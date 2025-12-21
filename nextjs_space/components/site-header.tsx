@@ -46,6 +46,7 @@ export default function SiteHeader() {
                   <div className="px-3 py-1 text-xs font-semibold text-gray-500 uppercase">Neurodevelopmental</div>
                   <Link href="/autism" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Autism</Link>
                   <Link href="/adhd" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">ADHD</Link>
+                  <Link href="/dyslexia-reading-training" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">📖 Dyslexia Reading Training</Link>
                   <div className="px-3 py-1 text-xs font-semibold text-gray-500 uppercase mt-2">Mental Health</div>
                   <Link href="/anxiety" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Anxiety</Link>
                   <Link href="/stress" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Stress</Link>
@@ -143,6 +144,7 @@ export default function SiteHeader() {
               <Link href="/" className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md" onClick={() => setIsNavOpen(false)}>Home</Link>
               <Link href="/autism" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md" onClick={() => setIsNavOpen(false)}>Autism</Link>
               <Link href="/adhd" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md" onClick={() => setIsNavOpen(false)}>ADHD</Link>
+              <Link href="/dyslexia-reading-training" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md" onClick={() => setIsNavOpen(false)}>📖 Dyslexia Reading Training</Link>
               <Link href="/anxiety" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md" onClick={() => setIsNavOpen(false)}>Anxiety</Link>
               <Link href="/techniques/box-breathing" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md" onClick={() => setIsNavOpen(false)}>🟩 Box Breathing</Link>
               <Link href="/progress" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md" onClick={() => setIsNavOpen(false)}>📊 Progress</Link>
