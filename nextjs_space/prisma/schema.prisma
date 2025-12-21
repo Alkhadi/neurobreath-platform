@@ -1,0 +1,90 @@
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+    output = "/home/ubuntu/neurobreath/nextjs_space/node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  deviceId     String
+  technique    String   // box, coherent, four78, sos, roulette, ladder, colourPath
+  label        String
+  minutes      Int
+  breaths      Int      @default(0)
+  rounds       Int      @default(0)
+  completedAt  DateTime @default(now())
+  category     String?  // calm, focus, sleep, school, mood
+
+  @@index([deviceId, completedAt])
+}
+
+model Progress {
+  id                   String   @id @default(cuid())
+  deviceId             String   @unique
+  totalSessions        Int      @default(0)
+  totalMinutes         Int      @default(0)
+  totalBreaths         Int      @default(0)
+  currentStreak        Int      @default(0)
+  longestStreak        Int      @default(0)
+  lastSessionDate      String?  // Store as YYYY-MM-DD for streak tracking
+  updatedAt            DateTime @default(now()) @updatedAt
+}
+
+model Badge {
+  id              String   @id @default(cuid())
+  deviceId        String
+  badgeKey        String   // firstBreath, weekWarrior, steadyNavigator, etc
+  badgeName       String
+  badgeIcon       String
+  unlockedAt      DateTime @default(now())
+
+  @@unique([deviceId, badgeKey])
+  @@index([deviceId])
+}
+
+model Challenge {
+  id               String   @id @default(cuid())
+  deviceId         String
+  challengeKey     String   // dailyCalm, morningFocus, sleepReset, etc
+  challengeName    String
+  category         String   // calm, focus, sleep, school, mood
+  targetSessions   Int
+  currentSessions  Int      @default(0)
+  isCompleted      Boolean  @default(false)
+  lastCompletedDate String? // YYYY-MM-DD
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now()) @updatedAt
+
+  @@unique([deviceId, challengeKey])
+  @@index([deviceId, category])
+}
+
+model DailyQuest {
+  id            String   @id @default(cuid())
+  deviceId      String
+  questDate     String   // YYYY-MM-DD
+  category      String   // calm, focus, sleep, school, mood
+  minutes       Int
+  technique     String
+  isCompleted   Boolean  @default(false)
+  completedAt   DateTime?
+  points        Int      @default(0)
+
+  @@unique([deviceId, questDate, category])
+  @@index([deviceId, questDate])
+}
+
+model VoicePreference {
+  id              String   @id @default(cuid())
+  deviceId        String   @unique
+  voiceName       String   @default("UK English Voice")
+  voiceSpeed      String   @default("Steady")
+  useTTS          Boolean  @default(true)
+  useVibration    Boolean  @default(false)
+  updatedAt       DateTime @default(now()) @updatedAt
+}
