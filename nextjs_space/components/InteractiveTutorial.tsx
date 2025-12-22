@@ -45,63 +45,63 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     title: 'Practice Timer',
     description: 'Use this timer to track how long you practice. Try to practice for at least 10 minutes each day to keep your streak going!',
     targetSelector: '[data-tutorial="timer"]',
-    position: 'left',
+    position: 'bottom',
   },
   {
     id: 'breathing',
     title: 'Breathing Exercise',
     description: 'Start here! Take a few deep breaths to calm down before learning. It helps your brain get ready for reading practice.',
     targetSelector: '[data-tutorial="breathing"]',
-    position: 'right',
+    position: 'bottom',
   },
   {
     id: 'phonics',
     title: 'Phonics Player',
     description: 'Listen to fun phonics songs that teach you letter sounds. Music makes learning easier and more fun!',
     targetSelector: '[data-tutorial="phonics"]',
-    position: 'top',
+    position: 'bottom',
   },
   {
     id: 'phon ics-lab',
     title: 'Phonics Sounds Lab',
     description: 'Practice individual letter sounds with visual animations! Watch the letters slide in and hear their sounds.',
     targetSelector: '[data-tutorial="phonics-lab"]',
-    position: 'top',
+    position: 'bottom',
   },
   {
     id: 'wordbuilder',
     title: 'Word Builder',
     description: 'Build words by putting letters together! Start with simple words and work your way up to harder ones.',
     targetSelector: '[data-tutorial="wordbuilder"]',
-    position: 'top',
+    position: 'bottom',
   },
   {
     id: 'fluency',
     title: 'Fluency Pacer',
     description: 'Practice reading at different speeds. Words light up as you read along, helping you keep a steady pace.',
     targetSelector: '[data-tutorial="fluency"]',
-    position: 'top',
+    position: 'bottom',
   },
   {
     id: 'syllables',
     title: 'Syllable Splitter',
     description: 'Learn to break big words into smaller parts called syllables. It makes reading long words much easier!',
     targetSelector: '[data-tutorial="syllables"]',
-    position: 'top',
+    position: 'bottom',
   },
   {
     id: 'vowels',
     title: 'Vowel Universe',
     description: 'Explore 5 zones to master all vowel sounds! Start at Short Street with simple vowels, then journey through to advanced patterns.',
     targetSelector: '[data-tutorial="vowels"]',
-    position: 'top',
+    position: 'bottom',
   },
   {
     id: 'rewards',
     title: 'Reward Cards',
     description: 'As you practice, you earn points that unlock reward cards! Keep practicing to collect them all.',
     targetSelector: '[data-tutorial="rewards"]',
-    position: 'top',
+    position: 'bottom',
   },
   {
     id: 'complete',
@@ -225,37 +225,14 @@ export default function InteractiveTutorial({ open, onOpenChange }: InteractiveT
   const getTooltipPosition = () => {
     if (!highlightRect) return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
 
-    const padding = 16;
-    const tooltipHeight = 200;
+    const padding = 20;
     const tooltipWidth = 350;
 
-    switch (step.position) {
-      case 'top':
-        return {
-          bottom: `${window.innerHeight - highlightRect.top + padding}px`,
-          left: `${Math.max(padding, Math.min(highlightRect.left + highlightRect.width / 2 - tooltipWidth / 2, window.innerWidth - tooltipWidth - padding))}px`,
-        };
-      case 'bottom':
-        return {
-          top: `${highlightRect.bottom + padding}px`,
-          left: `${Math.max(padding, Math.min(highlightRect.left + highlightRect.width / 2 - tooltipWidth / 2, window.innerWidth - tooltipWidth - padding))}px`,
-        };
-      case 'left':
-        return {
-          top: `${Math.max(padding, highlightRect.top + highlightRect.height / 2 - tooltipHeight / 2)}px`,
-          right: `${window.innerWidth - highlightRect.left + padding}px`,
-        };
-      case 'right':
-        return {
-          top: `${Math.max(padding, highlightRect.top + highlightRect.height / 2 - tooltipHeight / 2)}px`,
-          left: `${highlightRect.right + padding}px`,
-        };
-      default:
-        return {
-          top: `${highlightRect.bottom + padding}px`,
-          left: `${highlightRect.left}px`,
-        };
-    }
+    // Always position below the highlighted element
+    return {
+      top: `${highlightRect.bottom + padding}px`,
+      left: `${Math.max(padding, Math.min(highlightRect.left + highlightRect.width / 2 - tooltipWidth / 2, window.innerWidth - tooltipWidth - padding))}px`,
+    };
   };
 
   return (
