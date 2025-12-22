@@ -185,7 +185,7 @@ export const PHONICS_LETTER_DATA: Record<string, { word: string; emoji: string }
   K: { word: "kite", emoji: "🪁" },
   L: { word: "lion", emoji: "🦁" },
   M: { word: "milk", emoji: "🥛" },
-  N: { word: "net", emoji: "🎣" },
+  N: { word: "nose", emoji: "👃" },
   O: { word: "orange", emoji: "🍊" },
   P: { word: "pen", emoji: "🖊️" },
   Q: { word: "queen", emoji: "👑" },
