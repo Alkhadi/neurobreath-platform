@@ -30,34 +30,56 @@ export default function DyslexiaReadingTrainingPage() {
         <div className="min-h-screen bg-background">
           <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8 md:space-y-12">
             
-            {/* Hero Section */}
-            <section data-tutorial="hero" className="text-center space-y-3 sm:space-y-4">
-              <p className="text-xs sm:text-sm uppercase tracking-wider text-primary font-semibold">
-                Dyslexia Reading Training • NeuroBreath
-              </p>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
-                Professional Reading Development
-              </h1>
-              <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-                Evidence-based techniques for efficient skill enhancement.
-              </p>
-              <div className="flex flex-wrap justify-center gap-3 pt-4">
-                <Button size="lg" className="gap-2">
-                  <GraduationCap className="w-5 h-5" />
-                  Begin Training
-                </Button>
-                <Button size="lg" variant="outline">Daily Practice</Button>
-                <Button size="lg" variant="outline">Learn More</Button>
-              </div>
-              <div className="flex flex-wrap justify-center gap-4 text-xs text-muted-foreground pt-2">
-                <span>✓ No login required</span>
-                <span>✓ Saves privately on device</span>
-                <span>✓ Dyslexia-friendly design</span>
-              </div>
-            </section>
+            {/* Hero Section with Profile Creation - Two Card Layout */}
+            <section data-tutorial="hero" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left Card - Hero/Introduction */}
+              <Card className="overflow-hidden border-2 border-primary/20">
+                <CardContent className="p-6 sm:p-8 space-y-6">
+                  <div className="space-y-3">
+                    <p className="text-xs sm:text-sm uppercase tracking-wider text-primary font-semibold">
+                      Dyslexia Reading Training • NeuroBreath
+                    </p>
+                    <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
+                      Professional Reading Development
+                    </h1>
+                    <p className="text-sm sm:text-base text-muted-foreground">
+                      Evidence-based techniques for efficient skill enhancement.
+                    </p>
+                  </div>
 
-            {/* Profile Creation */}
-            <CreateProfile />
+                  <div className="space-y-3">
+                    <Button size="lg" className="w-full gap-2 bg-[#4A7C9D] hover:bg-[#3d6680]">
+                      <GraduationCap className="w-5 h-5" />
+                      Begin Training
+                    </Button>
+                    <Button size="lg" variant="outline" className="w-full">
+                      Daily Practice
+                    </Button>
+                    <Button size="lg" variant="outline" className="w-full">
+                      Learn More
+                    </Button>
+                  </div>
+
+                  <div className="space-y-2 pt-2">
+                    <div className="flex items-center gap-2 text-sm">
+                      <div className="w-2 h-2 rounded-full bg-green-500" />
+                      <span className="text-muted-foreground">No login required</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <div className="w-2 h-2 rounded-full bg-blue-500" />
+                      <span className="text-muted-foreground">Saves privately on device</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <div className="w-2 h-2 rounded-full bg-orange-500" />
+                      <span className="text-muted-foreground">Dyslexia-friendly design</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Right Card - Profile Creation */}
+              <CreateProfile />
+            </section>
 
             {/* Streak Toolkit */}
             <div data-tutorial="streak">
