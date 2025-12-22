@@ -6,8 +6,16 @@ import { VowelUniverse } from '@/components/VowelUniverse';
 import { PrintableWorksheets } from '@/components/PrintableWorksheets';
 import { RewardCards } from '@/components/RewardCards';
 import { StreakToolkit } from '@/components/StreakToolkit';
+import { CreateProfile } from '@/components/CreateProfile';
+import { PracticeTimer } from '@/components/PracticeTimer';
+import { BreathingExercise } from '@/components/BreathingExercise';
+import { ReadingAssessment } from '@/components/ReadingAssessment';
+import { RapidNaming } from '@/components/RapidNaming';
 import { ProgressProvider } from '@/contexts/ProgressContext';
 import { ReadingLevelProvider } from '@/contexts/ReadingLevelContext';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { GraduationCap } from 'lucide-react';
 
 export default function DyslexiaReadingTrainingPage() {
   return (
@@ -22,15 +30,40 @@ export default function DyslexiaReadingTrainingPage() {
                 Dyslexia Reading Training • NeuroBreath
               </p>
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
-                Phonics & Reading Practice
+                Professional Reading Development
               </h1>
               <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-                Master letter sounds, vowel patterns, and reading skills with structured practice and breathing breaks.
+                Evidence-based techniques for efficient skill enhancement.
               </p>
+              <div className="flex flex-wrap justify-center gap-3 pt-4">
+                <Button size="lg" className="gap-2">
+                  <GraduationCap className="w-5 h-5" />
+                  Begin Training
+                </Button>
+                <Button size="lg" variant="outline">Daily Practice</Button>
+                <Button size="lg" variant="outline">Learn More</Button>
+              </div>
+              <div className="flex flex-wrap justify-center gap-4 text-xs text-muted-foreground pt-2">
+                <span>✓ No login required</span>
+                <span>✓ Saves privately on device</span>
+                <span>✓ Dyslexia-friendly design</span>
+              </div>
             </section>
+
+            {/* Profile Creation */}
+            <CreateProfile />
 
             {/* Streak Toolkit */}
             <StreakToolkit />
+
+            {/* Practice Timer */}
+            <PracticeTimer />
+
+            {/* Breathing Exercise */}
+            <BreathingExercise />
+
+            {/* Reading Assessment */}
+            <ReadingAssessment />
 
             {/* Phonics Song Player */}
             <PhonicsPlayer />
@@ -40,6 +73,9 @@ export default function DyslexiaReadingTrainingPage() {
 
             {/* Vowel Universe Map */}
             <VowelUniverse />
+
+            {/* Rapid Naming Game */}
+            <RapidNaming />
 
             {/* Printable Worksheets */}
             <PrintableWorksheets />
