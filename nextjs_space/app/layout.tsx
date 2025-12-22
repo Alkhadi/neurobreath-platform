@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 import SiteHeader from '@/components/site-header'
 import SiteFooter from '@/components/site-footer'
 import QuestPassPill from '@/components/quest-pass-pill'
+import ReadingBuddy from '@/components/ReadingBuddy'
 import { Toaster } from 'sonner'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -52,6 +53,7 @@ export default function RootLayout({
           </main>
           <SiteFooter />
           <QuestPassPill />
+          <ReadingBuddy />
           <Toaster position="bottom-center" richColors />
         </ThemeProvider>
       </body>

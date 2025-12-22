@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Card } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, StopCircle, MapPin, Sparkles } from 'lucide-react';
+import { Send, StopCircle, MapPin, Sparkles, MessageCircle, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Message {
@@ -46,6 +46,7 @@ const responses: { [key: string]: string } = {
 };
 
 export default function ReadingBuddy() {
+  const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -152,28 +153,42 @@ export default function ReadingBuddy() {
   };
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/20 dark:to-purple-950/20 border-indigo-200 dark:border-indigo-800">
-      <div className="space-y-4">
-        {/* Header */}
-        <div className="flex items-start gap-4">
-          <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-3xl flex-shrink-0">
-            🤖
-          </div>
-          <div className="flex-1">
-            <h3 className="text-xl font-bold text-indigo-900 dark:text-indigo-100 flex items-center gap-2">
-              Reading Buddy
-            </h3>
-            <p className="text-sm text-indigo-700 dark:text-indigo-300 mt-1">
-              Your friendly guide
-            </p>
-          </div>
-        </div>
+    <>
+      {/* Floating Chat Button */}
+      <button
+        onClick={() => setIsOpen(true)}
+        className="fixed bottom-6 right-6 z-50 w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center text-white group"
+        aria-label="Open Reading Buddy chat"
+      >
+        <MessageCircle className="w-8 h-8 group-hover:scale-110 transition-transform" />
+        <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-pulse" />
+      </button>
 
-        {/* Chat Messages */}
-        <div 
-          ref={chatContainerRef}
-          className="bg-white/80 dark:bg-gray-800/80 rounded-xl p-4 max-h-96 overflow-y-auto space-y-3"
-        >
+      {/* Chat Dialog */}
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="sm:max-w-[500px] p-0 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/20 dark:to-purple-950/20">
+          <DialogHeader className="p-6 pb-4">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-2xl flex-shrink-0">
+                🤖
+              </div>
+              <div className="flex-1">
+                <DialogTitle className="text-xl font-bold text-indigo-900 dark:text-indigo-100">
+                  Reading Buddy
+                </DialogTitle>
+                <p className="text-sm text-indigo-700 dark:text-indigo-300 mt-1">
+                  Your friendly guide
+                </p>
+              </div>
+            </div>
+          </DialogHeader>
+
+          <div className="px-6 pb-6 space-y-4">
+            {/* Chat Messages */}
+            <div 
+              ref={chatContainerRef}
+              className="bg-white/80 dark:bg-gray-800/80 rounded-xl p-4 max-h-96 overflow-y-auto space-y-3"
+            >
           {messages.map((message) => (
             <div
               key={message.id}
@@ -263,14 +278,16 @@ export default function ReadingBuddy() {
           </Button>
         </div>
 
-        {/* Helper Text */}
-        <div className="flex items-center gap-2 text-xs text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-3">
-          <Sparkles className="w-4 h-4 flex-shrink-0" />
-          <p>
-            I'm here to help you navigate and learn! Ask me about any activity on this page.
-          </p>
-        </div>
-      </div>
-    </Card>
+            {/* Helper Text */}
+            <div className="flex items-center gap-2 text-xs text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-3">
+              <Sparkles className="w-4 h-4 flex-shrink-0" />
+              <p>
+                I'm here to help you navigate and learn! Ask me about any activity on this page.
+              </p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
