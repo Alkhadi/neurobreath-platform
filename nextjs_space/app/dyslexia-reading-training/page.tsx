@@ -438,32 +438,199 @@ export default function DyslexiaReadingTraining() {
 
         {/* Alphabet Atlas (Letter Grid) */}
         <Card className="p-6 mb-8 border-border bg-card">
-          <h2 className="text-lg font-semibold mb-4">Alphabet Atlas</h2>
-          <div className="grid grid-cols-13 gap-2">
-            {LETTER_TIMINGS.letters.map((info, index) => {
-              const isCompleted = completedLetters.has(info.letter);
-              const isCurrent = currentLetterIndex === index;
-              return (
-                <button
-                  key={info.letter}
-                  onClick={() => handleLetterClick(info.letter, index)}
-                  className={`
-                    aspect-square rounded-lg text-lg font-bold transition-all relative group
-                    ${isCurrent ? 'bg-primary text-primary-foreground scale-110 shadow-lg z-10' : ''}
-                    ${isCompleted && !isCurrent ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : ''}
-                    ${!isCompleted && !isCurrent ? 'bg-muted hover:bg-muted/80' : ''}
-                  `}
-                >
-                  {info.letter}
-                  {isCompleted && !isCurrent && (
-                    <Check className="w-3 h-3 absolute top-0.5 right-0.5 text-green-600 dark:text-green-400" />
-                  )}
-                  <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs text-muted-foreground whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-                    {info.word}
-                  </span>
-                </button>
-              );
-            })}
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-xl font-bold">Alphabet Atlas</h2>
+              <p className="text-sm text-muted-foreground mt-1">Click any letter to jump to that sound</p>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded bg-muted border"></div>
+                <span className="text-muted-foreground">Pending</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800"></div>
+                <span className="text-muted-foreground">Complete</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded bg-primary"></div>
+                <span className="text-muted-foreground">Playing</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Milestone Groups */}
+          <div className="space-y-6">
+            {/* Bronze Group (A-F) */}
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-2xl">🥉</span>
+                <span className="text-sm font-semibold text-muted-foreground">A-F Bronze</span>
+                {earnedMilestones.has('bronze') && (
+                  <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
+                )}
+              </div>
+              <div className="grid grid-cols-6 md:grid-cols-6 gap-3">
+                {LETTER_TIMINGS.letters.slice(0, 6).map((info, index) => {
+                  const isCompleted = completedLetters.has(info.letter);
+                  const isCurrent = currentLetterIndex === index;
+                  return (
+                    <button
+                      key={info.letter}
+                      onClick={() => handleLetterClick(info.letter, index)}
+                      className={`
+                        relative group aspect-square rounded-xl text-2xl font-bold transition-all duration-200
+                        flex flex-col items-center justify-center p-4
+                        ${isCurrent ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white scale-105 shadow-xl ring-4 ring-blue-300 dark:ring-blue-700 z-10' : ''}
+                        ${isCompleted && !isCurrent ? 'bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 text-green-700 dark:text-green-300 border-2 border-green-200 dark:border-green-800 hover:scale-105 hover:shadow-lg' : ''}
+                        ${!isCompleted && !isCurrent ? 'bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 text-slate-700 dark:text-slate-300 border-2 border-slate-200 dark:border-slate-700 hover:scale-105 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md' : ''}
+                      `}
+                    >
+                      <span className="text-3xl mb-1">{info.letter}</span>
+                      {isCompleted && !isCurrent && (
+                        <Check className="w-5 h-5 absolute top-2 right-2 text-green-600 dark:text-green-400 bg-white dark:bg-green-950 rounded-full p-0.5" />
+                      )}
+                      {isCurrent && (
+                        <div className="absolute inset-0 rounded-xl animate-pulse bg-blue-400/20"></div>
+                      )}
+                      <span className="text-xs font-medium mt-1 opacity-70">{info.word}</span>
+                      <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-3 py-1.5 rounded-lg text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-lg z-20">
+                        {info.tip}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Silver Group (G-L) */}
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-2xl">🥈</span>
+                <span className="text-sm font-semibold text-muted-foreground">G-L Silver</span>
+                {earnedMilestones.has('silver') && (
+                  <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
+                )}
+              </div>
+              <div className="grid grid-cols-6 md:grid-cols-6 gap-3">
+                {LETTER_TIMINGS.letters.slice(6, 12).map((info, index) => {
+                  const actualIndex = index + 6;
+                  const isCompleted = completedLetters.has(info.letter);
+                  const isCurrent = currentLetterIndex === actualIndex;
+                  return (
+                    <button
+                      key={info.letter}
+                      onClick={() => handleLetterClick(info.letter, actualIndex)}
+                      className={`
+                        relative group aspect-square rounded-xl text-2xl font-bold transition-all duration-200
+                        flex flex-col items-center justify-center p-4
+                        ${isCurrent ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white scale-105 shadow-xl ring-4 ring-blue-300 dark:ring-blue-700 z-10' : ''}
+                        ${isCompleted && !isCurrent ? 'bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 text-green-700 dark:text-green-300 border-2 border-green-200 dark:border-green-800 hover:scale-105 hover:shadow-lg' : ''}
+                        ${!isCompleted && !isCurrent ? 'bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 text-slate-700 dark:text-slate-300 border-2 border-slate-200 dark:border-slate-700 hover:scale-105 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md' : ''}
+                      `}
+                    >
+                      <span className="text-3xl mb-1">{info.letter}</span>
+                      {isCompleted && !isCurrent && (
+                        <Check className="w-5 h-5 absolute top-2 right-2 text-green-600 dark:text-green-400 bg-white dark:bg-green-950 rounded-full p-0.5" />
+                      )}
+                      {isCurrent && (
+                        <div className="absolute inset-0 rounded-xl animate-pulse bg-blue-400/20"></div>
+                      )}
+                      <span className="text-xs font-medium mt-1 opacity-70">{info.word}</span>
+                      <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-3 py-1.5 rounded-lg text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-lg z-20">
+                        {info.tip}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Gold Group (M-R) */}
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-2xl">🥇</span>
+                <span className="text-sm font-semibold text-muted-foreground">M-R Gold</span>
+                {earnedMilestones.has('gold') && (
+                  <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
+                )}
+              </div>
+              <div className="grid grid-cols-6 md:grid-cols-6 gap-3">
+                {LETTER_TIMINGS.letters.slice(12, 18).map((info, index) => {
+                  const actualIndex = index + 12;
+                  const isCompleted = completedLetters.has(info.letter);
+                  const isCurrent = currentLetterIndex === actualIndex;
+                  return (
+                    <button
+                      key={info.letter}
+                      onClick={() => handleLetterClick(info.letter, actualIndex)}
+                      className={`
+                        relative group aspect-square rounded-xl text-2xl font-bold transition-all duration-200
+                        flex flex-col items-center justify-center p-4
+                        ${isCurrent ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white scale-105 shadow-xl ring-4 ring-blue-300 dark:ring-blue-700 z-10' : ''}
+                        ${isCompleted && !isCurrent ? 'bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 text-green-700 dark:text-green-300 border-2 border-green-200 dark:border-green-800 hover:scale-105 hover:shadow-lg' : ''}
+                        ${!isCompleted && !isCurrent ? 'bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 text-slate-700 dark:text-slate-300 border-2 border-slate-200 dark:border-slate-700 hover:scale-105 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md' : ''}
+                      `}
+                    >
+                      <span className="text-3xl mb-1">{info.letter}</span>
+                      {isCompleted && !isCurrent && (
+                        <Check className="w-5 h-5 absolute top-2 right-2 text-green-600 dark:text-green-400 bg-white dark:bg-green-950 rounded-full p-0.5" />
+                      )}
+                      {isCurrent && (
+                        <div className="absolute inset-0 rounded-xl animate-pulse bg-blue-400/20"></div>
+                      )}
+                      <span className="text-xs font-medium mt-1 opacity-70">{info.word}</span>
+                      <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-3 py-1.5 rounded-lg text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-lg z-20">
+                        {info.tip}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Platinum Group (S-Z) */}
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-2xl">💎</span>
+                <span className="text-sm font-semibold text-muted-foreground">S-Z Platinum</span>
+                {earnedMilestones.has('platinum') && (
+                  <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
+                )}
+              </div>
+              <div className="grid grid-cols-6 md:grid-cols-8 gap-3">
+                {LETTER_TIMINGS.letters.slice(18, 26).map((info, index) => {
+                  const actualIndex = index + 18;
+                  const isCompleted = completedLetters.has(info.letter);
+                  const isCurrent = currentLetterIndex === actualIndex;
+                  return (
+                    <button
+                      key={info.letter}
+                      onClick={() => handleLetterClick(info.letter, actualIndex)}
+                      className={`
+                        relative group aspect-square rounded-xl text-2xl font-bold transition-all duration-200
+                        flex flex-col items-center justify-center p-4
+                        ${isCurrent ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white scale-105 shadow-xl ring-4 ring-blue-300 dark:ring-blue-700 z-10' : ''}
+                        ${isCompleted && !isCurrent ? 'bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 text-green-700 dark:text-green-300 border-2 border-green-200 dark:border-green-800 hover:scale-105 hover:shadow-lg' : ''}
+                        ${!isCompleted && !isCurrent ? 'bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 text-slate-700 dark:text-slate-300 border-2 border-slate-200 dark:border-slate-700 hover:scale-105 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md' : ''}
+                      `}
+                    >
+                      <span className="text-3xl mb-1">{info.letter}</span>
+                      {isCompleted && !isCurrent && (
+                        <Check className="w-5 h-5 absolute top-2 right-2 text-green-600 dark:text-green-400 bg-white dark:bg-green-950 rounded-full p-0.5" />
+                      )}
+                      {isCurrent && (
+                        <div className="absolute inset-0 rounded-xl animate-pulse bg-blue-400/20"></div>
+                      )}
+                      <span className="text-xs font-medium mt-1 opacity-70">{info.word}</span>
+                      <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-3 py-1.5 rounded-lg text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-lg z-20">
+                        {info.tip}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </Card>
 
