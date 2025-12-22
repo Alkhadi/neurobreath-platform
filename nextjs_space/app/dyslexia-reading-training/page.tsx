@@ -31,7 +31,7 @@ export default function DyslexiaReadingTrainingPage() {
           <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8 md:space-y-12">
             
             {/* Hero Section */}
-            <section className="text-center space-y-3 sm:space-y-4">
+            <section data-tutorial="hero" className="text-center space-y-3 sm:space-y-4">
               <p className="text-xs sm:text-sm uppercase tracking-wider text-primary font-semibold">
                 Dyslexia Reading Training • NeuroBreath
               </p>
@@ -60,40 +60,58 @@ export default function DyslexiaReadingTrainingPage() {
             <CreateProfile />
 
             {/* Streak Toolkit */}
-            <StreakToolkit />
+            <div data-tutorial="streak">
+              <StreakToolkit />
+            </div>
 
             {/* Practice Timer */}
-            <PracticeTimer />
+            <div data-tutorial="timer">
+              <PracticeTimer />
+            </div>
 
             {/* Breathing Exercise */}
-            <BreathingExercise />
+            <div data-tutorial="breathing">
+              <BreathingExercise />
+            </div>
 
             {/* Reading Assessment */}
             <ReadingAssessment />
 
             {/* Phonics Song Player */}
-            <PhonicsPlayer />
+            <div data-tutorial="phonics">
+              <PhonicsPlayer />
+            </div>
 
             {/* Phonics Sounds Lab - Full A-Z with celebrations */}
-            <PhonicsSoundsLab />
+            <div data-tutorial="phonics-lab">
+              <PhonicsSoundsLab />
+            </div>
 
             {/* Vowel Universe Map */}
-            <VowelUniverse />
+            <div data-tutorial="vowels">
+              <VowelUniverse />
+            </div>
 
             {/* Rapid Naming Game */}
             <RapidNaming />
 
             {/* Word Construction */}
-            <WordConstruction />
+            <div data-tutorial="wordbuilder">
+              <WordConstruction />
+            </div>
 
             {/* Fluency Pacer */}
-            <FluencyPacer />
+            <div data-tutorial="fluency">
+              <FluencyPacer />
+            </div>
 
             {/* Pronunciation Practice */}
             <PronunciationPractice />
 
             {/* Syllable Splitter */}
-            <SyllableSplitter />
+            <div data-tutorial="syllables">
+              <SyllableSplitter />
+            </div>
 
             {/* Vocabulary Recognition */}
             <VocabularyRecognition />
@@ -105,7 +123,9 @@ export default function DyslexiaReadingTrainingPage() {
             <PrintableWorksheets />
 
             {/* NeuroBreath Reward Cards */}
-            <RewardCards />
+            <div data-tutorial="rewards">
+              <RewardCards />
+            </div>
 
             {/* Footer */}
             <footer className="text-center py-6 sm:py-8 border-t border-border">
