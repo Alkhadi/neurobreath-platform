@@ -93,4 +93,60 @@
   html {
     scroll-behavior: smooth;
   }
+
+  /* Letter group animations for Phonics Sounds Lab */
+  @keyframes letterGroupMove {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scaleIn {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Animation classes with transparent backgrounds */
+  .animate-letter-group-move {
+    animation: letterGroupMove 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  .animate-letter-group-move-delayed-2s {
+    animation: letterGroupMove 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 2s forwards;
+    opacity: 0;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  /* Ensure transparent backgrounds for emoji and letter elements */
+  .letter-group-emoji,
+  .letter-group-text {
+    background: transparent !important;
+  }
 }

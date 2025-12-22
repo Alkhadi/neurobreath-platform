@@ -702,18 +702,28 @@ export function PhonicsSoundsLab() {
 
                   {/* Current Letter Info with Animation - entire group moves together */}
                   <div className="bg-gradient-to-r from-slate-700/60 to-purple-900/40 rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-5 border border-slate-600/30 overflow-hidden">
-                    <div className={cn(
-                      "flex items-center gap-3 sm:gap-4 md:gap-5 transition-transform",
-                      isPlaying && "animate-letter-group-move"
-                    )}>
-                      <div className="text-4xl sm:text-5xl md:text-6xl shrink-0">
-                        <span className="inline-block">
+                    <div 
+                      key={currentLetter} 
+                      className={cn(
+                        "flex items-center gap-3 sm:gap-4 md:gap-5 transition-transform",
+                        isPlaying && (() => {
+                          // M-R letters (indices 12-17) get 2s delay
+                          if (currentIndex >= 12 && currentIndex <= 17) {
+                            return "animate-letter-group-move-delayed-2s";
+                          }
+                          // All other letters get immediate animation
+                          return "animate-letter-group-move";
+                        })()
+                      )}
+                    >
+                      <div className="text-4xl sm:text-5xl md:text-6xl shrink-0 letter-group-emoji bg-transparent">
+                        <span className="inline-block bg-transparent">
                           {currentData.emoji}
                         </span>
                       </div>
-                      <div className="min-w-0">
-                        <p className="text-lg sm:text-xl md:text-2xl font-bold text-white">{currentLetter}</p>
-                        <p className="text-sm sm:text-base md:text-lg text-slate-300">{currentData.word}</p>
+                      <div className="min-w-0 letter-group-text bg-transparent">
+                        <p className="text-lg sm:text-xl md:text-2xl font-bold text-white bg-transparent">{currentLetter}</p>
+                        <p className="text-sm sm:text-base md:text-lg text-slate-300 bg-transparent">{currentData.word}</p>
                       </div>
                     </div>
                   </div>
