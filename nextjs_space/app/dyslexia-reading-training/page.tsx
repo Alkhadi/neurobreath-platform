@@ -11,6 +11,12 @@ import { PracticeTimer } from '@/components/PracticeTimer';
 import { BreathingExercise } from '@/components/BreathingExercise';
 import { ReadingAssessment } from '@/components/ReadingAssessment';
 import { RapidNaming } from '@/components/RapidNaming';
+import WordConstruction from '@/components/WordConstruction';
+import FluencyPacer from '@/components/FluencyPacer';
+import PronunciationPractice from '@/components/PronunciationPractice';
+import SyllableSplitter from '@/components/SyllableSplitter';
+import VocabularyRecognition from '@/components/VocabularyRecognition';
+import VocabularyBuilder from '@/components/VocabularyBuilder';
 import { ProgressProvider } from '@/contexts/ProgressContext';
 import { ReadingLevelProvider } from '@/contexts/ReadingLevelContext';
 import { Button } from '@/components/ui/button';
@@ -76,6 +82,24 @@ export default function DyslexiaReadingTrainingPage() {
 
             {/* Rapid Naming Game */}
             <RapidNaming />
+
+            {/* Word Construction */}
+            <WordConstruction />
+
+            {/* Fluency Pacer */}
+            <FluencyPacer />
+
+            {/* Pronunciation Practice */}
+            <PronunciationPractice />
+
+            {/* Syllable Splitter */}
+            <SyllableSplitter />
+
+            {/* Vocabulary Recognition */}
+            <VocabularyRecognition />
+
+            {/* Vocabulary Builder */}
+            <VocabularyBuilder />
 
             {/* Printable Worksheets */}
             <PrintableWorksheets />
