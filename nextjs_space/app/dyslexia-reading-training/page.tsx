@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useRef } from 'react';
 import { PhonicsPlayer } from '@/components/PhonicsPlayer';
 import { PhonicsSoundsLab } from '@/components/PhonicsSoundsLab';
 import { VowelUniverse } from '@/components/VowelUniverse';
@@ -17,13 +18,39 @@ import PronunciationPractice from '@/components/PronunciationPractice';
 import SyllableSplitter from '@/components/SyllableSplitter';
 import VocabularyRecognition from '@/components/VocabularyRecognition';
 import VocabularyBuilder from '@/components/VocabularyBuilder';
+import BeginSessionModal from '@/components/BeginSessionModal';
 import { ProgressProvider } from '@/contexts/ProgressContext';
 import { ReadingLevelProvider } from '@/contexts/ReadingLevelContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { GraduationCap } from 'lucide-react';
 
+type TrainingApproach = 'focused' | 'direct' | 'fluency';
+
 export default function DyslexiaReadingTrainingPage() {
+  const [sessionModalOpen, setSessionModalOpen] = useState(false);
+  const breathingRef = useRef<HTMLDivElement>(null);
+  const phonicsRef = useRef<HTMLDivElement>(null);
+  const fluencyRef = useRef<HTMLDivElement>(null);
+
+  const handleStartSession = (approach: TrainingApproach) => {
+    // Record session start in localStorage
+    const now = new Date().toISOString();
+    localStorage.setItem('lastSessionStart', now);
+    localStorage.setItem('lastSessionApproach', approach);
+
+    // Navigate to appropriate section based on approach
+    setTimeout(() => {
+      if (approach === 'focused' && breathingRef.current) {
+        breathingRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (approach === 'direct' && phonicsRef.current) {
+        phonicsRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (approach === 'fluency' && fluencyRef.current) {
+        fluencyRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 300);
+  };
+
   return (
     <ReadingLevelProvider>
       <ProgressProvider>
@@ -48,14 +75,34 @@ export default function DyslexiaReadingTrainingPage() {
                   </div>
 
                   <div className="space-y-3">
-                    <Button size="lg" className="w-full gap-2 bg-[#4A7C9D] hover:bg-[#3d6680]">
+                    <Button 
+                      size="lg" 
+                      className="w-full gap-2 bg-[#4A7C9D] hover:bg-[#3d6680]"
+                      onClick={() => setSessionModalOpen(true)}
+                    >
                       <GraduationCap className="w-5 h-5" />
                       Begin Training
                     </Button>
-                    <Button size="lg" variant="outline" className="w-full">
+                    <Button 
+                      size="lg" 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => {
+                        const timerSection = document.querySelector('[data-tutorial="timer"]');
+                        timerSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }}
+                    >
                       Daily Practice
                     </Button>
-                    <Button size="lg" variant="outline" className="w-full">
+                    <Button 
+                      size="lg" 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => {
+                        const heroSection = document.querySelector('[data-tutorial="hero"]');
+                        heroSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }}
+                    >
                       Learn More
                     </Button>
                   </div>
@@ -92,7 +139,7 @@ export default function DyslexiaReadingTrainingPage() {
             </div>
 
             {/* Breathing Exercise */}
-            <div data-tutorial="breathing">
+            <div ref={breathingRef} data-tutorial="breathing">
               <BreathingExercise />
             </div>
 
@@ -100,7 +147,7 @@ export default function DyslexiaReadingTrainingPage() {
             <ReadingAssessment />
 
             {/* Phonics Song Player */}
-            <div data-tutorial="phonics">
+            <div ref={phonicsRef} data-tutorial="phonics">
               <PhonicsPlayer />
             </div>
 
@@ -123,7 +170,7 @@ export default function DyslexiaReadingTrainingPage() {
             </div>
 
             {/* Fluency Pacer */}
-            <div data-tutorial="fluency">
+            <div ref={fluencyRef} data-tutorial="fluency">
               <FluencyPacer />
             </div>
 
@@ -160,6 +207,13 @@ export default function DyslexiaReadingTrainingPage() {
             </footer>
           </main>
         </div>
+
+        {/* Begin Session Modal */}
+        <BeginSessionModal
+          open={sessionModalOpen}
+          onOpenChange={setSessionModalOpen}
+          onStartSession={handleStartSession}
+        />
       </ProgressProvider>
     </ReadingLevelProvider>
   );
