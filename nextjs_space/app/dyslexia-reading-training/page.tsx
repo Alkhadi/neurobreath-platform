@@ -17,6 +17,7 @@ import PronunciationPractice from '@/components/PronunciationPractice';
 import SyllableSplitter from '@/components/SyllableSplitter';
 import VocabularyRecognition from '@/components/VocabularyRecognition';
 import VocabularyBuilder from '@/components/VocabularyBuilder';
+import ReadingBuddy from '@/components/ReadingBuddy';
 import { ProgressProvider } from '@/contexts/ProgressContext';
 import { ReadingLevelProvider } from '@/contexts/ReadingLevelContext';
 import { Button } from '@/components/ui/button';
@@ -58,6 +59,9 @@ export default function DyslexiaReadingTrainingPage() {
 
             {/* Profile Creation */}
             <CreateProfile />
+
+            {/* Reading Buddy */}
+            <ReadingBuddy />
 
             {/* Streak Toolkit */}
             <StreakToolkit />
