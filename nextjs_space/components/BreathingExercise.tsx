@@ -51,7 +51,23 @@ export function BreathingExercise() {
   const [showDrivingWarning, setShowDrivingWarning] = useState(true);
   
   const { speak, cancel, speaking } = useSpeechSynthesis();
-  const ambientAudioRef = useRef<HTMLAudioElement | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const ambientNodesRef = useRef<{
+    sources: AudioScheduledSourceNode[];
+    gainNode: GainNode | null;
+  }>({ sources: [], gainNode: null });
+
+  // Initialize Web Audio Context
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+    return () => {
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
+    };
+  }, []);
 
   // Announce phase changes with voice coach
   useEffect(() => {
@@ -112,31 +128,204 @@ export function BreathingExercise() {
     return () => clearInterval(timer);
   }, [isActive, countdown, phase, pattern, targetDuration, voiceCoachEnabled, speak]);
 
+  // Create ambient sound generators using Web Audio API
+  const createRainSound = (ctx: AudioContext, gainNode: GainNode) => {
+    // White noise for rain
+    const bufferSize = ctx.sampleRate * 2;
+    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+    
+    const whiteNoise = ctx.createBufferSource();
+    whiteNoise.buffer = noiseBuffer;
+    whiteNoise.loop = true;
+    
+    const bandpass = ctx.createBiquadFilter();
+    bandpass.type = 'bandpass';
+    bandpass.frequency.value = 1000;
+    bandpass.Q.value = 0.5;
+    
+    whiteNoise.connect(bandpass);
+    bandpass.connect(gainNode);
+    whiteNoise.start();
+    
+    return [whiteNoise];
+  };
+
+  const createOceanSound = (ctx: AudioContext, gainNode: GainNode) => {
+    // Low frequency oscillation with noise
+    const lfo = ctx.createOscillator();
+    lfo.type = 'sine';
+    lfo.frequency.value = 0.1;
+    
+    const lfoGain = ctx.createGain();
+    lfoGain.gain.value = 300;
+    
+    const carrier = ctx.createOscillator();
+    carrier.type = 'sine';
+    carrier.frequency.value = 100;
+    
+    lfo.connect(lfoGain);
+    lfoGain.connect(carrier.frequency);
+    
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 800;
+    
+    carrier.connect(filter);
+    filter.connect(gainNode);
+    
+    lfo.start();
+    carrier.start();
+    
+    return [lfo, carrier];
+  };
+
+  const createBirdsSound = (ctx: AudioContext, gainNode: GainNode) => {
+    // Random chirping tones
+    const sources: OscillatorNode[] = [];
+    
+    const chirp = () => {
+      if (!isActive) return;
+      
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = 800 + Math.random() * 1200;
+      
+      const envelope = ctx.createGain();
+      envelope.gain.value = 0;
+      envelope.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.01);
+      envelope.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.1 + Math.random() * 0.2);
+      
+      osc.connect(envelope);
+      envelope.connect(gainNode);
+      
+      osc.start();
+      osc.stop(ctx.currentTime + 0.3);
+      
+      setTimeout(chirp, 1000 + Math.random() * 3000);
+    };
+    
+    chirp();
+    return sources;
+  };
+
+  const createBowlSound = (ctx: AudioContext, gainNode: GainNode) => {
+    // Singing bowl resonance
+    const fundamentals = [220, 330, 440];
+    const sources: OscillatorNode[] = [];
+    
+    fundamentals.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      
+      const oscGain = ctx.createGain();
+      oscGain.gain.value = 0.3 / (i + 1);
+      
+      osc.connect(oscGain);
+      oscGain.connect(gainNode);
+      osc.start();
+      
+      sources.push(osc);
+    });
+    
+    return sources;
+  };
+
+  const createWindSound = (ctx: AudioContext, gainNode: GainNode) => {
+    // Wind chimes with random tones
+    const sources: OscillatorNode[] = [];
+    const notes = [523.25, 587.33, 659.25, 783.99, 880.00]; // C, D, E, G, A
+    
+    const chime = () => {
+      if (!isActive) return;
+      
+      const note = notes[Math.floor(Math.random() * notes.length)];
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = note;
+      
+      const envelope = ctx.createGain();
+      envelope.gain.value = 0;
+      envelope.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.02);
+      envelope.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 2);
+      
+      osc.connect(envelope);
+      envelope.connect(gainNode);
+      
+      osc.start();
+      osc.stop(ctx.currentTime + 2);
+      
+      setTimeout(chime, 2000 + Math.random() * 4000);
+    };
+    
+    chime();
+    return sources;
+  };
+
   // Ambient sound management
   useEffect(() => {
-    if (ambientSound === 'none') {
-      if (ambientAudioRef.current) {
-        ambientAudioRef.current.pause();
-        ambientAudioRef.current = null;
+    // Stop any existing ambient sounds
+    ambientNodesRef.current.sources.forEach(source => {
+      try {
+        source.stop();
+      } catch (e) {
+        // Source may already be stopped
       }
+    });
+    ambientNodesRef.current.sources = [];
+    
+    if (!isActive || ambientSound === 'none' || !audioContextRef.current) {
       return;
     }
 
-    // Create ambient audio simulation
-    if (isActive && !ambientAudioRef.current) {
-      ambientAudioRef.current = new Audio();
-      ambientAudioRef.current.loop = true;
-      ambientAudioRef.current.volume = 0.3;
-      // Note: In production, you would load actual audio files here
-      // ambientAudioRef.current.src = `/audio/ambient/${ambientSound}.mp3`;
-      // ambientAudioRef.current.play().catch(() => {});
+    const ctx = audioContextRef.current;
+    
+    // Resume audio context (required by some browsers)
+    if (ctx.state === 'suspended') {
+      ctx.resume();
     }
+    
+    // Create gain node for volume control
+    const gainNode = ctx.createGain();
+    gainNode.gain.value = 0.15; // Subtle background volume
+    gainNode.connect(ctx.destination);
+    ambientNodesRef.current.gainNode = gainNode;
+    
+    // Create appropriate sound based on selection
+    let sources: AudioScheduledSourceNode[] = [];
+    
+    switch (ambientSound) {
+      case 'rain':
+        sources = createRainSound(ctx, gainNode);
+        break;
+      case 'ocean':
+        sources = createOceanSound(ctx, gainNode);
+        break;
+      case 'birds':
+        sources = createBirdsSound(ctx, gainNode);
+        break;
+      case 'bowl':
+        sources = createBowlSound(ctx, gainNode);
+        break;
+      case 'wind':
+        sources = createWindSound(ctx, gainNode);
+        break;
+    }
+    
+    ambientNodesRef.current.sources = sources;
 
     return () => {
-      if (ambientAudioRef.current) {
-        ambientAudioRef.current.pause();
-        ambientAudioRef.current = null;
-      }
+      sources.forEach(source => {
+        try {
+          source.stop();
+        } catch (e) {
+          // Source may already be stopped
+        }
+      });
     };
   }, [ambientSound, isActive]);
 
