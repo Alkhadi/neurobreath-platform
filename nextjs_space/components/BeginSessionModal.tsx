@@ -1,164 +1,167 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Wind, BookOpen, Zap, Check } from 'lucide-react';
-import { cn } from '@/lib/utils';
-
-type TrainingApproach = 'focused' | 'direct' | 'fluency';
+import { useState } from 'react'
+import { X, Play, Clock, Heart, Sparkles } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useRouter } from 'next/navigation'
 
 interface BeginSessionModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onStartSession: (approach: TrainingApproach) => void;
+  isOpen: boolean
+  onClose: () => void
 }
 
-const TRAINING_APPROACHES = [
-  {
-    id: 'focused' as TrainingApproach,
-    icon: Wind,
-    title: 'Focused Start',
-    badge: 'Recommended',
-    description: 'Begin with breathing exercises to optimize concentration.',
-    color: 'text-green-600',
-    bgColor: 'bg-green-50',
-    borderColor: 'border-green-200',
-  },
-  {
-    id: 'direct' as TrainingApproach,
-    icon: BookOpen,
-    title: 'Direct Training',
-    description: 'Proceed directly to alphabet and phonics exercises.',
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50',
-    borderColor: 'border-blue-200',
-  },
-  {
-    id: 'fluency' as TrainingApproach,
-    icon: Zap,
-    title: 'Fluency Practice',
-    description: 'Focus on rapid naming for reading speed improvement.',
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-50',
-    borderColor: 'border-purple-200',
-  },
-];
+export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
+  const router = useRouter()
+  const [selectedDuration, setSelectedDuration] = useState<number>(2)
+  const [selectedTechnique, setSelectedTechnique] = useState<string>('box-breathing')
 
-export default function BeginSessionModal({
-  open,
-  onOpenChange,
-  onStartSession,
-}: BeginSessionModalProps) {
-  const [selectedApproach, setSelectedApproach] = useState<TrainingApproach>('focused');
+  if (!isOpen) return null
+
+  const durations = [
+    { value: 1, label: '1 min', points: 10 },
+    { value: 2, label: '2 min', points: 25 },
+    { value: 5, label: '5 min', points: 50 },
+    { value: 10, label: '10 min', points: 100 }
+  ]
+
+  const techniques = [
+    { id: 'box-breathing', name: 'Box Breathing', emoji: '🟩', path: '/techniques/box-breathing', desc: 'Equal counts (4-4-4-4)' },
+    { id: '4-7-8', name: '4-7-8 Breathing', emoji: '🟦', path: '/techniques/4-7-8', desc: 'Calming exhale focus' },
+    { id: 'coherent', name: 'Coherent 5-5', emoji: '🟪', path: '/techniques/coherent', desc: 'Heart-rate variability' },
+    { id: 'sos', name: '60-second SOS', emoji: '🆘', path: '/techniques/sos', desc: 'Quick panic relief' }
+  ]
 
   const handleStart = () => {
-    onStartSession(selectedApproach);
-    onOpenChange(false);
-  };
+    const technique = techniques.find(t => t.id === selectedTechnique)
+    if (technique) {
+      router.push(`${technique.path}?duration=${selectedDuration}`)
+    }
+    onClose()
+  }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] p-0">
-        <DialogHeader className="p-6 pb-4">
-          <DialogTitle className="text-2xl font-bold">Begin Session</DialogTitle>
-          <p className="text-sm text-muted-foreground mt-2">
-            Select your preferred approach for this training session.
-          </p>
-        </DialogHeader>
+    <>
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 bg-black/50 z-[9998] animate-in fade-in duration-200"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      
+      {/* Modal */}
+      <div 
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-2xl bg-white rounded-xl shadow-2xl z-[9999] animate-in zoom-in-95 duration-200"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="quick-start-title"
+      >
+        <div className="p-6">
+          {/* Header */}
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <h2 id="quick-start-title" className="text-2xl font-bold text-gray-900">
+                🚀 Quick Start Session
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">
+                Choose your breathing technique and duration
+              </p>
+            </div>
+            <button
+              onClick={onClose}
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              aria-label="Close modal"
+            >
+              <X size={20} className="text-gray-500" />
+            </button>
+          </div>
 
-        <div className="px-6 pb-6 space-y-3">
-          {TRAINING_APPROACHES.map((approach) => {
-            const Icon = approach.icon;
-            const isSelected = selectedApproach === approach.id;
-
-            return (
-              <button
-                key={approach.id}
-                onClick={() => setSelectedApproach(approach.id)}
-                className={cn(
-                  'w-full text-left transition-all duration-200',
-                  'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg'
-                )}
-              >
-                <Card
-                  className={cn(
-                    'relative p-4 border-2 cursor-pointer transition-all duration-200',
-                    isSelected
-                      ? 'border-primary bg-primary/5 shadow-md'
-                      : 'border-border hover:border-primary/50 hover:bg-accent/50'
-                  )}
+          {/* Duration Selection */}
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              <Clock size={16} className="inline mr-2" />
+              Select Duration
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {durations.map((duration) => (
+                <button
+                  key={duration.value}
+                  onClick={() => setSelectedDuration(duration.value)}
+                  className={`p-4 rounded-lg border-2 transition-all ${
+                    selectedDuration === duration.value
+                      ? 'border-blue-500 bg-blue-50 shadow-md'
+                      : 'border-gray-200 bg-white hover:border-gray-300'
+                  }`}
                 >
-                  <div className="flex items-start gap-3">
-                    {/* Icon */}
-                    <div
-                      className={cn(
-                        'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0',
-                        isSelected ? approach.bgColor : 'bg-muted'
-                      )}
-                    >
-                      <Icon
-                        className={cn(
-                          'w-5 h-5',
-                          isSelected ? approach.color : 'text-muted-foreground'
-                        )}
-                      />
-                    </div>
+                  <div className="text-lg font-bold text-gray-900">{duration.label}</div>
+                  <div className="text-xs text-gray-500 mt-1">+{duration.points} pts</div>
+                </button>
+              ))}
+            </div>
+          </div>
 
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold text-base">{approach.title}</h3>
-                        {approach.badge && (
-                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-                            {approach.badge}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {approach.description}
-                      </p>
-                    </div>
-
-                    {/* Selection Indicator */}
-                    <div className="flex-shrink-0">
-                      <div
-                        className={cn(
-                          'w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all',
-                          isSelected
-                            ? 'border-primary bg-primary'
-                            : 'border-muted-foreground/30'
-                        )}
-                      >
-                        {isSelected && <Check className="w-4 h-4 text-primary-foreground" />}
+          {/* Technique Selection */}
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              <Heart size={16} className="inline mr-2" />
+              Choose Technique
+            </label>
+            <div className="space-y-3">
+              {techniques.map((technique) => (
+                <button
+                  key={technique.id}
+                  onClick={() => setSelectedTechnique(technique.id)}
+                  className={`w-full p-4 rounded-lg border-2 text-left transition-all ${
+                    selectedTechnique === technique.id
+                      ? 'border-blue-500 bg-blue-50 shadow-md'
+                      : 'border-gray-200 bg-white hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{technique.emoji}</span>
+                      <div>
+                        <div className="font-semibold text-gray-900">{technique.name}</div>
+                        <div className="text-sm text-gray-500">{technique.desc}</div>
                       </div>
                     </div>
+                    {selectedTechnique === technique.id && (
+                      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-500">
+                        <div className="h-2 w-2 rounded-full bg-white" />
+                      </div>
+                    )}
                   </div>
-                </Card>
-              </button>
-            );
-          })}
-        </div>
+                </button>
+              ))}
+            </div>
+          </div>
 
-        {/* Footer Actions */}
-        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t bg-muted/30">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            className="min-w-[100px]"
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleStart}
-            className="min-w-[100px] gap-2"
-          >
-            <Zap className="w-4 h-4" />
-            Start
-          </Button>
+          {/* Start Button */}
+          <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+            <div className="text-sm text-gray-600">
+              <Sparkles size={16} className="inline mr-1" />
+              Earn{' '}
+              <span className="font-semibold text-blue-600">
+                {durations.find(d => d.value === selectedDuration)?.points || 0} points
+              </span>
+            </div>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={onClose}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleStart}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg"
+              >
+                <Play size={16} className="mr-2" />
+                Start Session
+              </Button>
+            </div>
+          </div>
         </div>
-      </DialogContent>
-    </Dialog>
-  );
+      </div>
+    </>
+  )
 }

@@ -18,11 +18,11 @@ import PronunciationPractice from '@/components/PronunciationPractice';
 import SyllableSplitter from '@/components/SyllableSplitter';
 import VocabularyRecognition from '@/components/VocabularyRecognition';
 import VocabularyBuilder from '@/components/VocabularyBuilder';
-import BeginSessionModal from '@/components/BeginSessionModal';
 import { ProgressProvider } from '@/contexts/ProgressContext';
 import { ReadingLevelProvider } from '@/contexts/ReadingLevelContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { GraduationCap } from 'lucide-react';
 // New Evidence-Based Components
 import { RhythmTraining } from '@/components/RhythmTraining';
@@ -464,11 +464,63 @@ export default function DyslexiaReadingTrainingPage() {
         </div>
 
         {/* Begin Session Modal */}
-        <BeginSessionModal
-          open={sessionModalOpen}
-          onOpenChange={setSessionModalOpen}
-          onStartSession={handleStartSession}
-        />
+        <Dialog open={sessionModalOpen} onOpenChange={setSessionModalOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Begin Your Reading Training Session</DialogTitle>
+              <DialogDescription>
+                Choose your training approach to get started
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <Button
+                onClick={() => {
+                  handleStartSession('focused');
+                  setSessionModalOpen(false);
+                }}
+                variant="outline"
+                className="justify-start h-auto p-4"
+              >
+                <div className="text-left">
+                  <div className="font-semibold">🎯 Focused Approach</div>
+                  <div className="text-sm text-muted-foreground">
+                    Start with breathing exercises for calm focus
+                  </div>
+                </div>
+              </Button>
+              <Button
+                onClick={() => {
+                  handleStartSession('direct');
+                  setSessionModalOpen(false);
+                }}
+                variant="outline"
+                className="justify-start h-auto p-4"
+              >
+                <div className="text-left">
+                  <div className="font-semibold">📖 Direct Approach</div>
+                  <div className="text-sm text-muted-foreground">
+                    Jump straight into phonics and reading practice
+                  </div>
+                </div>
+              </Button>
+              <Button
+                onClick={() => {
+                  handleStartSession('fluency');
+                  setSessionModalOpen(false);
+                }}
+                variant="outline"
+                className="justify-start h-auto p-4"
+              >
+                <div className="text-left">
+                  <div className="font-semibold">⚡ Fluency Approach</div>
+                  <div className="text-sm text-muted-foreground">
+                    Focus on reading speed and automaticity
+                  </div>
+                </div>
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </ProgressProvider>
     </ReadingLevelProvider>
   );

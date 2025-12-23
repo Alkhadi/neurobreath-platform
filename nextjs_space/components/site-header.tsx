@@ -3,146 +3,224 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { ChevronDown, Menu, X } from 'lucide-react'
 
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
+  const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null)
 
-  const toggleDropdown = (menuName: string) => {
-    setActiveDropdown(activeDropdown === menuName ? null : menuName)
+  const toggleMegaMenu = (menuName: string) => {
+    setActiveMegaMenu(activeMegaMenu === menuName ? null : menuName)
+  }
+
+  const closeMegaMenu = () => {
+    setActiveMegaMenu(null)
   }
 
   return (
-    <header className="site-header">
-      <div className="container navbar">
-        <Link href="/" className="brand" id="brandLink">
+    <header className="nb-header">
+      <div className="nb-header-container">
+        <Link href="/" className="nb-brand" id="brandLink" onClick={closeMegaMenu}>
           <Image 
             src="/icons/neurobreath-logo-square-64.png" 
             alt="NeuroBreath Logo" 
-            width={64} 
-            height={64} 
-            className="logo" 
+            width={48} 
+            height={48} 
+            className="nb-brand-logo" 
           />
-          <span className="brand-text">NeuroBreath</span>
+          <span className="nb-brand-text">NeuroBreath</span>
         </Link>
 
-        <nav className="main-nav" id="mainNav" role="navigation" aria-label="Primary">
-          {/* Conditions Menu */}
-          <div className="menu-group">
-            <button 
-              type="button" 
-              className="menu-toggle" 
-              aria-expanded={activeDropdown === 'conditions'}
-              onClick={() => toggleDropdown('conditions')}
-            >
-              Conditions ▾
-            </button>
-            <div className="submenu">
-              <div className="menu-label" aria-hidden="true">Neurodevelopmental</div>
-              <Link href="/conditions/autism">Autism</Link>
-              <Link href="/conditions/autism-parent">Autism Parent</Link>
-              <Link href="/adhd">ADHD</Link>
-              <Link href="/dyslexia-reading-training">Dyslexia</Link>
-              <div className="menu-label" aria-hidden="true">Mental Health</div>
-              <Link href="/conditions/anxiety">Anxiety</Link>
-              <Link href="/conditions/depression">Depression</Link>
-              <Link href="/stress">Stress</Link>
-              <Link href="/sleep">Sleep</Link>
-            </div>
-          </div>
-
-          {/* Breathing & Focus Menu */}
-          <div className="menu-group">
-            <button 
-              type="button" 
-              className="menu-toggle" 
-              aria-expanded={activeDropdown === 'breathing'}
-              onClick={() => toggleDropdown('breathing')}
-            >
-              Breathing &amp; Focus ▾
-            </button>
-            <div className="submenu">
-              <div className="menu-label" aria-hidden="true">Guides</div>
-              <Link href="/breathing/breath">Breath (how-to)</Link>
-              <Link href="/breathing/focus">Focus</Link>
-              <Link href="/breathing/mindfulness">Mindfulness</Link>
-              <div className="menu-label" aria-hidden="true">Techniques</div>
-              <Link href="/techniques/sos">🆘 60-second SOS</Link>
-              <Link href="/techniques/box-breathing">🟩 Box Breathing</Link>
-              <Link href="/techniques/4-7-8">🟦 4-7-8 Breathing</Link>
-              <Link href="/techniques/coherent">🟪 Coherent 5-5</Link>
-            </div>
-          </div>
-
-          {/* Tools Menu */}
-          <div className="menu-group">
-            <button 
-              type="button" 
-              className="menu-toggle" 
-              aria-expanded={activeDropdown === 'tools'}
-              onClick={() => toggleDropdown('tools')}
-            >
-              Tools ▾
-            </button>
-            <div className="submenu">
-              <Link href="/tools/sleep-tools">Sleep Tools</Link>
-              <Link href="/tools/breath-tools">Breath Tools</Link>
-              <Link href="/tools/mood-tools">Mood Tools</Link>
-              <Link href="/tools/adhd-tools">ADHD Tools</Link>
-              <Link href="/tools/autism-tools">Autism Tools</Link>
-              <Link href="/tools/anxiety-tools">Anxiety Tools</Link>
-              <Link href="/tools/stress-tools">Stress Tools</Link>
-              <Link href="/breathing/training/focus-garden">🌱 Focus Training</Link>
-              <div className="menu-label" aria-hidden="true">Progress &amp; Rewards</div>
-              <Link href="/progress">📊 Progress Dashboard</Link>
-              <Link href="/rewards">🏆 Rewards &amp; Badges</Link>
-              <div className="menu-label" aria-hidden="true">Symptom Guides</div>
-              <Link href="/conditions/anxiety">Stress &amp; General Anxiety</Link>
-              <Link href="/conditions/anxiety">Panic Symptoms</Link>
-              <Link href="/sleep">Sleep-Onset Insomnia</Link>
-              <Link href="/conditions/anxiety">Focus &amp; Test Anxiety</Link>
-              <Link href="/conditions/anxiety">PTSD Regulation*</Link>
-              <Link href="/conditions/low-mood-burnout">Low Mood &amp; Burnout</Link>
-            </div>
-          </div>
-
-          {/* About Menu */}
-          <div className="menu-group">
-            <button 
-              type="button" 
-              className="menu-toggle" 
-              aria-expanded={activeDropdown === 'about'}
-              onClick={() => toggleDropdown('about')}
-            >
-              About ▾
-            </button>
-            <div className="submenu">
-              <Link href="/about-us">About</Link>
-              <Link href="/aims-objectives">Aims &amp; Stories</Link>
-              <Link href="/support-us">Support Us</Link>
-              <Link href="/contact">Contact</Link>
-            </div>
-          </div>
-        </nav>
-
-        <button 
-          type="button" 
-          id="navToggle" 
-          className="nav-toggle" 
-          aria-label="Menu" 
-          aria-expanded={mobileMenuOpen}
-          aria-controls="mainNav"
+        {/* Mobile Menu Toggle */}
+        <button
+          type="button"
+          className="nb-mobile-toggle"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileMenuOpen}
         >
-          ☰
+          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
 
-        <Link href="#" className="nb-quest-pass-pill" id="questPassPill">
-          <span className="nb-quest-pass-pill__icon">🎯</span>
-          <span className="nb-quest-pass-pill__quests">0/3 quests</span>
-          <span className="nb-quest-pass-pill__points">0 pts</span>
-        </Link>
+        {/* Main Navigation */}
+        <nav 
+          className={`nb-main-nav ${mobileMenuOpen ? 'nb-main-nav--open' : ''}`}
+          id="mainNav" 
+          role="navigation" 
+          aria-label="Primary"
+        >
+          {/* Home Link */}
+          <Link href="/" className="nb-nav-link" onClick={closeMegaMenu}>
+            Home
+          </Link>
+
+          {/* Conditions Mega Menu */}
+          <div className="nb-mega-menu-wrapper">
+            <button 
+              type="button" 
+              className={`nb-nav-link nb-nav-trigger ${activeMegaMenu === 'conditions' ? 'active' : ''}`}
+              aria-expanded={activeMegaMenu === 'conditions'}
+              onClick={() => toggleMegaMenu('conditions')}
+            >
+              Conditions
+              <ChevronDown size={16} className="nb-chevron" />
+            </button>
+            {activeMegaMenu === 'conditions' && (
+              <div className="nb-mega-menu">
+                <div className="nb-mega-menu-content">
+                  <div className="nb-mega-menu-section">
+                    <h4 className="nb-mega-menu-heading">Neurodevelopmental</h4>
+                    <Link href="/conditions/autism" onClick={closeMegaMenu}>🧩 Autism</Link>
+                    <Link href="/conditions/autism-parent" onClick={closeMegaMenu}>👨‍👩‍👧 Autism Parent Support</Link>
+                    <Link href="/adhd" onClick={closeMegaMenu}>🎯 ADHD</Link>
+                    <Link href="/dyslexia-reading-training" onClick={closeMegaMenu}>📖 Dyslexia Reading Training</Link>
+                  </div>
+                  <div className="nb-mega-menu-section">
+                    <h4 className="nb-mega-menu-heading">Mental Health</h4>
+                    <Link href="/conditions/anxiety" onClick={closeMegaMenu}>😰 Anxiety</Link>
+                    <Link href="/conditions/depression" onClick={closeMegaMenu}>💙 Depression</Link>
+                    <Link href="/conditions/bipolar" onClick={closeMegaMenu}>⚡ Bipolar</Link>
+                    <Link href="/stress" onClick={closeMegaMenu}>😓 Stress</Link>
+                    <Link href="/sleep" onClick={closeMegaMenu}>💤 Sleep Issues</Link>
+                    <Link href="/conditions/low-mood-burnout" onClick={closeMegaMenu}>🌧️ Low Mood & Burnout</Link>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Breathing & Focus Mega Menu */}
+          <div className="nb-mega-menu-wrapper">
+            <button 
+              type="button" 
+              className={`nb-nav-link nb-nav-trigger ${activeMegaMenu === 'breathing' ? 'active' : ''}`}
+              aria-expanded={activeMegaMenu === 'breathing'}
+              onClick={() => toggleMegaMenu('breathing')}
+            >
+              Breathing &amp; Focus
+              <ChevronDown size={16} className="nb-chevron" />
+            </button>
+            {activeMegaMenu === 'breathing' && (
+              <div className="nb-mega-menu">
+                <div className="nb-mega-menu-content">
+                  <div className="nb-mega-menu-section">
+                    <h4 className="nb-mega-menu-heading">Guides</h4>
+                    <Link href="/breathing/breath" onClick={closeMegaMenu}>🫁 Breath (how-to)</Link>
+                    <Link href="/breathing/focus" onClick={closeMegaMenu}>🎯 Focus</Link>
+                    <Link href="/breathing/mindfulness" onClick={closeMegaMenu}>🧘 Mindfulness</Link>
+                  </div>
+                  <div className="nb-mega-menu-section">
+                    <h4 className="nb-mega-menu-heading">Techniques</h4>
+                    <Link href="/techniques/sos" onClick={closeMegaMenu}>🆘 60-second SOS</Link>
+                    <Link href="/techniques/box-breathing" onClick={closeMegaMenu}>🟩 Box Breathing</Link>
+                    <Link href="/techniques/4-7-8" onClick={closeMegaMenu}>🟦 4-7-8 Breathing</Link>
+                    <Link href="/techniques/coherent" onClick={closeMegaMenu}>🟪 Coherent 5-5</Link>
+                  </div>
+                  <div className="nb-mega-menu-section">
+                    <h4 className="nb-mega-menu-heading">Training</h4>
+                    <Link href="/breathing/training/focus-garden" onClick={closeMegaMenu}>🌱 Focus Garden</Link>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Tools Mega Menu */}
+          <div className="nb-mega-menu-wrapper">
+            <button 
+              type="button" 
+              className={`nb-nav-link nb-nav-trigger ${activeMegaMenu === 'tools' ? 'active' : ''}`}
+              aria-expanded={activeMegaMenu === 'tools'}
+              onClick={() => toggleMegaMenu('tools')}
+            >
+              Tools
+              <ChevronDown size={16} className="nb-chevron" />
+            </button>
+            {activeMegaMenu === 'tools' && (
+              <div className="nb-mega-menu">
+                <div className="nb-mega-menu-content">
+                  <div className="nb-mega-menu-section">
+                    <h4 className="nb-mega-menu-heading">Condition-Specific</h4>
+                    <Link href="/tools/adhd-tools" onClick={closeMegaMenu}>🎯 ADHD Tools</Link>
+                    <Link href="/tools/autism-tools" onClick={closeMegaMenu}>🧩 Autism Tools</Link>
+                    <Link href="/tools/anxiety-tools" onClick={closeMegaMenu}>😰 Anxiety Tools</Link>
+                    <Link href="/tools/stress-tools" onClick={closeMegaMenu}>😓 Stress Tools</Link>
+                    <Link href="/tools/depression-tools" onClick={closeMegaMenu}>💙 Depression Tools</Link>
+                  </div>
+                  <div className="nb-mega-menu-section">
+                    <h4 className="nb-mega-menu-heading">General Tools</h4>
+                    <Link href="/tools/breath-tools" onClick={closeMegaMenu}>🫁 Breath Tools</Link>
+                    <Link href="/tools/mood-tools" onClick={closeMegaMenu}>🌈 Mood Tools</Link>
+                    <Link href="/tools/sleep-tools" onClick={closeMegaMenu}>💤 Sleep Tools</Link>
+                  </div>
+                  <div className="nb-mega-menu-section">
+                    <h4 className="nb-mega-menu-heading">Games & Challenges</h4>
+                    <Link href="/tools/breath-ladder" onClick={closeMegaMenu}>🪜 Breath Ladder</Link>
+                    <Link href="/tools/colour-path" onClick={closeMegaMenu}>🎨 Colour Path</Link>
+                    <Link href="/tools/focus-tiles" onClick={closeMegaMenu}>🧩 Focus Tiles</Link>
+                    <Link href="/tools/roulette" onClick={closeMegaMenu}>🎡 Micro-Reset Roulette</Link>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* About & Resources Mega Menu */}
+          <div className="nb-mega-menu-wrapper">
+            <button 
+              type="button" 
+              className={`nb-nav-link nb-nav-trigger ${activeMegaMenu === 'resources' ? 'active' : ''}`}
+              aria-expanded={activeMegaMenu === 'resources'}
+              onClick={() => toggleMegaMenu('resources')}
+            >
+              Resources
+              <ChevronDown size={16} className="nb-chevron" />
+            </button>
+            {activeMegaMenu === 'resources' && (
+              <div className="nb-mega-menu">
+                <div className="nb-mega-menu-content">
+                  <div className="nb-mega-menu-section">
+                    <h4 className="nb-mega-menu-heading">For Educators</h4>
+                    <Link href="/schools" onClick={closeMegaMenu}>🏫 For Schools</Link>
+                    <Link href="/teacher-quick-pack" onClick={closeMegaMenu}>📦 Teacher Quick Pack</Link>
+                  </div>
+                  <div className="nb-mega-menu-section">
+                    <h4 className="nb-mega-menu-heading">Downloads</h4>
+                    <Link href="/downloads" onClick={closeMegaMenu}>📥 Downloadable Resources</Link>
+                    <Link href="/resources" onClick={closeMegaMenu}>📚 Resource Library</Link>
+                  </div>
+                  <div className="nb-mega-menu-section">
+                    <h4 className="nb-mega-menu-heading">About</h4>
+                    <Link href="/about-us" onClick={closeMegaMenu}>ℹ️ About Us</Link>
+                    <Link href="/aims-objectives" onClick={closeMegaMenu}>🎯 Aims & Objectives</Link>
+                    <Link href="/blog" onClick={closeMegaMenu}>📝 Blog</Link>
+                    <Link href="/contact" onClick={closeMegaMenu}>✉️ Contact</Link>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Progress & Dashboard */}
+          <Link href="/progress" className="nb-nav-link" onClick={closeMegaMenu}>
+            📊 Progress
+          </Link>
+
+          {/* Get Started Button */}
+          <Link href="/get-started" className="nb-nav-cta" onClick={closeMegaMenu}>
+            Get Started
+          </Link>
+        </nav>
       </div>
+
+      {/* Mega Menu Backdrop */}
+      {activeMegaMenu && (
+        <div 
+          className="nb-mega-menu-backdrop" 
+          onClick={closeMegaMenu}
+          aria-hidden="true"
+        />
+      )}
     </header>
   )
 }
