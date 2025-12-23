@@ -1,57 +1,304 @@
 # NeuroBreath.co.uk — Project Documentation
 
-**Version:** 1.0.0  
+**Version:** 2.0.0  
 **Last Updated:** December 23, 2025  
 **Project Status:** Active Development  
 
 ---
 
-## 🎯 Project Mission
+## 🎯 Project Mission & Vision
 
-NeuroBreath.co.uk is a comprehensive digital platform providing evidence-based breathing exercises, mindfulness tools, and specialized learning interventions for neurodivergent individuals, with a particular focus on:
-- **ADHD** — Attention regulation and focus enhancement
-- **Anxiety & Stress** — Nervous system regulation and emotional well-being
-- **Dyslexia** — Structured literacy and reading skill development
-- **Autism** — Sensory regulation and self-soothing techniques
-- **Sleep** — Sleep hygiene and relaxation protocols
+NeuroBreath.co.uk is **the go-to, one-stop platform for neurodivergent support across the lifespan** — providing an integrated ecosystem of tools and learning that supports neurodivergent users (Autism, ADHD, Dyslexia) and related wellbeing challenges (stress, low mood, emotional regulation difficulty), for children, teens, and adults.
 
----
+### 🌟 North Star Definition
 
-## 🌟 Core Aims
-
-### 1. **Accessibility First**
-- Ensure all features are usable by individuals with diverse learning needs and abilities
-- Maintain WCAG 2.1 AA compliance across all pages
-- Provide multiple modalities of interaction (visual, auditory, kinesthetic)
-- Support screen readers, keyboard navigation, and assistive technologies
-
-### 2. **Evidence-Based Practice**
-- Ground all interventions in peer-reviewed research and clinical guidelines
-- Cite authoritative sources (IDA, Harvard, NHS, Yale, etc.)
-- Provide transparent explanations of why each technique works
-- Update content based on latest scientific findings
-
-### 3. **Neurodivergent-Centered Design**
-- Design for focus, reduced cognitive load, and sensory comfort
-- Avoid overwhelming interfaces with excessive stimuli
-- Provide clear visual hierarchies and predictable navigation
-- Offer customization options (ambient sounds, voice coach, time settings)
-
-### 4. **Practical & Actionable**
-- Provide immediately usable tools and exercises
-- Break complex skills into manageable steps
-- Track progress to maintain motivation
-- Offer downloadable resources for offline use
-
-### 5. **Inclusive & Stigma-Free**
-- Use person-first and identity-first language respectfully
-- Celebrate neurodiversity as natural human variation
-- Avoid deficit-focused framing
-- Provide tools for all ages and skill levels
+NeuroBreath becomes the default first platform people open when they want:
+- A quick tool for calm/focus/sleep
+- A structured practice plan
+- A game or challenge that builds a real skill
+- A clear dashboard showing improvement  
+- Trusted guidance for parents/teachers/carers
 
 ---
 
-## 🎨 Design Principles
+## 🎯 Core Aims (One-Stop Shop Vision)
+
+### 1. **Be the Go-To, One-Stop Platform for Neurodivergent Support**
+Provide an integrated ecosystem of tools and learning that supports neurodivergent users (Autism, ADHD, Dyslexia) and related wellbeing challenges (stress, low mood, emotional regulation difficulty), for children, teens, and adults.
+
+### 2. **Deliver Practical Improvement Through Structured Routines**
+Offer step-by-step resources, exercises, interactive tools, and training pathways that help users build calm, focus, emotional regulation, learning confidence, and daily functioning.
+
+### 3. **Enable Measurable, Motivating Progress Without Shame**
+Provide clear progress tracking, streaks, quests, rewards, and milestones that make improvement visible, encourage consistency, and make restarts easy and supportive.
+
+### 4. **Support the Full Circle of Care**
+Equip supporters (individuals, parents, teachers, carers, support workers) with practical toolkits, scripts, routines, classroom/home strategies, and progress summaries that help them support learners/clients effectively.
+
+### 5. **Operate as a Trustworthy, Credible, Evidence-Informed Digital Product**
+Maintain a clinically responsible tone, transparent sources where appropriate, strong accessibility and neuro-inclusive design, and clear safeguarding boundaries (supportive tools, not a substitute for professional care).
+
+### 6. **Build a Scalable, High-Quality Web + Mobile Product Foundation**
+Deliver a reliable, accessible platform on neurobreath.co.uk and the Flutter app, designed for growth into new modules, dashboards, partnerships, and premium resource packs.
+
+---
+
+## 📋 Specific Objectives (Measurable, Delivery-Ready)
+
+### A) "One-Stop Shop" Structure and User Pathways
+
+#### Launch a Guided "Start Here" System (Age + Goal + Preference)
+- **Age modes:** Child / Teen / Adult
+- **Goals:** Calm, Focus, Sleep, Emotional Regulation, Learning/Reading Support, Routine Support
+- **Success measure:** A new user reaches a personalised plan within 3 clicks and starts a session within 60 seconds
+
+#### Create Condition-Informed Hubs (Support-Focused, Non-Diagnostic)
+- Hubs for Autism, ADHD, Dyslexia, and Wellbeing & Mood Support (stress/low mood challenges)
+- **Success measure:** Each hub contains: what helps, routines, tools, training, games, supporter guidance, signposting
+
+### B) Evidence-Informed Credibility and Trust Framework
+
+#### Build a "Trust & Evidence" Layer Across the Platform
+- Clear tone guidelines (supportive, credible, non-claiming)
+- Referencing model (sources where relevant; "why this helps" explanations)
+- Safety boundaries and UK signposting (including crisis routes)
+- **Success measure:** Every wellbeing/mental-health-related page includes appropriate disclaimers and signposting, and avoids clinical claims
+
+#### Add "Quality Standards" for Content and Tools
+- A checklist applied to every module: accessibility, clarity, age-appropriateness, low-overwhelm design, and measurable outcome
+- **Success measure:** 100% of new modules pass the checklist before release
+
+### C) Resources, Training, Practices, and Exercises
+
+#### Publish a Modular Training Library (Micro-Lessons)
+- Regulation skills (breathing, grounding, sensory breaks)
+- ADHD supports (task start, planning, focus sprints)
+- Dyslexia supports (phonics, blending, fluency routines)
+- Emotional literacy (naming emotions, coping choices)
+- **Success measure:** Each module includes: explain → practise → reflect → next step, and completes in 3–10 minutes
+
+#### Offer Printable and Offline-Friendly Resources
+- Quick cards, checklists, routines, classroom/home visuals, certificates
+- **Success measure:** Downloads are one-click, A4 print-clean, and easy to find in each module
+
+### D) Interactive Games, Challenges, Quests, Rewards
+
+#### Deliver Interactive Games Tied to Real Skills
+- Examples: focus sprint games, reading/phonics mini-games, memory sequencing, emotion coping scenarios
+- **Success measure:** Each game clearly states "what this supports", has a 3–7 minute mode, and logs completion
+
+#### Implement Quests and Challenge Tracks
+- Examples: "7-Day Calm Starter", "14-Day Focus Builder", "10-Day Reading Confidence"
+- **Success measure:** Each track includes daily steps, a progress bar, and a completion badge/certificate
+
+#### Introduce Ethical Streaks + Rewards (Optional Toggles)
+- Grace days and flexible targets (e.g., 3x/week option)
+- No-shame restart flows
+- Rewards: badges, coupons, unlockable content packs, certificates
+- **Success measure:** Users can disable gamification; streak logic is consistent; restarts do not reset lifetime progress
+
+### E) Measurable Progress Tracking and Dashboards
+
+#### Build a Measurable Progress System Across All Tools
+- Track: sessions completed, minutes practiced, streaks, quest completion, skill areas practiced, user ratings ("helpful/not helpful")
+- **Success measure:** Dashboards update accurately and remain simple and readable
+
+#### Create Supporter Dashboards (Optional)
+- Parent/teacher/carer view: routines used, what worked, notes, printable summaries
+- **Success measure:** Supporters can generate a simple weekly summary without complex setup
+
+### F) Prompt Generation and AI Guidance (Guardrailed)
+
+#### Launch a Prompt Generator for Each Context
+- Parent scripts (calm, neutral language)
+- Teacher strategies (classroom supports, attention breaks)
+- Carer routines (handover notes, consistent plans)
+- User self-coaching prompts (motivation, next-step clarity)
+- **Success measure:** Outputs are short, editable, context-specific, and aligned to NeuroBreath tone
+
+#### Deploy an "AI Coach" Feature with Safety Controls
+- No diagnosis, no medication advice
+- Clear boundaries + escalation signposting
+- **Success measure:** Safe responses are consistent and the feature is clearly framed as supportive guidance
+
+### G) Accessibility and Neuro-Inclusive Design Excellence
+
+#### Meet High Accessibility and Neuro-Inclusive Standards
+- Readable typography, reduced motion, sensory-friendly visuals
+- Keyboard navigation, screen reader labels, simple UI
+- **Success measure:** Core flows are fully usable with reduced motion enabled and with keyboard-only navigation
+
+### H) Product Delivery, Platform Reliability, and Scale
+
+#### Deliver a Stable Web + Flutter App Experience
+- Shared components, tokens, performance standards, regression protection
+- **Success measure:** Releases do not overwrite working legacy files; critical journeys are regression-tested
+
+#### Enable Optional Login + Privacy-First Guest Mode
+- Guest mode provides full core value; login enables sync and dashboards
+- **Success measure:** Guest mode works end-to-end; accounts add sync without friction
+
+#### Implement UK GDPR-Ready Privacy Foundations
+- Data minimisation, transparency, deletion/export pathway
+- **Success measure:** Users can control their data and understand what is stored and why
+
+---
+
+## 📂 Complete Page Structure (62 Pages)
+
+### Homepage
+- `/` — Main landing page
+
+### Conditions Hub (7 pages)
+**Neurodevelopmental:**
+- `/conditions/autism` — Autism support and resources
+- `/conditions/autism-parent` — Autism parent support
+- `/conditions/adhd` ⚠️ Exists at `/adhd` (legacy route to be consolidated)
+- `/conditions/dyslexia` → See `/dyslexia-reading-training` (comprehensive hub)
+
+**Mental Health:**
+- `/conditions/anxiety` — Anxiety support and tools
+- `/conditions/depression` — Depression support and resources
+- `/conditions/stress` → See `/stress` (legacy route to be consolidated)
+- `/conditions/sleep` → See `/sleep` (legacy route to be consolidated)
+- `/conditions/bipolar` — Bipolar support
+- `/conditions/mood` — Mood regulation
+- `/conditions/low-mood-burnout` — Low mood and burnout support
+
+### Breathing & Focus (5 pages)
+- `/breathing/breath` — Breath fundamentals (how-to)
+- `/breathing/focus` — Focus techniques
+- `/breathing/mindfulness` — Mindfulness practices
+- `/breathing/techniques/sos-60` — 60-second reset technique
+- `/breathing/training/focus-garden` — Focus training (garden metaphor)
+
+### Legacy Breathing Techniques (4 pages — Keep for existing users)
+- `/techniques/box-breathing` ✅ Fully functional with enhanced features
+- `/techniques/4-7-8` ✅ Fully functional with enhanced features
+- `/techniques/coherent` ✅ Fully functional with enhanced features  
+- `/techniques/sos` ✅ Fully functional with enhanced features
+
+### Tools Hub (20 pages)
+**Toolkits (8 pages):**
+- `/tools/breath-tools` — Breathing exercise toolkit
+- `/tools/mood-tools` — Mood regulation tools
+- `/tools/sleep-tools` — Sleep hygiene tools
+- `/tools/anxiety-tools` — Anxiety management tools
+- `/tools/stress-tools` — Stress relief tools
+- `/tools/depression-tools` — Depression support tools
+- `/tools/adhd-tools` — ADHD management tools
+- `/tools/autism-tools` — Autism support tools
+
+**ADHD Deep Dive (9 pages):**
+- `/tools/adhd-deep-dive/what-is-adhd` — ADHD fundamentals
+- `/tools/adhd-deep-dive/assessment` — ADHD assessment information
+- `/tools/adhd-deep-dive/diagnosis` — Diagnosis pathway
+- `/tools/adhd-deep-dive/support-at-home` — Home support strategies
+- `/tools/adhd-deep-dive/self-care` — Self-care for ADHD
+- `/tools/adhd-deep-dive/working-with-school` — School collaboration
+- `/tools/adhd-deep-dive/teens` — ADHD teen support
+- `/tools/adhd-deep-dive/young-people` — Young adult ADHD
+- `/tools/adhd-deep-dive/helplines` — UK ADHD helplines
+
+**Focus Training (3 pages):**
+- `/tools/adhd-focus-lab` — ADHD-specific focus lab
+- `/tools/focus-training` — General focus training
+- `/tools` — All tools overview
+
+### Legacy Tools (4 pages — Keep for existing users)
+- `/tools/breath-ladder` ✅ Progressive breathing challenges
+- `/tools/colour-path` ✅ Visual focus training
+- `/tools/focus-tiles` ✅ Memory and concentration game
+- `/tools/roulette` ✅ Random technique selector
+
+### Dyslexia Reading Training (1 comprehensive hub)
+- `/dyslexia-reading-training` ✅ **Complete 28-component structured literacy system**
+  - Phonological Awareness (5 games)
+  - Decoding & Word Recognition (8 tools)
+  - Fluency Development (2 tools)
+  - Vocabulary & Comprehension (2 tools)
+  - Resources & Support (5 downloadable guides)
+  - Gamification (3 systems: Streaks, Rewards, Reading Buddy)
+
+### Legacy Condition Pages (3 pages)
+- `/adhd` — ADHD hub (to consolidate with `/conditions/adhd`)
+- `/anxiety` — Anxiety hub (to consolidate with `/conditions/anxiety`)
+- `/autism` — Autism hub (to consolidate with `/conditions/autism`)
+- `/stress` — Stress hub (to consolidate with `/conditions/stress`)
+- `/sleep` — Sleep hub (to consolidate with `/conditions/sleep`)
+
+### About & Support (12 pages)
+- `/about-us` — About NeuroBreath (new unified page)
+- `/about` — About page (legacy, to be consolidated)
+- `/aims-objectives` — Platform aims and objectives
+- `/resources` — Resource library
+- `/downloads` — Downloadable content
+- `/blog` — Blog and articles
+- `/support-us` — Support and donations
+- `/schools` — For schools information
+- `/teacher-quick-pack` — Teacher resource pack
+- `/coach` — AI coach feature
+- `/contact` — Contact information
+- `/ai-blog` — AI blog and Q&A
+
+### Special Pages (2 pages)
+- `/get-started` — Onboarding and start here flow
+- `/ai-blog` — AI-powered blog and Q&A system
+
+### Legacy Progress Pages (2 pages — Keep for existing users)
+- `/progress` ✅ Progress tracking dashboard
+- `/rewards` ✅ Rewards and achievements
+
+---
+
+## 🗂️ Asset Inventory
+
+### Public Assets Structure
+```
+public/
+├── audio/                  # 3 audio files (Dorothy phonics, instructions)
+├── css/                    # 35+ CSS files from legacy HTML site
+│   ├── home.css
+│   ├── adhd-games.css
+│   ├── dyslexia-strategies.css
+│   ├── site.css
+│   └── [...35 more]
+├── js/                     # 85+ JavaScript files from legacy site
+│   ├── adhd-tools.js
+│   ├── breathing-session.js
+│   ├── phonics-sounds-lab.js
+│   ├── nb-store.js
+│   └── [...85 more]
+├── icons/                  # NeuroBreath brand icons (16-1024px)
+│   ├── neurobreath-favicon.ico
+│   ├── neurobreath-logo-square-*.png
+│   └── neurobreath-mark.svg
+├── img/                    # UI and content images
+│   ├── hero-*.svg/jpg
+│   ├── full page *.jpg (17 reference designs)
+│   └── [...more]
+├── pdfs/                   # Downloadable resources
+│   └── NeuroBreath_Prompt_Engineering_Reward_Cards_Compact_3up.pdf
+├── alkhadi.png             # 1.2MB brand asset
+├── neurobreath-logo-CB8ztn6H.png  # 34KB logo
+├── images_default_profile.pdf     # 64KB default profiles
+├── favicon.svg             # Site favicon
+├── og-image.png            # Social media preview (97KB)
+└── robots.txt              # SEO configuration
+```
+
+**Total Asset Count:**
+- CSS files: 35+
+- JavaScript files: 85+
+- Audio files: 3
+- Image files: 25+
+- Icon files: 15+
+- PDF files: 2+
+- Total: **165+ static assets**
+
+---
+
+## 🎨 Design System Standards
 
 ### Visual Design
 - **Color Palette:**
@@ -71,23 +318,6 @@ NeuroBreath.co.uk is a comprehensive digital platform providing evidence-based b
   - Use emojis for visual interest and quick recognition (🫁 lungs, 📚 books, 🎵 music)
   - Lucide icons for UI controls (consistent 24px size)
 
-### User Experience
-- **Navigation:**
-  - Sticky header with clear menu structure
-  - Conditions menu (ADHD, Anxiety, Dyslexia, Autism, Sleep, Stress)
-  - Breathing techniques menu (4-7-8, Box, Coherent, SOS)
-  - Tools menu (Breath Ladder, Colour Path, Focus Tiles, Roulette)
-- **Interaction Patterns:**
-  - Large tap targets (minimum 44×44px)
-  - Immediate visual feedback on all interactions
-  - Toast notifications for actions (downloads, completions)
-  - Confetti celebrations for milestones
-- **Progress Tracking:**
-  - LocalStorage for client-side persistence
-  - Visual progress bars and percentage displays
-  - Streak tracking and achievement badges
-  - Mastery indicators for completed skills
-
 ### Technical Standards
 - **Framework:** Next.js 14.2.28 (App Router)
 - **Language:** TypeScript with strict mode
@@ -100,109 +330,6 @@ NeuroBreath.co.uk is a comprehensive digital platform providing evidence-based b
 
 ---
 
-## 📚 Objectives by Focus Area
-
-### Dyslexia Reading Training
-**Primary Goal:** Provide a comprehensive structured literacy hub covering all 6 elements (Phonology, Sound-Symbol, Syllable, Morphology, Syntax, Semantics)
-
-**Objectives:**
-1. **Phonological Awareness** (3+ games)
-   - Blending & Segmenting Lab ✅
-   - Rhythm Training Game ✅
-   - Letter Reversal Training ✅
-   - Syllable Splitter ✅
-   - Phonics Sounds Lab ✅
-
-2. **Decoding & Word Recognition** (8+ tools)
-   - Phonics Player ✅
-   - Word Construction (drag-and-drop) ✅
-   - Rapid Naming Test ✅
-   - Morphology Master ✅
-   - Vowel Universe ✅
-
-3. **Fluency Development** (2+ tools)
-   - Fluency Pacer with WPM tracking ✅
-   - Reading Assessment ✅
-
-4. **Vocabulary & Comprehension** (2+ tools)
-   - Vocabulary Recognition (flashcards) ✅
-   - Vocabulary Builder ✅
-
-5. **Resources & Support** (5+ downloads)
-   - Parent & Educator Guide ✅
-   - Weekly Progress Tracker ✅
-   - Phonics Worksheets ✅
-   - Letter Reversal Practice ✅
-   - Achievement Certificates ✅
-
-6. **Gamification** (ongoing)
-   - Streak Toolkit ✅
-   - Reward Cards System ✅
-   - Reading Buddy Chatbot ✅
-
-**Success Metrics:**
-- 28+ interactive components
-- 137 KB optimized page size
-- Zero broken links
-- LocalStorage persistence across all tools
-- Evidence banners on all game components
-
-### Breathing Techniques
-**Primary Goal:** Provide scientifically-backed breathing protocols for nervous system regulation
-
-**Objectives:**
-1. **Core Techniques** (4 protocols)
-   - 4-7-8 Breathing (sleep & anxiety) ✅
-   - Box Breathing (focus & calm) ✅
-   - Coherent Breathing (HRV optimization) ✅
-   - SOS Breathing (acute stress) ✅
-
-2. **Enhanced Features**
-   - Fullscreen immersive mode ✅
-   - Voice coach with TTS ✅
-   - Ambient sounds (6 options) ✅
-   - Time selection (1-10 minutes) ✅
-   - Driving safety warnings ✅
-
-3. **Progress Tracking**
-   - Session counting ✅
-   - Total minutes practiced ✅
-   - Streak tracking ✅
-   - Badge achievements ✅
-
-### Tools & Games
-**Primary Goal:** Provide engaging tools for skill-building and regulation
-
-**Objectives:**
-1. **Breath Ladder** — Progressive difficulty breathing challenges
-2. **Colour Path** — Visual focus and attention training
-3. **Focus Tiles** — Memory and concentration games
-4. **Roulette** — Random technique selector for variety
-
-### Global Features
-**Primary Goal:** Provide consistent support across all pages
-
-**Objectives:**
-1. **Reading Buddy Chatbot** ✅
-   - Floating button in bottom-right corner
-   - Green gradient with red notification badge
-   - 15+ predefined responses
-   - Custom query handling
-   - Available on all pages via layout
-
-2. **Progress System** ✅
-   - Centralized progress tracking
-   - Badge unlocking system
-   - Challenge completions
-   - Quest rewards
-
-3. **Rewards Page** ✅
-   - Achievement cards display
-   - Progress visualization
-   - Motivational messaging
-
----
-
 ## 🛠️ Technical Architecture
 
 ### Project Structure
@@ -210,37 +337,25 @@ NeuroBreath.co.uk is a comprehensive digital platform providing evidence-based b
 neurobreath/
 ├── nextjs_space/
 │   ├── app/
-│   │   ├── layout.tsx               # Global layout with chatbot
+│   │   ├── layout.tsx               # Global layout with ReadingBuddy chatbot
 │   │   ├── page.tsx                 # Homepage
-│   │   ├── dyslexia-reading-training/
-│   │   │   └── page.tsx            # Dyslexia hub (137 KB)
-│   │   ├── techniques/
-│   │   │   ├── 4-7-8/
-│   │   │   ├── box-breathing/
-│   │   │   ├── coherent/
-│   │   │   └── sos/
-│   │   ├── tools/
-│   │   │   ├── breath-ladder/
-│   │   │   ├── colour-path/
-│   │   │   ├── focus-tiles/
-│   │   │   └── roulette/
-│   │   ├── progress/
-│   │   ├── rewards/
-│   │   ├── about/
-│   │   ├── contact/
-│   │   └── api/
-│   │       ├── download-resource/   # Generates HTML resources
-│   │       ├── sessions/
-│   │       ├── progress/
-│   │       ├── badges/
-│   │       ├── challenges/
-│   │       └── quests/
+│   │   ├── conditions/              # Condition-specific pages (7 pages)
+│   │   ├── breathing/               # Breathing & focus pages (5 pages)
+│   │   ├── tools/                   # Tools hub (20 pages)
+│   │   ├── dyslexia-reading-training/ # Comprehensive dyslexia hub
+│   │   ├── about-us/                # About section (12 pages)
+│   │   └── api/                     # API routes
+│   │       ├── download-resource/   # Dynamic resource generation
+│   │       ├── sessions/            # Session tracking
+│   │       ├── progress/            # Progress updates
+│   │       ├── badges/              # Badge system
+│   │       └── challenges/          # Challenge tracking
 │   ├── components/
-│   │   ├── site-header.tsx          # Navigation with 🫁 logo
+│   │   ├── site-header.tsx          # Simplified navigation (Home + Dyslexia)
 │   │   ├── site-footer.tsx
-│   │   ├── ReadingBuddy.tsx         # Global chatbot
+│   │   ├── ReadingBuddy.tsx         # Global AI chatbot
 │   │   ├── BreathingExercise.tsx    # Enhanced breathing UI
-│   │   ├── ui/                      # Radix/shadcn components
+│   │   ├── ui/                      # 50+ Radix/shadcn components
 │   │   └── [28+ dyslexia components]
 │   ├── contexts/
 │   │   ├── ProgressContext.tsx
@@ -256,164 +371,72 @@ neurobreath/
 │   │   ├── breathing-data.ts
 │   │   ├── badge-definitions.ts
 │   │   └── challenge-definitions.ts
-│   └── public/
-│       ├── audio/                    # MP3 audio files
-│       ├── favicon.svg
-│       └── og-image.png
-├── .gitignore                        # Comprehensive 249-line file
-└── PROJECT.md                        # This document
-```
-
-### Component Standards
-
-#### File Organization
-- One component per file
-- Use PascalCase for component files (e.g., `RhythmTraining.tsx`)
-- Group related files in subdirectories when needed
-- Keep components under 500 lines (split if larger)
-
-#### TypeScript Conventions
-```typescript
-'use client';  // Always include for client components
-
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-
-interface Props {
-  title: string;
-  difficulty?: 'Beginner' | 'Intermediate' | 'Advanced';
-}
-
-export function ComponentName({ title, difficulty = 'Beginner' }: Props) {
-  const [state, setState] = useState<Type>(initialValue);
-  
-  useEffect(() => {
-    // LocalStorage access ONLY in useEffect (SSR safety)
-    const saved = localStorage.getItem('key');
-    if (saved) setState(JSON.parse(saved));
-  }, []);
-  
-  return (
-    <Card className="w-full">
-      <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50">
-        <CardTitle>{title}</CardTitle>
-      </CardHeader>
-      <CardContent className="pt-6">
-        {/* Content */}
-      </CardContent>
-    </Card>
-  );
-}
-```
-
-#### SSR/Hydration Safety
-- **NEVER** access `localStorage`, `window`, or `document` in component body
-- **ALWAYS** wrap browser APIs in `useEffect` or `useLayoutEffect`
-- **NEVER** use `Math.random()` or `new Date()` in render (causes hydration errors)
-- Pass server data via props from `getServerSideProps` when needed
-
-#### Audio Integration
-```typescript
-// Web Audio API (for synthesis)
-const audioContextRef = useRef<AudioContext | null>(null);
-
-useEffect(() => {
-  if (typeof window !== 'undefined' && !audioContextRef.current) {
-    audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-  }
-  return () => {
-    if (audioContextRef.current) {
-      audioContextRef.current.close();
-    }
-  };
-}, []);
-
-// HTML5 Audio (for MP3 playback)
-const audioRef = useRef<HTMLAudioElement>(null);
-const playSound = () => {
-  if (audioRef.current) {
-    audioRef.current.play();
-  }
-};
-
-return <audio ref={audioRef} src="/audio/file.mp3" />;
-```
-
-#### LocalStorage Patterns
-```typescript
-// Loading data
-useEffect(() => {
-  const saved = localStorage.getItem('feature-progress');
-  if (saved) {
-    setProgress(JSON.parse(saved));
-  }
-}, []);
-
-// Saving data
-const handleComplete = () => {
-  const updated = { ...progress, completed: true };
-  setProgress(updated);
-  localStorage.setItem('feature-progress', JSON.stringify(updated));
-};
+│   └── public/                      # 165+ static assets
+├── .gitignore                        # 249-line comprehensive exclusions
+├── PROJECT.md                        # This document
+└── README.md                         # Project overview
 ```
 
 ---
 
-## 🎓 Content Guidelines
+## 🔮 Future Development Roadmap
 
-### Evidence Banners
-Every evidence-based component should include a banner explaining the research:
-```tsx
-<div className="bg-purple-50 dark:bg-purple-950/50 p-4 rounded-lg border-l-4 border-purple-500">
-  <p className="text-sm font-medium text-purple-900 dark:text-purple-100">
-    <strong>Evidence-Based:</strong> Research shows [specific finding] improves [specific outcome].
-  </p>
-</div>
-```
+### Phase 2: Content Population (Q1 2026)
+- [ ] **"Inside the Neurodivergent Brain" Educational Deck**
+  - Comprehensive research-backed content
+  - Neurodiversity-affirming lens
+  - Interactive infographics
+  - Source of truth for feature cards and pages
+  - Formats: Interactive web pages, PDF downloads, markdown documentation
 
-### Language & Tone
-- **Encouraging:** "Great work!", "You're building skills!", "Keep practicing!"
-- **Clear:** Use simple, direct language (8th-grade reading level)
-- **Respectful:** Avoid infantilizing language for older learners
-- **Specific:** "You completed 5 words correctly" vs. "Good job"
-
-### Link Standards
-- **NEVER** link to broken or inaccessible URLs
-- Verify all external links before adding
-- Prefer official sources (.edu, .gov, .org)
-- Use `target="_blank" rel="noopener noreferrer"` for external links
-- Provide descriptive link text (not "click here")
-
----
-
-## 🚀 Future Development Roadmap
-
-### Phase 2: Enhanced Content (Q1 2026)
-- [ ] ADHD focus training module
+- [ ] Populate all 62 empty pages with content
+- [ ] ADHD focus training module implementation
 - [ ] Anxiety management techniques library
 - [ ] Autism sensory regulation tools
 - [ ] Sleep hygiene program
-- [ ] Parent dashboard with child progress tracking
+- [ ] Mood support resources
 
-### Phase 3: Social Features (Q2 2026)
-- [ ] Educator accounts with classroom management
-- [ ] Group challenges and leaderboards
-- [ ] Peer support forums (moderated)
-- [ ] Progress sharing with parents/teachers
+### Phase 3: "Start Here" System (Q1 2026)
+- [ ] Age selection flow (Child/Teen/Adult)
+- [ ] Goal selection (Calm/Focus/Sleep/Regulation/Learning/Routine)
+- [ ] Personalized plan generation
+- [ ] 3-click onboarding system
+- [ ] 60-second session start target
 
-### Phase 4: Advanced Features (Q3 2026)
-- [ ] AI-powered personalized learning paths
-- [ ] Video demonstrations for all techniques
-- [ ] Multi-language support (Spanish, French, German)
-- [ ] Mobile app (Flutter) with offline mode
+### Phase 4: Gamification Enhancement (Q2 2026)
+- [ ] Quest system (7-Day Calm, 14-Day Focus, 10-Day Reading)
+- [ ] Ethical streak tracking with grace days
+- [ ] Badge and reward system expansion
+- [ ] Unlockable content packs
+- [ ] Certificate generation system
+
+### Phase 5: Supporter Features (Q2 2026)
+- [ ] Parent dashboard with progress summaries
+- [ ] Teacher toolkit with classroom strategies
+- [ ] Carer guidance and handover notes
+- [ ] Printable weekly summaries
+- [ ] Progress sharing system
+
+### Phase 6: AI Features (Q3 2026)
+- [ ] Prompt generator for parents/teachers/carers
+- [ ] AI coach with safety guardrails
+- [ ] Context-specific scripting
+- [ ] Personalized learning paths
+- [ ] Natural language query system
+
+### Phase 7: Flutter Mobile App (Q3 2026)
+- [ ] Cross-platform mobile app (iOS/Android)
+- [ ] Offline mode support
+- [ ] Sync with web platform
+- [ ] Push notifications for reminders
 - [ ] Wearable device integration (HRV tracking)
 
-### Phase 5: Research & Validation (Q4 2026)
+### Phase 8: Research & Validation (Q4 2026)
 - [ ] Clinical trials with partner institutions
 - [ ] Published efficacy studies
 - [ ] Professional certification program
 - [ ] Integration with school IEP/504 plans
+- [ ] NHS and UK education partnerships
 
 ---
 
@@ -425,12 +448,12 @@ Every evidence-based component should include a banner explaining the research:
 - **Total JS:** First Load < 300 KB
 - **Lighthouse Score:** > 90 across all metrics
 
-### Accessibility Requirements
-- **WCAG 2.1 AA** compliance mandatory
+### Accessibility Requirements (WCAG 2.1 AA)
 - **Color Contrast:** Minimum 4.5:1 for text
 - **Keyboard Navigation:** All features usable without mouse
 - **Screen Reader:** Descriptive ARIA labels on all interactive elements
 - **Focus Indicators:** Visible focus rings on all focusable elements
+- **Reduced Motion:** Respect prefers-reduced-motion
 
 ### Testing Checklist
 Before deploying any new feature:
@@ -445,104 +468,34 @@ Before deploying any new feature:
 - [ ] Keyboard navigation works
 - [ ] Screen reader announces correctly
 - [ ] High contrast mode readable
+- [ ] Reduced motion respected
 
 ---
 
-## 🤝 Collaboration Guidelines
+## 🚀 Current Status
 
-### Git Workflow
-```bash
-# Create feature branch
-git checkout -b feature/add-anxiety-module
+**Version:** 2.0.0  
+**Last Updated:** December 23, 2025  
+**Status:** ✅ **FRAMEWORK COMPLETE — READY FOR CONTENT POPULATION**
 
-# Make changes, test thoroughly
-yarn tsc --noEmit
-yarn build
-
-# Commit with descriptive message
-git add .
-git commit -m "Add anxiety management module with 5 techniques"
-
-# Push and create PR
-git push origin feature/add-anxiety-module
-```
-
-### Commit Message Format
-```
-<type>: <subject>
-
-<body>
-
-<footer>
-```
-
-Types:
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation update
-- `style`: Formatting changes
-- `refactor`: Code restructuring
-- `test`: Adding tests
-- `chore`: Maintenance tasks
-
-Examples:
-```
-feat: Add Rhythm Training game for phonological awareness
-
-- Implemented 6 difficulty patterns with audio sync
-- Added mastery tracking with localStorage
-- Included evidence banner with research citation
-
-Closes #123
-```
-
-### Code Review Standards
-All PRs must:
-1. Pass TypeScript compilation
-2. Pass build process
-3. Include updated documentation
-4. Have descriptive commit messages
-5. Include accessibility attributes
-6. Be tested on mobile devices
-7. Have no console errors
-
----
-
-## 📞 Support & Resources
-
-### Research Sources
-- **Dyslexia:** International Dyslexia Association (dyslexiaida.org)
-- **ADHD:** CHADD (chadd.org), ADDitude Magazine
-- **Autism:** Autism Self Advocacy Network (autisticadvocacy.org)
-- **Breathing:** Harvard Medical School, Mayo Clinic, NHS
-- **Education:** Reading Rockets, What Works Clearinghouse
-
-### Technical Documentation
-- **Next.js:** https://nextjs.org/docs
-- **TypeScript:** https://www.typescriptlang.org/docs
-- **Tailwind CSS:** https://tailwindcss.com/docs
-- **Radix UI:** https://www.radix-ui.com/primitives/docs
-- **Web Audio API:** https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
-
-### Contact
-- **Project Lead:** [To be assigned]
-- **Technical Lead:** [To be assigned]
-- **Clinical Advisor:** [To be assigned]
-- **Support Email:** support@neurobreath.co.uk
-
----
-
-## 📝 Change Log
-
-### v1.0.0 (December 23, 2025)
-- ✅ Initial project structure established
-- ✅ Dyslexia reading training hub completed (28+ components)
-- ✅ Breathing techniques with enhanced features
+### Completed Features
+- ✅ 62 page structure created (7 fully functional, 55 awaiting content)
+- ✅ Simplified navigation (Home + Dyslexia only)
+- ✅ 165+ legacy assets integrated
+- ✅ Comprehensive dyslexia hub (28+ components)
+- ✅ Enhanced breathing techniques (4 protocols)
+- ✅ Progress tracking system
+- ✅ Rewards and badges
 - ✅ Global Reading Buddy chatbot
-- ✅ Progress tracking and rewards system
-- ✅ Downloadable resources API
-- ✅ Comprehensive .gitignore
-- ✅ Production-ready with zero critical issues
+- ✅ API routes for dynamic content
+- ✅ Comprehensive .gitignore (249 lines)
+- ✅ Project documentation updated
+
+### Next Milestone
+- 📋 **"Inside the Neurodivergent Brain" Educational Deck** (Research + Design)
+- 📋 **Content population for 55 empty pages**
+- 📋 **"Start Here" onboarding flow**
+- 📋 **Flutter app foundation**
 
 ---
 
@@ -555,6 +508,4 @@ This project is proprietary software. Unauthorized copying, distribution, or mod
 
 ---
 
-**Project Status:** ✅ **PRODUCTION READY**  
-**Last Checkpoint:** "Production-ready dyslexia page with bug fixes" (Dec 23, 2025)  
-**Next Milestone:** Phase 2 content expansion (Q1 2026)
+**Built with ❤️ for neurodivergent learners**

@@ -1,0 +1,174 @@
+/* =============================================
+   NeuroBreath – Progress Dashboard Styles
+   ============================================= */
+
+/* Streaks Grid */
+.streaks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.streak-card {
+  background: var(--color-cream);
+  border: 2px solid var(--color-sage-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  text-align: center;
+  transition: var(--transition-base);
+}
+
+.streak-card:hover {
+  border-color: var(--color-sage);
+  box-shadow: var(--shadow-soft);
+}
+
+.streak-icon {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-sm);
+}
+
+.streak-label {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.streak-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-sage-dark);
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.stat-card {
+  background: var(--color-white);
+  border: 2px solid var(--color-sage-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  text-align: center;
+  transition: var(--transition-base);
+}
+
+.stat-card:hover {
+  border-color: var(--color-sage);
+  box-shadow: var(--shadow-soft);
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-sm);
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-sage-dark);
+  margin-bottom: var(--space-xs);
+}
+
+.stat-sublabel {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.stat-minutes {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-sage-light);
+}
+
+/* Points Display */
+.points-display {
+  text-align: center;
+  padding: var(--space-xl);
+  background: linear-gradient(135deg, var(--color-sage-light), var(--color-sky-light));
+  border-radius: var(--radius-lg);
+  margin-top: var(--space-lg);
+}
+
+.points-value {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--color-sage-dark);
+  display: block;
+  margin: var(--space-sm) 0;
+}
+
+.points-label {
+  font-size: 1.1rem;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+/* Activity List */
+.activity-list {
+  margin-top: var(--space-lg);
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--color-cream);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-sm);
+  transition: var(--transition-base);
+}
+
+.activity-item:hover {
+  background: var(--color-white);
+  box-shadow: var(--shadow-soft);
+}
+
+.activity-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.activity-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-name {
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.activity-meta {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .streaks-grid,
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .points-value {
+    font-size: 2.5rem;
+  }
+}

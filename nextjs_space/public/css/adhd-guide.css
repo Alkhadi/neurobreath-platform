@@ -1,0 +1,660 @@
+:root {
+  /* Keep ADHD guide layout tokens, but do not override the global light palette. */
+  --muted: var(--color-text-muted);
+  --radius: 18px;
+  --font: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;
+}
+
+* {
+  box-sizing:border-box;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color:var(--accent);
+  text-decoration:none;
+}
+
+a:hover,
+a:focus-visible {
+  text-decoration:underline;
+}
+
+.page-shell {
+  max-width:960px;
+  margin:0 auto;
+  padding:1.25rem 1.25rem 3rem;
+}
+
+header.site-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0.75rem 0 1.25rem;
+}
+
+.brand {
+  display:inline-flex;
+  align-items:center;
+  gap:.6rem;
+  font-weight:600;
+  color:var(--ink);
+  text-decoration:none;
+}
+
+.brand-mark {
+  width:32px;
+  height:32px;
+  border-radius:10px;
+  padding:4px;
+  border:1px solid rgba(15,23,42,.55);
+  background-color:rgba(2,6,23,.92);
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+  background-origin:content-box;
+  background-image:url('assets/icons/neurobreath-logo-square-64.png');
+  background-image:-webkit-image-set(url('assets/icons/neurobreath-logo-square-64.png') 1x, url('assets/icons/neurobreath-logo-square-128.png') 2x);
+  background-image:image-set(url('assets/icons/neurobreath-logo-square-64.png') 1x, url('assets/icons/neurobreath-logo-square-128.png') 2x);
+  display:inline-block;
+  box-shadow:0 12px 26px rgba(2,6,23,.55);
+  color:transparent;
+  text-indent:-9999px;
+  overflow:hidden;
+}
+
+.brand-sub {
+  font-size:12px;
+  color:var(--muted);
+}
+
+.badge {
+  display:inline-flex;
+  align-items:center;
+  gap:.3rem;
+  padding:.15rem .55rem;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,.4);
+  font-size:.72rem;
+  color:var(--muted);
+}
+
+.badge-dot {
+  width:7px;
+  height:7px;
+  border-radius:999px;
+  background:#22c55e;
+  box-shadow:0 0 10px rgba(34,197,94,.9);
+}
+
+/* Some pages override badge-dot colour (e.g. helplines) inline or via extra CSS if needed */
+
+.subnav {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:.5rem;
+  margin-bottom:1rem;
+  font-size:.82rem;
+  color:var(--muted);
+}
+
+.subnav a {
+  color:var(--muted);
+}
+
+.card {
+  background: var(--color-white);
+  border-radius: var(--r-card);
+  padding:1.25rem 1.2rem 1.4rem;
+  border: 1px solid var(--color-sage-light);
+  box-shadow: var(--shadow-medium);
+  margin-bottom:1rem;
+}
+
+h1 {
+  margin:0 0 .75rem;
+  font-size:1.6rem;
+}
+
+h2 {
+  margin:1rem 0 .6rem;
+  font-size:1.15rem;
+}
+
+h3 {
+  margin:.8rem 0 .45rem;
+  font-size:1rem;
+}
+
+p {
+  margin:.2rem 0 .6rem;
+  font-size:.93rem;
+  line-height:1.6;
+}
+
+.muted {
+  color:var(--muted);
+  font-size:.9rem;
+}
+
+ul {
+  padding-left:1.1rem;
+  margin:.15rem 0 .6rem;
+  font-size:.9rem;
+  line-height:1.6;
+}
+
+li + li {
+  margin-top:.12rem;
+}
+
+.two-col {
+  display:grid;
+  grid-template-columns:minmax(0,1.4fr) minmax(0,1.2fr);
+  gap:1rem;
+}
+
+/* Generic widget container for timers, jars, etc */
+.widget-shell {
+  margin-top:.4rem;
+  border-radius:12px;
+  border: 1px solid var(--color-sage-light);
+  padding:.6rem .7rem;
+  background: var(--color-white);
+  font-size:.85rem;
+}
+
+.widget-spaced {
+  margin-top:.7rem;
+}
+
+/* Timer styles */
+.timer-display {
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  font-size:1.1rem;
+  letter-spacing:.12em;
+  margin-bottom:.25rem;
+}
+
+.timer-bar {
+  position:relative;
+  width:100%;
+  height:6px;
+  border-radius:999px;
+  overflow:hidden;
+  background: var(--color-sage-light);
+  margin-bottom:.3rem;
+}
+
+.timer-bar-fill {
+  position:absolute;
+  inset:0;
+  width:0%;
+  background:linear-gradient(90deg,#22c55e,#eab308,#f97316,#ef4444);
+}
+
+/* Buttons */
+.btn {
+  margin-top:.3rem;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Pills / tags */
+.pill-row {
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem;
+  margin-top:.3rem;
+  font-size:.78rem;
+}
+
+.pill {
+  padding:.15rem .55rem;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,.4);
+  color:var(--muted);
+}
+
+.jar-count-display {
+  font-size:2rem;
+  margin:.1rem 0 .3rem;
+}
+
+.card-footer {
+  margin-top:1.2rem;
+}
+
+/* Autosave jotters */
+textarea[data-autosave] {
+  width:100%;
+  min-height:120px;
+  border-radius:10px;
+  border: 1px solid var(--color-sage-light);
+  background: var(--color-white);
+  color: var(--color-text);
+  padding:.55rem .6rem;
+  font-family:var(--font);
+  font-size:.86rem;
+  resize:vertical;
+}
+
+textarea[data-autosave]:focus-visible {
+  outline:none;
+  box-shadow: 0 0 0 3px rgba(157, 180, 160, .35);
+  border-color: var(--focus);
+}
+
+.note-hint {
+  font-size:.78rem;
+  color:var(--muted);
+  margin-top:.25rem;
+}
+
+/* Deep-dive links footer */
+.resource-foot {
+  margin-top:.8rem;
+  padding-top:.7rem;
+  border-top:1px dashed rgba(148,163,184,.5);
+  font-size:.8rem;
+  color:var(--muted);
+}
+
+/* Responsive */
+@media(max-width:720px){
+  .page-shell {
+    padding:1rem 1rem 2.2rem;
+  }
+  .two-col {
+    grid-template-columns:minmax(0,1fr);
+  }
+}
+
+/* =========================================================
+   ADHD Guide Theme — Midnight (Scoped + compatible)
+   Paste at END of assets/css/adhd-guide.css
+   Scope: only pages whose <body data-page-id="adhd_...">
+   ========================================================= */
+
+body[data-page-id^="adhd_"]{
+  /* ADHD guide pages are light-only; inherit the site palette. */
+  --muted: var(--color-text-muted);
+  --accent: var(--link);
+  --radius: 18px;
+  --font: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;
+  --radius-lg: var(--radius);
+}
+
+/* Base surface */
+body[data-page-id^="adhd_"]{
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Links */
+body[data-page-id^="adhd_"] a{ color: var(--accent); text-decoration: none; }
+body[data-page-id^="adhd_"] a:hover,
+body[data-page-id^="adhd_"] a:focus-visible{ text-decoration: underline; text-underline-offset: 3px; }
+
+/* Make page background come from <body>, not .page-main */
+body[data-page-id^="adhd_"] .page-main{
+  background: var(--color-cream);
+  min-height: 100vh;
+}
+
+/* Container stays as your layout */
+body[data-page-id^="adhd_"] .page-container{
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+/* Cards (match your existing .card markup) */
+body[data-page-id^="adhd_"] .card{
+  background: var(--color-white);
+  border: 1px solid var(--color-sage-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-medium);
+  color: var(--color-text);
+}
+
+/* Typography */
+body[data-page-id^="adhd_"] h1{ font-size: clamp(1.55rem, 2.0vw, 1.9rem); letter-spacing: -0.02em; }
+body[data-page-id^="adhd_"] h2{ font-size: clamp(1.15rem, 1.4vw, 1.25rem); }
+body[data-page-id^="adhd_"] h3{ font-size: 1rem; }
+body[data-page-id^="adhd_"] p{ line-height: 1.65; }
+body[data-page-id^="adhd_"] .muted{ color: var(--muted); }
+body[data-page-id^="adhd_"] .small-note{ color: var(--muted); }
+
+/* Pills */
+body[data-page-id^="adhd_"] .pill-row{ gap: .4rem; }
+body[data-page-id^="adhd_"] .pill{
+  border: 1px solid var(--color-sage-light);
+  color: var(--muted);
+  background: transparent;
+}
+
+/* Grids (your page uses these) */
+body[data-page-id^="adhd_"] .grid-2{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+body[data-page-id^="adhd_"] .grid-3{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+/* IMPORTANT: your HTML uses grid-2-1 */
+body[data-page-id^="adhd_"] .grid-2-1{
+  display: grid;
+  grid-template-columns: minmax(0,1.15fr) minmax(0,.85fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+/* Widget shells (your HTML uses timer-shell + jar-shell) */
+body[data-page-id^="adhd_"] .timer-shell,
+body[data-page-id^="adhd_"] .jar-shell{
+  margin-top: .45rem;
+  border-radius: 12px;
+  border: 1px solid var(--color-sage-light);
+  padding: .7rem .75rem;
+  background: var(--color-white);
+}
+
+/* Timer visuals */
+body[data-page-id^="adhd_"] .timer-display{
+  font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  font-size: 1.1rem;
+  letter-spacing: .12em;
+}
+body[data-page-id^="adhd_"] .timer-bar{
+  position: relative;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--color-sage-light);
+}
+body[data-page-id^="adhd_"] .timer-bar-fill{
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  background: linear-gradient(90deg,#22c55e,#eab308,#f97316,#ef4444);
+}
+
+/* Buttons (scope so you don't change other pages) */
+body[data-page-id^="adhd_"] .btn{
+  border-radius: 999px;
+  padding: .38rem .9rem;
+  border: 1px solid var(--color-sage-light);
+  background: var(--color-white);
+  color: var(--color-text);
+  font-size: .82rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+}
+body[data-page-id^="adhd_"] .btn-primary{
+  background: var(--primary);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 650;
+}
+body[data-page-id^="adhd_"] .btn-soft{
+  background: var(--color-cream);
+  border-color: var(--color-sage-light);
+}
+body[data-page-id^="adhd_"] .btn:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(157, 180, 160, .35);
+}
+
+/* Actions row */
+body[data-page-id^="adhd_"] .actions{
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin-top: .55rem;
+}
+
+/* Notes + autosave fields */
+body[data-page-id^="adhd_"] .note-field,
+body[data-page-id^="adhd_"] textarea[data-autosave]{
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--color-sage-light);
+  background: var(--color-white);
+  color: var(--color-text);
+  padding: .55rem .6rem;
+  font-family: var(--font);
+  font-size: .86rem;
+  resize: vertical;
+}
+body[data-page-id^="adhd_"] .note-field:focus-visible,
+body[data-page-id^="adhd_"] textarea[data-autosave]:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(157, 180, 160, .35);
+  border-color: var(--focus);
+}
+
+/* Header + dropdown readability on dark pages */
+body[data-page-id^="adhd_"] .site-header{
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-sage-light);
+}
+body[data-page-id^="adhd_"] .site-header .brand-text{ color: var(--color-text); }
+body[data-page-id^="adhd_"] .main-nav a{ color: var(--color-text); }
+body[data-page-id^="adhd_"] .menu-label{ color: var(--muted); }
+body[data-page-id^="adhd_"] .submenu{
+  background: var(--color-white);
+  border: 1px solid var(--color-sage-light);
+}
+
+/* Footer readability on dark pages */
+body[data-page-id^="adhd_"] .site-footer{
+  background: var(--color-white);
+  border-top: 1px solid var(--color-sage-light);
+}
+
+/* Responsive */
+@media (max-width: 860px){
+  body[data-page-id^="adhd_"] .grid-2-1{ grid-template-columns: 1fr; }
+}
+@media (max-width: 520px){
+  body[data-page-id^="adhd_"] .actions .btn{ width: 100%; justify-content: center; }
+}
+
+/* =========================================================
+   ADHD Guides — Midnight Theme (Force Override Layer)
+   Covers: adhd-what-is.html + all adhd_* pages
+   Paste at END of assets/css/adhd-guide.css
+   ========================================================= */
+
+body[data-page-id^="adhd_"]{
+  --muted: var(--color-text-muted);
+  --accent: var(--link);
+  --radius: 18px;
+  --font: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;
+  --radius-lg: var(--radius);
+
+  -webkit-font-smoothing: antialiased;
+}
+
+body[data-page-id^="adhd_"] a{ color: var(--accent); text-decoration: none; }
+body[data-page-id^="adhd_"] a:hover,
+body[data-page-id^="adhd_"] a:focus-visible{ text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---- Override the repeated in-page <style> block (required) ---- */
+body[data-page-id^="adhd_"] .page-main{
+  background: var(--color-cream) !important;
+}
+
+body[data-page-id^="adhd_"] .card{
+  background: var(--color-white) !important;
+  border: 1px solid var(--color-sage-light) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-medium) !important;
+  color: var(--color-text) !important;
+}
+
+body[data-page-id^="adhd_"] .muted,
+body[data-page-id^="adhd_"] .small-note{
+  color: var(--muted) !important;
+}
+
+/* ---- Subnav (used by adhd-what-is.html) ---- */
+body[data-page-id^="adhd_"] .subnav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:.6rem;
+  margin: 0 0 1rem;
+  font-size:.86rem;
+  color: var(--muted);
+}
+body[data-page-id^="adhd_"] .subnav a{ color: var(--muted); }
+body[data-page-id^="adhd_"] .subnav a:hover,
+body[data-page-id^="adhd_"] .subnav a:focus-visible{ color: var(--accent); }
+
+/* ---- Layout grids (covers both markup styles across your ADHD pages) ---- */
+body[data-page-id^="adhd_"] .two-col{
+  display:grid;
+  grid-template-columns: minmax(0,1.4fr) minmax(0,1.2fr);
+  gap: 1rem;
+  align-items:start;
+}
+
+body[data-page-id^="adhd_"] .grid-2{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+  align-items:start;
+}
+
+body[data-page-id^="adhd_"] .grid-3{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  align-items:start;
+}
+
+body[data-page-id^="adhd_"] .grid-2-1{
+  display:grid;
+  grid-template-columns: minmax(0,1.15fr) minmax(0,.85fr);
+  gap: 1rem;
+  align-items:start;
+}
+
+/* ---- Widgets (adhd-what-is uses .widget-shell; support-home uses timer-shell/jar-shell) ---- */
+body[data-page-id^="adhd_"] .widget-shell,
+body[data-page-id^="adhd_"] .timer-shell,
+body[data-page-id^="adhd_"] .jar-shell{
+  margin-top: .45rem;
+  border-radius: 12px;
+  border: 1px solid var(--color-sage-light);
+  padding: .7rem .75rem;
+  background: var(--color-white);
+}
+
+body[data-page-id^="adhd_"] .widget-spaced{ margin-top: .75rem; }
+
+body[data-page-id^="adhd_"] .timer-display{
+  font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  font-size: 1.1rem;
+  letter-spacing: .12em;
+  margin: .25rem 0 .35rem;
+}
+
+body[data-page-id^="adhd_"] .timer-bar{
+  position:relative;
+  width:100%;
+  height:6px;
+  border-radius:999px;
+  overflow:hidden;
+  background: var(--color-sage-light);
+  margin-bottom: .4rem;
+}
+
+body[data-page-id^="adhd_"] .timer-bar-fill{
+  position:absolute;
+  inset:0;
+  width:0%;
+  background: linear-gradient(90deg,#22c55e,#eab308,#f97316,#ef4444);
+}
+
+body[data-page-id^="adhd_"] .jar-count-display{
+  font-size: 2rem;
+  margin: .15rem 0 .45rem;
+}
+
+/* ---- Buttons (scoped so only ADHD pages change) ---- */
+body[data-page-id^="adhd_"] .btn{
+  border-radius:999px;
+  padding:.38rem .9rem;
+  border: 1px solid var(--color-sage-light);
+  background: var(--color-white);
+  color: var(--color-text);
+  font-size:.82rem;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:.35rem;
+}
+
+body[data-page-id^="adhd_"] .btn-primary{
+  background: radial-gradient(circle at top,#0ea5e9,#0369a1);
+  border-color: transparent;
+  color: #0b1220;
+  font-weight: 650;
+}
+
+body[data-page-id^="adhd_"] .btn:focus-visible{
+  outline:none;
+  box-shadow: 0 0 0 3px rgba(157, 180, 160, .35);
+}
+
+/* ---- Autosave textareas ---- */
+body[data-page-id^="adhd_"] textarea[data-autosave],
+body[data-page-id^="adhd_"] .note-field{
+  width:100%;
+  border-radius:10px;
+  border: 1px solid var(--color-sage-light);
+  background: var(--color-white);
+  color: var(--color-text);
+  padding:.55rem .6rem;
+  font-family: var(--font);
+  font-size:.86rem;
+  resize:vertical;
+}
+
+body[data-page-id^="adhd_"] textarea[data-autosave]:focus-visible,
+body[data-page-id^="adhd_"] .note-field:focus-visible{
+  outline:none;
+  box-shadow: 0 0 0 3px rgba(157, 180, 160, .35);
+  border-color: var(--focus);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 860px){
+  body[data-page-id^="adhd_"] .two-col,
+  body[data-page-id^="adhd_"] .grid-2-1{ grid-template-columns: 1fr; }
+}
+@media (max-width: 520px){
+  body[data-page-id^="adhd_"] .btn{ width: 100%; justify-content: center; }
+}

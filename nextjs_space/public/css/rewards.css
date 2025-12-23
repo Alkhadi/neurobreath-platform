@@ -1,0 +1,230 @@
+/* =============================================
+   NeuroBreath – Rewards & Badges Styles
+   ============================================= */
+
+/* Points Header */
+.points-header {
+  margin-top: var(--space-lg);
+}
+
+.points-display {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: linear-gradient(135deg, var(--color-sage-light), var(--color-sky-light));
+  border-radius: var(--radius-md);
+}
+
+.points-label {
+  font-size: 1.1rem;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.points-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-sage-dark);
+}
+
+/* Badges Grid */
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.badge-card {
+  background: var(--color-white);
+  border: 2px solid var(--color-sage-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  text-align: center;
+  transition: var(--transition-base);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.badge-card.earned {
+  border-color: var(--color-sage);
+  background: linear-gradient(135deg, var(--color-cream), var(--color-white));
+}
+
+.badge-card.locked {
+  opacity: 0.6;
+  background: var(--color-cream);
+}
+
+.badge-card:hover {
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-2px);
+}
+
+.badge-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-sm);
+}
+
+.badge-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.badge-description {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-sm);
+  line-height: var(--line-height-base);
+}
+
+.badge-status {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-sage-dark);
+  margin-bottom: var(--space-sm);
+}
+
+.badge-date {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.badge-card .btn {
+  margin-top: auto;
+}
+
+/* Badge Tabs */
+.badges-tabs {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-cream);
+  border: 2px solid var(--color-sage-light);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.tab-btn:hover {
+  background: var(--color-sage-light);
+  border-color: var(--color-sage);
+}
+
+.tab-btn.active {
+  background: var(--color-sage);
+  border-color: var(--color-sage-dark);
+  color: var(--color-white);
+  font-weight: 600;
+}
+
+/* Coupons Grid */
+.coupons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.coupon-card {
+  background: var(--color-white);
+  border: 2px solid var(--color-sage-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  text-align: center;
+  transition: var(--transition-base);
+  display: flex;
+  flex-direction: column;
+}
+
+.coupon-card.affordable {
+  border-color: var(--color-sage);
+  background: linear-gradient(135deg, var(--color-cream), var(--color-white));
+}
+
+.coupon-card.locked {
+  opacity: 0.7;
+  background: var(--color-cream);
+}
+
+.coupon-card:hover {
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-2px);
+}
+
+.coupon-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-sm);
+}
+
+.coupon-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.coupon-description {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-md);
+  line-height: var(--line-height-base);
+}
+
+.coupon-cost {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+  padding: var(--space-sm);
+  background: var(--color-sage-light);
+  border-radius: var(--radius-sm);
+}
+
+.cost-label {
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.cost-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-sage-dark);
+}
+
+.coupon-locked {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-top: var(--space-sm);
+}
+
+.coupon-card .btn {
+  margin-top: auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .badges-grid,
+  .coupons-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .badges-tabs {
+    justify-content: center;
+  }
+}

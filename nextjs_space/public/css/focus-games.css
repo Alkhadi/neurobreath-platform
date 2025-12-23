@@ -1,0 +1,281 @@
+/* =============================================
+   NeuroBreath – Focus Games Styles
+   ============================================= */
+
+/* Game selector buttons */
+.game-selector {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 1.5rem 0;
+}
+
+/* Game container visibility */
+.game-container-hidden {
+  display: none;
+}
+
+.focus-game-container {
+  background: var(--color-cream);
+  border: 2px solid var(--color-sage-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin: var(--space-lg) 0;
+}
+
+.focus-game-area {
+  min-height: 400px;
+  position: relative;
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+  overflow: hidden;
+}
+
+/* Focus Quest Game */
+.focus-task {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: var(--space-xl);
+  text-align: center;
+}
+
+.focus-task.low-stim {
+  background: var(--color-cream);
+}
+
+.task-text {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-lg);
+  line-height: var(--line-height-base);
+}
+
+.task-timer {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-sage-dark);
+  padding: var(--space-md);
+  background: var(--color-sage-light);
+  border-radius: var(--radius-md);
+  min-width: 80px;
+}
+
+/* Spot Target Game */
+.focus-target {
+  position: absolute;
+  background: var(--color-sage);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white);
+  font-weight: 600;
+  font-size: 1.2rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 3px solid var(--color-white);
+  box-shadow: 0 4px 12px rgba(107, 139, 110, 0.3);
+}
+
+.focus-target:hover,
+.focus-target:focus {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(107, 139, 110, 0.4);
+  outline: none;
+}
+
+.focus-target:active {
+  transform: scale(0.95);
+}
+
+.focus-target.low-stim {
+  background: var(--color-sage-dark);
+  border-width: 4px;
+}
+
+/* Reaction Challenge Game */
+.focus-signal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--color-coral);
+  color: var(--color-white);
+  padding: var(--space-lg) var(--space-xl);
+  border-radius: var(--radius-lg);
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(212, 165, 154, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 3px solid var(--color-white);
+}
+
+.focus-signal:hover,
+.focus-signal:focus {
+  transform: translate(-50%, -50%) scale(1.05);
+  box-shadow: 0 6px 20px rgba(212, 165, 154, 0.5);
+  outline: none;
+}
+
+.focus-signal:active {
+  transform: translate(-50%, -50%) scale(0.95);
+}
+
+.focus-signal.low-stim {
+  background: var(--color-coral);
+  border-width: 4px;
+}
+
+/* Focus Feedback */
+.focus-feedback {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-sage);
+  color: var(--color-white);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 1.1rem;
+  animation: feedback-pop 0.5s ease;
+  z-index: 10;
+}
+
+@keyframes feedback-pop {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px) scale(0.8);
+  }
+  50% {
+    transform: translateX(-50%) translateY(0) scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+/* Game Controls */
+.focus-game-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.game-stats {
+  display: flex;
+  gap: var(--space-lg);
+  justify-content: center;
+  padding: var(--space-md);
+  background: var(--color-white);
+  border-radius: var(--radius-sm);
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  display: block;
+  margin-bottom: var(--space-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-sage-dark);
+}
+
+.game-progress {
+  margin: var(--space-md) 0;
+}
+
+.game-actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-instructions {
+  text-align: center;
+  padding: var(--space-md);
+  background: var(--color-sage-light);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  margin-top: var(--space-sm);
+}
+
+/* Game Complete Message */
+.game-complete {
+  text-align: center;
+  padding: var(--space-xl);
+  background: linear-gradient(135deg, var(--color-sage-light), var(--color-sky-light));
+  border-radius: var(--radius-md);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.complete-icon {
+  font-size: 4rem;
+  margin-bottom: var(--space-md);
+}
+
+.game-complete h3 {
+  font-size: 1.5rem;
+  color: var(--color-sage-dark);
+  margin-bottom: var(--space-sm);
+}
+
+.game-complete p {
+  font-size: 1.1rem;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.complete-message {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* Low Stimulation Mode */
+.low-stim-mode .focus-feedback {
+  animation: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .focus-game-area {
+    min-height: 300px;
+  }
+
+  .game-stats {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .task-text {
+    font-size: 1.2rem;
+  }
+
+  .task-timer {
+    font-size: 1.5rem;
+  }
+}

@@ -1,0 +1,1848 @@
+(function () {
+  "use strict";
+
+  // Theme switching functionality
+  const THEME_STORAGE_KEY = "nb_games_lab_theme";
+  const themeToggle = document.getElementById("themeToggle");
+  const themeIcon = document.getElementById("themeIcon");
+  const themeLabel = document.getElementById("themeLabel");
+
+  function initTheme() {
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || "light";
+    document.body.setAttribute("data-theme", savedTheme);
+    updateThemeUI(savedTheme);
+  }
+
+  function updateThemeUI(theme) {
+    if (themeIcon && themeLabel) {
+      if (theme === "dark") {
+        themeIcon.textContent = "☀️";
+        themeLabel.textContent = "Light";
+      } else {
+        themeIcon.textContent = "🌙";
+        themeLabel.textContent = "Dark";
+      }
+    }
+  }
+
+  function toggleTheme() {
+    const currentTheme = document.body.getAttribute("data-theme") || "light";
+    const newTheme = currentTheme === "light" ? "dark" : "light";
+    document.body.setAttribute("data-theme", newTheme);
+    localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+    updateThemeUI(newTheme);
+  }
+
+  if (themeToggle) {
+    themeToggle.addEventListener("click", toggleTheme);
+  }
+
+  // Initialize theme on page load
+  initTheme();
+
+  function $(id) {
+    return document.getElementById(id);
+  }
+
+  const LS_KEY = "nb_games_rewards_lab_v1";
+
+  const BREATH_PATTERNS = {
+    "478": {
+      key: "478",
+      label: "4–7–8 · Sleep wind-down",
+      phases: [
+        { name: "Inhale", label: "Inhale", duration: 4 },
+        { name: "Hold", label: "Hold", duration: 7 },
+        { name: "Exhale", label: "Exhale", duration: 8 }
+      ],
+      description:
+        "Longer exhale pattern often used as a pre-sleep wind-down to activate the parasympathetic “rest and digest” system.",
+      bestFor:
+        "Evening down-shift, easing racing thoughts at bedtime, or gently settling after a stressful event.",
+      suggestedMinutes: "2–4 minutes (about 4–8 cycles)."
+    },
+    "box": {
+      key: "box",
+      label: "Box · Steady square",
+      phases: [
+        { name: "Inhale", label: "Inhale", duration: 4 },
+        { name: "HoldTop", label: "Hold", duration: 4 },
+        { name: "Exhale", label: "Exhale", duration: 4 },
+        { name: "HoldBottom", label: "Hold", duration: 4 }
+      ],
+      description:
+        "Sometimes called “tactical breathing”, commonly taught in high-stakes roles to steady the nervous system under pressure.",
+      bestFor:
+        "Resetting during intense work, public speaking prep, or between challenging tasks and meetings.",
+      suggestedMinutes: "1–3 minutes for quick resets; up to 5 minutes for deeper calm."
+    },
+    "coherent": {
+      key: "coherent",
+      label: "5–5 · Coherent wave",
+      phases: [
+        { name: "Inhale", label: "Inhale", duration: 5 },
+        { name: "Exhale", label: "Exhale", duration: 5 }
+      ],
+      description:
+        "Slow, even breathing around 5–6 breaths per minute is linked with better heart-rate variability and emotional regulation.",
+      bestFor:
+        "Daily baseline regulation, gentle practice in classrooms, and building interoceptive (body) awareness.",
+      suggestedMinutes: "3–5 minutes on most days."
+    },
+    "sos60": {
+      key: "sos60",
+      label: "SOS–60 · Quick rescue",
+      phases: [
+        { name: "Inhale", label: "Inhale", duration: 3 },
+        { name: "Exhale", label: "Exhale", duration: 4 }
+      ],
+      description:
+        "Short, portable pattern to create a 60-second “micro reset” when overwhelm spikes unexpectedly.",
+      bestFor:
+        "Moments of acute stress, before a difficult phone call, or when sensory overload appears.",
+      suggestedMinutes: "1–2 minutes as needed."
+    }
+  };
+
+  const FOCUS_MAX_ROUNDS = 5;
+
+  let progressState = loadState();
+
+  let breathPatternKey = "478";
+  let breathMode = "interactive";
+  let breathGoalMinutes = 1;
+  let lowStim = false;
+
+  let breathTimer = null;
+  let breathRunning = false;
+  let breathSeconds = 0;
+  let breathCycles = 0;
+  let breathPhaseIndex = 0;
+  let breathPhaseElapsed = 0;
+
+  let focusActive = false;
+  let focusTimer = null;
+  let focusSessionSeconds = 0;
+  let focusRound = 0;
+  let focusScore = 0;
+  let focusCurrentStarIndex = null;
+
+  let groupCompleted = 0;
+
+  let breathMusic = null;
+  if (window.Audio) {
+    try {
+      breathMusic = new Audio("assets/audio/ambient-soft-loop.mp3");
+      breathMusic.loop = true;
+      breathMusic.preload = "auto";
+    } catch (_) {
+      breathMusic = null;
+    }
+  }
+
+  const navButtons = document.querySelectorAll("[data-scroll-target]");
+  const patternChips = document.querySelectorAll(".nb-chip[data-breath-pattern]");
+
+  const breathDurationSelect = $("breathDurationSelect");
+  const breathModeSimple = $("breathModeSimple");
+  const breathModeInteractive = $("breathModeInteractive");
+  const lowStimToggle = $("lowStimToggle");
+  const musicToggle = $("musicToggle");
+  const breathVisual = $("breathVisual");
+  const breathBubble = $("breathBubble");
+  const breathOrbit = $("breathOrbit");
+  const breathOrbitRing = $("breathOrbitRing");
+  const breathSatellite = $("breathSatellite");
+  const breathPhaseLabel = $("breathPhaseLabel");
+  const breathPhaseCounter = $("breathPhaseCounter");
+  const breathGoalLabel = $("breathGoalLabel");
+  const breathCyclesCountEl = $("breathCyclesCount");
+  const breathSecondsCountEl = $("breathSecondsCount");
+  const breathDragonText = $("breathDragonText");
+  const breathPatternExplainer = $("breathPatternExplainer");
+  const breathStartBtn = $("breathStartBtn");
+  const breathPauseBtn = $("breathPauseBtn");
+  const breathResetBtn = $("breathResetBtn");
+  const breathStatusText = $("breathStatusText");
+
+  const focusGrid = $("focusGrid");
+  const focusRoundLabel = $("focusRoundLabel");
+  const focusScoreLabel = $("focusScoreLabel");
+  const focusSecondsLabel = $("focusSecondsLabel");
+  const focusStatusText = $("focusStatusText");
+  const focusStartBtn = $("focusStartBtn");
+  const focusResetBtn = $("focusResetBtn");
+
+  const overallProgressBar = $("overallProgressBar");
+  const overallProgressLabel = $("overallProgressLabel");
+  const overallSessionsLabel = $("overallSessionsLabel");
+  const totalMinutesLabel = $("totalMinutesLabel");
+  const streakProgressBar = $("streakProgressBar");
+  const streakCurrentLabel = $("streakCurrentLabel");
+  const streakBestLabel = $("streakBestLabel");
+  const lastSessionsList = $("lastSessionsList");
+  const activityTotalsList = $("activityTotalsList");
+  const resetProgressBtn = $("resetProgressBtn");
+
+  const badgesList = $("badgesList");
+  const couponList = $("couponList");
+  const couponCategorySelect = $("couponCategorySelect");
+  const couponDifficultySelect = $("couponDifficultySelect");
+  const couponBrandInput = $("couponBrandInput");
+  const generateCouponBtn = $("generateCouponBtn");
+
+  const certNameInput = $("certNameInput");
+  const certTechniqueSelect = $("certTechniqueSelect");
+  const certMinutesSelect = $("certMinutesSelect");
+  const certModeSelect = $("certModeSelect");
+  const printCertBtn = $("printCertBtn");
+
+  const groupTotalInput = $("groupTotalInput");
+  const groupActivitySelect = $("groupActivitySelect");
+  const groupCompletedLabel = $("groupCompletedLabel");
+  const groupPercentLabel = $("groupPercentLabel");
+  const groupAddCompletedBtn = $("groupAddCompletedBtn");
+  const groupResetBtn = $("groupResetBtn");
+
+  const joinChallengeBtn = $("joinChallengeBtn");
+  const challengeStatusLabel = $("challengeStatusLabel");
+  const challengeDaysLabel = $("challengeDaysLabel");
+
+  navButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      const target = btn.getAttribute("data-scroll-target");
+      if (!target) return;
+      const el = document.querySelector(target);
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  patternChips.forEach(function (chip) {
+    chip.addEventListener("click", function () {
+      const key = chip.getAttribute("data-breath-pattern");
+      selectPattern(key);
+    });
+  });
+
+  if (breathDurationSelect) {
+    breathDurationSelect.addEventListener("change", function () {
+      const minutes = parseInt(breathDurationSelect.value || "1", 10);
+      breathGoalMinutes = clampInt(minutes, 1, 5);
+      updateBreathGoalLabel();
+    });
+  }
+
+  if (breathModeSimple) {
+    breathModeSimple.addEventListener("change", function () {
+      if (breathModeSimple.checked) {
+        breathMode = "simple";
+        if (breathVisual) breathVisual.dataset.mode = "simple";
+      }
+    });
+  }
+
+  if (breathModeInteractive) {
+    breathModeInteractive.addEventListener("change", function () {
+      if (breathModeInteractive.checked) {
+        breathMode = "interactive";
+        if (breathVisual) breathVisual.dataset.mode = "interactive";
+      }
+    });
+  }
+
+  if (lowStimToggle) {
+    lowStimToggle.addEventListener("change", function () {
+      lowStim = !!lowStimToggle.checked;
+      if (breathVisual) {
+        breathVisual.dataset.lowStim = lowStim ? "1" : "0";
+      }
+      if (lowStim && musicToggle && musicToggle.checked) {
+        musicToggle.checked = false;
+        stopMusic();
+      }
+    });
+  }
+
+  if (musicToggle) {
+    musicToggle.addEventListener("change", function () {
+      if (!breathMusic) return;
+      if (musicToggle.checked) {
+        if (lowStim) {
+          musicToggle.checked = false;
+          return;
+        }
+        try {
+          breathMusic.currentTime = 0;
+          breathMusic.play().catch(function () {});
+        } catch (_) {}
+      } else {
+        stopMusic();
+      }
+    });
+  }
+
+  if (breathStartBtn) {
+    breathStartBtn.addEventListener("click", function () {
+      startBreath();
+    });
+  }
+
+  if (breathPauseBtn) {
+    breathPauseBtn.addEventListener("click", function () {
+      pauseBreath(true);
+    });
+  }
+
+  if (breathResetBtn) {
+    breathResetBtn.addEventListener("click", function () {
+      resetBreathSession();
+    });
+  }
+
+  if (focusStartBtn) {
+    focusStartBtn.addEventListener("click", function () {
+      if (focusActive) return;
+      resetFocusSession();
+      focusActive = true;
+      focusStartBtn.disabled = true;
+      focusResetBtn.disabled = false;
+      focusStatusText.textContent = "Status: In progress – look for the star and tap it calmly.";
+      focusTimer = window.setInterval(function () {
+        focusSessionSeconds += 1;
+        focusSecondsLabel.textContent = String(focusSessionSeconds);
+      }, 1000);
+      startFocusRound();
+    });
+  }
+
+  if (focusResetBtn) {
+    focusResetBtn.addEventListener("click", function () {
+      resetFocusSession();
+    });
+  }
+
+  if (focusGrid) {
+    const cells = focusGrid.querySelectorAll(".nb-focus-cell");
+    cells.forEach(function (cell) {
+      cell.addEventListener("click", function () {
+        const idx = parseInt(cell.getAttribute("data-cell") || "0", 10);
+        handleFocusCellClick(idx);
+      });
+    });
+  }
+
+  if (groupAddCompletedBtn) {
+    groupAddCompletedBtn.addEventListener("click", function () {
+      groupCompleted += 1;
+      updateGroupUI();
+    });
+  }
+  if (groupResetBtn) {
+    groupResetBtn.addEventListener("click", function () {
+      groupCompleted = 0;
+      updateGroupUI();
+    });
+  }
+  if (groupTotalInput) {
+    groupTotalInput.addEventListener("input", function () {
+      updateGroupUI();
+    });
+  }
+
+  if (resetProgressBtn) {
+    resetProgressBtn.addEventListener("click", function () {
+      const ok = window.confirm(
+        "This will clear calm sessions, badges and coupons stored for this hub on this device. Continue?"
+      );
+      if (!ok) return;
+      progressState = defaultState();
+      saveState();
+      updateDashboards();
+      updateRewardsUI();
+      updateChallengeUI();
+    });
+  }
+
+  if (generateCouponBtn) {
+    generateCouponBtn.addEventListener("click", function () {
+      generateCoupon();
+    });
+  }
+
+  if (couponList) {
+    couponList.addEventListener("click", function (evt) {
+      const target = evt.target;
+      if (!target) return;
+      const btn = target.closest("button[data-coupon-id][data-action='mark-used']");
+      if (!btn) return;
+      const id = btn.getAttribute("data-coupon-id");
+      if (!id || !progressState.coupons) return;
+      const idx = progressState.coupons.findIndex(function (c) {
+        return c.id === id;
+      });
+      if (idx === -1) return;
+      progressState.coupons[idx].used = true;
+      saveState();
+      updateRewardsUI();
+    });
+  }
+
+  if (printCertBtn) {
+    printCertBtn.addEventListener("click", function () {
+      openCertificate();
+    });
+  }
+
+  if (joinChallengeBtn) {
+    joinChallengeBtn.addEventListener("click", function () {
+      toggleChallenge();
+    });
+  }
+
+  selectPattern("478");
+  breathGoalMinutes = 1;
+  if (breathDurationSelect) breathDurationSelect.value = "1";
+  updateBreathGoalLabel();
+  resetBreathSession();
+  resetFocusSession();
+  updateGroupUI();
+  updateDashboards();
+  updateRewardsUI();
+  updateChallengeUI();
+
+  function defaultState() {
+    return {
+      totalSessions: 0,
+      totalBreathSessions: 0,
+      totalFocusSessions: 0,
+      totalMinutes: 0,
+      lastSessionDay: null,
+      currentStreak: 0,
+      bestStreak: 0,
+      sessions: [],
+      coupons: [],
+      challengeJoined: false,
+      challengeStartDate: null
+    };
+  }
+
+  function loadState() {
+    const base = defaultState();
+    if (!window.localStorage) return base;
+    try {
+      const raw = window.localStorage.getItem(LS_KEY);
+      if (!raw) return base;
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === "object") {
+        return Object.assign(base, parsed);
+      }
+    } catch (e) {}
+    return base;
+  }
+
+  function saveState() {
+    if (!window.localStorage) return;
+    try {
+      window.localStorage.setItem(LS_KEY, JSON.stringify(progressState));
+    } catch (e) {}
+  }
+
+  function clampInt(value, min, max) {
+    const n = parseInt(value, 10);
+    if (isNaN(n)) return min;
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function selectPattern(key) {
+    if (!BREATH_PATTERNS[key]) return;
+    breathPatternKey = key;
+    if (breathVisual) {
+      breathVisual.dataset.pattern = key;
+    }
+    patternChips.forEach(function (chip) {
+      const cKey = chip.getAttribute("data-breath-pattern");
+      chip.setAttribute("data-active", cKey === key ? "true" : "false");
+    });
+    updatePatternExplainer();
+    resetBreathSession();
+  }
+
+  function updatePatternExplainer() {
+    const p = BREATH_PATTERNS[breathPatternKey];
+    if (!p || !breathPatternExplainer) return;
+    const minutesText = p.suggestedMinutes;
+    const extra = {
+      "478":
+        "Many people like this as a wind-down before sleep or when shifting from work mode to rest mode.",
+      "box":
+        "Box breathing is widely used in high-pressure environments (for example, by tactical and emergency professionals) to stay steady.",
+      "coherent":
+        "Coherent breathing supports heart-rate variability and can be a good daily practice for mood stability.",
+      "sos60":
+        "SOS-60 is designed for quick moments – one or two minutes can soften spikes of stress."
+    }[breathPatternKey] || "";
+    breathPatternExplainer.innerHTML =
+      "<p><strong>" +
+      p.label +
+      "</strong></p>" +
+      "<p>" +
+      p.description +
+      "</p>" +
+      "<p><strong>Good for:</strong> " +
+      p.bestFor +
+      "</p>" +
+      "<p><strong>Typical duration:</strong> " +
+      minutesText +
+      "</p>" +
+      (extra ? '<p class="nb-small-muted">' + extra + "</p>" : "");
+  }
+
+  function updateBreathGoalLabel() {
+    if (!breathGoalLabel) return;
+    if (breathGoalMinutes === 1) {
+      breathGoalLabel.textContent = "1 min calm practice";
+    } else if (breathGoalMinutes === 5) {
+      breathGoalLabel.textContent = "5 min deep calm reset";
+    } else {
+      breathGoalLabel.textContent = breathGoalMinutes + " min calm practice";
+    }
+  }
+
+  function stopMusic() {
+    if (!breathMusic) return;
+    try {
+      breathMusic.pause();
+      breathMusic.currentTime = 0;
+    } catch (_) {}
+  }
+
+  function resetBreathSession() {
+    if (breathTimer) {
+      window.clearInterval(breathTimer);
+      breathTimer = null;
+    }
+    breathRunning = false;
+    breathSeconds = 0;
+    breathCycles = 0;
+    breathPhaseIndex = 0;
+    breathPhaseElapsed = 0;
+
+    if (breathPhaseLabel) breathPhaseLabel.textContent = "Ready";
+    if (breathPhaseCounter) breathPhaseCounter.textContent = "0";
+    if (breathCyclesCountEl) breathCyclesCountEl.textContent = "0";
+    if (breathSecondsCountEl) breathSecondsCountEl.textContent = "0";
+    if (breathStatusText) {
+      breathStatusText.innerHTML =
+        'Status: <strong>Not started</strong>. When you are ready, press <strong>Start</strong>. You can stop at any time.';
+    }
+    if (breathDragonText) {
+      breathDragonText.innerHTML =
+        '<span>🐉</span> Dragon is resting. Calm breaths help it feel safe.';
+    }
+    updateBreathVisual("Ready", 0);
+  }
+
+  function startBreath() {
+    if (breathRunning) return;
+    const pattern = BREATH_PATTERNS[breathPatternKey];
+    if (!pattern) return;
+    if (breathSeconds === 0 && breathPhaseElapsed === 0) {
+      breathPhaseIndex = 0;
+      breathPhaseElapsed = 0;
+      if (breathPhaseLabel) breathPhaseLabel.textContent = pattern.phases[0].label;
+    }
+    breathRunning = true;
+    if (!breathTimer) {
+      breathTimer = window.setInterval(function () {
+        tickBreath();
+      }, 1000);
+    }
+    if (breathStatusText) {
+      breathStatusText.innerHTML =
+        "Status: <strong>In progress</strong>. Follow the bubble; you can pause or stop at any time.";
+    }
+  }
+
+  function pauseBreath(saveSession) {
+    if (!breathRunning && !saveSession) return;
+    if (breathTimer) {
+      window.clearInterval(breathTimer);
+      breathTimer = null;
+    }
+    const hadActivity = breathSeconds > 0 || breathCycles > 0;
+    if (saveSession && hadActivity) {
+      recordSession("breath", {
+        pattern: breathPatternKey,
+        minutes: Math.max(1, Math.round(breathSeconds / 60) || 1)
+      });
+      updateDashboards();
+      updateRewardsUI();
+      updateChallengeUI();
+      if (breathStatusText) {
+        breathStatusText.innerHTML =
+          "Status: <strong>Session saved</strong>. Gentle progress added to your calm streak.";
+      }
+    } else if (breathStatusText) {
+      breathStatusText.innerHTML =
+        "Status: <strong>Paused</strong>. You can resume or reset whenever you like.";
+    }
+    breathRunning = false;
+  }
+
+  function autoCompleteBreath() {
+    if (!breathRunning) return;
+    if (breathTimer) {
+      window.clearInterval(breathTimer);
+      breathTimer = null;
+    }
+    breathRunning = false;
+    const hadActivity = breathSeconds > 0 || breathCycles > 0;
+    if (hadActivity) {
+      recordSession("breath", {
+        pattern: breathPatternKey,
+        minutes: Math.max(1, Math.round(breathSeconds / 60) || breathGoalMinutes)
+      });
+      updateDashboards();
+      updateRewardsUI();
+      updateChallengeUI();
+    }
+    if (breathStatusText) {
+      breathStatusText.innerHTML =
+        "Status: <strong>Goal reached</strong>. Lovely steady work – you can rest or start another round.";
+    }
+    if (breathDragonText) {
+      breathDragonText.innerHTML =
+        '<span>🐉</span> Dragon is purring. It remembers how you helped it feel safe.';
+    }
+  }
+
+  function tickBreath() {
+    const pattern = BREATH_PATTERNS[breathPatternKey];
+    if (!pattern) return;
+    if (!breathRunning) return;
+
+    breathSeconds += 1;
+    if (breathSecondsCountEl) breathSecondsCountEl.textContent = String(breathSeconds);
+
+    const goalSeconds = breathGoalMinutes * 60;
+    if (breathSeconds >= goalSeconds) {
+      autoCompleteBreath();
+      return;
+    }
+
+    const phases = pattern.phases;
+    if (!phases.length) return;
+
+    let phase = phases[breathPhaseIndex];
+    breathPhaseElapsed += 1;
+
+    if (breathPhaseCounter) {
+      const remaining = Math.max(0, phase.duration - breathPhaseElapsed + 1);
+      breathPhaseCounter.textContent = String(remaining);
+    }
+    if (breathPhaseLabel) {
+      breathPhaseLabel.textContent = phase.label;
+    }
+
+    const phaseProgress = phase.duration > 0 ? breathPhaseElapsed / phase.duration : 0;
+    updateBreathVisual(phase.name, phaseProgress);
+
+    if (breathPhaseElapsed >= phase.duration) {
+      breathPhaseIndex += 1;
+      breathPhaseElapsed = 0;
+      if (breathPhaseIndex >= phases.length) {
+        breathPhaseIndex = 0;
+        breathCycles += 1;
+        if (breathCyclesCountEl) breathCyclesCountEl.textContent = String(breathCycles);
+      }
+      phase = phases[breathPhaseIndex];
+      if (breathPhaseLabel) breathPhaseLabel.textContent = phase.label;
+    }
+  }
+
+  function updateBreathVisual(phaseName, phaseProgress) {
+    if (!breathVisual || !breathBubble || !breathSatellite || !breathOrbit || !breathOrbitRing) return;
+    if (!phaseName) phaseName = "Ready";
+    if (phaseProgress == null) phaseProgress = 0;
+
+    breathVisual.dataset.mode = breathMode;
+    breathVisual.dataset.lowStim = lowStim ? "1" : "0";
+
+    const baseScale = phaseName === "Ready" ? 1.0 : 1.0;
+    let extra = 0.0;
+    if (phaseName === "Inhale") extra = 0.25 * phaseProgress;
+    else if (phaseName === "Exhale") extra = 0.2 * (1 - phaseProgress);
+    else extra = 0.05 * phaseProgress;
+    const scale = baseScale + extra;
+    breathBubble.style.transform = "scale(" + scale.toFixed(3) + ")";
+
+    if (breathMode === "interactive" && !lowStim) {
+      const angleDeg = (breathSeconds * 45 + phaseProgress * 45) % 360;
+      const radius = 80;
+      const rad = (angleDeg * Math.PI) / 180;
+      const x = Math.cos(rad) * radius;
+      const y = Math.sin(rad) * radius;
+      breathSatellite.style.transform =
+        "translate(calc(-50% + " + x.toFixed(1) + "px), calc(-50% + " + y.toFixed(1) + "px))";
+    } else {
+      breathSatellite.style.transform = "translate(-50%, -50%)";
+    }
+
+    if (breathPatternKey === "sos60" && !lowStim) {
+      const pulse = 1 + 0.12 * Math.sin(breathSeconds * 3.14);
+      breathOrbitRing.style.transform = "scale(" + pulse.toFixed(3) + ")";
+    } else {
+      breathOrbitRing.style.transform = "scale(1)";
+    }
+  }
+
+  function resetFocusSession() {
+    focusActive = false;
+    if (focusTimer) {
+      window.clearInterval(focusTimer);
+      focusTimer = null;
+    }
+    focusSessionSeconds = 0;
+    focusRound = 0;
+    focusScore = 0;
+    focusCurrentStarIndex = null;
+
+    if (focusSecondsLabel) focusSecondsLabel.textContent = "0";
+    if (focusScoreLabel) focusScoreLabel.textContent = "0";
+    if (focusRoundLabel) focusRoundLabel.textContent = "0 / " + FOCUS_MAX_ROUNDS;
+    if (focusStatusText) {
+      focusStatusText.innerHTML =
+        "Status: <strong>Not started</strong>. Press Start when you are ready.";
+    }
+    if (focusStartBtn) focusStartBtn.disabled = false;
+    if (focusResetBtn) focusResetBtn.disabled = true;
+
+    if (focusGrid) {
+      const cells = focusGrid.querySelectorAll(".nb-focus-cell");
+      cells.forEach(function (cell) {
+        cell.textContent = "";
+        cell.classList.remove("is-star");
+        cell.setAttribute("aria-label", "Empty spot");
+      });
+    }
+  }
+
+  function startFocusRound() {
+    if (!focusActive) return;
+    if (!focusGrid) return;
+    if (focusRound >= FOCUS_MAX_ROUNDS) {
+      completeFocusSession();
+      return;
+    }
+
+    focusRound += 1;
+    if (focusRoundLabel) {
+      focusRoundLabel.textContent = focusRound + " / " + FOCUS_MAX_ROUNDS;
+    }
+
+    const cells = focusGrid.querySelectorAll(".nb-focus-cell");
+    cells.forEach(function (cell) {
+      cell.textContent = "";
+      cell.classList.remove("is-star");
+      cell.setAttribute("aria-label", "Empty spot");
+    });
+
+    const idx = Math.floor(Math.random() * cells.length);
+    focusCurrentStarIndex = idx;
+    const cell = focusGrid.querySelector('.nb-focus-cell[data-cell="' + idx + '"]');
+    if (cell) {
+      cell.textContent = "★";
+      cell.classList.add("is-star");
+      cell.setAttribute("aria-label", "Star");
+    }
+  }
+
+  function handleFocusCellClick(idx) {
+    if (!focusGrid) return;
+    if (!focusActive) {
+      return;
+    }
+    if (idx === focusCurrentStarIndex) {
+      focusScore += 1;
+      if (focusScoreLabel) focusScoreLabel.textContent = String(focusScore);
+      if (focusStatusText) {
+        focusStatusText.textContent = "Nice catch – steady focus.";
+      }
+    } else {
+      if (focusStatusText) {
+        focusStatusText.textContent = "That was a miss – no problem, try the next star.";
+      }
+    }
+    startFocusRound();
+  }
+
+  function completeFocusSession() {
+    focusActive = false;
+    if (focusTimer) {
+      window.clearInterval(focusTimer);
+      focusTimer = null;
+    }
+    if (focusStartBtn) focusStartBtn.disabled = false;
+    if (focusResetBtn) focusResetBtn.disabled = false;
+
+    const minutesApprox = Math.max(1, Math.round(focusSessionSeconds / 60) || 1);
+    recordSession("focus", { minutes: minutesApprox });
+    updateDashboards();
+    updateRewardsUI();
+    updateChallengeUI();
+
+    if (focusStatusText) {
+      focusStatusText.textContent =
+        "Session complete – you spotted " +
+        focusScore +
+        " star(s) calmly. You can rest or start another round.";
+    }
+  }
+
+  function recordSession(type, meta) {
+    const now = new Date();
+    const dayStr = now.toISOString().slice(0, 10);
+
+    if (!progressState.lastSessionDay) {
+      progressState.currentStreak = 1;
+    } else {
+      const last = progressState.lastSessionDay;
+      const diff = daysBetween(last, dayStr);
+      if (diff === 0) {
+        progressState.currentStreak = progressState.currentStreak || 1;
+      } else if (diff === 1) {
+        progressState.currentStreak = (progressState.currentStreak || 0) + 1;
+      } else {
+        progressState.currentStreak = 1;
+      }
+    }
+
+    progressState.lastSessionDay = dayStr;
+    if (!progressState.bestStreak || progressState.currentStreak > progressState.bestStreak) {
+      progressState.bestStreak = progressState.currentStreak;
+    }
+
+    progressState.totalSessions = (progressState.totalSessions || 0) + 1;
+    const minutes = meta && meta.minutes ? meta.minutes : 1;
+    progressState.totalMinutes = (progressState.totalMinutes || 0) + minutes;
+
+    if (type === "breath") {
+      progressState.totalBreathSessions = (progressState.totalBreathSessions || 0) + 1;
+    } else if (type === "focus") {
+      progressState.totalFocusSessions = (progressState.totalFocusSessions || 0) + 1;
+    }
+
+    if (!Array.isArray(progressState.sessions)) {
+      progressState.sessions = [];
+    }
+    progressState.sessions.unshift({
+      type: type,
+      pattern: meta && meta.pattern ? meta.pattern : null,
+      minutes: minutes,
+      date: now.toISOString()
+    });
+    if (progressState.sessions.length > 20) {
+      progressState.sessions.pop();
+    }
+
+    saveState();
+  }
+
+  function daysBetween(dayA, dayB) {
+    try {
+      const a = new Date(dayA + "T00:00:00Z");
+      const b = new Date(dayB + "T00:00:00Z");
+      const diffMs = b.getTime() - a.getTime();
+      return Math.round(diffMs / 86400000);
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  function updateDashboards() {
+    const total = progressState.totalSessions || 0;
+    const totalMin = progressState.totalMinutes || 0;
+    const streak = progressState.currentStreak || 0;
+    const bestStreak = progressState.bestStreak || 0;
+
+    const targetSessions = 30;
+    const pct = Math.min(100, Math.round((total / targetSessions) * 100));
+    if (overallProgressBar) overallProgressBar.style.width = pct + "%";
+    if (overallProgressLabel) overallProgressLabel.textContent = pct + "%";
+    if (overallSessionsLabel) overallSessionsLabel.textContent = total + " / " + targetSessions;
+
+    if (totalMinutesLabel) totalMinutesLabel.textContent = String(totalMin);
+
+    const streakPct = Math.min(100, Math.round((streak / 30) * 100));
+    if (streakProgressBar) streakProgressBar.style.width = streakPct + "%";
+    if (streakCurrentLabel) streakCurrentLabel.textContent = String(streak);
+    if (streakBestLabel) streakBestLabel.textContent = String(bestStreak);
+
+    if (lastSessionsList) {
+      lastSessionsList.innerHTML = "";
+      const sessions = Array.isArray(progressState.sessions) ? progressState.sessions.slice(0, 5) : [];
+      if (!sessions.length) {
+        const li = document.createElement("li");
+        li.textContent = "No sessions recorded yet. A short calm session will appear here.";
+        lastSessionsList.appendChild(li);
+      } else {
+        sessions.forEach(function (s) {
+          const li = document.createElement("li");
+          const when = formatSessionDate(s.date);
+          const typeLabel = s.type === "breath" ? "Breathing" : "Focus";
+          const patternLabel = s.pattern && BREATH_PATTERNS[s.pattern] ? " · " + BREATH_PATTERNS[s.pattern].label : "";
+          li.textContent =
+            when + " – " + typeLabel + patternLabel + " (" + (s.minutes || 1) + " min)";
+          lastSessionsList.appendChild(li);
+        });
+      }
+    }
+
+    if (activityTotalsList) {
+      activityTotalsList.innerHTML = "";
+      const breathTotal = progressState.totalBreathSessions || 0;
+      const focusTotal = progressState.totalFocusSessions || 0;
+      if (!total) {
+        const li = document.createElement("li");
+        li.textContent = "No activity yet.";
+        activityTotalsList.appendChild(li);
+      } else {
+        const li1 = document.createElement("li");
+        li1.textContent = "Breathing sessions: " + breathTotal;
+        const li2 = document.createElement("li");
+        li2.textContent = "Focus sessions: " + focusTotal;
+        const li3 = document.createElement("li");
+        li3.textContent = "Total sessions: " + total;
+        activityTotalsList.appendChild(li1);
+        activityTotalsList.appendChild(li2);
+        activityTotalsList.appendChild(li3);
+      }
+    }
+  }
+
+  function formatSessionDate(isoString) {
+    if (!isoString) return "Unknown date";
+    try {
+      const d = new Date(isoString);
+      return d.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric"
+      });
+    } catch (_) {
+      return "Unknown date";
+    }
+  }
+
+  function getBadgeDefinitions() {
+    return [
+      {
+        id: "breath-starter",
+        name: "Breathing Starter",
+        condition: function () {
+          return (progressState.totalBreathSessions || 0) >= 1;
+        },
+        description: "Complete at least one breathing session on this hub."
+      },
+      {
+        id: "breath-hero",
+        name: "Breathing Hero",
+        condition: function () {
+          return (progressState.totalBreathSessions || 0) >= 15;
+        },
+        description: "Reach 15 breathing sessions. Regular practice shapes powerful habits."
+      },
+      {
+        id: "focus-explorer",
+        name: "Focus Explorer",
+        condition: function () {
+          return (progressState.totalFocusSessions || 0) >= 5;
+        },
+        description: "Complete 5 Focus Quest sessions, exploring gentle attention training."
+      },
+      {
+        id: "streak-builder",
+        name: "Calm Streak Builder",
+        condition: function () {
+          return (progressState.currentStreak || 0) >= 3;
+        },
+        description: "Maintain a calm streak of 3 or more days in a row."
+      },
+      {
+        id: "thirty-day-challenge",
+        name: "30-Day Challenge Partner",
+        condition: function () {
+          return (
+            progressState.challengeJoined &&
+            (progressState.currentStreak || 0) >= 10
+          );
+        },
+        description: "Join the 30-day calm challenge and complete at least 10 calm days."
+      }
+    ];
+  }
+
+  function updateRewardsUI() {
+    const badges = getBadgeDefinitions();
+
+    if (badgesList) {
+      badgesList.innerHTML = "";
+      badges.forEach(function (b) {
+        const earned = !!b.condition();
+        const badgeEl = document.createElement("div");
+        badgeEl.className = "nb-badge";
+
+        const header = document.createElement("div");
+        header.className = "nb-badge-header";
+        const nameEl = document.createElement("div");
+        nameEl.className = "nb-badge-name";
+        nameEl.textContent = b.name;
+        const statusEl = document.createElement("div");
+        statusEl.className = earned ? "nb-badge-earned" : "nb-badge-locked";
+        statusEl.textContent = earned ? "Unlocked" : "Locked";
+        header.appendChild(nameEl);
+        header.appendChild(statusEl);
+
+        const desc = document.createElement("div");
+        desc.className = "nb-badge-desc";
+        desc.textContent = b.description;
+
+        badgeEl.appendChild(header);
+        badgeEl.appendChild(desc);
+        badgesList.appendChild(badgeEl);
+      });
+    }
+
+    if (couponList) {
+      couponList.innerHTML = "";
+      const coupons = Array.isArray(progressState.coupons)
+        ? progressState.coupons
+        : [];
+      if (!coupons.length) {
+        const p = document.createElement("p");
+        p.className = "nb-small-muted";
+        p.textContent =
+          "No coupons yet – calm sessions and goals can unlock them.";
+        couponList.appendChild(p);
+      } else {
+        coupons.forEach(function (c) {
+          const cardWrapper = document.createElement("div");
+          cardWrapper.style.marginBottom = "1.5rem";
+
+          const scratchCard = document.createElement("div");
+          scratchCard.className = "nb-scratch-card";
+          scratchCard.setAttribute("data-coupon-id", c.id);
+
+          const cardContent = document.createElement("div");
+          cardContent.className = "nb-scratch-card-content";
+
+          const prize = document.createElement("div");
+          prize.className = "nb-scratch-prize";
+          prize.textContent = c.category === "clothing" ? "🎁 Clothing Reward" : "🍕 Food Treat";
+
+          const code = document.createElement("div");
+          code.className = "nb-scratch-code";
+          code.textContent = c.code;
+
+          const label = document.createElement("div");
+          label.style.marginTop = "0.5rem";
+          label.style.fontSize = "0.9rem";
+          label.style.color = "var(--nb-text-soft)";
+          label.textContent = c.label;
+
+          const instruction = document.createElement("div");
+          instruction.className = "nb-scratch-instruction";
+          instruction.textContent = "👆 Scratch to reveal your reward code";
+
+          const scratchLayer = document.createElement("div");
+          scratchLayer.className = "nb-scratch-card-reveal";
+          scratchLayer.setAttribute("data-coupon-id", c.id);
+
+          cardContent.appendChild(prize);
+          cardContent.appendChild(code);
+          cardContent.appendChild(label);
+          cardContent.appendChild(instruction);
+
+          scratchCard.appendChild(cardContent);
+          scratchCard.appendChild(scratchLayer);
+
+          const meta = document.createElement("div");
+          meta.style.marginTop = "0.5rem";
+          meta.style.fontSize = "0.8rem";
+          meta.style.color = "var(--nb-text-soft)";
+          meta.style.display = "flex";
+          meta.style.justifyContent = "space-between";
+          meta.style.alignItems = "center";
+          meta.style.flexWrap = "wrap";
+          meta.style.gap = "0.5rem";
+
+          const when = document.createElement("span");
+          when.textContent = "Created: " + formatSessionDate(c.createdAt);
+
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "nb-btn nb-btn-soft";
+          btn.style.fontSize = "0.75rem";
+          btn.textContent = c.used ? "Already used" : "Mark as used";
+          btn.disabled = !!c.used;
+          btn.setAttribute("data-coupon-id", c.id);
+          btn.setAttribute("data-action", "mark-used");
+
+          meta.appendChild(when);
+          meta.appendChild(btn);
+
+          cardWrapper.appendChild(scratchCard);
+          cardWrapper.appendChild(meta);
+          couponList.appendChild(cardWrapper);
+
+          initScratchCard(scratchLayer, c.id);
+        });
+      }
+    }
+  }
+
+  function generateCoupon() {
+    const category = couponCategorySelect
+      ? couponCategorySelect.value
+      : "food";
+    const difficulty = couponDifficultySelect
+      ? couponDifficultySelect.value
+      : "small";
+    const brandRaw = couponBrandInput ? couponBrandInput.value.trim() : "";
+    const brandName = brandRaw || (category === "food" ? "favourite food place" : "favourite clothing shop");
+
+    const label =
+      (category === "food" ? "Food treat" : "Clothing / trainers") +
+      " · " +
+      (difficulty === "big" ? "Big challenge" : "Small task") +
+      " at " +
+      brandName;
+
+    const code = createLocalCouponCode(category, brandName, difficulty);
+    const nowIso = new Date().toISOString();
+    const coupon = {
+      id:
+        "cpn-" +
+        Date.now().toString(36) +
+        "-" +
+        Math.random().toString(36).slice(2, 6),
+      category: category,
+      difficulty: difficulty,
+      brand: brandName,
+      label: label,
+      code: code,
+      createdAt: nowIso,
+      used: false
+    };
+
+    if (!Array.isArray(progressState.coupons)) {
+      progressState.coupons = [];
+    }
+    progressState.coupons.unshift(coupon);
+    if (progressState.coupons.length > 25) {
+      progressState.coupons.pop();
+    }
+    saveState();
+    updateRewardsUI();
+  }
+
+  function createLocalCouponCode(category, brandName, difficulty) {
+    const base = (brandName || "")
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .toUpperCase()
+      .slice(0, 6);
+    const catPart = category === "clothing" ? "STYLE" : "TREAT";
+    const diffPart = difficulty === "big" ? "XL" : "S";
+    const rand = Math.random()
+      .toString(36)
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, "")
+      .slice(2, 6);
+    const prefix = base || (category === "clothing" ? "WEAR" : "FOOD");
+    return prefix + "-" + catPart + "-" + diffPart + "-" + rand;
+  }
+
+  function updateGroupUI() {
+    const total = clampInt(groupTotalInput ? groupTotalInput.value : "0", 0, 9999);
+    const completed = groupCompleted;
+    const percent = total > 0 ? Math.round((completed * 100) / total) : 0;
+    if (groupCompletedLabel) groupCompletedLabel.textContent = String(completed);
+    if (groupPercentLabel) {
+      groupPercentLabel.textContent = total
+        ? percent + "% of estimated group"
+        : "No estimate set yet.";
+    }
+  }
+
+  function toggleChallenge() {
+    if (!progressState.challengeJoined) {
+      progressState.challengeJoined = true;
+      progressState.challengeStartDate = new Date().toISOString().slice(0, 10);
+    } else {
+      const leave = window.confirm("Leave the 30-day calm challenge on this device?");
+      if (!leave) return;
+      progressState.challengeJoined = false;
+      progressState.challengeStartDate = null;
+    }
+    saveState();
+    updateChallengeUI();
+  }
+
+  function updateChallengeUI() {
+    if (!challengeStatusLabel || !challengeDaysLabel) return;
+    if (!progressState.challengeJoined) {
+      challengeStatusLabel.textContent = "Not joined yet";
+      challengeDaysLabel.textContent = String(progressState.currentStreak || 0);
+      joinChallengeBtn.textContent = "🌱 Join 30-Day Calm Challenge";
+    } else {
+      challengeStatusLabel.textContent = "Joined";
+      challengeDaysLabel.textContent = String(progressState.currentStreak || 0);
+      joinChallengeBtn.textContent = "✅ In challenge – tap to leave";
+    }
+  }
+
+  function openCertificate() {
+    const name = (certNameInput && certNameInput.value.trim()) || "NeuroBreath learner";
+    const techniqueKey = certTechniqueSelect ? certTechniqueSelect.value : "478";
+    const minutesStr = certMinutesSelect ? certMinutesSelect.value : "1";
+    const minutes = clampInt(minutesStr, 1, 5);
+    const mode = certModeSelect ? certModeSelect.value : "solo";
+    const pattern = BREATH_PATTERNS[techniqueKey] || BREATH_PATTERNS["478"];
+    const now = new Date();
+    const dateStr = now.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    });
+    const certId =
+      "NB-" +
+      now
+        .getFullYear()
+        .toString()
+        .slice(2) +
+      "-" +
+      Math.random()
+        .toString(36)
+        .substring(2, 8)
+        .toUpperCase();
+
+    const w = window.open("", "_blank");
+    if (!w) {
+      window.alert("Please allow pop-ups to print your certificate.");
+      return;
+    }
+
+    const modeLabel = mode === "group" ? "Group / class calm session" : "Individual calm practice";
+
+    const html =
+      "<!doctype html>" +
+      '<html lang="en-GB">' +
+      "<head>" +
+      '<meta charset="utf-8" />' +
+      "<title>NeuroBreath Calm Certificate</title>" +
+      "<style>" +
+      "body{margin:0;padding:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:#0b1120;color:#0f172a;}" +
+      ".wrap{max-width:900px;margin:2rem auto;padding:2rem 1.5rem;background:#f9fafb;border-radius:24px;box-shadow:0 25px 60px rgba(15,23,42,0.45);border:1px solid #e5e7eb;}" +
+      ".head{text-align:center;margin-bottom:1.5rem;}" +
+      ".brand{font-size:0.8rem;letter-spacing:0.18em;text-transform:uppercase;color:#6b7280;margin-bottom:0.25rem;}" +
+      ".title{font-size:1.6rem;font-weight:700;letter-spacing:-0.03em;margin-bottom:0.25rem;}" +
+      ".subtitle{font-size:0.95rem;color:#4b5563;}" +
+      ".body{margin-top:1.8rem;font-size:0.98rem;color:#374151;}" +
+      ".name{font-size:1.35rem;font-weight:650;margin:0.6rem 0 0.8rem;}" +
+      ".highlight{font-weight:600;color:#111827;}" +
+      ".meta{margin-top:1.4rem;display:flex;flex-wrap:wrap;gap:0.9rem;font-size:0.85rem;color:#4b5563;}" +
+      ".meta span{padding:0.25rem 0.7rem;border-radius:999px;border:1px solid #d1d5db;background:#f3f4f6;}" +
+      ".footer{margin-top:2.2rem;display:flex;justify-content:space-between;align-items:flex-end;font-size:0.8rem;color:#6b7280;}" +
+      ".sig-line{min-width:9rem;border-top:1px solid #d1d5db;padding-top:0.2rem;margin-top:1.3rem;}" +
+      ".id{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:0.8rem;color:#6b7280;}" +
+      "@media print{body{background:#fff;}.wrap{box-shadow:none;border-color:#d1d5db;margin:0;max-width:none;border-radius:0;}}" +
+      "</style>" +
+      "</head>" +
+      "<body>" +
+      '<div class="wrap">' +
+      '<div class="head">' +
+      '<div class="brand">NEUROBREATH · CALM PRACTICE CERTIFICATE</div>' +
+      '<div class="title">Certificate of Calm Practice</div>' +
+      '<div class="subtitle">Awarded for consistent engagement with regulated breathing and focus training.</div>' +
+      "</div>" +
+      '<div class="body">' +
+      "<p>This is to recognise</p>" +
+      '<div class="name">' +
+      escapeHtml(name) +
+      "</div>" +
+      "<p>for completing <span class=\"highlight\">" +
+      minutes +
+      "+ minute</span> sessions using the <span class=\"highlight\">" +
+      escapeHtml(pattern.label) +
+      "</span> technique as part of the NeuroBreath Games & Rewards Lab.</p>" +
+      "<p>The practice supports calmer breathing, steadier attention and more confident self-regulation in everyday life.</p>" +
+      '<div class="meta">' +
+      "<span>Date: " +
+      dateStr +
+      "</span>" +
+      "<span>Mode: " +
+      escapeHtml(modeLabel) +
+      "</span>" +
+      "<span>Technique family: Breathing & focus training</span>" +
+      "</div>" +
+      "</div>" +
+      '<div class="footer">' +
+      '<div><div class="sig-line">NeuroBreath Facilitator</div></div>' +
+      '<div class="id">Certificate ID: ' +
+      certId +
+      "</div>" +
+      "</div>" +
+      "</div>" +
+      "</body></html>";
+
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+  }
+
+  function escapeHtml(text) {
+    return String(text)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function initScratchCard(element, couponId) {
+    if (!element) return;
+    let isScratching = false;
+    let scratched = false;
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const rect = element.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    canvas.style.position = "absolute";
+    canvas.style.top = "0";
+    canvas.style.left = "0";
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    canvas.style.pointerEvents = "none";
+    element.appendChild(canvas);
+
+    function drawScratch(x, y, radius) {
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function getEventPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      if (e.touches && e.touches.length > 0) {
+        return {
+          x: e.touches[0].clientX - rect.left,
+          y: e.touches[0].clientY - rect.top
+        };
+      }
+      return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      };
+    }
+
+    function checkScratched() {
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const pixels = imageData.data;
+      let transparentPixels = 0;
+      for (let i = 3; i < pixels.length; i += 4) {
+        if (pixels[i] < 128) {
+          transparentPixels++;
+        }
+      }
+      const percentScratched = (transparentPixels / (pixels.length / 4)) * 100;
+      if (percentScratched > 30 && !scratched) {
+        scratched = true;
+        element.classList.add("scratched");
+        setTimeout(function () {
+          element.style.display = "none";
+        }, 300);
+      }
+    }
+
+    element.addEventListener("mousedown", function (e) {
+      isScratching = true;
+      const pos = getEventPos(e);
+      drawScratch(pos.x, pos.y, 30);
+      checkScratched();
+    });
+
+    element.addEventListener("mousemove", function (e) {
+      if (isScratching && !scratched) {
+        const pos = getEventPos(e);
+        drawScratch(pos.x, pos.y, 30);
+        checkScratched();
+      }
+    });
+
+    element.addEventListener("mouseup", function () {
+      isScratching = false;
+    });
+
+    element.addEventListener("mouseleave", function () {
+      isScratching = false;
+    });
+
+    element.addEventListener("touchstart", function (e) {
+      e.preventDefault();
+      isScratching = true;
+      const pos = getEventPos(e);
+      drawScratch(pos.x, pos.y, 30);
+      checkScratched();
+    });
+
+    element.addEventListener("touchmove", function (e) {
+      e.preventDefault();
+      if (isScratching && !scratched) {
+        const pos = getEventPos(e);
+        drawScratch(pos.x, pos.y, 30);
+        checkScratched();
+      }
+    });
+
+    element.addEventListener("touchend", function () {
+      isScratching = false;
+    });
+  }
+
+  function openCertificate() {
+    const name = (certNameInput && certNameInput.value.trim()) || "NeuroBreath learner";
+    const techniqueKey = certTechniqueSelect ? certTechniqueSelect.value : "478";
+    const minutesStr = certMinutesSelect ? certMinutesSelect.value : "1";
+    const minutes = clampInt(minutesStr, 1, 5);
+    const mode = certModeSelect ? certModeSelect.value : "solo";
+    const pattern = BREATH_PATTERNS[techniqueKey] || BREATH_PATTERNS["478"];
+    const now = new Date();
+    const dateStr = now.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    });
+    const certId =
+      "NB-CERT-" +
+      now
+        .getFullYear()
+        .toString()
+        .slice(2) +
+      "-" +
+      Math.random()
+        .toString(36)
+        .substring(2, 8)
+        .toUpperCase();
+
+    const w = window.open("", "_blank");
+    if (!w) {
+      window.alert("Please allow pop-ups to generate your certificate.");
+      return;
+    }
+
+    const modeLabel = mode === "group" ? "Group / class calm session" : "Individual calm practice";
+    const logoPath = "../assets/icons/neurobreath-logo-square-150.png";
+    const issuer = "NeuroBreath Academy";
+    const verifyUrl = "neurobreath.co.uk/verify";
+
+    // Project colors: cream #FDF8F3, sage #9DB4A0, sky #A8C5D8, lavender #B8A9C9, coral #D4A59A
+    const html =
+      "<!doctype html>" +
+      '<html lang="en-GB">' +
+      "<head>" +
+      '<meta charset="utf-8" />' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1" />' +
+      "<title>NeuroBreath Certificate - " + escapeHtml(name) + "</title>" +
+      '<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">' +
+      "<style>" +
+      ":root{" +
+      "--nb-paper:#FDF8F3;" +
+      "--nb-paper-2:#F6F2EA;" +
+      "--nb-ink:#3D3D3D;" +
+      "--nb-muted:rgba(61,61,61,0.7);" +
+      "--nb-gold-1:#E5C76B;" +
+      "--nb-gold-2:#D4A59A;" +
+      "--nb-gold-3:#B8A9C9;" +
+      "--nb-gold-glow:rgba(229,199,107,0.25);" +
+      "--nb-accent:#A8C5D8;" +
+      "--nb-accent-2:#9DB4A0;" +
+      "--nb-radius-outer:26px;" +
+      "--nb-radius-inner:18px;" +
+      "--nb-shadow:0 18px 55px rgba(107,139,110,0.25);" +
+      "--nb-shadow-soft:0 10px 28px rgba(107,139,110,0.15);" +
+      "}" +
+      "*{box-sizing:border-box;}" +
+      "html,body{height:100%;}" +
+      "body{" +
+      "margin:0;" +
+      "color:var(--nb-ink);" +
+      "background:" +
+      "radial-gradient(1200px 600px at 15% 8%, rgba(168,197,216,0.08), transparent 55%)," +
+      "radial-gradient(1100px 650px at 85% 15%, rgba(184,169,201,0.08), transparent 55%)," +
+      "radial-gradient(900px 550px at 50% 110%, rgba(229,199,107,0.08), transparent 60%)," +
+      "linear-gradient(180deg, var(--nb-paper), var(--nb-paper-2));" +
+      "font-family:Lexend,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;" +
+      "}" +
+      ".c-wrap{" +
+      "min-height:100%;" +
+      "display:grid;" +
+      "place-items:center;" +
+      "padding:clamp(14px, 3vw, 34px);" +
+      "}" +
+      ".c-sheet{" +
+      "width:min(980px, 100%);" +
+      "aspect-ratio:1 / 1.414;" +
+      "max-height:100svh;" +
+      "border-radius:var(--nb-radius-outer);" +
+      "box-shadow:var(--nb-shadow);" +
+      "position:relative;" +
+      "overflow:hidden;" +
+      "padding:18px;" +
+      "background:" +
+      "linear-gradient(135deg, rgba(229,199,107,0.15), rgba(255,255,255,0) 40%)," +
+      "linear-gradient(315deg, rgba(184,169,201,0.12), rgba(255,255,255,0) 42%)," +
+      "radial-gradient(900px 500px at 50% 0%, rgba(168,197,216,0.1), transparent 60%)," +
+      "linear-gradient(180deg, rgba(229,199,107,0.1), rgba(157,180,160,0.04));" +
+      "}" +
+      ".c-sheet::before{" +
+      "content:'';" +
+      "position:absolute;" +
+      "inset:10px;" +
+      "border-radius:calc(var(--nb-radius-outer) - 8px);" +
+      "border:1px solid rgba(229,199,107,0.3);" +
+      "box-shadow:inset 0 0 0 1px rgba(0,0,0,0.08);" +
+      "pointer-events:none;" +
+      "}" +
+      ".c-inner{" +
+      "height:100%;" +
+      "border-radius:var(--nb-radius-inner);" +
+      "position:relative;" +
+      "background:" +
+      "radial-gradient(900px 600px at 50% -10%, rgba(168,197,216,0.06), transparent 58%)," +
+      "radial-gradient(700px 500px at 85% 18%, rgba(184,169,201,0.05), transparent 55%)," +
+      "radial-gradient(900px 600px at 20% 85%, rgba(229,199,107,0.05), transparent 60%)," +
+      "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));" +
+      "border:1px solid rgba(157,180,160,0.2);" +
+      "box-shadow:var(--nb-shadow-soft);" +
+      "padding:clamp(20px, 3.6vw, 42px);" +
+      "display:grid;" +
+      "grid-template-rows:auto 1fr auto;" +
+      "gap:clamp(14px, 2vw, 22px);" +
+      "}" +
+      ".c-top{" +
+      "display:grid;" +
+      "grid-template-columns:1fr auto 1fr;" +
+      "align-items:center;" +
+      "gap:18px;" +
+      "}" +
+      ".c-logo{" +
+      "display:inline-flex;" +
+      "align-items:center;" +
+      "gap:12px;" +
+      "}" +
+      ".c-logo img{" +
+      "height:52px;" +
+      "width:52px;" +
+      "object-fit:contain;" +
+      "filter:drop-shadow(0 8px 18px rgba(107,139,110,0.25));" +
+      "}" +
+      ".c-logo .brand{line-height:1.05;}" +
+      ".c-logo .brand .name{" +
+      "font-weight:800;" +
+      "letter-spacing:.3px;" +
+      "font-size:15px;" +
+      "color:var(--nb-ink);" +
+      "}" +
+      ".c-logo .brand .tag{" +
+      "font-size:12.5px;" +
+      "color:var(--nb-muted);" +
+      "}" +
+      ".c-badge{" +
+      "justify-self:end;" +
+      "width:84px;" +
+      "height:84px;" +
+      "border-radius:999px;" +
+      "position:relative;" +
+      "display:grid;" +
+      "place-items:center;" +
+      "background:" +
+      "radial-gradient(circle at 35% 30%, rgba(255,255,255,0.55), rgba(255,255,255,0) 42%)," +
+      "radial-gradient(circle at 50% 50%, var(--nb-gold-1), var(--nb-gold-2) 55%, var(--nb-gold-3));" +
+      "box-shadow:" +
+      "0 12px 30px rgba(107,139,110,0.25)," +
+      "0 0 0 2px rgba(229,199,107,0.45)," +
+      "0 0 24px var(--nb-gold-glow);" +
+      "}" +
+      ".c-badge::before{" +
+      "content:'';" +
+      "position:absolute;" +
+      "inset:7px;" +
+      "border-radius:999px;" +
+      "border:2px solid rgba(255,255,255,0.28);" +
+      "box-shadow:inset 0 0 0 1px rgba(0,0,0,0.12);" +
+      "}" +
+      ".c-badge::after{" +
+      "content:'';" +
+      "position:absolute;" +
+      "left:50%;" +
+      "top:calc(100% - 10px);" +
+      "transform:translateX(-50%);" +
+      "width:62px;" +
+      "height:34px;" +
+      "background:linear-gradient(90deg, rgba(229,199,107,0.95), rgba(212,165,154,0.95));" +
+      "clip-path:polygon(0 0, 100% 0, 86% 100%, 50% 70%, 14% 100%);" +
+      "filter:drop-shadow(0 10px 18px rgba(107,139,110,0.25));" +
+      "border-radius:0 0 10px 10px;" +
+      "}" +
+      ".c-badge span{" +
+      "text-align:center;" +
+      "font-weight:900;" +
+      "letter-spacing:.9px;" +
+      "font-size:10px;" +
+      "color:rgba(33,22,5,0.95);" +
+      "text-transform:uppercase;" +
+      "line-height:1.05;" +
+      "text-shadow:0 1px 0 rgba(255,255,255,0.35);" +
+      "}" +
+      ".c-title{text-align:center;}" +
+      ".c-title .kicker{" +
+      "font-size:12px;" +
+      "color:var(--nb-muted);" +
+      "letter-spacing:.22em;" +
+      "text-transform:uppercase;" +
+      "}" +
+      ".c-title h1{" +
+      "margin:6px 0 0;" +
+      "font-size:clamp(28px, 3.2vw, 40px);" +
+      "letter-spacing:.04em;" +
+      "color:var(--nb-ink);" +
+      "}" +
+      ".c-title .sub{" +
+      "margin-top:6px;" +
+      "font-size:13.5px;" +
+      "color:var(--nb-muted);" +
+      "}" +
+      ".c-main{" +
+      "display:grid;" +
+      "gap:clamp(14px, 2vw, 22px);" +
+      "align-content:center;" +
+      "text-align:center;" +
+      "padding:6px 0 0;" +
+      "}" +
+      ".c-recipient{" +
+      "font-size:clamp(26px, 4.2vw, 46px);" +
+      "font-weight:900;" +
+      "letter-spacing:.02em;" +
+      "margin:0;" +
+      "color:var(--nb-ink);" +
+      "}" +
+      ".c-recipient .underline{" +
+      "display:inline-block;" +
+      "padding:0 10px 6px;" +
+      "background:linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(229,199,107,0.18) 60%);" +
+      "border-radius:12px;" +
+      "}" +
+      ".c-body{" +
+      "max-width:72ch;" +
+      "margin:0 auto;" +
+      "color:var(--nb-muted);" +
+      "font-size:15px;" +
+      "line-height:1.6;" +
+      "}" +
+      ".c-course{" +
+      "margin:0 auto;" +
+      "display:inline-grid;" +
+      "gap:8px;" +
+      "padding:14px 16px;" +
+      "border-radius:16px;" +
+      "border:1px solid rgba(229,199,107,0.25);" +
+      "background:rgba(157,180,160,0.08);" +
+      "box-shadow:inset 0 0 0 1px rgba(255,255,255,0.4);" +
+      "}" +
+      ".c-course .label{" +
+      "font-size:11px;" +
+      "color:var(--nb-muted);" +
+      "letter-spacing:.18em;" +
+      "text-transform:uppercase;" +
+      "}" +
+      ".c-course .value{" +
+      "font-size:18px;" +
+      "font-weight:800;" +
+      "letter-spacing:.02em;" +
+      "color:var(--nb-ink);" +
+      "}" +
+      ".c-course .meta{" +
+      "display:flex;" +
+      "flex-wrap:wrap;" +
+      "gap:10px 14px;" +
+      "justify-content:center;" +
+      "color:var(--nb-muted);" +
+      "font-size:12.5px;" +
+      "}" +
+      ".pill{" +
+      "padding:6px 10px;" +
+      "border-radius:999px;" +
+      "border:1px solid rgba(157,180,160,0.3);" +
+      "background:rgba(255,255,255,0.6);" +
+      "}" +
+      ".c-footer{" +
+      "display:grid;" +
+      "grid-template-columns:1fr 1fr 1fr;" +
+      "gap:14px;" +
+      "align-items:end;" +
+      "padding-top:8px;" +
+      "border-top:1px solid rgba(157,180,160,0.2);" +
+      "}" +
+      ".c-field{text-align:left;}" +
+      ".c-field.center{text-align:center;}" +
+      ".c-field.right{text-align:right;}" +
+      ".c-field .cap{" +
+      "font-size:11px;" +
+      "color:var(--nb-muted);" +
+      "letter-spacing:.18em;" +
+      "text-transform:uppercase;" +
+      "}" +
+      ".c-field .val{" +
+      "margin-top:6px;" +
+      "font-weight:800;" +
+      "font-size:13.5px;" +
+      "color:var(--nb-ink);" +
+      "}" +
+      ".sig{" +
+      "margin-top:10px;" +
+      "height:34px;" +
+      "border-bottom:1px solid rgba(229,199,107,0.35);" +
+      "opacity:.9;" +
+      "}" +
+      ".c-actions{" +
+      "text-align:center;" +
+      "margin-top:20px;" +
+      "padding-top:20px;" +
+      "border-top:1px solid rgba(157,180,160,0.2);" +
+      "}" +
+      ".c-btn{" +
+      "background:linear-gradient(135deg, var(--nb-accent-2), var(--nb-accent));" +
+      "color:#FFFFFF;" +
+      "border:none;" +
+      "padding:12px 24px;" +
+      "border-radius:30px;" +
+      "font-size:0.9rem;" +
+      "font-weight:700;" +
+      "cursor:pointer;" +
+      "margin:0 8px;" +
+      "font-family:'Atkinson Hyperlegible',sans-serif;" +
+      "text-transform:uppercase;" +
+      "letter-spacing:0.1em;" +
+      "box-shadow:0 4px 12px rgba(107,139,110,0.25);" +
+      "transition:all 0.3s ease;" +
+      "}" +
+      ".c-btn:hover{" +
+      "transform:translateY(-2px);" +
+      "box-shadow:0 6px 20px rgba(107,139,110,0.35);" +
+      "}" +
+      "@media print{" +
+      "body{background:#fff;}" +
+      ".c-wrap{padding:0;}" +
+      ".c-sheet{" +
+      "width:210mm;" +
+      "height:297mm;" +
+      "aspect-ratio:auto;" +
+      "box-shadow:none;" +
+      "border-radius:0;" +
+      "}" +
+      ".c-sheet::before{display:none;}" +
+      ".c-inner{" +
+      "border-radius:0;" +
+      "border:none;" +
+      "box-shadow:none;" +
+      "}" +
+      ".c-actions{display:none;}" +
+      "@page{size:A4;margin:0;}" +
+      "}" +
+      "</style>" +
+      "</head>" +
+      "<body>" +
+      '<main class="c-wrap">' +
+      '<section class="c-sheet" role="document" aria-label="Certificate">' +
+      '<div class="c-inner">' +
+      '<header class="c-top">' +
+      '<div class="c-logo" aria-label="Brand">' +
+      '<img src="' + logoPath + '" alt="NeuroBreath logo" />' +
+      '<div class="brand">' +
+      '<div class="name">NeuroBreath</div>' +
+      '<div class="tag">Evidence‑informed calm & focus practice</div>' +
+      "</div>" +
+      "</div>" +
+      '<div class="c-title">' +
+      '<div class="kicker">Certificate of Completion</div>' +
+      '<h1>Achievement Award</h1>' +
+      '<div class="sub">This certificate verifies successful completion of a NeuroBreath practice.</div>' +
+      "</div>" +
+      '<div class="c-badge" aria-label="Gold badge">' +
+      '<span>Gold<br/>Certified</span>' +
+      "</div>" +
+      "</header>" +
+      '<section class="c-main" aria-label="Certificate details">' +
+      '<p class="c-body">This is to certify that</p>' +
+      '<h2 class="c-recipient">' +
+      '<span class="underline">' + escapeHtml(name) + "</span>" +
+      "</h2>" +
+      '<p class="c-body">has successfully completed the following programme and met the stated practice requirements.</p>' +
+      '<div class="c-course" aria-label="Programme">' +
+      '<div class="label">Programme</div>' +
+      '<div class="value">NeuroBreath Daily Practice</div>' +
+      '<div class="meta">' +
+      '<span class="pill">Technique: <strong>' + escapeHtml(pattern.label) + "</strong></span>" +
+      '<span class="pill">Duration: <strong>' + minutes + " minute" + (minutes > 1 ? "s" : "") + "</strong></span>" +
+      '<span class="pill">Mode: <strong>' + escapeHtml(modeLabel) + "</strong></span>" +
+      "</div>" +
+      "</div>" +
+      '<p class="c-body">Unique certificate ID: <strong>' + certId + "</strong></p>" +
+      "</section>" +
+      '<footer class="c-footer" aria-label="Certificate footer">' +
+      '<div class="c-field">' +
+      '<div class="cap">Issued on</div>' +
+      '<div class="val">' + dateStr + "</div>" +
+      "</div>" +
+      '<div class="c-field center">' +
+      '<div class="cap">Authorised by</div>' +
+      '<div class="val">' + escapeHtml(issuer) + "</div>" +
+      '<div class="sig" aria-hidden="true"></div>' +
+      "</div>" +
+      '<div class="c-field right">' +
+      '<div class="cap">Verification</div>' +
+      '<div class="val">' + escapeHtml(verifyUrl) + "</div>" +
+      "</div>" +
+      "</footer>" +
+      '<div class="c-actions">' +
+      '<button class="c-btn" onclick="window.print()">🖨 Print Certificate</button>' +
+      '<button class="c-btn" onclick="downloadCertificate()">💾 Download PDF</button>' +
+      "</div>" +
+      "</div>" +
+      "</section>" +
+      "</main>" +
+      '<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>' +
+      '<script>' +
+      'function downloadCertificate(){' +
+      'const element=document.querySelector(".c-sheet");' +
+      'const opt={' +
+      'margin:[0,0,0,0],' +
+      'filename:"neurobreath-certificate-' + certId + '.pdf",' +
+      'image:{type:"jpeg",quality:0.98},' +
+      'html2canvas:{scale:2,useCORS:true,backgroundColor:"#FDF8F3"},' +
+      'jsPDF:{unit:"mm",format:"a4",orientation:"portrait"}' +
+      '};' +
+      'html2pdf().set(opt).from(element).save();' +
+      '}' +
+      "</script>" +
+      "</body></html>";
+
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+  }
+})();
+
