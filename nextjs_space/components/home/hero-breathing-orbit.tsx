@@ -16,10 +16,13 @@ interface BreathingStats {
   awards: string
 }
 
+type Phase = 'Inhale' | 'Hold' | 'Exhale' | 'Ready'
+
 export function HeroBreathingOrbit() {
   const [isRunning, setIsRunning] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
-  const [phase, setPhase] = useState<string>('Ready')
+  const [phase, setPhase] = useState<Phase>('Ready')
+  const [orbPosition, setOrbPosition] = useState({ x: 0, y: 50 }) // Start on left middle
   const [stats, setStats] = useState<BreathingStats>({
     todayMinutes: 0,
     sessions: 0,
@@ -31,7 +34,6 @@ export function HeroBreathingOrbit() {
     awards: 'Log a quick session to unlock your first badge.'
   })
 
-  const orbRef = useRef<HTMLDivElement>(null)
   const animationRef = useRef<number>()
   const startTimeRef = useRef<number>(0)
   const pausedTimeRef = useRef<number>(0)
@@ -78,6 +80,7 @@ export function HeroBreathingOrbit() {
     setIsRunning(false)
     setIsPaused(false)
     setPhase('Ready')
+    setOrbPosition({ x: 0, y: 50 })
     pausedTimeRef.current = 0
     
     if (animationRef.current) {
@@ -101,10 +104,10 @@ export function HeroBreathingOrbit() {
 
   const animateBreathing = () => {
     const phases = [
-      { name: 'Inhale', duration: 4000, transform: 'scale(1.3)' },
-      { name: 'Hold', duration: 2000, transform: 'scale(1.3)' },
-      { name: 'Exhale', duration: 6000, transform: 'scale(0.8)' },
-      { name: 'Hold', duration: 2000, transform: 'scale(0.8)' }
+      { name: 'Inhale' as Phase, duration: 4000 },
+      { name: 'Hold' as Phase, duration: 2000 },
+      { name: 'Exhale' as Phase, duration: 6000 },
+      { name: 'Hold' as Phase, duration: 2000 }
     ]
 
     const totalCycle = phases.reduce((sum, p) => sum + p.duration, 0)
@@ -113,10 +116,13 @@ export function HeroBreathingOrbit() {
 
     let currentPhase = phases[0]
     let phaseStart = 0
+    let progress = 0
 
-    for (const p of phases) {
+    for (let i = 0; i < phases.length; i++) {
+      const p = phases[i]
       if (cyclePosition >= phaseStart && cyclePosition < phaseStart + p.duration) {
         currentPhase = p
+        progress = (cyclePosition - phaseStart) / p.duration
         break
       }
       phaseStart += p.duration
@@ -124,11 +130,49 @@ export function HeroBreathingOrbit() {
 
     setPhase(currentPhase.name)
 
-    if (orbRef.current) {
-      orbRef.current.style.transform = currentPhase.transform
-    }
+    // Calculate orb position on the pill-shaped track
+    const trackProgress = (cyclePosition / totalCycle) * 100
+    const position = calculateOrbPosition(trackProgress)
+    setOrbPosition(position)
 
     animationRef.current = requestAnimationFrame(animateBreathing)
+  }
+
+  // Calculate position on pill-shaped track (rounded rectangle)
+  const calculateOrbPosition = (progress: number): { x: number; y: number } => {
+    // Track is a pill shape (rounded rectangle): left semicircle -> top line -> right semicircle -> bottom line
+    const normalized = progress / 100
+
+    // Divide the track into 4 segments
+    if (normalized < 0.25) {
+      // Left semicircle (bottom to top)
+      const angle = (normalized * 4) * Math.PI
+      return {
+        x: 20 - Math.cos(angle) * 20,
+        y: 50 + Math.sin(angle) * 30
+      }
+    } else if (normalized < 0.5) {
+      // Top line (left to right)
+      const lineProgress = (normalized - 0.25) * 4
+      return {
+        x: 20 + lineProgress * 60,
+        y: 20
+      }
+    } else if (normalized < 0.75) {
+      // Right semicircle (top to bottom)
+      const angle = ((normalized - 0.5) * 4) * Math.PI
+      return {
+        x: 80 + Math.cos(angle) * 20,
+        y: 50 - Math.sin(angle) * 30
+      }
+    } else {
+      // Bottom line (right to left)
+      const lineProgress = (normalized - 0.75) * 4
+      return {
+        x: 80 - lineProgress * 60,
+        y: 80
+      }
+    }
   }
 
   const resetStats = () => {
@@ -156,132 +200,138 @@ export function HeroBreathingOrbit() {
   }, [])
 
   return (
-    <aside className="nb-hero-orbit" data-nb-activity-card="1" aria-label="Breathing rhythm visual with live stats">
-      <div className="nb-orbit-header">
-        <h3 className="nb-orbit-title">Inhale Hold Exhale</h3>
-        <div className="nb-orbit-stat" aria-live="polite">
-          <span className="nb-orbit-stat-label">Today's focused minutes</span>
-          <strong className="nb-orbit-stat-value">
-            <b>{stats.todayMinutes}</b> min
-          </strong>
-        </div>
+    <div className="orbit-container">
+      {/* Title */}
+      <h3 className="orbit-title">Inhale Hold Exhale</h3>
+
+      {/* Today's Focused Minutes Card */}
+      <div className="orbit-stats-card">
+        <div className="orbit-stats-label">TODAY'S FOCUSED MINUTES</div>
+        <div className="orbit-stats-value">{stats.todayMinutes} min</div>
       </div>
 
-      <div className="nb-orbit-visual" id="heroOrbitVisual" aria-hidden="true">
-        <div className="nb-orbit-ring"></div>
-        <div 
-          ref={orbRef}
-          className="nb-orbit-orb" 
-          style={{ transition: 'transform 1s ease-in-out' }}
+      {/* Main Orbit Visualization */}
+      <div className="orbit-visual-wrapper">
+        {/* Dashed outer circle */}
+        <svg className="orbit-outer-circle" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <ellipse
+            cx="50"
+            cy="50"
+            rx="48"
+            ry="40"
+            fill="none"
+            stroke="#cbd5e1"
+            strokeWidth="0.5"
+            strokeDasharray="2 2"
+          />
+        </svg>
+
+        {/* Inner track (pill shape) */}
+        <div className="orbit-track"></div>
+
+        {/* Orb */}
+        <div
+          className="orbit-orb"
+          style={{
+            left: `${orbPosition.x}%`,
+            top: `${orbPosition.y}%`,
+          }}
         />
-        <div className="nb-orbit-phase-label" aria-live="polite">
-          {phase}
+
+        {/* Phase label */}
+        <div className="orbit-phase-label">{phase}</div>
+      </div>
+
+      {/* Phase indicators */}
+      <div className="orbit-phase-indicators">
+        <div className={cn("orbit-phase-pill", phase === 'Inhale' && 'active')}>
+          <span className="orbit-phase-dot orbit-phase-dot-inhale" />
+          <span>INHALE</span>
+        </div>
+        <div className={cn("orbit-phase-pill", phase === 'Hold' && 'active')}>
+          <span className="orbit-phase-dot orbit-phase-dot-hold" />
+          <span>HOLD</span>
+        </div>
+        <div className={cn("orbit-phase-pill", phase === 'Exhale' && 'active')}>
+          <span className="orbit-phase-dot orbit-phase-dot-exhale" />
+          <span>EXHALE</span>
         </div>
       </div>
 
-      <div className="nb-orbit-label-row" aria-hidden="true">
-        <div className="nb-orbit-label nb-orbit-label--inhale">
-          <span></span> Inhale
-        </div>
-        <div className="nb-orbit-label nb-orbit-label--hold">
-          <span></span> Hold
-        </div>
-        <div className="nb-orbit-label nb-orbit-label--exhale">
-          <span></span> Exhale
-        </div>
-      </div>
-
-      <div className="nb-orbit-controls">
+      {/* Control Buttons */}
+      <div className="orbit-controls">
         {!isRunning && (
-          <Button
-            onClick={startBreathing}
-            className="btn btn-primary nb-orbit-start-btn"
-            aria-label="Start breathing session"
-          >
+          <button onClick={startBreathing} className="orbit-btn orbit-btn-start">
             🎧 Start
-          </Button>
+          </button>
         )}
         {isRunning && !isPaused && (
-          <Button
-            onClick={pauseBreathing}
-            className="btn nb-orbit-pause-btn"
-            aria-label="Pause breathing session"
-          >
+          <button onClick={pauseBreathing} className="orbit-btn orbit-btn-pause">
             ⏸ Pause
-          </Button>
+          </button>
         )}
         {isRunning && isPaused && (
-          <Button
-            onClick={resumeBreathing}
-            className="btn nb-orbit-resume-btn"
-            aria-label="Resume breathing session"
-          >
+          <button onClick={resumeBreathing} className="orbit-btn orbit-btn-resume">
             ▶ Resume
-          </Button>
+          </button>
         )}
         {isRunning && (
-          <Button
-            onClick={stopBreathing}
-            className="btn nb-orbit-stop-btn"
-            aria-label="Stop breathing session"
-          >
+          <button onClick={stopBreathing} className="orbit-btn orbit-btn-stop">
             ⏹ Stop
-          </Button>
+          </button>
         )}
       </div>
 
-      <p className="nb-orbit-guidance">
+      {/* Breathing Guidance */}
+      <div className="orbit-guidance-box">
         Breathing guidance: inhale for four counts, hold for two counts, and exhale for six counts. Today's focused minutes display above.
-      </p>
+      </div>
 
-      <div className="nb-orbit-side">
-        <div className="nb-orbit-side-title">
-          <span>Measured relief tracker</span>
-          <span className="nb-orbit-side-pill">
-            <span aria-hidden="true">●</span>
+      {/* Measured Relief Tracker */}
+      <div className="orbit-tracker-card">
+        <div className="orbit-tracker-header">
+          <span className="orbit-tracker-title">Measured relief tracker</span>
+          <span className="orbit-tracker-pill">
+            <span className="orbit-tracker-dot">●</span>
             <span>{stats.streak}</span>
           </span>
         </div>
 
-        <div className="nb-orbit-side-body">
-          <p>{stats.message}</p>
+        <p className="orbit-tracker-message">{stats.message}</p>
 
-          <div className="nb-orbit-score">
-            <span>Score awards</span>
-            <p>{stats.awards}</p>
+        <div className="orbit-tracker-awards">
+          <div className="orbit-tracker-awards-title">Score awards</div>
+          <p>{stats.awards}</p>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="orbit-stats-grid">
+          <div className="orbit-stat-pill">
+            <div className="orbit-stat-label">Sessions</div>
+            <div className="orbit-stat-number">{stats.sessions}</div>
           </div>
-
-          <div className="nb-orbit-mini-metrics">
-            <div className="nb-orbit-mini-metric">
-              <span>Sessions</span>
-              <b>{stats.sessions}</b>
-            </div>
-            <div className="nb-orbit-mini-metric">
-              <span>Lifetime min</span>
-              <b>{stats.lifetimeMinutes}</b>
-            </div>
-            <div className="nb-orbit-mini-metric">
-              <span>Lifetime hrs</span>
-              <b>{stats.lifetimeHours}</b>
-            </div>
-            <div className="nb-orbit-mini-metric">
-              <span>Avg session</span>
-              <b>{stats.averageSession} min</b>
-            </div>
+          <div className="orbit-stat-pill">
+            <div className="orbit-stat-label">Lifetime min</div>
+            <div className="orbit-stat-number">{stats.lifetimeMinutes}</div>
           </div>
-
-          <div className="nb-hero-reset">
-            <button 
-              type="button" 
-              onClick={resetStats}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              ↻ Reset these stats
-            </button>
-            <small>Only clears this page's record on this device.</small>
+          <div className="orbit-stat-pill">
+            <div className="orbit-stat-label">Lifetime hrs</div>
+            <div className="orbit-stat-number">{stats.lifetimeHours}</div>
+          </div>
+          <div className="orbit-stat-pill">
+            <div className="orbit-stat-label">Avg session</div>
+            <div className="orbit-stat-number">{stats.averageSession} min</div>
           </div>
         </div>
+
+        {/* Reset Button */}
+        <div className="orbit-reset-section">
+          <button onClick={resetStats} className="orbit-reset-btn">
+            ↻ Reset these stats
+          </button>
+          <p className="orbit-reset-note">Only clears this page's record on this device.</p>
+        </div>
       </div>
-    </aside>
+    </div>
   )
 }
