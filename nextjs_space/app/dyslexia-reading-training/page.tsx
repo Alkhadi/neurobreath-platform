@@ -24,6 +24,13 @@ import { ReadingLevelProvider } from '@/contexts/ReadingLevelContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { GraduationCap } from 'lucide-react';
+// New Evidence-Based Components
+import { RhythmTraining } from '@/components/RhythmTraining';
+import { RapidNamingTest } from '@/components/RapidNamingTest';
+import { MorphologyMaster } from '@/components/MorphologyMaster';
+import { LetterReversalTraining } from '@/components/LetterReversalTraining';
+import { BlendingSegmentingLab } from '@/components/BlendingSegmentingLab';
+import { DownloadableResources } from '@/components/DownloadableResources';
 
 type TrainingApproach = 'focused' | 'direct' | 'fluency';
 
@@ -242,10 +249,25 @@ export default function DyslexiaReadingTrainingPage() {
               <div data-tutorial="vowels">
                 <VowelUniverse />
               </div>
+
+              {/* Blending & Segmenting Lab - NEW */}
+              <div data-tutorial="blending-segmenting">
+                <BlendingSegmentingLab />
+              </div>
+
+              {/* Rhythm Training Game - NEW */}
+              <div data-tutorial="rhythm-training">
+                <RhythmTraining />
+              </div>
+
+              {/* Letter Reversal Training - NEW */}
+              <div data-tutorial="letter-reversal">
+                <LetterReversalTraining />
+              </div>
             </section>
 
-            {/* Rapid Naming Game */}
-            <RapidNaming />
+            {/* Rapid Automatic Naming Test - Enhanced */}
+            <RapidNamingTest />
 
             {/* Decoding & Word Construction Section */}
             <section className="space-y-4">
@@ -280,6 +302,11 @@ export default function DyslexiaReadingTrainingPage() {
               {/* Syllable Splitter */}
               <div data-tutorial="syllables">
                 <SyllableSplitter />
+              </div>
+
+              {/* Morphology Master - NEW */}
+              <div data-tutorial="morphology">
+                <MorphologyMaster />
               </div>
             </section>
 
@@ -355,6 +382,11 @@ export default function DyslexiaReadingTrainingPage() {
             {/* NeuroBreath Reward Cards */}
             <div data-tutorial="rewards">
               <RewardCards />
+            </div>
+
+            {/* Downloadable Resources Hub - NEW */}
+            <div data-tutorial="downloadable-resources">
+              <DownloadableResources />
             </div>
 
             {/* Parent & Educator Guidance Section */}
