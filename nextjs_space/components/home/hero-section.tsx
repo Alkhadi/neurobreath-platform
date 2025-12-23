@@ -84,14 +84,14 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Right Column: Breathing Orbit (50% shorter) */}
+          {/* Right Column: Breathing Orbit */}
           <div className="nb-hero-col-right">
             <HeroBreathingOrbit />
           </div>
         </div>
 
-        {/* Quick Win Planner */}
-        <div className="nb-hero-bottom">
+        {/* Quick Win Planner - Below main grid */}
+        <div className="nb-hero-quickwin-section">
           <QuickWinPlanner />
         </div>
       </div>
