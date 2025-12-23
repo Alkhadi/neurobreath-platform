@@ -1,60 +1,133 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
-export default function SiteFooter() {
-  const currentYear = new Date().getFullYear()
+export function SiteFooter() {
+  const [currentYear, setCurrentYear] = useState(2025)
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear())
+  }, [])
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   return (
-    <footer className="bg-gray-50 border-t border-gray-200 mt-16">
-      <div className="container max-w-6xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          {/* Brand */}
-          <div>
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="relative w-10 h-10">
-                <Image src="/favicon.svg" alt="NeuroBreath Logo" fill className="object-contain" />
-              </div>
-              <span className="text-xl font-semibold text-gray-900">NeuroBreath</span>
+    <footer className="site-footer" id="siteFooter">
+      {/* Footer navigation - Full Width */}
+      <div className="ft-nav-wrapper">
+        <div className="ft-nav-inner">
+          {/* Brand + Support in Navigation Area */}
+          <div className="ft-nav-brand">
+            <Link className="ft-logo" href="/" aria-label="NeuroBreath home">
+              <Image 
+                src="/icons/neurobreath-logo-square-64.png" 
+                alt="NeuroBreath" 
+                width={64}
+                height={64}
+              />
             </Link>
-            <p className="text-sm text-gray-600">Clinically referenced, neuro-inclusive breathing techniques for calm, focus, and emotional regulation.</p>
+            <Link href="/support-us" className="btn">
+              ☕ Support Us
+            </Link>
           </div>
-
-          {/* Quick Links */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Quick Links</h3>
-            <ul className="space-y-2 text-sm">
-              <li><Link href="/" className="text-gray-600 hover:text-gray-900">Home</Link></li>
-              <li><Link href="/progress" className="text-gray-600 hover:text-gray-900">Progress Dashboard</Link></li>
-              <li><Link href="/rewards" className="text-gray-600 hover:text-gray-900">Rewards & Badges</Link></li>
-              <li><Link href="/about" className="text-gray-600 hover:text-gray-900">About</Link></li>
-            </ul>
-          </div>
-
-          {/* Techniques */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Techniques</h3>
-            <ul className="space-y-2 text-sm">
-              <li><Link href="/techniques/box-breathing" className="text-gray-600 hover:text-gray-900">Box Breathing</Link></li>
-              <li><Link href="/techniques/4-7-8" className="text-gray-600 hover:text-gray-900">4-7-8 Breathing</Link></li>
-              <li><Link href="/techniques/coherent" className="text-gray-600 hover:text-gray-900">Coherent 5-5</Link></li>
-              <li><Link href="/techniques/sos" className="text-gray-600 hover:text-gray-900">60-second SOS</Link></li>
-            </ul>
-          </div>
+          <nav className="ft-nav" aria-label="Footer">
+            <details className="ft-group">
+              <summary>Conditions <span aria-hidden="true">▾</span></summary>
+              <div className="links">
+                <p>
+                  <Link href="/conditions/autism">Autism</Link> ·{' '}
+                  <Link href="/conditions/autism-parent">Autism Parent</Link> ·{' '}
+                  <Link href="/adhd">ADHD</Link> ·{' '}
+                  <Link href="/dyslexia-reading-training">Dyslexia</Link>
+                </p>
+                <p>
+                  <Link href="/conditions/anxiety">Anxiety</Link> ·{' '}
+                  <Link href="/conditions/depression">Depression</Link> ·{' '}
+                  <Link href="/stress">Stress</Link> ·{' '}
+                  <Link href="/sleep">Sleep</Link>
+                </p>
+              </div>
+            </details>
+            <details className="ft-group">
+              <summary>Breathing &amp; Focus <span aria-hidden="true">▾</span></summary>
+              <div className="links">
+                <p>
+                  <Link href="/breathing/breath">Breath (how-to)</Link> ·{' '}
+                  <Link href="/breathing/focus">Focus</Link> ·{' '}
+                  <Link href="/breathing/mindfulness">Mindfulness</Link>
+                </p>
+                <p>
+                  <Link href="/techniques/sos">60-second Reset</Link> ·{' '}
+                  <Link href="/techniques/box-breathing">Box Breathing</Link> ·{' '}
+                  <Link href="/techniques/4-7-8">4-7-8 Breathing</Link> ·{' '}
+                  <Link href="/techniques/coherent">Coherent 5-5</Link>
+                </p>
+              </div>
+            </details>
+            <details className="ft-group">
+              <summary>Toolkits <span aria-hidden="true">▾</span></summary>
+              <div className="links">
+                <p>
+                  <Link href="/tools/sleep-tools">Sleep Tools</Link> ·{' '}
+                  <Link href="/tools/breath-tools">Breath Tools</Link> ·{' '}
+                  <Link href="/tools/mood-tools">Mood Tools</Link> ·{' '}
+                  <Link href="/tools/adhd-tools">ADHD Tools</Link> ·{' '}
+                  <Link href="/tools/autism-tools">Autism Tools</Link> ·{' '}
+                  <Link href="/tools/anxiety-tools">Anxiety Tools</Link> ·{' '}
+                  <Link href="/tools/stress-tools">Stress Tools</Link>
+                </p>
+              </div>
+            </details>
+            <details className="ft-group">
+              <summary>Symptom Guides <span aria-hidden="true">▾</span></summary>
+              <div className="links">
+                <p>
+                  <Link href="/conditions/anxiety">Stress &amp; General Anxiety</Link> ·{' '}
+                  <Link href="/conditions/anxiety">Panic Symptoms</Link> ·{' '}
+                  <Link href="/sleep">Sleep-Onset Insomnia</Link>
+                </p>
+                <p>
+                  <Link href="/conditions/anxiety">Focus &amp; Test Anxiety</Link> ·{' '}
+                  <Link href="/conditions/anxiety">PTSD Regulation*</Link> ·{' '}
+                  <Link href="/conditions/low-mood-burnout">Low Mood &amp; Burnout</Link>
+                </p>
+              </div>
+            </details>
+            <details className="ft-group">
+              <summary>About <span aria-hidden="true">▾</span></summary>
+              <div className="links">
+                <p>
+                  <Link href="/about-us">About</Link> ·{' '}
+                  <Link href="/aims-objectives">Aims &amp; Stories</Link> ·{' '}
+                  <Link href="/support-us">Support Us</Link> ·{' '}
+                  <Link href="/contact">Contact</Link>
+                </p>
+              </div>
+            </details>
+          </nav>
         </div>
+      </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-gray-500">
-            Educational information only. Not medical advice. © {currentYear} NeuroBreath. All rights reserved.
-          </p>
-          <button
-            type="button"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1"
+      <div className="inner">
+        <div className="ft-bottom">
+          <div className="ft-bottom__copy" aria-label="Site notice">
+            <p className="muted ft-bottom__text">
+              Educational information only. Not medical advice. NeuroBreath is a free resource by NeuroBreath. ©{' '}
+              <span id="yearFooter">{currentYear}</span> NeuroBreath. All rights reserved.
+            </p>
+          </div>
+          <button 
+            type="button" 
+            className="btn back-to-top-btn" 
+            onClick={scrollToTop}
+            aria-label="Back to top"
           >
-            Back to top <span aria-hidden="true">↑</span>
+            <span className="back-to-top__label">Back to top</span>
+            <span className="back-to-top__icon" aria-hidden="true">↑</span>
           </button>
         </div>
       </div>

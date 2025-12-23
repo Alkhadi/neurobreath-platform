@@ -552,8 +552,8 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
                 className={cn(
                   'px-4 py-2 rounded-lg text-sm font-medium transition-all',
                   targetDuration === option.value
-                    ? 'bg-primary text-primary-foreground shadow-sm'
-                    : 'bg-muted hover:bg-muted/80'
+                    ? 'bg-primary text-white shadow-sm'
+                    : 'bg-muted text-gray-900 dark:text-gray-100 hover:bg-muted/80'
                 )}
               >
                 {option.label}

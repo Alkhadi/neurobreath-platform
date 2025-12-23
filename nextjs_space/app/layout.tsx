@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
-import SiteHeader from '@/components/site-header'
-import SiteFooter from '@/components/site-footer'
+import { SiteHeader } from '@/components/site-header'
+import { SiteFooter } from '@/components/site-footer'
 import QuestPassPill from '@/components/quest-pass-pill'
 import ClientLayout from '@/components/ClientLayout'
 import { Toaster } from 'sonner'
@@ -36,6 +36,9 @@ export default function RootLayout({
   return (
     <html lang="en-GB" suppressHydrationWarning>
       <head>
+        <link rel="stylesheet" href="/css/base.css" />
+        <link rel="stylesheet" href="/css/site.css" />
+        <link rel="stylesheet" href="/css/quest-pass.css" />
         <script src="https://apps.abacus.ai/chatllm/appllm-lib.js" defer></script>
       </head>
       <body className={inter.className}>
