@@ -1,79 +1,82 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import BreathingOrbit from '@/components/breathing-orbit'
-import { breathingTechniques } from '@/lib/breathing-data'
-import { getDeviceId } from '@/lib/device-id'
+import { HeroBreathingOrbit } from '@/components/home/hero-breathing-orbit'
+import { QuickWinPlanner } from '@/components/home/quick-win-planner'
 import Link from 'next/link'
 
 export default function HeroSection() {
-  const [todayMinutes, setTodayMinutes] = useState(0)
-
-  useEffect(() => {
-    const fetchProgress = async () => {
-      try {
-        const deviceId = getDeviceId()
-        const response = await fetch(`/api/progress?deviceId=${deviceId}`)
-        if (response?.ok) {
-          const data = await response.json()
-          setTodayMinutes(data?.totalMinutes ?? 0)
-        }
-      } catch (error) {
-        console.error('Failed to fetch progress:', error)
-      }
-    }
-
-    fetchProgress()
-  }, [])
-
   return (
-    <section className="relative bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 py-16 md:py-24">
-      <div className="container max-w-6xl mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Content */}
-          <div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Measured Breathing & Relief
-            </h1>
-            <p className="text-lg text-gray-600 mb-6">
-              Clinically referenced, neuro-inclusive breathing tools with clear guidance, timers and safety notes for calm, focus, and emotional regulation.
+    <section id="vp-home-hero" className="hero-section section" aria-label="Measured breathing hero">
+      <div className="page-container">
+        <article className="card hero-content-card hero-gradient--home">
+          
+          <HeroBreathingOrbit />
+
+          <div className="hero-primary">
+            <h1>Measured breathing. Measurable relief.</h1>
+
+            <p className="hero-tagline">
+              <strong>Guided breathing, voice cues, and evidence-based resources built for neurodiversity.</strong><br />
+              Free to use and share across classrooms, clinics, and home practice.
             </p>
 
-            <div className="flex flex-wrap gap-3 mb-8">
-              <span className="px-4 py-2 bg-white rounded-full text-sm font-medium text-gray-700 shadow-sm">Neuro-inclusive</span>
-              <span className="px-4 py-2 bg-white rounded-full text-sm font-medium text-gray-700 shadow-sm">Evidence-based</span>
-              <span className="px-4 py-2 bg-white rounded-full text-sm font-medium text-gray-700 shadow-sm">Share-ready</span>
-            </div>
-
-            <div className="flex flex-wrap gap-3">
-              <Button asChild size="lg" className="bg-purple-600 hover:bg-purple-700">
-                <Link href="#daily-practice">Start Daily Player</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link href="/techniques/box-breathing">Try Box Breathing</Link>
-              </Button>
-              <Button asChild size="lg" variant="destructive">
-                <Link href="/techniques/sos">SOS 60s Reset</Link>
-              </Button>
-            </div>
+            <p className="nb-lead">
+              NeuroBreath helps neurodivergent people and their supporters build calm, focus and stability through practical tools, guided breathing, training, and low-pressure progress tracking.
+              Start with a 2–5 minute Quick Win today and earn rewards you can actually use.
+            </p>
           </div>
 
-          {/* Breathing Orbit */}
-          <div className="bg-white rounded-2xl p-8 shadow-xl">
-            <div className="mb-4">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Inhale Hold Exhale</h3>
-              <div className="text-sm text-gray-600">
-                <span className="font-medium">Today's focused minutes:</span>{' '}
-                <strong className="text-purple-600 text-lg">{todayMinutes}</strong> min
+          <QuickWinPlanner />
+
+          <div className="hero-features">
+            <div className="hero-feature-col">
+              <h3 className="feature-title">Key features</h3>
+
+              <ul className="hero-highlights">
+                <li>Voice-guided breathing cues with adjustable timings for neuro-inclusive learning</li>
+                <li>Private progress tracking: session minutes, breath counts, and daily streaks stored locally on your device</li>
+                <li>Auto-updating resources: printable guides, QR code cards, and shareable materials sync with your progress</li>
+                <li>
+                  <Link href="/breathing/training/focus-garden" className="focus-training-link">
+                    🌱 Focus Training – Interactive plant-based focus exercises for sustained attention
+                  </Link>
+                </li>
+              </ul>
+
+              <div className="hero-badges">
+                <span className="badge">Neuro-inclusive</span>
+                <span className="badge">Evidence-based</span>
+                <span className="badge">Share-ready</span>
               </div>
             </div>
-            <BreathingOrbit technique={breathingTechniques['box-4444']} />
-            <p className="text-xs text-gray-500 mt-4 text-center">
-              Breathing guidance: inhale for four counts, hold for two counts, and exhale for six counts.
-            </p>
+
+            <div className="hero-feature-col">
+              <h3 className="feature-title">Common concerns</h3>
+
+              <div className="actions hero-condition-links">
+                <Link className="btn btn-compact" href="/conditions/anxiety">
+                  Stress &amp; Anxiety
+                </Link>
+                <Link className="btn btn-compact" href="/conditions/anxiety">
+                  Panic Symptoms
+                </Link>
+                <Link className="btn btn-compact" href="/sleep">
+                  Sleep Issues
+                </Link>
+                <Link className="btn btn-compact" href="/conditions/anxiety">
+                  Focus &amp; Tests
+                </Link>
+                <Link className="btn btn-compact" href="/conditions/anxiety">
+                  PTSD Support*
+                </Link>
+                <Link className="btn btn-compact" href="/conditions/low-mood-burnout">
+                  Low Mood
+                </Link>
+              </div>
+            </div>
           </div>
-        </div>
+        </article>
       </div>
     </section>
   )

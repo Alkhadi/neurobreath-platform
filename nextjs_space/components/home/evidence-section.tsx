@@ -1,109 +1,135 @@
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 
 export default function EvidenceSection() {
   return (
-    <section className="py-16 bg-white">
-      <div className="container max-w-6xl mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Evidence & Research</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            NeuroBreath is informed by clinical research and public health guidance from trusted institutions.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          {/* Box Breathing */}
-          <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6">
-            <div className="text-3xl mb-3">🟩</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Box Breathing</h3>
-            <p className="text-gray-700 mb-4">
-              Equal 4-4-4-4 or 5-5 patterns are used by Navy special operations teams, HRV researchers, and the NHS to steady attention for ADHD brains.
+    <section className="content-section section-bg-sky-lavender" id="why-breathing-works">
+      <div className="page-container">
+        <article className="card card-elevated card-full-width home-evidence card-share-theme">
+          
+          <div className="home-evidence__heading">
+            <h2>Why these techniques work</h2>
+            <p className="muted">
+              Everything here is educational guidance informed by clinical and occupational therapy sources. 
+              We translate the evidence so it feels friendly, neuro-affirming, and doable.
             </p>
-            <a
-              href="https://psychcentral.com/health/box-breathing"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-purple-600 hover:underline text-sm"
-            >
-              PsychCentral Reference →
-            </a>
           </div>
 
-          {/* 4-7-8 Breathing */}
-          <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6">
-            <div className="text-3xl mb-3">🟦</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">4-7-8 Breathing</h3>
-            <p className="text-gray-700 mb-4">
-              Dr Andrew Weil's 4-7-8 protocol and Harvard's relaxation response show that extending the out-breath dampens stress, easing sleep onset.
+          <div className="home-evidence__layout">
+            <div className="home-evidence__cards-area">
+              <div className="evidence-grid home-evidence__cards">
+                
+                <article className="evidence-card">
+                  <span className="evidence-badge">🫧 Box &amp; coherent breathing</span>
+                  <h3>Steady the autonomic swing</h3>
+                  <p>
+                    Equal 4-4-4-4 or 5-5 patterns are used by Navy special operations teams (
+                    <a href="https://psychcentral.com/health/box-breathing" target="_blank" rel="noopener noreferrer">
+                      PsychCentral
+                    </a>
+                    ), HRV researchers, and the NHS to nudge the vagus nerve, lower heart rate variability peaks, 
+                    and steady attention for ADHD brains.
+                  </p>
+                </article>
+
+                <article className="evidence-card">
+                  <span className="evidence-badge">🌙 4-7-8 &amp; slow exhale work</span>
+                  <h3>Lengthened exhales calm the limbic system</h3>
+                  <p>
+                    Dr Andrew Weil's 4-7-8 protocol and Harvard's relaxation response both show that extending 
+                    the out-breath dampens the stress response, easing sleep onset and evening anxiety.
+                  </p>
+                </article>
+
+                <article className="evidence-card">
+                  <span className="evidence-badge">🎯 Short, frequent breaks</span>
+                  <h3>Regulation is a trainable skill</h3>
+                  <p>
+                    Occupational therapy guidance recommends 60–180 second breathing punctuations to reduce sensory 
+                    overload, anchor autistic routines, and prep ADHD minds for learning. You're not broken — 
+                    these are skills you can practise.
+                  </p>
+                </article>
+
+              </div>
+
+              <div className="evidence-metrics" aria-label="Study outcomes">
+                
+                <article className="evidence-metric">
+                  <p className="evidence-metric__eyebrow">8-week diaphragmatic breathing RCT</p>
+                  <strong className="evidence-metric__value">−1.3&nbsp;µg/dL cortisol</strong>
+                  <p>
+                    Office workers who completed 20 guided sessions cut salivary cortisol by roughly 1.3 µg/dL, 
+                    while controls showed no change. {' '}
+                    <a 
+                      href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5455070/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
+                      Ma et&nbsp;al., 2017
+                    </a>
+                  </p>
+                </article>
+
+                <article className="evidence-metric">
+                  <p className="evidence-metric__eyebrow">Attention &amp; accuracy</p>
+                  <strong className="evidence-metric__value">+6.7 target hits</strong>
+                  <p>
+                    The same study recorded a 6.7 point gain on the Number Cancellation Test after training, 
+                    confirming measurable focus improvements for everyday staff. {' '}
+                    <a 
+                      href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5455070/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
+                      Frontiers in Psychology
+                    </a>
+                  </p>
+                </article>
+
+              </div>
+            </div>
+
+            <aside className="home-evidence__live-orbit" aria-labelledby="liveOrbitTitle">
+              <div className="live-orbit-badge">LIVE ORBIT</div>
+              
+              <h3 id="liveOrbitTitle" className="live-orbit-title">Guided inhale · hold · exhale</h3>
+              
+              <p className="live-orbit-description muted">
+                Preview the same visual pacing used in the hero controls and narration. Inhale, hold, and exhale 
+                cues keep timing predictable for sensory-sensitive learners.
+              </p>
+
+              <div className="live-orbit-footer">
+                <p className="live-orbit-footer-prompt">Click here to explore:</p>
+                <div className="live-orbit-pointer-wrapper">
+                  <span className="live-orbit-pointer-icon">👇</span>
+                </div>
+                <Link 
+                  href="/breathing/training/focus-garden" 
+                  className="btn live-orbit-focus-btn"
+                  role="button" 
+                  aria-label="Go to Focus Training - Interactive plant-based focus exercises"
+                >
+                  <span className="live-orbit-focus-icon">🌱</span>
+                  <span className="live-orbit-focus-text">
+                    <strong>Focus Training</strong> — Interactive plant-based focus exercises for sustained attention
+                  </span>
+                </Link>
+              </div>
+            </aside>
+          </div>
+
+          <div className="evidence-safety-notice">
+            <p className="evidence-safety-text">
+              <span className="evidence-safety-icon">⚠️</span>
+              <span className="evidence-safety-content">
+                <strong>Pause or stop any time.</strong> If breathing feels uncomfortable, return to natural 
+                breathing and speak to a clinician for personalised advice.
+              </span>
             </p>
-            <a
-              href="https://www.healthline.com/health/4-7-8-breathing"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline text-sm"
-            >
-              4-7-8 Breathing Guide →
-            </a>
           </div>
 
-          {/* Research Results */}
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6">
-            <div className="text-3xl mb-3">📊</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Measured Results</h3>
-            <p className="text-gray-700 mb-4">
-              Office workers who completed 20 guided sessions cut salivary cortisol by roughly 1.3 µg/dL, while controls showed no change.
-            </p>
-            <a
-              href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5455070/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-green-600 hover:underline text-sm"
-            >
-              Ma et al., 2017 →
-            </a>
-          </div>
-        </div>
-
-        {/* Clinical Backing */}
-        <div className="bg-gray-50 rounded-xl p-8">
-          <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center">Clinical Backing & Credibility</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <p className="font-medium text-gray-900 mb-2">Informed by experts</p>
-              <p className="text-sm text-gray-600">
-                <a href="https://bhi.org/our-founder" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">Dr Herbert Benson</a> (Harvard) ·{' '}
-                <a href="https://www.healthline.com/health/4-7-8-breathing" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">Dr Andrew Weil</a> (4-7-8)
-              </p>
-            </div>
-            <div>
-              <p className="font-medium text-gray-900 mb-2">Public guidance</p>
-              <p className="text-sm text-gray-600">
-                <a href="https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/breathing-exercises-for-stress/" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">NHS (UK)</a> ·{' '}
-                <a href="https://www.va.gov/health-care/health-needs-conditions/mental-health/" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">U.S. VA</a> ·{' '}
-                <a href="https://hms.harvard.edu/" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">Harvard</a>
-              </p>
-            </div>
-            <div>
-              <p className="font-medium text-gray-900 mb-2">Evidence</p>
-              <p className="text-sm text-gray-600">
-                Navy SEAL teams use box breathing for focus. 2024 trial: <strong>99.2%</strong> breathing effectiveness improvement.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Safety Notice */}
-        <div className="mt-8 p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">⚠️</span>
-            <div>
-              <p className="text-sm text-gray-700">
-                <strong>Safety note:</strong> Breathwork is not a substitute for medical or psychiatric treatment. If you experience dizziness, panic, or worsening symptoms, stop immediately and consult a healthcare professional. Some techniques may not be suitable for certain conditions.
-              </p>
-            </div>
-          </div>
-        </div>
+        </article>
       </div>
     </section>
   )
