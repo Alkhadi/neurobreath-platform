@@ -38,12 +38,12 @@ export default function EvidenceSection() {
               Dr Andrew Weil's 4-7-8 protocol and Harvard's relaxation response show that extending the out-breath dampens stress, easing sleep onset.
             </p>
             <a
-              href="https://drweil.com/videos-features/breathing-exercises-4-7-8-breath/"
+              href="https://www.healthline.com/health/4-7-8-breathing"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 hover:underline text-sm"
             >
-              Dr Weil Reference →
+              4-7-8 Breathing Guide →
             </a>
           </div>
 
@@ -72,8 +72,8 @@ export default function EvidenceSection() {
             <div>
               <p className="font-medium text-gray-900 mb-2">Informed by experts</p>
               <p className="text-sm text-gray-600">
-                <a href="https://www.health.harvard.edu/mind-and-mood/harnessing-the-relaxation-response" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">Dr Herbert Benson</a> (Harvard) ·{' '}
-                <a href="https://drweil.com/videos-features/breathing-exercises-4-7-8-breath/" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">Dr Andrew Weil</a> (4-7-8)
+                <a href="https://bhi.org/our-founder" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">Dr Herbert Benson</a> (Harvard) ·{' '}
+                <a href="https://www.healthline.com/health/4-7-8-breathing" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">Dr Andrew Weil</a> (4-7-8)
               </p>
             </div>
             <div>

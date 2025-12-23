@@ -20,8 +20,8 @@ export default function SiteHeader() {
         <div className="flex items-center justify-between h-16 px-4">
           {/* Brand */}
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <div className="relative w-10 h-10">
-              <Image src="/favicon.svg" alt="NeuroBreath Logo" fill className="object-contain" />
+            <div className="flex items-center justify-center w-10 h-10 text-2xl">
+              🫁
             </div>
             <span className="text-xl font-semibold text-gray-900">NeuroBreath</span>
           </Link>
