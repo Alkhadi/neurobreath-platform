@@ -5,6 +5,8 @@ import DailyPracticePlayer from '@/components/home/daily-practice-player'
 import ChallengesSection from '@/components/home/challenges-section'
 import ToolsLab from '@/components/home/tools-lab'
 import EvidenceSection from '@/components/home/evidence-section'
+import RewardsSection from '@/components/home/rewards-section'
+import ShareSupportSection from '@/components/home/share-support-section'
 
 export default function HomePage() {
   return (
@@ -29,9 +31,26 @@ export default function HomePage() {
       <hr className="section-divider" aria-hidden="true" />
 
       <EvidenceSection />
+      
+      <hr className="section-divider" aria-hidden="true" />
+      
       <ChallengesSection />
+      
+      <hr className="section-divider" aria-hidden="true" />
+      
+      <RewardsSection />
+      
+      <hr className="section-divider" aria-hidden="true" />
+      
       <DailyPracticePlayer />
+      
+      <hr className="section-divider" aria-hidden="true" />
+      
       <ToolsLab />
+      
+      <hr className="section-divider" aria-hidden="true" />
+      
+      <ShareSupportSection />
     </div>
   )
 }
