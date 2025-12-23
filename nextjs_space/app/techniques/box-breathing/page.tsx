@@ -1,37 +1,13 @@
 'use client'
 
-import BreathingOrbit from '@/components/breathing-orbit'
+import { BreathingExercise } from '@/components/BreathingExercise'
 import { breathingTechniques } from '@/lib/breathing-data'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { toast } from 'sonner'
-import { getDeviceId } from '@/lib/device-id'
 
 export default function BoxBreathingPage() {
   const technique = breathingTechniques['box-4444']
-
-  const handleSessionComplete = async (breaths: number, rounds: number) => {
-    try {
-      const deviceId = getDeviceId()
-      await fetch('/api/sessions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          deviceId,
-          technique: 'box-4444',
-          label: 'Box Breathing Session',
-          minutes: Math.ceil((breaths * 16) / 60), // Approximate
-          breaths,
-          rounds,
-          category: 'calm'
-        })
-      })
-      toast.success('✅ Session logged successfully!')
-    } catch (error) {
-      console.error('Failed to log session:', error)
-    }
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 py-12">
@@ -47,7 +23,7 @@ export default function BoxBreathingPage() {
             <p className="text-lg text-gray-600">{technique?.description ?? ''}</p>
           </div>
 
-          <BreathingOrbit technique={technique!} onSessionComplete={handleSessionComplete} />
+          <BreathingExercise initialPattern="box" />
         </div>
 
         {/* Benefits */}

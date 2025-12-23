@@ -149,4 +149,40 @@
   .letter-group-text {
     background: transparent !important;
   }
+
+  /* Print styles for worksheets */
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+    .print-area, .print-area * {
+      visibility: visible;
+    }
+    .print-area {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      padding: 20px;
+    }
+    .no-print {
+      display: none !important;
+    }
+  }
+
+  /* Print styles for certificates */
+  @media print {
+    .certificate-print {
+      /* Force single page */
+      @page {
+        size: A4 portrait;
+        margin: 0 !important;
+      }
+    }
+  }
+
+  /* Suppress hydration warnings for dynamic content */
+  [data-hydration-on-demand] {
+    content-visibility: auto;
+  }
 }

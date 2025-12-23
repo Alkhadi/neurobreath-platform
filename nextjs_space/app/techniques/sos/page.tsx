@@ -1,37 +1,13 @@
 'use client'
 
-import BreathingOrbit from '@/components/breathing-orbit'
+import { BreathingExercise } from '@/components/BreathingExercise'
 import { breathingTechniques } from '@/lib/breathing-data'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { toast } from 'sonner'
-import { getDeviceId } from '@/lib/device-id'
 
 export default function SOSPage() {
   const technique = breathingTechniques['sos-1m']
-
-  const handleSessionComplete = async (breaths: number, rounds: number) => {
-    try {
-      const deviceId = getDeviceId()
-      await fetch('/api/sessions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          deviceId,
-          technique: 'sos-1m',
-          label: 'SOS 60-second Reset',
-          minutes: 1,
-          breaths,
-          rounds,
-          category: 'transition'
-        })
-      })
-      toast.success('✅ Quick reset completed!')
-    } catch (error) {
-      console.error('Failed to log session:', error)
-    }
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 py-12">
@@ -47,7 +23,7 @@ export default function SOSPage() {
             <p className="text-lg text-gray-600">{technique?.description ?? ''}</p>
           </div>
 
-          <BreathingOrbit technique={technique!} onSessionComplete={handleSessionComplete} />
+          <BreathingExercise initialPattern="box" />
         </div>
 
         {/* Benefits */}

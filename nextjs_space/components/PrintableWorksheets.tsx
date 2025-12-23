@@ -355,29 +355,6 @@ export function PrintableWorksheets() {
 
   return (
     <>
-      <style>
-        {`
-          @media print {
-            body * {
-              visibility: hidden;
-            }
-            .print-area, .print-area * {
-              visibility: visible;
-            }
-            .print-area {
-              position: absolute;
-              left: 0;
-              top: 0;
-              width: 100%;
-              padding: 20px;
-            }
-            .no-print {
-              display: none !important;
-            }
-          }
-        `}
-      </style>
-
       <Card className="w-full">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

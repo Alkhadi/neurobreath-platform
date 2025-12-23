@@ -80,7 +80,7 @@ export default function EvidenceSection() {
               <p className="font-medium text-gray-900 mb-2">Public guidance</p>
               <p className="text-sm text-gray-600">
                 <a href="https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/breathing-exercises-for-stress/" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">NHS (UK)</a> ·{' '}
-                <a href="https://www.mentalhealth.va.gov/suicide_prevention/docs/VA_Breathing_Techniques.pdf" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">U.S. VA</a> ·{' '}
+                <a href="https://www.va.gov/health-care/health-needs-conditions/mental-health/" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">U.S. VA</a> ·{' '}
                 <a href="https://hms.harvard.edu/" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">Harvard</a>
               </p>
             </div>

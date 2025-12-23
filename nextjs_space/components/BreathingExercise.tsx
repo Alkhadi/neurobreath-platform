@@ -37,8 +37,12 @@ const AMBIENT_SOUNDS = [
 
 type Pattern = keyof typeof BREATHING_PATTERNS;
 
-export function BreathingExercise() {
-  const [pattern, setPattern] = useState<Pattern>('box');
+interface BreathingExerciseProps {
+  initialPattern?: Pattern;
+}
+
+export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseProps) {
+  const [pattern, setPattern] = useState<Pattern>(initialPattern);
   const [isActive, setIsActive] = useState(false);
   const [phase, setPhase] = useState(0);
   const [countdown, setCountdown] = useState(0);

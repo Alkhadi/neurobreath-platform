@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { RotateCcw } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface VocabWord {
   word: string;
@@ -323,16 +324,36 @@ export default function VocabularyRecognition() {
 
         {/* Action Tabs */}
         <div className="grid grid-cols-4 gap-2">
-          <Button variant="outline" size="sm" className="text-xs">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-xs"
+            onClick={() => toast.info('Tricky Parts highlighting coming soon! Identify challenging word segments.')}
+          >
             Tricky Parts
           </Button>
-          <Button variant="outline" size="sm" className="text-xs">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-xs"
+            onClick={() => toast.info('Syllable breakdown coming soon! Break words into manageable chunks.')}
+          >
             Syllables
           </Button>
-          <Button variant="outline" size="sm" className="text-xs">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-xs"
+            onClick={() => toast.info('Spelling practice coming soon! Test your spelling skills.')}
+          >
             Spell
           </Button>
-          <Button variant="outline" size="sm" className="text-xs">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-xs"
+            onClick={() => toast.info('Letter tracing coming soon! Practice writing letter forms.')}
+          >
             Trace
           </Button>
         </div>
@@ -349,6 +370,10 @@ export default function VocabularyRecognition() {
             Reset Progress
           </Button>
           <Button
+            onClick={() => {
+              resetProgress();
+              toast.success('New session started! All cards have been reset.');
+            }}
             variant="outline"
             size="sm"
             className="flex-1"
