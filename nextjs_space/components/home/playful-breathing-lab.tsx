@@ -150,16 +150,19 @@ export default function PlayfulBreathingLab() {
   
   const spinWheel = () => {
     setIsSpinning(true);
-    const spins = 5 + Math.floor(Math.random() * 3); // 5-7 full rotations
+    // REQUIREMENT #4: 8-12 full rotations
+    const spins = 8 + Math.floor(Math.random() * 5);
     const finalIndex = Math.floor(Math.random() * WHEEL_TECHNIQUES.length);
     const finalRotation = spins * 360 + finalIndex * (360 / WHEEL_TECHNIQUES.length);
     
     setRotation(finalRotation);
     
+    // REQUIREMENT #4: 2.5s-3.5s duration (random within range)
+    const duration = 2500 + Math.random() * 1000;
     setTimeout(() => {
       setSelectedTechnique(WHEEL_TECHNIQUES[finalIndex]);
       setIsSpinning(false);
-    }, 3000);
+    }, duration);
   };
   
   const selectContext = (context: typeof FOCUS_CONTEXTS[0]) => {
@@ -391,11 +394,21 @@ export default function PlayfulBreathingLab() {
                 </div>
               </div>
               
-              {/* Wheel Visual */}
-              <div className="relative mb-6 h-64 flex items-center justify-center">
+              {/* REQUIREMENT #4: Label above roulette */}
+              <div className="text-center mb-3">
+                <h4 className="font-bold text-lg">🎯 Spin the Roulette Wheel</h4>
+                <p className="text-sm text-muted-foreground">Get a random breathing technique</p>
+              </div>
+              
+              {/* REQUIREMENT #4: Wheel Visual - Perfect Circle */}
+              <div className="relative mb-6 flex items-center justify-center">
                 <div
-                  className="relative w-56 h-56 rounded-full overflow-hidden transition-transform duration-3000 ease-out"
-                  style={{ transform: `rotate(${rotation}deg)` }}
+                  className="relative w-56 rounded-full overflow-hidden transition-transform ease-out"
+                  style={{ 
+                    transform: `rotate(${rotation}deg)`,
+                    transitionDuration: isSpinning ? '3000ms' : '0ms',
+                    aspectRatio: '1 / 1'
+                  }}
                 >
                   {WHEEL_TECHNIQUES.map((tech, idx) => (
                     <div
@@ -463,79 +476,138 @@ export default function PlayfulBreathingLab() {
             </CardContent>
           </Card>
           
-          {/* Focus Tiles */}
+          {/* REQUIREMENT #3: Clinical Backing & Credibility (with Focus Tiles functionality) */}
           <Card className="border-2 hover:shadow-lg transition-shadow">
             <CardHeader>
-              <div className="flex items-center gap-2 mb-2">
-                <Grid3x3 className="h-6 w-6 text-teal-600" />
-                <CardTitle>Focus Tiles</CardTitle>
-              </div>
+              <CardTitle className="text-2xl">Clinical backing & credibility</CardTitle>
               <CardDescription>
-                Pick the context and we'll suggest a ready-made breathing recipe.
+                Evidence-based techniques informed by medical experts and public health guidance.
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              {/* How to Use */}
-              <div className="bg-muted/50 p-4 rounded-lg mb-6 space-y-2 text-sm">
-                <div className="flex items-start gap-2">
-                  <span>👆</span>
-                  <p>Choose a context tile that matches your situation</p>
-                </div>
-                <div className="flex items-center justify-center">↓</div>
-                <div className="flex items-start gap-2">
-                  <span>💡</span>
-                  <p>See your personalized breathing suggestion appear</p>
-                </div>
-                <div className="flex items-center justify-center">↓</div>
-                <div className="flex items-start gap-2">
-                  <span>✨</span>
-                  <p>Log your session or click the link to learn the technique</p>
+            <CardContent className="space-y-6">
+              {/* Informed by experts */}
+              <div>
+                <h4 className="font-bold text-sm mb-2">Informed by experts</h4>
+                <p className="text-sm text-muted-foreground">
+                  Dr Herbert Benson (Harvard) · Dr Andrew Weil (4-7-8)
+                </p>
+              </div>
+
+              {/* Public guidance */}
+              <div>
+                <h4 className="font-bold text-sm mb-2">Public guidance</h4>
+                <p className="text-sm text-muted-foreground">
+                  NHS (UK) · U.S. VA · Harvard · Mayo Clinic
+                </p>
+              </div>
+
+              {/* Evidence */}
+              <div>
+                <h4 className="font-bold text-sm mb-2">Evidence</h4>
+                <p className="text-sm text-muted-foreground">
+                  Navy SEAL teams use box breathing for focus (PsychCentral). 2024 trial: 99.2% breathing effectiveness improvement (Healthline).
+                </p>
+              </div>
+
+              {/* Supporting line */}
+              <div className="p-3 bg-muted/50 rounded-lg">
+                <p className="text-sm">
+                  We log rounds automatically so you can focus on calm, not dashboards.
+                </p>
+              </div>
+
+              <hr className="my-4" />
+
+              {/* Pick your goal */}
+              <div>
+                <h4 className="font-bold mb-3">Pick your goal</h4>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Choose a goal to tailor cues, pace, and downloadable guides.
+                </p>
+                
+                {/* Goal chips */}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {['Calm', 'Sleep', 'Focus', 'School', 'Mood'].map((goal) => (
+                    <Badge key={goal} variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors">
+                      {goal}
+                    </Badge>
+                  ))}
                 </div>
               </div>
-              
-              {/* Context Tiles Grid */}
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                {FOCUS_CONTEXTS.map((context) => (
-                  <button
-                    key={context.id}
-                    onClick={() => selectContext(context)}
-                    className={`p-4 rounded-lg border-2 transition-all text-left ${
-                      selectedContext?.id === context.id
-                        ? "border-teal-500 bg-teal-50 dark:bg-teal-950 shadow-lg"
-                        : "border-muted hover:border-teal-300 bg-background"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-2xl">{context.emoji}</span>
-                      <h4 className="font-bold">{context.name}</h4>
-                    </div>
-                    <p className="text-xs text-muted-foreground">{context.description}</p>
-                  </button>
-                ))}
+
+              {/* How long do you have? */}
+              <div>
+                <h4 className="font-bold mb-3">How long do you have?</h4>
+                <div className="flex gap-2 mb-4">
+                  {['1 minute', '3 minutes', '5 minutes'].map((time) => (
+                    <Button key={time} variant="outline" size="sm">
+                      {time}
+                    </Button>
+                  ))}
+                </div>
               </div>
-              
-              {/* Suggestion Display */}
-              <div className="mb-4 p-4 bg-gradient-to-r from-teal-50 to-blue-50 dark:from-teal-950 dark:to-blue-950 rounded-lg border-2 min-h-32">
-                {selectedContext ? (
-                  <div>
+
+              {/* Context Tiles with existing functionality */}
+              <div>
+                <h4 className="font-bold mb-3">Choose your context</h4>
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  {FOCUS_CONTEXTS.map((context) => (
+                    <button
+                      key={context.id}
+                      onClick={() => selectContext(context)}
+                      className={`p-4 rounded-lg border-2 transition-all text-left ${
+                        selectedContext?.id === context.id
+                          ? "border-teal-500 bg-teal-50 dark:bg-teal-950 shadow-lg"
+                          : "border-muted hover:border-teal-300 bg-background"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-2xl">{context.emoji}</span>
+                        <h4 className="font-bold text-sm">{context.name}</h4>
+                      </div>
+                      <p className="text-xs text-muted-foreground">{context.description}</p>
+                    </button>
+                  ))}
+                </div>
+                
+                {/* Suggestion Display */}
+                {selectedContext && (
+                  <div className="p-4 bg-gradient-to-r from-teal-50 to-blue-50 dark:from-teal-950 dark:to-blue-950 rounded-lg border-2">
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-2xl">💡</span>
-                      <h4 className="font-bold">Your personalized suggestion:</h4>
+                      <h4 className="font-bold text-sm">Your personalized suggestion:</h4>
                     </div>
                     <p className="text-sm mb-3">{selectedContext.suggestion}</p>
                     <Link href={selectedContext.link}>
-                      <Button variant="link" className="p-0 h-auto">
+                      <Button variant="link" className="p-0 h-auto text-sm">
                         Learn this technique →
                       </Button>
                     </Link>
                   </div>
-                ) : (
-                  <div className="flex items-center justify-center h-full">
-                    <p className="text-sm text-muted-foreground text-center">
-                      Select a tile above to see your breathing recipe.
-                    </p>
-                  </div>
                 )}
+              </div>
+
+              {/* Built for neurodiversity */}
+              <div>
+                <h4 className="font-bold mb-3">Built for neurodiversity</h4>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-start gap-2">
+                    <span>✓</span>
+                    <span>Clear language, optional visuals, OT-aligned timings</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span>✓</span>
+                    <span>Alternative cues for sensory-sensitive learners</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span>✓</span>
+                    <span>Accessible contrast & keyboard-first controls</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span>✓</span>
+                    <span>Evidence citations across every technique</span>
+                  </li>
+                </ul>
               </div>
             </CardContent>
           </Card>

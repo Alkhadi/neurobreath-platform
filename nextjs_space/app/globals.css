@@ -1183,6 +1183,43 @@
 }
 
 /* ============================================
+   REQUIREMENT #2: POST-HERO WIDTH STANDARDIZATION
+   ============================================ */
+
+:root {
+  --nb-posthero-max: 900px;
+  --nb-posthero-gutter: max(24px, 3vw);
+  --nb-posthero-gap: clamp(16px, 2vw, 28px);
+}
+
+.nb-posthero-wrap {
+  width: min(calc(100% - 2 * var(--nb-posthero-gutter)), var(--nb-posthero-max));
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: var(--nb-posthero-gap);
+}
+
+/* Apply to all major post-hero sections */
+.content-section .page-container,
+section:not(#vp-home-hero) > .container,
+section:not(.nb-hero-section-v2) .nb-quickwin,
+.section-bg-white,
+.home-practice-card {
+  max-width: var(--nb-posthero-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--nb-posthero-gutter);
+  padding-right: var(--nb-posthero-gutter);
+}
+
+/* Override existing wider containers */
+.max-w-6xl,
+.max-w-5xl,
+.max-w-4xl {
+  max-width: var(--nb-posthero-max) !important;
+}
+
+/* ============================================
    HERO SECTION V2 - GLASSMORPHISM CARDS
    ============================================ */
 
@@ -1785,6 +1822,28 @@
   .nb-hero-two-col {
     grid-template-columns: 1fr 350px;
     gap: 2rem;
+  }
+}
+
+/* REQUIREMENT #1: Hide orbit guidance/stats on ≤900px */
+@media (max-width: 900px) {
+  /* Completely hide orbit guidance box */
+  .orbit-guidance-box {
+    display: none !important;
+  }
+  
+  /* Completely hide measured relief tracker card */
+  .orbit-tracker-card {
+    display: none !important;
+  }
+  
+  /* Ensure no gap remains */
+  .orbit-container {
+    padding-bottom: 1rem !important;
+  }
+  
+  .nb-hero-col-right .orbit-controls {
+    margin-bottom: 0 !important;
   }
 }
 

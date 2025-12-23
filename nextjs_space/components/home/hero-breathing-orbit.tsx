@@ -283,12 +283,12 @@ export function HeroBreathingOrbit() {
       </div>
 
       {/* Breathing Guidance */}
-      <div className="orbit-guidance-box">
+      <div className="orbit-guidance-box" aria-hidden={typeof window !== 'undefined' && window.innerWidth <= 900 ? 'true' : 'false'}>
         Breathing guidance: inhale for four counts, hold for two counts, and exhale for six counts. Today's focused minutes display above.
       </div>
 
       {/* Measured Relief Tracker */}
-      <div className="orbit-tracker-card">
+      <div className="orbit-tracker-card" aria-hidden={typeof window !== 'undefined' && window.innerWidth <= 900 ? 'true' : 'false'}>
         <div className="orbit-tracker-header">
           <span className="orbit-tracker-title">Measured relief tracker</span>
           <span className="orbit-tracker-pill">
