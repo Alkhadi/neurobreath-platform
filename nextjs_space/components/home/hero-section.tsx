@@ -6,67 +6,86 @@ import { HeroBreathingOrbit } from '@/components/home/hero-breathing-orbit'
 import { QuickWinPlanner } from '@/components/home/quick-win-planner'
 import { BeginSessionModal } from '@/components/BeginSessionModal'
 import Link from 'next/link'
-import { Play, Sparkles, ArrowRight } from 'lucide-react'
+import { Zap, Sparkles, ArrowRight } from 'lucide-react'
 
 export default function HeroSection() {
   const [showQuickStart, setShowQuickStart] = useState(false)
 
   return (
-    <section id="vp-home-hero" className="nb-hero-section" aria-label="Measured breathing hero">
-      <div className="nb-hero-container">
-        <div className="nb-hero-content">
-          
-          {/* Left Column: Text & CTA */}
-          <div className="nb-hero-left">
-            <div className="nb-hero-badge">
-              🧠 Built for Neurodiversity
-            </div>
-            
-            <h1 className="nb-hero-title">
-              Measured breathing.<br />
-              Measurable relief.
-            </h1>
+    <section id="vp-home-hero" className="nb-hero-section-v2" aria-label="Measured breathing hero">
+      <div className="nb-hero-container-v2">
+        {/* Main Title */}
+        <h1 className="nb-hero-main-title">
+          Measured breathing. Measurable relief.
+        </h1>
 
-            <p className="nb-hero-tagline">
-              Guided breathing, voice cues, and evidence-based resources built specifically for neurodivergent minds.
-            </p>
-
-            <p className="nb-hero-description">
-              NeuroBreath helps neurodivergent people and their supporters build calm, focus and stability through practical tools, guided breathing, training, and low-pressure progress tracking.
-            </p>
-
-            {/* Quick Start Button */}
-            <div className="nb-hero-actions">
-              <button
-                onClick={() => setShowQuickStart(true)}
-                className="nb-hero-cta-primary"
-                aria-label="Start quick breathing session"
-              >
-                <Play size={20} className="nb-hero-cta-icon" />
-                <span className="nb-hero-cta-text">
-                  <span className="nb-hero-cta-main">Click here for a Quick Start</span>
-                  <span className="nb-hero-cta-sub">2-5 minute breathing session • Earn rewards</span>
-                </span>
-                <Sparkles size={18} className="nb-hero-cta-sparkle" />
-              </button>
-
-              <Link href="/get-started" className="nb-hero-cta-secondary">
-                Explore All Tools
-                <ArrowRight size={16} />
-              </Link>
+        {/* Two-column layout */}
+        <div className="nb-hero-two-col">
+          {/* Left Column: Glass Cards */}
+          <div className="nb-hero-col-left">
+            {/* HERO CARD 1: Glass card with two lines */}
+            <div className="nb-glass-card-primary">
+              <p className="nb-glass-line-bold">
+                Guided breathing, voice cues, and evidence-based resources built for neurodiversity.
+              </p>
+              <p className="nb-glass-line-normal">
+                Free to use and share across classrooms, clinics, and home practice.
+              </p>
             </div>
 
-            {/* Trust Badges */}
-            <div className="nb-hero-badges">
-              <span className="nb-hero-badge-item">✅ Free Forever</span>
-              <span className="nb-hero-badge-item">🔒 Privacy First</span>
-              <span className="nb-hero-badge-item">🧠 Neuro-Inclusive</span>
-              <span className="nb-hero-badge-item">🔬 Evidence-Based</span>
+            {/* Paragraph under card */}
+            <p className="nb-hero-paragraph">
+              NeuroBreath helps neurodivergent people and their supporters build calm, focus and stability through practical tools, guided breathing, training, and low-pressure progress tracking. Start with a 2–5 minute Quick Win today and earn rewards you can actually use.
+            </p>
+
+            {/* Yellow CTA Button */}
+            <button
+              onClick={() => setShowQuickStart(true)}
+              className="nb-hero-yellow-btn"
+              aria-label="Start quick breathing session"
+            >
+              <Zap size={20} className="nb-btn-icon" />
+              Click here for a quick start
+            </button>
+
+            {/* HERO CARD 2: Large glass panel with features */}
+            <div className="nb-glass-card-secondary">
+              <h3 className="nb-glass-heading">Key features</h3>
+              
+              <ul className="nb-glass-features-list">
+                <li>Voice-guided breathing cues with adjustable timings for neuro-inclusive learning</li>
+                <li>Private progress tracking: session minutes, breath counts, and daily streaks stored locally on your device</li>
+                <li>Auto-updating resources: printable guides, QR code cards, and shareable materials sync with your progress</li>
+                <li>
+                  <Link href="/tools/focus-training" className="nb-feature-link">
+                    🌱 Focus Training — Interactive plant-based focus exercises for sustained attention
+                  </Link>
+                </li>
+              </ul>
+
+              {/* Chips row */}
+              <div className="nb-chips-row">
+                <span className="nb-chip">Neuro-inclusive</span>
+                <span className="nb-chip">Evidence-based</span>
+                <span className="nb-chip">Share-ready</span>
+              </div>
+
+              {/* Common Concerns */}
+              <h4 className="nb-glass-subheading">Common concerns</h4>
+              
+              <div className="nb-concern-pills">
+                <Link href="/conditions/anxiety" className="nb-pill-btn">Stress & Anxiety</Link>
+                <Link href="/conditions/anxiety" className="nb-pill-btn">Panic Symptoms</Link>
+                <Link href="/sleep" className="nb-pill-btn">Sleep Issues</Link>
+                <Link href="/conditions/anxiety" className="nb-pill-btn">Focus & Tests</Link>
+                <Link href="/conditions/anxiety" className="nb-pill-btn">PTSD Support*</Link>
+                <Link href="/conditions/low-mood-burnout" className="nb-pill-btn">Low Mood</Link>
+              </div>
             </div>
           </div>
 
-          {/* Right Column: Breathing Orbit */}
-          <div className="nb-hero-right">
+          {/* Right Column: Breathing Orbit (50% shorter) */}
+          <div className="nb-hero-col-right">
             <HeroBreathingOrbit />
           </div>
         </div>
@@ -74,37 +93,6 @@ export default function HeroSection() {
         {/* Quick Win Planner */}
         <div className="nb-hero-bottom">
           <QuickWinPlanner />
-        </div>
-
-        {/* Common Concerns */}
-        <div className="nb-hero-concerns">
-          <h3 className="nb-hero-concerns-title">Common concerns we support:</h3>
-          <div className="nb-hero-concerns-grid">
-            <Link href="/conditions/anxiety" className="nb-concern-card">
-              <span className="nb-concern-emoji">😰</span>
-              <span className="nb-concern-text">Stress & Anxiety</span>
-            </Link>
-            <Link href="/conditions/anxiety" className="nb-concern-card">
-              <span className="nb-concern-emoji">😱</span>
-              <span className="nb-concern-text">Panic Symptoms</span>
-            </Link>
-            <Link href="/sleep" className="nb-concern-card">
-              <span className="nb-concern-emoji">💤</span>
-              <span className="nb-concern-text">Sleep Issues</span>
-            </Link>
-            <Link href="/conditions/anxiety" className="nb-concern-card">
-              <span className="nb-concern-emoji">🎯</span>
-              <span className="nb-concern-text">Focus & Tests</span>
-            </Link>
-            <Link href="/adhd" className="nb-concern-card">
-              <span className="nb-concern-emoji">🌀</span>
-              <span className="nb-concern-text">ADHD Support</span>
-            </Link>
-            <Link href="/conditions/low-mood-burnout" className="nb-concern-card">
-              <span className="nb-concern-emoji">🌧️</span>
-              <span className="nb-concern-text">Low Mood</span>
-            </Link>
-          </div>
         </div>
       </div>
 

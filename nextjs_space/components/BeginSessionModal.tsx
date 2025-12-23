@@ -1,166 +1,384 @@
 'use client'
 
-import { useState } from 'react'
-import { X, Play, Clock, Heart, Sparkles } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { X, Play, Pause, Square, Volume2, VolumeX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation'
 
 interface BeginSessionModalProps {
   isOpen: boolean
   onClose: () => void
 }
 
+type View = 'picker' | 'session'
+type Phase = 'inhale' | 'hold' | 'exhale' | 'ready'
+
 export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
-  const router = useRouter()
-  const [selectedDuration, setSelectedDuration] = useState<number>(2)
-  const [selectedTechnique, setSelectedTechnique] = useState<string>('box-breathing')
+  const [view, setView] = useState<View>('picker')
+  const [selectedDuration, setSelectedDuration] = useState<number>(1)
+  const [selectedTechnique, setSelectedTechnique] = useState<string>('4-7-8')
+  const [selectedVoice, setSelectedVoice] = useState<string>('british-male')
+  const [voiceEnabled, setVoiceEnabled] = useState(true)
+  
+  // Session state
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [phase, setPhase] = useState<Phase>('ready')
+  const [timeRemaining, setTimeRemaining] = useState(0)
+  const [totalTime, setTotalTime] = useState(0)
+  
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
+
+  useEffect(() => {
+    if (!isOpen) {
+      setView('picker')
+      setIsPlaying(false)
+      setPhase('ready')
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+  }, [isOpen])
 
   if (!isOpen) return null
 
-  const durations = [
-    { value: 1, label: '1 min', points: 10 },
-    { value: 2, label: '2 min', points: 25 },
-    { value: 5, label: '5 min', points: 50 },
-    { value: 10, label: '10 min', points: 100 }
-  ]
-
   const techniques = [
-    { id: 'box-breathing', name: 'Box Breathing', emoji: '🟩', path: '/techniques/box-breathing', desc: 'Equal counts (4-4-4-4)' },
-    { id: '4-7-8', name: '4-7-8 Breathing', emoji: '🟦', path: '/techniques/4-7-8', desc: 'Calming exhale focus' },
-    { id: 'coherent', name: 'Coherent 5-5', emoji: '🟪', path: '/techniques/coherent', desc: 'Heart-rate variability' },
-    { id: 'sos', name: '60-second SOS', emoji: '🆘', path: '/techniques/sos', desc: 'Quick panic relief' }
+    { 
+      id: 'box-breathing', 
+      name: 'Box breathing', 
+      subtitle: 'Equal 4-4-4-4 pacing',
+      color: 'bg-green-50 border-green-200',
+      colorActive: 'bg-green-100 border-green-400'
+    },
+    { 
+      id: '4-7-8', 
+      name: '4–7–8 breathing', 
+      subtitle: 'Slow exhale wind-down',
+      color: 'bg-blue-50 border-blue-200',
+      colorActive: 'bg-blue-100 border-blue-400'
+    },
+    { 
+      id: 'coherent', 
+      name: 'Coherent 5–5', 
+      subtitle: 'HRV-friendly resonance',
+      color: 'bg-purple-50 border-purple-200',
+      colorActive: 'bg-purple-100 border-purple-400'
+    },
+    { 
+      id: 'sos', 
+      name: '60-second SOS', 
+      subtitle: 'Rapid calm cue',
+      color: 'bg-red-50 border-red-200',
+      colorActive: 'bg-red-100 border-red-400'
+    }
   ]
 
-  const handleStart = () => {
+  const voiceOptions = [
+    { id: 'british-male', label: 'British male' },
+    { id: 'british-female', label: 'British female' },
+    { id: 'us-male', label: 'US male' },
+    { id: 'us-female', label: 'US female' }
+  ]
+
+  const speak = (text: string) => {
+    if (!voiceEnabled || typeof window === 'undefined' || !window.speechSynthesis) return
+    
+    window.speechSynthesis.cancel()
+    const utterance = new SpeechSynthesisUtterance(text)
+    utterance.rate = 0.9
+    utterance.pitch = 1.0
+    window.speechSynthesis.speak(utterance)
+    utteranceRef.current = utterance
+  }
+
+  const readInstructions = () => {
     const technique = techniques.find(t => t.id === selectedTechnique)
     if (technique) {
-      router.push(`${technique.path}?duration=${selectedDuration}`)
+      speak(`${technique.name}. ${technique.subtitle}. Pick a warm-up technique and duration. We will start your session with voice guidance.`)
     }
-    onClose()
+  }
+
+  const stopVoice = () => {
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel()
+    }
+  }
+
+  const testVoice = () => {
+    speak('This is a voice test. Daniel, English, Great Britain.')
+  }
+
+  const handleStartBreathing = () => {
+    const totalSeconds = selectedDuration * 60
+    setTotalTime(totalSeconds)
+    setTimeRemaining(totalSeconds)
+    setView('session')
+    setIsPlaying(true)
+    startBreathingCycle()
+  }
+
+  const startBreathingCycle = () => {
+    setPhase('inhale')
+    speak('Inhale')
+    
+    // Simplified breathing cycle
+    let cycleStep = 0
+    intervalRef.current = setInterval(() => {
+      cycleStep++
+      
+      if (cycleStep === 4) {
+        setPhase('hold')
+        speak('Hold')
+      } else if (cycleStep === 6) {
+        setPhase('exhale')
+        speak('Exhale')
+      } else if (cycleStep === 12) {
+        setPhase('inhale')
+        speak('Inhale')
+        cycleStep = 0
+      }
+      
+      setTimeRemaining(prev => {
+        if (prev <= 1) {
+          if (intervalRef.current) clearInterval(intervalRef.current)
+          setIsPlaying(false)
+          setPhase('ready')
+          speak('Session complete')
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+  }
+
+  const handlePause = () => {
+    setIsPlaying(false)
+    if (intervalRef.current) clearInterval(intervalRef.current)
+    stopVoice()
+  }
+
+  const handleResume = () => {
+    setIsPlaying(true)
+    startBreathingCycle()
+  }
+
+  const handleStop = () => {
+    setIsPlaying(false)
+    setPhase('ready')
+    if (intervalRef.current) clearInterval(intervalRef.current)
+    stopVoice()
+    setView('picker')
+  }
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
   return (
     <>
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-black/50 z-[9998] animate-in fade-in duration-200"
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998] animate-in fade-in duration-200"
         onClick={onClose}
         aria-hidden="true"
       />
       
       {/* Modal */}
       <div 
-        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-2xl bg-white rounded-xl shadow-2xl z-[9999] animate-in zoom-in-95 duration-200"
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-xl bg-white rounded-2xl shadow-2xl z-[9999] animate-in zoom-in-95 duration-200"
         role="dialog"
         aria-modal="true"
         aria-labelledby="quick-start-title"
+        onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-6">
-          {/* Header */}
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <h2 id="quick-start-title" className="text-2xl font-bold text-gray-900">
-                🚀 Quick Start Session
+        {view === 'picker' ? (
+          <div className="p-6">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 id="quick-start-title" className="text-xl font-bold text-gray-900">
+                Choose a breathing technique
               </h2>
-              <p className="text-sm text-gray-600 mt-1">
-                Choose your breathing technique and duration
-              </p>
-            </div>
-            <button
-              onClick={onClose}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-              aria-label="Close modal"
-            >
-              <X size={20} className="text-gray-500" />
-            </button>
-          </div>
-
-          {/* Duration Selection */}
-          <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-700 mb-3">
-              <Clock size={16} className="inline mr-2" />
-              Select Duration
-            </label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {durations.map((duration) => (
-                <button
-                  key={duration.value}
-                  onClick={() => setSelectedDuration(duration.value)}
-                  className={`p-4 rounded-lg border-2 transition-all ${
-                    selectedDuration === duration.value
-                      ? 'border-blue-500 bg-blue-50 shadow-md'
-                      : 'border-gray-200 bg-white hover:border-gray-300'
-                  }`}
-                >
-                  <div className="text-lg font-bold text-gray-900">{duration.label}</div>
-                  <div className="text-xs text-gray-500 mt-1">+{duration.points} pts</div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Technique Selection */}
-          <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-700 mb-3">
-              <Heart size={16} className="inline mr-2" />
-              Choose Technique
-            </label>
-            <div className="space-y-3">
-              {techniques.map((technique) => (
-                <button
-                  key={technique.id}
-                  onClick={() => setSelectedTechnique(technique.id)}
-                  className={`w-full p-4 rounded-lg border-2 text-left transition-all ${
-                    selectedTechnique === technique.id
-                      ? 'border-blue-500 bg-blue-50 shadow-md'
-                      : 'border-gray-200 bg-white hover:border-gray-300'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{technique.emoji}</span>
-                      <div>
-                        <div className="font-semibold text-gray-900">{technique.name}</div>
-                        <div className="text-sm text-gray-500">{technique.desc}</div>
-                      </div>
-                    </div>
-                    {selectedTechnique === technique.id && (
-                      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-500">
-                        <div className="h-2 w-2 rounded-full bg-white" />
-                      </div>
-                    )}
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Start Button */}
-          <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-            <div className="text-sm text-gray-600">
-              <Sparkles size={16} className="inline mr-1" />
-              Earn{' '}
-              <span className="font-semibold text-blue-600">
-                {durations.find(d => d.value === selectedDuration)?.points || 0} points
-              </span>
-            </div>
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
+              <button
                 onClick={onClose}
+                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                aria-label="Close modal"
+              >
+                <X size={20} className="text-gray-600" />
+              </button>
+            </div>
+
+            {/* Narration Voice Section */}
+            <div className="mb-6 p-4 bg-amber-50 rounded-lg border border-amber-100">
+              <div className="flex items-center gap-2 mb-2">
+                <Volume2 size={16} className="text-gray-600" />
+                <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                  Narration Voice
+                </label>
+              </div>
+              <p className="text-sm font-medium text-gray-900 mb-3">Choose narration voice</p>
+              
+              <div className="flex flex-wrap gap-2 mb-3">
+                <select 
+                  value={selectedVoice}
+                  onChange={(e) => setSelectedVoice(e.target.value)}
+                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {voiceOptions.map(v => (
+                    <option key={v.id} value={v.id}>{v.label}</option>
+                  ))}
+                </select>
+                <button
+                  onClick={readInstructions}
+                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  Read instructions
+                </button>
+                <button
+                  onClick={stopVoice}
+                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  Stop
+                </button>
+              </div>
+              
+              <button
+                onClick={testVoice}
+                className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50 mb-2"
+              >
+                Voice test
+              </button>
+              
+              <p className="text-xs text-gray-600">Daniel • en-GB</p>
+            </div>
+
+            {/* Instruction Text */}
+            <p className="text-sm text-gray-700 mb-4">
+              Pick a warm-up technique and duration. We will start your session with voice guidance.
+            </p>
+
+            {/* Technique Grid */}
+            <div className="grid grid-cols-2 gap-3 mb-6">
+              {techniques.map(tech => (
+                <button
+                  key={tech.id}
+                  onClick={() => setSelectedTechnique(tech.id)}
+                  className={`relative p-4 rounded-lg border-2 text-left transition-all ${
+                    selectedTechnique === tech.id ? tech.colorActive : tech.color
+                  }`}
+                >
+                  {selectedTechnique === tech.id && (
+                    <span className="absolute top-2 right-2 px-2 py-0.5 text-xs font-semibold bg-white rounded-full border border-gray-300">
+                      Selected
+                    </span>
+                  )}
+                  <div className="font-semibold text-gray-900 mb-1">{tech.name}</div>
+                  <div className="text-xs text-gray-600">{tech.subtitle}</div>
+                </button>
+              ))}
+            </div>
+
+            {/* Session Duration */}
+            <div className="mb-6">
+              <h3 className="text-sm font-semibold text-gray-900 mb-2">Session duration</h3>
+              <p className="text-xs text-gray-600 mb-3">Tap a timing that feels doable today.</p>
+              
+              <div className="flex gap-2">
+                {[1, 2, 3, 4, 5].map(min => (
+                  <button
+                    key={min}
+                    onClick={() => setSelectedDuration(min)}
+                    className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all ${
+                      selectedDuration === min
+                        ? 'bg-blue-50 border-blue-400 text-blue-900'
+                        : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    {min} min
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer Buttons */}
+            <div className="flex gap-3">
+              <button
+                onClick={onClose}
+                className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Cancel
-              </Button>
-              <Button
-                onClick={handleStart}
-                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg"
+              </button>
+              <button
+                onClick={handleStartBreathing}
+                className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
               >
-                <Play size={16} className="mr-2" />
-                Start Session
-              </Button>
+                Start breathing
+              </button>
             </div>
           </div>
-        </div>
+        ) : (
+          /* Session View */
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">Breathing Session</h2>
+              <button
+                onClick={handleStop}
+                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                aria-label="Stop session"
+              >
+                <X size={20} className="text-gray-600" />
+              </button>
+            </div>
+
+            {/* Timer Display */}
+            <div className="text-center mb-8">
+              <div className="text-5xl font-bold text-gray-900 mb-2">{formatTime(timeRemaining)}</div>
+              <div className="text-sm text-gray-600">Time remaining</div>
+            </div>
+
+            {/* Phase Display */}
+            <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-8 mb-6 text-center">
+              <div className="text-3xl font-bold text-gray-900 capitalize mb-2">{phase}</div>
+              <div className="w-32 h-32 mx-auto bg-gradient-to-br from-blue-200 to-purple-200 rounded-full animate-pulse" />
+            </div>
+
+            {/* Progress Bar */}
+            <div className="mb-6">
+              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-1000"
+                  style={{ width: `${((totalTime - timeRemaining) / totalTime) * 100}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Controls */}
+            <div className="flex gap-3 justify-center">
+              {!isPlaying ? (
+                <button
+                  onClick={handleResume}
+                  className="px-6 py-3 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+                >
+                  <Play size={18} />
+                  Resume
+                </button>
+              ) : (
+                <button
+                  onClick={handlePause}
+                  className="px-6 py-3 text-sm font-medium text-white bg-amber-500 rounded-lg hover:bg-amber-600 transition-colors flex items-center gap-2"
+                >
+                  <Pause size={18} />
+                  Pause
+                </button>
+              )}
+              <button
+                onClick={handleStop}
+                className="px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
+              >
+                <Square size={18} />
+                Stop
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </>
   )
