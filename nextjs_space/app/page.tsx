@@ -4,6 +4,7 @@ import { GoalsAssist } from '@/components/home/goals-assist'
 import DailyPracticePlayer from '@/components/home/daily-practice-player'
 import ChallengesSection from '@/components/home/challenges-section'
 import ToolsLab from '@/components/home/tools-lab'
+import PlayfulBreathingLab from '@/components/home/playful-breathing-lab'
 import EvidenceSection from '@/components/home/evidence-section'
 import RewardsSection from '@/components/home/rewards-section'
 import ShareSupportSection from '@/components/home/share-support-section'
@@ -47,6 +48,10 @@ export default function HomePage() {
       <hr className="section-divider" aria-hidden="true" />
       
       <ToolsLab />
+      
+      <hr className="section-divider" aria-hidden="true" />
+      
+      <PlayfulBreathingLab />
       
       <hr className="section-divider" aria-hidden="true" />
       
