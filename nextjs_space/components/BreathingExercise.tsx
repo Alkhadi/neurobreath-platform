@@ -7,17 +7,17 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   Wind, Play, Pause, RotateCcw, Maximize2, Minimize2, 
-  Volume2, VolumeX, AlertTriangle, Car, Clock, X
+  Volume2, VolumeX, AlertTriangle, Car, Clock, X, Music, Mic, MicOff
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
-
-const BREATHING_PATTERNS = {
-  box: { name: 'Box Breathing', phases: [4, 4, 4, 4], labels: ['Inhale', 'Hold', 'Exhale', 'Hold'], cycleTime: 16 },
-  '4-7-8': { name: '4-7-8 Breathing', phases: [4, 7, 8], labels: ['Inhale', 'Hold', 'Exhale'], cycleTime: 19 },
-  coherent: { name: 'Coherent 5-5', phases: [5, 5], labels: ['Inhale', 'Exhale'], cycleTime: 10 },
-  sos: { name: 'SOS 60s Reset', phases: [4, 6], labels: ['Inhale', 'Exhale'], cycleTime: 10 },
-};
+import { 
+  useBreathingAudio, 
+  BREATHING_PATTERNS, 
+  AMBIENT_SOUNDS,
+  createEnhancedAmbientSounds,
+  type BreathingPattern 
+} from '@/hooks/useBreathingAudio';
 
 const TIME_OPTIONS = [
   { value: 60, label: '1 min' },
@@ -27,35 +27,36 @@ const TIME_OPTIONS = [
   { value: 600, label: '10 min' },
 ];
 
-const AMBIENT_SOUNDS = [
-  { id: 'none', name: 'None', emoji: '🔇' },
-  { id: 'rain', name: 'Rain', emoji: '🌧️' },
-  { id: 'ocean', name: 'Ocean Waves', emoji: '🌊' },
-  { id: 'birds', name: 'Forest Birds', emoji: '🐦' },
-  { id: 'bowl', name: 'Singing Bowl', emoji: '🎵' },
-  { id: 'wind', name: 'Wind Chimes', emoji: '🎐' },
-];
-
-type Pattern = keyof typeof BREATHING_PATTERNS;
+type VoiceMode = 'audio' | 'tts' | 'off';
 
 interface BreathingExerciseProps {
-  initialPattern?: Pattern;
+  initialPattern?: BreathingPattern;
 }
 
 export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseProps) {
-  const [pattern, setPattern] = useState<Pattern>(initialPattern);
+  const [pattern, setPattern] = useState<BreathingPattern>(initialPattern);
   const [isActive, setIsActive] = useState(false);
   const [phase, setPhase] = useState(0);
   const [countdown, setCountdown] = useState(0);
   const [cycles, setCycles] = useState(0);
   const [totalTime, setTotalTime] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [voiceCoachEnabled, setVoiceCoachEnabled] = useState(true);
+  const [voiceMode, setVoiceMode] = useState<VoiceMode>('audio'); // audio, tts, or off
   const [ambientSound, setAmbientSound] = useState('none');
   const [targetDuration, setTargetDuration] = useState(60);
   const [showDrivingWarning, setShowDrivingWarning] = useState(true);
+  const [breathCount, setBreathCount] = useState(0);
   
+  // Audio hooks
   const { speak, cancel, speaking } = useSpeechSynthesis();
+  const { 
+    playInstructions, 
+    pauseInstructions, 
+    resumeInstructions, 
+    stopInstructions,
+    isPlaying: audioPlaying 
+  } = useBreathingAudio();
+  
   const audioContextRef = useRef<AudioContext | null>(null);
   const ambientNodesRef = useRef<{
     sources: AudioScheduledSourceNode[];
@@ -74,24 +75,45 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
     };
   }, []);
 
-  // Announce phase changes with voice coach
+  // Handle voice coaching - pre-recorded audio or TTS
   useEffect(() => {
-    if (!isActive || !voiceCoachEnabled) return;
+    if (!isActive) return;
     
-    const currentPattern = BREATHING_PATTERNS[pattern];
-    const phaseLabel = currentPattern.labels[phase];
-    
-    if (phaseLabel && countdown === currentPattern.phases[phase]) {
-      speak(phaseLabel);
+    if (voiceMode === 'audio') {
+      // Use pre-recorded breathing instructions
+      if (audioPlaying) {
+        resumeInstructions();
+      } else {
+        playInstructions(pattern, true);
+      }
+    } else if (voiceMode === 'tts') {
+      // Use TTS for phase announcements
+      const currentPattern = BREATHING_PATTERNS[pattern];
+      const phaseData = currentPattern.phases[phase];
+      
+      if (phaseData && countdown === phaseData.duration) {
+        speak(phaseData.name);
+      }
     }
-  }, [phase, countdown, isActive, voiceCoachEnabled, pattern, speak]);
+  }, [phase, countdown, isActive, voiceMode, pattern, speak, playInstructions, resumeInstructions, audioPlaying]);
+  
+  // Stop audio when session ends
+  useEffect(() => {
+    if (!isActive) {
+      if (voiceMode === 'audio') {
+        pauseInstructions();
+      } else if (voiceMode === 'tts') {
+        cancel();
+      }
+    }
+  }, [isActive, voiceMode, pauseInstructions, cancel]);
 
   // Main breathing timer
   useEffect(() => {
     if (!isActive) return;
 
     const currentPattern = BREATHING_PATTERNS[pattern];
-    const phaseTime = currentPattern.phases[phase];
+    const phaseTime = currentPattern.phases[phase].duration;
 
     if (countdown === 0) {
       setCountdown(phaseTime);
@@ -104,10 +126,12 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
             const nextPhase = (p + 1) % currentPattern.phases.length;
             if (nextPhase === 0) {
               setCycles((cy) => cy + 1);
+              // Count breaths (one complete cycle)
+              setBreathCount((bc) => bc + 1);
             }
             return nextPhase;
           });
-          return currentPattern.phases[(phase + 1) % currentPattern.phases.length];
+          return currentPattern.phases[(phase + 1) % currentPattern.phases.length].duration;
         }
         return c - 1;
       });
@@ -117,156 +141,54 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
         // Auto-stop when target duration reached
         if (newTime >= targetDuration) {
           setIsActive(false);
-          if (voiceCoachEnabled) {
+          if (voiceMode !== 'off') {
             speak('Session complete. Well done.');
           }
+          stopInstructions();
+          // Save the completed session
+          setTimeout(() => {
+            if (newTime >= 30 && breathCount > 0) {
+              try {
+                const session = {
+                  pattern: pattern,
+                  patternName: BREATHING_PATTERNS[pattern].name,
+                  duration: newTime,
+                  breaths: breathCount,
+                  cycles: cycles,
+                  timestamp: new Date().toISOString(),
+                  voiceMode: voiceMode,
+                  ambientSound: ambientSound,
+                  completed: true,
+                };
+                
+                const existingSessions = localStorage.getItem('nb_breathing_sessions');
+                const sessions = existingSessions ? JSON.parse(existingSessions) : [];
+                sessions.push(session);
+                if (sessions.length > 100) sessions.shift();
+                localStorage.setItem('nb_breathing_sessions', JSON.stringify(sessions));
+                
+                // Update stats
+                const stats = {
+                  totalSessions: sessions.length,
+                  totalBreaths: sessions.reduce((sum: number, s: any) => sum + s.breaths, 0),
+                  totalMinutes: Math.floor(sessions.reduce((sum: number, s: any) => sum + s.duration, 0) / 60),
+                  lastSession: new Date().toISOString(),
+                };
+                localStorage.setItem('nb_breathing_stats', JSON.stringify(stats));
+              } catch (e) {
+                console.error('Failed to save session:', e);
+              }
+            }
+          }, 100);
         }
         return newTime;
       });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [isActive, countdown, phase, pattern, targetDuration, voiceCoachEnabled, speak]);
+  }, [isActive, countdown, phase, pattern, targetDuration, voiceMode, speak, stopInstructions]);
 
-  // Create ambient sound generators using Web Audio API
-  const createRainSound = (ctx: AudioContext, gainNode: GainNode) => {
-    // White noise for rain
-    const bufferSize = ctx.sampleRate * 2;
-    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const output = noiseBuffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      output[i] = Math.random() * 2 - 1;
-    }
-    
-    const whiteNoise = ctx.createBufferSource();
-    whiteNoise.buffer = noiseBuffer;
-    whiteNoise.loop = true;
-    
-    const bandpass = ctx.createBiquadFilter();
-    bandpass.type = 'bandpass';
-    bandpass.frequency.value = 1000;
-    bandpass.Q.value = 0.5;
-    
-    whiteNoise.connect(bandpass);
-    bandpass.connect(gainNode);
-    whiteNoise.start();
-    
-    return [whiteNoise];
-  };
-
-  const createOceanSound = (ctx: AudioContext, gainNode: GainNode) => {
-    // Low frequency oscillation with noise
-    const lfo = ctx.createOscillator();
-    lfo.type = 'sine';
-    lfo.frequency.value = 0.1;
-    
-    const lfoGain = ctx.createGain();
-    lfoGain.gain.value = 300;
-    
-    const carrier = ctx.createOscillator();
-    carrier.type = 'sine';
-    carrier.frequency.value = 100;
-    
-    lfo.connect(lfoGain);
-    lfoGain.connect(carrier.frequency);
-    
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 800;
-    
-    carrier.connect(filter);
-    filter.connect(gainNode);
-    
-    lfo.start();
-    carrier.start();
-    
-    return [lfo, carrier];
-  };
-
-  const createBirdsSound = (ctx: AudioContext, gainNode: GainNode) => {
-    // Random chirping tones
-    const sources: OscillatorNode[] = [];
-    
-    const chirp = () => {
-      if (!isActive) return;
-      
-      const osc = ctx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.value = 800 + Math.random() * 1200;
-      
-      const envelope = ctx.createGain();
-      envelope.gain.value = 0;
-      envelope.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.01);
-      envelope.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.1 + Math.random() * 0.2);
-      
-      osc.connect(envelope);
-      envelope.connect(gainNode);
-      
-      osc.start();
-      osc.stop(ctx.currentTime + 0.3);
-      
-      setTimeout(chirp, 1000 + Math.random() * 3000);
-    };
-    
-    chirp();
-    return sources;
-  };
-
-  const createBowlSound = (ctx: AudioContext, gainNode: GainNode) => {
-    // Singing bowl resonance
-    const fundamentals = [220, 330, 440];
-    const sources: OscillatorNode[] = [];
-    
-    fundamentals.forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      
-      const oscGain = ctx.createGain();
-      oscGain.gain.value = 0.3 / (i + 1);
-      
-      osc.connect(oscGain);
-      oscGain.connect(gainNode);
-      osc.start();
-      
-      sources.push(osc);
-    });
-    
-    return sources;
-  };
-
-  const createWindSound = (ctx: AudioContext, gainNode: GainNode) => {
-    // Wind chimes with random tones
-    const sources: OscillatorNode[] = [];
-    const notes = [523.25, 587.33, 659.25, 783.99, 880.00]; // C, D, E, G, A
-    
-    const chime = () => {
-      if (!isActive) return;
-      
-      const note = notes[Math.floor(Math.random() * notes.length)];
-      const osc = ctx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.value = note;
-      
-      const envelope = ctx.createGain();
-      envelope.gain.value = 0;
-      envelope.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.02);
-      envelope.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 2);
-      
-      osc.connect(envelope);
-      envelope.connect(gainNode);
-      
-      osc.start();
-      osc.stop(ctx.currentTime + 2);
-      
-      setTimeout(chime, 2000 + Math.random() * 4000);
-    };
-    
-    chime();
-    return sources;
-  };
-
-  // Ambient sound management
+  // Ambient sound management with enhanced quality
   useEffect(() => {
     // Stop any existing ambient sounds
     ambientNodesRef.current.sources.forEach(source => {
@@ -289,30 +211,37 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
       ctx.resume();
     }
     
+    // Find selected ambient sound configuration
+    const selectedSound = AMBIENT_SOUNDS.find(s => s.id === ambientSound);
+    
     // Create gain node for volume control
     const gainNode = ctx.createGain();
-    gainNode.gain.value = 0.15; // Subtle background volume
+    gainNode.gain.value = selectedSound?.volume || 0.15;
     gainNode.connect(ctx.destination);
     ambientNodesRef.current.gainNode = gainNode;
     
-    // Create appropriate sound based on selection
+    // Create appropriate sound based on selection using enhanced generators
+    const soundGenerators = createEnhancedAmbientSounds(ctx);
     let sources: AudioScheduledSourceNode[] = [];
     
     switch (ambientSound) {
       case 'rain':
-        sources = createRainSound(ctx, gainNode);
+        sources = soundGenerators.createRainSound(gainNode);
         break;
       case 'ocean':
-        sources = createOceanSound(ctx, gainNode);
+        sources = soundGenerators.createOceanSound(gainNode);
         break;
-      case 'birds':
-        sources = createBirdsSound(ctx, gainNode);
+      case 'forest':
+        sources = soundGenerators.createForestSound(gainNode);
+        break;
+      case 'fire':
+        sources = soundGenerators.createFireSound(gainNode);
         break;
       case 'bowl':
-        sources = createBowlSound(ctx, gainNode);
+        sources = soundGenerators.createBowlSound(gainNode);
         break;
       case 'wind':
-        sources = createWindSound(ctx, gainNode);
+        sources = soundGenerators.createWindSound(gainNode);
         break;
     }
     
@@ -330,20 +259,106 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
   }, [ambientSound, isActive]);
 
   const handleReset = () => {
+    // Save session before resetting (only if meaningful progress was made)
+    if (totalTime >= 30 && breathCount > 0) {
+      saveBreathingSession();
+    }
+    
     setIsActive(false);
     setPhase(0);
     setCountdown(0);
     setCycles(0);
     setTotalTime(0);
+    setBreathCount(0);
     cancel();
+    stopInstructions();
   };
+  
+  // Save breathing session to localStorage
+  const saveBreathingSession = () => {
+    try {
+      const session = {
+        pattern: pattern,
+        patternName: currentPattern.name,
+        duration: totalTime,
+        breaths: breathCount,
+        cycles: cycles,
+        timestamp: new Date().toISOString(),
+        voiceMode: voiceMode,
+        ambientSound: ambientSound,
+      };
+      
+      // Get existing sessions
+      const existingSessions = localStorage.getItem('nb_breathing_sessions');
+      const sessions = existingSessions ? JSON.parse(existingSessions) : [];
+      
+      // Add new session
+      sessions.push(session);
+      
+      // Keep only last 100 sessions
+      if (sessions.length > 100) {
+        sessions.shift();
+      }
+      
+      // Save back to localStorage
+      localStorage.setItem('nb_breathing_sessions', JSON.stringify(sessions));
+      
+      // Update total stats
+      const stats = {
+        totalSessions: sessions.length,
+        totalBreaths: sessions.reduce((sum: number, s: any) => sum + s.breaths, 0),
+        totalMinutes: Math.floor(sessions.reduce((sum: number, s: any) => sum + s.duration, 0) / 60),
+        lastSession: new Date().toISOString(),
+      };
+      localStorage.setItem('nb_breathing_stats', JSON.stringify(stats));
+    } catch (error) {
+      console.error('Failed to save breathing session:', error);
+    }
+  };
+  
+  // Save session when component unmounts (if active)
+  useEffect(() => {
+    return () => {
+      if (totalTime >= 30 && breathCount > 0) {
+        try {
+          const session = {
+            pattern: pattern,
+            patternName: BREATHING_PATTERNS[pattern].name,
+            duration: totalTime,
+            breaths: breathCount,
+            cycles: cycles,
+            timestamp: new Date().toISOString(),
+            voiceMode: voiceMode,
+            ambientSound: ambientSound,
+          };
+          
+          const existingSessions = localStorage.getItem('nb_breathing_sessions');
+          const sessions = existingSessions ? JSON.parse(existingSessions) : [];
+          sessions.push(session);
+          if (sessions.length > 100) sessions.shift();
+          localStorage.setItem('nb_breathing_sessions', JSON.stringify(sessions));
+        } catch (e) {
+          // Ignore errors during unmount
+        }
+      }
+    };
+  }, [pattern, totalTime, breathCount, cycles, voiceMode, ambientSound]);
 
   const handleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
   };
+  
+  // Cycle voice modes: audio -> tts -> off -> audio
+  const cycleVoiceMode = () => {
+    setVoiceMode((current) => {
+      if (current === 'audio') return 'tts';
+      if (current === 'tts') return 'off';
+      return 'audio';
+    });
+  };
 
   const currentPattern = BREATHING_PATTERNS[pattern];
-  const currentPhaseLabel = currentPattern.labels[phase] || 'Ready';
+  const currentPhaseLabel = currentPattern.phases[phase]?.name || 'Ready';
   const remainingTime = targetDuration - totalTime;
   const progressPercentage = (totalTime / targetDuration) * 100;
 
@@ -364,18 +379,19 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
 
         {/* Controls Bar */}
         <div className="absolute top-4 left-4 right-16 flex items-center gap-4 flex-wrap">
-          {/* Voice Coach Toggle */}
+          {/* Voice Mode Toggle */}
           <button
-            onClick={() => setVoiceCoachEnabled(!voiceCoachEnabled)}
+            onClick={cycleVoiceMode}
             className={cn(
               'px-4 py-2 rounded-full transition-all text-sm font-medium flex items-center gap-2',
-              voiceCoachEnabled
-                ? 'bg-green-500 text-white'
-                : 'bg-white/10 text-white/60'
+              voiceMode === 'off'
+                ? 'bg-white/10 text-white/60'
+                : 'bg-green-500 text-white'
             )}
           >
-            {voiceCoachEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-            Voice Coach
+            {voiceMode === 'audio' && <><Mic className="w-4 h-4" />Guided Audio</>}
+            {voiceMode === 'tts' && <><Volume2 className="w-4 h-4" />Voice TTS</>}
+            {voiceMode === 'off' && <><MicOff className="w-4 h-4" />Voice Off</>}
           </button>
 
           {/* Ambient Sound Selector */}
@@ -395,7 +411,7 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
         {/* Main Content */}
         <div className="relative z-10 text-center max-w-2xl w-full space-y-8">
           {/* Pattern Tabs */}
-          <Tabs value={pattern} onValueChange={(v) => setPattern(v as Pattern)} className="w-full">
+          <Tabs value={pattern} onValueChange={(v) => setPattern(v as BreathingPattern)} className="w-full">
             <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4 bg-white/10">
               <TabsTrigger value="box" className="text-white data-[state=active]:bg-white/20">Box</TabsTrigger>
               <TabsTrigger value="4-7-8" className="text-white data-[state=active]:bg-white/20">4-7-8</TabsTrigger>
@@ -448,7 +464,11 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
           </div>
 
           {/* Stats */}
-          <div className="flex justify-center gap-12">
+          <div className="flex justify-center gap-8">
+            <div className="text-center">
+              <div className="text-4xl font-bold text-white">{breathCount}</div>
+              <p className="text-sm text-white/60 mt-1">Breaths</p>
+            </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-white">{cycles}</div>
               <p className="text-sm text-white/60 mt-1">Cycles</p>
@@ -560,7 +580,7 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
         </div>
 
         {/* Pattern Selection */}
-        <Tabs value={pattern} onValueChange={(v) => setPattern(v as Pattern)} className="w-full">
+        <Tabs value={pattern} onValueChange={(v) => setPattern(v as BreathingPattern)} className="w-full">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="box">Box</TabsTrigger>
             <TabsTrigger value="4-7-8">4-7-8</TabsTrigger>
@@ -569,17 +589,21 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
           </TabsList>
         </Tabs>
 
-        {/* Voice Coach & Ambient Sound */}
+        {/* Voice Mode & Ambient Sound */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Voice Coach</label>
+            <label className="text-sm font-medium flex items-center gap-2">
+              <Music className="w-4 h-4" />
+              Voice Guidance
+            </label>
             <Button
-              onClick={() => setVoiceCoachEnabled(!voiceCoachEnabled)}
-              variant={voiceCoachEnabled ? 'default' : 'outline'}
+              onClick={cycleVoiceMode}
+              variant={voiceMode === 'off' ? 'outline' : 'default'}
               className="w-full gap-2"
             >
-              {voiceCoachEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-              {voiceCoachEnabled ? 'On' : 'Off'}
+              {voiceMode === 'audio' && <><Mic className="w-4 h-4" />Guided Audio</>}
+              {voiceMode === 'tts' && <><Volume2 className="w-4 h-4" />Voice TTS</>}
+              {voiceMode === 'off' && <><MicOff className="w-4 h-4" />Off</>}
             </Button>
           </div>
           <div className="space-y-2">
@@ -653,6 +677,10 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
         {/* Stats */}
         <div className="flex justify-around py-4 border-t">
           <div className="text-center">
+            <div className="text-xl font-bold">{breathCount}</div>
+            <p className="text-xs text-muted-foreground">breaths</p>
+          </div>
+          <div className="text-center">
             <div className="text-xl font-bold">{cycles}</div>
             <p className="text-xs text-muted-foreground">cycles</p>
           </div>
@@ -667,13 +695,7 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
         </div>
 
         <p className="text-xs text-center text-muted-foreground">
-          {currentPattern.name}. {
-            pattern === 'box' ? 'Equal 4-4-4-4 timing for all phases. Great for focus and calm.' : 
-            pattern === '4-7-8' ? 'Extended hold and exhale for deep relaxation. 4s inhale, 7s hold, 8s exhale.' : 
-            pattern === 'coherent' ? 'Simple 5-5 pattern. Inhale and exhale equally for heart rate variability.' :
-            pattern === 'sos' ? '60-second reset. 4s inhale, 6s exhale. Quick calm for transitions.' : 
-            'Breathe naturally.'
-          }
+          {currentPattern.name}. {currentPattern.description}
         </p>
       </CardContent>
     </Card>
