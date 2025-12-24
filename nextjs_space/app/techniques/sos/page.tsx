@@ -23,7 +23,7 @@ export default function SOSPage() {
             <p className="text-lg text-gray-600">{technique?.description ?? ''}</p>
           </div>
 
-          <BreathingExercise initialPattern="box" />
+          <BreathingExercise initialPattern="sos" />
         </div>
 
         {/* Benefits */}

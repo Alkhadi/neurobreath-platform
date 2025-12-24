@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, TrendingUp, Palette, Shuffle, Grid3x3, Play, ChevronUp, BookOpen, Car, Briefcase, FileText } from "lucide-react";
+import { AlertCircle, TrendingUp, Palette, Shuffle, Grid3x3, Play, ChevronUp, BookOpen, Car, Briefcase, FileText, Volume2, VolumeX } from "lucide-react";
 import Link from "next/link";
+import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 
 interface BreathLadderRung {
   level: number;
@@ -42,6 +43,10 @@ export default function PlayfulBreathingLab() {
   const [breathPhase, setBreathPhase] = useState<"inhale" | "hold" | "exhale" | "rest">("inhale");
   const [phaseTimer, setPhaseTimer] = useState(0);
   const [cyclesCompleted, setCyclesCompleted] = useState(0);
+  const [voiceCoachEnabled, setVoiceCoachEnabled] = useState(true);
+  
+  // Voice synthesis hook
+  const { speak, cancel } = useSpeechSynthesis();
   
   // Colour Path state
   const [isColourPathActive, setIsColourPathActive] = useState(false);
@@ -55,6 +60,10 @@ export default function PlayfulBreathingLab() {
   
   // Focus Tiles state
   const [selectedContext, setSelectedContext] = useState<typeof FOCUS_CONTEXTS[0] | null>(null);
+  
+  // Time preference state
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
 
   // Breath Ladder Logic
   useEffect(() => {
@@ -74,16 +83,20 @@ export default function PlayfulBreathingLab() {
         const currentPhaseDuration = phaseDurations[breathPhase];
         
         if (nextTime >= currentPhaseDuration) {
-          // Move to next phase
+          // Move to next phase and announce with voice coach
           if (breathPhase === "inhale") {
             setBreathPhase("hold");
+            if (voiceCoachEnabled) speak("Hold");
           } else if (breathPhase === "hold") {
             setBreathPhase("exhale");
+            if (voiceCoachEnabled) speak("Exhale");
           } else if (breathPhase === "exhale") {
             setBreathPhase("rest");
+            if (voiceCoachEnabled) speak("Hold");  // Use "Hold" for rest phase for consistency
           } else {
             setBreathPhase("inhale");
             setCyclesCompleted(prev => prev + 1);
+            if (voiceCoachEnabled) speak("Inhale");
           }
           return 0;
         }
@@ -92,7 +105,7 @@ export default function PlayfulBreathingLab() {
     }, 100);
     
     return () => clearInterval(timer);
-  }, [isClimbing, breathPhase, currentRung]);
+  }, [isClimbing, breathPhase, currentRung, voiceCoachEnabled, speak]);
   
   // Colour Path Logic
   useEffect(() => {
@@ -119,6 +132,7 @@ export default function PlayfulBreathingLab() {
   
   const stopLadderClimb = () => {
     setIsClimbing(false);
+    cancel();  // Stop any queued speech
     // Auto-save progress
     if (typeof window !== "undefined") {
       localStorage.setItem("nb_ladder_rung", currentRung.toString());
@@ -239,6 +253,17 @@ export default function PlayfulBreathingLab() {
                   </div>
                 </div>
               </div>
+              
+              {/* Voice Coach Toggle */}
+              <Button
+                variant={voiceCoachEnabled ? "default" : "outline"}
+                size="sm"
+                onClick={() => setVoiceCoachEnabled(!voiceCoachEnabled)}
+                className="mb-4 w-full"
+              >
+                {voiceCoachEnabled ? <Volume2 className="h-4 w-4 mr-2" /> : <VolumeX className="h-4 w-4 mr-2" />}
+                Voice Coach {voiceCoachEnabled ? "ON" : "OFF"}
+              </Button>
               
               {isClimbing && (
                 <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
@@ -528,7 +553,12 @@ export default function PlayfulBreathingLab() {
                 {/* Goal chips */}
                 <div className="flex flex-wrap gap-2 mb-4">
                   {['Calm', 'Sleep', 'Focus', 'School', 'Mood'].map((goal) => (
-                    <Badge key={goal} variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors">
+                    <Badge 
+                      key={goal} 
+                      variant={selectedGoal === goal ? "default" : "outline"}
+                      className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                      onClick={() => setSelectedGoal(goal)}
+                    >
                       {goal}
                     </Badge>
                   ))}
@@ -540,7 +570,12 @@ export default function PlayfulBreathingLab() {
                 <h4 className="font-bold mb-3">How long do you have?</h4>
                 <div className="flex gap-2 mb-4">
                   {['1 minute', '3 minutes', '5 minutes'].map((time) => (
-                    <Button key={time} variant="outline" size="sm">
+                    <Button 
+                      key={time} 
+                      variant={selectedTime === time ? "default" : "outline"} 
+                      size="sm"
+                      onClick={() => setSelectedTime(time)}
+                    >
                       {time}
                     </Button>
                   ))}

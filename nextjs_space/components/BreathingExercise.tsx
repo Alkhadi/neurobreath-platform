@@ -13,9 +13,10 @@ import { cn } from '@/lib/utils';
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 
 const BREATHING_PATTERNS = {
-  box: { name: 'Box Breathing', phases: [4, 4, 4, 4], labels: ['Inhale', 'Hold', 'Exhale', 'Hold'] },
-  '4-7-8': { name: '4-7-8 Breathing', phases: [4, 7, 8, 0], labels: ['Inhale', 'Hold', 'Exhale', ''] },
-  coherent: { name: 'Coherent 5-5', phases: [5, 0, 5, 0], labels: ['Inhale', '', 'Exhale', ''] },
+  box: { name: 'Box Breathing', phases: [4, 4, 4, 4], labels: ['Inhale', 'Hold', 'Exhale', 'Hold'], cycleTime: 16 },
+  '4-7-8': { name: '4-7-8 Breathing', phases: [4, 7, 8], labels: ['Inhale', 'Hold', 'Exhale'], cycleTime: 19 },
+  coherent: { name: 'Coherent 5-5', phases: [5, 5], labels: ['Inhale', 'Exhale'], cycleTime: 10 },
+  sos: { name: 'SOS 60s Reset', phases: [4, 6], labels: ['Inhale', 'Exhale'], cycleTime: 10 },
 };
 
 const TIME_OPTIONS = [
@@ -91,11 +92,6 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
 
     const currentPattern = BREATHING_PATTERNS[pattern];
     const phaseTime = currentPattern.phases[phase];
-
-    if (phaseTime === 0) {
-      setPhase((p) => (p + 1) % currentPattern.phases.length);
-      return;
-    }
 
     if (countdown === 0) {
       setCountdown(phaseTime);
@@ -400,10 +396,11 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
         <div className="relative z-10 text-center max-w-2xl w-full space-y-8">
           {/* Pattern Tabs */}
           <Tabs value={pattern} onValueChange={(v) => setPattern(v as Pattern)} className="w-full">
-            <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 bg-white/10">
+            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4 bg-white/10">
               <TabsTrigger value="box" className="text-white data-[state=active]:bg-white/20">Box</TabsTrigger>
               <TabsTrigger value="4-7-8" className="text-white data-[state=active]:bg-white/20">4-7-8</TabsTrigger>
               <TabsTrigger value="coherent" className="text-white data-[state=active]:bg-white/20">5-5</TabsTrigger>
+              <TabsTrigger value="sos" className="text-white data-[state=active]:bg-white/20">SOS</TabsTrigger>
             </TabsList>
           </Tabs>
 
@@ -564,10 +561,11 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
 
         {/* Pattern Selection */}
         <Tabs value={pattern} onValueChange={(v) => setPattern(v as Pattern)} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="box">Box</TabsTrigger>
             <TabsTrigger value="4-7-8">4-7-8</TabsTrigger>
             <TabsTrigger value="coherent">5-5</TabsTrigger>
+            <TabsTrigger value="sos">SOS</TabsTrigger>
           </TabsList>
         </Tabs>
 
@@ -669,7 +667,13 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
         </div>
 
         <p className="text-xs text-center text-muted-foreground">
-          {currentPattern.name}. {pattern === 'box' ? 'Equal timing for all phases. Great for focus and calm.' : pattern === '4-7-8' ? 'Calming technique. Hold longer, exhale slower.' : 'Simple and effective. Inhale and exhale equally.'}
+          {currentPattern.name}. {
+            pattern === 'box' ? 'Equal 4-4-4-4 timing for all phases. Great for focus and calm.' : 
+            pattern === '4-7-8' ? 'Extended hold and exhale for deep relaxation. 4s inhale, 7s hold, 8s exhale.' : 
+            pattern === 'coherent' ? 'Simple 5-5 pattern. Inhale and exhale equally for heart rate variability.' :
+            pattern === 'sos' ? '60-second reset. 4s inhale, 6s exhale. Quick calm for transitions.' : 
+            'Breathe naturally.'
+          }
         </p>
       </CardContent>
     </Card>

@@ -18,16 +18,37 @@ export default function ShareSupportSection() {
     const url = 'https://neurobreath.co.uk'
     const text = 'NeuroBreath: Free breathing & mindfulness tools for neurodivergent people. Evidence-based, neuro-inclusive, and privacy-first.'
 
+    // REQUIREMENT #3: WhatsApp fix - use wa.me instead of api.whatsapp.com
+    if (platform === 'whatsapp') {
+      const whatsappText = `NeuroBreath — free breathing tools: ${url}`;
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(whatsappText)}`;
+      
+      // Try Web Share API first on mobile
+      if (navigator.share && /mobile/i.test(navigator.userAgent)) {
+        try {
+          await navigator.share({ title: 'NeuroBreath', text: whatsappText });
+          toast.success('Shared successfully!');
+          return;
+        } catch (err) {
+          // Fallback to wa.me if share fails
+        }
+      }
+      
+      // Open wa.me link
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+      toast.success('Opening WhatsApp...');
+      return;
+    }
+
     const shareUrls: Record<string, string> = {
       twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
       linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
-      whatsapp: `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`,
       email: `mailto:?subject=${encodeURIComponent('Check out NeuroBreath')}&body=${encodeURIComponent(text + '\n\n' + url)}`
     }
 
     if (shareUrls[platform]) {
-      window.open(shareUrls[platform], '_blank', 'width=600,height=400')
+      window.open(shareUrls[platform], '_blank', 'noopener,noreferrer')
       toast.success(`Opening ${platform} share...`)
     }
   }
@@ -43,17 +64,18 @@ export default function ShareSupportSection() {
     }
   }
 
-  // REQUIREMENT #5: QR Code generation without external libraries
+  // REQUIREMENT #3: Professional QR Code with Logo
   const handleDownloadQR = () => {
     try {
       const url = 'https://neurobreath.co.uk'
-      const size = 300
+      const canvasSize = 1024  // High resolution
+      const qrSize = 700  // QR code size within canvas
       const qrData = encodeQRData(url)
       
-      // Create canvas
+      // Create canvas with padding for title and styling
       const canvas = document.createElement('canvas')
-      canvas.width = size
-      canvas.height = size
+      canvas.width = canvasSize
+      canvas.height = canvasSize
       const ctx = canvas.getContext('2d')
       
       if (!ctx) {
@@ -61,36 +83,104 @@ export default function ShareSupportSection() {
         return
       }
       
-      // Draw white background
+      // Draw white background with subtle border
       ctx.fillStyle = '#ffffff'
-      ctx.fillRect(0, 0, size, size)
+      ctx.fillRect(0, 0, canvasSize, canvasSize)
       
-      // Draw QR code (simple matrix)
+      // Draw outer border
+      ctx.strokeStyle = '#e5e7eb'
+      ctx.lineWidth = 4
+      ctx.strokeRect(20, 20, canvasSize - 40, canvasSize - 40)
+      
+      // Draw title
+      ctx.fillStyle = '#1f2937'
+      ctx.font = 'bold 48px system-ui, -apple-system, sans-serif'
+      ctx.textAlign = 'center'
+      ctx.fillText('Scan NeuroBreath', canvasSize / 2, 90)
+      
+      // Calculate QR position (centered with top margin for title)
+      const qrX = (canvasSize - qrSize) / 2
+      const qrY = 140
+      
+      // Draw QR code
       ctx.fillStyle = '#000000'
-      const moduleSize = size / qrData.length
+      const moduleSize = qrSize / qrData.length
+      const quietZone = 4  // 4 modules quiet zone
       
       for (let row = 0; row < qrData.length; row++) {
         for (let col = 0; col < qrData[row].length; col++) {
           if (qrData[row][col] === 1) {
-            ctx.fillRect(col * moduleSize, row * moduleSize, moduleSize, moduleSize)
+            ctx.fillRect(
+              qrX + (col * moduleSize),
+              qrY + (row * moduleSize),
+              moduleSize,
+              moduleSize
+            )
           }
         }
       }
       
-      // Convert to blob and download
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const downloadUrl = URL.createObjectURL(blob)
-          const link = document.createElement('a')
-          link.href = downloadUrl
-          link.download = 'neurobreath-qr-code.png'
-          document.body.appendChild(link)
-          link.click()
-          document.body.removeChild(link)
-          URL.revokeObjectURL(downloadUrl)
-          toast.success('QR code downloaded!')
-        }
-      }, 'image/png')
+      // Load and draw logo in center
+      const logo = new Image()
+      logo.crossOrigin = 'anonymous'
+      logo.src = '/icons/neurobreath-logo-square-128.png'
+      
+      logo.onload = () => {
+        const logoSize = qrSize * 0.2  // 20% of QR size
+        const logoX = (canvasSize - logoSize) / 2
+        const logoY = qrY + (qrSize - logoSize) / 2
+        
+        // Draw white rounded background for logo
+        const logoBackground = logoSize * 1.2
+        const logoBgX = (canvasSize - logoBackground) / 2
+        const logoBgY = qrY + (qrSize - logoBackground) / 2
+        
+        ctx.fillStyle = '#ffffff'
+        ctx.beginPath()
+        ctx.roundRect(logoBgX, logoBgY, logoBackground, logoBackground, 16)
+        ctx.fill()
+        
+        // Draw logo
+        ctx.drawImage(logo, logoX, logoY, logoSize, logoSize)
+        
+        // Add website URL at bottom
+        ctx.fillStyle = '#6b7280'
+        ctx.font = '32px system-ui, -apple-system, sans-serif'
+        ctx.textAlign = 'center'
+        ctx.fillText('neurobreath.co.uk', canvasSize / 2, qrY + qrSize + 60)
+        
+        // Convert to blob and download
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const downloadUrl = URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.href = downloadUrl
+            link.download = 'neurobreath-qr.png'
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            URL.revokeObjectURL(downloadUrl)
+            toast.success('Premium QR code downloaded!')
+          }
+        }, 'image/png')
+      }
+      
+      logo.onerror = () => {
+        // Fallback: download without logo
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const downloadUrl = URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.href = downloadUrl
+            link.download = 'neurobreath-qr.png'
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            URL.revokeObjectURL(downloadUrl)
+            toast.success('QR code downloaded!')
+          }
+        }, 'image/png')
+      }
     } catch (error) {
       toast.error('Failed to generate QR code')
     }

@@ -64,12 +64,10 @@ export const breathingTechniques: Record<string, BreathingTechnique> = {
     label: 'SOS Reset · 60s',
     phases: [
       { name: 'Inhale', duration: 4, color: '#60B5FF' },
-      { name: 'Hold', duration: 4, color: '#FF9149' },
-      { name: 'Exhale', duration: 4, color: '#FF9898' },
-      { name: 'Hold', duration: 4, color: '#A19AD3' }
+      { name: 'Exhale', duration: 6, color: '#FF9898' }
     ],
-    description: 'Quick reset for transitions',
-    benefits: ['Fast reset', 'Reduces panic', 'Quick calm'],
+    description: 'Quick 60-second reset: 4s inhale, 6s exhale. 6 cycles for immediate calm.',
+    benefits: ['60-second emergency reset', 'Reduces panic quickly', 'Perfect for transitions'],
     category: 'transition'
   }
 }
