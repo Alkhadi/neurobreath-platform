@@ -1,0 +1,168 @@
+# NeuroBreath CI/CD Pipeline
+# Runs on: Push to main, Pull Requests
+
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ====================================
+  # Web App (Next.js) - Build & Test
+  # ====================================
+  web-build:
+    name: Web App - Build & Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./web
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'yarn'
+          cache-dependency-path: web/yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: TypeScript type check
+        run: yarn tsc --noEmit
+
+      - name: Lint check
+        run: yarn lint
+
+      - name: Build production bundle
+        run: yarn build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://www.neurobreath.co.uk
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: web-build
+          path: web/.next
+          retention-days: 7
+
+  # ====================================
+  # Web App - Accessibility Audit
+  # ====================================
+  web-accessibility:
+    name: Web App - Accessibility Audit
+    runs-on: ubuntu-latest
+    needs: web-build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: web-build
+          path: web/.next
+
+      - name: Start Next.js server
+        run: |
+          cd web
+          yarn install --frozen-lockfile
+          yarn start &
+          sleep 10
+
+      - name: Run Lighthouse CI
+        run: |
+          npm install -g @lhci/cli
+          lhci autorun --config=./web/.lighthouserc.json
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+  # ====================================
+  # Web App - Deploy to Cloudflare Pages (Production only)
+  # ====================================
+  web-deploy:
+    name: Web App - Deploy to Cloudflare Pages
+    runs-on: ubuntu-latest
+    needs: [web-build, web-accessibility]
+    if: github.ref == 'refs/heads/main'  # Only deploy on main branch
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          cd web
+          yarn install --frozen-lockfile
+
+      - name: Build for production
+        run: |
+          cd web
+          yarn build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://www.neurobreath.co.uk
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy web/.next --project-name=neurobreath
+
+  # ====================================
+  # Serverless (Cloudflare Workers) - Future
+  # ====================================
+  # Uncomment when serverless/ has code
+  # serverless-deploy:
+  #   name: Serverless - Deploy Workers
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main'
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Deploy Worker
+  #       run: |
+  #         cd serverless/worker
+  #         npm install
+  #         npx wrangler deploy
+  #       env:
+  #         CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+  # ====================================
+  # Flutter App - Future
+  # ====================================
+  # Uncomment when flutter_app/ has code
+  # flutter-build:
+  #   name: Flutter - Build iOS & Android
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Setup Flutter
+  #       uses: subosito/flutter-action@v2
+  #       with:
+  #         flutter-version: '3.16.0'
+  #     - name: Build Android APK
+  #       run: |
+  #         cd flutter_app
+  #         flutter pub get
+  #         flutter build apk --release
+  #     - name: Build iOS IPA
+  #       run: |
+  #         cd flutter_app
+  #         flutter build ios --release --no-codesign

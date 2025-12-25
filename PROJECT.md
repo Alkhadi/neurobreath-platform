@@ -335,7 +335,7 @@ public/
 ### Project Structure
 ```
 neurobreath/
-├── nextjs_space/
+├── web/              # Next.js web application (formerly nextjs_space/)
 │   ├── app/
 │   │   ├── layout.tsx               # Global layout with ReadingBuddy chatbot
 │   │   ├── page.tsx                 # Homepage

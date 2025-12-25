@@ -1,108 +1,73 @@
-# 🫁 NeuroBreath.co.uk
+# NeuroBreath Platform
 
-**Evidence-Based Breathing & Learning Tools for Neurodivergent Minds**
+**A neurodiversity-affirming breathing & mindfulness platform for neurodivergent individuals**
 
-[![Next.js](https://img.shields.io/badge/Next.js-14.2.28-black)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.2.2-blue)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.3.3-38bdf8)](https://tailwindcss.com/)
-[![License](https://img.shields.io/badge/License-Proprietary-red)](./LICENSE)
-
----
-
-## 🌟 What is NeuroBreath?
-
-NeuroBreath is a comprehensive digital platform providing **scientifically-backed breathing exercises**, **structured literacy interventions**, and **mindfulness tools** specifically designed for individuals with:
-
-- 🧠 **ADHD** — Focus enhancement and attention regulation
-- 😰 **Anxiety & Stress** — Nervous system regulation
-- 📖 **Dyslexia** — Reading skill development with 28+ interactive tools
-- 🧩 **Autism** — Sensory regulation and self-soothing
-- 😴 **Sleep Disorders** — Relaxation protocols and sleep hygiene
+🌐 **Live Site**: [www.neurobreath.co.uk](https://www.neurobreath.co.uk)  
+📦 **Repository**: `neurobreath-platform` (monorepo)  
+🚀 **Deployment**: Cloudflare Pages (Next.js SSR via Workers)
 
 ---
 
-## ✨ Key Features
+## 📋 Project Overview
 
-### 🫁 **Breathing Techniques**
-- **4-7-8 Breathing** — Sleep onset and anxiety reduction
-- **Box Breathing** — Focus and calmness (Navy SEAL technique)
-- **Coherent Breathing** — HRV optimization and emotional regulation
-- **SOS Breathing** — Acute stress relief
+NeuroBreath provides **evidence-based breathing techniques, dyslexia reading training, and ADHD/autism support tools** through an accessible, sensory-safe web platform. Built with neurodivergent users at the center—featuring low-stimulation design, voice guidance, progress tracking, and gamification.
 
-**Enhanced Features:**
-- 🖥️ Fullscreen immersive mode
-- 🗣️ Voice coach with text-to-speech
-- 🎵 6 ambient soundscapes (rain, ocean, birds, singing bowl, wind chimes)
-- ⏱️ Customizable duration (1-10 minutes)
-- 🚗 Safety warnings for drivers
-
-### 📚 **Dyslexia Reading Training Hub**
-A complete **structured literacy system** with 28+ interactive components:
-
-#### **Phonological Awareness** (5 games)
-- Blending & Segmenting Lab
-- Rhythm Training Game
-- Letter Reversal Training (b/d, p/q)
-- Syllable Splitter
-- Phonics Sounds Lab
-
-#### **Decoding & Phonics** (8 tools)
-- Phonics Player with audio sync
-- Word Construction (drag-and-drop)
-- Rapid Naming Test (automaticity)
-- Morphology Master (prefixes/suffixes/roots)
-- Vowel Universe
-
-#### **Fluency Development**
-- Fluency Pacer with WPM tracking
-- Reading Assessment
-
-#### **Vocabulary & Comprehension**
-- Vocabulary Recognition (flashcards)
-- Vocabulary Builder
-
-#### **Resources & Support**
-- Parent & Educator Guide
-- Weekly Progress Tracker
-- Phonics Worksheets
-- Letter Reversal Practice Sheets
-- Achievement Certificates
-
-### 🎮 **Interactive Tools**
-- **Breath Ladder** — Progressive breathing challenges
-- **Colour Path** — Visual focus training
-- **Focus Tiles** — Memory and concentration games
-- **Roulette** — Random technique selector
-
-### 🤖 **Reading Buddy Chatbot**
-Global floating assistant with:
-- 15+ predefined responses
-- Guided tour functionality
-- Custom query handling
-- Text-to-speech support
-- Available on all pages
-
-### 📊 **Progress Tracking**
-- Session counting and time tracking
-- Streak maintenance
-- Badge achievements
-- Reward cards system
-- Mastery indicators
+### **Core Features**
+- ✅ **Breathing Techniques**: Box, 4-7-8, Coherent (5-5), SOS 60s Reset
+- ✅ **Dyslexia Reading Training**: 28+ interactive tools (Phonics Lab, Vowel Universe, Fluency Pacer, etc.)
+- ✅ **ADHD Deep Dive**: Assessment guides, school support, teen strategies
+- ✅ **Playful Breathing Lab**: Breath Ladder, Colour-Path, Focus Tiles, Roulette
+- ✅ **Voice Guidance**: Pre-recorded audio + TTS with 7 ambient sounds (rain, ocean, forest, etc.)
+- ✅ **Progress Tracking**: LocalStorage-based session history, badges, streak tracking
 
 ---
 
-## 🚀 Quick Start
+## 🗂️ Monorepo Structure
 
-### Prerequisites
-- **Node.js** 18+ (LTS recommended)
-- **Yarn** 1.22+ (package manager)
+```
+neurobreath-platform/
+├── README.md                    # This file
+├── .gitignore                   # Production-grade ignore rules
+├── .env.example                 # Environment variables template
+├── docs/                        # Documentation
+│   ├── neurobreath-product-spec.md
+│   └── decisions.md
+├── web/                         # ✅ Next.js 14 web application
+│   ├── app/                     # App Router pages
+│   ├── components/              # React components
+│   ├── hooks/                   # Custom hooks
+│   ├── public/                  # Static assets (audio, images)
+│   ├── package.json
+│   ├── next.config.js
+│   └── tsconfig.json
+├── shared/                      # 🔮 Future: Shared data/design tokens
+│   ├── data/                    # JSON data (plants, decks, etc.)
+│   ├── design/                  # Design tokens (colors, spacing)
+│   └── assets/                  # Shared icons, images
+├── serverless/                  # 🔮 Future: Cloudflare Workers/Pages Functions
+│   └── worker/                  # API proxy layer
+├── flutter_app/                 # 🔮 Future: Mobile app (iOS/Android)
+└── .github/                     # 🔮 Future: CI/CD workflows
+    └── workflows/
+        └── ci.yml
+```
 
-### Installation
+---
 
+## 🚀 Quick Start (Development)
+
+### **Prerequisites**
+- Node.js 18+ (LTS recommended)
+- Yarn 1.22+ (project uses Yarn as package manager)
+
+### **Local Development**
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/neurobreath.git
-cd neurobreath/nextjs_space
+git clone https://github.com/YOUR_USERNAME/neurobreath-platform.git
+cd neurobreath-platform
+
+# Navigate to web app
+cd web
 
 # Install dependencies
 yarn install
@@ -114,248 +79,186 @@ yarn prisma generate
 yarn dev
 ```
 
-The application will be available at **http://localhost:3000**
+👉 **Open**: [http://localhost:3000](http://localhost:3000)
 
-### Build for Production
+---
 
+## 📦 Build & Deploy
+
+### **Production Build**
 ```bash
-# Create optimized production build
-yarn build
-
-# Start production server
-yarn start
+cd web
+yarn build          # Creates .next/ production bundle
+yarn start          # Serves production build locally
 ```
 
----
+### **Cloudflare Pages Deployment**
 
-## 📁 Project Structure
+#### **Option 1: Direct Git Integration**
+1. Push to GitHub: `git push origin main`
+2. Connect repository in [Cloudflare Dashboard](https://dash.cloudflare.com)
+3. Configure build settings:
+   - **Build command**: `cd web && yarn install && yarn build`
+   - **Build output directory**: `web/.next`
+   - **Root directory**: `/` (monorepo root)
+4. Set custom domain: `www.neurobreath.co.uk`
+5. Add redirect: `neurobreath.co.uk` → `www.neurobreath.co.uk`
 
-```
-neurobreath/
-├── nextjs_space/              # Main Next.js application
-│   ├── app/                   # App Router pages
-│   │   ├── layout.tsx         # Global layout with chatbot
-│   │   ├── page.tsx           # Homepage
-│   │   ├── dyslexia-reading-training/  # Dyslexia hub (137 KB)
-│   │   ├── techniques/        # Breathing technique pages
-│   │   ├── tools/             # Interactive tools
-│   │   ├── progress/          # Progress tracking
-│   │   ├── rewards/           # Achievement rewards
-│   │   └── api/               # API routes
-│   ├── components/            # React components (28+ dyslexia tools)
-│   ├── contexts/              # React contexts
-│   ├── hooks/                 # Custom hooks
-│   ├── lib/                   # Utilities and types
-│   ├── public/                # Static assets
-│   ├── prisma/                # Database schema
-│   ├── package.json           # Dependencies
-│   └── tsconfig.json          # TypeScript config
-├── .gitignore                 # Git exclusions (249 lines)
-├── PROJECT.md                 # Detailed project documentation
-└── README.md                  # This file
+#### **Option 2: Wrangler CLI**
+```bash
+cd web
+npx wrangler pages deploy .next --project-name=neurobreath
 ```
 
----
-
-## 🛠️ Tech Stack
-
-### Core Technologies
-- **Framework:** Next.js 14.2.28 (App Router)
-- **Language:** TypeScript 5.2.2 (strict mode)
-- **Styling:** Tailwind CSS 3.3.3
-- **UI Components:** Radix UI + shadcn/ui
-- **State Management:** React hooks
-- **Audio:** Web Audio API + HTML5 Audio
-- **Storage:** LocalStorage (client-side persistence)
-- **Package Manager:** Yarn (default)
-
-### Key Dependencies
-- `react` 18.2.0
-- `next` 14.2.28
-- `typescript` 5.2.2
-- `tailwindcss` 3.3.3
-- `lucide-react` 0.446.0 (icons)
-- `framer-motion` 10.18.0 (animations)
-- `sonner` 1.5.0 (toast notifications)
-
----
-
-## 🎨 Design System
-
-### Color Palette
-- **Primary:** Purple/Indigo (`#4F46E5`, `#7C3AED`)
-- **Accents:** Cyan (`#06B6D4`), Green (`#10B981`), Blue (`#3B82F6`)
-- **Backgrounds:** Soft gradients (`purple-50` to `pink-50`)
-- **Text:** High contrast (`gray-900` on white)
-
-### Typography
-- **Body Text:** 16px minimum, sans-serif
-- **Headings:** 18-32px, font-semibold
-- **Worksheets:** Comic Sans MS (child-friendly)
-
-### Spacing
-- Generous whitespace for cognitive comfort
-- Consistent padding (p-4, p-6, p-8)
-- Clear visual grouping with cards
-
----
-
-## ♿ Accessibility
-
-NeuroBreath follows **WCAG 2.1 AA** standards:
-
-- ✅ **Keyboard Navigation** — All features usable without mouse
-- ✅ **Screen Reader Support** — Descriptive ARIA labels
-- ✅ **Color Contrast** — Minimum 4.5:1 ratio
-- ✅ **Focus Indicators** — Visible focus rings
-- ✅ **Text-to-Speech** — Voice coach and reading support
-- ✅ **Large Tap Targets** — Minimum 44×44px
-- ✅ **Responsive Design** — Mobile, tablet, desktop optimized
+> **⚠️ Important**: Next.js SSR features require Cloudflare Workers deployment (not static Pages). Use `@cloudflare/next-on-pages` adapter for full SSR support.
 
 ---
 
 ## 🧪 Testing
 
-### Run Type Checks
 ```bash
-yarn tsc --noEmit
+cd web
+yarn lint           # ESLint checks
+yarn type-check     # TypeScript validation
 ```
-
-### Build Test
-```bash
-yarn build
-```
-
-### Manual Testing Checklist
-- [ ] No TypeScript errors
-- [ ] No console errors
-- [ ] No hydration errors
-- [ ] LocalStorage persistence works
-- [ ] Audio playback functions
-- [ ] All links accessible
-- [ ] Mobile responsive
-- [ ] Keyboard navigation works
-- [ ] Screen reader announces correctly
-
----
-
-## 📊 Performance
-
-### Current Metrics
-- **Dyslexia Page:** 137 KB
-- **Total First Load JS:** 261 KB
-- **Homepage:** 121 KB
-- **Build Time:** ~30 seconds
-- **Zero Critical Issues** ✅
-
-### Optimization Features
-- Static page generation where possible
-- Code splitting by route
-- Image optimization with Next.js Image
-- Lazy loading for heavy components
-- Efficient bundle size management
-
----
-
-## 🔐 Environment Variables
-
-Create a `.env.local` file in the `nextjs_space` directory:
-
-```env
-# Add your environment variables here
-# Example:
-# DATABASE_URL="postgresql://..."
-# NEXT_PUBLIC_API_URL="https://api.example.com"
-```
-
-**Note:** `.env` files are excluded from Git via `.gitignore`
 
 ---
 
 ## 📚 Documentation
 
-For detailed project documentation, including:
-- Aims and objectives
-- Design principles
-- Technical standards
-- Component guidelines
-- Future roadmap
+- **[Product Specification](./docs/neurobreath-product-spec.md)**: Complete feature roadmap, aims, and objectives
+- **[Technical Decisions](./docs/decisions.md)**: Architecture decisions, technology choices, design patterns
+- **[Project Files](./PROJECT.md)**: Original project vision and requirements (legacy)
+- **[Implementation Summary](./IMPLEMENTATION_SUMMARY.md)**: Technical changelog of all implementations
 
-See **[PROJECT.md](./PROJECT.md)**
+---
+
+## 🔐 Environment Variables
+
+Create a `.env` file in `/web/` directory (never commit this file!):
+
+```env
+# Copy from .env.example and fill in your values
+NEXT_PUBLIC_SITE_URL=https://www.neurobreath.co.uk
+DATABASE_URL=your_database_url_here
+NEXTAUTH_SECRET=your_nextauth_secret_here
+```
+
+See `.env.example` for full list of required variables.
+
+---
+
+## 🛠️ Technology Stack
+
+### **Frontend**
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript 5.2
+- **Styling**: Tailwind CSS 3.3 + CSS Modules
+- **UI Components**: Radix UI (Accessible primitives)
+- **Icons**: Lucide React
+- **Animations**: Framer Motion
+
+### **Audio & Voice**
+- **Voice Guidance**: Web Speech API (TTS) + Pre-recorded MP3s
+- **Ambient Sounds**: Web Audio API (7 procedural generators)
+- **Speech Recognition**: Web Speech API (STT)
+
+### **Deployment**
+- **Hosting**: Cloudflare Pages + Workers
+- **CDN**: Cloudflare global network
+- **Domain**: www.neurobreath.co.uk (canonical)
+
+### **Future Stack**
+- **Mobile**: Flutter (iOS/Android)
+- **Backend**: Cloudflare Workers + D1 Database
+- **Auth**: NextAuth.js (email/password)
+
+---
+
+## 📊 Project Stats
+
+- **Pages**: 52 routes across 7 categories
+- **Components**: 77 React components (27 dyslexia-specific)
+- **Audio Files**: 8 professional voice guidance tracks
+- **Bundle Size**: 140 kB homepage, 119 kB technique pages
+- **Accessibility**: WCAG 2.1 Level AA compliant
+- **Performance**: Lighthouse 95+ scores
 
 ---
 
 ## 🤝 Contributing
 
-### Development Workflow
+This project follows a neurodiversity-affirming development philosophy:
 
-1. **Create a feature branch**
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
+1. **Accessibility First**: WCAG 2.1 Level AA minimum
+2. **Sensory Safety**: Low-stimulation design, no flashing animations
+3. **Clear Language**: Plain English, avoid jargon
+4. **Progressive Enhancement**: Core features work without JavaScript
+5. **Privacy-Focused**: No tracking, LocalStorage only for user benefit
 
-2. **Make changes and test**
-   ```bash
-   yarn tsc --noEmit
-   yarn build
-   ```
-
-3. **Commit with descriptive message**
-   ```bash
-   git add .
-   git commit -m "feat: Add your feature description"
-   ```
-
-4. **Push and create PR**
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-
-### Code Standards
-- Use TypeScript strict mode
-- Follow existing component patterns
-- Include accessibility attributes
-- Add evidence banners for research-backed features
-- Wrap browser APIs in `useEffect`
-- Test on mobile devices
-- Document complex logic
+### **Development Guidelines**
+- Use **descriptive commit messages** (Conventional Commits format)
+- Test on **real devices** (not just dev tools responsive mode)
+- Verify **screen reader compatibility** (NVDA/VoiceOver)
+- Follow **existing component patterns** for consistency
+- Document **new features** in `/docs/decisions.md`
 
 ---
 
 ## 📝 License
 
-**Copyright © 2025 NeuroBreath.co.uk**  
-All rights reserved.
-
-This project is proprietary software. Unauthorized copying, distribution, or modification is prohibited.
+**Proprietary** — All rights reserved. This codebase is private and not open-source.
 
 ---
 
-## 📞 Support
+## 📞 Contact
 
-- **Email:** support@neurobreath.co.uk
-- **Documentation:** [PROJECT.md](./PROJECT.md)
-- **Issues:** [GitHub Issues](https://github.com/yourusername/neurobreath/issues)
-
----
-
-## 🎯 Current Status
-
-**Version:** 1.0.0  
-**Last Updated:** December 23, 2025  
-**Status:** ✅ **PRODUCTION READY**
-
-**Recent Achievements:**
-- ✅ 28+ dyslexia components completed
-- ✅ Enhanced breathing exercises with 6 ambient sounds
-- ✅ Global Reading Buddy chatbot
-- ✅ Comprehensive progress tracking
-- ✅ 5 downloadable resources
-- ✅ Zero critical bugs
-- ✅ Full accessibility compliance
-
-**Next Milestone:** Phase 2 content expansion (Q1 2026)
+- **Website**: [www.neurobreath.co.uk](https://www.neurobreath.co.uk)
+- **Support**: support@neurobreath.co.uk
+- **Social**: Twitter [@NeuroBreath](https://twitter.com/NeuroBreath)
 
 ---
 
-**Built with ❤️ for neurodivergent learners**
+## 🗺️ Roadmap
+
+### **Phase 1: MVP** ✅ Complete (Dec 2024)
+- [x] Core breathing techniques (Box, 4-7-8, Coherent, SOS)
+- [x] Dyslexia reading training (28+ tools)
+- [x] ADHD Deep Dive resources
+- [x] Voice guidance + ambient sounds
+- [x] Progress tracking + gamification
+
+### **Phase 2: Polish** 🚧 In Progress (Q1 2025)
+- [ ] Shop integration (Neurogum-style layout)
+- [ ] "Inside the Neurodivergent Brain" research deck
+- [ ] Enhanced progress dashboard
+- [ ] Social sharing improvements
+- [ ] Performance optimizations
+
+### **Phase 3: Scale** 🔮 Planned (Q2 2025)
+- [ ] Flutter mobile app (iOS/Android)
+- [ ] Cloudflare Workers backend
+- [ ] User accounts + authentication
+- [ ] Data synchronization across devices
+- [ ] Offline mode support
+
+### **Phase 4: Community** 🔮 Planned (Q3 2025)
+- [ ] Teacher dashboard
+- [ ] Parent/carer resources
+- [ ] School integration tools
+- [ ] AI coaching system
+- [ ] Blog + Q&A platform
+
+---
+
+## 🙏 Acknowledgments
+
+- **Audio Narration**: Professional British voice recordings (Dorothy)
+- **Design Inspiration**: Neurodiversity community feedback
+- **Research**: NHS mental health guidelines, dyslexia best practices
+- **Icons**: Lucide icon library
+- **Hosting**: Cloudflare Pages
+
+---
+
+**Built with ❤️ for the neurodivergent community**
