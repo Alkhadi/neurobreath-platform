@@ -1,20 +1,162 @@
-**/node_modules
-.next
+# =========================
+# OS / Editor junk
+# =========================
+.DS_Store
+Thumbs.db
+
+.idea/
+*.iml
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# =========================
+# Secrets / env files (DO NOT COMMIT)
+# =========================
+.env
+.env.*
+!.env.example
+
+# Cloudflare recommends ignoring these local secrets files
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+
+# =========================
+# Node / Next.js
+# =========================
+**/node_modules/
+node_modules/
+web/node_modules
+.next/
+out/
+dist/
+build/
+coverage/
+.nyc_output/
+*.tsbuildinfo
+.turbo/
+.vercel/
+.swc/
+
+# =========================
+# Cloudflare (Workers / Pages / Wrangler / Miniflare)
+# =========================
+.wrangler/
+.node-cache/
+.mf/
+.miniflare/
+.pages/
+
+# =========================
+# Build directory used in this project
+# =========================
+.build/
+
+# =========================
+# Flutter / Dart (future /flutter_app)
+# =========================
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Build outputs
+**/build/
+
+# Android
+**/android/.gradle/
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/app/debug.keystore
+**/android/key.properties
+
+# iOS / macOS
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/macos/Flutter/ephemeral/
+
+# Windows / Linux ephemeral
+**/windows/flutter/ephemeral/
+**/linux/flutter/ephemeral/
+
+# =========================
+# Database
+# =========================
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# =========================
+# Keep media assets tracked
+# =========================
+# (No ignore rules for /web/public/audio/*.mp3 or *.vtt — these should stay committed)
+
+# =========================
+# Project-specific ignores
+# =========================
+# Backup files
+*.backup
+*.SAFETY_*
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
 .cache
-.build
-*.nfs*
-**/.yarn/
-!**/.yarn/patches
-!**/.yarn/plugins
-!**/.yarn/releases
-!**/.yarn/sdks
-!**/.yarn/versions
-!**/.yarn/cache
-**/.yarn/build-state.yml
-**/.yarn/install-state.gz
-dist
-target
-out
+
+# Deploy and logs folders
 .deploy
 .logs
-*.tsbuildinfo
+
+# Build states
+**/.yarn/build-state.yml
+**/.yarn/install-state.gz
+target
+
+# NFS files
+*.nfs*
+
+# =========================
+# macOS-specific
+# =========================
+.AppleDouble
+.LSOverride
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
