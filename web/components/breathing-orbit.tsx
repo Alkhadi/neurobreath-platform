@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button } from './ui/button'
 import { Play, Pause, Square } from 'lucide-react'
-import { BreathingTechnique, calculateTotalCycleDuration } from '@/lib/breathing-data'
+import { BreathingTechnique } from '@/lib/breathing-data'
 
 interface BreathingOrbitProps {
   technique: BreathingTechnique
@@ -22,7 +22,6 @@ export default function BreathingOrbit({ technique, onSessionComplete }: Breathi
 
   const phases = technique?.phases ?? []
   const currentPhase = phases?.[currentPhaseIndex]
-  const totalCycleDuration = calculateTotalCycleDuration(technique)
 
   useEffect(() => {
     if (!isPlaying || isPaused) {
@@ -118,11 +117,10 @@ export default function BreathingOrbit({ technique, onSessionComplete }: Breathi
 
         {/* Orb */}
         <div
-          className="absolute w-8 h-8 rounded-full transition-all duration-300"
+          className="absolute w-8 h-8 rounded-full transition-all duration-300 -translate-x-1/2 -translate-y-1/2"
           style={{
             left: `${orbX}%`,
             top: `${orbY}%`,
-            transform: 'translate(-50%, -50%)',
             backgroundColor: currentPhase?.color ?? '#60B5FF',
             boxShadow: `0 0 20px ${currentPhase?.color ?? '#60B5FF'}`
           }}

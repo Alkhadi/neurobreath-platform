@@ -25,7 +25,6 @@ import {
   findLetterIndexForTime,
   checkMilestoneTime,
   getAudioPhase,
-  type LetterTiming,
   type AudioPhase
 } from '@/hooks/useDorothyAudio';
 
@@ -294,7 +293,7 @@ export function PhonicsSoundsLab() {
     return () => {
       if (countdownRef.current) clearInterval(countdownRef.current);
     };
-  }, [showMilestone]);
+  }, [showMilestone, countdown]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -557,9 +556,9 @@ export function PhonicsSoundsLab() {
             
             {/* Floating orbs */}
             <div className="absolute top-[20%] left-[25%] w-4 h-4 rounded-full bg-pink-500/40 blur-sm animate-pulse" />
-            <div className="absolute top-[35%] right-[20%] w-3 h-3 rounded-full bg-yellow-400/50 blur-sm animate-pulse" style={{ animationDelay: '0.5s' }} />
-            <div className="absolute top-[60%] left-[15%] w-2 h-2 rounded-full bg-green-400/40 blur-sm animate-pulse" style={{ animationDelay: '1s' }} />
-            <div className="absolute top-[45%] right-[30%] w-3 h-3 rounded-full bg-cyan-400/50 blur-sm animate-pulse" style={{ animationDelay: '1.5s' }} />
+            <div className="absolute top-[35%] right-[20%] w-3 h-3 rounded-full bg-yellow-400/50 blur-sm animate-pulse [animation-delay:0.5s]" />
+            <div className="absolute top-[60%] left-[15%] w-2 h-2 rounded-full bg-green-400/40 blur-sm animate-pulse [animation-delay:1s]" />
+            <div className="absolute top-[45%] right-[30%] w-3 h-3 rounded-full bg-cyan-400/50 blur-sm animate-pulse [animation-delay:1.5s]" />
           </div>
 
           {/* Main Content */}
@@ -815,7 +814,7 @@ export function PhonicsSoundsLab() {
                     
                     {/* Countdown Clock */}
                     <div className="flex flex-col items-center mx-auto md:mx-0">
-                      <div 
+                      <div
                         className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full flex items-center justify-center border-4 bg-slate-900/60 shadow-xl"
                         style={{ borderColor: MILESTONE_COLORS[currentMilestone.id]?.clock }}
                       >
@@ -922,8 +921,8 @@ export function PhonicsSoundsLab() {
                       </div>
                       
                       <div>
-                        <label className="block text-xs sm:text-sm text-slate-400 mb-1.5 sm:mb-2">Gender <span className="text-[10px] sm:text-xs">(optional)</span></label>
-                        <select className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-slate-700 border border-slate-600 text-white text-sm sm:text-base">
+                        <label htmlFor="gender-select" className="block text-xs sm:text-sm text-slate-400 mb-1.5 sm:mb-2">Gender <span className="text-[10px] sm:text-xs">(optional)</span></label>
+                        <select id="gender-select" className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-slate-700 border border-slate-600 text-white text-sm sm:text-base">
                           <option>Prefer not to say</option>
                           <option>Female</option>
                           <option>Male</option>

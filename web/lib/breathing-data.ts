@@ -19,10 +19,10 @@ export interface BreathingTechnique {
 }
 
 export const breathingTechniques: Record<string, BreathingTechnique> = {
-  'box-4444': {
-    id: 'box-4444',
-    name: 'Box Breathing',
-    label: 'Box Breathing · 4-4-4-4',
+  'box-breathing': {
+    id: 'box-breathing',
+    name: '🟩 Box Breathing',
+    label: '🟩 Box Breathing · 4-4-4-4',
     phases: [
       { name: 'Inhale', duration: 4, color: '#60B5FF' },
       { name: 'Hold', duration: 4, color: '#FF9149' },
@@ -33,22 +33,10 @@ export const breathingTechniques: Record<string, BreathingTechnique> = {
     benefits: ['Reduces stress', 'Improves focus', 'Steadies heart rate'],
     category: 'calm'
   },
-  'coherent-55': {
-    id: 'coherent-55',
-    name: 'Coherent Breathing',
-    label: 'Coherent Breathing · 5-5',
-    phases: [
-      { name: 'Inhale', duration: 5, color: '#60B5FF' },
-      { name: 'Exhale', duration: 5, color: '#FF9898' }
-    ],
-    description: 'Simple 5-5 pattern for heart rate variability',
-    benefits: ['Boosts HRV', 'Enhances focus', 'Calms nervous system'],
-    category: 'focus'
-  },
-  'four-7-8': {
-    id: 'four-7-8',
-    name: '4-7-8 Breathing',
-    label: '4-7-8 Reset',
+  '4-7-8': {
+    id: '4-7-8',
+    name: '🟦 4-7-8 Breathing',
+    label: '🟦 4-7-8 Reset',
     phases: [
       { name: 'Inhale', duration: 4, color: '#60B5FF' },
       { name: 'Hold', duration: 7, color: '#FF9149' },
@@ -58,10 +46,22 @@ export const breathingTechniques: Record<string, BreathingTechnique> = {
     benefits: ['Promotes sleep', 'Reduces anxiety', 'Deepens relaxation'],
     category: 'sleep'
   },
-  'sos-1m': {
-    id: 'sos-1m',
-    name: '60-second SOS',
-    label: 'SOS Reset · 60s',
+  'coherent': {
+    id: 'coherent',
+    name: '🟪 Coherent 5-5',
+    label: '🟪 Coherent Breathing · 5-5',
+    phases: [
+      { name: 'Inhale', duration: 5, color: '#60B5FF' },
+      { name: 'Exhale', duration: 5, color: '#FF9898' }
+    ],
+    description: 'Simple 5-5 pattern for heart rate variability',
+    benefits: ['Boosts HRV', 'Enhances focus', 'Calms nervous system'],
+    category: 'focus'
+  },
+  'sos': {
+    id: 'sos',
+    name: '🆘 60-second SOS',
+    label: '🆘 SOS Reset · 60s',
     phases: [
       { name: 'Inhale', duration: 4, color: '#60B5FF' },
       { name: 'Exhale', duration: 6, color: '#FF9898' }

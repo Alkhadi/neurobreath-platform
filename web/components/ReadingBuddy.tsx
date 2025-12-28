@@ -4,14 +4,13 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { 
-  Send, 
-  MapPin, 
-  Sparkles, 
-  MessageCircle, 
-  Volume2, 
-  VolumeX, 
-  Mic, 
+import {
+  Send,
+  MapPin,
+  Sparkles,
+  Volume2,
+  VolumeX,
+  Mic,
   MicOff,
   Bot
 } from 'lucide-react';
@@ -109,14 +108,6 @@ export default function ReadingBuddy({ onStartTutorial }: ReadingBuddyProps) {
     }
   }, [transcript]);
 
-  // Auto-send when speech recognition ends with a valid transcript
-  useEffect(() => {
-    if (!isListening && transcript.trim()) {
-      handleSendMessage(transcript);
-      resetTranscript();
-    }
-  }, [isListening, transcript]);
-
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -165,6 +156,8 @@ export default function ReadingBuddy({ onStartTutorial }: ReadingBuddyProps) {
   };
 
   const handleSendMessage = useCallback((customInput?: string) => {
+    cancel(); // Stop any ongoing speech
+    stopListening(); // Stop any ongoing listening
     const messageText = customInput || inputValue.trim();
     if (!messageText) return;
 
@@ -339,9 +332,9 @@ export default function ReadingBuddy({ onStartTutorial }: ReadingBuddyProps) {
                   </div>
                   <div className="bg-muted rounded-2xl rounded-bl-md px-4 py-3">
                     <div className="flex gap-1">
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" />
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:150ms]" />
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:300ms]" />
                     </div>
                   </div>
                 </div>

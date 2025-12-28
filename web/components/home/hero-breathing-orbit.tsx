@@ -1,8 +1,6 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Play, Pause, Square } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 interface BreathingStats {
@@ -11,6 +9,7 @@ interface BreathingStats {
   lifetimeMinutes: number
   lifetimeHours: number
   averageSession: number
+  currentStreak?: number
   streak: string
   message: string
   awards: string
@@ -39,14 +38,73 @@ export function HeroBreathingOrbit() {
   const pausedTimeRef = useRef<number>(0)
 
   useEffect(() => {
-    // Load stats from localStorage
+    // Load stats from localStorage and calculate streak
     if (typeof window !== 'undefined') {
       const savedStats = localStorage.getItem('nb-breathing-stats')
+      const lastSessionDate = localStorage.getItem('nb-last-session-date')
+
       if (savedStats) {
-        setStats(JSON.parse(savedStats))
+        const parsedStats = JSON.parse(savedStats)
+
+        // Calculate streak
+        const today = new Date().toDateString()
+        const yesterday = new Date(Date.now() - 86400000).toDateString()
+
+        let streakInfo = {
+          streak: 'No streak yet',
+          message: 'Complete any 1-minute challenge to start your streak. Small, regular practice helps your nervous system learn a predictable calm pattern.',
+          awards: 'Log a quick session to unlock your first badge.'
+        }
+
+        if (lastSessionDate) {
+          const lastDate = new Date(lastSessionDate).toDateString()
+          const currentStreak = parsedStats.currentStreak || 0
+
+          if (lastDate === today && currentStreak > 0) {
+            streakInfo = calculateStreakInfo(currentStreak, parsedStats.sessions)
+          } else if (lastDate === yesterday && currentStreak > 0) {
+            streakInfo = calculateStreakInfo(currentStreak, parsedStats.sessions)
+          } else if (currentStreak === 0 && parsedStats.sessions > 0) {
+            streakInfo = {
+              streak: '1 day',
+              message: 'Great start! Practice again tomorrow to build your streak.',
+              awards: parsedStats.sessions >= 5 ? '🥉 Bronze badge unlocked!' : `${parsedStats.sessions}/5 sessions to Bronze badge`
+            }
+          }
+        }
+
+        setStats({ ...parsedStats, ...streakInfo })
       }
     }
   }, [])
+
+  const calculateStreakInfo = (streak: number, sessions: number) => {
+    let message = ''
+    let awards = ''
+
+    if (streak >= 30) {
+      message = '🔥 Outstanding! 30+ days of consistent practice. Your nervous system is building lasting calm patterns.'
+      awards = '🏆 Diamond streak! All badges unlocked.'
+    } else if (streak >= 14) {
+      message = '🌟 Two weeks strong! Consistent practice is rewiring your stress response.'
+      awards = '🥇 Gold badge + Silver + Bronze unlocked!'
+    } else if (streak >= 7) {
+      message = '💪 One week streak! You\'re building a powerful daily habit.'
+      awards = '🥈 Silver badge + Bronze unlocked!'
+    } else if (streak >= 3) {
+      message = '✨ Nice momentum! Keep this up for proven nervous system benefits.'
+      awards = sessions >= 5 ? '🥉 Bronze badge unlocked!' : `${sessions}/5 sessions to Bronze`
+    } else {
+      message = 'Building your streak. Each session strengthens your calm response.'
+      awards = sessions >= 5 ? '🥉 Bronze badge unlocked!' : `${sessions}/5 sessions to Bronze`
+    }
+
+    return {
+      streak: `${streak} day${streak !== 1 ? 's' : ''}`,
+      message,
+      awards
+    }
+  }
 
   const saveStats = (newStats: BreathingStats) => {
     setStats(newStats)
@@ -82,32 +140,58 @@ export function HeroBreathingOrbit() {
     setPhase('Ready')
     setOrbPosition({ x: 0, y: 50 })
     pausedTimeRef.current = 0
-    
+
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current)
     }
 
-    // Update stats
+    // Update stats with streak tracking
     const sessionMinutes = Math.floor((Date.now() - startTimeRef.current) / 60000)
     if (sessionMinutes > 0) {
+      const today = new Date().toDateString()
+      const lastSessionDate = typeof window !== 'undefined' ? localStorage.getItem('nb-last-session-date') : null
+      const yesterday = new Date(Date.now() - 86400000).toDateString()
+
+      let currentStreak = stats.currentStreak || 0
+
+      if (!lastSessionDate || lastSessionDate !== today) {
+        // First session today
+        if (lastSessionDate === yesterday) {
+          currentStreak += 1 // Continue streak
+        } else if (!lastSessionDate || currentStreak === 0) {
+          currentStreak = 1 // Start new streak
+        } else {
+          currentStreak = 1 // Reset streak after break
+        }
+
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('nb-last-session-date', today)
+        }
+      }
+
+      const totalSessions = stats.sessions + 1
+      const totalMinutes = stats.lifetimeMinutes + sessionMinutes
+
       const newStats = {
         ...stats,
         todayMinutes: stats.todayMinutes + sessionMinutes,
-        sessions: stats.sessions + 1,
-        lifetimeMinutes: stats.lifetimeMinutes + sessionMinutes,
-        lifetimeHours: parseFloat(((stats.lifetimeMinutes + sessionMinutes) / 60).toFixed(1)),
-        averageSession: Math.round((stats.lifetimeMinutes + sessionMinutes) / (stats.sessions + 1))
+        sessions: totalSessions,
+        lifetimeMinutes: totalMinutes,
+        lifetimeHours: parseFloat((totalMinutes / 60).toFixed(1)),
+        averageSession: Math.round(totalMinutes / totalSessions),
+        currentStreak,
+        ...calculateStreakInfo(currentStreak, totalSessions)
       }
+
       saveStats(newStats)
     }
   }
 
   const animateBreathing = () => {
+    // Using 4-6 breathing pattern (4s inhale, 6s exhale) - 60-second SOS technique
     const phases = [
       { name: 'Inhale' as Phase, duration: 4000 },
-      { name: 'Hold' as Phase, duration: 2000 },
-      { name: 'Exhale' as Phase, duration: 6000 },
-      { name: 'Hold' as Phase, duration: 2000 }
+      { name: 'Exhale' as Phase, duration: 6000 }
     ]
 
     const totalCycle = phases.reduce((sum, p) => sum + p.duration, 0)
@@ -246,49 +330,45 @@ export function HeroBreathingOrbit() {
       <div className="orbit-phase-indicators">
         <div className={cn("orbit-phase-pill", phase === 'Inhale' && 'active')}>
           <span className="orbit-phase-dot orbit-phase-dot-inhale" />
-          <span>INHALE</span>
-        </div>
-        <div className={cn("orbit-phase-pill", phase === 'Hold' && 'active')}>
-          <span className="orbit-phase-dot orbit-phase-dot-hold" />
-          <span>HOLD</span>
+          <span>INHALE (4s)</span>
         </div>
         <div className={cn("orbit-phase-pill", phase === 'Exhale' && 'active')}>
           <span className="orbit-phase-dot orbit-phase-dot-exhale" />
-          <span>EXHALE</span>
+          <span>EXHALE (6s)</span>
         </div>
       </div>
 
       {/* Control Buttons */}
       <div className="orbit-controls">
         {!isRunning && (
-          <button onClick={startBreathing} className="orbit-btn orbit-btn-start">
+          <button onClick={startBreathing} className="orbit-btn orbit-btn-start" aria-label="Start breathing exercise">
             🎧 Start
           </button>
         )}
         {isRunning && !isPaused && (
-          <button onClick={pauseBreathing} className="orbit-btn orbit-btn-pause">
+          <button onClick={pauseBreathing} className="orbit-btn orbit-btn-pause" aria-label="Pause breathing exercise">
             ⏸ Pause
           </button>
         )}
         {isRunning && isPaused && (
-          <button onClick={resumeBreathing} className="orbit-btn orbit-btn-resume">
+          <button onClick={resumeBreathing} className="orbit-btn orbit-btn-resume" aria-label="Resume breathing exercise">
             ▶ Resume
           </button>
         )}
         {isRunning && (
-          <button onClick={stopBreathing} className="orbit-btn orbit-btn-stop">
+          <button onClick={stopBreathing} className="orbit-btn orbit-btn-stop" aria-label="Stop breathing exercise">
             ⏹ Stop
           </button>
         )}
       </div>
 
       {/* Breathing Guidance */}
-      <div className="orbit-guidance-box" aria-hidden={typeof window !== 'undefined' && window.innerWidth <= 900 ? 'true' : 'false'}>
-        Breathing guidance: inhale for four counts, hold for two counts, and exhale for six counts. Today's focused minutes display above.
+      <div className="orbit-guidance-box md:block hidden">
+        🆘 60-second SOS breathing: Inhale for 4 seconds, exhale for 6 seconds. Six complete cycles provide immediate calm. Today's focused minutes display above.
       </div>
 
       {/* Measured Relief Tracker */}
-      <div className="orbit-tracker-card" aria-hidden={typeof window !== 'undefined' && window.innerWidth <= 900 ? 'true' : 'false'}>
+      <div className="orbit-tracker-card md:block hidden">
         <div className="orbit-tracker-header">
           <span className="orbit-tracker-title">Measured relief tracker</span>
           <span className="orbit-tracker-pill">

@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { X, Play, Pause, Square, Volume2, VolumeX } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { X, Play, Pause, Square, Volume2 } from 'lucide-react'
+import { getTechniqueById } from '@/lib/breathing-data'
 
 interface BeginSessionModalProps {
   isOpen: boolean
@@ -17,7 +17,7 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
   const [selectedDuration, setSelectedDuration] = useState<number>(1)
   const [selectedTechnique, setSelectedTechnique] = useState<string>('4-7-8')
   const [selectedVoice, setSelectedVoice] = useState<string>('british-male')
-  const [voiceEnabled, setVoiceEnabled] = useState(true)
+  const voiceEnabled = true
   
   // Session state
   const [isPlaying, setIsPlaying] = useState(false)
@@ -39,31 +39,34 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
 
   if (!isOpen) return null
 
+  // Calculate progress percentage
+  const progressPercentage = totalTime > 0 ? Math.round(((totalTime - timeRemaining) / totalTime) * 100) : 0
+
   const techniques = [
-    { 
-      id: 'box-breathing', 
-      name: 'Box breathing', 
+    {
+      id: 'box-breathing',
+      name: '🟩 Box Breathing',
       subtitle: 'Equal 4-4-4-4 pacing',
       color: 'bg-green-50 border-green-200',
       colorActive: 'bg-green-100 border-green-400'
     },
-    { 
-      id: '4-7-8', 
-      name: '4–7–8 breathing', 
+    {
+      id: '4-7-8',
+      name: '🟦 4-7-8 Breathing',
       subtitle: 'Slow exhale wind-down',
       color: 'bg-blue-50 border-blue-200',
       colorActive: 'bg-blue-100 border-blue-400'
     },
-    { 
-      id: 'coherent', 
-      name: 'Coherent 5–5', 
+    {
+      id: 'coherent',
+      name: '🟪 Coherent 5-5',
       subtitle: 'HRV-friendly resonance',
       color: 'bg-purple-50 border-purple-200',
       colorActive: 'bg-purple-100 border-purple-400'
     },
-    { 
-      id: 'sos', 
-      name: '60-second SOS', 
+    {
+      id: 'sos',
+      name: '🆘 60-second SOS',
       subtitle: 'Rapid calm cue',
       color: 'bg-red-50 border-red-200',
       colorActive: 'bg-red-100 border-red-400'
@@ -115,26 +118,28 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
   }
 
   const startBreathingCycle = () => {
-    setPhase('inhale')
-    speak('Inhale')
-    
-    // Simplified breathing cycle
-    let cycleStep = 0
+    const technique = getTechniqueById(selectedTechnique)
+    if (!technique) return
+
+    let phaseIndex = 0
+    let secondsInPhase = 0
+
+    setPhase(technique.phases[0].name.toLowerCase() as Phase)
+    speak(technique.phases[0].name)
+
     intervalRef.current = setInterval(() => {
-      cycleStep++
-      
-      if (cycleStep === 4) {
-        setPhase('hold')
-        speak('Hold')
-      } else if (cycleStep === 6) {
-        setPhase('exhale')
-        speak('Exhale')
-      } else if (cycleStep === 12) {
-        setPhase('inhale')
-        speak('Inhale')
-        cycleStep = 0
+      secondsInPhase++
+
+      // Check if current phase is complete
+      if (secondsInPhase >= technique.phases[phaseIndex].duration) {
+        secondsInPhase = 0
+        phaseIndex = (phaseIndex + 1) % technique.phases.length
+
+        const nextPhase = technique.phases[phaseIndex]
+        setPhase(nextPhase.name.toLowerCase() as Phase)
+        speak(nextPhase.name)
       }
-      
+
       setTimeRemaining(prev => {
         if (prev <= 1) {
           if (intervalRef.current) clearInterval(intervalRef.current)
@@ -217,10 +222,12 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
               <p className="text-sm font-medium text-gray-900 mb-3">Choose narration voice</p>
               
               <div className="flex flex-wrap gap-2 mb-3">
-                <select 
+                <select
                   value={selectedVoice}
                   onChange={(e) => setSelectedVoice(e.target.value)}
                   className="px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  aria-label="Select narration voice"
+                  title="Choose your preferred narration voice"
                 >
                   {voiceOptions.map(v => (
                     <option key={v.id} value={v.id}>{v.label}</option>
@@ -229,20 +236,23 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
                 <button
                   onClick={readInstructions}
                   className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+                  aria-label="Read breathing instructions aloud"
                 >
                   Read instructions
                 </button>
                 <button
                   onClick={stopVoice}
                   className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+                  aria-label="Stop voice narration"
                 >
                   Stop
                 </button>
               </div>
-              
+
               <button
                 onClick={testVoice}
                 className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50 mb-2"
+                aria-label="Test selected voice"
               >
                 Voice test
               </button>
@@ -256,7 +266,7 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
             </p>
 
             {/* Technique Grid */}
-            <div className="grid grid-cols-2 gap-3 mb-6">
+            <div className="grid grid-cols-2 gap-3 mb-6" role="group" aria-label="Breathing technique options">
               {techniques.map(tech => (
                 <button
                   key={tech.id}
@@ -264,6 +274,7 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
                   className={`relative p-4 rounded-lg border-2 text-left transition-all ${
                     selectedTechnique === tech.id ? tech.colorActive : tech.color
                   }`}
+                  aria-label={`Select ${tech.name} technique - ${tech.subtitle}`}
                 >
                   {selectedTechnique === tech.id && (
                     <span className="absolute top-2 right-2 px-2 py-0.5 text-xs font-semibold bg-white rounded-full border border-gray-300">
@@ -280,8 +291,8 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
             <div className="mb-6">
               <h3 className="text-sm font-semibold text-gray-900 mb-2">Session duration</h3>
               <p className="text-xs text-gray-600 mb-3">Tap a timing that feels doable today.</p>
-              
-              <div className="flex gap-2">
+
+              <div className="flex gap-2" role="group" aria-label="Session duration options">
                 {[1, 2, 3, 4, 5].map(min => (
                   <button
                     key={min}
@@ -291,6 +302,7 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
                         ? 'bg-blue-50 border-blue-400 text-blue-900'
                         : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
                     }`}
+                    aria-label={`Select ${min} minute session`}
                   >
                     {min} min
                   </button>
@@ -303,12 +315,14 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
               <button
                 onClick={onClose}
                 className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                aria-label="Cancel and close modal"
               >
                 Cancel
               </button>
               <button
                 onClick={handleStartBreathing}
                 className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+                aria-label="Start breathing session"
               >
                 Start breathing
               </button>
@@ -342,10 +356,18 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
 
             {/* Progress Bar */}
             <div className="mb-6">
-              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div 
+              <div
+                className="w-full h-2 bg-gray-200 rounded-full overflow-hidden"
+                role="progressbar"
+                aria-valuenow={Math.max(0, Math.min(100, progressPercentage))}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label="Session progress"
+              >
+                {/* Inline style is necessary for dynamic progress width */}
+                <div
                   className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-1000"
-                  style={{ width: `${((totalTime - timeRemaining) / totalTime) * 100}%` }}
+                  style={{ width: `${progressPercentage}%` }}
                 />
               </div>
             </div>
@@ -356,6 +378,7 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
                 <button
                   onClick={handleResume}
                   className="px-6 py-3 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+                  aria-label="Resume breathing session"
                 >
                   <Play size={18} />
                   Resume
@@ -364,6 +387,7 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
                 <button
                   onClick={handlePause}
                   className="px-6 py-3 text-sm font-medium text-white bg-amber-500 rounded-lg hover:bg-amber-600 transition-colors flex items-center gap-2"
+                  aria-label="Pause breathing session"
                 >
                   <Pause size={18} />
                   Pause
@@ -372,6 +396,7 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
               <button
                 onClick={handleStop}
                 className="px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
+                aria-label="Stop breathing session and return to picker"
               >
                 <Square size={18} />
                 Stop
