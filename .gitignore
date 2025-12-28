@@ -18,3 +18,10 @@ out
 .deploy
 .logs
 *.tsbuildinfo
+
+
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
