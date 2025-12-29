@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { getDbDownReason, isDbDown, markDbDown, prisma } from '@/lib/db'
 import { challengeDefinitions } from '@/lib/challenge-definitions'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
+  if (isDbDown()) {
+    return NextResponse.json({
+      challenges: [],
+      dbUnavailable: true,
+      dbUnavailableReason: getDbDownReason()
+    })
+  }
+
   try {
     const deviceId = request?.nextUrl?.searchParams?.get('deviceId')
     
@@ -40,14 +48,29 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ challenges: challenges ?? [] })
   } catch (error) {
     console.error('Failed to fetch challenges:', error)
+    markDbDown(error)
+    if (isDbDown()) {
+      return NextResponse.json({
+        challenges: [],
+        dbUnavailable: true,
+        dbUnavailableReason: getDbDownReason()
+      })
+    }
     return NextResponse.json({ error: 'Failed to fetch challenges' }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
+  if (isDbDown()) {
+    return NextResponse.json(
+      { error: 'Database unavailable', dbUnavailable: true, dbUnavailableReason: getDbDownReason() },
+      { status: 503 }
+    )
+  }
+
   try {
     const body = await request.json()
-    const { deviceId, challengeKey, minutes, technique, category } = body
+    const { deviceId, challengeKey } = body
 
     if (!deviceId || !challengeKey) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -88,6 +111,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, challenge: updatedChallenge })
   } catch (error) {
     console.error('Failed to update challenge:', error)
+    markDbDown(error)
+    if (isDbDown()) {
+      return NextResponse.json(
+        { error: 'Database unavailable', dbUnavailable: true, dbUnavailableReason: getDbDownReason() },
+        { status: 503 }
+      )
+    }
     return NextResponse.json({ error: 'Failed to update challenge' }, { status: 500 })
   }
 }

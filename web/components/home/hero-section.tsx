@@ -1,12 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { HeroBreathingOrbit } from '@/components/home/hero-breathing-orbit'
 import { QuickWinPlanner } from '@/components/home/quick-win-planner'
 import { BeginSessionModal } from '@/components/BeginSessionModal'
 import Link from 'next/link'
-import { Zap, Sparkles, ArrowRight } from 'lucide-react'
+import { Zap } from 'lucide-react'
 
 export default function HeroSection() {
   const [showQuickStart, setShowQuickStart] = useState(false)

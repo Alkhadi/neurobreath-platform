@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Play, Pause, RotateCcw, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { useDorothyAudio, PHONICS_LETTER_DATA, DOROTHY_LETTER_TIMINGS } from "@/hooks/useDorothyAudio";
+import { useDorothyAudio, PHONICS_LETTER_DATA } from "@/hooks/useDorothyAudio";
 
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const VOWELS = ["A", "E", "I", "O", "U"];
@@ -11,7 +11,7 @@ export function PhonicsPlayer() {
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [speed, setSpeed] = useState([1.5]);
-  const { playLetterCall, stop, isPlaying } = useDorothyAudio();
+  const { playLetterCall, stop } = useDorothyAudio();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const playLetter = useCallback(

@@ -1,35 +1,51 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { getDeviceId } from '@/lib/device-id'
+
+// Retry fetch with exponential backoff
+async function fetchWithRetry(url: string, retries = 3, delay = 1000): Promise<Response | null> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url)
+      if (response?.ok) return response
+    } catch {
+      if (i < retries - 1) {
+        await new Promise(r => setTimeout(r, delay * Math.pow(2, i)))
+      }
+    }
+  }
+  return null
+}
 
 export default function QuestPassPill() {
   const [questData, setQuestData] = useState({ quests: 0, points: 0 })
 
-  useEffect(() => {
-    const fetchQuestData = async () => {
-      try {
-        const deviceId = getDeviceId()
-        const response = await fetch(`/api/quests/today?deviceId=${deviceId}`)
-        if (response?.ok) {
-          const data = await response.json()
-          setQuestData({
-            quests: data?.completedQuests ?? 0,
-            points: data?.totalPoints ?? 0
-          })
-        }
-      } catch (error) {
-        console.error('Failed to fetch quest data:', error)
+  const fetchQuestData = useCallback(async () => {
+    try {
+      const deviceId = getDeviceId()
+      const response = await fetchWithRetry(`/api/quests/today?deviceId=${deviceId}`)
+      if (response?.ok) {
+        const data = await response.json()
+        setQuestData({
+          quests: data?.completedQuests ?? 0,
+          points: data?.totalPoints ?? 0
+        })
       }
+    } catch (error) {
+      // Silently fail - the UI will show default values
+      console.debug('Quest data unavailable:', error)
     }
+  }, [])
 
+  useEffect(() => {
     fetchQuestData()
 
     // Update every minute
     const interval = setInterval(fetchQuestData, 60000)
     return () => clearInterval(interval)
-  }, [])
+  }, [fetchQuestData])
 
   return (
     <Link

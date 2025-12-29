@@ -1372,6 +1372,7 @@ body[data-page-id="index"] b {
 /* Specific card type backgrounds - these override the default */
 .home-practice-card {
     background: var(--color-cream) !important;
+    margin-bottom: 2%;
 }
 
 .home-goals-card {
@@ -2027,6 +2028,80 @@ body[data-page-id="coffee"] .bank-helper__inner{
 /* Practice credibility cards */
 .practice-credibility-compact {
     background: var(--color-cream);
+}
+
+/* Evidence Accordion Styles */
+.evidence-accordion {
+    margin-top: 1.5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding-top: 1rem;
+}
+
+.evidence-accordion-item {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 0.5rem;
+}
+
+.evidence-accordion-trigger {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    text-align: left;
+    transition: background-color 0.2s ease;
+}
+
+.evidence-accordion-trigger:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.evidence-accordion-icon {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--color-primary);
+    transition: transform 0.2s ease;
+}
+
+.evidence-accordion-content {
+    padding: 0 1rem 1.5rem 1rem;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.evidence-accordion-content p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.evidence-accordion-content ul {
+    margin: 0.75rem 0;
+    padding-left: 1.5rem;
+}
+
+.evidence-accordion-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+.evidence-accordion-content strong {
+    color: var(--color-primary);
 }
 
 /* Evidence metrics cards */
@@ -5816,6 +5891,7 @@ body[data-page-id="index"] .nb-hero-reset small {
 
 /* Live Orbit Card Styles - Evidence Section */
 .home-evidence__live-orbit {
+    margin-top: 2%;
     padding: clamp(0.5rem, 2vw, 1.4rem);
     display: grid;
     justify-items: center;

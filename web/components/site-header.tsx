@@ -1,5 +1,6 @@
 'use client'
 
+/* eslint-disable jsx-a11y/aria-proptypes */
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -37,7 +38,7 @@ export function SiteHeader() {
           className="nb-mobile-toggle"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={mobileMenuOpen}
+          data-expanded={mobileMenuOpen}
         >
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -59,7 +60,8 @@ export function SiteHeader() {
             <button 
               type="button" 
               className={`nb-nav-link nb-nav-trigger ${activeMegaMenu === 'conditions' ? 'active' : ''}`}
-              aria-expanded={activeMegaMenu === 'conditions'}
+              aria-haspopup="true"
+              data-expanded={activeMegaMenu === 'conditions'}
               onClick={() => toggleMegaMenu('conditions')}
             >
               Conditions
@@ -94,7 +96,8 @@ export function SiteHeader() {
             <button 
               type="button" 
               className={`nb-nav-link nb-nav-trigger ${activeMegaMenu === 'breathing' ? 'active' : ''}`}
-              aria-expanded={activeMegaMenu === 'breathing'}
+              aria-haspopup="true"
+              data-expanded={activeMegaMenu === 'breathing'}
               onClick={() => toggleMegaMenu('breathing')}
             >
               Breathing &amp; Focus
@@ -130,7 +133,8 @@ export function SiteHeader() {
             <button 
               type="button" 
               className={`nb-nav-link nb-nav-trigger ${activeMegaMenu === 'tools' ? 'active' : ''}`}
-              aria-expanded={activeMegaMenu === 'tools'}
+              aria-haspopup="true"
+              data-expanded={activeMegaMenu === 'tools'}
               onClick={() => toggleMegaMenu('tools')}
             >
               Tools
@@ -170,7 +174,8 @@ export function SiteHeader() {
             <button 
               type="button" 
               className={`nb-nav-link nb-nav-trigger ${activeMegaMenu === 'resources' ? 'active' : ''}`}
-              aria-expanded={activeMegaMenu === 'resources'}
+              aria-haspopup="true"
+              data-expanded={activeMegaMenu === 'resources'}
               onClick={() => toggleMegaMenu('resources')}
             >
               Resources

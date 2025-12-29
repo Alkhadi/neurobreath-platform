@@ -5,9 +5,9 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  Wind, Play, Pause, RotateCcw, Maximize2, Minimize2, 
-  Volume2, VolumeX, AlertTriangle, Car, Clock, X, Music, Mic, MicOff
+import {
+  Wind, Play, Pause, RotateCcw, Maximize2,
+  Volume2, AlertTriangle, Car, Clock, X, Music, Mic, MicOff
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
@@ -48,7 +48,7 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
   const [breathCount, setBreathCount] = useState(0);
   
   // Audio hooks
-  const { speak, cancel, speaking } = useSpeechSynthesis();
+  const { speak, cancel } = useSpeechSynthesis();
   const { 
     playInstructions, 
     pauseInstructions, 
@@ -66,7 +66,10 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
   // Initialize Web Audio Context
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (AudioContextClass) {
+        audioContextRef.current = new AudioContextClass();
+      }
     }
     return () => {
       if (audioContextRef.current) {
@@ -170,8 +173,8 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
                 // Update stats
                 const stats = {
                   totalSessions: sessions.length,
-                  totalBreaths: sessions.reduce((sum: number, s: any) => sum + s.breaths, 0),
-                  totalMinutes: Math.floor(sessions.reduce((sum: number, s: any) => sum + s.duration, 0) / 60),
+                  totalBreaths: sessions.reduce((sum: number, s: { breaths: number }) => sum + s.breaths, 0),
+                  totalMinutes: Math.floor(sessions.reduce((sum: number, s: { duration: number }) => sum + s.duration, 0) / 60),
                   lastSession: new Date().toISOString(),
                 };
                 localStorage.setItem('nb_breathing_stats', JSON.stringify(stats));
@@ -186,7 +189,7 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [isActive, countdown, phase, pattern, targetDuration, voiceMode, speak, stopInstructions]);
+  }, [isActive, countdown, phase, pattern, targetDuration, voiceMode, speak, stopInstructions, ambientSound, breathCount, cycles]);
 
   // Ambient sound management with enhanced quality
   useEffect(() => {
@@ -225,11 +228,17 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
     let sources: AudioScheduledSourceNode[] = [];
     
     switch (ambientSound) {
+      case 'cosmic':
+        sources = soundGenerators.createCosmicSound(gainNode);
+        break;
       case 'rain':
         sources = soundGenerators.createRainSound(gainNode);
         break;
       case 'ocean':
         sources = soundGenerators.createOceanSound(gainNode);
+        break;
+      case 'birds':
+        sources = soundGenerators.createBirdsSound(gainNode);
         break;
       case 'forest':
         sources = soundGenerators.createForestSound(gainNode);
@@ -239,6 +248,15 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
         break;
       case 'bowl':
         sources = soundGenerators.createBowlSound(gainNode);
+        break;
+      case 'tibetan':
+        sources = soundGenerators.createTibetanSound(gainNode);
+        break;
+      case 'meditation':
+        sources = soundGenerators.createMeditationSound(gainNode);
+        break;
+      case 'spiritual':
+        sources = soundGenerators.createSpiritualSound(gainNode);
         break;
       case 'wind':
         sources = soundGenerators.createWindSound(gainNode);
@@ -306,8 +324,8 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
       // Update total stats
       const stats = {
         totalSessions: sessions.length,
-        totalBreaths: sessions.reduce((sum: number, s: any) => sum + s.breaths, 0),
-        totalMinutes: Math.floor(sessions.reduce((sum: number, s: any) => sum + s.duration, 0) / 60),
+        totalBreaths: sessions.reduce((sum: number, s: { breaths: number }) => sum + s.breaths, 0),
+        totalMinutes: Math.floor(sessions.reduce((sum: number, s: { duration: number }) => sum + s.duration, 0) / 60),
         lastSession: new Date().toISOString(),
       };
       localStorage.setItem('nb_breathing_stats', JSON.stringify(stats));
@@ -399,6 +417,8 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
             value={ambientSound}
             onChange={(e) => setAmbientSound(e.target.value)}
             className="px-4 py-2 rounded-full bg-white/10 text-white text-sm font-medium border-none outline-none"
+            aria-label="Select ambient sound"
+            title="Choose background ambient sound"
           >
             {AMBIENT_SOUNDS.map((sound) => (
               <option key={sound.id} value={sound.id} className="bg-gray-900">
@@ -423,6 +443,7 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
           {/* Breathing Circle */}
           <div className="flex justify-center">
             <div className="relative">
+              {/* Inline style required for dynamic transition duration based on breathing phase */}
               <div
                 className={cn(
                   'w-64 h-64 rounded-full flex items-center justify-center',
@@ -456,7 +477,8 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
               <span>{Math.floor(remainingTime / 60)}:{(remainingTime % 60).toString().padStart(2, '0')} remaining</span>
             </div>
             <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-              <div 
+              {/* Inline style required for dynamic progress width */}
+              <div
                 className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-300"
                 style={{ width: `${progressPercentage}%` }}
               />
@@ -607,11 +629,13 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
             </Button>
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium">Ambient Sound</label>
+            <label htmlFor="ambient-sound-select" className="text-sm font-medium">Ambient Sound</label>
             <select
+              id="ambient-sound-select"
               value={ambientSound}
               onChange={(e) => setAmbientSound(e.target.value)}
               className="w-full px-3 py-2 rounded-md border border-input bg-background text-sm"
+              aria-label="Select ambient sound"
             >
               {AMBIENT_SOUNDS.map((sound) => (
                 <option key={sound.id} value={sound.id}>
@@ -625,6 +649,7 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
         {/* Breathing Circle */}
         <div className="flex justify-center py-8">
           <div className="relative">
+            {/* Inline style required for dynamic transition duration based on breathing phase */}
             <div
               className={cn(
                 'w-32 h-32 rounded-full flex items-center justify-center',
@@ -653,7 +678,8 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
             <span>{Math.round(progressPercentage)}%</span>
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
-            <div 
+            {/* Inline style required for dynamic progress width */}
+            <div
               className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-300"
               style={{ width: `${progressPercentage}%` }}
             />

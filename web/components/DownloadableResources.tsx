@@ -12,7 +12,7 @@ interface Resource {
   title: string;
   description: string;
   type: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
   downloadType: string;
   color: string;
 }

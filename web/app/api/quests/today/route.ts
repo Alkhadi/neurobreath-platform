@@ -1,9 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { getDbDownReason, isDbDown, markDbDown, prisma } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
+  if (isDbDown()) {
+    return NextResponse.json({
+      completedQuests: 0,
+      totalPoints: 0,
+      quests: [],
+      dbUnavailable: true,
+      dbUnavailableReason: getDbDownReason()
+    })
+  }
+
   try {
     const deviceId = request?.nextUrl?.searchParams?.get('deviceId')
     
@@ -30,11 +40,28 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('Failed to fetch today\'s quests:', error)
+    markDbDown(error)
+    if (isDbDown()) {
+      return NextResponse.json({
+        completedQuests: 0,
+        totalPoints: 0,
+        quests: [],
+        dbUnavailable: true,
+        dbUnavailableReason: getDbDownReason()
+      })
+    }
     return NextResponse.json({ error: 'Failed to fetch quests' }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
+  if (isDbDown()) {
+    return NextResponse.json(
+      { error: 'Database unavailable', dbUnavailable: true, dbUnavailableReason: getDbDownReason() },
+      { status: 503 }
+    )
+  }
+
   try {
     const body = await request.json()
     const { deviceId, category, minutes, technique } = body
@@ -73,6 +100,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, quest })
   } catch (error) {
     console.error('Failed to complete quest:', error)
+    markDbDown(error)
+    if (isDbDown()) {
+      return NextResponse.json(
+        { error: 'Database unavailable', dbUnavailable: true, dbUnavailableReason: getDbDownReason() },
+        { status: 503 }
+      )
+    }
     return NextResponse.json({ error: 'Failed to complete quest' }, { status: 500 })
   }
 }

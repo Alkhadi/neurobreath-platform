@@ -69,6 +69,69 @@ export const breathingTechniques: Record<string, BreathingTechnique> = {
     description: 'Quick 60-second reset: 4s inhale, 6s exhale. 6 cycles for immediate calm.',
     benefits: ['60-second emergency reset', 'Reduces panic quickly', 'Perfect for transitions'],
     category: 'transition'
+  },
+  'triangle': {
+    id: 'triangle',
+    name: '🔺 Triangle Breathing',
+    label: '🔺 Triangle · 4-4-4',
+    phases: [
+      { name: 'Inhale', duration: 4, color: '#60B5FF' },
+      { name: 'Hold', duration: 4, color: '#FF9149' },
+      { name: 'Exhale', duration: 4, color: '#FF9898' }
+    ],
+    description: 'Simple 4-4-4 triangle pattern for beginners',
+    benefits: ['Easy to learn', 'Gentle stress relief', 'Good for beginners'],
+    category: 'calm'
+  },
+  'relaxing': {
+    id: 'relaxing',
+    name: '🌙 Relaxing Breath',
+    label: '🌙 Relaxing · 4-2-6',
+    phases: [
+      { name: 'Inhale', duration: 4, color: '#60B5FF' },
+      { name: 'Hold', duration: 2, color: '#FF9149' },
+      { name: 'Exhale', duration: 6, color: '#FF9898' }
+    ],
+    description: 'Extended exhale promotes parasympathetic response',
+    benefits: ['Deep relaxation', 'Activates rest response', 'Reduces tension'],
+    category: 'sleep'
+  },
+  'energizing': {
+    id: 'energizing',
+    name: '⚡ Energizing Breath',
+    label: '⚡ Energizing · 4-0-2',
+    phases: [
+      { name: 'Inhale', duration: 4, color: '#60B5FF' },
+      { name: 'Exhale', duration: 2, color: '#FF9898' }
+    ],
+    description: 'Quick powerful breaths to boost energy and alertness',
+    benefits: ['Increases energy', 'Improves alertness', 'Wakes you up'],
+    category: 'energy'
+  },
+  'physiological-sigh': {
+    id: 'physiological-sigh',
+    name: '😮‍💨 Physiological Sigh',
+    label: '😮‍💨 Double Inhale Sigh',
+    phases: [
+      { name: 'Inhale', duration: 2, color: '#60B5FF' },
+      { name: 'Inhale More', duration: 1, color: '#4A9FE8' },
+      { name: 'Exhale Slowly', duration: 6, color: '#FF9898' }
+    ],
+    description: 'Double inhale followed by long exhale - scientifically proven to reduce stress fast',
+    benefits: ['Fastest stress relief', 'Science-backed', 'Works in 1-3 breaths'],
+    category: 'calm'
+  },
+  'wim-hof': {
+    id: 'wim-hof',
+    name: '🧊 Wim Hof Style',
+    label: '🧊 Power Breathing',
+    phases: [
+      { name: 'Deep Inhale', duration: 2, color: '#60B5FF' },
+      { name: 'Let Go', duration: 2, color: '#FF9898' }
+    ],
+    description: 'Powerful rhythmic breathing for energy and cold tolerance',
+    benefits: ['Boosts immune system', 'Increases energy', 'Builds mental resilience'],
+    category: 'energy'
   }
 }
 

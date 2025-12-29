@@ -2,10 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Flame, Trophy, Clock, Star } from 'lucide-react';
 import { useProgress } from '@/contexts/ProgressContext';
-import { cn } from '@/lib/utils';
 
 function calculateStreak(): { streak: number; lastDate: string | null } {
   if (typeof window === 'undefined') return { streak: 0, lastDate: null };
@@ -59,7 +57,7 @@ export function StreakToolkit() {
         streakDays: currentStreak
       });
     }
-  }, []);
+  }, [progress]);
 
   return (
     <Card>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { getDeviceId } from '@/lib/device-id'
 import { challengeDefinitions } from '@/lib/challenge-definitions'
@@ -10,6 +10,22 @@ import ProgressCard from './progress-card'
 import CoachNote from './coach-note'
 import ChallengeCard from './challenge-card'
 import { Clock, Target, Flame, TrendingUp } from 'lucide-react'
+import { useBreathingSession, mapTechniqueToSession } from '@/contexts/BreathingSessionContext'
+
+// Retry fetch with exponential backoff
+async function fetchWithRetry(url: string, retries = 3, delay = 1000): Promise<Response | null> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url)
+      if (response?.ok) return response
+    } catch {
+      if (i < retries - 1) {
+        await new Promise(r => setTimeout(r, delay * Math.pow(2, i)))
+      }
+    }
+  }
+  return null
+}
 
 interface Challenge {
   challengeKey: string
@@ -36,59 +52,59 @@ export default function ChallengesSection() {
     last7Days: 0
   })
   const [loading, setLoading] = useState(true)
+  const { launchSession } = useBreathingSession()
 
   // Define stat items configuration
   const statItems = [
     {
       icon: Clock,
+      value: stats.totalMinutes,
       label: 'Total minutes',
       bgColor: 'bg-blue-100',
       iconColor: 'text-blue-600'
     },
     {
       icon: Target,
+      value: stats.totalSessions,
       label: 'Sessions',
       bgColor: 'bg-purple-100',
       iconColor: 'text-purple-600'
     },
     {
       icon: Flame,
+      value: stats.currentStreak,
       label: 'Day streak',
       bgColor: 'bg-orange-100',
       iconColor: 'text-orange-600'
     },
     {
       icon: TrendingUp,
+      value: stats.last7Days,
       label: 'Last 7 days',
       bgColor: 'bg-green-100',
       iconColor: 'text-green-600'
     }
   ]
 
-  useEffect(() => {
-    fetchChallenges()
-    fetchStats()
-  }, [])
-
-  const fetchChallenges = async () => {
+  const fetchChallenges = useCallback(async () => {
     try {
       const deviceId = getDeviceId()
-      const response = await fetch(`/api/challenges?deviceId=${deviceId}`)
+      const response = await fetchWithRetry(`/api/challenges?deviceId=${deviceId}`)
       if (response?.ok) {
         const data = await response.json()
         setChallenges(data?.challenges ?? [])
       }
     } catch (error) {
-      console.error('Failed to fetch challenges:', error)
+      console.debug('Challenges unavailable:', error)
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       const deviceId = getDeviceId()
-      const response = await fetch(`/api/progress?deviceId=${deviceId}`)
+      const response = await fetchWithRetry(`/api/progress?deviceId=${deviceId}`)
       if (response?.ok) {
         const data = await response.json()
         setStats({
@@ -99,9 +115,14 @@ export default function ChallengesSection() {
         })
       }
     } catch (error) {
-      console.error('Failed to fetch stats:', error)
+      console.debug('Stats unavailable:', error)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    fetchChallenges()
+    fetchStats()
+  }, [fetchChallenges, fetchStats])
 
   const handleMarkComplete = async (challengeKey: string) => {
     try {
@@ -174,7 +195,7 @@ export default function ChallengesSection() {
 
           <div className="space-y-6">
             {/* Progress Card - Full Width */}
-            <ProgressCard stats={stats} statItems={statItems} />
+            <ProgressCard statItems={statItems} />
 
             {/* Coach Note - Full Width */}
             <CoachNote
@@ -196,8 +217,10 @@ export default function ChallengesSection() {
                       challenge={challenge}
                       definition={def}
                       onStart={() => {
-                        const anchor = document.querySelector('#daily-practice')
-                        anchor?.scrollIntoView({ behavior: 'smooth' })
+                        // Launch the appropriate breathing session for this challenge
+                        const technique = def?.recommendedTechnique ?? 'box-4444'
+                        const sessionType = mapTechniqueToSession(technique)
+                        launchSession(sessionType, challenge.challengeKey)
                       }}
                       onMarkComplete={() => handleMarkComplete(challenge.challengeKey)}
                     />

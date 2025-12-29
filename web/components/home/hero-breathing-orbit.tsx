@@ -313,12 +313,12 @@ export function HeroBreathingOrbit() {
         {/* Inner track (pill shape) */}
         <div className="orbit-track"></div>
 
-        {/* Orb */}
+        {/* Orb - Using CSS custom properties for dynamic animation positioning */}
         <div
           className="orbit-orb"
           style={{
-            left: `${orbPosition.x}%`,
-            top: `${orbPosition.y}%`,
+            ['--orb-x' as string]: `${orbPosition.x}%`,
+            ['--orb-y' as string]: `${orbPosition.y}%`,
           }}
         />
 
@@ -362,55 +362,9 @@ export function HeroBreathingOrbit() {
         )}
       </div>
 
-      {/* Breathing Guidance */}
-      <div className="orbit-guidance-box md:block hidden">
-        🆘 60-second SOS breathing: Inhale for 4 seconds, exhale for 6 seconds. Six complete cycles provide immediate calm. Today's focused minutes display above.
-      </div>
-
-      {/* Measured Relief Tracker */}
-      <div className="orbit-tracker-card md:block hidden">
-        <div className="orbit-tracker-header">
-          <span className="orbit-tracker-title">Measured relief tracker</span>
-          <span className="orbit-tracker-pill">
-            <span className="orbit-tracker-dot">●</span>
-            <span>{stats.streak}</span>
-          </span>
-        </div>
-
-        <p className="orbit-tracker-message">{stats.message}</p>
-
-        <div className="orbit-tracker-awards">
-          <div className="orbit-tracker-awards-title">Score awards</div>
-          <p>{stats.awards}</p>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="orbit-stats-grid">
-          <div className="orbit-stat-pill">
-            <div className="orbit-stat-label">Sessions</div>
-            <div className="orbit-stat-number">{stats.sessions}</div>
-          </div>
-          <div className="orbit-stat-pill">
-            <div className="orbit-stat-label">Lifetime min</div>
-            <div className="orbit-stat-number">{stats.lifetimeMinutes}</div>
-          </div>
-          <div className="orbit-stat-pill">
-            <div className="orbit-stat-label">Lifetime hrs</div>
-            <div className="orbit-stat-number">{stats.lifetimeHours}</div>
-          </div>
-          <div className="orbit-stat-pill">
-            <div className="orbit-stat-label">Avg session</div>
-            <div className="orbit-stat-number">{stats.averageSession} min</div>
-          </div>
-        </div>
-
-        {/* Reset Button */}
-        <div className="orbit-reset-section">
-          <button onClick={resetStats} className="orbit-reset-btn">
-            ↻ Reset these stats
-          </button>
-          <p className="orbit-reset-note">Only clears this page's record on this device.</p>
-        </div>
+      {/* Breathing Guidance - Hidden on mobile via CSS */}
+      <div className="orbit-guidance-box">
+        🆘 60-second SOS breathing: Inhale for 4 seconds, exhale for 6 seconds. Six complete cycles provide immediate calm. Today&apos;s focused minutes display above.
       </div>
     </div>
   )

@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Layers, Check, X, Trophy, Volume2, Sparkles } from 'lucide-react';
+import { Layers, Check, X, Trophy, Volume2 } from 'lucide-react';
 
 interface Word {
   word: string;
@@ -49,7 +48,15 @@ export function BlendingSegmentingLab() {
   const [attempts, setAttempts] = useState({ blending: 0, segmenting: 0 });
 
   useEffect(() => {
-    generateNewWord();
+    const generateWord = () => {
+      const filtered = WORDS.filter(w => w.difficulty === difficulty);
+      const randomWord = filtered[Math.floor(Math.random() * filtered.length)];
+      setCurrentWord(randomWord);
+      setUserAnswer([]);
+      setFeedback(null);
+    };
+
+    generateWord();
     const saved = localStorage.getItem('blending-segmenting-score');
     if (saved) {
       setScore(JSON.parse(saved));

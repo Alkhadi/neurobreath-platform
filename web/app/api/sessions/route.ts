@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { getDbDownReason, isDbDown, markDbDown, prisma } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
+  if (isDbDown()) {
+    return NextResponse.json(
+      { error: 'Database unavailable', dbUnavailable: true, dbUnavailableReason: getDbDownReason() },
+      { status: 503 }
+    )
+  }
+
   try {
     const body = await request.json()
     const { deviceId, technique, label, minutes, breaths, rounds, category } = body
@@ -77,11 +84,26 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Session creation error:', error)
+    markDbDown(error)
+    if (isDbDown()) {
+      return NextResponse.json(
+        { error: 'Database unavailable', dbUnavailable: true, dbUnavailableReason: getDbDownReason() },
+        { status: 503 }
+      )
+    }
     return NextResponse.json({ error: 'Failed to log session' }, { status: 500 })
   }
 }
 
 export async function GET(request: NextRequest) {
+  if (isDbDown()) {
+    return NextResponse.json({
+      sessions: [],
+      dbUnavailable: true,
+      dbUnavailableReason: getDbDownReason()
+    })
+  }
+
   try {
     const deviceId = request?.nextUrl?.searchParams?.get('deviceId')
     
@@ -98,11 +120,25 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ sessions: sessions ?? [] })
   } catch (error) {
     console.error('Failed to fetch sessions:', error)
+    markDbDown(error)
+    if (isDbDown()) {
+      return NextResponse.json({
+        sessions: [],
+        dbUnavailable: true,
+        dbUnavailableReason: getDbDownReason()
+      })
+    }
     return NextResponse.json({ error: 'Failed to fetch sessions' }, { status: 500 })
   }
 }
 
-async function checkAndUnlockBadges(deviceId: string, progress: any) {
+interface Progress {
+  totalSessions?: number
+  totalMinutes?: number
+  currentStreak?: number
+}
+
+async function checkAndUnlockBadges(deviceId: string, progress: Progress | null) {
   const badges = [
     { key: 'firstBreath', condition: (progress?.totalSessions ?? 0) >= 1 },
     { key: 'calmExplorer', condition: (progress?.totalSessions ?? 0) >= 10 },

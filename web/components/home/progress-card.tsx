@@ -21,16 +21,10 @@ function StatItem({ icon: Icon, value, label, bgColor, iconColor }: StatItemProp
 }
 
 interface ProgressCardProps {
-  stats: {
-    totalMinutes: number
-    totalSessions: number
-    currentStreak: number
-    last7Days: number
-  }
   statItems: StatItemProps[]
 }
 
-export default function ProgressCard({ stats, statItems }: ProgressCardProps) {
+export default function ProgressCard({ statItems }: ProgressCardProps) {
   return (
     <div
       className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200"
@@ -43,7 +37,7 @@ export default function ProgressCard({ stats, statItems }: ProgressCardProps) {
           <StatItem
             key={index}
             icon={item.icon}
-            value={Object.values(stats)[index]}
+            value={item.value}
             label={item.label}
             bgColor={item.bgColor}
             iconColor={item.iconColor}

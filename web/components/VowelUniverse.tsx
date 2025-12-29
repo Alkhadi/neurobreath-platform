@@ -159,7 +159,6 @@ export function VowelUniverse() {
   const [activeZone, setActiveZone] = useState<VowelZone>(VOWEL_ZONES[0]);
   const [activePattern, setActivePattern] = useState<VowelPattern | null>(null);
   const [completedPatterns, setCompletedPatterns] = useState<Set<string>>(new Set());
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const { speak, speaking, supported } = useSpeechSynthesis();
   const { incrementGameCompleted } = useProgress();
   const handlePatternClick = (pattern: VowelPattern) => {
@@ -198,7 +197,7 @@ export function VowelUniverse() {
     return Math.round((completed / zone.patterns.length) * 100);
   };
   
-  const isAnySoundPlaying = speaking || isAudioPlaying;
+  const isAnySoundPlaying = speaking;
 
   return (
     <Card data-tutorial="vowels" className="p-6 shadow-medium animate-slide-up">

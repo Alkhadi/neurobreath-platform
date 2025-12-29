@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, TrendingUp, Palette, Shuffle, Grid3x3, Play, ChevronUp, BookOpen, Car, Briefcase, FileText, Volume2, VolumeX } from "lucide-react";
+import { AlertCircle, TrendingUp, Palette, Shuffle, Play, ChevronUp, BookOpen, Car, Briefcase, FileText, Volume2, VolumeX } from "lucide-react";
 import Link from "next/link";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 

@@ -808,6 +808,10 @@
   background: linear-gradient(180deg, #e0f2fe 0%, #f0f9ff 100%);
   border-radius: 1.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: visible;
+  box-sizing: border-box;
+  min-height: fit-content;
 }
 
 .orbit-title {
@@ -879,6 +883,8 @@
 
 .orbit-orb {
   position: absolute;
+  left: var(--orb-x, 0%);
+  top: var(--orb-y, 50%);
   width: 60px;
   height: 60px;
   background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
@@ -1005,7 +1011,11 @@
   font-size: 0.875rem;
   color: #78350f;
   line-height: 1.6;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
+  margin-top: 0.75rem;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Tracker Card */
@@ -1014,6 +1024,10 @@
   border: 1px solid #fde68a;
   border-radius: 0.75rem;
   padding: 1.25rem;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .orbit-tracker-header {
@@ -1320,17 +1334,23 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
 }
 
 .nb-hero-col-right {
-  position: sticky;
-  top: 2rem;
+  position: relative;
   height: fit-content;
-  z-index: 2;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 100%;
+  overflow: visible;
+  box-sizing: border-box;
 }
 
 /* Quick Win Section - Below Grid */
 .nb-hero-quickwin-section {
   margin-top: 3rem;
   position: relative;
-  z-index: 1;
+  z-index: 3;
+  clear: both;
 }
 
 /* ============================================
@@ -1339,14 +1359,16 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
 
 .nb-quickwin {
   background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 1.25rem;
   padding: 2rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   position: relative;
-  z-index: 2;
+  z-index: 10;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .nb-quickwin__inner {
@@ -1455,8 +1477,8 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
 /* Glassmorphism Card - Primary (two-line card) */
 .nb-glass-card-primary {
   background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 1rem;
   padding: 1.5rem 2rem;
@@ -1585,8 +1607,8 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
 /* Glassmorphism Card - Secondary (large features card) */
 .nb-glass-card-secondary {
   background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 1.25rem;
   padding: 2rem;
@@ -1692,9 +1714,10 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Orbit Height Adjustment - Increased for Full Visibility */
+/* Orbit Height Adjustment - Flexible for Full Visibility */
 .nb-hero-col-right .orbit-container {
-  max-height: 750px;
+  max-height: none;
+  min-height: fit-content;
   padding: 1rem 1rem 1.5rem;
   overflow: visible;
 }
@@ -1825,9 +1848,9 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
   }
 }
 
-/* REQUIREMENT #1: Hide orbit guidance/stats on ≤900px */
+/* REQUIREMENT #1: Hide only the tracker card on ≤900px, keep controls visible */
 @media (max-width: 900px) {
-  /* Completely hide orbit guidance box */
+  /* Hide guidance box on smaller screens to save space */
   .orbit-guidance-box {
     display: none !important;
   }
@@ -1837,13 +1860,29 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
     display: none !important;
   }
   
-  /* Ensure no gap remains */
+  /* Ensure orbit container shows all content */
   .orbit-container {
-    padding-bottom: 1rem !important;
+    padding-bottom: 1.5rem !important;
+    overflow: visible !important;
+    min-height: auto !important;
+  }
+  
+  /* Keep controls visible */
+  .orbit-phase-indicators,
+  .orbit-controls {
+    display: flex !important;
+    visibility: visible !important;
   }
   
   .nb-hero-col-right .orbit-controls {
-    margin-bottom: 0 !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  /* Ensure orbit visual doesn't overflow */
+  .orbit-visual-wrapper {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
@@ -1855,12 +1894,18 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
 
   .nb-hero-col-right {
     position: relative;
-    top: 0;
     order: -1;
+    margin-bottom: 2rem;
   }
 
   .nb-hero-col-right .orbit-container {
-    max-height: 600px;
+    max-height: none;
+    max-width: 100%;
+    min-height: fit-content;
+  }
+  
+  .nb-hero-quickwin-section {
+    margin-top: 2rem;
   }
 }
 
@@ -1886,6 +1931,59 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
   .nb-concern-pills {
     grid-template-columns: 1fr;
   }
+  
+  /* Ensure orbit fits on small screens */
+  .orbit-container {
+    max-width: 100%;
+    padding: 1.5rem 1rem;
+    margin: 0;
+  }
+  
+  .orbit-visual-wrapper {
+    aspect-ratio: 4 / 2.5;
+    padding: 1rem;
+  }
+  
+  .orbit-orb {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .orbit-phase-label {
+    font-size: 1rem;
+  }
+  
+  .orbit-title {
+    font-size: 1.125rem;
+  }
+  
+  .orbit-stats-card {
+    padding: 0.75rem;
+  }
+  
+  .orbit-stats-value {
+    font-size: 1.5rem;
+  }
+  
+  .orbit-phase-indicators {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .orbit-phase-pill {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+  
+  .orbit-controls {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .orbit-btn {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+  }
 
   .nb-hero-yellow-btn {
     width: 100%;
@@ -1909,6 +2007,91 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
   .nb-hero-yellow-btn {
     font-size: 1rem;
     padding: 0.875rem 1.5rem;
+  }
+  
+  /* Extra small screen orbit adjustments */
+  .orbit-container {
+    padding: 1rem 0.75rem;
+    border-radius: 1rem;
+  }
+  
+  .orbit-title {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .orbit-stats-card {
+    padding: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .orbit-stats-label {
+    font-size: 0.625rem;
+  }
+  
+  .orbit-stats-value {
+    font-size: 1.25rem;
+  }
+  
+  .orbit-visual-wrapper {
+    aspect-ratio: 4 / 2;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .orbit-orb {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .orbit-track {
+    width: 65%;
+    height: 50%;
+  }
+  
+  .orbit-phase-label {
+    font-size: 0.875rem;
+  }
+  
+  .orbit-phase-indicators {
+    margin-bottom: 0.75rem;
+  }
+  
+  .orbit-phase-pill {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.688rem;
+  }
+  
+  .orbit-controls {
+    margin-bottom: 0.75rem;
+  }
+  
+  .orbit-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.813rem;
+  }
+}
+
+/* Extra small screens - 480px and below */
+@media (max-width: 480px) {
+  .orbit-container {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .orbit-phase-indicators {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.375rem;
+  }
+  
+  .orbit-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .orbit-btn {
+    width: 100%;
+    text-align: center;
   }
 }
 

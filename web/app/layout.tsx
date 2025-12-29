@@ -7,6 +7,7 @@ import { SiteFooter } from '@/components/site-footer'
 import QuestPassPill from '@/components/quest-pass-pill'
 import ClientLayout from '@/components/ClientLayout'
 import { Toaster } from 'sonner'
+import { BreathingSessionProvider } from '@/contexts/BreathingSessionContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,8 +24,12 @@ export const metadata: Metadata = {
     images: [{ url: '/og-image.png', width: 1200, height: 630 }]
   },
   icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' }
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/favicon.svg',
   },
 }
 
@@ -39,7 +44,6 @@ export default function RootLayout({
         <link rel="stylesheet" href="/css/base.css" />
         <link rel="stylesheet" href="/css/site.css" />
         <link rel="stylesheet" href="/css/quest-pass.css" />
-        <script src="https://apps.abacus.ai/chatllm/appllm-lib.js" defer></script>
       </head>
       <body className={inter.className}>
         <ThemeProvider
@@ -48,16 +52,18 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <a className="skip-link" href="#main">Skip to content</a>
-          <div id="top"></div>
-          <SiteHeader />
-          <main id="main" className="page-main">
-            {children}
-          </main>
-          <SiteFooter />
-          <QuestPassPill />
-          <ClientLayout />
-          <Toaster position="bottom-center" richColors />
+          <BreathingSessionProvider>
+            <a className="skip-link" href="#main">Skip to content</a>
+            <div id="top"></div>
+            <SiteHeader />
+            <main id="main" className="page-main">
+              {children}
+            </main>
+            <SiteFooter />
+            <QuestPassPill />
+            <ClientLayout />
+            <Toaster position="bottom-center" richColors />
+          </BreathingSessionProvider>
         </ThemeProvider>
       </body>
     </html>

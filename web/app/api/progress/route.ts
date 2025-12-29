@@ -1,9 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { getDbDownReason, isDbDown, markDbDown, prisma } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
+  if (isDbDown()) {
+    return NextResponse.json({
+      totalSessions: 0,
+      totalMinutes: 0,
+      totalBreaths: 0,
+      currentStreak: 0,
+      longestStreak: 0,
+      dbUnavailable: true,
+      dbUnavailableReason: getDbDownReason()
+    })
+  }
+
   try {
     const deviceId = request?.nextUrl?.searchParams?.get('deviceId')
     
@@ -28,6 +40,18 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(progress)
   } catch (error) {
     console.error('Failed to fetch progress:', error)
+    markDbDown(error)
+    if (isDbDown()) {
+      return NextResponse.json({
+        totalSessions: 0,
+        totalMinutes: 0,
+        totalBreaths: 0,
+        currentStreak: 0,
+        longestStreak: 0,
+        dbUnavailable: true,
+        dbUnavailableReason: getDbDownReason()
+      })
+    }
     return NextResponse.json({ error: 'Failed to fetch progress' }, { status: 500 })
   }
 }

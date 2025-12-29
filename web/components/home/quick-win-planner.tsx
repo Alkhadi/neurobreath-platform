@@ -1,15 +1,12 @@
 'use client'
 
-import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Sparkles, Save } from 'lucide-react'
 
 export function QuickWinPlanner() {
-  const [showModal, setShowModal] = useState(false)
-
   const handleGeneratePlan = () => {
     // This would open a modal with the AI planner
-    setShowModal(true)
+    alert('Quick Win Planner feature coming soon!')
   }
 
   const handleSaveToToolkit = () => {

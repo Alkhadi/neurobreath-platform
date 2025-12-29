@@ -85,19 +85,35 @@ export default function ChallengeCard({
             <span>Day {challenge.currentSessions} of {challenge.targetSessions}</span>
             <span>{Math.round(progress)}%</span>
           </div>
-          <div
-            className="w-full bg-gray-200 rounded-full h-2"
-            role="progressbar"
-            aria-valuenow={Math.min(progress, 100)}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label={`Challenge progress: ${Math.round(progress)}%`}
-          >
+          <div className="w-full bg-gray-200 rounded-full h-2">
             <div
-              className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500"
-              style={{ width: `${Math.min(progress, 100)}%` }}
+              className={`bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500 ${
+                progress <= 0 ? 'w-0' :
+                progress <= 5 ? 'w-[5%]' :
+                progress <= 10 ? 'w-[10%]' :
+                progress <= 15 ? 'w-[15%]' :
+                progress <= 20 ? 'w-[20%]' :
+                progress <= 25 ? 'w-1/4' :
+                progress <= 30 ? 'w-[30%]' :
+                progress <= 35 ? 'w-[35%]' :
+                progress <= 40 ? 'w-[40%]' :
+                progress <= 45 ? 'w-[45%]' :
+                progress <= 50 ? 'w-1/2' :
+                progress <= 55 ? 'w-[55%]' :
+                progress <= 60 ? 'w-[60%]' :
+                progress <= 65 ? 'w-[65%]' :
+                progress <= 70 ? 'w-[70%]' :
+                progress <= 75 ? 'w-3/4' :
+                progress <= 80 ? 'w-[80%]' :
+                progress <= 85 ? 'w-[85%]' :
+                progress <= 90 ? 'w-[90%]' :
+                progress <= 95 ? 'w-[95%]' :
+                'w-full'
+              }`}
+              aria-hidden="true"
             />
           </div>
+          <span className="sr-only">Challenge progress: {Math.round(progress)}%</span>
           <div className="text-xs text-gray-500 mt-1">
             {totalMinutesLogged} min logged
           </div>

@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Music, Play, Check, X, Trophy, Volume2 } from 'lucide-react';
+import { Music, Check, X, Trophy, Volume2 } from 'lucide-react';
 
 interface Pattern {
   id: string;
@@ -90,7 +90,10 @@ export function RhythmTraining() {
   useEffect(() => {
     // Initialize Web Audio API
     if (typeof window !== 'undefined' && !audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (AudioContextClass) {
+        audioContextRef.current = new AudioContextClass();
+      }
     }
 
     return () => {

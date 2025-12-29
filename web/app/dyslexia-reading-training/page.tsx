@@ -11,7 +11,6 @@ import { CreateProfile } from '@/components/CreateProfile';
 import { PracticeTimer } from '@/components/PracticeTimer';
 import { BreathingExercise } from '@/components/BreathingExercise';
 import { ReadingAssessment } from '@/components/ReadingAssessment';
-import { RapidNaming } from '@/components/RapidNaming';
 import WordConstruction from '@/components/WordConstruction';
 import FluencyPacer from '@/components/FluencyPacer';
 import PronunciationPractice from '@/components/PronunciationPractice';
@@ -21,7 +20,7 @@ import VocabularyBuilder from '@/components/VocabularyBuilder';
 import { ProgressProvider } from '@/contexts/ProgressContext';
 import { ReadingLevelProvider } from '@/contexts/ReadingLevelContext';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { GraduationCap } from 'lucide-react';
 // New Evidence-Based Components

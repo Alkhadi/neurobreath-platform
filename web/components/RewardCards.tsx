@@ -25,9 +25,7 @@ import {
   BookOpen,
   Smile,
   Code,
-  GraduationCap,
   Palette,
-  Clock,
   Shield,
   Compass,
   Sun,
@@ -357,7 +355,6 @@ interface RewardCardsProps {
 
 export function RewardCards({ className, compact = false }: RewardCardsProps) {
   const { gamesCompleted, streakDays } = useProgress();
-  const rewards = {}; // Placeholder
   // const { currentProfile } = useUserProfile();
   const currentProfile = null;
   const [selectedCard, setSelectedCard] = useState<typeof REWARD_CARDS[0] | null>(null);
@@ -381,7 +378,9 @@ export function RewardCards({ className, compact = false }: RewardCardsProps) {
     const progressData = storedData ? JSON.parse(storedData) : null;
     
     const letterProgress = progressData?.letterProgress || {};
-    const masteredLetters = Object.values(letterProgress).filter((l: any) => l?.mastered).length;
+    const masteredLetters = Object.values(letterProgress).filter((l): l is { mastered: boolean } =>
+      typeof l === 'object' && l !== null && 'mastered' in l && (l as { mastered?: boolean }).mastered === true
+    ).length;
 
     return {
       games: gamesCompleted,
@@ -423,7 +422,6 @@ export function RewardCards({ className, compact = false }: RewardCardsProps) {
   };
 
   const printCard = (card: typeof REWARD_CARDS[0]) => {
-    const Icon = card.icon;
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
     

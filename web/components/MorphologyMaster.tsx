@@ -289,11 +289,6 @@ export function MorphologyMaster() {
     }, 2000);
   };
 
-  const typeColor = {
-    prefix: 'blue',
-    suffix: 'green',
-    root: 'purple'
-  };
 
   return (
     <Card className="w-full">

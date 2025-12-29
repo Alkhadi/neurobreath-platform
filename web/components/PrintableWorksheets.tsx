@@ -14,7 +14,6 @@ import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 import {
   Printer,
-  Download,
   FileText,
   PenTool,
   BookOpen,

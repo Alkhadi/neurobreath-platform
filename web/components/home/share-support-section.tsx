@@ -8,7 +8,6 @@ import { toast } from 'sonner'
 // REQUIREMENT #6: Support URL Constants
 const SUPPORT_DONATE_ONCE_URL = 'https://buymeacoffee.com/neurobreath' // Placeholder - update with actual URL
 const SUPPORT_MONTHLY_URL = 'https://patreon.com/neurobreath' // Placeholder - update with actual URL
-const SUPPORT_SHARE_URL = '#share-section' // Scroll to share section
 const ORG_CONTACT_URL = '/contact'
 
 export default function ShareSupportSection() {
@@ -105,8 +104,7 @@ export default function ShareSupportSection() {
       // Draw QR code
       ctx.fillStyle = '#000000'
       const moduleSize = qrSize / qrData.length
-      const quietZone = 4  // 4 modules quiet zone
-      
+
       for (let row = 0; row < qrData.length; row++) {
         for (let col = 0; col < qrData[row].length; col++) {
           if (qrData[row][col] === 1) {

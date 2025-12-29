@@ -57,8 +57,13 @@ export default function WordConstruction() {
       setCurrentSetIndex(data.currentSetIndex || 0);
       setWordsFound(data.wordsFound || []);
     }
-    shuffleLetters();
-  }, []);
+    const doShuffle = () => {
+      const shuffled = [...currentSet.letters].sort(() => Math.random() - 0.5);
+      setAvailableLetters(shuffled);
+      setBuiltWord([]);
+    };
+    doShuffle();
+  }, [currentSet.letters]);
 
   useEffect(() => {
     // Save progress

@@ -1,10 +1,24 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { getDeviceId } from '@/lib/device-id'
-import { badgeDefinitions } from '@/lib/badge-definitions'
 import RewardTutorial from './reward-tutorial'
 import { Sparkles } from 'lucide-react'
+
+// Retry fetch with exponential backoff
+async function fetchWithRetry(url: string, retries = 3, delay = 1000): Promise<Response | null> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url)
+      if (response?.ok) return response
+    } catch {
+      if (i < retries - 1) {
+        await new Promise(r => setTimeout(r, delay * Math.pow(2, i)))
+      }
+    }
+  }
+  return null
+}
 
 interface Badge {
   badgeKey: string
@@ -19,24 +33,24 @@ export default function RewardsSection() {
   const [badges, setBadges] = useState<Badge[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchBadges()
-  }, [])
-
-  const fetchBadges = async () => {
+  const fetchBadges = useCallback(async () => {
     try {
       const deviceId = getDeviceId()
-      const response = await fetch(`/api/badges?deviceId=${deviceId}`)
+      const response = await fetchWithRetry(`/api/badges?deviceId=${deviceId}`)
       if (response?.ok) {
         const data = await response.json()
         setBadges(data?.badges ?? [])
       }
     } catch (error) {
-      console.error('Failed to fetch badges:', error)
+      console.debug('Badges unavailable:', error)
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    fetchBadges()
+  }, [fetchBadges])
 
   return (
     <section

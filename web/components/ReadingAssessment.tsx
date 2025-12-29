@@ -15,7 +15,7 @@ const ASSESSMENT_SECTIONS = [
 
 export function ReadingAssessment() {
   const [started, setStarted] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [progress] = useState(0);
 
   return (
     <Card>

@@ -48,19 +48,6 @@ export function RapidNamingTest() {
   const timerRef = useRef<number>(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    generateTest();
-    loadResults();
-  }, [testType]);
-
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []);
-
   const loadResults = () => {
     const saved = localStorage.getItem('rapid-naming-results');
     if (saved) {
@@ -78,30 +65,16 @@ export function RapidNamingTest() {
     for (let i = 0; i < gridSize; i++) {
       switch (testType) {
         case 'letter':
-          items.push({
-            value: LETTERS[Math.floor(Math.random() * LETTERS.length)],
-            type: 'letter'
-          });
+          items.push({ value: ['a','b','c','d','e','s','o','p','d','n'][Math.floor(Math.random() * 10)], type: 'letter' });
           break;
         case 'number':
-          items.push({
-            value: NUMBERS[Math.floor(Math.random() * NUMBERS.length)],
-            type: 'number'
-          });
+          items.push({ value: String(Math.floor(Math.random() * 9) + 1), type: 'number' });
           break;
         case 'color':
-          const color = COLORS[Math.floor(Math.random() * COLORS.length)];
-          items.push({
-            value: color.emoji,
-            type: 'color'
-          });
+          items.push({ value: ['🔴','🔵','🟢','🟡','🟣'][Math.floor(Math.random() * 5)], type: 'color' });
           break;
         case 'object':
-          const obj = OBJECTS[Math.floor(Math.random() * OBJECTS.length)];
-          items.push({
-            value: obj.emoji,
-            type: 'object'
-          });
+          items.push({ value: ['☀️','⭐','🌙','❤️','⚡'][Math.floor(Math.random() * 5)], type: 'object' });
           break;
       }
     }
@@ -109,6 +82,19 @@ export function RapidNamingTest() {
     setTestItems(items);
     setCurrentIndex(0);
   };
+
+  useEffect(() => {
+    generateTest();
+    loadResults();
+  }, [testType]);
+
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
 
   const startTest = () => {
     setIsRunning(true);
@@ -167,9 +153,13 @@ export function RapidNamingTest() {
   };
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [isRunning, currentIndex]);
+    const keyHandler = (event: KeyboardEvent) => {
+      handleKeyPress(event);
+    };
+
+    window.addEventListener('keydown', keyHandler);
+    return () => window.removeEventListener('keydown', keyHandler);
+  }, [isRunning, currentIndex, testItems]);
 
   return (
     <Card className="w-full">

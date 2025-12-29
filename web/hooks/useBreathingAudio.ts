@@ -163,16 +163,75 @@ export interface AmbientSound {
 
 export const AMBIENT_SOUNDS: AmbientSound[] = [
   { id: 'none', name: 'None', emoji: '🔇', volume: 0 },
+  { id: 'cosmic', name: 'Cosmic', emoji: '🌌', volume: 0.15 },
   { id: 'rain', name: 'Gentle Rain', emoji: '🌧️', volume: 0.15 },
   { id: 'ocean', name: 'Ocean Waves', emoji: '🌊', volume: 0.12 },
-  { id: 'forest', name: 'Forest Birds', emoji: '🌲', volume: 0.18 },
+  { id: 'birds', name: 'Nature Birds', emoji: '🐦', volume: 0.15 },
+  { id: 'forest', name: 'Forest Stream', emoji: '🌲', volume: 0.18 },
   { id: 'fire', name: 'Crackling Fire', emoji: '🔥', volume: 0.14 },
-  { id: 'bowl', name: 'Singing Bowl', emoji: '🎵', volume: 0.16 },
+  { id: 'tibetan', name: 'Tibetan Bowls', emoji: '🎵', volume: 0.16 },
+  { id: 'meditation', name: 'Meditation', emoji: '🧘', volume: 0.15 },
+  { id: 'spiritual', name: 'Spiritual', emoji: '✨', volume: 0.14 },
   { id: 'wind', name: 'Wind Chimes', emoji: '🎐', volume: 0.13 },
 ];
 
-// Create enhanced ambient sound generators
+// Create enhanced ambient sound generators with spiritual/meditation sounds
 export function createEnhancedAmbientSounds(audioContext: AudioContext) {
+  
+  // Helper to create noise buffer
+  const createNoiseBuffer = (type: 'white' | 'pink' | 'brown'): AudioBuffer => {
+    const bufferSize = audioContext.sampleRate * 2
+    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate)
+    const output = buffer.getChannelData(0)
+    
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0
+    
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1
+      
+      if (type === 'white') {
+        output[i] = white * 0.5
+      } else if (type === 'pink') {
+        b0 = 0.99886 * b0 + white * 0.0555179
+        b1 = 0.99332 * b1 + white * 0.0750759
+        b2 = 0.96900 * b2 + white * 0.1538520
+        b3 = 0.86650 * b3 + white * 0.3104856
+        b4 = 0.55000 * b4 + white * 0.5329522
+        b5 = -0.7616 * b5 - white * 0.0168980
+        output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11
+        b6 = white * 0.115926
+      } else {
+        output[i] = (b0 = (b0 + (0.02 * white)) / 1.02) * 3.5
+      }
+    }
+    return buffer
+  }
+
+  const createCosmicSound = (gainNode: GainNode) => {
+    const sources: AudioScheduledSourceNode[] = [];
+    
+    // Deep space ambient drone with multiple harmonics
+    const frequencies = [60, 90, 120, 180];
+    const gains = [0.15, 0.1, 0.08, 0.05];
+    
+    frequencies.forEach((freq, i) => {
+      const osc = audioContext.createOscillator();
+      osc.type = i < 3 ? 'sine' : 'triangle';
+      osc.frequency.value = freq;
+      
+      const oscGain = audioContext.createGain();
+      oscGain.gain.value = gains[i];
+      
+      osc.connect(oscGain);
+      oscGain.connect(gainNode);
+      osc.start();
+      
+      sources.push(osc);
+    });
+    
+    return sources;
+  };
+
   const createRainSound = (gainNode: GainNode) => {
     // Multi-layered rain effect
     const sources: AudioScheduledSourceNode[] = [];
@@ -360,6 +419,146 @@ export function createEnhancedAmbientSounds(audioContext: AudioContext) {
     return sources;
   };
 
+  const createBirdsSound = (gainNode: GainNode) => {
+    const sources: AudioScheduledSourceNode[] = [];
+    
+    // High frequency chirps
+    const frequencies = [2000, 2500, 3000];
+    const gains = [0.02, 0.015, 0.01];
+    
+    frequencies.forEach((freq, i) => {
+      const osc = audioContext.createOscillator();
+      osc.type = i < 2 ? 'sine' : 'triangle';
+      osc.frequency.value = freq;
+      
+      const oscGain = audioContext.createGain();
+      oscGain.gain.value = gains[i];
+      
+      osc.connect(oscGain);
+      oscGain.connect(gainNode);
+      osc.start();
+      
+      sources.push(osc);
+    });
+    
+    // Background rustling with pink noise
+    const noiseBuffer = createNoiseBuffer('pink');
+    const noise = audioContext.createBufferSource();
+    noise.buffer = noiseBuffer;
+    noise.loop = true;
+    
+    const birdFilter = audioContext.createBiquadFilter();
+    birdFilter.type = 'highpass';
+    birdFilter.frequency.value = 1000;
+    
+    const birdGain = audioContext.createGain();
+    birdGain.gain.value = 0.1;
+    
+    noise.connect(birdFilter);
+    birdFilter.connect(birdGain);
+    birdGain.connect(gainNode);
+    noise.start();
+    
+    sources.push(noise);
+    return sources;
+  };
+
+  const createTibetanSound = (gainNode: GainNode) => {
+    const sources: OscillatorNode[] = [];
+    
+    // Tibetan singing bowls - Solfeggio frequencies
+    const frequencies = [174, 285, 396, 528, 639];
+    const gains = [0.12, 0.1, 0.08, 0.06, 0.04];
+    
+    frequencies.forEach((freq, i) => {
+      const osc = audioContext.createOscillator();
+      osc.type = i < 4 ? 'sine' : 'triangle';
+      osc.frequency.value = freq;
+      
+      const oscGain = audioContext.createGain();
+      oscGain.gain.value = gains[i];
+      
+      osc.connect(oscGain);
+      oscGain.connect(gainNode);
+      osc.start();
+      
+      sources.push(osc);
+    });
+    
+    return sources;
+  };
+
+  const createMeditationSound = (gainNode: GainNode) => {
+    const sources: OscillatorNode[] = [];
+    
+    // Deep meditation drone with binaural-like tones
+    const frequencies = [100, 104, 200, 300]; // 4Hz difference for theta waves
+    const gains = [0.15, 0.15, 0.08, 0.05];
+    const types: OscillatorType[] = ['sine', 'sine', 'sine', 'triangle'];
+    
+    frequencies.forEach((freq, i) => {
+      const osc = audioContext.createOscillator();
+      osc.type = types[i];
+      osc.frequency.value = freq;
+      
+      const oscGain = audioContext.createGain();
+      oscGain.gain.value = gains[i];
+      
+      osc.connect(oscGain);
+      oscGain.connect(gainNode);
+      osc.start();
+      
+      sources.push(osc);
+    });
+    
+    return sources;
+  };
+
+  const createSpiritualSound = (gainNode: GainNode) => {
+    const sources: AudioScheduledSourceNode[] = [];
+    
+    // Ethereal spiritual sounds with harmonics
+    const frequencies = [256, 384, 512, 768];
+    const gains = [0.1, 0.08, 0.06, 0.04];
+    const types: OscillatorType[] = ['sine', 'sine', 'sine', 'triangle'];
+    
+    frequencies.forEach((freq, i) => {
+      const osc = audioContext.createOscillator();
+      osc.type = types[i];
+      osc.frequency.value = freq;
+      
+      const oscGain = audioContext.createGain();
+      oscGain.gain.value = gains[i];
+      
+      osc.connect(oscGain);
+      oscGain.connect(gainNode);
+      osc.start();
+      
+      sources.push(osc);
+    });
+    
+    // Subtle shimmer with high-pass filtered white noise
+    const shimmerBuffer = createNoiseBuffer('white');
+    const shimmer = audioContext.createBufferSource();
+    shimmer.buffer = shimmerBuffer;
+    shimmer.loop = true;
+    
+    const shimmerFilter = audioContext.createBiquadFilter();
+    shimmerFilter.type = 'highpass';
+    shimmerFilter.frequency.value = 8000;
+    
+    const shimmerGain = audioContext.createGain();
+    shimmerGain.gain.value = 0.02;
+    
+    shimmer.connect(shimmerFilter);
+    shimmerFilter.connect(shimmerGain);
+    shimmerGain.connect(gainNode);
+    shimmer.start();
+    
+    sources.push(shimmer);
+    return sources;
+  };
+
   const createWindSound = (gainNode: GainNode) => {
     const sources: OscillatorNode[] = [];
     // Wind chimes with pentatonic scale
@@ -392,11 +591,16 @@ export function createEnhancedAmbientSounds(audioContext: AudioContext) {
   };
 
   return {
+    createCosmicSound,
     createRainSound,
     createOceanSound,
+    createBirdsSound,
     createForestSound,
     createFireSound,
     createBowlSound,
+    createTibetanSound,
+    createMeditationSound,
+    createSpiritualSound,
     createWindSound,
   };
 }

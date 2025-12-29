@@ -41,7 +41,6 @@ export default function PronunciationPractice() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [practiced, setPracticed] = useState<{ [key: string]: boolean }>({});
   const [isRecording, setIsRecording] = useState(false);
-  const [hasRecorded, setHasRecorded] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
@@ -85,10 +84,7 @@ export default function PronunciationPractice() {
       };
 
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
-        const audioUrl = URL.createObjectURL(audioBlob);
         // Here you could implement playback or analysis
-        setHasRecorded(true);
         toast.success('Recording saved!');
         
         // Mark as practiced
@@ -118,10 +114,8 @@ export default function PronunciationPractice() {
   const navigate = (direction: 'prev' | 'next') => {
     if (direction === 'prev' && currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
-      setHasRecorded(false);
     } else if (direction === 'next' && currentIndex < filteredWords.length - 1) {
       setCurrentIndex(currentIndex + 1);
-      setHasRecorded(false);
     }
   };
 
@@ -155,7 +149,6 @@ export default function PronunciationPractice() {
               onClick={() => {
                 setSelectedDifficulty(difficulty);
                 setCurrentIndex(0);
-                setHasRecorded(false);
               }}
               className={`px-4 py-2 rounded-lg font-medium transition-all ${
                 selectedDifficulty === difficulty
