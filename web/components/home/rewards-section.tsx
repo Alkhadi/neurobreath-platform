@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { getDeviceId } from '@/lib/device-id'
 import RewardTutorial from './reward-tutorial'
+import HomeCardGrid from './home-card-grid'
 import { Sparkles } from 'lucide-react'
 
 // Retry fetch with exponential backoff
@@ -57,7 +58,7 @@ export default function RewardsSection() {
       id="rewards-lab"
       className="py-16 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50"
     >
-      <div className="container max-w-6xl mx-auto px-4">
+      <div className="px-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -71,7 +72,7 @@ export default function RewardsSection() {
           <RewardTutorial />
 
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            <HomeCardGrid>
               {[...Array(6)].map((_, i) => (
                 <div
                   key={i}
@@ -79,9 +80,9 @@ export default function RewardsSection() {
                   style={{ minHeight: '180px' }}
                 />
               ))}
-            </div>
+            </HomeCardGrid>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            <HomeCardGrid>
               {badges.map((badge) => (
                 <div
                   key={badge.badgeKey}
@@ -133,7 +134,7 @@ export default function RewardsSection() {
                   )}
                 </div>
               ))}
-            </div>
+            </HomeCardGrid>
           )}
 
           <p className="text-center text-gray-600 mt-8">

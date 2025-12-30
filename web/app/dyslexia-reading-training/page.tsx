@@ -68,7 +68,10 @@ export default function DyslexiaReadingTrainingPage() {
             
             {/* Hero Section with Profile Creation - Two Card Layout */}
             <section data-tutorial="hero" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Left Card - Hero/Introduction */}
+              {/* Left Card - Profile Creation */}
+              <CreateProfile />
+
+              {/* Right Card - Hero/Introduction */}
               <Card className="overflow-hidden border-2 border-primary/20">
                 <CardContent className="p-6 sm:p-8 space-y-6">
                   <div className="space-y-3">
@@ -133,9 +136,6 @@ export default function DyslexiaReadingTrainingPage() {
                   </div>
                 </CardContent>
               </Card>
-
-              {/* Right Card - Profile Creation */}
-              <CreateProfile />
             </section>
 
             {/* Evidence-Based Research Banner */}

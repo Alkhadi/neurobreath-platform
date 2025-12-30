@@ -13,9 +13,6 @@
     "db:down": "docker compose down",
     "db:reset": "docker compose down -v && docker compose up -d"
   },
-  "prisma": {
-    "seed": "tsx --require dotenv/config scripts/seed.ts"
-  },
   "devDependencies": {
     "@next/swc-wasm-nodejs": "13.5.1",
     "@types/canvas-confetti": "^1",

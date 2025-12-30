@@ -29,36 +29,49 @@ import { UserPlus, Users, X, Sparkles, TrendingUp, Award } from 'lucide-react';
 import { toast } from 'sonner';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { useState } from 'react';
+import { ProfileCreationDialog } from '@/components/ProfileCreationDialog';
+import { ClassroomJoinDialog, ClassroomJoinDetails } from '@/components/ClassroomJoinDialog';
 
 export function OnboardingCard() {
-  const { dismissOnboarding, completeOnboarding } = useOnboarding();
+  const { dismissOnboarding } = useOnboarding();
   const [isVisible, setIsVisible] = useState(true);
+  const [showProfileDialog, setShowProfileDialog] = useState(false);
+  const [showClassroomDialog, setShowClassroomDialog] = useState(false);
 
   /**
    * Handle creating a new learner profile
-   * This will trigger profile creation flow
+   * Opens the profile creation dialog
    */
-  const handleCreateProfile = () => {
-    // TODO: Open profile creation modal/dialog
-    toast.info('Profile creation coming soon! Create personalized learning paths.');
-    // When profile is actually created, call: completeOnboarding()
+  const handleCreateProfile = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowProfileDialog(true);
   };
 
   /**
    * Handle joining a classroom
-   * This will trigger classroom join flow
+   * Open the classroom join dialog
    */
-  const handleJoinClassroom = () => {
-    // TODO: Open classroom join modal/dialog
-    toast.info('Classroom features coming soon! Connect with teachers and track progress.');
-    // When classroom is joined, call: completeOnboarding()
+  const handleJoinClassroom = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowClassroomDialog(true);
+  };
+
+  const handleClassroomJoined = (details: ClassroomJoinDetails) => {
+    setIsVisible(false);
+    toast.success(`You're connected to classroom ${details.classCode}. Your teacher can now see your progress.`, {
+      duration: 4000,
+    });
   };
 
   /**
    * Handle continuing as guest
    * User can use the app without a profile
    */
-  const handleContinueAsGuest = () => {
+  const handleContinueAsGuest = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     dismissOnboarding();
     setIsVisible(false);
     toast.success('Welcome! You can create a profile anytime to track your progress.', {
@@ -70,7 +83,9 @@ export function OnboardingCard() {
    * Handle dismissing the onboarding card
    * User explicitly closes it
    */
-  const handleDismiss = () => {
+  const handleDismiss = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     dismissOnboarding();
     setIsVisible(false);
   };
@@ -187,6 +202,14 @@ export function OnboardingCard() {
           </div>
         </div>
       </CardContent>
+
+      {/* Profile Creation Dialog */}
+      <ProfileCreationDialog open={showProfileDialog} onOpenChange={setShowProfileDialog} />
+      <ClassroomJoinDialog
+        open={showClassroomDialog}
+        onOpenChange={setShowClassroomDialog}
+        onJoined={handleClassroomJoined}
+      />
     </Card>
   );
 }

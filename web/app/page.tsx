@@ -1,61 +1,45 @@
 import HeroSection from '@/components/home/hero-section'
-import { PracticeCredibility } from '@/components/home/practice-credibility'
-import { GoalsAssist } from '@/components/home/goals-assist'
-import DailyPracticePlayer from '@/components/home/daily-practice-player'
+import CredibilitySection from '@/components/home/credibility-section'
+import GoalsSection from '@/components/home/goals-section'
+import ScienceSection from '@/components/home/science-section'
 import ChallengesSection from '@/components/home/challenges-section'
-import ToolsLab from '@/components/home/tools-lab'
-import PlayfulBreathingLab from '@/components/home/playful-breathing-lab'
-import EvidenceSection from '@/components/home/evidence-section'
 import RewardsSection from '@/components/home/rewards-section'
-import ShareSupportSection from '@/components/home/share-support-section'
+import ToolsSection from '@/components/home/tools-section'
+import SafetySupportSection from '@/components/home/safety-support-section'
+import OrganisationsSection from '@/components/home/organisations-section'
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen home-shell">
+    <div className="min-h-screen">
+      {/* Hero - Full width */}
       <HeroSection />
       
-      <hr className="section-divider" aria-hidden="true" />
-      
-      <section className="content-section section-bg-white">
-        <div className="page-container">
-          <article className="card home-practice-card">
-            <PracticeCredibility />
-            <p className="muted practice-card-footer">
-              We log rounds automatically so you can focus on calm, not dashboards.
-            </p>
-          </article>
-
-          <GoalsAssist />
-        </div>
-      </section>
-
-      <hr className="section-divider" aria-hidden="true" />
-
-      <EvidenceSection />
-      
-      <hr className="section-divider" aria-hidden="true" />
-      
-      <ChallengesSection />
-      
-      <hr className="section-divider" aria-hidden="true" />
-      
-      <RewardsSection />
-      
-      <hr className="section-divider" aria-hidden="true" />
-      
-      <DailyPracticePlayer />
-      
-      <hr className="section-divider" aria-hidden="true" />
-      
-      <ToolsLab />
-      
-      <hr className="section-divider" aria-hidden="true" />
-      
-      <PlayfulBreathingLab />
-      
-      <hr className="section-divider" aria-hidden="true" />
-      
-      <ShareSupportSection />
+      {/* Post-hero content - 94% width centred container */}
+      <div className="mx-auto w-[94vw] max-w-[1400px]">
+        {/* Credibility & Evidence */}
+        <CredibilitySection />
+        
+        {/* Choose Your Path */}
+        <GoalsSection />
+        
+        {/* Why It Works */}
+        <ScienceSection />
+        
+        {/* Challenges & Tracking */}
+        <ChallengesSection />
+        
+        {/* Rewards & Milestones */}
+        <RewardsSection />
+        
+        {/* Interactive Tools */}
+        <ToolsSection />
+        
+        {/* Safety & Support */}
+        <SafetySupportSection />
+        
+        {/* For Organisations */}
+        <OrganisationsSection />
+      </div>
     </div>
   )
 }

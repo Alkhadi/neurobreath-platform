@@ -2,9 +2,9 @@ import Link from 'next/link'
 
 export default function EvidenceSection() {
   return (
-    <section className="content-section section-bg-sky-lavender" id="why-breathing-works">
-      <div className="page-container">
-        <article className="card card-elevated card-full-width home-evidence card-share-theme">
+    <section className="content-section section-bg-sky-lavender w-full" id="why-breathing-works">
+      <div className="page-container-full px-4 md:px-6 lg:px-8">
+        <article className="card card-elevated card-full-width home-evidence card-share-theme w-full-override">
           
           <div className="home-evidence__heading">
             <h2>Why these techniques work</h2>

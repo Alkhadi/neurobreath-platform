@@ -619,11 +619,12 @@ export default function DailyPracticePlayer() {
                     <Headphones className="w-4 h-4" /> Voice Guidance
                   </h4>
                   <div className="flex items-center gap-3">
-                    <label className="text-sm text-gray-600">Enable:</label>
+                    <span className="text-sm text-gray-600">Enable:</span>
                     <Button
                       onClick={() => setVoiceEnabled(!voiceEnabled)}
                       variant={voiceEnabled ? 'default' : 'outline'}
                       size="sm"
+                      aria-label="Toggle voice coaching"
                     >
                       {voiceEnabled ? 'On' : 'Off'}
                     </Button>
@@ -741,21 +742,23 @@ export default function DailyPracticePlayer() {
                 <div className="space-y-4">
                   <h4 className="font-semibold text-gray-700">🛠️ Other Options</h4>
                   <div className="flex items-center gap-3">
-                    <label className="text-sm text-gray-600">Vibration:</label>
+                    <span className="text-sm text-gray-600">Vibration:</span>
                     <Button
                       onClick={() => setVibrationEnabled(!vibrationEnabled)}
                       variant={vibrationEnabled ? 'default' : 'outline'}
                       size="sm"
+                      aria-label="Toggle vibration feedback"
                     >
                       {vibrationEnabled ? 'On' : 'Off'}
                     </Button>
                   </div>
                   <div className="flex items-center gap-3">
-                    <label className="text-sm text-gray-600">Focus Mode:</label>
+                    <span className="text-sm text-gray-600">Focus Mode:</span>
                     <Button
                       onClick={() => setFocusModeEnabled(!focusModeEnabled)}
                       variant={focusModeEnabled ? 'default' : 'outline'}
                       size="sm"
+                      aria-label="Toggle focus mode"
                     >
                       {focusModeEnabled ? 'On' : 'Off'}
                     </Button>
@@ -768,7 +771,7 @@ export default function DailyPracticePlayer() {
 
           {/* Quick Technique Selection */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-3">Choose a technique:</label>
+            <p className="block text-sm font-medium text-gray-700 mb-3">Choose a technique:</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <button
                 onClick={() => launchSession('box')}
@@ -858,7 +861,7 @@ export default function DailyPracticePlayer() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Quick Settings</label>
+              <p className="block text-sm font-medium text-gray-700 mb-2">Quick Settings</p>
               <div className="flex gap-2">
                 <Button
                   onClick={() => setVoiceEnabled(!voiceEnabled)}

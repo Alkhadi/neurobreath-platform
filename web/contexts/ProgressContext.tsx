@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode, useMemo } from 'react';
 
 interface ProgressState {
   streakDays: number;
@@ -19,53 +19,25 @@ interface ProgressContextType extends ProgressState {
   addBadgeEarned: (badge: string) => void;
   addMinutes: (minutes: number) => void;
   incrementSession: () => void;
+  hydrated: boolean;
 }
 
 const ProgressContext = createContext<ProgressContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'neurobreath-progress';
 
-function getInitialState(): ProgressState {
-  if (typeof window === 'undefined') {
-    return {
-      streakDays: 0,
-      lastPracticeDate: null,
-      minutesToday: 0,
-      totalMinutes: 0,
-      sessionsToday: 0,
-      totalSessions: 0,
-      lettersCompleted: new Set(),
-      gamesCompleted: 0,
-      badgesEarned: new Set(),
-    };
-  }
-
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      return {
-        ...parsed,
-        lettersCompleted: new Set(parsed.lettersCompleted || []),
-        badgesEarned: new Set(parsed.badgesEarned || []),
-      };
-    }
-  } catch (e) {
-    console.error('Failed to load progress:', e);
-  }
-
-  return {
-    streakDays: 0,
-    lastPracticeDate: null,
-    minutesToday: 0,
-    totalMinutes: 0,
-    sessionsToday: 0,
-    totalSessions: 0,
-    lettersCompleted: new Set(),
-    gamesCompleted: 0,
-    badgesEarned: new Set(),
-  };
-}
+// Default state - ALWAYS used for SSR/initial render
+const defaultState: ProgressState = {
+  streakDays: 0,
+  lastPracticeDate: null,
+  minutesToday: 0,
+  totalMinutes: 0,
+  sessionsToday: 0,
+  totalSessions: 0,
+  lettersCompleted: new Set(),
+  gamesCompleted: 0,
+  badgesEarned: new Set(),
+};
 
 function saveState(state: ProgressState) {
   try {
@@ -81,14 +53,33 @@ function saveState(state: ProgressState) {
 }
 
 export function ProgressProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<ProgressState>(getInitialState);
+  // Always start with default state for SSR/hydration consistency
+  const [state, setState] = useState<ProgressState>(defaultState);
+  const [hydrated, setHydrated] = useState(false);
 
-  // Save to localStorage whenever state changes
+  // Load from localStorage AFTER mount (client-only)
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      saveState(state);
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setState({
+          ...parsed,
+          lettersCompleted: new Set(parsed.lettersCompleted || []),
+          badgesEarned: new Set(parsed.badgesEarned || []),
+        });
+      }
+    } catch (e) {
+      console.error('Failed to load progress:', e);
     }
-  }, [state]);
+    setHydrated(true);
+  }, []);
+
+  // Save to localStorage whenever state changes (but only after hydration)
+  useEffect(() => {
+    if (!hydrated) return;
+    saveState(state);
+  }, [hydrated, state]);
 
   const updateProgress = useCallback((updates: Partial<ProgressState>) => {
     setState(prev => ({ ...prev, ...updates }));
@@ -128,7 +119,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
-  const value: ProgressContextType = {
+  const value: ProgressContextType = useMemo(() => ({
     ...state,
     updateProgress,
     addLetterCompleted,
@@ -136,7 +127,8 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     addBadgeEarned,
     addMinutes,
     incrementSession,
-  };
+    hydrated,
+  }), [state, hydrated, updateProgress, addLetterCompleted, incrementGameCompleted, addBadgeEarned, addMinutes, incrementSession]);
 
   return (
     <ProgressContext.Provider value={value}>

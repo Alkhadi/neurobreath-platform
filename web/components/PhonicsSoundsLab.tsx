@@ -931,11 +931,14 @@ export function PhonicsSoundsLab() {
                       </div>
                       
                       <div>
-                        <label className="block text-xs sm:text-sm text-slate-400 mb-1.5 sm:mb-2">Age <span className="text-[10px] sm:text-xs">(optional)</span></label>
+                        <label htmlFor="certificate-age" className="block text-xs sm:text-sm text-slate-400 mb-1.5 sm:mb-2">Age <span className="text-[10px] sm:text-xs">(optional)</span></label>
                         <Input
+                          id="certificate-age"
+                          name="age"
                           type="number"
                           placeholder="10"
                           className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 text-sm sm:text-base"
+                          aria-label="Age (optional)"
                         />
                       </div>
                       

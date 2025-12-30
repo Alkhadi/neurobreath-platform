@@ -19,7 +19,7 @@ export function SiteFooter() {
     <footer className="site-footer" id="siteFooter">
       {/* Footer navigation - Full Width */}
       <div className="ft-nav-wrapper">
-        <div className="ft-nav-inner">
+        <div className="ft-nav-inner mx-auto w-[80vw] max-w-[1400px]">
           {/* Brand + Support in Navigation Area */}
           <div className="ft-nav-brand">
             <Link className="ft-logo" href="/" aria-label="NeuroBreath home">
@@ -112,7 +112,7 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="inner">
+      <div className="inner mx-auto w-[80vw] max-w-[1400px]">
         <div className="ft-bottom">
           <div className="ft-bottom__copy" aria-label="Site notice">
             <p className="muted ft-bottom__text">

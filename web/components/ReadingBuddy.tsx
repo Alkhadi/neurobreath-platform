@@ -387,12 +387,15 @@ export default function ReadingBuddy({ onStartTutorial }: ReadingBuddyProps) {
               className="flex gap-2"
             >
               <Input
+                id="reading-buddy-input"
+                name="message"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder={isListening ? "Listening..." : "Ask me anything about this page..."}
                 disabled={isTyping || isListening}
                 className="flex-1"
+                aria-label="Ask Dorothy a question"
               />
               {sttSupported && (
                 <Button 

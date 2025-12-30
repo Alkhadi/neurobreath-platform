@@ -1,6 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  /* Full-width overrides for page containers */
+  .w-full-override {
+    width: 100% !important;
+    max-width: none !important;
+  }
+  
+  .page-container-full {
+    max-width: none !important;
+    width: 100% !important;
+  }
+}
  
 @layer base {
   :root {

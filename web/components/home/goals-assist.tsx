@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 export function GoalsAssist() {
   return (
-    <article className="card home-goals-card" id="vp-home-goals">
+    <article className="card home-goals-card w-full-override" id="vp-home-goals">
       <div className="goals-card-header">
         <h3>Pick your goal</h3>
         <p className="muted goals-card-subtitle">
