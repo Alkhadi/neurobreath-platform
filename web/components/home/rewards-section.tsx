@@ -76,8 +76,7 @@ export default function RewardsSection() {
               {[...Array(6)].map((_, i) => (
                 <div
                   key={i}
-                  className="bg-gray-100 rounded-lg p-6 animate-pulse"
-                  style={{ minHeight: '180px' }}
+                  className="bg-gray-100 rounded-lg p-6 animate-pulse min-h-[180px]"
                 />
               ))}
             </HomeCardGrid>

@@ -15,32 +15,53 @@ interface AccordionItemProps {
 function SourceItem({ title, description, link, isOpen, onToggle, children }: AccordionItemProps) {
   return (
     <div className="border border-slate-200 rounded-lg mb-2">
-      <button 
-        className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-slate-50 transition-colors"
-        onClick={onToggle}
-        aria-expanded={isOpen}
-      >
-        <div className="flex-1">
-          <h4 className="font-medium text-slate-900">{title}</h4>
-          <p className="text-sm text-slate-600 mt-1">{description}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          {link && (
-            <ExternalLink 
-              className="w-4 h-4 text-slate-400"
-              onClick={(e) => {
-                e.stopPropagation()
-                window.open(link, '_blank', 'noopener,noreferrer')
-              }}
-            />
-          )}
-          {isOpen ? (
+      {isOpen ? (
+        <button
+          className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-slate-50 transition-colors"
+          onClick={onToggle}
+          aria-expanded="true"
+        >
+          <div className="flex-1">
+            <h4 className="font-medium text-slate-900">{title}</h4>
+            <p className="text-sm text-slate-600 mt-1">{description}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            {link && (
+              <ExternalLink
+                className="w-4 h-4 text-slate-400"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  window.open(link, '_blank', 'noopener,noreferrer')
+                }}
+              />
+            )}
             <ChevronUp className="w-4 h-4 text-slate-400" />
-          ) : (
+          </div>
+        </button>
+      ) : (
+        <button
+          className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-slate-50 transition-colors"
+          onClick={onToggle}
+          aria-expanded="false"
+        >
+          <div className="flex-1">
+            <h4 className="font-medium text-slate-900">{title}</h4>
+            <p className="text-sm text-slate-600 mt-1">{description}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            {link && (
+              <ExternalLink
+                className="w-4 h-4 text-slate-400"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  window.open(link, '_blank', 'noopener,noreferrer')
+                }}
+              />
+            )}
             <ChevronDown className="w-4 h-4 text-slate-400" />
-          )}
-        </div>
-      </button>
+          </div>
+        </button>
+      )}
       {isOpen && (
         <div className="px-4 pb-4 text-sm text-slate-700">
           {children}

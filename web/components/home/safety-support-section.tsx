@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Share2, Heart, Download, Copy, Check, ExternalLink, QrCode } from 'lucide-react'
+import { Share2, Heart, Copy, Check, ExternalLink, QrCode } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 

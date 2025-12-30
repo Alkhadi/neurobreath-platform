@@ -1,0 +1,7 @@
+/*
+  Compatibility shim:
+  Some tooling/environments may attempt to load a root-level `layout.css`.
+  The canonical stylesheet lives at `/css/layout.css`.
+*/
+
+@import url("/css/layout.css");

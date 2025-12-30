@@ -624,12 +624,12 @@ export function RewardCards({ className, compact = false }: RewardCardsProps) {
                       
                       {!unlocked && (
                         <div className="mt-3">
-                          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-primary/50 rounded-full transition-all"
-                              style={{ width: `${progress}%` }}
-                            />
-                          </div>
+                          <progress
+                            className="h-1.5 w-full overflow-hidden rounded-full"
+                            value={Math.round(progress)}
+                            max={100}
+                            aria-label="Badge progress"
+                          />
                           <p className="text-xs text-muted-foreground mt-1">
                             {Math.round(progress)}% complete
                           </p>
@@ -685,12 +685,12 @@ export function RewardCards({ className, compact = false }: RewardCardsProps) {
                   </p>
                   {!isUnlocked(selectedCard) && (
                     <div className="mt-2">
-                      <div className="h-2 bg-muted rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-primary rounded-full"
-                          style={{ width: `${getProgress(selectedCard)}%` }}
-                        />
-                      </div>
+                      <progress
+                        className="h-2 w-full overflow-hidden rounded-full"
+                        value={Math.round(getProgress(selectedCard))}
+                        max={100}
+                        aria-label="Badge completion progress"
+                      />
                       <p className="text-xs text-muted-foreground mt-1 text-right">
                         {Math.round(getProgress(selectedCard))}% complete
                       </p>

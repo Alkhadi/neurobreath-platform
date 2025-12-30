@@ -16,6 +16,37 @@
 }
  
 @layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Override Tailwind's vendor-prefixed properties with standard versions */
+  button,
+  input,
+  optgroup,
+  select,
+  textarea {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  [type='search'] {
+    -webkit-appearance: textfield;
+    appearance: textfield;
+  }
+
+  .line-clamp-1,
+  .line-clamp-2,
+  .line-clamp-3,
+  .line-clamp-4,
+  .line-clamp-5,
+  .line-clamp-6 {
+    -webkit-line-clamp: var(--line-clamp, 2);
+    line-clamp: var(--line-clamp, 2);
+  }
+
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
@@ -157,6 +188,225 @@
     animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   }
 
+  /* Playful Breathing Lab - Roulette Wheel (no inline styles) */
+  .nb-wheel {
+    transform-origin: center;
+    will-change: transform;
+  }
+
+  .nb-wheel-rest-0 {
+    transform: rotate(0deg);
+  }
+  .nb-wheel-rest-1 {
+    transform: rotate(90deg);
+  }
+  .nb-wheel-rest-2 {
+    transform: rotate(180deg);
+  }
+  .nb-wheel-rest-3 {
+    transform: rotate(270deg);
+  }
+
+  .nb-wheel-slice-0 {
+    clip-path: polygon(50% 50%, 50% 0%, 100% 50%);
+  }
+  .nb-wheel-slice-1 {
+    clip-path: polygon(50% 50%, 100% 50%, 50% 100%);
+  }
+  .nb-wheel-slice-2 {
+    clip-path: polygon(50% 50%, 50% 100%, 0% 50%);
+  }
+  .nb-wheel-slice-3 {
+    clip-path: polygon(50% 50%, 0% 50%, 50% 0%);
+  }
+
+  .nb-wheel[class*="nb-wheel-spin-"] {
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+    animation-iteration-count: 1;
+  }
+
+  .nb-wheel-dur-2500 {
+    animation-duration: 2500ms;
+  }
+  .nb-wheel-dur-2750 {
+    animation-duration: 2750ms;
+  }
+  .nb-wheel-dur-3000 {
+    animation-duration: 3000ms;
+  }
+  .nb-wheel-dur-3250 {
+    animation-duration: 3250ms;
+  }
+  .nb-wheel-dur-3500 {
+    animation-duration: 3500ms;
+  }
+
+  .nb-wheel-spin-s8-from0-to0 { animation-name: nb-wheel-spin-s8-from0-to0; }
+  @keyframes nb-wheel-spin-s8-from0-to0 { to { transform: rotate(2880deg); } }
+  .nb-wheel-spin-s8-from0-to1 { animation-name: nb-wheel-spin-s8-from0-to1; }
+  @keyframes nb-wheel-spin-s8-from0-to1 { to { transform: rotate(2970deg); } }
+  .nb-wheel-spin-s8-from0-to2 { animation-name: nb-wheel-spin-s8-from0-to2; }
+  @keyframes nb-wheel-spin-s8-from0-to2 { to { transform: rotate(3060deg); } }
+  .nb-wheel-spin-s8-from0-to3 { animation-name: nb-wheel-spin-s8-from0-to3; }
+  @keyframes nb-wheel-spin-s8-from0-to3 { to { transform: rotate(3150deg); } }
+  .nb-wheel-spin-s8-from1-to0 { animation-name: nb-wheel-spin-s8-from1-to0; }
+  @keyframes nb-wheel-spin-s8-from1-to0 { to { transform: rotate(3240deg); } }
+  .nb-wheel-spin-s8-from1-to1 { animation-name: nb-wheel-spin-s8-from1-to1; }
+  @keyframes nb-wheel-spin-s8-from1-to1 { to { transform: rotate(2970deg); } }
+  .nb-wheel-spin-s8-from1-to2 { animation-name: nb-wheel-spin-s8-from1-to2; }
+  @keyframes nb-wheel-spin-s8-from1-to2 { to { transform: rotate(3060deg); } }
+  .nb-wheel-spin-s8-from1-to3 { animation-name: nb-wheel-spin-s8-from1-to3; }
+  @keyframes nb-wheel-spin-s8-from1-to3 { to { transform: rotate(3150deg); } }
+  .nb-wheel-spin-s8-from2-to0 { animation-name: nb-wheel-spin-s8-from2-to0; }
+  @keyframes nb-wheel-spin-s8-from2-to0 { to { transform: rotate(3240deg); } }
+  .nb-wheel-spin-s8-from2-to1 { animation-name: nb-wheel-spin-s8-from2-to1; }
+  @keyframes nb-wheel-spin-s8-from2-to1 { to { transform: rotate(3330deg); } }
+  .nb-wheel-spin-s8-from2-to2 { animation-name: nb-wheel-spin-s8-from2-to2; }
+  @keyframes nb-wheel-spin-s8-from2-to2 { to { transform: rotate(3060deg); } }
+  .nb-wheel-spin-s8-from2-to3 { animation-name: nb-wheel-spin-s8-from2-to3; }
+  @keyframes nb-wheel-spin-s8-from2-to3 { to { transform: rotate(3150deg); } }
+  .nb-wheel-spin-s8-from3-to0 { animation-name: nb-wheel-spin-s8-from3-to0; }
+  @keyframes nb-wheel-spin-s8-from3-to0 { to { transform: rotate(3240deg); } }
+  .nb-wheel-spin-s8-from3-to1 { animation-name: nb-wheel-spin-s8-from3-to1; }
+  @keyframes nb-wheel-spin-s8-from3-to1 { to { transform: rotate(3330deg); } }
+  .nb-wheel-spin-s8-from3-to2 { animation-name: nb-wheel-spin-s8-from3-to2; }
+  @keyframes nb-wheel-spin-s8-from3-to2 { to { transform: rotate(3420deg); } }
+  .nb-wheel-spin-s8-from3-to3 { animation-name: nb-wheel-spin-s8-from3-to3; }
+  @keyframes nb-wheel-spin-s8-from3-to3 { to { transform: rotate(3150deg); } }
+
+  .nb-wheel-spin-s9-from0-to0 { animation-name: nb-wheel-spin-s9-from0-to0; }
+  @keyframes nb-wheel-spin-s9-from0-to0 { to { transform: rotate(3240deg); } }
+  .nb-wheel-spin-s9-from0-to1 { animation-name: nb-wheel-spin-s9-from0-to1; }
+  @keyframes nb-wheel-spin-s9-from0-to1 { to { transform: rotate(3330deg); } }
+  .nb-wheel-spin-s9-from0-to2 { animation-name: nb-wheel-spin-s9-from0-to2; }
+  @keyframes nb-wheel-spin-s9-from0-to2 { to { transform: rotate(3420deg); } }
+  .nb-wheel-spin-s9-from0-to3 { animation-name: nb-wheel-spin-s9-from0-to3; }
+  @keyframes nb-wheel-spin-s9-from0-to3 { to { transform: rotate(3510deg); } }
+  .nb-wheel-spin-s9-from1-to0 { animation-name: nb-wheel-spin-s9-from1-to0; }
+  @keyframes nb-wheel-spin-s9-from1-to0 { to { transform: rotate(3600deg); } }
+  .nb-wheel-spin-s9-from1-to1 { animation-name: nb-wheel-spin-s9-from1-to1; }
+  @keyframes nb-wheel-spin-s9-from1-to1 { to { transform: rotate(3330deg); } }
+  .nb-wheel-spin-s9-from1-to2 { animation-name: nb-wheel-spin-s9-from1-to2; }
+  @keyframes nb-wheel-spin-s9-from1-to2 { to { transform: rotate(3420deg); } }
+  .nb-wheel-spin-s9-from1-to3 { animation-name: nb-wheel-spin-s9-from1-to3; }
+  @keyframes nb-wheel-spin-s9-from1-to3 { to { transform: rotate(3510deg); } }
+  .nb-wheel-spin-s9-from2-to0 { animation-name: nb-wheel-spin-s9-from2-to0; }
+  @keyframes nb-wheel-spin-s9-from2-to0 { to { transform: rotate(3600deg); } }
+  .nb-wheel-spin-s9-from2-to1 { animation-name: nb-wheel-spin-s9-from2-to1; }
+  @keyframes nb-wheel-spin-s9-from2-to1 { to { transform: rotate(3690deg); } }
+  .nb-wheel-spin-s9-from2-to2 { animation-name: nb-wheel-spin-s9-from2-to2; }
+  @keyframes nb-wheel-spin-s9-from2-to2 { to { transform: rotate(3420deg); } }
+  .nb-wheel-spin-s9-from2-to3 { animation-name: nb-wheel-spin-s9-from2-to3; }
+  @keyframes nb-wheel-spin-s9-from2-to3 { to { transform: rotate(3510deg); } }
+  .nb-wheel-spin-s9-from3-to0 { animation-name: nb-wheel-spin-s9-from3-to0; }
+  @keyframes nb-wheel-spin-s9-from3-to0 { to { transform: rotate(3600deg); } }
+  .nb-wheel-spin-s9-from3-to1 { animation-name: nb-wheel-spin-s9-from3-to1; }
+  @keyframes nb-wheel-spin-s9-from3-to1 { to { transform: rotate(3690deg); } }
+  .nb-wheel-spin-s9-from3-to2 { animation-name: nb-wheel-spin-s9-from3-to2; }
+  @keyframes nb-wheel-spin-s9-from3-to2 { to { transform: rotate(3780deg); } }
+  .nb-wheel-spin-s9-from3-to3 { animation-name: nb-wheel-spin-s9-from3-to3; }
+  @keyframes nb-wheel-spin-s9-from3-to3 { to { transform: rotate(3510deg); } }
+
+  .nb-wheel-spin-s10-from0-to0 { animation-name: nb-wheel-spin-s10-from0-to0; }
+  @keyframes nb-wheel-spin-s10-from0-to0 { to { transform: rotate(3600deg); } }
+  .nb-wheel-spin-s10-from0-to1 { animation-name: nb-wheel-spin-s10-from0-to1; }
+  @keyframes nb-wheel-spin-s10-from0-to1 { to { transform: rotate(3690deg); } }
+  .nb-wheel-spin-s10-from0-to2 { animation-name: nb-wheel-spin-s10-from0-to2; }
+  @keyframes nb-wheel-spin-s10-from0-to2 { to { transform: rotate(3780deg); } }
+  .nb-wheel-spin-s10-from0-to3 { animation-name: nb-wheel-spin-s10-from0-to3; }
+  @keyframes nb-wheel-spin-s10-from0-to3 { to { transform: rotate(3870deg); } }
+  .nb-wheel-spin-s10-from1-to0 { animation-name: nb-wheel-spin-s10-from1-to0; }
+  @keyframes nb-wheel-spin-s10-from1-to0 { to { transform: rotate(3960deg); } }
+  .nb-wheel-spin-s10-from1-to1 { animation-name: nb-wheel-spin-s10-from1-to1; }
+  @keyframes nb-wheel-spin-s10-from1-to1 { to { transform: rotate(3690deg); } }
+  .nb-wheel-spin-s10-from1-to2 { animation-name: nb-wheel-spin-s10-from1-to2; }
+  @keyframes nb-wheel-spin-s10-from1-to2 { to { transform: rotate(3780deg); } }
+  .nb-wheel-spin-s10-from1-to3 { animation-name: nb-wheel-spin-s10-from1-to3; }
+  @keyframes nb-wheel-spin-s10-from1-to3 { to { transform: rotate(3870deg); } }
+  .nb-wheel-spin-s10-from2-to0 { animation-name: nb-wheel-spin-s10-from2-to0; }
+  @keyframes nb-wheel-spin-s10-from2-to0 { to { transform: rotate(3960deg); } }
+  .nb-wheel-spin-s10-from2-to1 { animation-name: nb-wheel-spin-s10-from2-to1; }
+  @keyframes nb-wheel-spin-s10-from2-to1 { to { transform: rotate(4050deg); } }
+  .nb-wheel-spin-s10-from2-to2 { animation-name: nb-wheel-spin-s10-from2-to2; }
+  @keyframes nb-wheel-spin-s10-from2-to2 { to { transform: rotate(3780deg); } }
+  .nb-wheel-spin-s10-from2-to3 { animation-name: nb-wheel-spin-s10-from2-to3; }
+  @keyframes nb-wheel-spin-s10-from2-to3 { to { transform: rotate(3870deg); } }
+  .nb-wheel-spin-s10-from3-to0 { animation-name: nb-wheel-spin-s10-from3-to0; }
+  @keyframes nb-wheel-spin-s10-from3-to0 { to { transform: rotate(3960deg); } }
+  .nb-wheel-spin-s10-from3-to1 { animation-name: nb-wheel-spin-s10-from3-to1; }
+  @keyframes nb-wheel-spin-s10-from3-to1 { to { transform: rotate(4050deg); } }
+  .nb-wheel-spin-s10-from3-to2 { animation-name: nb-wheel-spin-s10-from3-to2; }
+  @keyframes nb-wheel-spin-s10-from3-to2 { to { transform: rotate(4140deg); } }
+  .nb-wheel-spin-s10-from3-to3 { animation-name: nb-wheel-spin-s10-from3-to3; }
+  @keyframes nb-wheel-spin-s10-from3-to3 { to { transform: rotate(3870deg); } }
+
+  .nb-wheel-spin-s11-from0-to0 { animation-name: nb-wheel-spin-s11-from0-to0; }
+  @keyframes nb-wheel-spin-s11-from0-to0 { to { transform: rotate(3960deg); } }
+  .nb-wheel-spin-s11-from0-to1 { animation-name: nb-wheel-spin-s11-from0-to1; }
+  @keyframes nb-wheel-spin-s11-from0-to1 { to { transform: rotate(4050deg); } }
+  .nb-wheel-spin-s11-from0-to2 { animation-name: nb-wheel-spin-s11-from0-to2; }
+  @keyframes nb-wheel-spin-s11-from0-to2 { to { transform: rotate(4140deg); } }
+  .nb-wheel-spin-s11-from0-to3 { animation-name: nb-wheel-spin-s11-from0-to3; }
+  @keyframes nb-wheel-spin-s11-from0-to3 { to { transform: rotate(4230deg); } }
+  .nb-wheel-spin-s11-from1-to0 { animation-name: nb-wheel-spin-s11-from1-to0; }
+  @keyframes nb-wheel-spin-s11-from1-to0 { to { transform: rotate(4320deg); } }
+  .nb-wheel-spin-s11-from1-to1 { animation-name: nb-wheel-spin-s11-from1-to1; }
+  @keyframes nb-wheel-spin-s11-from1-to1 { to { transform: rotate(4050deg); } }
+  .nb-wheel-spin-s11-from1-to2 { animation-name: nb-wheel-spin-s11-from1-to2; }
+  @keyframes nb-wheel-spin-s11-from1-to2 { to { transform: rotate(4140deg); } }
+  .nb-wheel-spin-s11-from1-to3 { animation-name: nb-wheel-spin-s11-from1-to3; }
+  @keyframes nb-wheel-spin-s11-from1-to3 { to { transform: rotate(4230deg); } }
+  .nb-wheel-spin-s11-from2-to0 { animation-name: nb-wheel-spin-s11-from2-to0; }
+  @keyframes nb-wheel-spin-s11-from2-to0 { to { transform: rotate(4320deg); } }
+  .nb-wheel-spin-s11-from2-to1 { animation-name: nb-wheel-spin-s11-from2-to1; }
+  @keyframes nb-wheel-spin-s11-from2-to1 { to { transform: rotate(4410deg); } }
+  .nb-wheel-spin-s11-from2-to2 { animation-name: nb-wheel-spin-s11-from2-to2; }
+  @keyframes nb-wheel-spin-s11-from2-to2 { to { transform: rotate(4140deg); } }
+  .nb-wheel-spin-s11-from2-to3 { animation-name: nb-wheel-spin-s11-from2-to3; }
+  @keyframes nb-wheel-spin-s11-from2-to3 { to { transform: rotate(4230deg); } }
+  .nb-wheel-spin-s11-from3-to0 { animation-name: nb-wheel-spin-s11-from3-to0; }
+  @keyframes nb-wheel-spin-s11-from3-to0 { to { transform: rotate(4320deg); } }
+  .nb-wheel-spin-s11-from3-to1 { animation-name: nb-wheel-spin-s11-from3-to1; }
+  @keyframes nb-wheel-spin-s11-from3-to1 { to { transform: rotate(4410deg); } }
+  .nb-wheel-spin-s11-from3-to2 { animation-name: nb-wheel-spin-s11-from3-to2; }
+  @keyframes nb-wheel-spin-s11-from3-to2 { to { transform: rotate(4500deg); } }
+  .nb-wheel-spin-s11-from3-to3 { animation-name: nb-wheel-spin-s11-from3-to3; }
+  @keyframes nb-wheel-spin-s11-from3-to3 { to { transform: rotate(4230deg); } }
+
+  .nb-wheel-spin-s12-from0-to0 { animation-name: nb-wheel-spin-s12-from0-to0; }
+  @keyframes nb-wheel-spin-s12-from0-to0 { to { transform: rotate(4320deg); } }
+  .nb-wheel-spin-s12-from0-to1 { animation-name: nb-wheel-spin-s12-from0-to1; }
+  @keyframes nb-wheel-spin-s12-from0-to1 { to { transform: rotate(4410deg); } }
+  .nb-wheel-spin-s12-from0-to2 { animation-name: nb-wheel-spin-s12-from0-to2; }
+  @keyframes nb-wheel-spin-s12-from0-to2 { to { transform: rotate(4500deg); } }
+  .nb-wheel-spin-s12-from0-to3 { animation-name: nb-wheel-spin-s12-from0-to3; }
+  @keyframes nb-wheel-spin-s12-from0-to3 { to { transform: rotate(4590deg); } }
+  .nb-wheel-spin-s12-from1-to0 { animation-name: nb-wheel-spin-s12-from1-to0; }
+  @keyframes nb-wheel-spin-s12-from1-to0 { to { transform: rotate(4680deg); } }
+  .nb-wheel-spin-s12-from1-to1 { animation-name: nb-wheel-spin-s12-from1-to1; }
+  @keyframes nb-wheel-spin-s12-from1-to1 { to { transform: rotate(4410deg); } }
+  .nb-wheel-spin-s12-from1-to2 { animation-name: nb-wheel-spin-s12-from1-to2; }
+  @keyframes nb-wheel-spin-s12-from1-to2 { to { transform: rotate(4500deg); } }
+  .nb-wheel-spin-s12-from1-to3 { animation-name: nb-wheel-spin-s12-from1-to3; }
+  @keyframes nb-wheel-spin-s12-from1-to3 { to { transform: rotate(4590deg); } }
+  .nb-wheel-spin-s12-from2-to0 { animation-name: nb-wheel-spin-s12-from2-to0; }
+  @keyframes nb-wheel-spin-s12-from2-to0 { to { transform: rotate(4680deg); } }
+  .nb-wheel-spin-s12-from2-to1 { animation-name: nb-wheel-spin-s12-from2-to1; }
+  @keyframes nb-wheel-spin-s12-from2-to1 { to { transform: rotate(4770deg); } }
+  .nb-wheel-spin-s12-from2-to2 { animation-name: nb-wheel-spin-s12-from2-to2; }
+  @keyframes nb-wheel-spin-s12-from2-to2 { to { transform: rotate(4500deg); } }
+  .nb-wheel-spin-s12-from2-to3 { animation-name: nb-wheel-spin-s12-from2-to3; }
+  @keyframes nb-wheel-spin-s12-from2-to3 { to { transform: rotate(4590deg); } }
+  .nb-wheel-spin-s12-from3-to0 { animation-name: nb-wheel-spin-s12-from3-to0; }
+  @keyframes nb-wheel-spin-s12-from3-to0 { to { transform: rotate(4680deg); } }
+  .nb-wheel-spin-s12-from3-to1 { animation-name: nb-wheel-spin-s12-from3-to1; }
+  @keyframes nb-wheel-spin-s12-from3-to1 { to { transform: rotate(4770deg); } }
+  .nb-wheel-spin-s12-from3-to2 { animation-name: nb-wheel-spin-s12-from3-to2; }
+  @keyframes nb-wheel-spin-s12-from3-to2 { to { transform: rotate(4860deg); } }
+  .nb-wheel-spin-s12-from3-to3 { animation-name: nb-wheel-spin-s12-from3-to3; }
+  @keyframes nb-wheel-spin-s12-from3-to3 { to { transform: rotate(4590deg); } }
+
   /* Ensure transparent backgrounds for emoji and letter elements */
   .letter-group-emoji,
   .letter-group-text {
@@ -185,12 +435,14 @@
 
   /* Print styles for certificates */
   @media print {
+    /* Note: @page cannot be scoped to a selector; this applies to all print pages. */
+    @page {
+      size: A4 portrait;
+      margin: 0 !important;
+    }
+
     .certificate-print {
-      /* Force single page */
-      @page {
-        size: A4 portrait;
-        margin: 0 !important;
-      }
+      /* Intentional: marker class for certificate print views */
     }
   }
 
