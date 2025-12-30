@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NeuroBreath Creativity Lab - A supportive space for neurodivergent minds to build creative thinking skills through playful, evidence-informed games.">
+    <title>NeuroBreath • Creativity Lab – Neurodivergent Creativity Training</title>
+    
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="NeuroBreath">
+    <meta property="og:title" content="NeuroBreath • Creativity Lab – Neurodivergent Creativity Training">
+    <meta property="og:description" content="A supportive space for neurodivergent minds to build creative thinking skills through playful, evidence-informed games.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://neurobreath.co.uk/creativity-lab.html">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="assets/icons/neurobreath-favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/neurobreath-logo-square-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/neurobreath-logo-square-16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/neurobreath-logo-square-180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/neurobreath-logo-square-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/icons/neurobreath-logo-square-512.png">
+    <meta name="msapplication-TileImage" content="assets/icons/neurobreath-logo-square-150.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/site.css">
+    <link rel="stylesheet" href="assets/css/creativity-lab.css">
+    
+    <!-- React CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="assets/js/voice-preferences.js" defer></script>
+    <script src="assets/js/site.js" defer></script>
+</head>
+<body data-page-id="creativity-lab">
+<a class="skip-link" href="#main">Skip to content</a>
+<div id="top"></div>
+<header class="site-header">
+  <div class="container navbar">
+    <a id="brandLink" class="brand" href="index.html">
+      <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo" class="logo"><span class="brand-text">NeuroBreath</span>
+    </a>
+    <nav class="main-nav" id="mainNav" role="navigation" aria-label="Primary">
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Conditions ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Neurodevelopmental</div>
+          <a href="autism.html">Autism</a>
+          <a href="autism-parent.html">Autism Parent</a>
+          <a href="adhd.html">ADHD</a>
+          <a href="dyslexia-reading-training.html">Dyslexia</a>
+          <div class="menu-label" aria-hidden="true">Mental Health</div>
+          <a href="anxiety.html">Anxiety</a>
+          <a href="depression.html">Depression</a>
+          <a href="stress.html">Stress</a>
+          <a href="sleep.html">Sleep</a>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Breathing &amp; Focus ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Guides</div>
+          <a href="breath.html">Breath (how-to)</a>
+          <a href="focus.html">Focus</a>
+          <a href="mindfulness.html">Mindfulness</a>
+          <div class="menu-label" aria-hidden="true">Techniques</div>
+          <a href="sos-60.html">🆘 60-second SOS</a>
+          <a href="box-breathing.html">🟩 Box Breathing</a>
+          <a href="4-7-8-breathing.html">🟦 4-7-8 Breathing</a>
+          <a href="coherent-5-5.html">🟪 Coherent 5-5</a>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Tools ▾</button>
+        <div class="submenu">
+          <a href="sleep-tools.html">Sleep Tools</a>
+          <a href="breath-tools.html">Breath Tools</a>
+          <a href="mood-tools.html">Mood Tools</a>
+          <a href="adhd-tools.html">ADHD Tools</a>
+          <a href="autism-tools.html">Autism Tools</a>
+          <a href="anxiety-tools.html">Anxiety Tools</a>
+          <a href="stress-tools.html">Stress Tools</a>
+          <a href="creativity-lab.html" class="active">🧠 Creativity Lab</a>
+          <div class="menu-label" aria-hidden="true">Symptom Guides</div>
+          <a href="stress-anxiety.html">Stress &amp; General Anxiety</a>
+          <a href="panic-symptoms.html">Panic Symptoms</a>
+          <a href="sleep-onset-insomnia.html">Sleep-Onset Insomnia</a>
+          <a href="focus-test-anxiety.html">Focus &amp; Test Anxiety</a>
+          <a href="ptsd-regulation.html">PTSD Regulation*</a>
+          <a href="low-mood-burnout.html">Low Mood &amp; Burnout</a>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">About ▾</button>
+        <div class="submenu">
+          <a href="about.html">About</a>
+          <a href="aims-objectives.html">Aims &amp; Stories</a>
+          <a href="coffee.html">Support Us</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+    </nav>
+    <div id="profile-manager-container" class="profile-manager-header"></div>
+    <button type="button" id="navToggle" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="mainNav">☰</button>
+  </div>
+</header>
+
+<main id="main" class="page-main creativity-lab-main">
+    <div id="root"></div>
+</main>
+
+<footer class="site-footer" id="siteFooter">
+  <!-- Footer navigation - Full Width -->
+  <div class="ft-nav-wrapper">
+    <div class="ft-nav-inner">
+      <!-- Brand + Support in Navigation Area -->
+      <div class="ft-nav-brand">
+        <a class="ft-logo" href="index.html" aria-label="NeuroBreath home">
+          <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo">
+        </a>
+        <a href="coffee.html" class="btn">☕ Support Us</a>
+      </div>
+      <nav class="ft-nav" aria-label="Footer">
+        <details class="ft-group">
+          <summary>Conditions <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="autism.html">Autism</a> · <a href="autism-parent.html">Autism Parent</a> · <a href="adhd.html">ADHD</a> · <a href="dyslexia-reading-training.html">Dyslexia</a></p>
+            <p><a href="anxiety.html">Anxiety</a> · <a href="depression.html">Depression</a> · <a href="stress.html">Stress</a> · <a href="sleep.html">Sleep</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Breathing &amp; Focus <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="breath.html">Breath (how-to)</a> · <a href="focus.html">Focus</a> · <a href="mindfulness.html">Mindfulness</a></p>
+            <p><a href="sos-60.html">60-second Reset</a> · <a href="box-breathing.html">Box Breathing</a> · <a href="4-7-8-breathing.html">4-7-8 Breathing</a> · <a href="coherent-5-5.html">Coherent 5-5</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Toolkits <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="sleep-tools.html">Sleep Tools</a> · <a href="breath-tools.html">Breath Tools</a> · <a href="mood-tools.html">Mood Tools</a> · <a href="adhd-tools.html">ADHD Tools</a> · <a href="autism-tools.html">Autism Tools</a> · <a href="anxiety-tools.html">Anxiety Tools</a> · <a href="stress-tools.html">Stress Tools</a></p>
+            <p><a href="creativity-lab.html"><strong>🧠 Creativity Lab</strong></a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Symptom Guides <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="stress-anxiety.html">Stress &amp; General Anxiety</a> · <a href="panic-symptoms.html">Panic Symptoms</a> · <a href="sleep-onset-insomnia.html">Sleep-Onset Insomnia</a></p>
+            <p><a href="focus-test-anxiety.html">Focus &amp; Test Anxiety</a> · <a href="ptsd-regulation.html">PTSD Regulation*</a> · <a href="low-mood-burnout.html">Low Mood &amp; Burnout</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>About <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="about.html">About</a> · <a href="aims-objectives.html">Aims &amp; Stories</a> · <a href="coffee.html">Support Us</a> · <a href="contact.html">Contact</a></p>
+          </div>
+        </details>
+      </nav>
+    </div>
+  </div>
+
+  <div class="inner">
+    <div class="ft-bottom">
+      <div class="ft-bottom__copy" aria-label="Site notice">
+        <p class="muted ft-bottom__text">Educational information only. Not medical advice. NeuroBreath is a free resource. © <span id="yearFooter"></span> NeuroBreath. All rights reserved.</p>
+      </div>
+      <button type="button" class="btn back-to-top-btn" data-action="back-to-top" aria-label="Back to top">
+        <span class="back-to-top__label">Back to top</span>
+        <span class="back-to-top__icon" aria-hidden="true">↑</span>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<!-- Creativity Lab React App -->
+<script type="text/babel" src="assets/js/creativity-lab.js"></script>
+
+<!-- Year in footer -->
+<script>
+    document.getElementById('yearFooter').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

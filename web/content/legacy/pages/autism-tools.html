@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+
+  <!-- Brand: NeuroBreath -->
+  <title>Autism Tools · NeuroBreath</title>
+  <meta name="description" content="NeuroBreath provides clinically referenced, neuro-inclusive breathing tools, guides and timers for calm, sleep, focus and emotional regulation.">
+
+  <!-- Social (Open Graph / Twitter) -->
+  <meta property="og:site_name" content="NeuroBreath">
+  <meta property="og:title" content="Autism Tools · NeuroBreath">
+  <meta property="og:description" content="NeuroBreath provides clinically referenced, neuro-inclusive breathing tools, guides and timers for calm, sleep, focus and emotional regulation.">
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://neurobreath.co.uk/autism-tools.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Standard favicon -->
+  <link rel="icon" type="image/x-icon" href="assets/icons/neurobreath-favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/neurobreath-logo-square-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/neurobreath-logo-square-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/neurobreath-logo-square-180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/neurobreath-logo-square-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icons/neurobreath-logo-square-512.png">
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/site.css" />
+  <script src="assets/js/voice-preferences.js" defer></script>
+  <script src="assets/js/site.js" defer></script>
+    <style>
+    /* Guide-specific styles using global color palette */
+    .page-main {
+      background: var(--color-cream);
+      padding: var(--spacing-2xl) 0;
+      min-height: 100vh;
+    }
+    
+    .page-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-lg);
+    }
+    
+    .card {
+      background: var(--color-white);
+      border: 1px solid var(--color-sage-light);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-xl);
+      box-shadow: var(--shadow-medium);
+      position: relative;
+      z-index: 1;
+      display: block;
+      overflow: visible;
+    }
+    
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--spacing-lg);
+    }
+    
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--spacing-lg);
+    }
+    
+    .small-note {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      font-style: italic;
+      margin-top: var(--spacing-sm);
+    }
+    
+    .muted {
+      color: var(--color-text-muted);
+    }
+    
+    /* Footer spacing - add 2% margin left and right */
+    .site-footer .ft-nav-wrapper {
+      margin-left: 2%;
+      margin-right: 2%;
+      box-sizing: border-box;
+    }
+    
+    .site-footer .inner {
+      margin-left: 2%;
+      margin-right: 2%;
+      box-sizing: border-box;
+    }
+
+  </style>
+</head>
+<body data-page-id="autism_tools" >
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<div id="top"></div>
+<header class="site-header">
+  <div class="container navbar">
+    <a id="brandLink" class="brand" href="index.html">
+      <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo" class="logo" /><span class="brand-text">NeuroBreath</span>
+    </a>
+    <nav class="main-nav" id="mainNav" role="navigation" aria-label="Primary">
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Conditions ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Neurodevelopmental</div>
+          <a href="autism.html" data-href="autism.html">Autism</a>
+          <a href="autism-parent.html" data-href="autism-parent.html">Autism Parent</a>
+          <a href="adhd.html" data-href="adhd.html">ADHD</a>
+          <a href="dyslexia-reading-training.html" data-href="dyslexia-reading-training.html">Dyslexia</a>
+          <div class="menu-label" aria-hidden="true">Mental Health</div>
+          <a href="anxiety.html" data-href="anxiety.html">Anxiety</a>
+          <a href="depression.html" data-href="depression.html">Depression</a>
+          <a href="stress.html" data-href="stress.html">Stress</a>
+          <a href="sleep.html" data-href="sleep.html">Sleep</a>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Breathing &amp; Focus ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Guides</div>
+          <a href="breath.html" data-href="breath.html">Breath (how-to)</a>
+          <a href="focus.html" data-href="focus.html">Focus</a>
+          <a href="mindfulness.html" data-href="mindfulness.html">Mindfulness</a>
+          <div class="menu-label" aria-hidden="true">Techniques</div>
+          <a href="sos-60.html" data-href="sos-60.html">🆘 60-second SOS</a>
+          <a href="box-breathing.html" data-href="box-breathing.html">🟩 Box Breathing</a>
+          <a href="4-7-8-breathing.html" data-href="4-7-8-breathing.html">🟦 4-7-8 Breathing</a>
+          <a href="coherent-5-5.html" data-href="coherent-5-5.html">🟪 Coherent 5-5</a>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Tools ▾</button>
+        <div class="submenu">
+          <a href="sleep-tools.html" data-href="sleep-tools.html">Sleep Tools</a>
+          <a href="breath-tools.html" data-href="breath-tools.html">Breath Tools</a>
+          <a href="mood-tools.html" data-href="mood-tools.html">Mood Tools</a>
+          <a href="adhd-tools.html" data-href="adhd-tools.html">ADHD Tools</a>
+          <a href="autism-tools.html" data-href="autism-tools.html">Autism Tools</a>
+          <a href="anxiety-tools.html" data-href="anxiety-tools.html">Anxiety Tools</a>
+          <a href="stress-tools.html" data-href="stress-tools.html">Stress Tools</a>
+          <a href="focus-garden.html" data-href="focus-garden.html">🌱 Focus Training</a>
+          <div class="menu-label" aria-hidden="true">Symptom Guides</div>
+          <a href="stress-anxiety.html" data-href="stress-anxiety.html">Stress &amp; General Anxiety</a>
+          <a href="panic-symptoms.html" data-href="panic-symptoms.html">Panic Symptoms</a>
+          <a href="sleep-onset-insomnia.html" data-href="sleep-onset-insomnia.html">Sleep-Onset Insomnia</a>
+          <a href="focus-test-anxiety.html" data-href="focus-test-anxiety.html">Focus &amp; Test Anxiety</a>
+          <a href="ptsd-regulation.html" data-href="ptsd-regulation.html">PTSD Regulation*</a>
+          <a href="low-mood-burnout.html" data-href="low-mood-burnout.html">Low Mood &amp; Burnout</a>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">About ▾</button>
+        <div class="submenu">
+          <a href="about.html" data-href="about.html">About</a>
+          <a href="aims-objectives.html" data-href="aims-objectives.html">Aims &amp; Stories</a>
+          <a href="coffee.html" data-href="coffee.html">Support Us</a>
+          <a href="contact.html" data-href="contact.html">Contact</a>
+        </div>
+      </div>
+    </nav>
+    <button type="button" id="navToggle" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="mainNav">☰</button>
+  </div>
+</header>
+
+
+<main id="main-content" class="page-main">
+  <div class="page-container">
+    <h1 class=" page-title">Autism Tools</h1>
+  <div class="page-content stack">
+    <a id="top"></a>
+
+  <section class="card autism-hero autism-hero--tools" id="autism-tools-hero">
+      <div class="hero-header">
+        <h2>Autism tools overview</h2>
+        <p class="hero-lead">Neuro-inclusive breathing, regulation, and communication supports. Everything below keeps the original Autism Tools content, now styled to match the Autism condition hub.</p>
+      </div>
+      <div class="hero-grid">
+        <div class="hero-block">
+          <h3>What to expect</h3>
+          <ul>
+            <li>Curated breathing bundles that save to the device.</li>
+            <li>Checklists for sensory, communication, and shutdown prep.</li>
+            <li>Evidence-backed UK resources and printable packs.</li>
+          </ul>
+        </div>
+        <div class="hero-block">
+          <h3>Use this toolkit for</h3>
+          <ul>
+            <li>Planning predictable breathing routines that respect sensory needs.</li>
+            <li>Sharing quick PDFs with carers, teachers, or clinical teams.</li>
+            <li>Capturing tried techniques, imagery ideas, and next-step TODOs.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="hero-badges">
+        <a class="badge" href="#vp-toolkit-bundles">Curated bundles</a>
+        <a class="badge" href="#mpl-autism-quick-card">Quick starter</a>
+        <a class="badge" href="#autism-tools-essentials">Daily supports</a>
+        <a class="badge" href="#autism-tools-reference">Evidence &amp; PDFs</a>
+      </div>
+    </section>
+
+    <section class="card mshare-value-pack gradient-card" id="vp-toolkit-bundles">
+      <h2>Curated bundles</h2>
+      <ul>
+        <li>Beginner: 2× Box (1 min) + share PDF.</li>
+        <li>Quick: SOS-60 + Coherent 5-5 (2 min).</li>
+        <li>Classroom: Silent Box (2 min) — no audio.</li>
+        <li>Bedtime: 4-7-8 (3–5 min), phone face-down.</li>
+      </ul>
+      <p class="muted section-lead">Use the checkboxes below to tick what you’ve tried (saved on your device):</p>
+      <div class="card-checklist">
+        <label><input type="checkbox" data-tk="autism-tools-b1"> Beginner</label>
+        <label><input type="checkbox" data-tk="autism-tools-b2"> Quick</label>
+        <label><input type="checkbox" data-tk="autism-tools-b3"> Classroom</label>
+        <label><input type="checkbox" data-tk="autism-tools-b4"> Bedtime</label>
+      </div>
+      </section>
+
+    <section class="card gradient-card-alt" id="mpl-autism-quick-card">
+      <h2>Quick Starter: Autism</h2>
+      <p class="muted section-lead">Educational information only — not a diagnosis or medical advice.</p>
+      <div class="grid-two">
+        <div class="info-card">
+          <h3>What it is</h3>
+          <p>Autism is a neurodevelopmental difference that affects social communication, sensory processing, and patterns of behaviour or interests.</p>
+          <h4>Possible signs</h4>
+          <ul>
+            <li>Differences in social communication or interaction</li>
+            <li>Sensory sensitivities (noise, light, textures)</li>
+            <li>Preference for routines; difficulty with change</li>
+            <li>Focused or intense interests</li>
+          </ul>
+          <h4>Trusted resources</h4>
+          <ul>
+            <li><a href="https://www.nhs.uk/conditions/autism/" rel="noopener">NHS – Autism overview</a></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h3>Use this site for Autism</h3>
+          <ul>
+            <li>Choose a breathing pace that feels safe for your sensory profile.</li>
+            <li>Use predictable counts (e.g., Coherent 5-5) and minimise audio.</li>
+            <li>Save a one-page PDF and share with carers/teachers if helpful.</li>
+          </ul>
+          <div class="actions">
+            <a class="btn" href="box-breathing.html" rel="noopener">🟩 Box Breathing</a>
+            <a class="btn" href="4-7-8-breathing.html" rel="noopener">🟦 4-7-8 Breathing</a>
+            <a class="btn" href="coherent-5-5.html" rel="noopener">🟪 Coherent 5-5</a>
+            <a class="btn btn-danger" href="sos-60.html" rel="noopener">🆘 60-second SOS</a>
+          </div>
+          <h4>Progress (local only)</h4>
+          <div class="badge-row">
+            <span class="badge">Sessions: <span id="mpl-autism-sess">0</span></span>
+            <span class="badge">Minutes: <span id="mpl-autism-mins">0</span></span>
+            <span class="badge">Last used: <span id="mpl-autism-last">—</span></span>
+          </div>
+          <div class="progress-actions">
+            <button type="button" class="btn" id="mpl-autism-start">Start session</button>
+            <button type="button" class="btn" id="mpl-autism-stop" disabled>Stop &amp; save</button>
+            <span class="muted timer-label" id="mpl-autism-timer">00:00</span>
+          </div>
+        </div>
+      </div>
+      </section>
+
+    <section class="card-grid grid-3" id="autism-tools-essentials">
+      <article class="info-card">
+        <h3>Sensory profile (quick)</h3>
+        <ul>
+          <li>Helpful: noise-cancelling, dimmer lighting, stable desk.</li>
+          <li>Difficult: strong smells, bright flicker, last-minute change.</li>
+          <li>Note three adjustments to request in writing.</li>
+        </ul>
+      </article>
+      <article class="info-card">
+        <h3>Communication preferences</h3>
+        <ul>
+          <li>Written agendas; clear decisions and next steps.</li>
+          <li>Option to bring a supporter to key meetings.</li>
+          <li>Non-phone routes to book or amend appointments.</li>
+        </ul>
+      </article>
+      <article class="info-card">
+        <h3>Shutdown / overload kit</h3>
+        <ul>
+          <li>Quiet corner or room access.</li>
+          <li>Noise-reduction plus sunglasses or hat.</li>
+          <li>Simple exit script: “I need 10 minutes to reset.”</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="card info-card" id="autism-tools-reference">
+      <h3>Evidence &amp; UK resources</h3>
+      <ul>
+        <li><a href="https://www.autism.org.uk/advice-and-guidance/topics/mental-health/seeking-help/asking-for-reasonable-adjustments" target="_blank" rel="noopener">National Autistic Society — Asking for adjustments</a></li>
+        <li><a href="https://www.acas.org.uk/reasonable-adjustments/adjustments-for-neurodiversity" target="_blank" rel="noopener">Acas — Adjustments for neurodiversity</a></li>
+        <li><a href="https://www.england.nhs.uk/long-read/meeting-the-needs-of-autistic-adults-in-mental-health-services/" target="_blank" rel="noopener">NHS England — Meeting the needs of autistic adults</a></li>
+      </ul>
+      <div class="actions">
+        <button class="btn btn-success" id="resPdf_autism-tools" type="button">Download: Autism Tools — Resources (PDF)</button>
+      </div>
+      </section>
+    <script src="res.manifest.js"></script>
+
+    <section class="card info-card">
+      <h3>Emergency &amp; urgent help (UK)</h3>
+      <p class="muted">If you are at immediate risk of harming yourself or someone else, call <strong>999</strong> or go to A&amp;E. For urgent mental health support call <strong>NHS 111</strong> (select the mental health option). You can talk 24/7 to <strong>Samaritans on 116 123</strong> (free). This site is educational and is <em>not</em> medical advice.</p>
+    </section>
+
+    <section class="card info-card">
+      <h3>Autism PDFs</h3>
+      <div class="pdf-actions">
+        <a class="btn" href="https://files.mindpaylink.com/pdfs%3Aautism-parent-quick-guide-uk.pdf" download>⬇ Parent (PDF)</a>
+        <a class="btn" href="https://files.mindpaylink.com/pdfs%3Aautism-adult-support-guide-uk.pdf" download>⬇ Adult (PDF)</a>
+        <a class="btn" href="https://files.mindpaylink.com/pdfs%3Aautism-later-life-carer-guide-uk.pdf" download>⬇ Later life (PDF)</a>
+        <a class="btn" href="https://files.mindpaylink.com/pdfs%3Aautism-clinic-guide-checklists-uk.pdf" download>⬇ Clinic (PDF)</a>
+        <a class="btn" href="https://files.mindpaylink.com/autism-parent-quick-guide-uk.pdf" download>⬇ Parent Quick (alt)</a>
+      </div>
+    </section>
+
+    <section class="card info-card" id="asd-visual-schedule">
+      <h2>Visual Schedule Builder</h2>
+      <p class="muted" data-excerpt="3">Use First/Then and simple icons for transitions. Keep the next step visible; preview changes early.</p>
+    </section>
+
+    <section class="card info-card" id="asd-social-story">
+      <h2>Social Story (quick)</h2>
+      <p class="muted" data-excerpt="3">Create a six-sentence story: Where, When, Who, What, How, Why. Read together before the event.</p>
+    </section>
+
+    <section class="card info-card" id="asd-aac-ready">
+      <h2>AAC Ready</h2>
+      <p class="muted" data-excerpt="3">Offer a consistent way to ask (picture, word, AAC). Model and accept all attempts.</p>
+    </section>
+
+    <section class="card-grid grid-2x2" id="autism-tools-planning">
+      <article class="info-card">
+        <h3>TODOs</h3>
+        <ul>
+          <li>Confirm voice assistant defaults do not auto-play on page load.</li>
+          <li>Audit localStorage saves in private browsing and document fallbacks.</li>
+          <li>Draft classroom variation for silent breathing cues (visual only).</li>
+          <li>Schedule quarterly reviews of clinical links for accuracy.</li>
+        </ul>
+      </article>
+      <article class="info-card">
+        <h3>Imagery ideas</h3>
+        <ul>
+          <li>Muted teal gradients with soft geometric rings mirroring sensory calm.</li>
+          <li>Hands using picture exchange cards to reinforce AAC readiness.</li>
+          <li>Desk scene with predictable timer and weighted objects for regulation.</li>
+          <li>Step-by-step breathing panels in high-contrast illustrated style.</li>
+        </ul>
+      </article>
+      <article class="info-card">
+        <h3>Bibliography</h3>
+        <ol>
+          <li>NHS. <em>Autism</em>. 2024. Available at: <a href="https://www.nhs.uk/conditions/autism/" rel="noopener">nhs.uk/conditions/autism</a>.</li>
+          <li>NHS England. <em>Meeting the needs of autistic adults in mental health services</em>. 2023.</li>
+          <li>National Autistic Society. <em>Reasonable Adjustments Guidance</em>. 2024.</li>
+          <li>Acas. <em>Adjustments for neurodiversity in the workplace</em>. 2024.</li>
+        </ol>
+      </article>
+      <article class="info-card">
+        <h3>Link policy reminders</h3>
+        <ul>
+          <li>Surface NHS, NAS, and Acas first; verify HTTPS and UK relevance.</li>
+          <li>Add human-readable titles and <code>rel="noopener"</code> for all external links.</li>
+          <li>Group four or more outbound links into responsive card grids (2×2 on desktop, stacked on mobile).</li>
+          <li>Retest downloadable assets quarterly to avoid expired redirects.</li>
+        </ul>
+      </article>
+    </section>
+
+  </div>
+  
+  </div>
+</main>
+
+<footer class="site-footer" id="siteFooter">
+  <!-- Footer navigation - Full Width -->
+  <div class="ft-nav-wrapper">
+    <div class="ft-nav-inner">
+      <!-- Brand + Support in Navigation Area -->
+      <div class="ft-nav-brand">
+        <a class="ft-logo" href="index.html" data-href="index.html" aria-label="NeuroBreath home">
+          <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo" />
+        </a>
+        <a href="coffee.html" class="btn" data-href="coffee.html">☕ Support Us</a>
+      </div>
+      <nav class="ft-nav" aria-label="Footer">
+        <details class="ft-group">
+          <summary>Conditions <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="autism.html" data-href="autism.html">Autism</a> · <a href="autism-parent.html" data-href="autism-parent.html">Autism Parent</a> · <a href="adhd.html" data-href="adhd.html">ADHD</a> · <a href="dyslexia-reading-training.html" data-href="dyslexia-reading-training.html">Dyslexia</a></p>
+            <p><a href="anxiety.html" data-href="anxiety.html">Anxiety</a> · <a href="depression.html" data-href="depression.html">Depression</a> · <a href="stress.html" data-href="stress.html">Stress</a> · <a href="sleep.html" data-href="sleep.html">Sleep</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Breathing &amp; Focus <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="breath.html" data-href="breath.html">Breath (how-to)</a> · <a href="focus.html" data-href="focus.html">Focus</a> · <a href="mindfulness.html" data-href="mindfulness.html">Mindfulness</a></p>
+            <p><a href="sos-60.html" data-href="sos-60.html">60-second Reset</a> · <a href="box-breathing.html" data-href="box-breathing.html">Box Breathing</a> · <a href="4-7-8-breathing.html" data-href="4-7-8-breathing.html">4-7-8 Breathing</a> · <a href="coherent-5-5.html" data-href="coherent-5-5.html">Coherent 5-5</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Toolkits <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="sleep-tools.html" data-href="sleep-tools.html">Sleep Tools</a> · <a href="breath-tools.html" data-href="breath-tools.html">Breath Tools</a> · <a href="mood-tools.html" data-href="mood-tools.html">Mood Tools</a> · <a href="adhd-tools.html" data-href="adhd-tools.html">ADHD Tools</a> · <a href="autism-tools.html" data-href="autism-tools.html">Autism Tools</a> · <a href="anxiety-tools.html" data-href="anxiety-tools.html">Anxiety Tools</a> · <a href="stress-tools.html" data-href="stress-tools.html">Stress Tools</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Symptom Guides <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="stress-anxiety.html" data-href="stress-anxiety.html">Stress &amp; General Anxiety</a> · <a href="panic-symptoms.html" data-href="panic-symptoms.html">Panic Symptoms</a> · <a href="sleep-onset-insomnia.html" data-href="sleep-onset-insomnia.html">Sleep-Onset Insomnia</a></p>
+            <p><a href="focus-test-anxiety.html" data-href="focus-test-anxiety.html">Focus &amp; Test Anxiety</a> · <a href="ptsd-regulation.html" data-href="ptsd-regulation.html">PTSD Regulation*</a> · <a href="low-mood-burnout.html" data-href="low-mood-burnout.html">Low Mood &amp; Burnout</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>About <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="about.html" data-href="about.html">About</a> · <a href="aims-objectives.html" data-href="aims-objectives.html">Aims &amp; Stories</a> · <a href="coffee.html" data-href="coffee.html">Support Us</a> · <a href="contact.html" data-href="contact.html">Contact</a></p>
+          </div>
+        </details>
+      </nav>
+    </div>
+  </div>
+
+  <div class="inner">
+    <div class="ft-bottom">
+      <div class="ft-bottom__copy" aria-label="Site notice">
+        <p class="muted ft-bottom__text">Educational information only. Not medical advice. NeuroBreath is a free resource by NeuroBreath. © <span id="yearFooter"></span> NeuroBreath. All rights reserved.</p>
+      </div>
+      <button type="button" class="btn back-to-top-btn" data-action="back-to-top" aria-label="Back to top">
+        <span class="back-to-top__label">Back to top</span>
+        <span class="back-to-top__icon" aria-hidden="true">↑</span>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/app.js" defer></script>
+</body>
+</html>
+

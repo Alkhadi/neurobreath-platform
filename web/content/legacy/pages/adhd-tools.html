@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+
+  <!-- Brand: NeuroBreath -->
+  <title>ADHD Tools · NeuroBreath</title>
+  <meta name="description" content="NeuroBreath provides clinically referenced, neuro-inclusive breathing tools, guides and timers for calm, sleep, focus and emotional regulation.">
+
+  <!-- Social (Open Graph / Twitter) -->
+  <meta property="og:site_name" content="NeuroBreath">
+  <meta property="og:title" content="ADHD Tools · NeuroBreath">
+  <meta property="og:description" content="NeuroBreath provides clinically referenced, neuro-inclusive breathing tools, guides and timers for calm, sleep, focus and emotional regulation.">
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://neurobreath.co.uk/adhd-tools.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Standard favicon -->
+  <link rel="icon" type="image/x-icon" href="assets/icons/neurobreath-favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/neurobreath-logo-square-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/neurobreath-logo-square-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/neurobreath-logo-square-180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/neurobreath-logo-square-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icons/neurobreath-logo-square-512.png">
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/site.css" />
+  <script src="assets/js/voice-preferences.js" defer></script>
+  <script src="assets/js/site.js" defer></script>
+    <style>
+    /* Guide-specific styles using global color palette */
+    .page-main {
+      background: var(--color-cream);
+      padding: var(--spacing-2xl) 0;
+      min-height: 100vh;
+    }
+    
+    .page-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-lg);
+    }
+    
+    .card {
+      background: var(--color-white);
+      border: 1px solid var(--color-sage-light);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-xl);
+      box-shadow: var(--shadow-medium);
+      position: relative;
+      z-index: 1;
+      display: block;
+      overflow: visible;
+    }
+    
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--spacing-lg);
+    }
+    
+    .grid-2-1 {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--spacing-lg);
+    }
+    
+    @media (max-width: 768px) {
+      .grid-2-1 {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--spacing-lg);
+    }
+    
+    .small-note {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      font-style: italic;
+      margin-top: var(--spacing-sm);
+    }
+    
+    .muted {
+      color: var(--color-text-muted);
+    }
+    
+    /* Footer spacing - add 2% margin left and right */
+    .site-footer .ft-nav-wrapper {
+      margin-left: 2%;
+      margin-right: 2%;
+      box-sizing: border-box;
+    }
+    
+    .site-footer .inner {
+      margin-left: 2%;
+      margin-right: 2%;
+      box-sizing: border-box;
+    }
+    
+    /* Ensure logo and back to top button don't touch edges */
+    .ft-nav-brand {
+      margin-left: 0;
+      margin-right: 0;
+    }
+    
+    /* Section cards should be full width and properly spaced */
+    section.card {
+      display: block;
+      width: 100%;
+      clear: both;
+      margin-bottom: var(--spacing-lg);
+      box-sizing: border-box;
+    }
+    
+    .page-container > section.card {
+      grid-column: 1 / -1;
+      width: 100%;
+      max-width: 100%;
+    }
+    
+    section.card {
+      position: relative;
+      isolation: isolate;
+      z-index: 1;
+      margin-bottom: var(--spacing-xl);
+      clear: both;
+      overflow: visible;
+    }
+
+    /* =========================================================
+       ADHD Tools hero (fix image out-of-place)
+       ========================================================= */
+
+    #adhd-tools-hero{
+      /* Full-bleed hero section (background on the section itself) */
+      width: 100vw;
+      max-width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      left: 0;
+      right: 0;
+
+      padding: var(--spacing-2xl) 0;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+
+      overflow: clip;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.22), rgba(0,0,0,0.34)),
+        url('assets/img/curated-bundles.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    #adhd-tools-hero .hero-lede--adhd-tools{
+      display: block;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-lg);
+    }
+
+    /* Put hero text + buttons on their own card */
+    #adhd-tools-hero .hero-lede-copy{
+      background: var(--color-white);
+      border: 1px solid var(--color-sage-light);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-medium);
+      padding: var(--spacing-xl);
+      width: min(720px, 100%);
+    }
+
+    /* Put the injected “Inhale/Hold/Exhale + stats” block into its own card too */
+    #adhd-tools-hero .hero-activity-slot--adhd-tools{
+      margin-top: var(--spacing-lg);
+    }
+
+    #adhd-tools-hero .nb-hero-orbit{
+      background: var(--color-white);
+      border: 1px solid var(--color-sage-light);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-medium);
+      padding: var(--spacing-xl);
+      overflow: hidden;
+    }
+
+    /* Keep this block clean/readable (this page doesn't use the index hero-orbit theme) */
+    #adhd-tools-hero .nb-orbit-visual{
+      display: none;
+    }
+
+    #adhd-tools-hero .nb-orbit-label-row{
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+      margin: var(--spacing-sm) 0;
+    }
+
+    #adhd-tools-hero .nb-orbit-label{
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      color: var(--color-text-muted);
+      font-size: 0.95rem;
+    }
+
+    #adhd-tools-hero .nb-orbit-side-title{
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-sm);
+    }
+
+    #adhd-tools-hero .nb-orbit-side-pill{
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      background: var(--color-cream);
+      border: 1px solid var(--color-sage-light);
+      border-radius: 999px;
+      padding: 0 var(--spacing-sm);
+    }
+
+    #adhd-tools-hero .nb-orbit-mini-metrics{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-sm);
+    }
+
+    #adhd-tools-hero .nb-orbit-mini-metric{
+      background: var(--color-cream);
+      border: 1px solid var(--color-sage-light);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-sm);
+    }
+
+    #adhd-tools-hero .nb-hero-reset{
+      margin-top: var(--spacing-sm);
+    }
+
+    #adhd-tools-hero .nb-hero-reset button{
+      all: unset;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      text-decoration: underline;
+    }
+
+    #adhd-tools-hero .nb-hero-reset button:focus-visible{
+      outline: 2px solid var(--color-sage-light);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+
+    @media (max-width: 768px){
+      #adhd-tools-hero .hero-lede-copy{
+        padding: var(--spacing-lg);
+      }
+    }
+
+    #adhd-tools-hero .hero-visual{
+      display: none;
+    }
+
+  </style>
+</head>
+<body data-page-id="adhd_tools" >
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<div id="top"></div>
+<header class="site-header">
+  <div class="container navbar">
+    <a id="brandLink" class="brand" href="index.html">
+      <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo" class="logo" /><span class="brand-text">NeuroBreath</span>
+    </a>
+    <nav class="main-nav" id="mainNav" role="navigation" aria-label="Primary">
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Conditions ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Neurodevelopmental</div>
+          <a href="autism.html" data-href="autism.html">Autism</a>
+          <a href="autism-parent.html" data-href="autism-parent.html">Autism Parent</a>
+          <a href="adhd.html" data-href="adhd.html">ADHD</a>
+          <a href="dyslexia-reading-training.html" data-href="dyslexia-reading-training.html">Dyslexia</a>
+          <div class="menu-label" aria-hidden="true">Mental Health</div>
+          <a href="anxiety.html" data-href="anxiety.html">Anxiety</a>
+          <a href="depression.html" data-href="depression.html">Depression</a>
+          <a href="stress.html" data-href="stress.html">Stress</a>
+          <a href="sleep.html" data-href="sleep.html">Sleep</a>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Breathing &amp; Focus ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Guides</div>
+          <a href="breath.html" data-href="breath.html">Breath (how-to)</a>
+          <a href="focus.html" data-href="focus.html">Focus</a>
+          <a href="mindfulness.html" data-href="mindfulness.html">Mindfulness</a>
+          <div class="menu-label" aria-hidden="true">Techniques</div>
+          <a href="sos-60.html" data-href="sos-60.html">🆘 60-second SOS</a>
+          <a href="box-breathing.html" data-href="box-breathing.html">🟩 Box Breathing</a>
+          <a href="4-7-8-breathing.html" data-href="4-7-8-breathing.html">🟦 4-7-8 Breathing</a>
+          <a href="coherent-5-5.html" data-href="coherent-5-5.html">🟪 Coherent 5-5</a>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Tools ▾</button>
+        <div class="submenu">
+          <a href="sleep-tools.html" data-href="sleep-tools.html">Sleep Tools</a>
+          <a href="breath-tools.html" data-href="breath-tools.html">Breath Tools</a>
+          <a href="mood-tools.html" data-href="mood-tools.html">Mood Tools</a>
+          <a href="adhd-tools.html" data-href="adhd-tools.html">ADHD Tools</a>
+          <a href="autism-tools.html" data-href="autism-tools.html">Autism Tools</a>
+          <a href="anxiety-tools.html" data-href="anxiety-tools.html">Anxiety Tools</a>
+          <a href="stress-tools.html" data-href="stress-tools.html">Stress Tools</a>
+          <a href="focus-garden.html" data-href="focus-garden.html">🌱 Focus Training</a>
+          <div class="menu-label" aria-hidden="true">Symptom Guides</div>
+          <a href="stress-anxiety.html" data-href="stress-anxiety.html">Stress &amp; General Anxiety</a>
+          <a href="panic-symptoms.html" data-href="panic-symptoms.html">Panic Symptoms</a>
+          <a href="sleep-onset-insomnia.html" data-href="sleep-onset-insomnia.html">Sleep-Onset Insomnia</a>
+          <a href="focus-test-anxiety.html" data-href="focus-test-anxiety.html">Focus &amp; Test Anxiety</a>
+          <a href="ptsd-regulation.html" data-href="ptsd-regulation.html">PTSD Regulation*</a>
+          <a href="low-mood-burnout.html" data-href="low-mood-burnout.html">Low Mood &amp; Burnout</a>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">About ▾</button>
+        <div class="submenu">
+          <a href="about.html" data-href="about.html">About</a>
+          <a href="aims-objectives.html" data-href="aims-objectives.html">Aims &amp; Stories</a>
+          <a href="coffee.html" data-href="coffee.html">Support Us</a>
+          <a href="contact.html" data-href="contact.html">Contact</a>
+        </div>
+      </div>
+    </nav>
+    <button type="button" id="navToggle" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="mainNav">☰</button>
+  </div>
+</header>
+
+
+<main id="main-content" class="page-main">
+      <div class="page-container">
+    <section class=" card hero hero-adhd-tools card-full-width" id="adhd-tools-hero" aria-label="ADHD tools overview" data-nb-hero="1">
+      <div class="hero-lede hero-lede--adhd-tools">
+        <div class="hero-lede-copy">
+          <p class="hero-kicker">Focus · Regulation · Planning</p>
+          <h1>ADHD Tools</h1>
+          <p>Curated bundles, breathing resets and focus routines to help you plan work, protect energy and build supportive habits.</p>
+          <div class="actions hero-controls" role="group" aria-label="Audio narration controls">
+            <button class="btn ok" id="adhdHeroStart" type="button">🎧 Start</button>
+            <button class="btn" id="adhdHeroPause" type="button">⏸ Pause</button>
+            <button class="btn" id="adhdHeroResume" type="button">▶ Resume</button>
+            <button class="btn" id="adhdHeroStop" type="button">■ Stop</button>
+          </div>
+          <div class="actions hero-anchors">
+            <a class="btn" href="#adhd-guided-reset">Guided reset</a>
+            <a class="btn" href="#vp-toolkit-bundles">Explore bundles</a>
+            <a class="btn" href="#mpl-adhd-quick-card">Open quick starter</a>
+            <a class="btn" href="#adhd-25-5">Focus sprint</a>
+          </div>
+          <p class="muted hero-disclaimer">Educational information only; not medical advice.</p>
+        </div>
+
+        <!-- Slot for the auto-injected activity/stats card (site.js) -->
+        <div class="hero-activity-slot hero-activity-slot--adhd-tools" data-nb-activity-slot="1"></div>
+
+        <figure class="hero-visual hero-visual--adhd" aria-hidden="true">
+          <div class="hero-visual-stage">
+            <div class="hero-orbit hero-orbit--tools">
+              <div class="hero-orbit-ring"></div>
+              <div class="breath-orb"></div>
+              <div class="hero-stat-chip">
+                <span>Breath cadence</span>
+                <strong>4 · 2 · 6</strong>
+              </div>
+            </div>
+            <div class="hero-image-frame">
+              <img src="assets/img/curated-bundles.png" alt="" />
+            </div>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <section class="card card-full-width guided-reset" id="adhd-guided-reset">
+      <div class="guided-reset-header">
+        <h2>Guided Focus Reset</h2>
+        <p class="muted">Prefer to listen? This three-minute walkthrough sets posture, breathing cadence and a launch cue before you start your sprint.</p>
+      </div>
+      <div class="guided-reset-media" role="group" aria-label="Guided focus reset audio player">
+        <audio controls preload="metadata">
+          <source src="assets/tts/instructions-en-GB-female.mp3" type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+        <div class="actions">
+          <a class="btn" href="assets/tts/instructions-en-GB-female.mp3" download>⬇ Save audio</a>
+          <a class="btn" href="#adhd-focus-planner">Jump to planner</a>
+        </div>
+      </div>
+      <details class="guided-reset-notes">
+        <summary>Quick script (read aloud)</summary>
+        <ol>
+          <li>Sit tall, soften your shoulders, let the jaw unclench.</li>
+          <li>Inhale for four, hold for two, exhale for six — repeat twice.</li>
+          <li>Check distractions: notifications off, water in reach, task visible.</li>
+          <li>Say your cue: “When the timer starts, then I…”. Hit Start.</li>
+        </ol>
+      </details>
+    </section>
+<!-- Curated bundles / value pack (kept) -->
+  <section class="card card-full-width mshare-value-pack" id="vp-toolkit-bundles">
+      <h2>Curated bundles</h2>
+      <ul>
+        <li>Beginner: 2× Box (1 min) + share PDF.</li>
+        <li>Quick: SOS-60 + Coherent 5-5 (2 min).</li>
+        <li>Classroom: Silent Box (2 min) — no audio.</li>
+        <li>Bedtime: 4-7-8 (3–5 min), phone face-down.</li>
+      </ul>
+      <p class="muted">Use the checkboxes below to tick what you’ve tried (saved on your device):</p>
+      <div class="bundle-checklist">
+        <label><input type="checkbox" data-tk="adhd-tools-b1"> Beginner</label>
+        <label><input type="checkbox" data-tk="adhd-tools-b2"> Quick</label>
+        <label><input type="checkbox" data-tk="adhd-tools-b3"> Classroom</label>
+        <label><input type="checkbox" data-tk="adhd-tools-b4"> Bedtime</label>
+      </div>
+      </section>
+
+    <section class="card card-full-width printable-toolkit" id="adhd-printable-toolkit">
+      <h2>Printable Toolkit</h2>
+      <p class="muted">Need something desk-side? Print the one-page sprint planner with If-Then cues, breathing menu and micro boosters.</p>
+      <ul>
+        <li>Space for three sprint cycles and quick win reviews.</li>
+        <li>Checklist of breathing resets to use before you start.</li>
+        <li>Micro-boost reminders to keep water, focus mode and rewards ready.</li>
+      </ul>
+      <div class="actions">
+        <a class="btn ok" href="assets/downloads/adhd-focus-toolkit.html" download>⬇ Download planner (HTML)</a>
+        <a class="btn" href="assets/downloads/adhd-focus-toolkit.html" target="_blank" rel="noopener">Open in new tab</a>
+      </div>
+    </section>
+
+    <!-- Quick Starter card (kept) -->
+  <section id="mpl-adhd-quick-card" class="card card-full-width">
+      <h2>Quick Starter: ADHD</h2>
+  <p class="muted muted-tight">Educational information only — not a diagnosis or medical advice.</p>
+  <div class="grid cols-2 grid-gap-1">
+        <div>
+          <h3>What it is</h3>
+          <p>A neurodevelopmental condition that affects attention regulation, impulsivity and hyperactivity. Experiences vary from person to person.</p>
+          <h3>Possible signs</h3>
+          <ul>
+            <li>Difficulty sustaining attention or following through on tasks</li>
+            <li>Restlessness or fidgeting; feeling “on the go”</li>
+            <li>Impulsivity (e.g., interrupting, acting before thinking)</li>
+            <li>Disorganisation, forgetfulness, losing things</li>
+          </ul>
+          <h3>Trusted resources</h3>
+          <ul><li><a href="https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/" rel="noopener">NHS – ADHD overview</a></li></ul>
+        </div>
+        <div>
+          <h3>Use this site for ADHD</h3>
+          <ul>
+            <li>Start with short, repeatable breath sets to settle the nervous system.</li>
+            <li>Use the SOS 60-second reset before challenging tasks.</li>
+            <li>Build a streak in the progress panel; keep sessions brief but frequent.</li>
+          </ul>
+          <div class="actions mt-05">
+            <a class="btn" href="box-breathing.html" rel="noopener">🟩 Box Breathing</a>
+            <a class="btn" href="4-7-8-breathing.html" rel="noopener">🟦 4-7-8 Breathing</a>
+            <a class="btn" href="coherent-5-5.html" rel="noopener">🟪 Coherent 5-5</a>
+            <a class="btn danger" href="sos-60.html" rel="noopener">🆘 60-second SOS</a>
+          </div>
+          <h3 class="mt-075">Progress (local only)</h3>
+          <div class="badge">Sessions: <span id="mpl-adhd-sessionCount">0</span></div>
+          <div class="badge">Minutes:  <span id="mpl-adhd-mins">0</span></div>
+          <div class="badge">Last used: <span id="mpl-adhd-last">—</span></div>
+          <div class="actions mt-05">
+            <button type="button" class="btn" id="mpl-adhd-start">Start session</button>
+            <button type="button" class="btn" id="mpl-adhd-stop" disabled="">Stop &amp; save</button>
+            <span class="muted ml-05" id="mpl-adhd-timer">00:00</span>
+          </div>
+        </div>
+      </div>
+      </section>
+
+    <section class="card card-full-width adhd-practice-zone" id="adhd-practice-zone">
+      <h2>Practice Zone: Games &amp; Warm-ups</h2>
+      <p class="muted">Short exercises to reset the nervous system, warm up attention, and prime your next focus sprint.</p>
+      <div class="practice-grid">
+        <article class="practice-card practice-card--breath" id="adhd-practice-breath">
+          <h3>Breathing orb — nervous system reset</h3>
+          <p class="muted">Short, paced breathing helps regulate the autonomic nervous system. Use this 4-2-6 pattern before starting a focus sprint, transitioning between tasks, or when emotions run high.</p>
+          <div class="practice-breath-visual" aria-hidden="true">
+            <div class="practice-orbit">
+              <div class="practice-orbit-ring"></div>
+              <div class="practice-orb"></div>
+            </div>
+          </div>
+          <ol class="muted practice-steps">
+            <li>Inhale through the nose for a slow count of <strong>4</strong> as the orb expands.</li>
+            <li>Hold gently for <strong>2</strong>.</li>
+            <li>Exhale through the mouth for a slow count of <strong>6</strong>, letting shoulders drop.</li>
+            <li>Repeat for 4–6 cycles (about 2–3 minutes).</li>
+          </ol>
+          <p class="muted practice-tip">Tip: For younger learners, imagine blowing bubbles. For older learners, pair the exhale with “In with calm, out with tension.”</p>
+        </article>
+        <article class="practice-card practice-card--game" id="adhd-practice-game">
+          <h3>30-second attention game</h3>
+          <p class="muted">Tap the glowing coin as it jumps around the board. This builds quick visual focus and practises returning to task after each tap — without pressure.</p>
+          <div class="practice-game-board" id="toolsGameBoard">
+            <button class="practice-game-shape" id="toolsGameShape" type="button" aria-label="Tap the glowing coin">+</button>
+          </div>
+          <div class="practice-game-meta">
+            <span>Time left: <strong id="toolsGameTime">30</strong>s</span>
+            <span>Score: <strong id="toolsGameScore">0</strong></span>
+            <span>Best: <strong id="toolsGameBest">0</strong></span>
+          </div>
+          <div class="actions practice-game-actions">
+            <button type="button" class="btn" id="toolsGameStart">▶ Start 30-second game</button>
+            <button type="button" class="btn" id="toolsGameReset">■ Reset</button>
+          </div>
+          <p class="small-note" id="toolsGameStatus" aria-live="polite"></p>
+          <p class="muted practice-tip">Suggested: younger players take one round; teens and adults try 1–3 rounds and aim to beat their personal best, not someone else’s score.</p>
+        </article>
+        <article class="practice-card practice-card--guided" id="adhd-practice-guided">
+          <h3>Guided warm-up (4 minutes)</h3>
+          <p class="muted">Run a short warm-up before longer sprints: 1 minute breathing, 2 minutes quiet focus, 1 minute stretch and praise. Ideal for classrooms, co-working or solo sessions.</p>
+          <div class="practice-video" id="toolsGuidedPlaceholder" role="button" aria-label="Start 4-minute warm-up">
+            <div>
+              <div class="practice-video-icon">▶</div>
+              <p>Placeholder for your audio or video embed. Click to launch the warm-up timer.</p>
+            </div>
+          </div>
+          <div class="practice-timer" aria-label="4-minute warm-up timer">
+            <div class="practice-timer-display" id="toolsGuidedTimer" aria-live="polite">04:00</div>
+            <div class="practice-progress">
+              <div class="practice-progress-fill" id="toolsGuidedProgress"></div>
+            </div>
+            <p class="small-note" id="toolsGuidedStatus" aria-live="polite">Press play to begin. Phase 1 sets the breath, Phase 2 keeps quiet focus, Phase 3 stretches and celebrates the win.</p>
+            <div class="actions practice-timer-actions">
+              <button type="button" class="btn" id="toolsGuidedStart">▶ Play warm-up</button>
+              <button type="button" class="btn" id="toolsGuidedStop">■ Stop</button>
+            </div>
+          </div>
+          <p class="practice-meta">Warm-ups completed: <strong id="toolsGuidedCount">0</strong></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="tips-banner" aria-label="Micro tips for quick wins">
+      <p><strong>Micro Tips:</strong> Stack resets with transitions, keep your next task in view, and pair every sprint with a short sensory break.</p>
+      <div class="actions">
+        <a class="btn" href="focus.html">Focus guide</a>
+        <a class="btn" href="stress-tools.html">Calm-down tools</a>
+      </div>
+    </section>
+
+  <!-- Main toolkit -->
+    <section class="card card-full-width" id="adhd-focus-planner">
+        <h3>Focus Sprint Planner</h3>
+        <p class="muted">Pair a timed sprint with a concrete If-Then cue so starting feels automatic. Set the sprint, capture the trigger, and run the cycle.</p>
+  <div class="planner-grid">
+          <section class="planner-panel">
+            <h4>Focus Sprint</h4>
+            <p class="muted muted-tight">Choose your sprint length, press start, then stay with one task until the timer ends.</p>
+            <div id="pomoAdhdTools"></div>
+          </section>
+          <section class="planner-panel">
+            <h4>If-Then Plan Builder</h4>
+            <p class="muted muted-tight">Capture the trigger (If…) and the follow-through (Then…) to reduce friction when you begin.</p>
+            <div class="kv-grid">
+              <div><label for="ifTxt">If…</label><input id="ifTxt" type="text" placeholder="If I open email…"></div>
+              <div><label for="thenTxt">Then…</label><input id="thenTxt" type="text" placeholder="…then I triage for 5 min."></div>
+            </div>
+            <div class="actions"><button type="button" class="btn" id="addRule">Add</button></div>
+            <ul id="ruleList" class="muted"></ul>
+          </section>
+        </div>
+        </section>
+
+      <section class="card card-full-width">
+        <h3>Noise &amp; Notification Audit</h3>
+        <ul>
+          <li>List distractions you can remove today (pop-ups, badges, sounds).</li>
+          <li>Agree “quiet hours” with your team.</li>
+          <li>Keep a short “todo capture” next to you.</li>
+        </ul>
+      </section>
+
+    <section class="card card-full-width success-stories" id="adhd-success-stories">
+      <h3>Success Stories (micro wins)</h3>
+      <p class="muted">Practical feedback from people putting the tools into action — short cycles, clear cues and a calm nervous system.</p>
+      <div class="success-grid">
+        <article class="success-item">
+          <header>
+            <span class="case-label">Set the cue and showed up</span>
+          </header>
+          <blockquote>
+            <p>Putting the If-Then statement by my keyboard meant I actually started a dreaded admin pile — and finished it in two sprints.</p>
+          </blockquote>
+          <footer class="case-attribution">Shared via user feedback</footer>
+        </article>
+        <article class="success-item">
+          <header>
+            <span class="case-label">Classroom calm-down</span>
+          </header>
+          <blockquote>
+            <p>We run the guided audio with headphones before maths. The routine gives the group enough regulation to stay present.</p>
+          </blockquote>
+          <footer class="case-attribution">Primary classroom facilitator</footer>
+        </article>
+        <article class="success-item">
+          <header>
+            <span class="case-label">Team body double</span>
+          </header>
+          <blockquote>
+            <p>Our project team meets online, hits Start together and checks in at breaks. Accountability plus the breathing reset works.</p>
+          </blockquote>
+          <footer class="case-attribution">Remote project lead</footer>
+        </article>
+      </div>
+    </section>
+
+    <section class="card card-full-width youth-evidence" id="adhd-youth-support">
+      <h3>ADHD pain points &amp; support for young people (UK)</h3>
+      <p class="muted">Key challenges raised by UK families and schools, alongside evidence-backed support that helps students remain engaged and regulated.</p>
+      <div class="youth-grid">
+        <div>
+          <h4>Frequent pain points</h4>
+          <ul>
+            <li>Persistent restless energy and reduced classroom focus that disrupt ongoing learning progress.</li>
+            <li>Executive-organisation difficulties leading to missed homework submissions and uneven exam preparation.</li>
+            <li>Emotional dysregulation with dips in self-esteem triggered by repeated corrections or disciplinary feedback.</li>
+            <li>Stressful transitions between school, home and online study environments that overwhelm daily routines.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Evidence-backed responses</h4>
+          <ul>
+            <li><strong>Parent/carer psychoeducation programmes</strong> – first-line provision for children under five and a recommended offer for school-age learners (<a href="https://www.nice.org.uk/guidance/ng87/chapter/Recommendations" target="_blank" rel="noopener">NICE NG87</a>).</li>
+            <li><strong>Behavioural and organisational coaching</strong> – structured reward systems, visual schedules and planner check-ins to scaffold executive skills (<a href="https://www.nhs.uk/conditions/adhd/treatment/" target="_blank" rel="noopener">NHS ADHD treatment guide</a>).</li>
+            <li><strong>Talking therapies (CBT/skills training)</strong> – targeted work on problem solving and emotional regulation for older children and adolescents (<a href="https://www.youngminds.org.uk/young-person/mental-health-conditions/adhd/" target="_blank" rel="noopener">YoungMinds ADHD overview</a>).</li>
+            <li><strong>Medication for severe or persistent symptoms</strong> – methylphenidate, lisdexamfetamine or atomoxetine prescribed within shared-care agreements following informed consent (<a href="https://www.nice.org.uk/guidance/ng87/chapter/Recommendations" target="_blank" rel="noopener">NICE NG87</a>).</li>
+            <li><strong>Movement and active breaks</strong> – short bursts of vigorous play or structured sport to lift mood, attention and body regulation (<a href="https://www.youthsporttrust.org/programmes/active-in-mind" target="_blank" rel="noopener">Youth Sport Trust – Active in Mind</a>).</li>
+          </ul>
+        </div>
+      </div>
+      <div class="resource-grid">
+        <a class="resource-card" href="https://www.nhs.uk/mental-health/children-and-young-adults/advice-for-parents/adhd-in-children/" target="_blank" rel="noopener">
+          <span class="resource-source">NHS</span>
+          <h4>ADHD in children</h4>
+          <p class="muted">Spot the signs, understand assessments, and access NHS support pathways.</p>
+        </a>
+        <a class="resource-card" href="https://www.adhdfoundation.org.uk/resources/children-and-young-people/" target="_blank" rel="noopener">
+          <span class="resource-source">ADHD Foundation</span>
+          <h4>Children &amp; young people hub</h4>
+          <p class="muted">Study planners, sensory movement ideas and advocacy kits for school collaboration.</p>
+        </a>
+        <a class="resource-card" href="https://www.mind.org.uk/information-support/for-children-and-young-people/types-of-mental-health-problems/adhd/" target="_blank" rel="noopener">
+          <span class="resource-source">Mind</span>
+          <h4>Young people &amp; ADHD</h4>
+          <p class="muted">Explains legal rights, self-advocacy scripts and helplines open across the UK.</p>
+        </a>
+        <a class="resource-card" href="https://www.nhs.uk/live-well/exercise/" target="_blank" rel="noopener">
+          <span class="resource-source">NHS Live Well</span>
+          <h4>10-minute workouts</h4>
+          <p class="muted">Curriculum-friendly movement bursts for home, PE or sensory breaks.</p>
+        </a>
+        <a class="resource-card" href="https://www.youngminds.org.uk/parent/parents-a-z-mental-health-guide/adhd/" target="_blank" rel="noopener">
+          <span class="resource-source">YoungMinds</span>
+          <h4>Parents helpline</h4>
+          <p class="muted">Free UK advice line plus downloadable school-meeting preparation sheets.</p>
+        </a>
+        <a class="resource-card" href="https://contact.org.uk/advice-and-support/education-learning/extra-help-at-school/send-support/" target="_blank" rel="noopener">
+          <span class="resource-source">Contact</span>
+          <h4>SEND support</h4>
+          <p class="muted">Guidance on EHCPs, reasonable adjustments and transition planning across settings.</p>
+        </a>
+      </div>
+    </section>
+
+    <div class="card">
+      <h3>Emergency &amp; urgent help (UK)</h3>
+      <p class="muted">
+        If you are at immediate risk of harming yourself or someone else, call <strong>999</strong> or go to A&amp;E.
+        For urgent mental health support call <strong>NHS 111</strong> (select the mental health option).
+        You can talk 24/7 to <strong>Samaritans on 116 123</strong> (free). This site is educational and is <em>not</em> medical advice.
+      </p>
+    </div>
+
+    <section class="card" id="adhd-25-5">
+      <h2>Focus Sprints (25/5)</h2>
+      <p class="muted" data-excerpt="3">Work 25 minutes, break 5. After four sprints, rest 20–30. Use a visible timer and list your Next 3.</p>
+  <div class="actions mt-08" data-tech="adhd-25-5">
+        <button type="button" class="btn" data-act="start">Start</button>
+        <button type="button" class="btn" data-act="stop" disabled="">Stop</button>
+      </div>
+    </section>
+
+    <section class="card" id="adhd-body-double">
+      <h2>Body Double</h2>
+      <p class="muted" data-excerpt="3">Work alongside a partner (in-person or virtual). Agree a goal, mute mics, check in every 15 minutes.</p>
+    </section>
+
+    <section class="card" id="adhd-if-then">
+      <h2>If-Then Planning</h2>
+      <p class="muted" data-excerpt="3">Write If-Then cues: “If 9:00 starts, then open task board and do the first sticky.”</p>
+    </section>
+
+    <section class="card card-full-width integrations" id="adhd-integrations">
+      <h3>Plug Into Your Workflow</h3>
+      <p class="muted">Drop these templates into the tools you already use so the sprint habit follows you everywhere.</p>
+      <div class="integration-grid">
+        <a class="integration-tile" href="https://calendar.google.com/" target="_blank" rel="noopener">
+          <span class="tile-label">Google Calendar blocks</span>
+          <span class="tile-desc">Copy the 25/5 repeating event</span>
+        </a>
+        <a class="integration-tile" href="https://www.notion.so/templates" target="_blank" rel="noopener">
+          <span class="tile-label">Notion sprint board</span>
+          <span class="tile-desc">Duplicate the focus + reward tracker</span>
+        </a>
+        <a class="integration-tile" href="https://todo.microsoft.com/" target="_blank" rel="noopener">
+          <span class="tile-label">Microsoft To Do list</span>
+          <span class="tile-desc">Import the If-Then checklist</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="card card-full-width evidence" id="adhd-evidence">
+      <h3>Evidence &amp; UK resources</h3>
+      <div class="evidence-callout">
+        <p><strong>Why breathing + sprints?</strong> Short breathing resets regulate autonomic arousal (Noble &amp; Hochman, 2019) while structured work-rest intervals improve sustained attention for adults with ADHD (Semeijn et al., 2020).</p>
+      </div>
+      <ul>
+        <li><a href="https://www.nice.org.uk/guidance/ng87/chapter/recommendations" target="_blank" rel="noopener">NICE — NG87 (adult meds choice)</a></li>
+        <li><a href="https://www.acas.org.uk/reasonable-adjustments/adjustments-for-neurodiversity" target="_blank" rel="noopener">Acas — Adjustments for neurodiversity</a></li>
+        <li><a href="https://www.additudemag.com/adhd-productivity-pomodoro-technique/" target="_blank" rel="noopener">ADDitude — Pomodoro for ADHD focus</a></li>
+      </ul>
+      <div class="actions mt-10">
+  <button class="btn ok" id="resPdf_adhd-tools" type="button" data-download="adhd-tools-resources.pdf">Download: ADHD Tools — Resources (PDF)</button>
+      </div>
+    </section>
+    <script src="res.manifest.js"></script>
+    </div>
+</main>
+
+<footer class="site-footer" id="siteFooter">
+  <!-- Footer navigation - Full Width -->
+  <div class="ft-nav-wrapper">
+    <div class="ft-nav-inner">
+      <!-- Brand + Support in Navigation Area -->
+      <div class="ft-nav-brand">
+        <a class="ft-logo" href="index.html" data-href="index.html" aria-label="NeuroBreath home">
+          <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo" />
+        </a>
+        <a href="coffee.html" class="btn" data-href="coffee.html">☕ Support Us</a>
+      </div>
+      <nav class="ft-nav" aria-label="Footer">
+        <details class="ft-group">
+          <summary>Conditions <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="autism.html" data-href="autism.html">Autism</a> · <a href="autism-parent.html" data-href="autism-parent.html">Autism Parent</a> · <a href="adhd.html" data-href="adhd.html">ADHD</a> · <a href="dyslexia-reading-training.html" data-href="dyslexia-reading-training.html">Dyslexia</a></p>
+            <p><a href="anxiety.html" data-href="anxiety.html">Anxiety</a> · <a href="depression.html" data-href="depression.html">Depression</a> · <a href="stress.html" data-href="stress.html">Stress</a> · <a href="sleep.html" data-href="sleep.html">Sleep</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Breathing &amp; Focus <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="breath.html" data-href="breath.html">Breath (how-to)</a> · <a href="focus.html" data-href="focus.html">Focus</a> · <a href="mindfulness.html" data-href="mindfulness.html">Mindfulness</a></p>
+            <p><a href="sos-60.html" data-href="sos-60.html">60-second Reset</a> · <a href="box-breathing.html" data-href="box-breathing.html">Box Breathing</a> · <a href="4-7-8-breathing.html" data-href="4-7-8-breathing.html">4-7-8 Breathing</a> · <a href="coherent-5-5.html" data-href="coherent-5-5.html">Coherent 5-5</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Toolkits <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="sleep-tools.html" data-href="sleep-tools.html">Sleep Tools</a> · <a href="breath-tools.html" data-href="breath-tools.html">Breath Tools</a> · <a href="mood-tools.html" data-href="mood-tools.html">Mood Tools</a> · <a href="adhd-tools.html" data-href="adhd-tools.html">ADHD Tools</a> · <a href="autism-tools.html" data-href="autism-tools.html">Autism Tools</a> · <a href="anxiety-tools.html" data-href="anxiety-tools.html">Anxiety Tools</a> · <a href="stress-tools.html" data-href="stress-tools.html">Stress Tools</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Symptom Guides <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="stress-anxiety.html" data-href="stress-anxiety.html">Stress &amp; General Anxiety</a> · <a href="panic-symptoms.html" data-href="panic-symptoms.html">Panic Symptoms</a> · <a href="sleep-onset-insomnia.html" data-href="sleep-onset-insomnia.html">Sleep-Onset Insomnia</a></p>
+            <p><a href="focus-test-anxiety.html" data-href="focus-test-anxiety.html">Focus &amp; Test Anxiety</a> · <a href="ptsd-regulation.html" data-href="ptsd-regulation.html">PTSD Regulation*</a> · <a href="low-mood-burnout.html" data-href="low-mood-burnout.html">Low Mood &amp; Burnout</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>About <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="about.html" data-href="about.html">About</a> · <a href="aims-objectives.html" data-href="aims-objectives.html">Aims &amp; Stories</a> · <a href="coffee.html" data-href="coffee.html">Support Us</a> · <a href="contact.html" data-href="contact.html">Contact</a></p>
+          </div>
+        </details>
+      </nav>
+    </div>
+  </div>
+
+  <div class="inner">
+    <div class="ft-bottom">
+      <div class="ft-bottom__copy" aria-label="Site notice">
+        <p class="muted ft-bottom__text">Educational information only. Not medical advice. NeuroBreath is a free resource by NeuroBreath. © <span id="yearFooter"></span> NeuroBreath. All rights reserved.</p>
+      </div>
+      <button type="button" class="btn back-to-top-btn" data-action="back-to-top" aria-label="Back to top">
+        <span class="back-to-top__label">Back to top</span>
+        <span class="back-to-top__icon" aria-hidden="true">↑</span>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/app.js" defer></script>
+</body>
+</html>
+

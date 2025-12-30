@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>ADHD — Focus & Workflows • NeuroBreath</title>
+  <meta name="description" content="Clinically referenced, neuro‑inclusive breathing techniques."/>
+  <meta property="og:site_name" content="NeuroBreath">
+  <meta property="og:title" content="ADHD — Focus & Workflows • NeuroBreath">
+  <meta property="og:description" content="Clinically referenced, neuro‑inclusive breathing techniques.">
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://neurobreath.co.uk/adhd.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/x-icon" href="assets/icons/neurobreath-favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/neurobreath-logo-square-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/neurobreath-logo-square-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/neurobreath-logo-square-180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/neurobreath-logo-square-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icons/neurobreath-logo-square-512.png">
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/png" sizes="16x16" href="icons/neurobreath-mark-16.png" />
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/site.css" />
+  <style>
+    /* Guide-specific styles using global color palette */
+    .page-main {
+      background: var(--color-cream);
+      padding: var(--spacing-2xl) 0;
+      min-height: 100vh;
+    }
+    
+    .page-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-lg);
+    }
+    
+    .card {
+      background: var(--color-white);
+      border: 1px solid var(--color-sage-light);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-xl);
+      box-shadow: var(--shadow-medium);
+      position: relative;
+      z-index: 1;
+      display: block;
+      overflow: visible;
+    }
+    
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--spacing-lg);
+    }
+    
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--spacing-lg);
+    }
+    
+    .small-note {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      font-style: italic;
+      margin-top: var(--spacing-sm);
+    }
+    
+    .muted {
+      color: var(--color-text-muted);
+    }
+    
+    /* Footer spacing - add 2% margin left and right */
+    .site-footer .ft-nav-wrapper {
+      margin-left: 2%;
+      margin-right: 2%;
+      box-sizing: border-box;
+    }
+    
+    .site-footer .inner {
+      margin-left: 2%;
+      margin-right: 2%;
+      box-sizing: border-box;
+    }
+    
+    /* Ensure logo and back to top button don't touch edges */
+    .ft-nav-brand {
+      margin-left: 0;
+      margin-right: 0;
+    }
+    
+    .ft-bottom {
+      margin-left: 0;
+      margin-right: 0;
+    }
+    
+    /* Utility classes for inline styles */
+    .h1-no-margin-top {
+      margin-top: 0;
+    }
+    
+    .muted-margin-bottom {
+      margin-bottom: 16px;
+    }
+    
+    .anchor-hidden {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      overflow: hidden;
+    }
+    
+    .actions-margin-top-8 {
+      margin-top: 8px;
+    }
+    
+    .card-margin-bottom {
+      margin-bottom: 1.25rem;
+    }
+    
+    .muted-margin-top-negative {
+      margin-top: -0.25rem;
+    }
+    
+    .grid-gap-1 {
+      gap: 1rem;
+    }
+    
+    .actions-margin-top-half {
+      margin-top: 0.5rem;
+    }
+    
+    .h3-margin-top {
+      margin-top: 0.75rem;
+    }
+    
+    .muted-margin-left {
+      margin-left: 0.5rem;
+    }
+    
+    .actions-margin-6-12 {
+      margin: 6px 0 12px;
+    }
+    
+    .actions-margin-top-10 {
+      margin-top: 10px;
+    }
+    
+    .footer-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .footer-h3 {
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    
+    .footer-copyright {
+      margin-top: 24px;
+      color: #94A3B8;
+    }
+  </style>
+  <script src="assets/js/voice-preferences.js" defer></script>
+  <script src="assets/js/site.js" defer></script>
+  
+</head>
+<body data-page-id="adhd" >
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<div id="top"></div>
+<header class="site-header">
+  <div class="container navbar">
+    <a id="brandLink" class="brand" href="index.html">
+      <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo" class="logo" /><span class="brand-text">NeuroBreath</span>
+    </a>
+    <nav class="main-nav" id="mainNav" role="navigation" aria-label="Primary">
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Conditions ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Neurodevelopmental</div>
+          <a href="autism.html" data-href="autism.html">Autism</a>
+          <a href="autism-parent.html" data-href="autism-parent.html">Autism Parent</a>
+          <a href="adhd.html" data-href="adhd.html">ADHD</a>
+          <a href="dyslexia-reading-training.html" data-href="dyslexia-reading-training.html">Dyslexia</a>
+          <div class="menu-label" aria-hidden="true">Mental Health</div>
+          <a href="anxiety.html" data-href="anxiety.html">Anxiety</a>
+          <a href="depression.html" data-href="depression.html">Depression</a>
+          <a href="stress.html" data-href="stress.html">Stress</a>
+          <a href="sleep.html" data-href="sleep.html">Sleep</a>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Breathing &amp; Focus ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Guides</div>
+          <a href="breath.html" data-href="breath.html">Breath (how-to)</a>
+          <a href="focus.html" data-href="focus.html">Focus</a>
+          <a href="mindfulness.html" data-href="mindfulness.html">Mindfulness</a>
+          <div class="menu-label" aria-hidden="true">Techniques</div>
+          <a href="sos-60.html" data-href="sos-60.html">🆘 60-second SOS</a>
+          <a href="box-breathing.html" data-href="box-breathing.html">🟩 Box Breathing</a>
+          <a href="4-7-8-breathing.html" data-href="4-7-8-breathing.html">🟦 4-7-8 Breathing</a>
+          <a href="coherent-5-5.html" data-href="coherent-5-5.html">🟪 Coherent 5-5</a>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Tools ▾</button>
+        <div class="submenu">
+          <a href="sleep-tools.html" data-href="sleep-tools.html">Sleep Tools</a>
+          <a href="breath-tools.html" data-href="breath-tools.html">Breath Tools</a>
+          <a href="mood-tools.html" data-href="mood-tools.html">Mood Tools</a>
+          <a href="adhd-tools.html" data-href="adhd-tools.html">ADHD Tools</a>
+          <a href="autism-tools.html" data-href="autism-tools.html">Autism Tools</a>
+          <a href="anxiety-tools.html" data-href="anxiety-tools.html">Anxiety Tools</a>
+          <a href="stress-tools.html" data-href="stress-tools.html">Stress Tools</a>
+          <a href="focus-garden.html" data-href="focus-garden.html">🌱 Focus Training</a>
+          <div class="menu-label" aria-hidden="true">Symptom Guides</div>
+          <a href="stress-anxiety.html" data-href="stress-anxiety.html">Stress &amp; General Anxiety</a>
+          <a href="panic-symptoms.html" data-href="panic-symptoms.html">Panic Symptoms</a>
+          <a href="sleep-onset-insomnia.html" data-href="sleep-onset-insomnia.html">Sleep-Onset Insomnia</a>
+          <a href="focus-test-anxiety.html" data-href="focus-test-anxiety.html">Focus &amp; Test Anxiety</a>
+          <a href="ptsd-regulation.html" data-href="ptsd-regulation.html">PTSD Regulation*</a>
+          <a href="low-mood-burnout.html" data-href="low-mood-burnout.html">Low Mood &amp; Burnout</a>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">About ▾</button>
+        <div class="submenu">
+          <a href="about.html" data-href="about.html">About</a>
+          <a href="aims-objectives.html" data-href="aims-objectives.html">Aims &amp; Stories</a>
+          <a href="coffee.html" data-href="coffee.html">Support Us</a>
+          <a href="contact.html" data-href="contact.html">Contact</a>
+        </div>
+      </div>
+    </nav>
+    <button type="button" id="navToggle" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="mainNav">☰</button>
+  </div>
+</header>
+
+<a id="top" class="anchor-hidden"></a>
+
+<main id="main-content" class="page-main">
+  <div class="page-container">
+
+<!-- mshare:value-pack:v1:start -->
+
+<section class="card mshare-value-pack" id="vp-cond-overview">
+  <h2>ADHD — quick overview</h2>
+  
+  <p>ADHD affects attention, impulsivity, and self-regulation. Many adults use brief breath resets to switch tasks.</p>
+  <h3>Common signs</h3>
+  <ul><li>Difficulty sustaining attention</li><li>Impulsivity or restlessness</li><li>Time management challenges</li></ul>
+  <h3>How to use this site</h3>
+  <ol><li>Use 60-sec SOS before tasks</li><li>Run Coherent 5-5 for 3–5 min to settle</li><li>Pin Focus page to bookmarks</li></ol>
+  <div class="actions">
+    <a class="btn" href="sos-60.html?minutes=1" >Try SOS-60</a>
+    <a class="btn" href="breath.html" >Breath basics</a>
+  </div>
+  <h3>Credible recommendations (UK)</h3>
+  <ul><li><a href="https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/" rel="noopener">NHS: ADHD</a></li><li><a href="https://www.nice.org.uk/guidance/ng87" rel="noopener">NICE NG87 (overview)</a></li></ul>
+  <p class="muted">Supportive information only; not medical advice.</p>
+  
+<div class="actions actions-margin-top-8">
+  <button type="button" class="btn" data-mpl-prog="adhd">Mark 1 min practised</button>
+  <span class="badge" id="mpl-prog-adhd">Completed: 0</span>
+</div>
+<script>
+(()=>{ try {
+  const key='mpl.progress.adhd.count';
+  const el=document.getElementById('mpl-prog-adhd');
+  const btn=document.querySelector('[data-mpl-prog="adhd"]');
+  const get=()=>Number(localStorage.getItem(key)||0);
+  const set=v=>localStorage.setItem(key,String(v));
+  const paint=()=>{ if(el) el.textContent='Completed: '+get(); };
+  paint();
+  btn&&btn.addEventListener('click',()=>{ set(get()+1); paint(); });
+} catch(e){} })();
+</script>
+
+</section>
+<!-- mshare:value-pack:v1:end -->
+
+<!-- mpl-condition-card-start:adhd -->
+<section id="mpl-adhd-quick-card" class="card card-margin-bottom">
+  <h2>Quick Starter: ADHD</h2>
+  <p class="muted muted-margin-top-negative">Educational information only — not a diagnosis or medical advice.</p>
+
+  <div class="grid cols-2 grid-gap-1">
+    <div>
+      <h3>What it is</h3>
+      <p>A neurodevelopmental condition that affects attention regulation, impulsivity and hyperactivity. Experiences vary from person to person.</p>
+
+      <h3>Possible signs</h3>
+      <ul><li>Difficulty sustaining attention or following through on tasks</li><li>Restlessness or fidgeting; feeling “on the go”</li><li>Impulsivity (e.g., interrupting, acting before thinking)</li><li>Disorganisation, forgetfulness, losing things</li></ul>
+
+      <h3>Trusted resources</h3>
+      <ul><li><a href="https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/" rel="noopener">NHS – ADHD overview</a></li></ul>
+    </div>
+
+    <div>
+      <h3>Use this site for ADHD</h3>
+      <ul><li>Start with short, repeatable breath sets to settle the nervous system.</li><li>Use the SOS 60-second reset before challenging tasks.</li><li>Build a streak in the progress panel; keep sessions brief but frequent.</li></ul><div class="actions actions-margin-top-half">
+      <a class="btn" href="box-breathing.html" rel="noopener">🟩 Box Breathing</a>
+      <a class="btn" href="4-7-8-breathing.html" rel="noopener">🟦 4-7-8 Breathing</a>
+      <a class="btn" href="coherent-5-5.html" rel="noopener">🟪 Coherent 5-5</a>
+      <a class="btn btn-danger" href="sos-60.html" rel="noopener">🆘 60-second SOS</a>
+    </div>
+
+      <h3 class="h3-margin-top">Progress (local only)</h3>
+      <div class="badge">Sessions: <span id="mpl-adhd-sess">0</span></div>
+      <div class="badge">Minutes:  <span id="mpl-adhd-mins">0</span></div>
+      <div class="badge">Last used: <span id="mpl-adhd-last">—</span></div>
+      <div class="actions actions-margin-top-half">
+        <button type="button" class="btn" id="mpl-adhd-start">Start session</button>
+        <button type="button" class="btn" id="mpl-adhd-stop" disabled>Stop &amp; save</button>
+        <span class="muted muted-margin-left" id="mpl-adhd-timer">00:00</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    const key = 'mpl.progress.adhd';
+    const el = {
+      s: document.getElementById('mpl-adhd-sess'),
+      m: document.getElementById('mpl-adhd-mins'),
+      l: document.getElementById('mpl-adhd-last'),
+      start: document.getElementById('mpl-adhd-start'),
+      stop:  document.getElementById('mpl-adhd-stop'),
+      t: document.getElementById('mpl-adhd-timer'),
+    };
+    function load(){ try { return Object.assign({sessions:0, minutes:0, last:null, startedAt:null}, JSON.parse(localStorage.getItem(key)||'{}')); } catch(e){ return {sessions:0, minutes:0, last:null, startedAt:null}; } }
+    function save(v){ try { localStorage.setItem(key, JSON.stringify(v)); } catch(e){} }
+    function fmtMin(n){ return Math.max(0, Math.round(n)); }
+    function fmtTime(ms){ const s = Math.floor(ms/1000); const mm = String(Math.floor(s/60)).padStart(2,'0'); const ss = String(s%60).padStart(2,'0'); return mm+':'+ss; }
+
+    let state = load(), tickId = null;
+    function reflect(){
+      el.s && (el.s.textContent = String(state.sessions));
+      el.m && (el.m.textContent = String(fmtMin(state.minutes)));
+      el.l && (el.l.textContent = state.last ? new Date(state.last).toLocaleString() : '—');
+      el.start && (el.start.disabled = !!state.startedAt);
+      el.stop  && (el.stop.disabled  = !state.startedAt);
+    }
+    function start(){
+      if (state.startedAt) return;
+      state.startedAt = Date.now();
+      save(state); reflect();
+      tickId = setInterval(()=>{ el.t && (el.t.textContent = fmtTime(Date.now() - state.startedAt)); }, 1000);
+    }
+    function stop(){
+      if (!state.startedAt) return;
+      const durMin = (Date.now() - state.startedAt) / 60000;
+      state.minutes = Math.max(0, (state.minutes||0) + durMin);
+      state.sessions = (state.sessions||0) + 1;
+      state.last = new Date().toISOString();
+      state.startedAt = null;
+      save(state); reflect();
+      if (tickId){ clearInterval(tickId); tickId = null; }
+      el.t && (el.t.textContent = '00:00');
+    }
+    el.start && el.start.addEventListener('click', start);
+    el.stop  && el.stop.addEventListener('click', stop);
+    reflect();
+  })();
+  </script>
+</section>
+<!-- mpl-condition-card-end -->
+
+    <h1>ADHD — Focus & Workflows</h1>
+    <div class="actions actions-margin-6-12">
+      <button class="btn btn-success" id="btnAddCoachAdhd" type="button">➕ Add to app</button>
+      <button class="btn" id="btnOpenCoachAdhd" type="button">▶️ Open coach now</button>
+      <a class="btn" data-href="coach.html">Coach hub</a>
+    </div>
+
+    <div class="card">
+      <p>Practical, low-pressure routines for attention, time-blinds, task initiation and impulse control. Based on UK
+        guidance and workplace best practice. <span class="muted">Educational only; not medical advice.</span></p>
+    </div>
+
+    <div class="grid cols-3">
+      <div class="card">
+        <h3>Quick win: 10-minute Focus Sprint</h3>
+        <p class="muted">Set one tiny output. Remove friction, start before you feel ready. Use a short timer and stop
+          while it still feels easy.</p>
+        <div id="pomoAdhd"></div>
+        <script>document.addEventListener('DOMContentLoaded', () => { if (typeof MSCoach !== 'undefined' && MSCoach.mountPomo) { MSCoach.mountPomo('#pomoAdhd', { work: 10 * 60, break: 2 * 60 }); } });</script>
+      </div>
+      <div class="card">
+        <h3>Externalise time</h3>
+        <ul>
+          <li>Use visible timers and large clocks (not just phone).</li>
+          <li>Work in <strong>time boxes</strong>, not until-finished.</li>
+          <li>Put meetings and <em>prep blocks</em> in the calendar.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Reduce friction</h3>
+        <ul>
+          <li><strong>Body-double:</strong> co-work silently on video with a friend.</li>
+          <li><strong>One-touch rule:</strong> open the email? Reply or snooze with a time.</li>
+          <li><strong>Environment:</strong> noise-cancelling headphones; turn off non-critical notifications.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Meeting & task scaffolds</h3>
+      <ul>
+        <li><strong>One-slide brief:</strong> purpose, definition of done, next step.</li>
+        <li><strong>Agenda first:</strong> write and share 3 bullets, max 20 minutes.</li>
+        <li><strong>IF→THEN plans:</strong> “If I open Slack, then I check only #team for 2 minutes.”</li>
+      </ul>
+    </div>
+
+    <div class="grid cols-2">
+      <div class="card">
+        <h3>Workplace adjustments (UK)</h3>
+        <p class="muted">Under the Equality Act, employers should consider <em>reasonable adjustments</em>—no diagnosis
+          required to seek support.</p>
+        <ul>
+          <li>Quiet workspace / headphones, fewer interruptions; fixed desk instead of hot-desk.</li>
+          <li>Flexible hours, protected focus time, extra breaks; written follow-ups.</li>
+          <li>Assistive tech: text-to-speech, meeting transcribers, reminders.</li>
+        </ul>
+        <p class="muted">See Acas guidance linked below.</p>
+      </div>
+      <div class="card">
+        <h3>About medication (NICE NG87)</h3>
+        <p class="muted">For adults, first-line medicines are usually <strong>lisdexamfetamine</strong> or
+          <strong>methylphenidate</strong> when medication is appropriate. Non-stimulants can be options in some cases.
+          Talk to your prescriber; medicines aren’t for everyone.
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Evidence & UK resources</h3>
+      <ul>
+        <li><a href="https://www.nice.org.uk/guidance/ng87" target="_blank" rel="noopener">NICE — ADHD: diagnosis and
+            management (NG87)</a></li>
+        <li><a href="https://www.nice.org.uk/guidance/ng87/chapter/recommendations" target="_blank" rel="noopener">NICE
+            — NG87 recommendations (adults: meds choice)</a></li>
+        <li><a href="https://www.acas.org.uk/reasonable-adjustments/adjustments-for-neurodiversity" target="_blank"
+            rel="noopener">Acas — Adjustments for neurodiversity at work</a></li>
+        <li><a href="https://www.gov.uk/reasonable-adjustments-for-disabled-workers" target="_blank"
+            rel="noopener">GOV.UK — Reasonable adjustments for disabled workers</a></li>
+        <li><a
+            href="https://www.rcpsych.ac.uk/docs/default-source/improving-care/better-mh-policy/college-reports/cr235-adhd-in-adults---good-practice-guidance.pdf"
+            target="_blank" rel="noopener">RCPsych — ADHD in adults: good practice guidance</a></li>
+      </ul>
+
+      <div class="actions actions-margin-top-10">
+        <button class="btn btn-success" id="resPdf_adhd" type="button">Download: ADHD — Focus & Workflows — Resources
+          (PDF)</button>
+      </div>
+      <script>
+        (function () {
+          const btn = document.getElementById('resPdf_adhd');
+          if (!btn) return;
+          btn.addEventListener('click', function () {
+            if (typeof MSCoach !== 'undefined' && MSCoach.downloadLinksPdf) {
+              MSCoach.downloadLinksPdf('ADHD — Focus & Workflows — Resources', window.__RES__ && window.__RES__['adhd'] ? window.__RES__['adhd'] : []);
+            } else {
+              console.warn('MSCoach not available');
+            }
+          });
+        })();
+      </script>
+    </div>
+
+    <script src="res.manifest.js"></script>
+
+    <div class="card">
+      <h3>Emergency & urgent help (UK)</h3>
+      <p class="muted">
+        If you are at immediate risk of harming yourself or someone else, call <strong>999</strong> or go to A&amp;E.
+        For urgent mental health support call <strong>NHS 111</strong> (select the mental health option).
+        You can talk 24/7 to <strong>Samaritans on 116 123</strong> (free). This site is educational and is <em>not</em>
+        medical advice.
+      </p>
+    </div>
+
+    <section class="card">
+      <h2>ADHD — Download Guide</h2>
+      <p class="muted">Download a concise ADHD quick guide PDF with practical strategies.</p>
+      <div class="actions"><button id="adhdPdfDownload" class="btn btn-success" type="button">⬇ ADHD Quick Guide
+          (PDF)</button></div>
+    </section>
+
+    </div>
+</main>
+
+  <!-- Removed root app.js (React file, not for HTML pages) and other missing script references to prevent 404 errors:
+  <script src="coach.js"></script>
+  <script src="assets/js/ux-fixes.js"></script>
+  <script src="assets/js/paylinks.js"></script>
+  <script src="assets/js/site-core.js"></script>
+  <script src="assets/js/a11y-fix.js"></script>
+  <script src="assets/js/start-fix.js"></script>
+  <script src="assets/js/core/sound-kit.js"></script>
+  <script src="assets/header/header.js"></script>
+  <script src="assets/footer/footer.js"></script>
+  <script defer src="voice-coach-fix.js"></script>
+  <script defer src="assets/js/contrast-fix.js"></script>
+  -->
+  <script>
+    (function () {
+      var COACH_KEY = 'mshare_coach_modules_v1';
+      function loadModules() { try { return JSON.parse(localStorage.getItem(COACH_KEY) || '{}') || {}; } catch { return {}; } }
+      function saveModules(m) { try { localStorage.setItem(COACH_KEY, JSON.stringify(m)); } catch { } }
+      var btnAdd = document.getElementById('btnAddCoachAdhd');
+      var btnOpen = document.getElementById('btnOpenCoachAdhd');
+      btnAdd && btnAdd.addEventListener('click', function () {
+        try {
+          var mods = loadModules();
+          var base = mods.autism; if (!base) { alert('Add the Autism coach first on the Autism page.'); return; }
+          mods.adhd = { id: 'adhd', name: 'ADHD Coach', flows: base.flows, addedAt: Date.now() };
+          saveModules(mods);
+          alert('ADHD Coach added (using current flows). You can refine this module later.');
+        } catch { }
+      });
+      btnOpen && btnOpen.addEventListener('click', function () { location.href = 'autism.html#open-coach'; });
+    })();
+  </script>
+
+  <script id="mpl-theme-auto-js-v3">
+    (() => {
+      const KEY = 'mpl.theme.v2';
+      const DAY_START = 7, DAY_END = 19; // local time
+      const state = (() => { try { return Object.assign({ auto: true, color: null, brightness: 1 }, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch { return { auto: true, color: null, brightness: 1 }; } })();
+
+      function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch { } }
+      function hexToRgb(hex) { if (!hex) return { r: 255, g: 255, b: 255 }; const s = hex.replace('#', ''); const v = s.length === 3 ? s.split('').map(c => c + c).join('') : s; const n = parseInt(v, 16); return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 }; }
+      function luminance({ r, g, b }) { const toL = c => { c /= 255; return c <= .03928 ? c / 12.92 : Math.pow((c + .055) / 1.055, 2.4) }; const [R, G, B] = [toL(r), toL(g), toL(b)]; return .2126 * R + .7152 * G + .0722 * B; }
+      function derivePalette(baseHex) { const rgb = hexToRgb(baseHex); const L = luminance(rgb); const fg = (1 - L) > 0.45 ? '#ffffff' : '#111111'; const muted = (L > 0.5) ? '#6b7280' : '#9ca3af'; const border = (L > 0.5) ? 'rgba(0,0,0,.12)' : 'rgba(255,255,255,.18)'; return { bg: baseHex, fg, muted, b: border }; }
+      function isDay() { const h = new Date().getHours(); return (h >= DAY_START && h < DAY_END); }
+
+      function applyTheme() {
+        const root = document.documentElement;
+        let bg, fg, muted, b; let brightness = Number(state.brightness || 1) || 1;
+        if (state.auto) {
+          const base = isDay() ? '#f7f7fb' : '#0b0b10';
+          const pal = derivePalette(base); ({ bg, fg, muted, b } = pal);
+          root.dataset.mplTheme = isDay() ? 'day-auto' : 'night-auto';
+        } else {
+          const base = state.color || '#f7f7fb'; const pal = derivePalette(base); ({ bg, fg, muted, b } = pal); delete root.dataset.mplTheme;
+        }
+        root.style.setProperty('--bg', bg);
+        root.style.setProperty('--fg', fg);
+        root.style.setProperty('--muted', muted);
+        root.style.setProperty('--b', b);
+        root.style.setProperty('--brightness', String(brightness));
+      }
+
+      function ensureUI() {
+        // Prefer dedicated slot inside the new footer
+        let slot = document.getElementById('mpl-theme-slot');
+        if (!slot) {
+          // Create minimal host inside footer if missing
+          let footer = document.getElementById('siteFooter') || document.querySelector('.site-footer') || document.querySelector('footer');
+          if (!footer) { footer = document.createElement('footer'); document.body.appendChild(footer); }
+          slot = document.createElement('div'); slot.id = 'mpl-theme-slot'; footer.appendChild(slot);
+        }
+        // Build controls only once
+        if (slot.querySelector('.mpl-theme-host')) return;
+        const host = document.createElement('div'); host.className = 'mpl-theme-host';
+        const details = document.createElement('details'); details.open = false;
+        const summary = document.createElement('summary'); summary.textContent = 'Theme';
+        details.appendChild(summary);
+        const wrap = document.createElement('div');
+
+        // Auto
+        const autoId = 'mpl-theme-auto'; const autoL = document.createElement('label'); autoL.setAttribute('for', autoId); autoL.textContent = 'Auto';
+        const auto = document.createElement('input'); auto.type = 'checkbox'; auto.id = autoId;
+
+        // Color
+        const colorId = 'mpl-theme-color'; const colorL = document.createElement('label'); colorL.setAttribute('for', colorId); colorL.textContent = 'Color';
+        const color = document.createElement('input'); color.type = 'color'; color.id = colorId; color.value = state.color || '#f7f7fb';
+
+        // Brightness
+        const brId = 'mpl-theme-brightness'; const brL = document.createElement('label'); brL.setAttribute('for', brId); brL.textContent = 'Brightness';
+        const br = document.createElement('input'); br.type = 'range'; br.min = '0.85'; br.max = '1.25'; br.step = '0.01'; br.id = brId; br.value = String(state.brightness || 1);
+
+        const reset = document.createElement('button'); reset.type = 'button'; reset.textContent = 'Reset';
+
+        function reflect() {
+          auto.checked = !!state.auto;
+          color.disabled = !!state.auto; br.disabled = !!state.auto;
+          if (!state.color) color.value = '#f7f7fb';
+        }
+
+        wrap.append(autoL, auto, colorL, color, brL, br, reset);
+        details.appendChild(wrap); host.appendChild(details); slot.appendChild(host);
+
+        reflect();
+
+        auto.addEventListener('change', () => { state.auto = auto.checked; save(); applyTheme(); reflect(); });
+        color.addEventListener('input', () => { if (state.auto) return; state.color = color.value; save(); applyTheme(); });
+        br.addEventListener('input', () => { if (state.auto) return; state.brightness = Number(br.value) || 1; save(); applyTheme(); });
+        reset.addEventListener('click', () => { state.auto = true; state.color = null; state.brightness = 1; save(); applyTheme(); reflect(); });
+      }
+
+      function scheduleMinuteTicks() {
+        if (!state.auto) return;
+        const now = new Date();
+        const ms = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+        setTimeout(() => { applyTheme(); setInterval(() => { if (state.auto) applyTheme(); }, 60000); }, Math.max(0, ms));
+      }
+
+      function init() { applyTheme(); ensureUI(); scheduleMinuteTicks(); }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true }); else init();
+
+    })();
+  </script>
+  </div>
+</main>
+
+<footer class="site-footer" id="siteFooter">
+  <!-- Footer navigation - Full Width -->
+  <div class="ft-nav-wrapper">
+    <div class="ft-nav-inner">
+      <!-- Brand + Support in Navigation Area -->
+      <div class="ft-nav-brand">
+        <a class="ft-logo" href="index.html" data-href="index.html" aria-label="NeuroBreath home">
+          <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo" />
+        </a>
+        <a href="coffee.html" class="btn" data-href="coffee.html">☕ Support Us</a>
+      </div>
+      <nav class="ft-nav" aria-label="Footer">
+        <details class="ft-group">
+          <summary>Conditions <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="autism.html" data-href="autism.html">Autism</a> · <a href="autism-parent.html" data-href="autism-parent.html">Autism Parent</a> · <a href="adhd.html" data-href="adhd.html">ADHD</a> · <a href="dyslexia-reading-training.html" data-href="dyslexia-reading-training.html">Dyslexia</a></p>
+            <p><a href="anxiety.html" data-href="anxiety.html">Anxiety</a> · <a href="depression.html" data-href="depression.html">Depression</a> · <a href="stress.html" data-href="stress.html">Stress</a> · <a href="sleep.html" data-href="sleep.html">Sleep</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Breathing &amp; Focus <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="breath.html" data-href="breath.html">Breath (how-to)</a> · <a href="focus.html" data-href="focus.html">Focus</a> · <a href="mindfulness.html" data-href="mindfulness.html">Mindfulness</a></p>
+            <p><a href="sos-60.html" data-href="sos-60.html">60-second Reset</a> · <a href="box-breathing.html" data-href="box-breathing.html">Box Breathing</a> · <a href="4-7-8-breathing.html" data-href="4-7-8-breathing.html">4-7-8 Breathing</a> · <a href="coherent-5-5.html" data-href="coherent-5-5.html">Coherent 5-5</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Toolkits <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="sleep-tools.html" data-href="sleep-tools.html">Sleep Tools</a> · <a href="breath-tools.html" data-href="breath-tools.html">Breath Tools</a> · <a href="mood-tools.html" data-href="mood-tools.html">Mood Tools</a> · <a href="adhd-tools.html" data-href="adhd-tools.html">ADHD Tools</a> · <a href="autism-tools.html" data-href="autism-tools.html">Autism Tools</a> · <a href="anxiety-tools.html" data-href="anxiety-tools.html">Anxiety Tools</a> · <a href="stress-tools.html" data-href="stress-tools.html">Stress Tools</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Symptom Guides <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="stress-anxiety.html" data-href="stress-anxiety.html">Stress &amp; General Anxiety</a> · <a href="panic-symptoms.html" data-href="panic-symptoms.html">Panic Symptoms</a> · <a href="sleep-onset-insomnia.html" data-href="sleep-onset-insomnia.html">Sleep-Onset Insomnia</a></p>
+            <p><a href="focus-test-anxiety.html" data-href="focus-test-anxiety.html">Focus &amp; Test Anxiety</a> · <a href="ptsd-regulation.html" data-href="ptsd-regulation.html">PTSD Regulation*</a> · <a href="low-mood-burnout.html" data-href="low-mood-burnout.html">Low Mood &amp; Burnout</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>About <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="about.html" data-href="about.html">About</a> · <a href="aims-objectives.html" data-href="aims-objectives.html">Aims &amp; Stories</a> · <a href="coffee.html" data-href="coffee.html">Support Us</a> · <a href="contact.html" data-href="contact.html">Contact</a></p>
+          </div>
+        </details>
+      </nav>
+    </div>
+  </div>
+
+  <div class="inner">
+    <div class="ft-bottom">
+      <div class="ft-bottom__copy" aria-label="Site notice">
+        <p class="muted ft-bottom__text">Educational information only. Not medical advice. NeuroBreath is a free resource by NeuroBreath. © <span id="yearFooter"></span> NeuroBreath. All rights reserved.</p>
+      </div>
+      <button type="button" class="btn back-to-top-btn" data-action="back-to-top" aria-label="Back to top">
+        <span class="back-to-top__label">Back to top</span>
+        <span class="back-to-top__icon" aria-hidden="true">↑</span>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Footer year and back to top
+  document.addEventListener('DOMContentLoaded', function() {
+    const yearFooter = document.getElementById('yearFooter');
+    if (yearFooter) {
+      yearFooter.textContent = new Date().getFullYear();
+    }
+    
+    const backToTopBtn = document.querySelector('[data-action="back-to-top"]');
+    if (backToTopBtn) {
+      backToTopBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const topElement = document.getElementById('top') || document.body;
+        try {
+          topElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } catch {
+          location.hash = '#top';
+        }
+      });
+    }
+  });
+</script>
+<script src="assets/js/app.js" defer></script>
+</body>
+</html>

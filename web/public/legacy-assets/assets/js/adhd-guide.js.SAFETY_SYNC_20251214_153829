@@ -1,0 +1,338 @@
+(function () {
+  const storagePrefix = 'adhdGuide_';
+
+  function storageAvailable() {
+    try {
+      const testKey = `${storagePrefix}test`;
+      window.localStorage.setItem(testKey, '1');
+      window.localStorage.removeItem(testKey);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  const canStore = storageAvailable();
+
+  function readStore(key) {
+    if (!canStore) return null;
+    return window.localStorage.getItem(storagePrefix + key);
+  }
+
+  function writeStore(key, value) {
+    if (!canStore) return;
+    if (value === null || value === undefined) {
+      window.localStorage.removeItem(storagePrefix + key);
+    } else {
+      window.localStorage.setItem(storagePrefix + key, value);
+    }
+  }
+
+  function readFallback(key) {
+    if (!canStore) return null;
+    try {
+      return window.localStorage.getItem(key);
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function formatTime(seconds) {
+    const safeSeconds = Math.max(0, Math.round(seconds));
+    const mins = String(Math.floor(safeSeconds / 60)).padStart(2, '0');
+    const secs = String(safeSeconds % 60).padStart(2, '0');
+    return `${mins}:${secs}`;
+  }
+
+  function initTimer(root) {
+    if (!root) return;
+
+    const total = Number(root.dataset.seconds || 300);
+    const display = root.querySelector('[data-role="display"]');
+    const bar = root.querySelector('[data-role="bar"]');
+    const status = root.querySelector('[data-role="status"]');
+    const startBtn = root.querySelector('[data-action="start"]');
+    const resetBtn = root.querySelector('[data-action="reset"]');
+    if (!display || !startBtn || !resetBtn) return;
+
+    const label = root.dataset.label || 'focus block';
+    const initialStatus = status ? status.textContent : '';
+    let remaining = Number.isFinite(total) && total > 0 ? total : 300;
+    let running = false;
+    let rafId = null;
+    let endTime = 0;
+
+    function updateVisuals(value) {
+      if (display) display.textContent = formatTime(value);
+      if (bar && total > 0) {
+        const elapsed = Math.max(0, Math.min(total, total - value));
+        const progress = (elapsed / total) * 100;
+        bar.style.width = `${progress}%`;
+      }
+    }
+
+    function stopTimer() {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      running = false;
+    }
+
+    function finishTimer() {
+      stopTimer();
+      remaining = 0;
+      updateVisuals(remaining);
+      if (status) {
+        status.textContent = `Time's up for ${label}. Take a breath and decide what comes next.`;
+      }
+    }
+
+    function tick() {
+      if (!running) return;
+      const now = Date.now();
+      const secondsLeft = Math.max(0, Math.ceil((endTime - now) / 1000));
+      if (secondsLeft <= 0) {
+        finishTimer();
+        return;
+      }
+      remaining = secondsLeft;
+      updateVisuals(remaining);
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function startTimer() {
+      if (running) return;
+      if (remaining <= 0) {
+        remaining = Number.isFinite(total) && total > 0 ? total : 300;
+        updateVisuals(remaining);
+      }
+      running = true;
+      endTime = Date.now() + remaining * 1000;
+      if (status) {
+        status.textContent = `Timer running: ${label}`;
+      }
+      tick();
+    }
+
+    function resetTimer() {
+      stopTimer();
+      remaining = Number.isFinite(total) && total > 0 ? total : 300;
+      updateVisuals(remaining);
+      if (status) status.textContent = initialStatus;
+    }
+
+    startBtn.addEventListener('click', startTimer);
+    resetBtn.addEventListener('click', resetTimer);
+
+    updateVisuals(remaining);
+  }
+
+  function initJar(root) {
+  if (!root) return;
+  const jarId = root.dataset.jarId || root.id || '';
+  const mode = root.dataset.jarMode === 'count' ? 'count' : 'select';
+
+    const status = root.querySelector('[data-role="jarStatus"]');
+    const initialStatus = status ? status.textContent : '';
+    const initialStatusMarkup = status ? status.innerHTML : '';
+  const legacyCountEl = root.querySelector('[data-jar-count]');
+  const legacyInc = root.querySelector('[data-jar-inc]');
+  const legacyReset = root.querySelector('[data-jar-reset]');
+
+    if (legacyCountEl && legacyInc && legacyReset) {
+      const legacyKey = `jar_${jarId || 'legacy'}`;
+      let legacyCount = Number(readStore(legacyKey));
+      if (!Number.isFinite(legacyCount) || legacyCount < 0) {
+        const fallback = readFallback(`adhdJar_${jarId || 'default'}`);
+        legacyCount = fallback !== null ? Number(fallback) : 0;
+      }
+      if (!Number.isFinite(legacyCount) || legacyCount < 0) legacyCount = 0;
+
+      function renderLegacy() {
+        legacyCountEl.textContent = String(legacyCount);
+      }
+
+      legacyInc.addEventListener('click', () => {
+        legacyCount += 1;
+        writeStore(legacyKey, legacyCount);
+        renderLegacy();
+      });
+
+      legacyReset.addEventListener('click', () => {
+        legacyCount = 0;
+        writeStore(legacyKey, legacyCount);
+        renderLegacy();
+      });
+
+      renderLegacy();
+      return;
+    }
+
+  const key = jarId ? `jar_${jarId}` : null;
+  const buttons = Array.from(root.querySelectorAll('[data-jar-value]'));
+  if (!key || !buttons.length) return;
+
+    if (mode === 'count') {
+      const countEl = root.querySelector('[data-role="jarCount"]');
+      let count = Number(readStore(key));
+      if (!Number.isFinite(count) || count < 0) count = 0;
+
+      function renderCount() {
+        if (countEl) countEl.textContent = String(count);
+      }
+
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const value = btn.dataset.jarValue || '';
+          if (value === 'reset') {
+            count = 0;
+            writeStore(key, count);
+            if (status && initialStatusMarkup) status.innerHTML = initialStatusMarkup;
+            renderCount();
+            return;
+          }
+
+          const step = Number(btn.dataset.jarStep || 1);
+          count += Number.isFinite(step) ? step : 1;
+          writeStore(key, count);
+          renderCount();
+        });
+      });
+
+      renderCount();
+      return;
+    }
+
+    let storedValue = readStore(key) || '';
+    if (!storedValue) {
+      const fallbackValue = readFallback(`adhdJar_${jarId}`) || readFallback(jarId);
+      storedValue = fallbackValue || '';
+    }
+    if (storedValue === 'null') storedValue = '';
+    function updateSelection(value, button) {
+      storedValue = value;
+      buttons.forEach((btn) => {
+        const isActive = btn === button && value;
+        btn.classList.toggle('is-active', isActive);
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+      if (status) {
+        if (value) {
+          const label = button ? button.textContent.trim() : value;
+          status.textContent = initialStatus
+            ? `${initialStatus} Selected: ${label}.`
+            : `Selected: ${label}.`;
+        } else {
+          status.textContent = initialStatus;
+        }
+      }
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const value = btn.dataset.jarValue || '';
+        if (value === 'reset' || value === 'clear') {
+          writeStore(key, null);
+          updateSelection('', null);
+          return;
+        }
+        writeStore(key, value);
+        updateSelection(value, btn);
+      });
+    });
+
+    const initialButton = buttons.find((btn) => (btn.dataset.jarValue || '') === storedValue);
+    if (initialButton) {
+      updateSelection(storedValue, initialButton);
+    } else {
+      updateSelection('', null);
+    }
+  }
+
+  function initAutosave(textarea) {
+    if (!textarea) return;
+    const key = textarea.dataset.autosave || textarea.id;
+    if (!key) return;
+    const storeKey = `note_${key}`;
+    let saved = readStore(storeKey);
+    if (saved === null || saved === undefined) {
+      const fallback = readFallback(`adhdNote_${key}`);
+      if (fallback !== null && fallback !== undefined) saved = fallback;
+    }
+    if (saved !== null && saved !== undefined) {
+      textarea.value = saved === 'null' ? '' : saved;
+    }
+
+    textarea.addEventListener('input', () => {
+      writeStore(storeKey, textarea.value || '');
+    });
+  }
+
+  function initDownloadButtons(root = document) {
+    const buttons = root.querySelectorAll('[data-download]');
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const fileName = btn.dataset.download;
+        if (!fileName) return;
+        const path = fileName.startsWith('http') ? fileName : `assets/downloads/${fileName}`;
+        window.open(path, '_blank', 'noopener');
+      });
+    });
+  }
+
+  function updateYear(root = document) {
+    const year = new Date().getFullYear();
+    root.querySelectorAll('.year').forEach((node) => {
+      node.textContent = String(year);
+    });
+  }
+
+  function initExcerpts(root = document) {
+    const excerpts = root.querySelectorAll('.guide-excerpt');
+    excerpts.forEach((excerpt, index) => {
+      const body = excerpt.querySelector('.guide-excerpt__body');
+      const toggle = excerpt.querySelector('.guide-excerpt__toggle');
+      if (!body || !toggle) return;
+
+      const customLines = Number(excerpt.dataset.lines);
+      if (Number.isFinite(customLines) && customLines > 0) {
+        excerpt.style.setProperty('--excerpt-lines', customLines);
+      }
+
+      excerpt.dataset.expanded = 'false';
+      const expandLabel = toggle.dataset.expandLabel || 'Show more';
+      const collapseLabel = toggle.dataset.collapseLabel || 'Show less';
+
+      if (!body.id) {
+        body.id = `guideExcerpt_${index}`;
+      }
+      toggle.setAttribute('aria-controls', body.id);
+
+      function render() {
+        const expanded = excerpt.dataset.expanded === 'true';
+        toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        toggle.textContent = expanded ? collapseLabel : expandLabel;
+      }
+
+      toggle.addEventListener('click', () => {
+        const expanded = excerpt.dataset.expanded === 'true';
+        excerpt.dataset.expanded = expanded ? 'false' : 'true';
+        render();
+      });
+
+      render();
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-widget="timer"]').forEach(initTimer);
+    document.querySelectorAll('[data-widget="jar"]').forEach(initJar);
+    document
+      .querySelectorAll('textarea[data-autosave]')
+      .forEach(initAutosave);
+    initDownloadButtons();
+    updateYear();
+    initExcerpts();
+  });
+})();

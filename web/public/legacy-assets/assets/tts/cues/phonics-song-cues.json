@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "generatedAt": "2025-11-24T20:55:40.139Z",
+  "audio": "assets/tts/eleven-labs-phonics-alphabet-sounds-dorothy.mp3",
+  "intro": {
+    "start": 0,
+    "end": 8.04,
+    "duration": 8.04
+  },
+  "letters": [
+    { "letter": "A", "start": 8.04, "callEnd": 11.38, "repeatStart": 11.38, "repeatEnd": 15.08, "end": 15.08, "duration": 7.04 },
+    { "letter": "B", "start": 15.08, "callEnd": 18.36, "repeatStart": 18.36, "repeatEnd": 21.88, "end": 21.88, "duration": 6.8 },
+    { "letter": "C", "start": 21.88, "callEnd": 24.8, "repeatStart": 24.8, "repeatEnd": 28.36, "end": 28.36, "duration": 6.48 },
+    { "letter": "D", "start": 28.36, "callEnd": 31.24, "repeatStart": 31.24, "repeatEnd": 34.52, "end": 34.52, "duration": 6.16 },
+    { "letter": "E", "start": 34.52, "callEnd": 37.4, "repeatStart": 37.4, "repeatEnd": 40.88, "end": 40.88, "duration": 6.36 },
+    { "letter": "F", "start": 40.88, "callEnd": 43.76, "repeatStart": 43.76, "repeatEnd": 47.12, "end": 65, "duration": 24.12 },
+    { "letter": "G", "start": 65, "callEnd": 67.96, "repeatStart": 67.96, "repeatEnd": 71.2, "end": 71.2, "duration": 6.2 },
+    { "letter": "H", "start": 71.2, "callEnd": 74.12, "repeatStart": 74.12, "repeatEnd": 77.12, "end": 77.12, "duration": 5.92 },
+    { "letter": "I", "start": 77.12, "callEnd": 80.2, "repeatStart": 80.2, "repeatEnd": 82.96, "end": 82.96, "duration": 5.84 },
+    { "letter": "J", "start": 82.96, "callEnd": 85.76, "repeatStart": 85.76, "repeatEnd": 88.8, "end": 88.8, "duration": 5.84 },
+    { "letter": "K", "start": 88.8, "callEnd": 91.52, "repeatStart": 91.52, "repeatEnd": 94.36, "end": 94.36, "duration": 5.56 },
+    { "letter": "L", "start": 94.36, "callEnd": 97.16, "repeatStart": 97.16, "repeatEnd": 100.08, "end": 118.28, "duration": 23.92 },
+    { "letter": "M", "start": 118.28, "callEnd": 121.08, "repeatStart": 121.08, "repeatEnd": 124.16, "end": 124.16, "duration": 5.88 },
+    { "letter": "N", "start": 124.16, "callEnd": 126.96, "repeatStart": 126.96, "repeatEnd": 129.96, "end": 129.96, "duration": 5.8 },
+    { "letter": "O", "start": 129.96, "callEnd": 132.88, "repeatStart": 132.88, "repeatEnd": 135.92, "end": 135.92, "duration": 5.96 },
+    { "letter": "P", "start": 135.92, "callEnd": 138.68, "repeatStart": 138.68, "repeatEnd": 141.8, "end": 141.8, "duration": 5.88 },
+    { "letter": "Q", "start": 141.8, "callEnd": 144.72, "repeatStart": 144.72, "repeatEnd": 147.76, "end": 147.76, "duration": 5.96 },
+    { "letter": "R", "start": 147.76, "callEnd": 149.76, "repeatStart": null, "repeatEnd": null, "end": 174.72, "duration": 26.96 },
+    { "letter": "S", "start": 168.06, "callEnd": 170.42, "repeatStart": 171.12, "repeatEnd": 172.50, "end": 173.78, "duration": 5.72 },
+    { "letter": "T", "start": 173.78, "callEnd": 176.12, "repeatStart": 176.82, "repeatEnd": 178.14, "end": 179.52, "duration": 5.74 },
+    { "letter": "U", "start": 179.52, "callEnd": 182.00, "repeatStart": 182.82, "repeatEnd": 184.20, "end": 185.42, "duration": 5.90 },
+    { "letter": "V", "start": 185.42, "callEnd": 187.96, "repeatStart": 188.70, "repeatEnd": 190.02, "end": 190.88, "duration": 5.46 },
+    { "letter": "W", "start": 190.88, "callEnd": 193.66, "repeatStart": 194.40, "repeatEnd": 195.72, "end": 196.80, "duration": 5.92 },
+    { "letter": "X", "start": 196.80, "callEnd": 199.14, "repeatStart": 199.70, "repeatEnd": 201.12, "end": 202.30, "duration": 5.50 },
+    { "letter": "Y", "start": 202.30, "callEnd": 204.80, "repeatStart": 205.36, "repeatEnd": 206.94, "end": 208.24, "duration": 5.94 },
+    { "letter": "Z", "start": 208.24, "callEnd": 210.48, "repeatStart": 211.02, "repeatEnd": 212.62, "end": 225.80, "duration": 17.56 }
+  ]
+}

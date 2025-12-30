@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+
+  <!-- Brand: NeuroBreath -->
+  <title>ADHD support at home · NeuroBreath</title>
+  <meta name="description" content="NeuroBreath provides clinically referenced, neuro-inclusive breathing tools, guides and timers for calm, sleep, focus and emotional regulation.">
+
+  <!-- Social (Open Graph / Twitter) -->
+  <meta property="og:site_name" content="NeuroBreath">
+  <meta property="og:title" content="ADHD support at home · NeuroBreath">
+  <meta property="og:description" content="NeuroBreath provides clinically referenced, neuro-inclusive breathing tools, guides and timers for calm, sleep, focus and emotional regulation.">
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://neurobreath.co.uk/adhd-support-home.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Standard favicon -->
+  <link rel="icon" type="image/x-icon" href="assets/icons/neurobreath-favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/neurobreath-logo-square-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/neurobreath-logo-square-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/neurobreath-logo-square-180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/neurobreath-logo-square-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icons/neurobreath-logo-square-512.png">
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/site.css" />
+  <script src="assets/js/voice-preferences.js" defer></script>
+  <script src="assets/js/site.js" defer></script>
+
+  <link rel="stylesheet" href="assets/css/adhd-guide.css" />
+  <script src="assets/js/adhd-guide.js" defer></script>
+
+  <style>
+    /* ===========================
+       Premium guide page refinements
+       (Safe: does not remove/rename any IDs/data-*)
+       =========================== */
+
+    .page-main{
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(120,150,140,0.14), transparent 55%),
+        radial-gradient(900px 520px at 90% 0%, rgba(120,120,170,0.12), transparent 50%),
+        var(--color-cream);
+      padding: var(--spacing-2xl) 0;
+      min-height: 100vh;
+    }
+
+    .page-container{
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-lg);
+    }
+
+    .card{
+      background: var(--color-white);
+      border: 1px solid var(--color-sage-light);
+      border-radius: var(--radius-lg, 18px);
+      padding: clamp(18px, 2.2vw, var(--spacing-xl));
+      margin-bottom: var(--spacing-xl);
+      box-shadow: var(--shadow-medium, 0 18px 45px rgba(10,20,18,.08));
+      position: relative;
+      z-index: 1;
+      display: block;
+      overflow: clip; /* avoids accidental bleed while keeping clean rounded corners */
+    }
+
+    /* Intro card: stronger hierarchy */
+    .guide-intro{
+      border-color: rgba(120,150,140,.35);
+      box-shadow: var(--shadow-medium, 0 22px 55px rgba(10,20,18,.10));
+    }
+
+    /* Hero background image (intro card) */
+    .guide-intro::before{
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.82)),
+        url('assets/img/hero-home-bg.svg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .guide-intro > *{
+      position: relative;
+      z-index: 1;
+    }
+    .guide-intro h1{
+      letter-spacing: -0.02em;
+      line-height: 1.08;
+      margin-top: 6px;
+      margin-bottom: 10px;
+    }
+    .lede{
+      font-size: clamp(1rem, 1.15vw, 1.125rem);
+      line-height: 1.6;
+    }
+
+    /* Pills: wrap cleanly on mobile */
+    .pill-row{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .pill{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(120,150,140,.35);
+      background: rgba(250,250,250,.95);
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+
+    /* Grids */
+    .grid-2{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: var(--spacing-lg);
+      align-items: start;
+    }
+
+    .grid-3{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--spacing-lg);
+      align-items: start;
+    }
+
+    /* FIX: your page uses grid-2-1 but it was not defined */
+    .grid-2-1{
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: var(--spacing-lg);
+      align-items: start;
+    }
+
+    @media (max-width: 860px){
+      .grid-2-1{ grid-template-columns: 1fr; }
+      .grid-2{ grid-template-columns: 1fr; }
+    }
+
+    .small-note{
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      font-style: italic;
+      margin-top: var(--spacing-sm);
+    }
+
+    .muted{ color: var(--color-text-muted); }
+
+    /* Buttons row: prevent overflow + nicer stacking */
+    .actions{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .actions .btn{
+      flex: 0 0 auto;
+      max-width: 100%;
+    }
+    @media (max-width: 520px){
+      .actions .btn{ width: 100%; justify-content: center; }
+    }
+
+    /* Timer shell: subtle emphasis */
+    .timer-shell{
+      border-radius: var(--radius-lg, 18px);
+      border: 1px solid rgba(120,150,140,.28);
+      background: rgba(255,255,255,.9);
+      padding: 14px;
+      margin-top: 10px;
+    }
+    .timer-display{
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+    }
+    .timer-controls{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    @media (max-width: 520px){
+      .timer-controls .btn{ width: 100%; }
+    }
+
+    /* Notes field: better feel */
+    .note-field{
+      border-radius: 14px;
+      border: 1px solid rgba(120,150,140,.35);
+      padding: 12px 12px;
+      line-height: 1.5;
+      background: rgba(255,255,255,.98);
+    }
+    .note-field:focus{
+      outline: 2px solid rgba(120,150,140,.35);
+      outline-offset: 2px;
+    }
+
+    /* Pager */
+    .pager-grid{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+    .pager-prev, .pager-next{
+      display: block;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(120,150,140,.28);
+      background: rgba(255,255,255,.92);
+      text-decoration: none;
+    }
+    .pager-next{ text-align: right; }
+    @media (max-width: 680px){
+      .pager-grid{ grid-template-columns: 1fr; }
+      .pager-next{ text-align: left; }
+    }
+
+    /* External links: clearer click targets */
+    .external-links ul{ padding-left: 18px; }
+    .external-links a{
+      text-underline-offset: 3px;
+      text-decoration-thickness: 1px;
+    }
+
+    /* Footer spacing - add 2% margin left and right */
+    .site-footer .ft-nav-wrapper{
+      margin-left: 2%;
+      margin-right: 2%;
+      box-sizing: border-box;
+    }
+    .site-footer .inner{
+      margin-left: 2%;
+      margin-right: 2%;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+
+<body data-page-id="adhd_support_home">
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<div id="top"></div>
+
+<header class="site-header">
+  <div class="container navbar">
+    <a id="brandLink" class="brand" href="index.html">
+      <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo" class="logo" />
+      <span class="brand-text">NeuroBreath</span>
+    </a>
+
+    <nav class="main-nav" id="mainNav" role="navigation" aria-label="Primary">
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Conditions ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Neurodevelopmental</div>
+          <a href="autism.html" data-href="autism.html">Autism</a>
+          <a href="autism-parent.html" data-href="autism-parent.html">Autism Parent</a>
+          <a href="adhd.html" data-href="adhd.html">ADHD</a>
+          <a href="dyslexia-reading-training.html" data-href="dyslexia-reading-training.html">Dyslexia</a>
+          <div class="menu-label" aria-hidden="true">Mental Health</div>
+          <a href="anxiety.html" data-href="anxiety.html">Anxiety</a>
+          <a href="depression.html" data-href="depression.html">Depression</a>
+          <a href="stress.html" data-href="stress.html">Stress</a>
+          <a href="sleep.html" data-href="sleep.html">Sleep</a>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Breathing &amp; Focus ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Guides</div>
+          <a href="breath.html" data-href="breath.html">Breath (how-to)</a>
+          <a href="focus.html" data-href="focus.html">Focus</a>
+          <a href="mindfulness.html" data-href="mindfulness.html">Mindfulness</a>
+          <div class="menu-label" aria-hidden="true">Techniques</div>
+          <a href="sos-60.html" data-href="sos-60.html">🆘 60-second SOS</a>
+          <a href="box-breathing.html" data-href="box-breathing.html">🟩 Box Breathing</a>
+          <a href="4-7-8-breathing.html" data-href="4-7-8-breathing.html">🟦 4-7-8 Breathing</a>
+          <a href="coherent-5-5.html" data-href="coherent-5-5.html">🟪 Coherent 5-5</a>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Tools ▾</button>
+        <div class="submenu">
+          <a href="sleep-tools.html" data-href="sleep-tools.html">Sleep Tools</a>
+          <a href="breath-tools.html" data-href="breath-tools.html">Breath Tools</a>
+          <a href="mood-tools.html" data-href="mood-tools.html">Mood Tools</a>
+          <a href="adhd-tools.html" data-href="adhd-tools.html">ADHD Tools</a>
+          <a href="autism-tools.html" data-href="autism-tools.html">Autism Tools</a>
+          <a href="anxiety-tools.html" data-href="anxiety-tools.html">Anxiety Tools</a>
+          <a href="stress-tools.html" data-href="stress-tools.html">Stress Tools</a>
+          <a href="focus-garden.html" data-href="focus-garden.html">🌱 Focus Training</a>
+          <div class="menu-label" aria-hidden="true">Symptom Guides</div>
+          <a href="stress-anxiety.html" data-href="stress-anxiety.html">Stress &amp; General Anxiety</a>
+          <a href="panic-symptoms.html" data-href="panic-symptoms.html">Panic Symptoms</a>
+          <a href="sleep-onset-insomnia.html" data-href="sleep-onset-insomnia.html">Sleep-Onset Insomnia</a>
+          <a href="focus-test-anxiety.html" data-href="focus-test-anxiety.html">Focus &amp; Test Anxiety</a>
+          <a href="ptsd-regulation.html" data-href="ptsd-regulation.html">PTSD Regulation*</a>
+          <a href="low-mood-burnout.html" data-href="low-mood-burnout.html">Low Mood &amp; Burnout</a>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">About ▾</button>
+        <div class="submenu">
+          <a href="about.html" data-href="about.html">About</a>
+          <a href="aims-objectives.html" data-href="aims-objectives.html">Aims &amp; Stories</a>
+          <a href="coffee.html" data-href="coffee.html">Support Us</a>
+          <a href="contact.html" data-href="contact.html">Contact</a>
+        </div>
+      </div>
+    </nav>
+
+    <button type="button" id="navToggle" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="mainNav">☰</button>
+  </div>
+</header>
+
+<main id="main-content" class="page-main">
+  <div class="page-container">
+
+    <!-- Topic header -->
+    <article class="card guide-intro">
+      <p class="kicker">ADHD · Topic 4 of 9 · Home support</p>
+      <h1>ADHD support at home</h1>
+      <p class="nb-lead">
+        ADHD support should be practical and immediate. NeuroBreath helps you reduce friction, build routines, and protect focus—at home, at school, and at work—without shame-based systems.
+      </p>
+
+      <!-- NeuroBreath: Quick Win -->
+      <section class="nb-quickwin" data-quest="quickwin" data-quest-type="promptTool" aria-label="Quick Win">
+        <div class="nb-quickwin__inner">
+          <div class="nb-quickwin__meta">
+            <span class="nb-pill">Quick Win • Instant</span>
+            <span class="nb-pill nb-pill--gold">+30 points</span>
+          </div>
+          <h2 class="nb-quickwin__title">ADHD Day Map</h2>
+          <p class="nb-quickwin__lead">Generate a realistic plan for today: the next right task, a focus block, and a reset step.</p>
+
+          <div class="nb-quickwin__actions">
+            <button class="nb-btn nb-btn--primary" type="button">Generate My Day Map</button>
+            <button class="nb-btn" type="button">Turn Into Checklist</button>
+          </div>
+
+          <p class="nb-quickwin__note">
+            Earn coupon "Focus Fuel Voucher" after 7-day streak.
+          </p>
+        </div>
+      </section>
+
+      <p class="lede muted">
+        Home can be a safe base for ADHD brains — a place where routines, visual supports and warm relationships
+        reduce friction. This page offers practical ideas for mornings, homework, bedtime and big feelings.
+      </p>
+      <div class="pill-row">
+        <span class="pill">Routines &amp; visual tools</span>
+        <span class="pill">Praise &amp; reward systems</span>
+        <span class="pill">Calm-down plans</span>
+      </div>
+    </article>
+
+    <!-- Family guide navigation -->
+    <nav class="card guide-nav" aria-label="ADHD family guide navigation">
+      <h2 class="guide-nav-title">ADHD family guide · Sections</h2>
+      <ol class="guide-nav-list">
+        <li><a href="adhd-what-is.html">1. What is ADHD?</a></li>
+        <li><a href="adhd-assessment.html">2. Getting an ADHD assessment</a></li>
+        <li><a href="adhd-diagnosis.html">3. Diagnosis decisions</a></li>
+        <li><span class="current">4. Support at home</span></li>
+        <li><a href="adhd-school.html">5. Working with school</a></li>
+        <li><a href="adhd-teens.html">6. Teens &amp; older pupils</a></li>
+        <li><a href="adhd-young-people.html">7. Young people &amp; adults</a></li>
+        <li><a href="adhd-self-care.html">8. Parent &amp; carer self-care</a></li>
+        <li><a href="adhd-helplines.html">9. Helplines &amp; community</a></li>
+      </ol>
+    </nav>
+
+    <!-- Routines & visual supports -->
+    <section class="card">
+      <h2>Routines that work with ADHD, not against it</h2>
+      <div class="grid-2">
+        <div>
+          <p class="muted">
+            ADHD brains often struggle with time, sequencing and switching tasks. Predictable routines reduce the
+            number of decisions in a day and make things feel safer for everyone.
+          </p>
+          <h3>Keep it short, visible and repeatable</h3>
+          <ul class="muted">
+            <li>Break mornings and evenings into 3–6 clear steps, not long "To Do" lists.</li>
+            <li>Use pictures, icons or simple words at eye level rather than long verbal reminders.</li>
+            <li>Pair routines with anchors: wake-up song, same breakfast table set-up, same place for school bag.</li>
+            <li>Practice the routine on calmer days so it feels familiar when you are rushed or stressed.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3>Mini routine builder · 4 minutes</h3>
+          <p class="muted">
+            Use this focus block and notes area to sketch one routine (morning, homework or bedtime) in plain
+            language. You can print or copy it later.
+          </p>
+
+          <div class="timer-shell" data-widget="timer" data-seconds="240" data-label="Home routine builder">
+            <div class="timer-display" data-role="display">04:00</div>
+            <div class="timer-bar">
+              <div class="timer-bar-fill" data-role="bar"></div>
+            </div>
+            <div class="timer-status small-note" data-role="status">
+              Press Start and spend 4 minutes writing a realistic, no-perfection routine.
+            </div>
+            <div class="timer-controls">
+              <button type="button" class="btn btn-primary" data-action="start">▶ Start 4-minute routine builder</button>
+              <button type="button" class="btn btn-soft" data-action="reset">■ Reset</button>
+            </div>
+          </div>
+
+          <label class="field-label" for="homeRoutine">Routine notes (saved on this device only)</label>
+          <textarea id="homeRoutine" class="note-field" rows="6"
+            data-autosave="adhdHome_routine"
+            placeholder="Example: &#10;1) Wake up &amp; toilet &#10;2) Get dressed (clothes laid out night before) &#10;3) Breakfast at table &#10;4) Teeth &amp; shoes &#10;5) Bag check by the door"></textarea>
+
+          <p class="small-note">
+            Aim for "good enough", not perfect. You can adjust after trying it for a few days.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Praise & reward -->
+    <section class="card">
+      <h2>Praise, rewards and boundaries</h2>
+      <div class="grid-2">
+        <div>
+          <p class="muted">
+            Children and teens with ADHD often hear more corrections than praise. Over time, this can chip away at
+            self-esteem. Small, specific praise helps rebuild that balance.
+          </p>
+          <h3>"Catch them doing it almost right"</h3>
+          <ul class="muted">
+            <li>Describe exactly what you like: <em>"I like how you came back to finish your homework."</em></li>
+            <li>Focus on effort and strategies, not just results: <em>"You used your timer without me asking."</em></li>
+            <li>Offer small rewards linked to routines: choosing music, picking a game, extra story time.</li>
+            <li>Keep consequences clear and consistent, but avoid long lectures once everyone is upset.</li>
+          </ul>
+          <p class="small-note">
+            Rewards do not have to be expensive. Attention, time together and choices often matter more than money.
+          </p>
+        </div>
+
+        <div>
+          <h3>Reward chart ideas</h3>
+          <ul class="muted">
+            <li>Star chart for one or two focus behaviours (e.g. "hang up coat" or "ask for help before shouting").</li>
+            <li>Token jar where small tokens build towards a shared activity (baking, park, movie night).</li>
+            <li>Weekly "spotlights" where you name three things your child did that made you proud.</li>
+          </ul>
+          <div class="actions">
+            <button type="button" class="btn btn-primary" data-download="adhd_home_star_chart.pdf">
+              ⭐ Simple star chart (PDF)
+            </button>
+            <button type="button" class="btn btn-soft" data-download="adhd_home_token_jar.pdf">
+              🫙 Token jar printable (PDF)
+            </button>
+          </div>
+          <p class="small-note">
+            Use these templates as starting points; adjust language and pictures to fit your family.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Transitions & meltdowns -->
+    <section class="card">
+      <h2>Transitions, meltdowns and "big feelings"</h2>
+      <div class="grid-2-1">
+        <div>
+          <p class="muted">
+            Many ADHD brains find switching tasks harder than doing the task itself. This can show up as arguments,
+            "digging heels in", or complete shutdown when it is time to leave, stop screens or start homework.
+          </p>
+          <h3>Before the storm</h3>
+          <ul class="muted">
+            <li>Give gentle warnings: "5 more minutes of Xbox, then pause for dinner." Follow with a 2-minute warning.</li>
+            <li>Use visual timers or a sand timer so the change is predictable.</li>
+            <li>Offer choices within limits: "Do you want to walk or scooter to the car?"</li>
+            <li>Keep your own voice calm and low; model the regulation you want them to borrow.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3>During and after</h3>
+          <ul class="muted">
+            <li>Keep everyone safe first; remove siblings from conflict if needed.</li>
+            <li>Use few words: "You're angry. I am here. We'll sort this when you're calm."</li>
+            <li>Once calm, repair and problem-solve together rather than going over every detail.</li>
+            <li>Notice triggers and patterns so you can adjust routines next time.</li>
+          </ul>
+
+          <div class="jar-shell" data-widget="jar" data-jar-id="adhdHome_calmPlan">
+            <p class="muted">
+              Choose one calm-down option your family wants to try more often:
+            </p>
+            <div class="grid-3">
+              <button type="button" class="btn btn-soft" data-jar-value="cozyCorner">
+                🛋 Cozy corner &amp; weighted blanket
+              </button>
+              <button type="button" class="btn btn-soft" data-jar-value="movement">
+                🤸 Movement break (jumps, stretch)
+              </button>
+              <button type="button" class="btn btn-soft" data-jar-value="breathing">
+                🌬 Breathing or calm music
+              </button>
+            </div>
+            <p class="small-note" data-role="jarStatus">
+              Tap one. This just helps you remember what you want to try first when things are tricky.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tiny "attention game" re-using main JS -->
+    <section class="card">
+      <h2>30-second tidy-up challenge</h2>
+      <p class="muted">
+        Short games can turn dreaded tasks into something more playful. Use this as a "beat the buzzer" tidy or
+        reset game for kids or teens.
+      </p>
+      <div class="grid-2">
+        <div>
+          <ol class="muted">
+            <li>Pick a very small zone (one shelf, one table, one corner of the room).</li>
+            <li>Press Start and see how much you can tidy or put away in 30 seconds.</li>
+            <li>Celebrate effort, not perfection — even three items away is a win.</li>
+            <li>Repeat once or twice if everyone still has energy.</li>
+          </ol>
+        </div>
+
+        <div>
+          <div class="timer-shell" data-widget="timer" data-seconds="30" data-label="Tidy-up challenge">
+            <div class="timer-display" data-role="display">00:30</div>
+            <div class="timer-bar">
+              <div class="timer-bar-fill" data-role="bar"></div>
+            </div>
+            <div class="timer-status small-note" data-role="status">
+              Press Start, tidy one tiny area until the timer beeps, then stop and praise.
+            </div>
+            <div class="timer-controls">
+              <button type="button" class="btn btn-primary" data-action="start">▶ Start tidy-up</button>
+              <button type="button" class="btn btn-soft" data-action="reset">■ Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Downloads -->
+    <section class="card">
+      <h2>Downloads for home</h2>
+      <p class="muted">
+        These printables can live on the fridge, bedroom door or homework space. They are designed to be simple and
+        reusable.
+      </p>
+      <div class="actions">
+        <button type="button" class="btn btn-primary" data-download="adhd_home_morning_routine.pdf">
+          ☀ Morning routine visual (PDF)
+        </button>
+        <button type="button" class="btn btn-soft" data-download="adhd_home_bedtime_routine.pdf">
+          🌙 Bedtime routine visual (PDF)
+        </button>
+        <button type="button" class="btn btn-soft" data-download="adhd_home_meltdown_plan.pdf">
+          💬 "Big feelings" plan (PDF)
+        </button>
+      </div>
+      <p class="small-note">
+        All PDFs open in a new tab so you can keep this guide open. You can also save them for later.
+      </p>
+    </section>
+
+    <!-- Guide pager -->
+    <section class="card guide-pager" aria-label="Next ADHD guide sections">
+      <div class="pager-grid">
+        <a class="pager-prev" href="adhd-diagnosis.html">← Previous: Diagnosis decisions</a>
+        <a class="pager-next" href="adhd-school.html">Next: Working with school →</a>
+      </div>
+      <p class="small-note">
+        Or return to the main ADHD page: <a href="adhd.html">ADHD — Focus, Workouts &amp; Everyday Wins</a>.
+      </p>
+    </section>
+
+    <!-- External links at the bottom -->
+    <section class="card external-links" aria-label="Further reading on home support">
+      <h2>Further reading on ADHD support at home</h2>
+      <p class="muted">
+        These sites offer wider ideas for family routines and parenting support. They open in a new tab so you stay
+        on this guide.
+      </p>
+      <ul class="muted">
+        <li><a href="https://www.youngminds.org.uk/parent/parents-a-z-mental-health-guide/adhd/" target="_blank" rel="noopener">
+          YoungMinds · ADHD parent guide</a></li>
+        <li><a href="https://www.adhdfoundation.org.uk" target="_blank" rel="noopener">
+          ADHD Foundation · Resources for families</a></li>
+        <li><a href="https://www.additudemag.com/category/parenting-adhd-children/" target="_blank" rel="noopener">
+          ADDitude · Parenting ADHD</a></li>
+      </ul>
+      <p class="small-note">
+        External resources are optional. Our aim is that you can act on this page alone if you prefer.
+      </p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer" id="siteFooter">
+  <!-- Footer navigation - Full Width -->
+  <div class="ft-nav-wrapper">
+    <div class="ft-nav-inner">
+      <!-- Brand + Support in Navigation Area -->
+      <div class="ft-nav-brand">
+        <a class="ft-logo" href="index.html" data-href="index.html" aria-label="NeuroBreath home">
+          <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo" />
+        </a>
+        <a href="coffee.html" class="btn" data-href="coffee.html">☕ Support Us</a>
+      </div>
+      <nav class="ft-nav" aria-label="Footer">
+        <details class="ft-group">
+          <summary>Conditions <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="autism.html" data-href="autism.html">Autism</a> · <a href="autism-parent.html" data-href="autism-parent.html">Autism Parent</a> · <a href="adhd.html" data-href="adhd.html">ADHD</a> · <a href="dyslexia-reading-training.html" data-href="dyslexia-reading-training.html">Dyslexia</a></p>
+            <p><a href="anxiety.html" data-href="anxiety.html">Anxiety</a> · <a href="depression.html" data-href="depression.html">Depression</a> · <a href="stress.html" data-href="stress.html">Stress</a> · <a href="sleep.html" data-href="sleep.html">Sleep</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Breathing &amp; Focus <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="breath.html" data-href="breath.html">Breath (how-to)</a> · <a href="focus.html" data-href="focus.html">Focus</a> · <a href="mindfulness.html" data-href="mindfulness.html">Mindfulness</a></p>
+            <p><a href="sos-60.html" data-href="sos-60.html">60-second Reset</a> · <a href="box-breathing.html" data-href="box-breathing.html">Box Breathing</a> · <a href="4-7-8-breathing.html" data-href="4-7-8-breathing.html">4-7-8 Breathing</a> · <a href="coherent-5-5.html" data-href="coherent-5-5.html">Coherent 5-5</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Toolkits <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="sleep-tools.html" data-href="sleep-tools.html">Sleep Tools</a> · <a href="breath-tools.html" data-href="breath-tools.html">Breath Tools</a> · <a href="mood-tools.html" data-href="mood-tools.html">Mood Tools</a> · <a href="adhd-tools.html" data-href="adhd-tools.html">ADHD Tools</a> · <a href="autism-tools.html" data-href="autism-tools.html">Autism Tools</a> · <a href="anxiety-tools.html" data-href="anxiety-tools.html">Anxiety Tools</a> · <a href="stress-tools.html" data-href="stress-tools.html">Stress Tools</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Symptom Guides <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="stress-anxiety.html" data-href="stress-anxiety.html">Stress &amp; General Anxiety</a> · <a href="panic-symptoms.html" data-href="panic-symptoms.html">Panic Symptoms</a> · <a href="sleep-onset-insomnia.html" data-href="sleep-onset-insomnia.html">Sleep-Onset Insomnia</a></p>
+            <p><a href="focus-test-anxiety.html" data-href="focus-test-anxiety.html">Focus &amp; Test Anxiety</a> · <a href="ptsd-regulation.html" data-href="ptsd-regulation.html">PTSD Regulation*</a> · <a href="low-mood-burnout.html" data-href="low-mood-burnout.html">Low Mood &amp; Burnout</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>About <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="about.html" data-href="about.html">About</a> · <a href="aims-objectives.html" data-href="aims-objectives.html">Aims &amp; Stories</a> · <a href="coffee.html" data-href="coffee.html">Support Us</a> · <a href="contact.html" data-href="contact.html">Contact</a></p>
+          </div>
+        </details>
+      </nav>
+    </div>
+  </div>
+
+  <div class="inner">
+    <div class="ft-bottom">
+      <div class="ft-bottom__copy" aria-label="Site notice">
+        <p class="muted ft-bottom__text">Educational information only. Not medical advice. NeuroBreath is a free resource by NeuroBreath. © <span id="yearFooter"></span> NeuroBreath. All rights reserved.</p>
+      </div>
+      <button type="button" class="btn back-to-top-btn" data-action="back-to-top" aria-label="Back to top">
+        <span class="back-to-top__label">Back to top</span>
+        <span class="back-to-top__icon" aria-hidden="true">↑</span>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/app.js" defer></script>
+</body>
+</html>

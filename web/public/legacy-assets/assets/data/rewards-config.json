@@ -1,0 +1,84 @@
+{
+  "points": {
+    "reading_minute": 4,
+    "calm_reset_1min": 10,
+    "complete_daily_quest": 25
+  },
+  "badges": [
+    {
+      "id": "first_steps",
+      "name": "First Steps",
+      "icon": "👣",
+      "rule": {
+        "sessions_gte": 1
+      }
+    },
+    {
+      "id": "steady_reader",
+      "name": "Steady Reader",
+      "icon": "📖",
+      "rule": {
+        "reading_minutes_gte": 30
+      }
+    },
+    {
+      "id": "week_warrior",
+      "name": "Week Warrior",
+      "icon": "🌟",
+      "rule": {
+        "streak_days_gte": 7
+      }
+    },
+    {
+      "id": "calm_starter",
+      "name": "Calm Starter",
+      "icon": "🫧",
+      "rule": {
+        "calm_minutes_gte": 5
+      }
+    },
+    {
+      "id": "focus_friend",
+      "name": "Focus Friend",
+      "icon": "🌱",
+      "rule": {
+        "focus_sessions_gte": 5
+      }
+    }
+  ],
+  "coupons": [
+    {
+      "id": "streak_pause",
+      "name": "Streak Pause Token",
+      "icon": "⏸️",
+      "cost": 120,
+      "desc": "Pause streak loss once.",
+      "kind": "token",
+      "tokenId": "streak-pause"
+    },
+    {
+      "id": "teacher_pack",
+      "name": "Teacher Time-Saver Token",
+      "icon": "🧑‍🏫",
+      "cost": 200,
+      "desc": "Unlock printable pack.",
+      "kind": "prompt",
+      "promptTitle": "Teacher / Parent Confidence Script",
+      "promptText": "Short update (copy/paste):\n\nToday we used NeuroBreath for a calm start (1–5 minutes). The goal is consistency without pressure.\nWhat helps most:\n• Short, repeatable practice (daily if possible)\n• One clear \"next right action\" after calming\n• Positive feedback on effort + strategy, not speed\n\nIf you can, please support with: reduced noise, clear instructions, and one task at a time."
+    }
+  ],
+  "prompts": [
+    {
+      "id": "confidence_script",
+      "name": "Confidence Script",
+      "unlock_points": 50,
+      "text": "Create a 30-second confidence script for a dyslexic learner before reading practice."
+    },
+    {
+      "id": "calm_reset_script",
+      "name": "60-Second Calm Reset Script",
+      "unlock_points": 80,
+      "text": "60‑second calm reset (read slowly):\n\n1) Soften your shoulders.\n2) Breathe in gently through the nose.\n3) Pause for one beat.\n4) Breathe out longer than you breathed in.\n5) Notice one thing you can do next—small and easy.\n\nRepeat once if needed."
+    }
+  ]
+}

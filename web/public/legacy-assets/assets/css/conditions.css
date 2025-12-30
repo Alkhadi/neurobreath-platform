@@ -1,0 +1,22 @@
+/* Additional utilities shared by condition pages */
+.mt-0{margin-top:0}
+.mt-025{margin-top:.25rem}
+.mt-075{margin-top:.75rem}
+.mt-n025{margin-top:-.25rem}
+.mb-125{margin-bottom:1.25rem}
+.ml-05{margin-left:.5rem}
+.list-indent{margin:.25rem 0 0 1rem;padding-left:1rem}
+.gap-1{gap:1rem}
+.inline-details{display:inline-block}
+.summary-inline{display:inline-flex;align-items:center;cursor:pointer}
+.row-actions{display:flex;flex-wrap:wrap;gap:.5rem}
+.row-actions.items-center{align-items:center}
+.row-actions.justify-between{justify-content:space-between}
+.gap-lg{gap:12px}
+.min-h-88{min-height:88px}
+.min-h-120{min-height:120px}
+.btn-tight{margin-bottom:0}
+.no-margin{margin:0}
+#flowTitle{margin:.25rem 0}
+.flow-step-title{margin:.25rem 0}
+#top{position:absolute;top:0;left:0;width:0;height:0;overflow:hidden}

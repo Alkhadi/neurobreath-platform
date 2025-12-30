@@ -1,0 +1,42 @@
+/* Neurobreath Calm theme tokens extracted from home hero */
+:root{
+  --nb-layer-deep:#0c1630;
+  --nb-layer-mid:#142846;
+  --nb-layer-soft:#1e3458;
+  --nb-layer-tint:rgba(12,24,46,.68);
+  --nb-layer-veil:rgba(255,255,255,.94);
+  --nb-layer-veil-strong:rgba(255,255,255,.98);
+
+  --nb-hero-border:rgba(196,214,248,.42);
+  --nb-hero-glow:0 28px 68px rgba(6,12,28,.55);
+  --nb-hero-card-border:rgba(15,23,42,.12);
+  --nb-hero-card-shadow:0 26px 58px rgba(15,23,42,.12);
+  --nb-hero-chip-border:rgba(148,163,184,.3);
+  --nb-hero-chip-shadow:0 18px 40px rgba(15,23,42,.12);
+
+  --nb-hero-text-strong:#0f172a;
+  --nb-hero-text-soft:#475569;
+  --nb-hero-text-muted:rgba(229,238,252,.88);
+  --nb-hero-white:#ffffff;
+  --nb-hero-ink:#1e293b;
+
+  --nb-highlight-sky:#38bdf8;
+  --nb-highlight-sky-dark:#0ea5e9;
+  --nb-highlight-mint:#2dd4bf;
+  --nb-highlight-gold:#f59e0b;
+  --nb-highlight-gold-dark:#d97706;
+
+  --nb-glass-border:rgba(255,255,255,.2);
+  --nb-glass-shadow:0 18px 48px rgba(6,12,28,.52);
+  --nb-glass-depth:0 24px 44px rgba(15,23,42,.08);
+  --nb-glass-surface:linear-gradient(150deg, rgba(255,255,255,.97), rgba(231,238,255,.9));
+
+  --nb-card-radius:20px;
+  --nb-chip-radius:16px;
+  --nb-voice-card-radius:20px;
+
+  --nb-space-base:16px;
+  --nb-space-md:clamp(1rem, 2.6vw, 1.6rem);
+  --nb-space-lg:clamp(1.6rem, 3.5vw, 2.4rem);
+  --nb-space-xl:clamp(2rem, 4.2vw, 3rem);
+}

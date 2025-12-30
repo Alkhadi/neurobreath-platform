@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="roomGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a2540" />
+      <stop offset="55%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#0b1020" />
+    </linearGradient>
+    <linearGradient id="boardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1f3b5d" />
+      <stop offset="100%" stop-color="#14253f" />
+    </linearGradient>
+    <linearGradient id="deskGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#23304b" />
+      <stop offset="100%" stop-color="#151f34" />
+    </linearGradient>
+    <radialGradient id="ambientGlow" cx="50%" cy="25%" r="60%">
+      <stop offset="0%" stop-color="rgba(64,131,206,0.35)" />
+      <stop offset="70%" stop-color="rgba(64,131,206,0.1)" />
+      <stop offset="100%" stop-color="rgba(64,131,206,0)" />
+    </radialGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#roomGradient)" />
+  <rect width="1600" height="900" fill="url(#ambientGlow)" />
+
+  <!-- Blackboard -->
+  <rect x="260" y="160" width="1080" height="360" rx="22" fill="url(#boardGradient)" opacity="0.92" />
+  <rect x="280" y="180" width="1040" height="320" rx="18" fill="rgba(17,34,60,0.7)" />
+  <rect x="280" y="180" width="1040" height="320" rx="18" stroke="rgba(117,192,255,0.16)" stroke-width="8" fill="none" />
+  <path d="M310 230 H1180" stroke="rgba(148,220,255,0.16)" stroke-width="2" stroke-linecap="round" />
+  <path d="M310 310 H1180" stroke="rgba(148,220,255,0.12)" stroke-width="2" stroke-linecap="round" />
+  <path d="M310 390 H1180" stroke="rgba(148,220,255,0.12)" stroke-width="2" stroke-linecap="round" />
+
+  <!-- Teacher figure -->
+  <g transform="translate(420 420)">
+    <ellipse cx="0" cy="140" rx="90" ry="36" fill="rgba(12,18,36,0.7)" />
+    <rect x="-40" y="10" width="80" height="150" rx="32" fill="#204c79" />
+    <rect x="-26" y="-45" width="52" height="60" rx="18" fill="#f1f5f9" />
+    <circle cx="0" cy="-10" r="48" fill="#2b6cb0" />
+    <circle cx="-15" cy="-18" r="8" fill="#0b1020" />
+    <circle cx="15" cy="-18" r="8" fill="#0b1020" />
+    <rect x="-20" y="50" width="40" height="70" rx="18" fill="#1b3658" />
+    <rect x="-60" y="150" width="35" height="90" rx="14" fill="#162846" />
+    <rect x="25" y="150" width="35" height="90" rx="14" fill="#162846" />
+    <rect x="-100" y="80" width="70" height="26" rx="12" fill="#1b3658" />
+    <rect x="30" y="80" width="70" height="26" rx="12" fill="#1b3658" />
+  </g>
+
+  <!-- Students row -->
+  <g opacity="0.9">
+    <!-- Student 1 -->
+    <g transform="translate(620 520)">
+      <ellipse cx="0" cy="90" rx="70" ry="24" fill="rgba(12,18,36,0.6)" />
+      <rect x="-32" y="5" width="64" height="110" rx="28" fill="#1d4068" />
+      <circle cx="0" cy="-15" r="36" fill="#f8fafc" />
+      <circle cx="0" cy="-10" r="36" fill="#1e3658" opacity="0.75" />
+      <rect x="-18" y="50" width="36" height="50" rx="14" fill="#172a46" />
+      <rect x="-72" y="80" width="50" height="18" rx="9" fill="#172a46" />
+      <rect x="22" y="80" width="50" height="18" rx="9" fill="#172a46" />
+    </g>
+
+    <!-- Student 2 -->
+    <g transform="translate(820 520)">
+      <ellipse cx="0" cy="90" rx="70" ry="24" fill="rgba(12,18,36,0.55)" />
+      <rect x="-32" y="5" width="64" height="110" rx="28" fill="#254d7a" />
+      <circle cx="0" cy="-18" r="40" fill="#f8fafc" />
+      <circle cx="0" cy="-14" r="36" fill="#2b4f7b" opacity="0.9" />
+      <rect x="-18" y="45" width="36" height="55" rx="14" fill="#1a3053" />
+      <rect x="-72" y="78" width="50" height="20" rx="10" fill="#1a3053" />
+      <rect x="22" y="78" width="50" height="20" rx="10" fill="#1a3053" />
+    </g>
+
+    <!-- Student 3 -->
+    <g transform="translate(1020 520)">
+      <ellipse cx="0" cy="90" rx="70" ry="24" fill="rgba(12,18,36,0.6)" />
+      <rect x="-32" y="5" width="64" height="110" rx="28" fill="#1b3d66" />
+      <circle cx="0" cy="-16" r="38" fill="#f8fafc" />
+      <circle cx="0" cy="-12" r="35" fill="#263e63" opacity="0.82" />
+      <rect x="-18" y="48" width="36" height="54" rx="14" fill="#142b4a" />
+      <rect x="-72" y="80" width="50" height="18" rx="9" fill="#142b4a" />
+      <rect x="22" y="80" width="50" height="18" rx="9" fill="#142b4a" />
+    </g>
+  </g>
+
+  <!-- Desks -->
+  <g opacity="0.65">
+    <rect x="540" y="540" width="220" height="90" rx="18" fill="url(#deskGradient)" />
+    <rect x="740" y="540" width="220" height="90" rx="18" fill="url(#deskGradient)" />
+    <rect x="940" y="540" width="220" height="90" rx="18" fill="url(#deskGradient)" />
+  </g>
+
+  <!-- Soft front glow -->
+  <rect x="0" y="0" width="1600" height="900" fill="url(#ambientGlow)" opacity="0.45" />
+</svg>

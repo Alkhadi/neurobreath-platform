@@ -1,0 +1,1458 @@
+:root {
+      --nb-bg: radial-gradient(circle at top, #1e293b 0%, #020617 55%, #000000 100%);
+      --nb-surface: rgba(15, 23, 42, 0.92);
+      --nb-surface-soft: rgba(15, 23, 42, 0.85);
+      --nb-border-soft: rgba(148, 163, 184, 0.4);
+      --nb-text: #e5e7eb;
+      --nb-text-soft: #cbd5f5;
+      --nb-text-muted: #9ca3af;
+      --nb-accent: #38bdf8;
+      --nb-bronze: #fbbf77;
+      --nb-silver: #e5e7eb;
+      --nb-gold: #facc15;
+      --nb-platinum: #a5b4fc;
+      --nb-danger: #fb7185;
+      --nb-radius-lg: 24px;
+      --nb-radius-xl: 32px;
+      --nb-shadow-strong: 0 28px 80px rgba(0, 0, 0, 0.8);
+      --nb-font: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--nb-bg);
+      color: var(--nb-text);
+      font-family: var(--nb-font);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    main {
+      width: 100%;
+      max-width: 1200px;
+      margin-inline: auto;
+      padding: clamp(16px, 4vw, 32px);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: clamp(24px, 6vh, 40px);
+      border-radius: var(--nb-radius-xl);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.15), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(244, 114, 182, 0.12), transparent 55%),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.96));
+      box-shadow: var(--nb-shadow-strong);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.6rem, 3vw, 2rem);
+      letter-spacing: 0.03em;
+    }
+
+    .hero p {
+      margin: 0 0 18px;
+      color: var(--nb-text-soft);
+      max-width: 620px;
+      margin-inline: auto;
+      font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+    }
+
+    /* Buttons */
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 1.4rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font: 500 0.95rem/1 var(--nb-font);
+      color: var(--nb-text);
+      background: rgba(15, 23, 42, 0.85);
+      cursor: pointer;
+      transition: background 0.16s ease, transform 0.12s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: radial-gradient(circle at top, #0ea5e9, #0284c7);
+      border-color: rgba(125, 211, 252, 0.6);
+      box-shadow: 0 16px 40px rgba(8, 47, 73, 0.75);
+    }
+
+    .btn-success {
+      background: radial-gradient(circle at top, #22c55e, #15803d);
+      border-color: rgba(74, 222, 128, 0.7);
+      box-shadow: 0 16px 44px rgba(6, 95, 70, 0.8);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border-color: rgba(148, 163, 184, 0.7);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: transparent;
+      color: var(--nb-text-soft);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .btn:not(:disabled):hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.9);
+      background-color: rgba(30, 64, 175, 0.98);
+    }
+
+    .btn-primary:not(:disabled):hover {
+      background: radial-gradient(circle at top, #38bdf8, #0ea5e9);
+    }
+
+    .btn-success:not(:disabled):hover {
+      background: radial-gradient(circle at top, #4ade80, #22c55e);
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.9rem;
+      font-size: 0.85rem;
+    }
+
+    /* Focus screen overlay */
+
+    .dlx-focus-screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(8px, 2vw, 16px);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.9), rgba(3, 7, 18, 0.96));
+      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px);
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .dlx-focus-screen.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .dlx-focus-screen__backdrop {
+      position: absolute;
+      inset: 0;
+    }
+
+    .dlx-letter-sound-panel {
+      position: relative;
+      z-index: 1;
+      max-width: 1120px;
+      width: 100%;
+      max-height: 96vh;
+      border-radius: var(--nb-radius-xl);
+      overflow: hidden;
+      padding: clamp(16px, 2vw, 24px);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(234, 179, 8, 0.22), transparent 55%),
+        radial-gradient(circle at 90% 0%, rgba(96, 165, 250, 0.18), transparent 55%),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.98));
+      box-shadow: var(--nb-shadow-strong);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      color: var(--nb-text);
+    }
+
+    .dlx-letter-sound-panel.is-celebrating {
+      background:
+        radial-gradient(circle at 0% 0%, rgba(245, 158, 11, 0.32), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(236, 72, 153, 0.22), transparent 55%),
+        radial-gradient(circle at 50% 110%, rgba(56, 189, 248, 0.25), transparent 55%),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.97), rgba(3, 7, 18, 0.99));
+    }
+    .dlx-letter-sound-gallery {
+      margin-top: 8px;
+      width: 100%;
+    }
+
+    .dlx-letter-sound-gallery__track {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      padding: 10px 16px;
+      min-height: 86px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 12% 30%, rgba(59, 130, 246, 0.25), transparent 60%),
+        radial-gradient(circle at 90% 70%, rgba(236, 72, 153, 0.18), transparent 65%),
+        rgba(8, 15, 35, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      box-shadow: 0 12px 26px rgba(2, 6, 23, 0.55);
+      overflow: hidden;
+      gap: 16px;
+    }
+
+    .dlx-letter-sound-gallery__track::before {
+      content: "";
+      position: absolute;
+      inset: 8%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(248, 250, 252, 0.2), rgba(59, 130, 246, 0.1), rgba(248, 250, 252, 0.2));
+      filter: blur(20px);
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .dlx-letter-sound-gallery__item {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      color: #e2e8f0;
+      animation: nbTimelineGlide 12s ease-in-out infinite alternate;
+      will-change: left, transform;
+      position: absolute;
+      left: -24px;
+      top: 50%;
+      transform: translate3d(0, -50%, 0);
+      z-index: 1;
+    }
+
+    .dlx-letter-sound-gallery__item.is-intro {
+      animation: nbTimelineIntro 0.5s ease-out both, nbTimelineGlide 12s ease-in-out infinite alternate;
+    }
+
+    .dlx-letter-sound-gallery__item.is-outro {
+      animation: nbTimelineOutro 0.22s ease-in both, nbTimelineGlide 12s ease-in-out infinite alternate;
+    }
+
+    .dlx-letter-sound-gallery__frame {
+      position: relative;
+      width: 70px;
+      height: 70px;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(56, 189, 248, 0.45), transparent 60%),
+        rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 14px 30px rgba(2, 6, 23, 0.68);
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .dlx-letter-sound-gallery__emoji {
+      font-size: 2.4rem;
+      display: inline-flex;
+      transition: transform 0.4s ease;
+    }
+
+    .dlx-letter-sound-gallery__emoji-inner {
+      display: inline-block;
+      animation: nbLetterEmojiOrbit 5s ease-in-out infinite;
+    }
+
+    .dlx-letter-sound-gallery__item[data-direction="right"] .dlx-letter-sound-gallery__emoji {
+      transform: scaleX(-1);
+    }
+
+    .dlx-letter-sound-gallery__item[data-direction="left"] .dlx-letter-sound-gallery__emoji {
+      transform: scaleX(1);
+    }
+
+    .dlx-letter-sound-gallery__pulse {
+      position: absolute;
+      inset: -20%;
+      border-radius: 24px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.15), transparent 65%);
+      animation: nbTimelinePulse 3.2s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    .dlx-letter-sound-gallery__label {
+      display: flex;
+      flex-direction: column;
+      font-size: 0.92rem;
+      line-height: 1.2;
+    }
+
+    .dlx-letter-sound-gallery__letter {
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .dlx-letter-sound-gallery__word {
+      opacity: 0.78;
+      font-size: 0.85rem;
+    }
+
+    .dlx-letter-sound-gallery__spark {
+      position: absolute;
+      inset: -20% auto;
+      width: 220px;
+      height: 140%;
+      right: -60px;
+      background: radial-gradient(circle at 20% 40%, rgba(248, 250, 252, 0.35), transparent 70%);
+      mix-blend-mode: screen;
+      animation: nbTimelineSpark 6.4s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes nbLetterEmojiOrbit {
+      0%   { transform: translate3d(0, 0, 0) scale(0.96); filter: drop-shadow(0 2px 6px rgba(15, 23, 42, 0.65)); }
+      25%  { transform: translate3d(4px, -4px, 0) scale(1.05); filter: drop-shadow(0 4px 10px rgba(56, 189, 248, 0.3)); }
+      50%  { transform: translate3d(0, -8px, 0) scale(1.08); filter: drop-shadow(0 6px 14px rgba(14, 165, 233, 0.35)); }
+      75%  { transform: translate3d(-5px, -3px, 0) scale(1.03); filter: drop-shadow(0 4px 10px rgba(129, 140, 248, 0.3)); }
+      100% { transform: translate3d(0, 0, 0) scale(0.96); filter: drop-shadow(0 2px 6px rgba(15, 23, 42, 0.65)); }
+    }
+
+    @keyframes nbTimelineGlide {
+      0%   { left: -24px; }
+      100% { left: calc(100% - 180px); }
+    }
+
+    @keyframes nbTimelineIntro {
+      0%   { opacity: 0; transform: translate3d(24px, calc(-50% + 12px), 0) scale(0.9); filter: blur(3px); }
+      100% { opacity: 1; transform: translate3d(0, -50%, 0) scale(1); filter: blur(0); }
+    }
+
+    @keyframes nbTimelineOutro {
+      0%   { opacity: 1; transform: translate3d(0, -50%, 0) scale(1); }
+      100% { opacity: 0; transform: translate3d(-16px, calc(-50% - 8px), 0) scale(0.92); }
+    }
+
+    @keyframes nbTimelineSpark {
+      0%   { transform: translateX(0) scaleX(0.8); opacity: 0.15; }
+      50%  { transform: translateX(-40px) scaleX(1); opacity: 0.3; }
+      100% { transform: translateX(-80px) scaleX(0.8); opacity: 0.12; }
+    }
+    .dlx-letter-sound-lights span[data-light="violet"] {
+      right: 5%;
+      background: radial-gradient(circle at top, rgba(129, 140, 248, 0.6), transparent 65%);
+      animation-delay: -6.1s;
+    }
+
+    @keyframes nbStageLight {
+      0%   { transform: translateY(0) rotate(-6deg); opacity: 0.4; }
+      50%  { transform: translateY(8%) rotate(4deg); opacity: 0.75; }
+      100% { transform: translateY(-3%) rotate(-2deg); opacity: 0.35; }
+    }
+
+    /* Confetti + disco */
+
+    .dlx-letter-sound-confetti {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .dlx-letter-sound-confetti__layer {
+      position: absolute;
+      inset-inline: -10%;
+      height: 200%;
+      background-image: radial-gradient(circle, rgba(248, 250, 252, 0.6) 0.6px, transparent 0.6px);
+      background-size: 14px 18px;
+      opacity: 0.25;
+      mix-blend-mode: screen;
+      animation: nbConfettiFall 20s linear infinite;
+    }
+
+    .dlx-letter-sound-confetti__layer[data-speed="slow"] {
+      opacity: 0.12;
+      animation-duration: 30s;
+      animation-direction: reverse;
+    }
+
+    .dlx-letter-sound-confetti__layer[data-speed="sparkle"] {
+      opacity: 0.4;
+      background-size: 9px 11px;
+      animation-duration: 16s;
+    }
+
+    @keyframes nbConfettiFall {
+      from { transform: translateY(-20%); }
+      to   { transform: translateY(0%); }
+    }
+
+    .dlx-letter-sound-confetti__ribbons span,
+    .dlx-letter-sound-confetti__shapes span {
+      position: absolute;
+      display: block;
+      border-radius: 999px;
+      mix-blend-mode: screen;
+    }
+
+    .dlx-letter-sound-confetti__ribbons span {
+      width: 6px;
+      height: 80px;
+      background: linear-gradient(to bottom, #f97316, #facc15, #22c55e);
+      opacity: 0.7;
+      animation: nbRibbonWave 4s ease-in-out infinite;
+    }
+
+    @keyframes nbRibbonWave {
+      0%, 100% { transform: translate3d(0, -10%, 0) rotate(-8deg); }
+      50%      { transform: translate3d(8px, 10%, 0) rotate(4deg); }
+    }
+
+    .dlx-letter-sound-confetti__ribbons span:nth-child(1) { left: 8%; top: 10%; }
+    .dlx-letter-sound-confetti__ribbons span:nth-child(2) { left: 26%; top: -5%; }
+    .dlx-letter-sound-confetti__ribbons span:nth-child(3) { right: 18%; top: 0; }
+    .dlx-letter-sound-confetti__ribbons span:nth-child(4) { right: 6%; top: 20%; }
+    .dlx-letter-sound-confetti__ribbons span:nth-child(5) { left: 45%; top: 25%; }
+    .dlx-letter-sound-confetti__ribbons span:nth-child(6) { left: 60%; top: -10%; }
+
+    .dlx-letter-sound-confetti__shapes span {
+      width: 12px;
+      height: 12px;
+      background: #facc15;
+      transform: rotate(30deg);
+      box-shadow: 0 0 12px rgba(250, 204, 21, 0.85);
+      animation: nbShapeTwinkle 2.8s ease-in-out infinite alternate;
+    }
+
+    .dlx-letter-sound-confetti__shapes span[data-shape="diamond"] {
+      background: #38bdf8;
+    }
+
+    .dlx-letter-sound-confetti__shapes span[data-shape="spark"] {
+      background: #f472b6;
+      box-shadow: 0 0 10px rgba(244, 114, 182, 0.9);
+    }
+
+    .dlx-letter-sound-confetti__shapes span:nth-child(1) { left: 12%; top: 18%; }
+    .dlx-letter-sound-confetti__shapes span:nth-child(2) { left: 70%; top: 15%; }
+    .dlx-letter-sound-confetti__shapes span:nth-child(3) { right: 26%; top: 40%; }
+    .dlx-letter-sound-confetti__shapes span:nth-child(4) { left: 30%; top: 45%; }
+    .dlx-letter-sound-confetti__shapes span:nth-child(5) { left: 50%; top: 10%; }
+    .dlx-letter-sound-confetti__shapes span:nth-child(6) { right: 10%; top: 60%; }
+
+    @keyframes nbShapeTwinkle {
+      0%   { transform: translateY(0) rotate(18deg) scale(0.85); opacity: 0.4; }
+      50%  { transform: translateY(-8px) rotate(35deg) scale(1.05); opacity: 1; }
+      100% { transform: translateY(4px) rotate(50deg) scale(0.9); opacity: 0.6; }
+    }
+
+    /* Buzz plaque */
+
+    .dlx-letter-sound-buzz {
+      display: none;
+      position: relative;
+      margin-inline: auto;
+      margin-top: 4px;
+      padding: 12px 26px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top, #f97316, #b45309);
+      box-shadow:
+        0 14px 28px rgba(0, 0, 0, 0.75),
+        0 0 0 3px rgba(255, 255, 255, 0.3),
+        0 0 40px rgba(251, 191, 36, 0.9);
+      color: #111827;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-weight: 700;
+      font-size: clamp(0.72rem, 1.2vw, 0.8rem);
+      text-align: center;
+      z-index: 2;
+    }
+
+    .dlx-letter-sound-buzz.is-visible {
+      display: block;
+    }
+
+    .dlx-letter-sound-buzz__rays {
+      position: absolute;
+      inset: -45%;
+      background:
+        conic-gradient(from 0deg, rgba(250, 204, 21, 0.0) 0deg, rgba(250, 204, 21, 0.6) 40deg, rgba(250, 204, 21, 0.0) 80deg),
+        conic-gradient(from 160deg, rgba(248, 250, 252, 0.1) 0deg, rgba(248, 250, 252, 0.9) 18deg, rgba(248, 250, 252, 0.0) 40deg);
+      opacity: 0.12;
+      mix-blend-mode: screen;
+      pointer-events: none;
+      animation: nbRaysSpin 18s linear infinite;
+    }
+
+    @keyframes nbRaysSpin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .dlx-letter-sound-buzz__content { position: relative; z-index: 1; }
+    .dlx-letter-sound-buzz__label { margin: 0; }
+    .dlx-letter-sound-buzz__message,
+    .dlx-letter-sound-buzz__tip { display: none; }
+
+    /* Overview header */
+
+    .dlx-letter-sound-overview {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dlx-letter-sound-head { min-width: 0; }
+
+    .dlx-letter-sound-head h3 {
+      margin: 0 0 4px;
+      font-size: 1.1rem;
+    }
+
+    .dlx-letter-sound-head .muted {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--nb-text-muted);
+    }
+
+    .dlx-kicker {
+      margin: 0 0 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.7rem;
+      color: var(--nb-text-muted);
+    }
+
+    .dlx-letter-sound-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    /* Layout */
+
+    .dlx-letter-sound-body {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .dlx-letter-sound-layout {
+      display: grid;
+      grid-template-columns: minmax(0, calc(50% - 12px)) minmax(0, calc(50% + 12px));
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .dlx-letter-sound-layout__left,
+    .dlx-letter-sound-layout__right {
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.96));
+      border-radius: var(--nb-radius-lg);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Mouth stage */
+
+    .dlx-mouth-stage {
+      position: relative;
+      border-radius: var(--nb-radius-lg);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(251, 191, 36, 0.25), transparent 65%),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.98));
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 12px;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .dlx-mouth-head {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 32px;
+      background: linear-gradient(145deg, #020617, #0b1120);
+      box-shadow:
+        0 10px 34px rgba(15, 23, 42, 0.85),
+        inset 0 0 0 1px rgba(148, 163, 184, 0.35);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      isolation: isolate;
+    }
+
+    .dlx-mouth-letter-img {
+      position: absolute;
+      inset: 10%;
+      width: 80%;
+      height: 80%;
+      object-fit: cover;
+      border-radius: 24px;
+      box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.5);
+      opacity: 0.95;
+      animation: nbLetterImageFloat 8s ease-in-out infinite;
+      filter: saturate(1.1);
+      z-index: 0;
+    }
+
+    .dlx-mouth-head::before {
+      content: "";
+      position: absolute;
+      inset: 4%;
+      border-radius: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .dlx-mouth-head[data-variant="sunrise"] {
+      background: radial-gradient(circle at 10% 0%, rgba(251, 191, 36, 0.35), transparent 60%),
+                  linear-gradient(145deg, #1c0f3a, #020617);
+    }
+
+    .dlx-mouth-head[data-variant="onyx"] {
+      background: radial-gradient(circle at 80% 0%, rgba(14, 165, 233, 0.25), transparent 60%),
+                  linear-gradient(145deg, #010510, #111827);
+    }
+
+    .dlx-mouth-head[data-variant="neon"] {
+      background: radial-gradient(circle at 20% 30%, rgba(56, 189, 248, 0.45), transparent 65%),
+                  linear-gradient(145deg, #041026, #03050f);
+    }
+
+    .dlx-mouth-head[data-variant="aurora"] {
+      background: radial-gradient(circle at 60% 30%, rgba(236, 72, 153, 0.35), transparent 65%),
+                  linear-gradient(145deg, #08112a, #041f1c);
+    }
+
+    .dlx-mouth-head__img {
+      width: 74%;
+      max-width: 240px;
+      object-fit: contain;
+      filter: drop-shadow(0 15px 30px rgba(2, 6, 23, 0.8));
+      animation: nbHeadFloat 6s ease-in-out infinite;
+      z-index: 2;
+    }
+
+    @keyframes nbHeadFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-6px) scale(1.02); }
+    }
+
+    .dlx-mouth-eyes,
+    .dlx-mouth-mouth,
+    .dlx-mouth-accessory {
+      display: block;
+      position: absolute;
+      z-index: 3;
+    }
+
+    .dlx-mouth-eyes {
+      top: 26%;
+      width: 56%;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .dlx-mouth-eyes::before,
+    .dlx-mouth-eyes::after {
+      content: "";
+      width: 32px;
+      height: 12px;
+      border-radius: 999px;
+      background: #01060f;
+      box-shadow: inset 0 -2px 4px rgba(255, 255, 255, 0.1);
+      animation: nbBlink 6s ease-in-out infinite;
+    }
+
+    @keyframes nbBlink {
+      0%, 92%, 100% { transform: scaleY(1); }
+      95% { transform: scaleY(0.15); }
+    }
+
+    .dlx-mouth-mouth {
+      width: 46%;
+      height: 28px;
+      border-radius: 60px;
+      background: rgba(10, 12, 24, 0.9);
+      position: absolute;
+      bottom: 28%;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: inset 0 -4px 10px rgba(0, 0, 0, 0.35);
+    }
+
+    .dlx-mouth-head[data-mouth-phase="call"] .dlx-mouth-mouth {
+      animation: nbMouthCall 0.55s ease-in-out infinite;
+    }
+
+    .dlx-mouth-head[data-mouth-phase="repeat"] .dlx-mouth-mouth {
+      animation: nbMouthRepeat 0.8s ease-in-out infinite;
+    }
+
+    @keyframes nbMouthCall {
+      0%, 100% { transform: translate(-50%, 0) scaleY(0.5); }
+      50% { transform: translate(-50%, -2px) scaleY(1.4); }
+    }
+
+    @keyframes nbMouthRepeat {
+      0%, 100% { transform: translate(-50%, 0) scaleY(0.6); }
+      50% { transform: translate(-50%, -3px) scaleY(1.6); }
+    }
+
+    .dlx-mouth-accessory {
+      top: 10%;
+      right: 8%;
+      font-size: 1.8rem;
+      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.35));
+    }
+
+    .dlx-mouth-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .dlx-mouth-letter {
+      margin: 0;
+      font-size: 1.4rem;
+      letter-spacing: 0.05em;
+      animation: nbLetterGlow 3s ease-in-out infinite;
+    }
+
+    .dlx-mouth-word {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--nb-text-soft);
+    }
+
+    .dlx-mouth-tip {
+      margin: 6px 0 0;
+      font-size: 0.86rem;
+      color: var(--nb-text-muted);
+    }
+
+    .dlx-letter-sound-progress {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dlx-letter-sound-progress input[type="range"] {
+      flex: 1;
+      accent-color: var(--nb-accent);
+    }
+
+    .dlx-letter-sound-progress span {
+      font-size: 0.8rem;
+      color: var(--nb-text-muted);
+      min-width: 3.1rem;
+      text-align: right;
+    }
+
+    /* Letter grid */
+
+    .dlx-letter-sound-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    @keyframes nbLetterImageFloat {
+      0% { transform: translate3d(0, 0, 0) scale(0.98); opacity: 0.9; }
+      50% { transform: translate3d(0, -6px, 0) scale(1); opacity: 1; }
+      100% { transform: translate3d(0, 2px, 0) scale(0.98); opacity: 0.92; }
+    }
+
+    @keyframes nbLetterGlow {
+      0% { text-shadow: 0 0 8px rgba(56, 189, 248, 0.35); }
+      50% { text-shadow: 0 0 18px rgba(244, 114, 182, 0.55); }
+      100% { text-shadow: 0 0 8px rgba(56, 189, 248, 0.35); }
+    }
+
+    .dlx-letter-sound-chip {
+      border-radius: 20px;
+      padding: 6px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), #020617);
+      color: var(--nb-text-soft);
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.8rem;
+      transition: border-color 0.16s ease, background 0.16s ease, transform 0.1s ease, box-shadow 0.16s ease;
+      margin-right: 2px;
+    }
+
+    .dlx-letter-sound-chip__img {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      box-shadow: 0 6px 18px rgba(2, 6, 23, 0.8);
+      background: rgba(15, 23, 42, 0.6);
+      object-fit: cover;
+      display: block;
+    }
+
+    .dlx-letter-sound-chip__labels {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .dlx-letter-sound-chip__upper {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      line-height: 1;
+    }
+    .dlx-letter-sound-chip__lower { opacity: 0.75; font-size: 0.78rem; }
+
+    .dlx-letter-sound-chip.is-active {
+      border-color: rgba(59, 130, 246, 0.9);
+      background:
+        radial-gradient(circle at top, rgba(56, 189, 248, 0.36), transparent 65%),
+        linear-gradient(to bottom, #0f172a, #020617);
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.7), 0 12px 28px rgba(15, 23, 42, 0.9);
+      transform: translateY(-1px);
+      color: #e5f2ff;
+    }
+
+    /* Celebration container */
+
+    .dlx-letter-sound-celebration {
+      position: relative;
+      margin-top: 4px;
+      padding: 12px 16px 16px;
+      border-radius: var(--nb-radius-lg);
+      background: radial-gradient(circle at 50% -20%, rgba(251, 191, 36, 0.35), transparent 60%),
+                  linear-gradient(to bottom right, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.98));
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1;
+    }
+
+    .dlx-letter-sound-celebration.is-visible { display: flex; }
+
+    .dlx-letter-sound-celebration__halo {
+      position: absolute;
+      inset: -20%;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(254, 249, 195, 0.34), transparent 60%),
+        radial-gradient(circle at 15% 80%, rgba(96, 165, 250, 0.3), transparent 55%),
+        radial-gradient(circle at 85% 100%, rgba(244, 114, 182, 0.24), transparent 55%);
+      opacity: 0.6;
+      mix-blend-mode: screen;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .dlx-letter-sound-celebration__layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .dlx-letter-sound-celebration__message { min-width: 0; }
+
+    .dlx-letter-sound-celebration__title {
+      margin: 0 0 4px;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .dlx-letter-sound-celebration__body {
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--nb-text-soft);
+    }
+
+    .dlx-letter-sound-celebration__status {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .dlx-letter-sound-celebration__clock {
+      --clock-progress: 0deg;
+      --clock-color: var(--nb-bronze);
+      width: 72px;
+      height: 72px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dlx-letter-sound-celebration__clock-ring {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background:
+        conic-gradient(var(--clock-color) 0deg,
+                       var(--clock-color) var(--clock-progress),
+                       rgba(15, 23, 42, 0.7) var(--clock-progress),
+                       rgba(15, 23, 42, 0.9) 360deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .dlx-letter-sound-celebration__clock-ring::before {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: inherit;
+      background: rgba(15, 23, 42, 0.97);
+      box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.4);
+    }
+
+    .dlx-letter-sound-celebration__clock-value {
+      position: relative;
+      z-index: 1;
+      font-weight: 700;
+      font-size: 1.0rem;
+      color: var(--nb-text-soft);
+    }
+
+    .dlx-letter-sound-celebration__timer {
+      margin: 0;
+      font-size: 0.8rem;
+      color: var(--nb-text-muted);
+      max-width: 220px;
+      text-align: right;
+    }
+
+    .dlx-letter-sound-celebration__cta {
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      text-align: center;
+    }
+
+    .dlx-letter-sound-celebration__prompt {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--nb-text-soft);
+    }
+
+    .dlx-letter-sound-celebration__buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .dlx-letter-sound-nav {
+      margin-top: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    /* Certificate mode */
+
+    .dlx-letter-sound-celebration__certificate {
+      margin-top: 10px;
+      display: none;
+    }
+
+    .dlx-letter-sound-celebration__certificate.is-visible {
+      display: block;
+    }
+
+    .dlx-letter-sound-celebration__certificate-prompt {
+      margin: 0 0 6px;
+      font-size: 0.93rem;
+    }
+
+    .dlx-letter-sound-certificate-shell {
+      margin-block: clamp(12px, 2vh, 24px);
+      padding: clamp(12px, 2vw, 24px);
+      border-radius: var(--nb-radius-lg);
+      background: radial-gradient(circle at top, rgba(148, 163, 184, 0.35), transparent 65%),
+                  linear-gradient(to bottom, rgba(15, 23, 42, 0.96), rgba(3, 7, 18, 0.98));
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      display: flex;
+      flex-direction: column;
+      gap: clamp(12px, 2vw, 20px);
+      max-height: calc(min(70vh, 680px));
+    }
+
+    .dlx-letter-sound-certificate-columns {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+      gap: clamp(12px, 2vw, 24px);
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .dlx-letter-sound-certificate-form,
+    .dlx-letter-sound-certificate-preview {
+      padding: clamp(8px, 1.5vw, 16px);
+      border-radius: var(--nb-radius-md);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      background: rgba(15, 23, 42, 0.45);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      max-height: calc(min(62vh, 520px));
+      overflow-y: auto;
+    }
+
+    .dlx-letter-sound-panel.is-certificate-mode .dlx-letter-sound-layout,
+    .dlx-letter-sound-panel.is-certificate-mode .dlx-letter-sound-celebration__message,
+    .dlx-letter-sound-panel.is-certificate-mode .dlx-letter-sound-celebration__status,
+    .dlx-letter-sound-panel.is-certificate-mode .dlx-letter-sound-celebration__cta,
+    .dlx-letter-sound-panel.is-certificate-mode .dlx-letter-sound-nav {
+      display: none;
+    }
+
+    .dlx-letter-sound-certificate-form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+
+    .dlx-letter-sound-certificate-form label {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      text-align: left;
+    }
+
+    .dlx-letter-sound-certificate-form span {
+      font-size: 0.82rem;
+      color: var(--nb-text-soft);
+    }
+
+    .dlx-letter-sound-certificate-form input,
+    .dlx-letter-sound-certificate-form select {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: rgba(15, 23, 42, 0.96);
+      padding: 6px 10px;
+      color: var(--nb-text);
+      font: 400 0.9rem/1 var(--nb-font);
+    }
+
+    .dlx-letter-sound-certificate-note,
+    .dlx-letter-sound-certificate-buffer {
+      margin: 4px 0;
+      font-size: 0.78rem;
+      color: var(--nb-text-muted);
+    }
+
+    .dlx-letter-sound-certificate-preview {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .dlx-certificate-print-surface {
+      width: min(100%, 440px);
+      max-width: 100%;
+      aspect-ratio: 210 / 297;
+      border-radius: 32px;
+      border: 1px solid rgba(202, 138, 4, 0.35);
+      background:
+        radial-gradient(circle at 20% 15%, rgba(254, 249, 195, 0.35), transparent 50%),
+        radial-gradient(circle at 80% 12%, rgba(191, 219, 254, 0.25), transparent 55%),
+        #fefcf5;
+      box-shadow: 0 40px 90px rgba(15, 23, 42, 0.35);
+      padding: clamp(16px, 2vw, 40px);
+      margin: 0 auto;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .dlx-certificate-card {
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(254, 250, 224, 0.98));
+      color: #1f2937;
+      padding: clamp(18px, 3vw, 48px);
+      box-shadow: inset 0 0 0 2px rgba(249, 196, 82, 0.45), inset 0 0 0 8px rgba(255, 255, 255, 0.65);
+      border: 1px solid rgba(234, 179, 8, 0.35);
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: relative;
+    }
+
+    .dlx-certificate-card::after {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border: 1px solid rgba(249, 196, 82, 0.25);
+      border-radius: 20px;
+      pointer-events: none;
+    }
+
+    .dlx-certificate-brand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .dlx-certificate-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 20%, #facc15, #eab308);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: #1f2937;
+      box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.65);
+    }
+
+    .dlx-certificate-issuer {
+      margin: 0;
+      font-size: 0.95rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #475569;
+    }
+
+    .dlx-certificate-ribbon {
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.78rem;
+      color: #92400e;
+      text-align: center;
+    }
+
+    .dlx-certificate-title {
+      margin: 0;
+      font-weight: 700;
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+
+    .dlx-certificate-name {
+      margin: 0;
+      font-size: clamp(1.5rem, 4vw, 2.4rem);
+      font-weight: 800;
+      text-align: center;
+      color: #0f172a;
+    }
+
+    .dlx-certificate-medal {
+      margin: 0;
+      text-align: center;
+      font-size: 1rem;
+      color: #7c2d12;
+    }
+
+    .dlx-certificate-divider {
+      height: 2px;
+      background: linear-gradient(90deg, rgba(250, 204, 21, 0), rgba(250, 204, 21, 0.8), rgba(250, 204, 21, 0));
+      border-radius: 999px;
+      margin: 0 auto;
+      width: 80%;
+    }
+
+    .dlx-certificate-message {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.45;
+      color: #374151;
+      text-align: center;
+    }
+
+    .dlx-certificate-meta {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      font-size: 0.9rem;
+      color: #4b5563;
+    }
+
+    .dlx-certificate-meta li {
+      padding: 8px 10px;
+      border-radius: 14px;
+      background: rgba(250, 204, 21, 0.08);
+      border: 1px solid rgba(250, 204, 21, 0.2);
+    }
+
+    .dlx-certificate-meta li span {
+      display: block;
+      margin-bottom: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.68rem;
+      color: #9a3412;
+    }
+
+    .dlx-certificate-meta strong {
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .dlx-certificate-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.9rem;
+      color: #475569;
+    }
+
+    .dlx-certificate-signature {
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 600;
+    }
+
+    .dlx-letter-sound-certificate-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-start;
+    }
+
+    .dlx-letter-sound-certificate-actions .btn {
+      min-width: 140px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Medal colours */
+
+    .dlx-letter-sound-celebration[data-medal="bronze"] .dlx-letter-sound-celebration__clock {
+      --clock-color: var(--nb-bronze);
+    }
+
+    .dlx-letter-sound-celebration[data-medal="silver"] .dlx-letter-sound-celebration__clock {
+      --clock-color: var(--nb-silver);
+    }
+
+    .dlx-letter-sound-celebration[data-medal="gold"] .dlx-letter-sound-celebration__clock {
+      --clock-color: var(--nb-gold);
+    }
+
+    .dlx-letter-sound-celebration[data-medal="platinum"] .dlx-letter-sound-celebration__clock {
+      --clock-color: var(--nb-platinum);
+    }
+
+    /* Small screens */
+
+    @media (max-width: 900px) {
+      .dlx-letter-sound-layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .dlx-mouth-stage {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .dlx-letter-sound-celebration__layout {
+        grid-template-columns: minmax(0, 1fr);
+        align-items: flex-start;
+      }
+
+      .dlx-letter-sound-celebration__status {
+        align-items: flex-start;
+      }
+
+      .dlx-letter-sound-certificate-columns {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .dlx-letter-sound-certificate-shell,
+      .dlx-letter-sound-certificate-form,
+      .dlx-letter-sound-certificate-preview {
+        max-height: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .dlx-letter-sound-actions { justify-content: flex-start; }
+
+      .dlx-letter-sound-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+
+      .hero { padding-inline: 18px; }
+    }
+
+    #dlxCertificatePrintPortal {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    body.printing-certificate {
+      background: #fefbf4 !important;
+    }
+
+    body.printing-certificate * {
+      visibility: hidden !important;
+    }
+
+    body.printing-certificate #dlxCertificatePrintPortal,
+    body.printing-certificate #dlxCertificatePrintPortal * {
+      visibility: visible !important;
+    }
+
+    body.printing-certificate #dlxCertificatePrintPortal {
+      z-index: 9999;
+      display: grid;
+      place-items: center;
+      pointer-events: auto;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    body.printing-certificate #dlxCertificatePrintPortal .dlx-certificate-print-surface {
+      width: 210mm;
+      height: 297mm;
+      max-width: none;
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
+      background: #fefbf4;
+    }
+
+    body.printing-certificate #dlxCertificatePrintPortal .dlx-certificate-card {
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    @media print {
+      body.printing-certificate {
+        margin: 0;
+        padding: 0;
+      }
+
+      body.printing-certificate * {
+        visibility: hidden !important;
+      }
+
+      body.printing-certificate #dlxCertificatePrintPortal,
+      body.printing-certificate #dlxCertificatePrintPortal * {
+        visibility: visible !important;
+      }
+
+      body.printing-certificate #dlxCertificatePrintPortal {
+        display: grid;
+      }
+    }
+
+/* === NeuroBreath Phonics Celebration Lab — certificate & celebration visibility fixes === */
+
+/* Base: keep these hidden until the JS state classes turn them on */
+.dlx-letter-sound-celebration__status,
+.dlx-letter-sound-celebration__cta,
+.dlx-letter-sound-celebration__certificate,
+.dlx-letter-sound-buzz {
+  display: none;
+}
+
+/* Buzz halo: visible when JS adds .is-visible */
+.dlx-letter-sound-buzz.is-visible {
+  display: flex !important;
+}
+
+/* Countdown status + CTA area: visible while a celebration is running */
+.dlx-letter-sound-panel.is-celebrating .dlx-letter-sound-celebration__status,
+.dlx-letter-sound-panel.is-celebrating .dlx-letter-sound-celebration__cta {
+  display: block !important;
+}
+
+/* Certificate shell: visible whenever the panel is in certificate mode
+   (including after the audio has been completed or scrubbed to the end). */
+.dlx-letter-sound-panel.is-certificate-mode .dlx-letter-sound-celebration__certificate {
+  display: block !important;
+}
+
+/* === Print layout: only print the certificate card surface === */
+@media print {
+  body.printing-certificate * {
+    visibility: hidden !important;
+  }
+
+  body.printing-certificate #dlxCertificatePrintPortal,
+  body.printing-certificate #dlxCertificatePrintPortal * {
+    visibility: visible !important;
+  }
+
+  body.printing-certificate #dlxCertificatePrintPortal {
+    display: grid;
+  }
+
+  body.printing-certificate #dlxCertificatePrintPortal .dlx-certificate-print-surface {
+    width: 210mm;
+    height: 297mm;
+  }
+}
+

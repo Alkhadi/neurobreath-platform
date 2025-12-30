@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">Diverse group of people sharing content on different devices</title>
+  <desc id="desc">An illustrated group of adults and young people using laptops, tablets, and phones together.</desc>
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eff6ff" />
+      <stop offset="100%" stop-color="#e0f2fe" />
+    </linearGradient>
+    <linearGradient id="deviceBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+    <linearGradient id="deviceGreen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#16a34a" />
+      <stop offset="100%" stop-color="#0f9f43" />
+    </linearGradient>
+    <linearGradient id="devicePurple" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#6d28d9" />
+    </linearGradient>
+    <clipPath id="cardClip">
+      <rect x="48" y="56" width="544" height="248" rx="28" ry="28" />
+    </clipPath>
+  </defs>
+  <rect width="640" height="360" fill="url(#bgGradient)" rx="36" ry="36" />
+  <g clip-path="url(#cardClip)">
+    <rect x="48" y="56" width="544" height="248" fill="rgba(255,255,255,0.75)" />
+    <path d="M48 230c86-28 146-24 192-10s78 42 138 47 112-33 214-63v100H48z" fill="#bfdbfe" opacity="0.45" />
+  </g>
+  <g transform="translate(0,8)">
+    <g transform="translate(110,126)">
+      <circle cx="44" cy="28" r="28" fill="#c26b34" />
+      <path d="M16 104c2-32 16-54 44-54s42 22 44 54z" fill="#1e3a8a" />
+      <rect x="8" y="104" width="104" height="72" rx="12" ry="12" fill="url(#deviceBlue)" />
+      <rect x="20" y="118" width="80" height="46" rx="6" ry="6" fill="#eef2ff" />
+      <circle cx="64" cy="24" r="6" fill="#fcd34d" />
+      <path d="M24 58c8 0 12-6 16-10 3-4 10-8 16-8s12 4 16 8c5 4 8 10 16 10" stroke="#f59e0b" stroke-width="6" stroke-linecap="round" fill="none" />
+    </g>
+    <g transform="translate(250,118)">
+      <circle cx="58" cy="34" r="30" fill="#f59e0b" />
+      <path d="M28 118c4-36 22-58 56-58s52 22 56 58z" fill="#0f172a" />
+      <rect x="12" y="120" width="112" height="86" rx="16" ry="16" fill="#1f2937" />
+      <rect x="26" y="134" width="84" height="54" rx="10" ry="10" fill="#111827" />
+      <rect x="32" y="140" width="72" height="42" rx="6" ry="6" fill="url(#deviceGreen)" opacity="0.9" />
+      <circle cx="58" cy="32" r="8" fill="#fee2e2" />
+    </g>
+    <g transform="translate(388,138)">
+      <circle cx="64" cy="36" r="32" fill="#f9a8d4" />
+      <path d="M34 112c4-34 22-52 56-52s52 18 56 52z" fill="#312e81" />
+      <rect x="18" y="118" width="108" height="70" rx="20" ry="20" fill="#f9fafb" />
+      <rect x="36" y="132" width="72" height="42" rx="12" ry="12" fill="url(#devicePurple)" />
+      <rect x="56" y="180" width="28" height="36" rx="10" ry="10" fill="#2563eb" opacity="0.8" />
+      <circle cx="88" cy="30" r="7" fill="#fcd34d" />
+      <path d="M60 72c8 0 10-8 16-8 7 0 10 8 16 8" stroke="#c084fc" stroke-width="6" stroke-linecap="round" fill="none" />
+    </g>
+    <g transform="translate(76,188)">
+      <rect x="0" y="0" width="86" height="120" rx="30" ry="30" fill="#f3f4f6" />
+      <path d="M12 78h62" stroke="#60a5fa" stroke-width="10" stroke-linecap="round" />
+      <path d="M12 98h62" stroke="#c4b5fd" stroke-width="10" stroke-linecap="round" opacity="0.8" />
+      <circle cx="32" cy="42" r="16" fill="#0ea5e9" />
+      <circle cx="54" cy="42" r="16" fill="#f87171" />
+    </g>
+    <g transform="translate(520,182)">
+      <rect x="0" y="0" width="74" height="104" rx="24" ry="24" fill="#111827" />
+      <rect x="10" y="16" width="54" height="72" rx="12" ry="12" fill="#f3f4f6" opacity="0.95" />
+      <rect x="16" y="24" width="42" height="56" rx="10" ry="10" fill="#1d4ed8" opacity="0.85" />
+      <circle cx="37" cy="88" r="4" fill="#1f2937" />
+    </g>
+  </g>
+  <g transform="translate(80,38)">
+    <rect x="0" y="0" width="96" height="30" rx="15" ry="15" fill="#1e3a8a" opacity="0.15" />
+    <text x="48" y="20" text-anchor="middle" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#1e3a8a" font-weight="600">Share-ready</text>
+  </g>
+</svg>
