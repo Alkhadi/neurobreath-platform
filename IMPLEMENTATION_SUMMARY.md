@@ -298,3 +298,55 @@ All 6 requirements completed successfully:
 **Regression Status**: ✅ NO BREAKING CHANGES  
 
 Ready for production deployment.
+
+---
+
+# Dyslexia Reading Assessment Module - Implementation (December 29, 2025)
+
+## Overview
+A comprehensive Dyslexia Reading Assessment module has been added to NeuroBreath.
+
+### Status: ✅ COMPLETE & READY FOR TESTING
+
+## What's Included
+
+**Components (2):**
+- ReadingAssessment.tsx - Interactive 15-question assessment
+- AssessmentHistory.tsx - Assessment history tracking
+
+**Utilities (2):**
+- reading-assessment.ts - Metrics and level calculations
+- reading-assessment-seed.ts - Sample data
+
+**API (1):**
+- app/api/assessment/save-attempt/route.ts - Save/retrieve attempts
+
+**Database (Prisma):**
+- 6 new models: ReadingPassage, WordList, PseudowordList, ComprehensionQuestion, ReadingAttempt, AttemptErrorDetail
+
+## Features
+
+✅ **Interactive Assessment:** 15 questions across 4 sections
+✅ **Reading Level:** Auto-determined (Beginner → Advanced)
+✅ **Results Screen:** Score, accuracy, percentile, recommendations
+✅ **History Tracking:** Past assessments with metrics
+✅ **Compliance:** Training/monitoring only disclaimer
+
+## Quick Start
+
+```bash
+cd web
+npx prisma migrate dev --name add_reading_assessment_models
+yarn dev
+# Navigate to /dyslexia-reading-training
+```
+
+## Documentation
+See READING_ASSESSMENT_GUIDE.md for full technical details, API specs, and testing checklist.
+
+## Files
+- NEW: ReadingAssessment.tsx, AssessmentHistory.tsx, reading-assessment.ts, reading-assessment-seed.ts, api/assessment/save-attempt/route.ts
+- MODIFIED: dyslexia-reading-training/page.tsx, prisma/schema.prisma
+
+**Total:** ~930 lines of production code + documentation
+

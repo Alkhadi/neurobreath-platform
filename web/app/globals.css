@@ -883,8 +883,6 @@
 
 .orbit-orb {
   position: absolute;
-  left: var(--orb-x, 0%);
-  top: var(--orb-y, 50%);
   width: 60px;
   height: 60px;
   background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);

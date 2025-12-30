@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Progress } from '@/components/ui/progress';
 import {
   Wind, Play, Pause, RotateCcw, Maximize2,
   Volume2, AlertTriangle, Car, Clock, X, Music, Mic, MicOff
@@ -443,19 +444,16 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
           {/* Breathing Circle */}
           <div className="flex justify-center">
             <div className="relative">
-              {/* Inline style required for dynamic transition duration based on breathing phase */}
               <div
                 className={cn(
                   'w-64 h-64 rounded-full flex items-center justify-center',
                   'bg-gradient-to-br from-cyan-400/40 to-blue-500/40 backdrop-blur-xl shadow-2xl',
-                  'transition-all ease-in-out duration-1000',
-                  isActive && currentPhaseLabel === 'Inhale' && 'scale-125',
-                  isActive && currentPhaseLabel === 'Exhale' && 'scale-75',
-                  isActive && currentPhaseLabel === 'Hold' && 'scale-100'
+                  'transition-all ease-in-out',
+                  isActive && currentPhaseLabel === 'Inhale' && 'scale-125 [transition-duration:3000ms]',
+                  isActive && currentPhaseLabel === 'Exhale' && 'scale-75 [transition-duration:3000ms]',
+                  isActive && currentPhaseLabel === 'Hold' && 'scale-100 [transition-duration:1000ms]',
+                  !isActive && '[transition-duration:1000ms]'
                 )}
-                style={{
-                  transitionDuration: isActive && (currentPhaseLabel === 'Inhale' || currentPhaseLabel === 'Exhale') ? '3000ms' : '1000ms'
-                }}
               >
                 <div className="text-white text-center">
                   <div className="text-7xl font-bold mb-2">{countdown || '—'}</div>
@@ -476,13 +474,10 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
               <span>{Math.floor(totalTime / 60)}:{(totalTime % 60).toString().padStart(2, '0')}</span>
               <span>{Math.floor(remainingTime / 60)}:{(remainingTime % 60).toString().padStart(2, '0')} remaining</span>
             </div>
-            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-              {/* Inline style required for dynamic progress width */}
-              <div
-                className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-300"
-                style={{ width: `${progressPercentage}%` }}
-              />
-            </div>
+            <Progress
+              value={progressPercentage}
+              className="h-2 bg-white/10 [&>div]:bg-gradient-to-r [&>div]:from-cyan-400 [&>div]:to-blue-500"
+            />
           </div>
 
           {/* Stats */}
@@ -649,19 +644,16 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
         {/* Breathing Circle */}
         <div className="flex justify-center py-8">
           <div className="relative">
-            {/* Inline style required for dynamic transition duration based on breathing phase */}
             <div
               className={cn(
                 'w-32 h-32 rounded-full flex items-center justify-center',
                 'bg-gradient-to-br from-cyan-400 to-blue-500 shadow-lg',
-                'transition-all ease-in-out duration-1000',
-                isActive && currentPhaseLabel === 'Inhale' && 'scale-150',
-                isActive && currentPhaseLabel === 'Exhale' && 'scale-75',
-                isActive && currentPhaseLabel === 'Hold' && 'scale-110'
+                'transition-all ease-in-out',
+                isActive && currentPhaseLabel === 'Inhale' && 'scale-150 [transition-duration:3000ms]',
+                isActive && currentPhaseLabel === 'Exhale' && 'scale-75 [transition-duration:3000ms]',
+                isActive && currentPhaseLabel === 'Hold' && 'scale-110 [transition-duration:1000ms]',
+                !isActive && '[transition-duration:1000ms]'
               )}
-              style={{
-                transitionDuration: isActive && (currentPhaseLabel === 'Inhale' || currentPhaseLabel === 'Exhale') ? '3000ms' : '1000ms'
-              }}
             >
               <div className="text-white text-center">
                 <div className="text-3xl font-bold">{countdown || 'Ready'}</div>
@@ -677,13 +669,10 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
             <span>Progress</span>
             <span>{Math.round(progressPercentage)}%</span>
           </div>
-          <div className="h-2 bg-muted rounded-full overflow-hidden">
-            {/* Inline style required for dynamic progress width */}
-            <div
-              className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-300"
-              style={{ width: `${progressPercentage}%` }}
-            />
-          </div>
+          <Progress
+            value={progressPercentage}
+            className="h-2 [&>div]:bg-gradient-to-r [&>div]:from-cyan-500 [&>div]:to-blue-500"
+          />
         </div>
 
         {/* Controls */}

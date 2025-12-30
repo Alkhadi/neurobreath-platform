@@ -88,3 +88,283 @@ model VoicePreference {
   useVibration    Boolean  @default(false)
   updatedAt       DateTime @default(now()) @updatedAt
 }
+
+// ============================================================================
+// READING ASSESSMENT MODELS
+// ============================================================================
+
+model ReadingPassage {
+  id              String   @id @default(cuid())
+  title           String
+  text            String
+  wordCount       Int
+  levelBand       String   // beginner, elementary, intermediate, advanced
+  nbLevel         String?  // NB-L0 through NB-L8 (new placement system)
+  license         String   @default("public-domain") // public-domain, cc0, user-authored, licensed
+  sourceAttribution String?
+  
+  // Extended metadata for realistic assessment
+  tags            String[] @default([]) // phonicsFocus, morphologyFocus, topic tags
+  readabilityHint String?  // Additional readability notes
+  learnerGroups   String[] @default([]) // children, youth, adolescence, adult - content suitability
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+
+  readingAttempts ReadingAttempt[]
+  comprehensionQuestions ComprehensionQuestion[]
+
+  @@index([levelBand, createdAt])
+  @@index([nbLevel])
+}
+
+model WordList {
+  id              String   @id @default(cuid())
+  title           String
+  description     String?
+  levelBand       String   // beginner, elementary, intermediate, advanced
+  nbLevel         String?  // NB-L0 through NB-L8 (new placement system)
+  words           String[] // array of words
+  wordCount       Int
+  license         String   @default("public-domain")
+  
+  // Extended metadata for categorization
+  category        String?  // high-frequency, decodable-cvc, vowel-teams, morphology, confusables
+  learnerGroups   String[] @default([]) // children, youth, adolescence, adult - content suitability
+  
+  createdAt       DateTime @default(now())
+
+  readingAttempts ReadingAttempt[]
+
+  @@index([levelBand])
+  @@index([levelBand, category])
+  @@index([nbLevel])
+}
+
+model PseudowordList {
+  id              String   @id @default(cuid())
+  title           String
+  levelBand       String   // beginner, elementary, intermediate, advanced
+  nbLevel         String?  // NB-L0 through NB-L8 (new placement system)
+  items           String[] // array of pseudowords
+  generatorParams Json // stores the pattern rules used to generate
+  createdAt       DateTime @default(now())
+
+  readingAttempts ReadingAttempt[]
+
+  @@index([levelBand])
+  @@index([nbLevel])
+}
+
+model ComprehensionQuestion {
+  id                 String   @id @default(cuid())
+  passageId          String
+  passage            ReadingPassage @relation(fields: [passageId], references: [id], onDelete: Cascade)
+  prompt             String
+  choices            Json   // { index: 0, text: "Choice A" }, etc
+  correctChoiceIndex Int
+  explanation        String?
+  difficulty         String @default("intermediate") // easy, intermediate, hard
+  
+  // Question type for realistic assessment
+  questionType       String @default("literal") // literal, inferential, vocab, sequence, main-idea
+  
+  createdAt          DateTime @default(now())
+  
+  // Track responses for this question
+  responses          AttemptComprehensionResponse[]
+
+  @@index([passageId])
+  @@index([passageId, questionType])
+}
+
+// Main assessment session that can contain multiple parts
+model ReadingAttempt {
+  id                      String   @id @default(cuid())
+  deviceId                String
+  assessmentType          String   // fullCheckIn, orf, wordList, pseudoword, comprehension, quickAssessment
+  
+  // Learner Group (for age-appropriate content and weighting)
+  learnerGroup            String?  // children, youth, adolescence, adult
+  
+  // Content references
+  passageId               String?
+  passage                 ReadingPassage? @relation(fields: [passageId], references: [id], onDelete: SetNull)
+  wordListId              String?
+  wordList                WordList? @relation(fields: [wordListId], references: [id], onDelete: SetNull)
+  pseudowordListId        String?
+  pseudowordList          PseudowordList? @relation(fields: [pseudowordListId], references: [id], onDelete: SetNull)
+  
+  // Timing
+  startedAt               DateTime @default(now())
+  endedAt                 DateTime?
+  durationSeconds         Int      @default(0)
+  
+  // Target and result bands for adaptive routing
+  levelBandTarget         String?  // What level was attempted (legacy band)
+  levelBandResult         String?  // What level was determined (legacy band)
+  confidence              String?  // low, medium, high - based on evidence quantity
+  
+  // Placement Results (new NB Level system)
+  placementLevel          String?  // NB-L0 through NB-L8
+  placementConfidence     String?  // low, medium, high
+  placementPlanJson       Json?    // Full PlacementPlan object
+  
+  // ORF / Word Reading Metrics
+  totalWords              Int      @default(0)
+  wordsCorrect            Int      @default(0)
+  errorsTotal             Int      @default(0)
+  accuracyPct             Float    @default(0)
+  wcpm                    Float    @default(0) // Words Correct Per Minute
+  selfCorrections         Int      @default(0)
+  
+  // Comprehension
+  comprehensionScore      Float    @default(0) // 0-100
+  comprehensionCorrect    Int      @default(0)
+  comprehensionTotal      Int      @default(0)
+  
+  // Reading Profile scores (JSON for flexibility)
+  readingProfile          Json?    // { decoding, wordRecognition, fluency, comprehension }
+  
+  // Reading Level Assessment (legacy/quick assessment scoring)
+  readingLevelBand        String?  // beginner, elementary, intermediate, advanced
+  readingLevelPercentile  Int      @default(0) // 0-100 - NeuroBreath internal index only
+  
+  // Strengths and needs analysis
+  strengthsNeeds          Json?    // { strengths: [], needs: [], suggestedFocus: "" }
+  
+  // Notes
+  notes                   String?
+  audioUrl                String?  // optional audio recording
+  
+  // Related detail records
+  errorDetails            AttemptErrorDetail[]
+  wordResponses           AttemptWordResponse[]
+  comprehensionResponses  AttemptComprehensionResponse[]
+  
+  createdAt               DateTime @default(now())
+
+  @@index([deviceId, createdAt])
+  @@index([deviceId, assessmentType])
+  @@index([passageId])
+}
+
+// Detailed error tracking for ORF marking
+model AttemptErrorDetail {
+  id                String   @id @default(cuid())
+  attemptId         String
+  attempt           ReadingAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  wordIndex         Int
+  wordText          String
+  errorType         String   // substitution, omission, insertion, reversal, hesitation, unknown
+  corrected         Boolean  @default(false) // Self-corrected within 3 seconds
+  
+  createdAt         DateTime @default(now())
+  
+  @@index([attemptId])
+}
+
+// Word-level responses for word lists and pseudowords
+model AttemptWordResponse {
+  id                String   @id @default(cuid())
+  attemptId         String
+  attempt           ReadingAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  itemType          String   // word, pseudoword
+  itemText          String
+  isCorrect         Boolean
+  responseTimeMs    Int?     // Optional timing per item
+  
+  createdAt         DateTime @default(now())
+  
+  @@index([attemptId])
+}
+
+// Comprehension question responses
+model AttemptComprehensionResponse {
+  id                String   @id @default(cuid())
+  attemptId         String
+  attempt           ReadingAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId        String
+  question          ComprehensionQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  selectedIndex     Int
+  isCorrect         Boolean
+  
+  createdAt         DateTime @default(now())
+  
+  @@unique([attemptId, questionId])
+  @@index([attemptId])
+}
+
+// ============================================================================
+// LESSON CATALOG & PLACEMENT SYSTEM
+// ============================================================================
+
+// Catalog of available lessons/practice activities for placement routing
+model LessonCatalog {
+  id                String   @id @default(cuid())
+  
+  // Basic info
+  slug              String   @unique // URL-friendly identifier
+  title             String
+  description       String?
+  
+  // Placement targeting
+  nbLevel           String   // NB-L0 through NB-L8 - primary level
+  learnerGroups     String[] @default([]) // children, youth, adolescence, adult
+  
+  // Skill focus
+  skillFocus        String[] @default([]) // decoding, word-recognition, fluency, comprehension
+  subSkills         String[] @default([]) // cvc, blends, vowel-teams, sight-words, etc.
+  
+  // Lesson details
+  lessonType        String   // lesson, practice, game, worksheet
+  durationMinutes   Int      @default(15)
+  difficulty        String   @default("medium") // easy, medium, hard
+  
+  // Prerequisites and sequencing
+  prerequisites     String[] @default([]) // slug references to prerequisite lessons
+  suggestedNext     String[] @default([]) // slug references to next lessons
+  orderInLevel      Int      @default(0) // Order within the level
+  
+  // Content metadata
+  contentPath       String?  // Path to component or page
+  thumbnailUrl      String?
+  tags              String[] @default([])
+  
+  // Status
+  isActive          Boolean  @default(true)
+  isFreeContent     Boolean  @default(true) // Available without subscription
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now()) @updatedAt
+
+  @@index([nbLevel])
+  @@index([isActive, nbLevel])
+}
+
+// Learner's assigned placement and plan
+model LearnerPlacement {
+  id                String   @id @default(cuid())
+  deviceId          String   @unique
+  
+  // Current placement
+  learnerGroup      String   // children, youth, adolescence, adult
+  currentLevel      String   // NB-L0 through NB-L8
+  placementConfidence String @default("medium") // low, medium, high
+  
+  // When placement was determined
+  assessmentId      String?  // Reference to the ReadingAttempt that set this
+  placedAt          DateTime @default(now())
+  
+  // Full placement plan
+  placementPlanJson Json?    // { dailyPractice, weeklyGoals, lessonPath, etc. }
+  
+  // Progress tracking
+  lessonsCompleted  String[] @default([]) // Array of lesson slugs
+  currentLessonSlug String?  // Current lesson in progress
+  
+  updatedAt         DateTime @default(now()) @updatedAt
+  
+  @@index([deviceId])
+  @@index([currentLevel])
+}

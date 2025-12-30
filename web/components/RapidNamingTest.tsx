@@ -310,7 +310,7 @@ export function RapidNamingTest() {
                           {result.itemsNamed} items in {result.timeElapsed}s
                         </div>
                         <div className="text-xs text-gray-600 dark:text-gray-400">
-                          {new Date(result.date).toLocaleDateString()}
+                          {new Date(result.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                         </div>
                       </div>
                       <div className="text-right">

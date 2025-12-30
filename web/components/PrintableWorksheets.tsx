@@ -144,7 +144,7 @@ export function PrintableWorksheets() {
   };
 
   const renderWorksheet = () => {
-    const currentDate = new Date().toLocaleDateString();
+    const currentDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
     
     switch (selectedType) {
       case 'letter-tracing':

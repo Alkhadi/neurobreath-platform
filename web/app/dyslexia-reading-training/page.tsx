@@ -10,7 +10,9 @@ import { StreakToolkit } from '@/components/StreakToolkit';
 import { CreateProfile } from '@/components/CreateProfile';
 import { PracticeTimer } from '@/components/PracticeTimer';
 import { BreathingExercise } from '@/components/BreathingExercise';
-import { ReadingAssessment } from '@/components/ReadingAssessment';
+// ReadingAssessment - legacy component, replaced by ReadingCheckIn
+// import { ReadingAssessment } from '@/components/ReadingAssessment';
+import { ReadingCheckIn } from '@/components/ReadingCheckIn';
 import WordConstruction from '@/components/WordConstruction';
 import FluencyPacer from '@/components/FluencyPacer';
 import PronunciationPractice from '@/components/PronunciationPractice';
@@ -30,6 +32,7 @@ import { MorphologyMaster } from '@/components/MorphologyMaster';
 import { LetterReversalTraining } from '@/components/LetterReversalTraining';
 import { BlendingSegmentingLab } from '@/components/BlendingSegmentingLab';
 import { DownloadableResources } from '@/components/DownloadableResources';
+import { AssessmentHistory } from '@/components/AssessmentHistory';
 
 type TrainingApproach = 'focused' | 'direct' | 'fluency';
 
@@ -60,9 +63,81 @@ export default function DyslexiaReadingTrainingPage() {
   return (
     <ReadingLevelProvider>
       <ProgressProvider>
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-background pt-4">
           <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8 md:space-y-12">
             
+            {/* Hero Section with Profile Creation - Two Card Layout */}
+            <section data-tutorial="hero" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left Card - Hero/Introduction */}
+              <Card className="overflow-hidden border-2 border-primary/20">
+                <CardContent className="p-6 sm:p-8 space-y-6">
+                  <div className="space-y-3">
+                    <p className="text-xs sm:text-sm uppercase tracking-wider text-primary font-semibold">
+                      Dyslexia Reading Training • NeuroBreath
+                    </p>
+                    <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
+                      Multisensory Reading Development
+                    </h1>
+                    <p className="text-sm sm:text-base text-muted-foreground">
+                      Systematic, explicit, multisensory instruction based on the science of reading.
+                      Engaging sight, sound, and movement to reinforce letter-sound correspondences and word patterns.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <Button
+                      size="lg"
+                      className="w-full gap-2 bg-[#4A7C9D] hover:bg-[#3d6680]"
+                      onClick={() => setSessionModalOpen(true)}
+                    >
+                      <GraduationCap className="w-5 h-5" />
+                      Begin Training
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => {
+                        const timerSection = document.querySelector('[data-tutorial="timer"]');
+                        timerSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }}
+                    >
+                      Daily Practice
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => {
+                        const heroSection = document.querySelector('[data-tutorial="hero"]');
+                        heroSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }}
+                    >
+                      Learn More
+                    </Button>
+                  </div>
+
+                  <div className="space-y-2 pt-2">
+                    <div className="flex items-center gap-2 text-sm">
+                      <div className="w-2 h-2 rounded-full bg-green-500" />
+                      <span className="text-muted-foreground">No login required</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <div className="w-2 h-2 rounded-full bg-blue-500" />
+                      <span className="text-muted-foreground">Saves privately on device</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <div className="w-2 h-2 rounded-full bg-orange-500" />
+                      <span className="text-muted-foreground">Dyslexia-friendly design</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Right Card - Profile Creation */}
+              <CreateProfile />
+            </section>
+
             {/* Evidence-Based Research Banner */}
             <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-800">
               <CardContent className="p-4 sm:p-6">
@@ -76,8 +151,8 @@ export default function DyslexiaReadingTrainingPage() {
                     <div className="flex-1 space-y-2">
                       <h2 className="text-lg font-bold text-foreground">Evidence-Based Reading Development</h2>
                       <p className="text-sm text-muted-foreground leading-relaxed">
-                        This program implements <strong>Structured Literacy</strong> principles—the gold-standard approach recommended by the International Dyslexia Association. 
-                        Our methods are informed by research from leading organizations including the British Dyslexia Association, Yale Center for Dyslexia & Creativity, Reading Rockets, 
+                        This program implements <strong>Structured Literacy</strong> principles—the gold-standard approach recommended by the International Dyslexia Association.
+                        Our methods are informed by research from leading organizations including the British Dyslexia Association, Yale Center for Dyslexia & Creativity, Reading Rockets,
                         and National Center on Improving Literacy.
                       </p>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-2 pt-2">
@@ -110,7 +185,7 @@ export default function DyslexiaReadingTrainingPage() {
                   </div>
                   <div className="text-xs text-muted-foreground pt-2 border-t border-blue-200 dark:border-blue-800">
                     <p className="italic">
-                      <strong>Educational Resource:</strong> This tool provides educational activities only. Always pair with professional assessment and guidance. 
+                      <strong>Educational Resource:</strong> This tool provides educational activities only. Always pair with professional assessment and guidance.
                       Research shows early intervention yields the best outcomes, but it's never too late—adults can also make substantial gains with evidence-based strategies.
                     </p>
                   </div>
@@ -118,77 +193,14 @@ export default function DyslexiaReadingTrainingPage() {
               </CardContent>
             </Card>
 
-            {/* Hero Section with Profile Creation - Two Card Layout */}
-            <section data-tutorial="hero" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Left Card - Hero/Introduction */}
-              <Card className="overflow-hidden border-2 border-primary/20">
-                <CardContent className="p-6 sm:p-8 space-y-6">
-                  <div className="space-y-3">
-                    <p className="text-xs sm:text-sm uppercase tracking-wider text-primary font-semibold">
-                      Dyslexia Reading Training • NeuroBreath
-                    </p>
-                    <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
-                      Multisensory Reading Development
-                    </h1>
-                    <p className="text-sm sm:text-base text-muted-foreground">
-                      Systematic, explicit, multisensory instruction based on the science of reading. 
-                      Engaging sight, sound, and movement to reinforce letter-sound correspondences and word patterns.
-                    </p>
-                  </div>
+            {/* Reading Check-In - Multi-Part Assessment (NEW) */}
+            <ReadingCheckIn />
 
-                  <div className="space-y-3">
-                    <Button 
-                      size="lg" 
-                      className="w-full gap-2 bg-[#4A7C9D] hover:bg-[#3d6680]"
-                      onClick={() => setSessionModalOpen(true)}
-                    >
-                      <GraduationCap className="w-5 h-5" />
-                      Begin Training
-                    </Button>
-                    <Button 
-                      size="lg" 
-                      variant="outline" 
-                      className="w-full"
-                      onClick={() => {
-                        const timerSection = document.querySelector('[data-tutorial="timer"]');
-                        timerSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                      }}
-                    >
-                      Daily Practice
-                    </Button>
-                    <Button 
-                      size="lg" 
-                      variant="outline" 
-                      className="w-full"
-                      onClick={() => {
-                        const heroSection = document.querySelector('[data-tutorial="hero"]');
-                        heroSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      }}
-                    >
-                      Learn More
-                    </Button>
-                  </div>
+            {/* Legacy Quick Assessment (optional - keeping for fallback) */}
+            {/* <ReadingAssessment /> */}
 
-                  <div className="space-y-2 pt-2">
-                    <div className="flex items-center gap-2 text-sm">
-                      <div className="w-2 h-2 rounded-full bg-green-500" />
-                      <span className="text-muted-foreground">No login required</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <div className="w-2 h-2 rounded-full bg-blue-500" />
-                      <span className="text-muted-foreground">Saves privately on device</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <div className="w-2 h-2 rounded-full bg-orange-500" />
-                      <span className="text-muted-foreground">Dyslexia-friendly design</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Right Card - Profile Creation */}
-              <CreateProfile />
-            </section>
+            {/* Assessment History */}
+            <AssessmentHistory />
 
             {/* Streak Toolkit */}
             <div data-tutorial="streak">
@@ -204,9 +216,6 @@ export default function DyslexiaReadingTrainingPage() {
             <div ref={breathingRef} data-tutorial="breathing">
               <BreathingExercise />
             </div>
-
-            {/* Reading Assessment */}
-            <ReadingAssessment />
 
             {/* Phonological & Phonemic Awareness Section */}
             <section className="space-y-4">

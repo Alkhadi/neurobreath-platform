@@ -128,7 +128,7 @@ export default function RewardsSection() {
                   </div>
                   {badge.isUnlocked && badge.unlockedAt && (
                     <div className="text-xs text-gray-600 mt-2">
-                      {new Date(badge.unlockedAt).toLocaleDateString()}
+                      {new Date(badge.unlockedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </div>
                   )}
                 </div>

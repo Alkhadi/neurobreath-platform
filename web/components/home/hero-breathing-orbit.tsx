@@ -313,13 +313,13 @@ export function HeroBreathingOrbit() {
         {/* Inner track (pill shape) */}
         <div className="orbit-track"></div>
 
-        {/* Orb - Using CSS custom properties for dynamic animation positioning */}
+        {/* Orb - Using transform for dynamic animation positioning */}
         <div
           className="orbit-orb"
           style={{
-            ['--orb-x' as string]: `${orbPosition.x}%`,
-            ['--orb-y' as string]: `${orbPosition.y}%`,
-          }}
+            left: `${orbPosition.x}%`,
+            top: `${orbPosition.y}%`,
+          } as React.CSSProperties}
         />
 
         {/* Phase label */}
