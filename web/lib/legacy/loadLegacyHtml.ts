@@ -143,7 +143,31 @@ function fixFormAccessibility(html: string): string {
 export async function loadLegacyHtml(filename: string): Promise<string> {
   try {
     const filePath = path.join(process.cwd(), 'content', 'legacy', 'pages', filename);
-    const rawHtml = await fs.readFile(filePath, 'utf-8');
+    
+    // Try to read the file, return placeholder if it doesn't exist
+    let rawHtml: string;
+    try {
+      rawHtml = await fs.readFile(filePath, 'utf-8');
+    } catch (err: any) {
+      if (err?.code === 'ENOENT') {
+        // File doesn't exist - return a graceful placeholder
+        console.warn(`Legacy HTML file not found: ${filename} - returning placeholder`);
+        return `
+          <div class="container mx-auto px-4 py-12">
+            <div class="max-w-2xl mx-auto">
+              <h1 class="text-3xl font-bold mb-4">Content Coming Soon</h1>
+              <p class="text-gray-600 mb-4">
+                This resource is currently being updated. Please check back soon!
+              </p>
+              <p class="text-sm text-gray-500">
+                Missing file: ${filename}
+              </p>
+            </div>
+          </div>
+        `;
+      }
+      throw err;
+    }
 
     // Remove legacy header and footer elements to avoid duplicates with Next.js layout
     let processedHtml = rawHtml

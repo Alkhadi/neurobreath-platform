@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "rimraf .next && tsc --noEmit",
     "prisma:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
