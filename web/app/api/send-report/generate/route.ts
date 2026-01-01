@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     
     // Try AI analysis first (if configured)
     let analysis
-    let generatedBy = 'rules-engine'
+    const generatedBy = 'rules-engine'
     
     if (process.env.OPENAI_API_KEY || process.env.ABACUS_API_KEY) {
       try {

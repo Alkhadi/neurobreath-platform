@@ -30,15 +30,31 @@ export function AssessmentHistory() {
         setIsLoading(true);
         const deviceId = getDeviceId();
         const response = await fetch(
-          `/api/assessment/save-attempt?deviceId=${encodeURIComponent(deviceId)}`
+          `/api/assessment/save-attempt?deviceId=${encodeURIComponent(deviceId)}`,
+          {
+            cache: 'no-store',
+            headers: { 'Accept': 'application/json' }
+          }
         );
 
-        if (!response.ok) throw new Error('Failed to load attempts');
-
         const data = await response.json();
+        
+        // Check if DB is unavailable (now returns 200 with flag)
+        if (data?.dbUnavailable) {
+          setAttempts([]);
+          setError(null);
+          return;
+        }
+        
         setAttempts(data.attempts || []);
+        setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        // Silently handle errors in development
+        if (process.env.NODE_ENV === 'development') {
+          console.debug('[AssessmentHistory] Assessment data unavailable (this is normal without a database)');
+        }
+        setError(null); // Don't show error to user
+        setAttempts([]); // Show empty state
       } finally {
         setIsLoading(false);
       }

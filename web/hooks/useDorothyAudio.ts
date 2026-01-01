@@ -14,6 +14,30 @@ export interface LetterTiming {
   recapStart?: number;   // When recap sequence starts (only for milestone letters)
 }
 
+// Letters that should play "phoneme-only" (clean sound) when tapped/clicked.
+// For these, we prefer the repeat window (usually just the sound without extra phrasing).
+const PHONEME_ONLY_LETTERS = new Set(['S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']);
+
+export type LetterAudioWindow = { start: number; end: number };
+
+export function getLetterPhonemeWindow(letter: string): LetterAudioWindow | undefined {
+  const timing = getLetterTiming(letter);
+  if (!timing) return undefined;
+
+  const upper = letter.toUpperCase();
+  if (PHONEME_ONLY_LETTERS.has(upper)) {
+    // Trim slightly to avoid bleeding into surrounding words/next letter.
+    const start = Math.max(0, timing.repeatStart);
+    const end = Math.max(start, timing.repeatEnd - 0.05);
+    return { start, end };
+  }
+
+  // Default "call" window.
+  const start = Math.max(0, timing.start);
+  const end = Math.max(start, timing.callEnd - 0.05);
+  return { start, end };
+}
+
 // Delay before transitioning to next letter image (prevents premature display)
 export const LETTER_TRANSITION_DELAY = 2.0; // 2 seconds delay
 
@@ -284,6 +308,7 @@ export function checkMilestoneTime(currentTime: number, triggeredMilestones: Set
 export function useDorothyAudio() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const stopTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const targetEndRef = useRef<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentLetter, setCurrentLetter] = useState<string | null>(null);
 
@@ -291,9 +316,23 @@ export function useDorothyAudio() {
   useEffect(() => {
     audioRef.current = new Audio('/audio/dorothy-alphabet-sounds.mp3');
     audioRef.current.preload = 'auto';
+
+    const audio = audioRef.current;
+    const handleTimeUpdate = () => {
+      if (!audioRef.current) return;
+      if (targetEndRef.current == null) return;
+      // Pause as soon as we cross the segment end.
+      if (audioRef.current.currentTime >= targetEndRef.current) {
+        audioRef.current.pause();
+        targetEndRef.current = null;
+        setIsPlaying(false);
+      }
+    };
+    audio.addEventListener('timeupdate', handleTimeUpdate);
     
     return () => {
       if (audioRef.current) {
+        audioRef.current.removeEventListener('timeupdate', handleTimeUpdate);
         audioRef.current.pause();
         audioRef.current = null;
       }
@@ -301,61 +340,55 @@ export function useDorothyAudio() {
     };
   }, []);
 
-  // Play just the "call" portion of a letter (the initial sound)
-  const playLetterCall = useCallback((letter: string): number => {
+  const playWindow = useCallback((letter: string, window: LetterAudioWindow, playbackRate = 1): number => {
     if (!audioRef.current) return 0;
-    
-    const timing = getLetterTiming(letter);
-    if (!timing) return 0;
-    
-    // Clear any existing timeout
+
+    // Clear any existing timeout + target end
     if (stopTimeoutRef.current) clearTimeout(stopTimeoutRef.current);
-    
-    const duration = (timing.callEnd - timing.start) * 1000;
-    
-    audioRef.current.currentTime = timing.start;
-    audioRef.current.play().catch(console.error);
+    targetEndRef.current = null;
+
+    const audio = audioRef.current;
+    audio.playbackRate = playbackRate;
+
+    const durationMs = Math.max(0, (window.end - window.start) * 1000 / playbackRate);
+    audio.currentTime = window.start;
+    targetEndRef.current = window.end;
+    audio.play().catch(console.error);
+
     setIsPlaying(true);
     setCurrentLetter(letter.toUpperCase());
-    
-    // Stop at callEnd
+
+    // Fallback safety stop (in case timeupdate doesn't fire while buffered)
     stopTimeoutRef.current = setTimeout(() => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        setIsPlaying(false);
-      }
-    }, duration);
-    
-    return duration;
+      if (!audioRef.current) return;
+      audioRef.current.pause();
+      targetEndRef.current = null;
+      setIsPlaying(false);
+    }, durationMs + 150);
+
+    return durationMs;
   }, []);
 
-  // Play full letter segment (call + repeat)
-  const playLetterFull = useCallback((letter: string): number => {
-    if (!audioRef.current) return 0;
-    
+  // Play just the "call" portion of a letter (the initial sound)
+  const playLetterCall = useCallback((letter: string, playbackRate = 1): number => {
     const timing = getLetterTiming(letter);
     if (!timing) return 0;
-    
-    // Clear any existing timeout
-    if (stopTimeoutRef.current) clearTimeout(stopTimeoutRef.current);
-    
-    const duration = (timing.repeatEnd - timing.start) * 1000;
-    
-    audioRef.current.currentTime = timing.start;
-    audioRef.current.play().catch(console.error);
-    setIsPlaying(true);
-    setCurrentLetter(letter.toUpperCase());
-    
-    // Stop at repeatEnd
-    stopTimeoutRef.current = setTimeout(() => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        setIsPlaying(false);
-      }
-    }, duration);
-    
-    return duration;
-  }, []);
+    return playWindow(letter, { start: timing.start, end: timing.callEnd }, playbackRate);
+  }, [playWindow]);
+
+  // Play a "phoneme-only" window when available (used for S–Z tap/click accuracy)
+  const playLetterPhoneme = useCallback((letter: string, playbackRate = 1): number => {
+    const window = getLetterPhonemeWindow(letter);
+    if (!window) return 0;
+    return playWindow(letter, window, playbackRate);
+  }, [playWindow]);
+
+  // Play full letter segment (call + repeat)
+  const playLetterFull = useCallback((letter: string, playbackRate = 1): number => {
+    const timing = getLetterTiming(letter);
+    if (!timing) return 0;
+    return playWindow(letter, { start: timing.start, end: timing.repeatEnd }, playbackRate);
+  }, [playWindow]);
 
   // Stop playback
   const stop = useCallback(() => {
@@ -365,6 +398,7 @@ export function useDorothyAudio() {
     if (stopTimeoutRef.current) {
       clearTimeout(stopTimeoutRef.current);
     }
+    targetEndRef.current = null;
     setIsPlaying(false);
     setCurrentLetter(null);
   }, []);
@@ -374,6 +408,7 @@ export function useDorothyAudio() {
 
   return {
     playLetterCall,
+    playLetterPhoneme,
     playLetterFull,
     stop,
     isPlaying,

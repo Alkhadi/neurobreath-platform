@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { LiveBreathingPreview } from './live-breathing-preview'
 
 export default function ScienceSection() {
   const mechanisms = [
@@ -59,9 +60,8 @@ export default function ScienceSection() {
           </p>
         </div>
 
-        {/* Science Cards & Interactive Preview - Two Column Layout */}
-        <div className="grid lg:grid-cols-2 gap-12 items-start mb-12">
-          {/* Science Cards */}
+        {/* Science Cards - Separate Container */}
+        <div className="max-w-4xl mx-auto mb-12">
           <div className="space-y-6">
             {mechanisms.map((mechanism) => (
               <div key={mechanism.id} className={`p-6 rounded-lg border-2 ${mechanism.color}`}>
@@ -79,40 +79,40 @@ export default function ScienceSection() {
               </div>
             ))}
           </div>
+        </div>
 
-          {/* Interactive Preview */}
+        {/* Interactive Preview - Separate Card */}
+        <div className="max-w-4xl mx-auto mb-12">
           <div className="bg-white rounded-lg border border-slate-200 p-8 text-center">
             <div className="mb-4">
               <div className="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-4">
-                LIVE PREVIEW
+                INTERACTIVE DEMO
               </div>
             </div>
             
             <h3 className="text-xl font-semibold text-slate-900 mb-4">
-              Guided Inhale • Hold • Exhale
+              Try it now: Guided breathing
             </h3>
             
-            <p className="text-slate-600 mb-8 leading-relaxed">
-              Preview the same visual pacing used in the main player. Inhale, hold, and exhale cues 
-              keep timing predictable for sensory-sensitive learners.
+            <p className="text-slate-600 mb-6 leading-relaxed">
+              Experience our visual breathing guide in action. Click &quot;Start Preview&quot; to see how the orb 
+              expands, holds, and contracts — giving you predictable, sensory-friendly timing cues that match your breath.
             </p>
 
-            {/* Visual Breathing Circle Preview */}
-            <div className="mb-8 flex justify-center">
-              <div className="w-32 h-32 border-4 border-blue-200 rounded-full flex items-center justify-center bg-blue-50">
-                <div className="w-16 h-16 bg-blue-400 rounded-full opacity-60"></div>
-              </div>
+            {/* ACTUAL Working Breathing Demo */}
+            <div className="mb-6">
+              <LiveBreathingPreview />
             </div>
 
             <div className="text-center">
-              <p className="text-sm text-slate-600 mb-4">Click here to explore:</p>
+              <p className="text-sm text-slate-600 mb-4">Want full sessions with audio guidance?</p>
               <div className="mb-4 text-2xl">👇</div>
-              <Button asChild size="lg" className="bg-green-600 hover:bg-green-700">
-                <Link href="/breathing/training/focus-garden" className="flex items-center gap-2">
-                  <span className="text-lg">🌱</span>
+              <Button asChild size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                <Link href="/breathing/breath" className="flex items-center gap-2">
+                  <span className="text-lg">🫁</span>
                   <div className="text-left">
-                    <div className="font-semibold">Focus Training</div>
-                    <div className="text-xs opacity-90">Interactive plant-based focus exercises</div>
+                    <div className="font-semibold">Explore All Techniques</div>
+                    <div className="text-xs opacity-90">Full sessions with narration &amp; progress tracking</div>
                   </div>
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
@@ -122,34 +122,40 @@ export default function ScienceSection() {
         </div>
 
         {/* Evidence Highlights - Full Width */}
-        <div className="bg-white rounded-lg border border-slate-200 p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Evidence Highlights</h3>
-          <div className="grid md:grid-cols-2 gap-6">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-8 md:p-10">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-bold text-slate-900 mb-2">Evidence Highlights</h3>
+            <p className="text-slate-600 text-sm">Peer-reviewed research supporting breathing techniques</p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {research.map((study, index) => (
-              <div key={index} className="border-l-4 border-blue-200 pl-4">
-                <p className="text-sm text-slate-600 mb-1">{study.study}</p>
-                <p className="font-semibold text-slate-900 text-lg mb-2">{study.metric}</p>
-                <p className="text-sm text-slate-700 mb-2">{study.description}</p>
-                <a 
-                  href={study.sourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-blue-600 hover:text-blue-800 underline"
-                >
-                  {study.source}
-                </a>
+              <div key={index} className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border-l-4 border-blue-400 hover:shadow-md transition-shadow">
+                <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-3">{study.study}</p>
+                <p className="font-bold text-slate-900 text-3xl mb-3 text-center bg-white/60 rounded-lg py-2">{study.metric}</p>
+                <p className="text-sm text-slate-700 leading-relaxed mb-4 text-center">{study.description}</p>
+                <div className="text-center">
+                  <a 
+                    href={study.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-medium hover:underline transition-colors"
+                  >
+                    <span>📄</span>
+                    <span>{study.source}</span>
+                  </a>
+                </div>
               </div>
             ))}
           </div>
         </div>
 
         {/* Safety Notice */}
-        <div className="mt-12 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-          <div className="flex items-start gap-3">
-            <span className="text-amber-600 text-lg">⚠️</span>
+        <div className="mt-12 p-6 bg-amber-50 border border-amber-200 rounded-lg text-center">
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-amber-600 text-2xl">⚠️</span>
             <div>
-              <p className="text-amber-800 font-medium">Pause or stop any time</p>
-              <p className="text-amber-700 text-sm mt-1">
+              <p className="text-amber-800 font-semibold text-lg mb-2">Pause or stop any time</p>
+              <p className="text-amber-700 text-sm max-w-2xl mx-auto">
                 If breathing feels uncomfortable, return to natural breathing and speak to a clinician for personalised advice.
               </p>
             </div>

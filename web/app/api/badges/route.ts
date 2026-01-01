@@ -27,15 +27,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ badges: badges ?? [] })
   } catch (err) {
     const error = err instanceof Error ? err : new Error(String(err))
-    console.error('Failed to fetch badges:', error.message)
+    console.error('[Badges API] Failed to fetch badges:', error.message)
     markDbDown(error)
-    if (isDbDown()) {
-      return NextResponse.json({
-        badges: [],
-        dbUnavailable: true,
-        dbUnavailableReason: getDbDownReason()
-      })
-    }
-    return NextResponse.json({ error: 'Failed to fetch badges' }, { status: 500 })
+    // Always return 200 with fallback data (never 500)
+    return NextResponse.json({
+      badges: [],
+      dbUnavailable: true,
+      dbUnavailableReason: getDbDownReason() || 'Database error',
+      source: 'fallback'
+    })
   }
 }

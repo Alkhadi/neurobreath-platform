@@ -6228,6 +6228,19 @@ body[data-page-id="index"] .nb-hero-reset small {
     }
 }
 
+/* Orb inner - displays countdown */
+.live-orbit-orb-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-white);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
 /* Active breathing - synchronized with ring */
 .live-orbit-visual-container.breathing-active .live-orbit-orb {
     animation: none; /* Override idle when active */
@@ -6560,6 +6573,23 @@ body[data-page-id="index"] .nb-hero-reset small {
     color: var(--color-white);
     transform: translateY(-2px);
     box-shadow: var(--shadow-medium);
+}
+
+/* Pattern Info */
+.live-orbit-pattern-info {
+    margin-top: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: rgba(59, 130, 246, 0.08);
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    color: var(--color-text);
+    text-align: center;
+    line-height: 1.4;
+}
+
+.live-orbit-pattern-info strong {
+    color: var(--color-sky);
+    font-weight: 600;
 }
 
 /* Evidence Safety Notice */

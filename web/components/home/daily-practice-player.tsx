@@ -632,9 +632,9 @@ export default function DailyPracticePlayer() {
                   {voiceEnabled && (
                     <>
                       <div>
-                        <label htmlFor="voice-select" className="text-sm text-gray-600 block mb-1">Voice:</label>
+                        <label htmlFor="voice-select-coaching" className="text-sm text-gray-600 block mb-1">Voice:</label>
                         <select
-                          id="voice-select"
+                          id="voice-select-coaching"
                           name="voice-select"
                           title="Select voice for guidance"
                           value={selectedVoice}
@@ -649,9 +649,9 @@ export default function DailyPracticePlayer() {
                         </select>
                       </div>
                       <div>
-                        <label htmlFor="voice-speed" className="text-sm text-gray-600 block mb-1">Speed: {voiceSpeed.toFixed(1)}x</label>
+                        <label htmlFor="voice-speed-slider" className="text-sm text-gray-600 block mb-1">Speed: {voiceSpeed.toFixed(1)}x</label>
                         <input
-                          id="voice-speed"
+                          id="voice-speed-slider"
                           name="voice-speed"
                           title="Voice speed"
                           type="range"
@@ -673,9 +673,9 @@ export default function DailyPracticePlayer() {
                     <Music className="w-4 h-4" /> Ambient Sounds
                   </h4>
                   <div>
-                    <label htmlFor="ambience-select" className="text-sm text-gray-600 block mb-1">Sound:</label>
+                    <label htmlFor="ambience-select-main" className="text-sm text-gray-600 block mb-1">Sound:</label>
                     <select
-                      id="ambience-select"
+                      id="ambience-select-main"
                       name="ambience-select"
                       title="Select ambient sound"
                       value={ambience}
@@ -703,9 +703,9 @@ export default function DailyPracticePlayer() {
                   </div>
                   {ambience !== 'none' && (
                     <div>
-                      <label htmlFor="ambience-volume" className="text-sm text-gray-600 block mb-1">Volume: {Math.round(ambienceVolume * 100)}%</label>
+                      <label htmlFor="ambience-volume-range" className="text-sm text-gray-600 block mb-1">Volume: {Math.round(ambienceVolume * 100)}%</label>
                       <input
-                        id="ambience-volume"
+                        id="ambience-volume-range"
                         name="ambience-volume"
                         title="Ambience volume"
                         type="range"
@@ -811,14 +811,15 @@ export default function DailyPracticePlayer() {
           {/* Inline Settings */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div>
-              <label htmlFor="technique" className="block text-sm font-medium text-gray-700 mb-2">Technique</label>
+              <label htmlFor="technique-dropdown" className="block text-sm font-medium text-gray-700 mb-2">Technique</label>
               <select
-                id="technique"
+                id="technique-dropdown"
                 name="technique"
                 value={technique}
                 onChange={(e) => setTechnique(e?.target?.value ?? 'box-breathing')}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 disabled={isPlaying}
+                aria-label="Select breathing technique"
               >
                 <optgroup label="Calm & Focus">
                   <option value="box-breathing">🟩 Box Breathing · 4-4-4-4</option>
@@ -843,10 +844,10 @@ export default function DailyPracticePlayer() {
             </div>
 
             <div>
-              <label htmlFor="minutes" className="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+              <label htmlFor="minutes-slider" className="block text-sm font-medium text-gray-700 mb-2">Duration</label>
               <div className="flex items-center gap-4">
                 <input
-                  id="minutes"
+                  id="minutes-slider"
                   name="minutes"
                   type="range"
                   min="1"
@@ -855,6 +856,7 @@ export default function DailyPracticePlayer() {
                   onChange={(e) => setMinutes(Number(e?.target?.value ?? 3))}
                   className="flex-1"
                   disabled={isPlaying}
+                  aria-label="Session duration in minutes"
                 />
                 <span className="text-lg font-semibold text-gray-900 min-w-[4rem]">{minutes} min</span>
               </div>

@@ -1,5 +1,6 @@
 import { loadLegacyHtml } from '@/lib/legacy/loadLegacyHtml';
 import { Metadata } from 'next';
+import Link from 'next/link';
 
 interface LegacyHtmlPageProps {
   source: string;
@@ -43,9 +44,9 @@ export default async function LegacyHtmlPage({
           <p className="text-sm text-gray-500">
             Error loading: {source}
           </p>
-          <a href="/" className="mt-6 inline-block text-blue-600 hover:underline">
+          <Link href="/" className="mt-6 inline-block text-blue-600 hover:underline">
             ← Return to Home
-          </a>
+          </Link>
         </div>
       </main>
     );

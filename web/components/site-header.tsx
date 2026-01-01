@@ -55,6 +55,11 @@ export function SiteHeader() {
             Home
           </Link>
 
+          {/* AI Blog & Q&A Link */}
+          <Link href="/blog" className="nb-nav-link" onClick={closeMegaMenu}>
+            🤖 AI Blog & Q&A
+          </Link>
+
           {/* Conditions Mega Menu */}
           <div className="nb-mega-menu-wrapper">
             <button 
@@ -198,7 +203,7 @@ export function SiteHeader() {
                     <h4 className="nb-mega-menu-heading">About</h4>
                     <Link href="/about-us" onClick={closeMegaMenu}>ℹ️ About Us</Link>
                     <Link href="/aims-objectives" onClick={closeMegaMenu}>🎯 Aims & Objectives</Link>
-                    <Link href="/blog" onClick={closeMegaMenu}>📝 Blog</Link>
+                    <Link href="/blog" onClick={closeMegaMenu}>🤖 AI Blog & Q&A</Link>
                     <Link href="/contact" onClick={closeMegaMenu}>✉️ Contact</Link>
                   </div>
                 </div>

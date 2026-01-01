@@ -15,13 +15,13 @@ export const metadata = {
 }
 
 interface ParentViewPageProps {
-  params: {
+  params: Promise<{
     parentCode: string
-  }
+  }>
 }
 
-export default function ParentViewPage({ params }: ParentViewPageProps) {
-  const { parentCode } = params
+export default async function ParentViewPage({ params }: ParentViewPageProps) {
+  const { parentCode } = await params
   
   return (
     <div className="container mx-auto py-8 px-4 max-w-4xl">

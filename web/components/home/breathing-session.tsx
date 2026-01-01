@@ -987,8 +987,11 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
               
               {/* Voice Control Row */}
               <div className="voice-control-row">
+                <label htmlFor="voice-control-select" className="sr-only">
+                  Voice selection for coaching
+                </label>
                 <select 
-                  id="voice-control"
+                  id="voice-control-select"
                   name="voiceControl"
                   className="voice-select"
                   value={settings.ttsVoice}
@@ -1095,8 +1098,11 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
               
               {/* Voice Control Row */}
               <div className="vc-row">
+                <label htmlFor="voice-selection-dropdown" className="sr-only">
+                  Voice selection
+                </label>
                 <select 
-                  id="voice-selection"
+                  id="voice-selection-dropdown"
                   name="ttsVoice"
                   className="vc-voice"
                   value={settings.ttsVoice}
@@ -1115,8 +1121,11 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
               </div>
 
               <div className="btn-row mt-3">
+                <label htmlFor="preset-selection-dropdown" className="sr-only">
+                  Select session preset
+                </label>
                 <select 
-                  id="preset-selection"
+                  id="preset-selection-dropdown"
                   name="preset"
                   className="preset-select"
                   value={selectedPreset}
@@ -1310,11 +1319,17 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
               <h2 className="text-2xl font-bold mb-4">How to Practice</h2>
               
               <div className="vc-row">
+                <label htmlFor="instructions-voice-select" className="sr-only">
+                  Select voice for instructions
+                </label>
                 <select 
+                  id="instructions-voice-select"
+                  name="instructionsVoice"
                   className="vc-voice"
                   value={settings.ttsVoice}
                   onChange={(e) => setSettings(prev => ({ ...prev, ttsVoice: e.target.value }))}
                   title="Select voice for instructions"
+                  aria-label="Select voice for instructions"
                 >
                   <option value="">System default</option>
                   {voices.filter(v => v.lang.startsWith('en')).map(voice => (

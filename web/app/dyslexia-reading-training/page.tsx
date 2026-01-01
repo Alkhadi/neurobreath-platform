@@ -7,7 +7,6 @@ import { VowelUniverse } from '@/components/VowelUniverse';
 import { PrintableWorksheets } from '@/components/PrintableWorksheets';
 import { RewardCards } from '@/components/RewardCards';
 import { StreakToolkit } from '@/components/StreakToolkit';
-import { CreateProfile } from '@/components/CreateProfile';
 import { PracticeTimer } from '@/components/PracticeTimer';
 import { BreathingExercise } from '@/components/BreathingExercise';
 // ReadingAssessment - legacy component, replaced by ReadingCheckIn
@@ -66,12 +65,9 @@ export default function DyslexiaReadingTrainingPage() {
         <div className="min-h-screen bg-background pt-4">
           <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8 md:space-y-12">
             
-            {/* Hero Section with Profile Creation - Two Card Layout */}
-            <section data-tutorial="hero" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Left Card - Profile Creation */}
-              <CreateProfile />
-
-              {/* Right Card - Hero/Introduction */}
+            {/* Hero Section */}
+            <section data-tutorial="hero" className="space-y-6">
+              {/* Hero/Introduction Card */}
               <Card className="overflow-hidden border-2 border-primary/20">
                 <CardContent className="p-6 sm:p-8 space-y-6">
                   <div className="space-y-3">

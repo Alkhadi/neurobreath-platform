@@ -407,11 +407,14 @@ export function PrintableWorksheets() {
             </div>
 
             <div className="space-y-2">
-              <Label>Student Name (optional)</Label>
+              <Label htmlFor="worksheet-student-name">Student Name (optional)</Label>
               <Input
+                id="worksheet-student-name"
+                name="studentName"
                 value={studentName}
                 onChange={(e) => setStudentName(e.target.value)}
                 placeholder="Enter name..."
+                autoComplete="name"
               />
             </div>
 

@@ -2,6 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================================
+   GLOBAL GRID UTILITIES - Last Card Full Width
+   ============================================================================ */
+
+/* Make last card in any grid always span full width */
+[class*="grid"]:not([class*="grid-cols-1"]) > *:last-child,
+.grid > *:last-child:not(:only-child),
+[style*="display: grid"] > *:last-child:not(:only-child),
+[style*="display:grid"] > *:last-child:not(:only-child) {
+  grid-column: 1 / -1 !important;
+}
+
+/* Optimize full-width last cards for better readability */
+[class*="grid"] > *:last-child .checklist,
+[class*="grid"] > *:last-child ul:not([class]),
+.grid > *:last-child ul {
+  column-count: 1;
+}
+
+/* Multi-column layout for lists in full-width cards on larger screens */
+@media (min-width: 768px) {
+  [class*="grid"] > *:last-child .checklist,
+  [class*="grid"] > *:last-child ul:not([class*="inline"]) {
+    column-count: 2;
+    column-gap: 2rem;
+  }
+  
+  [class*="grid"] > *:last-child li {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+@media (min-width: 1024px) {
+  [class*="grid"] > *:last-child .checklist,
+  [class*="grid"] > *:last-child ul:not([class*="inline"]) {
+    column-count: 3;
+    column-gap: 2.5rem;
+  }
+}
+
+/* Reset on mobile */
+@media (max-width: 767px) {
+  [class*="grid"] > *:last-child .checklist,
+  [class*="grid"] > *:last-child ul {
+    column-count: 1;
+  }
+}
+
 @layer utilities {
   /* Full-width overrides for page containers */
   .w-full-override {
@@ -2355,6 +2404,41 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
   .orbit-btn {
     width: 100%;
     text-align: center;
+  }
+}
+
+/* ============================================================================
+   VISUAL LEARNING CARDS - 3D FLIP ANIMATION
+   ============================================================================ */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Print styles for learning cards */
+@media print {
+  #visual-cards {
+    page-break-before: always;
+  }
+  
+  .perspective-1000 > div {
+    transform: none !important;
+  }
+  
+  .backface-hidden.rotate-y-180 {
+    display: none;
   }
 }
 

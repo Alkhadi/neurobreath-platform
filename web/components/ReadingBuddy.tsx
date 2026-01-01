@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,6 +18,7 @@ import {
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { cn } from '@/lib/utils';
+import { getPageAssistantConfig } from '@/lib/page-assistant-registry';
 
 interface Message {
   id: string;
@@ -29,40 +31,16 @@ interface ReadingBuddyProps {
   onStartTutorial?: () => void;
 }
 
-const quickQuestions = [
-  'How do I start my first game?',
-  'How do I earn rewards?',
-  'What are streaks?',
-  'How do I track my progress?',
-  'Tell me about the Vowel Universe'
-];
-
-const responses: { [key: string]: string } = {
-  'How do I start my first game?': 
-    "Great question! Just scroll down the page and click on any activity card that catches your eye. Each card has a colorful design and tells you what it does. I recommend starting with the Phonics Song Player or Phonics Sounds Lab - they're super fun! Just click the play button and follow along. You've got this!",
-  
-  'How do I earn rewards?':
-    "Earning rewards is so exciting! As you complete activities and practice, you'll automatically unlock reward cards. You can see your rewards by scrolling to the NeuroBreath Reward Cards section at the bottom of the page. Keep practicing every day to unlock more awesome rewards!",
-  
-  'What are streaks?':
-    "Streaks are like your winning streak! Every day you practice, your streak grows. You can see your current streak in the Streak Toolkit card near the top of the page. It shows how many days in a row you've practiced, total minutes, and badges earned. Try to keep your streak going - it's really motivating!",
-  
-  'How do I track my progress?':
-    "Tracking your progress is easy! Many activities save your progress automatically on your device. You'll see progress bars, stars, and badges throughout the page. The Streak Toolkit shows your overall progress, and each activity card displays how much you've completed. Everything saves automatically so you can pick up right where you left off!",
-  
-  'Tell me about the Vowel Universe':
-    "The Vowel Universe is an amazing adventure! It's a special activity where you explore different vowel patterns like short vowels and long vowels. Each pattern has examples and practice words. It's like exploring different planets, but instead of planets, you're discovering how vowels work! Scroll down to find it and start exploring!",
-  
-  'guided_tour':
-    "Let me give you a quick tour of this page! At the top, you can create your profile and set practice goals. The Practice Timer helps you focus for set periods. The Breathing Exercise helps you stay calm and focused. Reading Assessment helps understand your current level. Phonics activities teach letter sounds with fun animations. Interactive games like Rapid Naming and Word Construction make learning fun. Vocabulary builders help expand your word knowledge. Rewards and streaks keep you motivated! Just scroll through and try what looks interesting! Each card is designed to help a different reading skill. Have fun exploring!",
-  
-  'default':
-    "That's a wonderful question! I'm here to help you explore all the fun activities on this page. Each activity is designed to help you become a better reader in a different way. Feel free to try any activity that looks interesting, and remember - learning to read is an adventure! If you have specific questions about any activity, just ask me!"
-};
-
-const welcomeMessage = "Hi there! I'm Reading Buddy, your friendly guide for NeuroBreath. I'm so excited you're here! This page is like a super fun playground for reading! We have lots of games and activities to help you become a superstar reader. To get started, just pick any activity that looks interesting to you. Each one helps with a different part of reading, and we'll learn together! Which adventure do you want to try first?";
-
 export default function ReadingBuddy({ onStartTutorial }: ReadingBuddyProps) {
+  const pathname = usePathname();
+  const pageConfig = getPageAssistantConfig(pathname);
+  const { readingBuddy } = pageConfig;
+  
+  // Extract dynamic content from config
+  const quickQuestions = readingBuddy.quickQuestions;
+  const responses = readingBuddy.responses || {};
+  const welcomeMessage = readingBuddy.intro;
+  const inputPlaceholder = readingBuddy.inputPlaceholder;
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
@@ -99,7 +77,12 @@ export default function ReadingBuddy({ onStartTutorial }: ReadingBuddyProps) {
         }, 300);
       }
     }
-  }, [isOpen, hasGreeted, autoSpeak, speak, ttsSupported]);
+  }, [isOpen, hasGreeted, autoSpeak, speak, ttsSupported, welcomeMessage]);
+
+  // Reset greeting when pathname changes
+  useEffect(() => {
+    setHasGreeted(false);
+  }, [pathname]);
 
   // Update input when transcript changes
   useEffect(() => {
@@ -263,8 +246,8 @@ export default function ReadingBuddy({ onStartTutorial }: ReadingBuddyProps) {
                   <Bot className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <DialogTitle className="text-lg font-semibold">Reading Buddy</DialogTitle>
-                  <p className="text-xs text-muted-foreground">Your friendly guide</p>
+                  <DialogTitle className="text-lg font-semibold">{readingBuddy.heading}</DialogTitle>
+                  <p className="text-xs text-muted-foreground">{readingBuddy.subheading}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -344,8 +327,8 @@ export default function ReadingBuddy({ onStartTutorial }: ReadingBuddyProps) {
             </div>
           </div>
 
-          {/* Tour Button */}
-          {onStartTutorial && (
+          {/* Tour Button - only show if tour steps exist */}
+          {onStartTutorial && pageConfig.tour.steps.length > 0 && (
             <div className="px-4 py-2 border-t border-border bg-gradient-to-r from-primary/5 to-accent/5">
               <Button
                 onClick={handleGuidedTour}
@@ -392,10 +375,10 @@ export default function ReadingBuddy({ onStartTutorial }: ReadingBuddyProps) {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder={isListening ? "Listening..." : "Ask me anything about this page..."}
+                placeholder={isListening ? "Listening..." : inputPlaceholder}
                 disabled={isTyping || isListening}
                 className="flex-1"
-                aria-label="Ask Dorothy a question"
+                aria-label="Ask your buddy a question"
               />
               {sttSupported && (
                 <Button 
@@ -417,6 +400,15 @@ export default function ReadingBuddy({ onStartTutorial }: ReadingBuddyProps) {
               </Button>
             </form>
           </div>
+
+          {/* DEV-ONLY: Config indicator */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="px-4 py-2 border-t border-border bg-yellow-50 dark:bg-yellow-950/30">
+              <p className="text-xs text-yellow-800 dark:text-yellow-200 text-center font-mono">
+                🔧 Active assistant config: <strong>{pageConfig.pageKey}</strong> | Route: {pathname}
+              </p>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </>

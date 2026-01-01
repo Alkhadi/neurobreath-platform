@@ -121,9 +121,8 @@ export default function SafetySupportSection() {
 
         {/* Share & Support - Centred with max-width */}
         <div className="max-w-4xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8">
-          {/* Share Section */}
-          <div className="bg-white rounded-lg border p-6">
+          {/* Share Section - Full Width */}
+          <div className="bg-white rounded-lg border p-6 mb-8">
             <h3 className="text-xl font-semibold text-slate-900 mb-4 flex items-center gap-2">
               <Share2 className="w-5 h-5 text-blue-500" />
               Share NeuroBreath
@@ -133,7 +132,7 @@ export default function SafetySupportSection() {
             </p>
             
             {/* Share Buttons */}
-            <div className="grid grid-cols-2 gap-2 mb-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
               {shareButtons.map((button) => (
                 <Button
                   key={button.id}
@@ -169,7 +168,7 @@ export default function SafetySupportSection() {
             </div>
           </div>
 
-          {/* Support Section */}
+          {/* Support Section - Full Width */}
           <div className="bg-white rounded-lg border p-6">
             <h3 className="text-xl font-semibold text-slate-900 mb-4 flex items-center gap-2">
               <Heart className="w-5 h-5 text-red-500" />
@@ -215,7 +214,6 @@ export default function SafetySupportSection() {
               All funds go towards hosting, development, and keeping this free for everyone.
             </p>
           </div>
-        </div>
         </div>
       </div>
     </section>

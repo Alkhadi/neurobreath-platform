@@ -1,5 +1,5 @@
-import LegacyHtmlPage from "@/components/legacy/LegacyHtmlPage";
+import { redirect } from 'next/navigation'
 
-export default async function ConditionsAutismPage() {
-  return <LegacyHtmlPage source="autism.html" title="Autism" />;
+export default function ConditionsAutismPage() {
+  redirect('/autism')
 }

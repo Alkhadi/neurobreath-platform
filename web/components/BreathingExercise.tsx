@@ -414,7 +414,12 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
           </button>
 
           {/* Ambient Sound Selector */}
+          <label htmlFor="ambient-sound-select-fullscreen" className="sr-only">
+            Select ambient sound
+          </label>
           <select
+            id="ambient-sound-select-fullscreen"
+            name="ambientSound"
             value={ambientSound}
             onChange={(e) => setAmbientSound(e.target.value)}
             className="px-4 py-2 rounded-full bg-white/10 text-white text-sm font-medium border-none outline-none"
@@ -627,6 +632,7 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
             <label htmlFor="ambient-sound-select" className="text-sm font-medium">Ambient Sound</label>
             <select
               id="ambient-sound-select"
+              name="ambientSound"
               value={ambientSound}
               onChange={(e) => setAmbientSound(e.target.value)}
               className="w-full px-3 py-2 rounded-md border border-input bg-background text-sm"

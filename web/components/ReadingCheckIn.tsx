@@ -105,13 +105,29 @@ export function ReadingCheckIn() {
     async function loadRecentAttempts() {
       try {
         const deviceId = getDeviceId()
-        const response = await fetch(`/api/assessment/save-full-attempt?deviceId=${deviceId}&limit=5`)
-        if (response.ok) {
-          const data = await response.json()
-          setRecentAttempts(data.attempts || [])
+        const response = await fetch(
+          `/api/assessment/save-full-attempt?deviceId=${deviceId}&limit=5`,
+          {
+            cache: 'no-store',
+            headers: { 'Accept': 'application/json' }
+          }
+        )
+        
+        const data = await response.json()
+        
+        // Check if DB is unavailable (now returns 200 with flag)
+        if (data?.dbUnavailable) {
+          setRecentAttempts([])
+          return
         }
+        
+        setRecentAttempts(data.attempts || [])
       } catch (error) {
-        console.error('Error loading recent attempts:', error)
+        // Silently handle errors in development
+        if (process.env.NODE_ENV === 'development') {
+          console.debug('[ReadingCheckIn] Assessment data unavailable (this is normal without a database)')
+        }
+        setRecentAttempts([])
       } finally {
         setIsLoading(false)
       }

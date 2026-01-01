@@ -4,15 +4,51 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { useDorothyAudio, PHONICS_LETTER_DATA } from "@/hooks/useDorothyAudio";
 
-const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+// Full 26-letter alphabet including Z
+const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""); // 26 letters: A-Z
 const VOWELS = ["A", "E", "I", "O", "U"];
 
 export function PhonicsPlayer() {
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [speed, setSpeed] = useState([1.5]);
-  const { playLetterCall, stop } = useDorothyAudio();
+  const { playLetterCall, playLetterPhoneme, stop } = useDorothyAudio();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const phonemeOnlyLetters = useRef(new Set(["S", "T", "U", "V", "W", "X", "Y", "Z"]));
+
+  const renderLetterButton = (letter: string, index: number) => {
+    const isVowel = VOWELS.includes(letter);
+    const isActive = index === currentIndex;
+    const isPast = index < currentIndex;
+
+    return (
+      <button
+        key={letter}
+        onClick={() => handleLetterClick(index)}
+        className={`
+          w-9 h-9 sm:w-10 sm:h-10 md:w-16 md:h-16
+          rounded-xl text-lg sm:text-xl md:text-2xl font-bold transition-all duration-300
+          flex items-center justify-center cursor-pointer flex-shrink-0
+          ${
+            isActive
+              ? "bg-primary text-primary-foreground scale-125 shadow-glow animate-pulse ring-4 ring-primary/30"
+              : isPast
+              ? isVowel
+                ? "bg-zone-vowel/60 text-foreground"
+                : "bg-zone-consonant/60 text-foreground"
+              : isVowel
+              ? "bg-zone-vowel text-foreground hover:scale-110"
+              : "bg-zone-consonant text-foreground hover:scale-110"
+          }
+        `}
+        aria-label={`Play letter ${letter}`}
+        type="button"
+      >
+        {letter}
+      </button>
+    );
+  };
 
   const playLetter = useCallback(
     (index: number) => {
@@ -24,7 +60,7 @@ export function PhonicsPlayer() {
 
       const letter = ALPHABET[index];
       setCurrentIndex(index);
-      const duration = playLetterCall(letter);
+      const duration = playLetterCall(letter, speed[0]);
       
       // Schedule next letter based on duration
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -34,7 +70,7 @@ export function PhonicsPlayer() {
         }
       }, duration + 400);
     },
-    [playLetterCall, isAutoPlaying]
+    [playLetterCall, isAutoPlaying, speed]
   );
 
   const handlePlay = () => {
@@ -59,7 +95,13 @@ export function PhonicsPlayer() {
     stop();
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setCurrentIndex(index);
-    playLetterCall(ALPHABET[index]);
+    const letter = ALPHABET[index];
+    // For S–Z, play the "phoneme-only" window for cleaner, accurate sounds.
+    if (phonemeOnlyLetters.current.has(letter)) {
+      playLetterPhoneme(letter, speed[0]);
+      return;
+    }
+    playLetterCall(letter, speed[0]);
   };
 
   useEffect(() => {
@@ -82,36 +124,22 @@ export function PhonicsPlayer() {
 
         <div className="bg-card rounded-3xl p-8 shadow-soft border border-border">
           {/* Letter Grid */}
-          <div className="grid grid-cols-7 sm:grid-cols-9 md:grid-cols-13 gap-2 mb-8">
-            {ALPHABET.map((letter, index) => {
-              const isVowel = VOWELS.includes(letter);
-              const isActive = index === currentIndex;
-              const isPast = index < currentIndex;
+          {/* Mobile/Tablet: force 3 fixed rows so Z is always on the same row as Y */}
+          <div className="md:hidden mb-8 space-y-4">
+            <div className="flex justify-center gap-2 sm:gap-3">
+              {ALPHABET.slice(0, 9).map((letter, i) => renderLetterButton(letter, i))}
+            </div>
+            <div className="flex justify-center gap-2 sm:gap-3">
+              {ALPHABET.slice(9, 18).map((letter, i) => renderLetterButton(letter, 9 + i))}
+            </div>
+            <div className="flex justify-center gap-2 sm:gap-3">
+              {ALPHABET.slice(18, 26).map((letter, i) => renderLetterButton(letter, 18 + i))}
+            </div>
+          </div>
 
-              return (
-                <button
-                  key={letter}
-                  onClick={() => handleLetterClick(index)}
-                  className={`
-                    aspect-square rounded-xl text-2xl font-bold transition-all duration-300
-                    flex items-center justify-center cursor-pointer
-                    ${
-                      isActive
-                        ? "bg-primary text-primary-foreground scale-125 shadow-glow animate-pulse ring-4 ring-primary/30"
-                        : isPast
-                        ? isVowel
-                          ? "bg-zone-vowel/60 text-foreground"
-                          : "bg-zone-consonant/60 text-foreground"
-                        : isVowel
-                        ? "bg-zone-vowel text-foreground hover:scale-110"
-                        : "bg-zone-consonant text-foreground hover:scale-110"
-                    }
-                  `}
-                >
-                  {letter}
-                </button>
-              );
-            })}
+          {/* Desktop: 13 columns => 2 perfect rows */}
+          <div className="hidden md:grid grid-cols-13 gap-2 mb-8 justify-items-center">
+            {ALPHABET.map((letter, index) => renderLetterButton(letter, index))}
           </div>
 
           {/* Current Letter Display */}

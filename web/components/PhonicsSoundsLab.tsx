@@ -25,10 +25,12 @@ import {
   findLetterIndexForTime,
   checkMilestoneTime,
   getAudioPhase,
+  getLetterPhonemeWindow,
   type AudioPhase
 } from '@/hooks/useDorothyAudio';
 
-const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+// Full 26-letter alphabet including Z
+const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""); // 26 letters: A-Z
 const LETTER_CALL_HEADROOM = 0.15; // Small buffer before letter starts
 
 // Letter segments for display grouping
@@ -151,6 +153,7 @@ export function PhonicsSoundsLab() {
   // Refs
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const countdownRef = useRef<NodeJS.Timeout | null>(null);
+  const manualStopAtRef = useRef<number | null>(null);
   
   const currentLetter = ALPHABET[Math.min(currentIndex, ALPHABET.length - 1)];
   const currentData = PHONICS_LETTER_DATA[currentLetter] || { word: "", emoji: "" };
@@ -172,6 +175,18 @@ export function PhonicsSoundsLab() {
     if (!audioRef.current || showMilestone) return;
     
     const t = audioRef.current.currentTime;
+
+    // If user tapped a letter for a short "phoneme-only" preview, stop cleanly at the target
+    // and avoid triggering milestone/letter-sync logic during this micro-play.
+    if (manualStopAtRef.current != null) {
+      if (t >= manualStopAtRef.current) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+        manualStopAtRef.current = null;
+      }
+      return;
+    }
+
     setElapsedTime(Math.floor(t));
     
     // Update audio phase for visual indicator
@@ -379,7 +394,19 @@ export function PhonicsSoundsLab() {
       setCurrentIndex(letterIndex);
     }
     
-    // Seek to letter start with small headroom and play
+    // Prefer "phoneme-only" window for S–Z so taps play the clean sound (no extra words).
+    const phonemeWindow = getLetterPhonemeWindow(letter);
+    if (phonemeWindow && ['S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'].includes(letter.toUpperCase())) {
+      manualStopAtRef.current = phonemeWindow.end;
+      const seekTime = Math.max(0, phonemeWindow.start - 0.03);
+      audioRef.current.currentTime = seekTime;
+      audioRef.current.muted = isMuted;
+      audioRef.current.play().catch(err => console.error('Play failed:', err));
+      setIsPlaying(true);
+      return;
+    }
+
+    // Default: seek to letter start with small headroom and play
     const seekTime = Math.max(0, timing.start - LETTER_CALL_HEADROOM);
     audioRef.current.currentTime = seekTime;
     audioRef.current.muted = isMuted;
@@ -499,30 +526,56 @@ export function PhonicsSoundsLab() {
         </CardHeader>
         <CardContent className="p-3 sm:p-4 md:p-6">
           <div className="text-center space-y-3 sm:space-y-4">
-            <div className="flex justify-center gap-1 sm:gap-2 flex-wrap">
-              {ALPHABET.slice(0, 13).map(letter => (
-                <span
-                  key={letter}
-                  className={cn(
-                    "w-6 h-6 sm:w-8 sm:h-8 rounded-md sm:rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold transition-all",
-                    completedLetters.has(letter)
-                      ? "bg-green-500 text-white"
-                      : "bg-muted text-muted-foreground"
-                  )}
-                >
-                  {letter}
-                </span>
-              ))}
+            {/* Preview alphabet: keep Z aligned with Y on all screens */}
+            <div className="md:hidden space-y-2">
+              <div className="flex justify-center gap-1 sm:gap-2">
+                {ALPHABET.slice(0, 9).map((letter) => (
+                  <span
+                    key={letter}
+                    className={cn(
+                      "w-6 h-6 sm:w-8 sm:h-8 rounded-md sm:rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold transition-all flex-shrink-0",
+                      completedLetters.has(letter) ? "bg-green-500 text-white" : "bg-muted text-muted-foreground"
+                    )}
+                  >
+                    {letter}
+                  </span>
+                ))}
+              </div>
+              <div className="flex justify-center gap-1 sm:gap-2">
+                {ALPHABET.slice(9, 18).map((letter) => (
+                  <span
+                    key={letter}
+                    className={cn(
+                      "w-6 h-6 sm:w-8 sm:h-8 rounded-md sm:rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold transition-all flex-shrink-0",
+                      completedLetters.has(letter) ? "bg-green-500 text-white" : "bg-muted text-muted-foreground"
+                    )}
+                  >
+                    {letter}
+                  </span>
+                ))}
+              </div>
+              <div className="flex justify-center gap-1 sm:gap-2">
+                {ALPHABET.slice(18, 26).map((letter) => (
+                  <span
+                    key={letter}
+                    className={cn(
+                      "w-6 h-6 sm:w-8 sm:h-8 rounded-md sm:rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold transition-all flex-shrink-0",
+                      completedLetters.has(letter) ? "bg-green-500 text-white" : "bg-muted text-muted-foreground"
+                    )}
+                  >
+                    {letter}
+                  </span>
+                ))}
+              </div>
             </div>
-            <div className="flex justify-center gap-1 sm:gap-2 flex-wrap">
-              {ALPHABET.slice(13).map(letter => (
+
+            <div className="hidden md:grid grid-cols-13 gap-1 sm:gap-2 justify-items-center max-w-fit mx-auto">
+              {ALPHABET.map((letter) => (
                 <span
                   key={letter}
                   className={cn(
-                    "w-6 h-6 sm:w-8 sm:h-8 rounded-md sm:rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold transition-all",
-                    completedLetters.has(letter)
-                      ? "bg-green-500 text-white"
-                      : "bg-muted text-muted-foreground"
+                    "w-6 h-6 sm:w-8 sm:h-8 rounded-md sm:rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold transition-all flex-shrink-0",
+                    completedLetters.has(letter) ? "bg-green-500 text-white" : "bg-muted text-muted-foreground"
                   )}
                 >
                   {letter}
@@ -911,18 +964,28 @@ export function PhonicsSoundsLab() {
                     {/* Form */}
                     <div className="space-y-3 sm:space-y-4 md:space-y-5">
                       <div>
-                        <label className="block text-xs sm:text-sm text-white font-medium mb-1.5 sm:mb-2">Full name *</label>
+                        <label htmlFor="certificate-full-name" className="block text-xs sm:text-sm text-white font-medium mb-1.5 sm:mb-2">
+                          Full name *
+                        </label>
                         <Input
+                          id="certificate-full-name"
+                          name="certificateName"
                           value={certificateName}
                           onChange={(e) => setCertificateName(e.target.value)}
                           placeholder="e.g. Maya Solanke"
                           className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 text-sm sm:text-base"
+                          autoComplete="name"
                         />
                       </div>
                       
                       <div>
                         <label htmlFor="gender-select" className="block text-xs sm:text-sm text-slate-400 mb-1.5 sm:mb-2">Gender <span className="text-[10px] sm:text-xs">(optional)</span></label>
-                        <select id="gender-select" className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-slate-700 border border-slate-600 text-white text-sm sm:text-base">
+                        <select
+                          id="gender-select"
+                          name="gender"
+                          className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-slate-700 border border-slate-600 text-white text-sm sm:text-base"
+                          autoComplete="sex"
+                        >
                           <option>Prefer not to say</option>
                           <option>Female</option>
                           <option>Male</option>

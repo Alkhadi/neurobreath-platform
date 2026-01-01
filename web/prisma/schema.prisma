@@ -436,3 +436,18 @@ model ParentAccess {
   @@index([deviceId])
   @@index([isActive])
 }
+
+// ============================================================================
+// USER PROFILE & ONBOARDING SYSTEM
+// ============================================================================
+
+// User profile for onboarding completion tracking
+model UserProfile {
+  id                String   @id @default(cuid())
+  deviceId          String   @unique
+  profileComplete   Boolean  @default(false)
+  name              String?
+  age               Int?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now()) @updatedAt
+}

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { HeroBreathingOrbit } from '@/components/home/hero-breathing-orbit'
 import { QuickWinPlanner } from '@/components/home/quick-win-planner'
 import { BeginSessionModal } from '@/components/BeginSessionModal'
+import { SiteWideProfileCta } from '@/components/onboarding/SiteWideProfileCta'
 import Link from 'next/link'
 import { Zap } from 'lucide-react'
 
@@ -22,6 +23,9 @@ export default function HeroSection() {
         <div className="nb-hero-two-col">
           {/* Left Column: Glass Cards */}
           <div className="nb-hero-col-left">
+            {/* HERO CTA: Create Profile Button */}
+            <SiteWideProfileCta className="mb-6" />
+
             {/* HERO CARD 1: Glass card with two lines */}
             <div className="nb-glass-card-primary">
               <p className="nb-glass-line-bold">

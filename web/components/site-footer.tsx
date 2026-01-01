@@ -103,6 +103,7 @@ export function SiteFooter() {
                 <p>
                   <Link href="/about-us">About</Link> ·{' '}
                   <Link href="/aims-objectives">Aims &amp; Stories</Link> ·{' '}
+                  <Link href="/blog">AI Blog &amp; Q&amp;A</Link> ·{' '}
                   <Link href="/support-us">Support Us</Link> ·{' '}
                   <Link href="/contact">Contact</Link>
                 </p>

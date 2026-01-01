@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -15,102 +16,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-export interface TutorialStep {
-  id: string;
-  title: string;
-  description: string;
-  targetSelector: string;
-  position?: 'top' | 'bottom' | 'left' | 'right';
-  action?: string;
-}
-
-const TUTORIAL_STEPS: TutorialStep[] = [
-  {
-    id: 'hero',
-    title: 'Welcome to NeuroBreath!',
-    description: 'This is your reading training hub! Here you\'ll find fun games and exercises to improve your reading skills. Let me show you around!',
-    targetSelector: '[data-tutorial="hero"]',
-    position: 'bottom',
-  },
-  {
-    id: 'streak',
-    title: 'Your Streak Toolkit',
-    description: 'This shows your practice streaks! Practice every day to build a streak. A 7-day streak earns you special rewards, and a 30-day streak unlocks amazing bonuses!',
-    targetSelector: '[data-tutorial="streak"]',
-    position: 'bottom',
-  },
-  {
-    id: 'timer',
-    title: 'Practice Timer',
-    description: 'Use this timer to track how long you practice. Try to practice for at least 10 minutes each day to keep your streak going!',
-    targetSelector: '[data-tutorial="timer"]',
-    position: 'bottom',
-  },
-  {
-    id: 'breathing',
-    title: 'Breathing Exercise',
-    description: 'Start here! Take a few deep breaths to calm down before learning. It helps your brain get ready for reading practice.',
-    targetSelector: '[data-tutorial="breathing"]',
-    position: 'bottom',
-  },
-  {
-    id: 'phonics',
-    title: 'Phonics Player',
-    description: 'Listen to fun phonics songs that teach you letter sounds. Music makes learning easier and more fun!',
-    targetSelector: '[data-tutorial="phonics"]',
-    position: 'bottom',
-  },
-  {
-    id: 'phon ics-lab',
-    title: 'Phonics Sounds Lab',
-    description: 'Practice individual letter sounds with visual animations! Watch the letters slide in and hear their sounds.',
-    targetSelector: '[data-tutorial="phonics-lab"]',
-    position: 'bottom',
-  },
-  {
-    id: 'wordbuilder',
-    title: 'Word Builder',
-    description: 'Build words by putting letters together! Start with simple words and work your way up to harder ones.',
-    targetSelector: '[data-tutorial="wordbuilder"]',
-    position: 'bottom',
-  },
-  {
-    id: 'fluency',
-    title: 'Fluency Pacer',
-    description: 'Practice reading at different speeds. Words light up as you read along, helping you keep a steady pace.',
-    targetSelector: '[data-tutorial="fluency"]',
-    position: 'bottom',
-  },
-  {
-    id: 'syllables',
-    title: 'Syllable Splitter',
-    description: 'Learn to break big words into smaller parts called syllables. It makes reading long words much easier!',
-    targetSelector: '[data-tutorial="syllables"]',
-    position: 'bottom',
-  },
-  {
-    id: 'vowels',
-    title: 'Vowel Universe',
-    description: 'Explore 5 zones to master all vowel sounds! Start at Short Street with simple vowels, then journey through to advanced patterns.',
-    targetSelector: '[data-tutorial="vowels"]',
-    position: 'bottom',
-  },
-  {
-    id: 'rewards',
-    title: 'Reward Cards',
-    description: 'As you practice, you earn points that unlock reward cards! Keep practicing to collect them all.',
-    targetSelector: '[data-tutorial="rewards"]',
-    position: 'bottom',
-  },
-  {
-    id: 'complete',
-    title: 'You\'re Ready!',
-    description: 'Great job completing the tour! Start with a breathing exercise, then try any game you like. Remember, practice every day to build your streak and earn rewards!',
-    targetSelector: '[data-tutorial="hero"]',
-    position: 'bottom',
-  },
-];
+import { getPageAssistantConfig, getAvailableTourSteps, type TourStep } from '@/lib/page-assistant-registry';
 
 interface InteractiveTutorialProps {
   open: boolean;
@@ -118,14 +24,37 @@ interface InteractiveTutorialProps {
 }
 
 export default function InteractiveTutorial({ open, onOpenChange }: InteractiveTutorialProps) {
+  const pathname = usePathname();
+  const pageConfig = getPageAssistantConfig(pathname);
+  
+  // Get tour steps from config and filter out missing targets
+  const [allSteps, setAllSteps] = useState<TourStep[]>(pageConfig.tour.steps);
+  const [availableSteps, setAvailableSteps] = useState<TourStep[]>([]);
+  
   const [currentStep, setCurrentStep] = useState(0);
   const [highlightRect, setHighlightRect] = useState<DOMRect | null>(null);
   const [autoSpeak, setAutoSpeak] = useState(true);
   
   const { speak, cancel, speaking, supported } = useSpeechSynthesis();
   
-  const step = TUTORIAL_STEPS[currentStep];
-  const progress = ((currentStep + 1) / TUTORIAL_STEPS.length) * 100;
+  // Update available steps when dialog opens
+  useEffect(() => {
+    if (open) {
+      const filtered = getAvailableTourSteps(allSteps);
+      setAvailableSteps(filtered);
+      setCurrentStep(0);
+    }
+  }, [open, allSteps]);
+  
+  // Update steps when pathname changes
+  useEffect(() => {
+    const newConfig = getPageAssistantConfig(pathname);
+    setAllSteps(newConfig.tour.steps);
+  }, [pathname]);
+  
+  const step = availableSteps[currentStep];
+  const totalSteps = availableSteps.length;
+  const progress = totalSteps > 0 ? ((currentStep + 1) / totalSteps) * 100 : 0;
 
   const scrollToAndHighlight = useCallback((selector: string) => {
     const element = document.querySelector(selector);
@@ -187,7 +116,7 @@ export default function InteractiveTutorial({ open, onOpenChange }: InteractiveT
 
   const handleNext = () => {
     cancel();
-    if (currentStep < TUTORIAL_STEPS.length - 1) {
+    if (currentStep < totalSteps - 1) {
       setCurrentStep(prev => prev + 1);
     } else {
       onOpenChange(false);
@@ -220,7 +149,8 @@ export default function InteractiveTutorial({ open, onOpenChange }: InteractiveT
     setAutoSpeak(!autoSpeak);
   };
 
-  if (!open || !step) return null;
+  // If no steps available, don't render
+  if (!open || !step || totalSteps === 0) return null;
 
   const getTooltipPosition = () => {
     if (!highlightRect) return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
@@ -294,7 +224,7 @@ export default function InteractiveTutorial({ open, onOpenChange }: InteractiveT
             <div>
               <h3 className="font-semibold text-sm">{step.title}</h3>
               <p className="text-xs text-muted-foreground">
-                Step {currentStep + 1} of {TUTORIAL_STEPS.length}
+                Step {currentStep + 1} of {totalSteps}
               </p>
             </div>
           </div>
@@ -350,7 +280,7 @@ export default function InteractiveTutorial({ open, onOpenChange }: InteractiveT
               onClick={handleNext}
               className="h-8"
             >
-              {currentStep === TUTORIAL_STEPS.length - 1 ? (
+              {currentStep === totalSteps - 1 ? (
                 'Finish'
               ) : (
                 <>
