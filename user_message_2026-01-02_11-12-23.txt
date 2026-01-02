@@ -1,0 +1,432 @@
+WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+main-DoJ-801O.js:77 `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+(anonymous) @ main-DoJ-801O.js:77Understand this error
+main-DoJ-801O.js:77 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+(anonymous) @ main-DoJ-801O.js:77Understand this warning
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+main-DoJ-801O.js:77 `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+(anonymous) @ main-DoJ-801O.js:77Understand this error
+main-DoJ-801O.js:77 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+(anonymous) @ main-DoJ-801O.js:77Understand this warning
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+ WebSocket connection to 'wss://na103-nb.abacus.ai/chatllm_computer/4bf03c5ef/vnc/chatllm_computer/4bf03c5ef/vnc/websockify' failed: 
+open @ websock.js:251Understand this error
+ WebSocket on-error event
+_socketError @ rfb.js:690Understand this warning
+ Failed when connecting: Connection closed (code: 1006)
+_fail @ rfb.js:945Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+(index):1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+main-app.js?v=1767352258247:2371 Warning: Prop `className` did not match. Server: "inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 gap-2" Client: "inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 gap-2"
+    at button
+    at _c (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/app/page.js:52356:84)
+    at div
+    at AudienceSwitcher (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/app/page.js:35623:115)
+    at div
+    at div
+    at div
+    at div
+    at main
+    at HomePage (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/app/page.js:34382:94)
+    at ClientPageRoot (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/app-pages-internals.js:331:11)
+    at InnerLayoutRouter (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/app-pages-internals.js:785:11)
+    at RedirectErrorBoundary (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:17489:9)
+    at RedirectBoundary (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:17497:11)
+    at NotFoundErrorBoundary (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:5405:9)
+    at NotFoundBoundary (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:5413:11)
+    at LoadingBoundary (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/app-pages-internals.js:891:11)
+    at ErrorBoundary (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:4443:11)
+    at InnerScrollAndFocusHandler (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/app-pages-internals.js:695:9)
+    at ScrollAndFocusHandler (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/app-pages-internals.js:770:11)
+    at RenderFromTemplateContext (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/app-pages-internals.js:1091:44)
+    at OuterLayoutRouter (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/app-pages-internals.js:912:11)
+    at O (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/app/layout.js:4377:24)
+    at z (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/app/layout.js:4371:47)
+    at ThemeProvider (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/app/layout.js:247:26)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:17489:9)
+    at RedirectBoundary (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:17497:11)
+    at NotFoundErrorBoundary (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:5405:9)
+    at NotFoundBoundary (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:5413:11)
+    at DevRootNotFoundBoundary (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:4192:11)
+    at ReactDevOverlay (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:5877:9)
+    at HotReload (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:6302:11)
+    at Router (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:3587:11)
+    at ErrorBoundaryHandler (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:4396:9)
+    at ErrorBoundary (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:4443:11)
+    at AppRouter (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:3965:13)
+    at ServerRoot (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:2450:27)
+    at Root (https://4bf03c5ef.na103.preview.abacusai.app/_next/static/chunks/main-app.js?v=1767352258247:2455:11)
+push.(app-pages-browser)/../../../../opt/hostedapp/node/root/app/node_modules/next/dist/client/app-index.js.window.console.error @ main-app.js?v=1767352258247:2371Understand this error
+main-app.js?v=1767352258247:2371 Warning: An error occurred during hydration. The server HTML was replaced with client content in <#document>.
+push.(app-pages-browser)/../../../../opt/hostedapp/node/root/app/node_modules/next/dist/client/app-index.js.window.console.error @ main-app.js?v=1767352258247:2371Understand this error
+5main-app.js?v=1767352258247:24157 Uncaught Error: Text content does not match server-rendered HTML.
+See more info here: https://nextjs.org/docs/messages/react-hydration-error
+    at checkForUnmatchedText (main-app.js?v=1767352258247:59780:11)
+    at diffHydratedProperties (main-app.js?v=1767352258247:62038:9)
+    at hydrateInstance (main-app.js?v=1767352258247:63110:3)
+    at prepareToHydrateHostInstance (main-app.js?v=1767352258247:34229:3)
+    at completeWork (main-app.js?v=1767352258247:46752:13)
+    at completeUnitOfWork (main-app.js?v=1767352258247:52946:14)
+    at performUnitOfWork (main-app.js?v=1767352258247:52742:5)
+    at workLoopConcurrent (main-app.js?v=1767352258247:52717:5)
+    at renderRootConcurrent (main-app.js?v=1767352258247:52673:9)
+    at performConcurrentWorkOnRoot (main-app.js?v=1767352258247:51487:38)
+    at workLoop (main-app.js?v=1767352258247:1243:34)
+    at flushWork (main-app.js?v=1767352258247:1212:14)
+    at MessagePort.performWorkUntilDeadline (main-app.js?v=1767352258247:1521:21)Understand this error
+main-app.js?v=1767352258247:43554 Uncaught Error: There was an error while hydrating. Because the error happened outside of a Suspense boundary, the entire root will switch to client rendering.
+See more info here: https://nextjs.org/docs/messages/react-hydration-error
+    at updateHostRoot (main-app.js?v=1767352258247:43554:57)
+    at beginWork$1 (main-app.js?v=1767352258247:45469:14)
+    at beginWork (main-app.js?v=1767352258247:53910:14)
+    at performUnitOfWork (main-app.js?v=1767352258247:52731:12)
+    at workLoopSync (main-app.js?v=1767352258247:52447:5)
+    at renderRootSync (main-app.js?v=1767352258247:52402:7)
+    at recoverFromConcurrentError (main-app.js?v=1767352258247:51580:20)
+    at performConcurrentWorkOnRoot (main-app.js?v=1767352258247:51525:26)
+    at workLoop (main-app.js?v=1767352258247:1243:34)
+    at flushWork (main-app.js?v=1767352258247:1212:14)
+    at MessagePort.performWorkUntilDeadline (main-app.js?v=1767352258247:1521:21)Understand this error
+main-app.js?v=1767352258247:16062 WebSocket connection to 'wss://4bf03c5ef.na103.preview.abacusai.app/_next/webpack-hmr' failed:
