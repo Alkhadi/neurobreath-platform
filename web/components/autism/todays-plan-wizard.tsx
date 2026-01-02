@@ -1,240 +1,337 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import type { AgeBand, SettingType, Plan } from '@/types/autism'
-import { savePlan, completePlan } from '@/lib/autism/storage'
-import { useAutismProgress } from '@/hooks/useAutismProgress'
-import { toast } from 'sonner'
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { Target, Clock, TrendingUp, Download, Save, CheckCircle2, ArrowRight } from 'lucide-react';
+import { 
+  generateDailyPlan, 
+  ageBandLabels, 
+  mainNeedLabels, 
+  settingLabels,
+  type AgeBand,
+  type MainNeed,
+  type Setting,
+  type DailyPlan
+} from '@/lib/data/todays-plan';
+import { toast } from 'sonner';
 
-const MAIN_NEEDS = [
-  'Transitions',
-  'Sensory overwhelm',
-  'Communication',
-  'Anxiety',
-  'Sleep',
-  'School refusal',
-  'Workplace stress',
-  'Social situations'
-]
+interface TodaysPlanWizardProps {
+  onComplete?: () => void;
+}
 
-export function TodaysPlanWizard() {
-  const [step, setStep] = useState(0)
-  const [ageBand, setAgeBand] = useState<AgeBand>('primary')
-  const [mainNeed, setMainNeed] = useState('')
-  const [setting, setSetting] = useState<SettingType>('home')
-  const [plan, setPlan] = useState<Plan | null>(null)
-  const { logSession } = useAutismProgress()
+export function TodaysPlanWizard({ onComplete }: TodaysPlanWizardProps) {
+  const [step, setStep] = useState<'config' | 'plan'>('config');
+  const [ageBand, setAgeBand] = useState<AgeBand | ''>('');
+  const [mainNeed, setMainNeed] = useState<MainNeed | ''>('');
+  const [setting, setSetting] = useState<Setting | ''>('');
+  const [generatedPlan, setGeneratedPlan] = useState<DailyPlan | null>(null);
 
-  const generatePlan = () => {
-    const planId = `plan-${Date.now()}`
-    const created = new Date().toISOString()
+  const canGenerate = ageBand && mainNeed && setting;
 
-    // Generate contextual plan based on inputs
-    const newPlan: Plan = {
-      id: planId,
-      title: `${mainNeed} support plan`,
-      created,
-      ageBand,
-      mainNeed,
-      setting,
-      doNow: generateDoNow(mainNeed, ageBand, setting),
-      buildThisWeek: generateBuildThisWeek(mainNeed, ageBand, setting),
-      measurement: generateMeasurement(mainNeed)
+  const handleGenerate = () => {
+    if (!canGenerate) return;
+
+    const plan = generateDailyPlan({
+      ageBand: ageBand as AgeBand,
+      mainNeed: mainNeed as MainNeed,
+      setting: setting as Setting
+    });
+
+    setGeneratedPlan(plan);
+    setStep('plan');
+
+    // Award badge for first plan
+    const plansCreated = parseInt(localStorage.getItem('nb:autism:v2:plansCreated') || '0');
+    localStorage.setItem('nb:autism:v2:plansCreated', String(plansCreated + 1));
+
+    if (plansCreated === 0) {
+      toast.success('🎯 Badge Earned: Plan Creator!', {
+        description: 'You created your first Today\'s Plan'
+      });
     }
 
-    setPlan(newPlan)
-    savePlan(newPlan)
-    setStep(3)
-  }
+    onComplete?.();
+  };
 
-  const handleComplete = () => {
-    if (plan) {
-      completePlan(plan.id)
-      logSession(5, 'plan-completion')
-    }
-    toast.success('Plan saved', {
-      description: 'You can track your progress below (stored locally on this device).'
-    })
-    reset()
-  }
+  const handleSave = () => {
+    const plans = JSON.parse(localStorage.getItem('nb:autism:v2:savedPlans') || '[]');
+    plans.push({
+      date: new Date().toISOString(),
+      config: { ageBand, mainNeed, setting },
+      plan: generatedPlan
+    });
+    localStorage.setItem('nb:autism:v2:savedPlans', JSON.stringify(plans));
+    toast.success('Plan saved successfully!');
+  };
 
-  const reset = () => {
-    setStep(0)
-    setPlan(null)
-    setAgeBand('primary')
-    setMainNeed('')
-    setSetting('home')
-  }
+  const handleExportPDF = () => {
+    // Simple text export for now
+    if (!generatedPlan) return;
+
+    const content = `TODAY'S PLAN
+
+Age Band: ${ageBandLabels[ageBand as AgeBand]}
+Main Need: ${mainNeedLabels[mainNeed as MainNeed]}
+Setting: ${settingLabels[setting as Setting]}
+Generated: ${new Date().toLocaleDateString()}
+
+${'='.repeat(50)}
+
+DO NOW (Under 5 minutes each):
+
+${generatedPlan.doNow.map((action, i) => `
+${i + 1}. ${action.title}
+   ${action.description}
+   Duration: ${action.duration}
+   ${action.evidence ? `Evidence: ${action.evidence}` : ''}`).join('\n')}
+
+${'='.repeat(50)}
+
+BUILD THIS WEEK:
+
+${generatedPlan.buildThisWeek.map((action, i) => `
+${i + 1}. ${action.title}
+   ${action.description}
+   Time: ${action.duration}
+   ${action.evidence ? `Evidence: ${action.evidence}` : ''}`).join('\n')}
+
+${'='.repeat(50)}
+
+MEASUREMENT:
+
+${generatedPlan.measurement.title}
+${generatedPlan.measurement.description}
+
+How to measure:
+${generatedPlan.measurement.howTo}
+
+${'='.repeat(50)}
+
+Generated by NeuroBreath Autism Hub
+Evidence-based strategies for autism support
+`;
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `todays-plan-${new Date().toISOString().split('T')[0]}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    toast.success('Plan exported successfully!');
+  };
+
+  const handleReset = () => {
+    setStep('config');
+    setAgeBand('');
+    setMainNeed('');
+    setSetting('');
+    setGeneratedPlan(null);
+  };
 
   return (
-    <section id="todays-plan" className="scroll-mt-24 py-16 md:py-20 bg-white">
-      <div className="container max-w-4xl mx-auto px-4">
-        <div className="mb-8 flex flex-col gap-2">
-          <p className="text-sm font-medium text-blue-700">Quick start</p>
-          <h2 className="text-3xl font-bold text-gray-900">Today's plan</h2>
-          <p className="text-gray-600">A practical 3-step plan with do-now actions, a weekly build, and a simple measure.</p>
+    <Card className="border-2 border-blue-200 dark:border-blue-900">
+      <CardHeader>
+        <div className="flex items-center gap-3">
+          <Target className="h-8 w-8 text-blue-600" />
+          <div>
+            <CardTitle className="text-2xl">Today\'s Plan Wizard</CardTitle>
+            <CardDescription>
+              Generate a practical, evidence-based plan tailored to your situation
+            </CardDescription>
+          </div>
         </div>
-
-        <Card className="p-6 md:p-8 bg-white/80 backdrop-blur shadow-sm">
-          {step === 0 && (
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Age band:</label>
-                <Select value={ageBand} onValueChange={(v) => setAgeBand(v as AgeBand)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="early-years">Early years (0-5)</SelectItem>
-                    <SelectItem value="primary">Primary (5-11)</SelectItem>
-                    <SelectItem value="secondary">Secondary (11-18)</SelectItem>
-                    <SelectItem value="adult">Adult (18+)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <Button onClick={() => setStep(1)} className="w-full">Next</Button>
-            </div>
-          )}
-
-          {step === 1 && (
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Main need right now:</label>
-                <Select value={mainNeed} onValueChange={setMainNeed}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choose..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MAIN_NEEDS.map(need => (
-                      <SelectItem key={need} value={need}>{need}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex gap-3">
-                <Button variant="outline" onClick={() => setStep(0)}>Back</Button>
-                <Button onClick={() => setStep(2)} disabled={!mainNeed} className="flex-1">Next</Button>
-              </div>
-            </div>
-          )}
-
-          {step === 2 && (
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Setting:</label>
-                <Select value={setting} onValueChange={(v) => setSetting(v as SettingType)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="home">Home</SelectItem>
-                    <SelectItem value="classroom">Classroom</SelectItem>
-                    <SelectItem value="community">Community</SelectItem>
-                    <SelectItem value="workplace">Workplace</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex gap-3">
-                <Button variant="outline" onClick={() => setStep(1)}>Back</Button>
-                <Button onClick={generatePlan} className="flex-1">Generate Plan</Button>
-              </div>
-            </div>
-          )}
-
-          {step === 3 && plan && (
-            <div className="space-y-6">
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <h3 className="font-bold text-lg text-gray-900 mb-2">{plan.title}</h3>
-                <p className="text-sm text-gray-600">Created: {new Date(plan.created).toLocaleDateString()}</p>
-              </div>
-
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-3">✅ Do now (under 5 min):</h4>
-                <ul className="space-y-2">
-                  {plan.doNow.map(step => (
-                    <li key={step.id} className="flex items-start gap-2 text-sm">
-                      <span className="text-green-600 mt-0.5">•</span>
-                      <span>{step.title}</span>
-                    </li>
+      </CardHeader>
+      <CardContent>
+        {step === 'config' && (
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Age Band</label>
+              <Select value={ageBand} onValueChange={(val) => setAgeBand(val as AgeBand)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select age band" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(ageBandLabels).map(([key, label]) => (
+                    <SelectItem key={key} value={key}>{label}</SelectItem>
                   ))}
-                </ul>
-              </div>
+                </SelectContent>
+              </Select>
+            </div>
 
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-3">🔨 Build this week:</h4>
-                <ul className="space-y-2">
-                  {plan.buildThisWeek.map(step => (
-                    <li key={step.id} className="flex items-start gap-2 text-sm">
-                      <span className="text-blue-600 mt-0.5">•</span>
-                      <span>{step.title}</span>
-                    </li>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Main Need Right Now</label>
+              <Select value={mainNeed} onValueChange={(val) => setMainNeed(val as MainNeed)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select main need" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(mainNeedLabels).map(([key, label]) => (
+                    <SelectItem key={key} value={key}>{label}</SelectItem>
                   ))}
-                </ul>
-              </div>
+                </SelectContent>
+              </Select>
+            </div>
 
-              <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                <h4 className="font-semibold text-gray-900 mb-2">📊 Measure:</h4>
-                <p className="text-sm text-gray-700">{plan.measurement}</p>
-              </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Setting</label>
+              <Select value={setting} onValueChange={(val) => setSetting(val as Setting)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select setting" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(settingLabels).map(([key, label]) => (
+                    <SelectItem key={key} value={key}>{label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-              <div className="flex flex-wrap gap-3">
-                <Button onClick={handleComplete} className="flex-1">Mark Complete & Save</Button>
-                <Button variant="outline" onClick={reset}>Start New Plan</Button>
+            <Button 
+              onClick={handleGenerate} 
+              disabled={!canGenerate}
+              className="w-full"
+              size="lg"
+            >
+              Generate My Plan
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        )}
+
+        {step === 'plan' && generatedPlan && (
+          <div className="space-y-6">
+            {/* Config Summary */}
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="secondary">{ageBandLabels[ageBand as AgeBand]}</Badge>
+              <Badge variant="secondary">{mainNeedLabels[mainNeed as MainNeed]}</Badge>
+              <Badge variant="secondary">{settingLabels[setting as Setting]}</Badge>
+            </div>
+
+            <Separator />
+
+            {/* Do Now Section */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <Clock className="h-5 w-5 text-green-600" />
+                <h3 className="text-lg font-semibold">Do Now (Under 5 Minutes)</h3>
+              </div>
+              <div className="space-y-4">
+                {generatedPlan.doNow.map((action, index) => (
+                  <Card key={index} className="border-green-200 dark:border-green-900">
+                    <CardContent className="pt-4">
+                      <div className="flex gap-3">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center font-semibold text-green-700 dark:text-green-300">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1 space-y-2">
+                          <h4 className="font-semibold">{action.title}</h4>
+                          <p className="text-sm text-muted-foreground">{action.description}</p>
+                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {action.duration}
+                            </span>
+                            {action.evidence && (
+                              <span className="flex items-center gap-1">
+                                <CheckCircle2 className="h-3 w-3" />
+                                {action.evidence}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </div>
-          )}
-        </Card>
-      </div>
-    </section>
-  )
-}
 
-// Helper functions to generate contextual plans
-function generateDoNow(need: string, age: AgeBand, setting: SettingType) {
-  const base = [
-    { id: '1', title: 'Take 3 slow breaths (belly breathing)', description: '', duration: '1 min', completed: false },
-    { id: '2', title: 'Identify one trigger or early sign to watch for', description: '', duration: '2 min', completed: false },
-    { id: '3', title: 'Choose one small support to try today', description: '', duration: '2 min', completed: false }
-  ]
-  
-  if (need.includes('Sensory')) {
-    base[2].title = 'Create a mini calm kit (3 items: fidget, headphones, weighted item)'
-  } else if (need.includes('Transitions')) {
-    base[2].title = 'Make a simple Now/Next visual (2 pictures)'
-  } else if (need.includes('Communication')) {
-    base[2].title = 'Write down 5 core words/symbols to model today'
-  }
-  
-  return base
-}
+            <Separator />
 
-function generateBuildThisWeek(need: string, age: AgeBand, setting: SettingType) {
-  const base = [
-    { id: 'w1', title: 'Practice the "do now" actions daily', description: '', duration: '', completed: false },
-    { id: 'w2', title: 'Observe and note what helps most', description: '', duration: '', completed: false },
-    { id: 'w3', title: 'Share your approach with one other person (co-parent, teacher, colleague)', description: '', duration: '', completed: false }
-  ]
-  
-  if (need.includes('Visual')) {
-    base[1].title = 'Expand visual schedule to include 5-7 daily activities'
-  } else if (need.includes('Anxiety')) {
-    base[1].title = 'Build a "calm menu" with 5 regulation strategies'
-  }
-  
-  return base
-}
+            {/* Build This Week Section */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <TrendingUp className="h-5 w-5 text-blue-600" />
+                <h3 className="text-lg font-semibold">Build This Week</h3>
+              </div>
+              <div className="space-y-4">
+                {generatedPlan.buildThisWeek.map((action, index) => (
+                  <Card key={index} className="border-blue-200 dark:border-blue-900">
+                    <CardContent className="pt-4">
+                      <div className="flex gap-3">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center font-semibold text-blue-700 dark:text-blue-300">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1 space-y-2">
+                          <h4 className="font-semibold">{action.title}</h4>
+                          <p className="text-sm text-muted-foreground">{action.description}</p>
+                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {action.duration}
+                            </span>
+                            {action.evidence && (
+                              <span className="flex items-center gap-1">
+                                <CheckCircle2 className="h-3 w-3" />
+                                {action.evidence}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
 
-function generateMeasurement(need: string) {
-  if (need.includes('Transitions')) {
-    return 'Count successful transitions this week (no meltdown/refusal). Target: 50% improvement.'
-  } else if (need.includes('Anxiety')) {
-    return 'Rate anxiety 1-10 before/after trying a calm strategy. Track daily.'
-  } else if (need.includes('Sensory')) {
-    return 'Note how many times calm corner/kit is used. Does it help prevent escalation?'
-  }
-  return 'Track frequency of target behaviour. Note any patterns or improvements.'
-}
+            <Separator />
 
+            {/* Measurement Section */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <Target className="h-5 w-5 text-purple-600" />
+                <h3 className="text-lg font-semibold">Track Progress</h3>
+              </div>
+              <Card className="border-purple-200 dark:border-purple-900 bg-purple-50 dark:bg-purple-950/20">
+                <CardContent className="pt-4 space-y-2">
+                  <h4 className="font-semibold">{generatedPlan.measurement.title}</h4>
+                  <p className="text-sm text-muted-foreground">{generatedPlan.measurement.description}</p>
+                  <div className="mt-2 p-3 bg-white dark:bg-gray-900 rounded-md">
+                    <p className="text-sm"><strong>How to measure:</strong></p>
+                    <p className="text-sm text-muted-foreground mt-1">{generatedPlan.measurement.howTo}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-3">
+              <Button onClick={handleSave} variant="outline">
+                <Save className="mr-2 h-4 w-4" />
+                Save Plan
+              </Button>
+              <Button onClick={handleExportPDF} variant="outline">
+                <Download className="mr-2 h-4 w-4" />
+                Export PDF
+              </Button>
+              <Button onClick={handleReset} variant="ghost">
+                Create New Plan
+              </Button>
+            </div>
+
+            <div className="text-xs text-muted-foreground text-center pt-4">
+              All strategies are evidence-based and referenced to NICE, NHS, CDC, and peer-reviewed research.
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}

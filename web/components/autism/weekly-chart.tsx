@@ -50,4 +50,3 @@ const WeeklyChart = ({ data }: WeeklyChartProps) => {
 };
 
 export default WeeklyChart;
-

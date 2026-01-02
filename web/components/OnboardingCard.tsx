@@ -191,10 +191,11 @@ export function OnboardingCard({ deviceId: propDeviceId, profileStatus: propProf
     <Card className="relative overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-card via-card to-primary/5">
       {/* Accordion Header Button */}
       <button
+        type="button"
         onClick={handleHeaderClick}
         className="w-full p-6 sm:p-8 flex items-center gap-4 hover:bg-muted/10 transition-colors text-left focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-t-lg cursor-pointer group"
         aria-label={isExpanded ? 'Collapse onboarding' : 'Expand onboarding'}
-        aria-expanded={isExpanded}
+        aria-expanded={isExpanded ? "true" : "false"}
         aria-controls="onboarding-content"
       >
         <div className="p-2.5 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 ring-2 ring-primary/20 flex-shrink-0 group-hover:scale-105 transition-transform">
