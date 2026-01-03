@@ -195,6 +195,188 @@ export const pageBuddyConfigs: Record<string, PageBuddyConfig> = {
       }
     ],
     keywords: ['neurobreath', 'neurodiversity', 'mental health', 'support', 'tools', 'adhd', 'autism', 'parents', 'teachers', 'school']
+  },
+  '/blog': {
+    pageId: 'blog',
+    pageName: 'Blog & Resources',
+    audiences: ['everyone', 'neurodivergent individuals', 'parents', 'teachers', 'carers'],
+    welcomeMessage: `Welcome to the **NeuroBreath Blog**! 📚✨\n\nI'm here to help you explore our evidence-based articles, research summaries, and practical guides.\n\n**What you'll find:**\n• 📖 In-depth articles on ADHD & autism\n• 🔬 Research-backed strategies\n• 💡 Practical tips for daily life\n• 🎓 Educational resources\n\nAll content is written with neurodivergent readers in mind. What would you like to learn about?`,
+    quickQuestions: [
+      'Show me ADHD articles',
+      'Show me autism articles',
+      'What are the latest posts?',
+      'Find research summaries',
+      'Take me to the main hubs'
+    ],
+    sections: [
+      {
+        id: 'articles',
+        name: 'Blog Articles',
+        description: 'Evidence-based articles on neurodiversity, ADHD, autism, and mental health',
+        tips: ['Browse by category or search for specific topics', 'All articles include source citations', 'Share helpful articles with your support network']
+      }
+    ],
+    keywords: ['blog', 'articles', 'research', 'guides', 'tips', 'evidence', 'neurodiversity']
+  },
+  '/tools': {
+    pageId: 'tools',
+    pageName: 'Interactive Tools',
+    audiences: ['everyone', 'neurodivergent individuals', 'parents', 'teachers'],
+    welcomeMessage: `Welcome to **Interactive Tools**! 🛠️✨\n\nI'm here to help you discover engaging tools designed for neurodivergent minds.\n\n**Available tools:**\n• 🎮 Focus games & activities\n• 🧘 Breathing exercises\n• 🎯 ADHD focus trainers\n• 🌈 Sensory-friendly activities\n• 📊 Progress trackers\n\nAll tools are designed with accessibility and neurodiversity in mind. What would you like to try?`,
+    quickQuestions: [
+      'Show me focus tools',
+      'What breathing exercises are available?',
+      'Show me ADHD tools',
+      'What are the interactive games?',
+      'How do I track progress?'
+    ],
+    sections: [
+      {
+        id: 'focus-tools',
+        name: 'Focus Tools',
+        description: 'Interactive tools to improve concentration and attention',
+        tips: ['Start with shorter sessions', 'Track your progress over time', 'Adjust difficulty as needed']
+      },
+      {
+        id: 'breathing-tools',
+        name: 'Breathing Tools',
+        description: 'Guided breathing exercises for calm and emotional regulation',
+        tips: ['Choose exercises based on your current state', 'Use regularly for best results', 'Safe for all ages']
+      }
+    ],
+    keywords: ['tools', 'interactive', 'focus', 'breathing', 'games', 'activities', 'training']
+  },
+  '/breathing': {
+    pageId: 'breathing',
+    pageName: 'Breathing Exercises',
+    audiences: ['everyone', 'neurodivergent individuals', 'parents', 'teachers'],
+    welcomeMessage: `Welcome to **Breathing Exercises**! 🌬️✨\n\nI'm here to guide you through calming breathing techniques.\n\n**Available exercises:**\n• 📦 Box Breathing - Equal counts for calm\n• 🌊 Coherent Breathing - Balance your nervous system\n• 🚨 SOS 60-Second Calm - Quick stress relief\n• 🌟 Extended Exhale - Activate relaxation\n\nAll techniques are safe, evidence-based, and suitable for all ages. Which would you like to try?`,
+    quickQuestions: [
+      'Which exercise should I start with?',
+      'Show me quick calming techniques',
+      'What is Box Breathing?',
+      'How do breathing exercises help?',
+      'Are these safe for children?'
+    ],
+    sections: [
+      {
+        id: 'exercises',
+        name: 'Breathing Techniques',
+        description: 'Guided breathing exercises with timers and instructions',
+        tips: ['Start with shorter sessions', 'Stop if you feel dizzy', 'Practice regularly for best results', 'Great for managing anxiety and stress']
+      }
+    ],
+    keywords: ['breathing', 'calm', 'anxiety', 'stress', 'relaxation', 'regulation', 'techniques']
+  },
+  '/resources': {
+    pageId: 'resources',
+    pageName: 'Resources & Downloads',
+    audiences: ['parents', 'teachers', 'carers'],
+    welcomeMessage: `Welcome to **Resources & Downloads**! 📄✨\n\nI'm here to help you find printable templates, guides, and support documents.\n\n**Available resources:**\n• 📋 EHCP/IEP request templates\n• 📊 Progress tracking sheets\n• 🎯 Visual schedules\n• 💼 Workplace adjustment letters\n• 🏫 School support documents\n\nAll resources are evidence-based and ready to print. What do you need?`,
+    quickQuestions: [
+      'Show me EHCP templates',
+      'Where are IEP resources?',
+      'Find visual schedules',
+      'Show me workplace templates',
+      'What can I print for teachers?'
+    ],
+    sections: [
+      {
+        id: 'downloads',
+        name: 'Downloadable Resources',
+        description: 'Printable templates, letters, and support documents',
+        tips: ['All PDFs are printer-friendly', 'Customize templates before printing', 'Share with schools and workplaces', 'Free to use for personal needs']
+      }
+    ],
+    keywords: ['resources', 'downloads', 'templates', 'printable', 'ehcp', 'iep', 'visual', 'schedules']
+  },
+  '/teacher-quick-pack': {
+    pageId: 'teacher-quick-pack',
+    pageName: 'Teacher Quick Pack',
+    audiences: ['teachers', 'school staff'],
+    welcomeMessage: `Welcome, Teachers! 👩‍🏫✨\n\nI'm here to help you access quick, practical classroom tools.\n\n**Quick Pack includes:**\n• 🎯 Ready-to-use strategies\n• 📋 Classroom adaptations\n• 🧩 Sensory support ideas\n• 📊 Behavior tracking templates\n• 🏫 SEND support guides\n\nAll resources are NICE & DfE evidence-based. What do you need for your classroom?`,
+    quickQuestions: [
+      'Show me ADHD classroom strategies',
+      'What autism supports are available?',
+      'Find sensory tools',
+      'Show me behavior tracking',
+      'Where are SEND guides?'
+    ],
+    sections: [
+      {
+        id: 'quick-strategies',
+        name: 'Quick Strategies',
+        description: 'Fast, practical classroom interventions for ADHD & autism',
+        tips: ['Use during lessons for immediate support', 'Adapt to your classroom needs', 'Share with teaching assistants']
+      }
+    ],
+    keywords: ['teacher', 'classroom', 'strategies', 'send', 'support', 'adaptations', 'behavior']
+  },
+  '/schools': {
+    pageId: 'schools',
+    pageName: 'Schools & Education',
+    audiences: ['teachers', 'school staff', 'parents'],
+    welcomeMessage: `Welcome to **Schools & Education**! 🏫✨\n\nI'm here to help schools and families work together.\n\n**What's here:**\n• 🎓 SEND support guidance\n• 📚 Evidence-based teaching strategies\n• 🤝 Home-school collaboration tools\n• 📊 Progress monitoring systems\n• 📋 Legal rights information\n\nSupporting neurodivergent learners together. How can I help?`,
+    quickQuestions: [
+      'What are SEND rights?',
+      'Show me teaching strategies',
+      'How do I request support?',
+      'Find home-school tools',
+      'What is an EHCP?'
+    ],
+    sections: [
+      {
+        id: 'send-guidance',
+        name: 'SEND Guidance',
+        description: 'Special Educational Needs and Disability support information',
+        tips: ['Know your legal rights', 'Document everything', 'Collaborate with schools', 'Use official templates']
+      }
+    ],
+    keywords: ['schools', 'education', 'send', 'ehcp', 'iep', 'support', 'teaching', 'rights']
+  },
+  '/get-started': {
+    pageId: 'get-started',
+    pageName: 'Getting Started',
+    audiences: ['everyone', 'new users'],
+    welcomeMessage: `Welcome! Let's Get Started! 🚀✨\n\nI'm here to help you navigate NeuroBreath for the first time.\n\n**Quick Start Guide:**\n• 🎯 Choose your hub (ADHD or Autism)\n• 📊 Explore interactive tools\n• 📚 Browse evidence-based strategies\n• 🏆 Start tracking progress\n• 📄 Find printable resources\n\nLet's find what works for you! What brings you here today?`,
+    quickQuestions: [
+      'I have ADHD - where do I start?',
+      'I am autistic - show me resources',
+      'I am a parent - what should I use?',
+      'I am a teacher - show me tools',
+      'How does progress tracking work?'
+    ],
+    sections: [
+      {
+        id: 'onboarding',
+        name: 'Getting Started',
+        description: 'Your introduction to NeuroBreath features and tools',
+        tips: ['Take your time exploring', 'All progress is saved automatically', 'Revisit this guide anytime', 'Ask me questions as you go!']
+      }
+    ],
+    keywords: ['getting started', 'onboarding', 'welcome', 'introduction', 'guide', 'first time']
+  },
+  '/about': {
+    pageId: 'about',
+    pageName: 'About NeuroBreath',
+    audiences: ['everyone'],
+    welcomeMessage: `Learn About **NeuroBreath**! 💙✨\n\nI'm here to share our story and mission.\n\n**About Us:**\n• 🎯 Our mission: Empower neurodivergent communities\n• 🔬 Evidence-based approach (NICE, CDC, NHS)\n• 🤝 Built with neurodivergent input\n• 🌍 Supporting families worldwide\n• 💝 Free, accessible tools for all\n\nWant to know more about who we are and what we do?`,
+    quickQuestions: [
+      'What is NeuroBreath?',
+      'Who created this platform?',
+      'How is this evidence-based?',
+      'Is this free to use?',
+      'How can I support this project?'
+    ],
+    sections: [
+      {
+        id: 'mission',
+        name: 'Our Mission',
+        description: 'Why NeuroBreath exists and who we serve',
+        tips: ['Learn about our values', 'See our evidence sources', 'Meet the team', 'Join our community']
+      }
+    ],
+    keywords: ['about', 'mission', 'team', 'story', 'values', 'evidence', 'who we are']
   }
 };
 
