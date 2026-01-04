@@ -175,9 +175,20 @@ export const pageBuddyConfigs: Record<string, PageBuddyConfig> = {
     welcomeMessage: `Welcome to **NeuroBreath**! 🧠✨\n\nI'm your friendly guide to this neurodiversity support platform.\n\n**Our Mission:** Empower neurodivergent people, parents, teachers, and carers with one trusted hub.\n\n**We offer:**\n• 🎯 **ADHD Hub** – Focus tools, gamified quests, evidence-based strategies\n• 🌟 **Autism Hub** – Calming techniques, education pathways, printable resources\n• 📊 Safe progress tracking\n• 🏠 Home-school collaboration tools\n\nAll content is evidence-informed, drawing from NICE, CDC, NHS, and peer-reviewed research.\n\nWhich hub would you like to explore?`,
     quickQuestions: [
       'What is NeuroBreath?',
+      'What tools are available?',
       'Take me to the ADHD Hub',
       'Take me to the Autism Hub',
-      'What tools are available?',
+      'Tell me about Dyslexia support',
+      'Show me breathing techniques',
+      'Help with Anxiety',
+      'Depression support',
+      'Stress management tools',
+      'Sleep support',
+      'What about Bipolar?',
+      'Low mood & burnout help',
+      'Parent support available?',
+      'Teacher resources',
+      'Carer support tools',
       'How is this evidence-based?'
     ],
     sections: [
