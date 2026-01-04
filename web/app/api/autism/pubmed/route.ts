@@ -15,11 +15,14 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ articles })
   } catch (error) {
-    console.error('PubMed API error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch PubMed results' },
-      { status: 500 }
-    )
+    console.error('[PubMed API] Error:', error)
+    // Return 200 with empty array instead of 500 to prevent console errors
+    // PubMed API failures are expected (CORS, rate limits, network issues)
+    return NextResponse.json({
+      articles: [],
+      error: 'PubMed service temporarily unavailable',
+      fallback: true
+    })
   }
 }
 

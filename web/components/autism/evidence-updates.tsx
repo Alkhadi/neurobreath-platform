@@ -19,12 +19,26 @@ export function EvidenceUpdates() {
     setSelectedPreset(query)
     try {
       const res = await fetch(`/api/autism/pubmed?query=${encodeURIComponent(query)}`)
+      
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`)
+      }
+      
       const data = await res.json()
+      
+      // Check if this is a fallback response
+      if (data.fallback) {
+        toast.info('PubMed temporarily unavailable', {
+          description: 'Showing cached results or try again later.'
+        })
+      }
+      
       setPubmedResults(data.articles || [])
     } catch (e) {
-      console.error('PubMed fetch error:', e)
-      toast.error('Could not fetch PubMed', {
-        description: 'Please try again in a moment.'
+      // Silently handle - don't spam console with expected errors
+      setPubmedResults([])
+      toast.error('Could not fetch PubMed results', {
+        description: 'The service may be temporarily unavailable.'
       })
     } finally {
       setLoading(false)
