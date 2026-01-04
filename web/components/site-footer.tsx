@@ -48,8 +48,13 @@ export function SiteFooter() {
                   <Link href="/adhd">ADHD</Link> ·{' '}
                   <Link href="/conditions/adhd-parent">ADHD Parent</Link> ·{' '}
                   <Link href="/conditions/adhd-teacher">ADHD Teacher</Link> ·{' '}
-                  <Link href="/conditions/adhd-carer">ADHD Carers</Link> ·{' '}
+                  <Link href="/conditions/adhd-carer">ADHD Carers</Link>
+                </p>
+                <p>
                   <Link href="/conditions/dyslexia">Dyslexia Hub</Link> ·{' '}
+                  <Link href="/conditions/dyslexia-parent">Dyslexia Parent</Link> ·{' '}
+                  <Link href="/conditions/dyslexia-teacher">Dyslexia Teacher</Link> ·{' '}
+                  <Link href="/conditions/dyslexia-carer">Dyslexia Carers</Link> ·{' '}
                   <Link href="/dyslexia-reading-training">Dyslexia Training</Link>
                 </p>
                 <p>

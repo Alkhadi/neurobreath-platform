@@ -81,6 +81,9 @@ export function SiteHeader() {
                     <Link href="/conditions/adhd-teacher" onClick={closeMegaMenu}>🎓 ADHD Teacher Support</Link>
                     <Link href="/conditions/adhd-carer" onClick={closeMegaMenu}>❤️ ADHD Carers Support</Link>
                     <Link href="/conditions/dyslexia" onClick={closeMegaMenu}>📖 Dyslexia Hub</Link>
+                    <Link href="/conditions/dyslexia-parent" onClick={closeMegaMenu}>👨‍👩‍👧 Dyslexia Parent Support</Link>
+                    <Link href="/conditions/dyslexia-teacher" onClick={closeMegaMenu}>🎓 Dyslexia Teacher Support</Link>
+                    <Link href="/conditions/dyslexia-carer" onClick={closeMegaMenu}>❤️ Dyslexia Carers Support</Link>
                     <Link href="/dyslexia-reading-training" onClick={closeMegaMenu}>📚 Dyslexia Reading Training</Link>
                   </div>
                   <div className="nb-mega-menu-section">
