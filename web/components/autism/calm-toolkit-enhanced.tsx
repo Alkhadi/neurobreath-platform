@@ -286,17 +286,16 @@ export function CalmToolkitEnhanced({ onProgressUpdate }: CalmToolkitEnhancedPro
   }, []);
 
   return (
-    <section id="calm" className="py-16 bg-gradient-to-br from-blue-50 via-green-50 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 scroll-mt-20 relative">
-      <div className="container mx-auto px-4 relative z-0">
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Wind className="h-8 w-8 text-blue-600" />
-            <h2 className="text-3xl md:text-4xl font-bold">Calm & Co-regulation Toolkit</h2>
-          </div>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Science-backed breathing exercises and calming techniques. Track your mood and build your calm practice.
-          </p>
+    <div className="mx-auto px-4 relative z-0" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <div className="text-center mb-12">
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <Wind className="h-8 w-8 text-blue-600" />
+          <h2 className="text-3xl md:text-4xl font-bold">Calm & Co-regulation Toolkit</h2>
         </div>
+        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          Science-backed breathing exercises and calming techniques. Track your mood and build your calm practice.
+        </p>
+      </div>
 
         <Tabs defaultValue="breathing" className="w-full">
           <TabsList className="flex w-full max-w-md mx-auto mb-8 relative z-50 bg-muted">
@@ -336,8 +335,7 @@ export function CalmToolkitEnhanced({ onProgressUpdate }: CalmToolkitEnhancedPro
             </div>
           </TabsContent>
         </Tabs>
-      </div>
-    </section>
+    </div>
   );
 }
 

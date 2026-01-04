@@ -145,16 +145,15 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
   const selectedSkillData = selectedSkill ? skills.find(s => s.id === selectedSkill) : null;
 
   return (
-    <section id="skills" className="py-16 scroll-mt-20">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Skills Library
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Evidence-based strategies to support autism. Practice, master, and track your progress.
-          </p>
-        </div>
+    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <div className="text-center mb-12">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          Skills Library
+        </h2>
+        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          Evidence-based strategies to support autism. Practice, master, and track your progress.
+        </p>
+      </div>
 
         {/* Search and Filters */}
         <div className="mb-8 space-y-4">
@@ -217,11 +216,12 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
             const mastery = progress?.skillMastery?.[skill.id];
             const isFavorite = progress?.favoriteSkills?.includes(skill.id) || false;
             const masteryProgress = mastery ? (mastery.level / 5) * 100 : 0;
+            const isFullWidth = skill.id === 'peer-support';
             
             return (
               <Card 
                 key={skill.id} 
-                className="group hover:shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden"
+                className={`group hover:shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden ${isFullWidth ? 'col-span-full' : ''}`}
                 onClick={() => setSelectedSkill(skill.id)}
               >
                 {/* Favorite button */}
@@ -404,7 +404,6 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
             </div>
           </DialogContent>
         </Dialog>
-      </div>
-    </section>
+    </div>
   );
 }

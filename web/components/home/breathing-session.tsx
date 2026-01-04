@@ -1303,12 +1303,6 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
                 <button className="btn" onClick={handleStop}>Stop</button>
               </div>
             </section>
-
-            {/* Footer */}
-            <div className="footer">
-              <p>© {new Date().getFullYear()} <strong>NeuroBreath</strong> — Empowering minds through breath.</p>
-              <p className="mt-2">Educational content only, not medical advice. <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/support-us">Support Us</a></p>
-            </div>
           </div>
         )}
 
@@ -1352,11 +1346,6 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
                 <button className="btn btn-success" onClick={handleStartSession}>Begin Session</button>
                 <button className="btn" onClick={() => setStage('quick')}>Back to Setup</button>
               </div>
-            </div>
-
-            <div className="footer">
-              <p>© {new Date().getFullYear()} <strong>NeuroBreath</strong> — Empowering minds through breath.</p>
-              <p className="mt-2">Educational content only, not medical advice. <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/support-us">Support Us</a></p>
             </div>
           </div>
         )}
@@ -1486,11 +1475,6 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
                 }}>Again</button>
                 <button className="btn" onClick={onClose}>Back to Hub</button>
               </div>
-            </div>
-
-            <div className="footer">
-              <p>© {new Date().getFullYear()} <strong>NeuroBreath</strong> — Empowering minds through breath.</p>
-              <p className="mt-2">Educational content only, not medical advice. <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/support-us">Support Us</a></p>
             </div>
           </div>
         )}
@@ -2118,31 +2102,6 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
         .ring.progress {
           stroke: #10b981;
           transition: stroke-dashoffset 0.3s linear;
-        }
-
-        /* Footer */
-        .footer {
-          text-align: center;
-          padding: 32px 16px;
-          font-size: 0.875rem;
-          color: #6b7280;
-          border-top: 1px solid #e5e7eb;
-          margin-top: 32px;
-          background: white;
-        }
-
-        .footer strong {
-          color: #111827;
-        }
-
-        .footer a {
-          color: #3b82f6;
-          text-decoration: none;
-          font-weight: 500;
-        }
-
-        .footer a:hover {
-          text-decoration: underline;
         }
 
         /* Animations */

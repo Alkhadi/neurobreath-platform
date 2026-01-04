@@ -526,14 +526,15 @@ export function PhonicsSoundsLab() {
         </CardHeader>
         <CardContent className="p-3 sm:p-4 md:p-6">
           <div className="text-center space-y-3 sm:space-y-4">
-            {/* Preview alphabet: keep Z aligned with Y on all screens */}
-            <div className="md:hidden space-y-2">
-              <div className="flex justify-center gap-1 sm:gap-2">
+            {/* Preview alphabet - Clean 3-row layout (9 + 9 + 8 letters) */}
+            <div className="space-y-1.5 sm:space-y-2">
+              {/* Row 1: A-I (9 letters) */}
+              <div className="flex justify-center gap-1 sm:gap-1.5 md:gap-2">
                 {ALPHABET.slice(0, 9).map((letter) => (
                   <span
                     key={letter}
                     className={cn(
-                      "w-6 h-6 sm:w-8 sm:h-8 rounded-md sm:rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold transition-all flex-shrink-0",
+                      "w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-md sm:rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold transition-all flex-shrink-0",
                       completedLetters.has(letter) ? "bg-green-500 text-white" : "bg-muted text-muted-foreground"
                     )}
                   >
@@ -541,12 +542,13 @@ export function PhonicsSoundsLab() {
                   </span>
                 ))}
               </div>
-              <div className="flex justify-center gap-1 sm:gap-2">
+              {/* Row 2: J-R (9 letters) */}
+              <div className="flex justify-center gap-1 sm:gap-1.5 md:gap-2">
                 {ALPHABET.slice(9, 18).map((letter) => (
                   <span
                     key={letter}
                     className={cn(
-                      "w-6 h-6 sm:w-8 sm:h-8 rounded-md sm:rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold transition-all flex-shrink-0",
+                      "w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-md sm:rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold transition-all flex-shrink-0",
                       completedLetters.has(letter) ? "bg-green-500 text-white" : "bg-muted text-muted-foreground"
                     )}
                   >
@@ -554,12 +556,13 @@ export function PhonicsSoundsLab() {
                   </span>
                 ))}
               </div>
-              <div className="flex justify-center gap-1 sm:gap-2">
+              {/* Row 3: S-Z (8 letters) */}
+              <div className="flex justify-center gap-1 sm:gap-1.5 md:gap-2">
                 {ALPHABET.slice(18, 26).map((letter) => (
                   <span
                     key={letter}
                     className={cn(
-                      "w-6 h-6 sm:w-8 sm:h-8 rounded-md sm:rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold transition-all flex-shrink-0",
+                      "w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-md sm:rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold transition-all flex-shrink-0",
                       completedLetters.has(letter) ? "bg-green-500 text-white" : "bg-muted text-muted-foreground"
                     )}
                   >
@@ -567,20 +570,6 @@ export function PhonicsSoundsLab() {
                   </span>
                 ))}
               </div>
-            </div>
-
-            <div className="hidden md:grid grid-cols-13 gap-1 sm:gap-2 justify-items-center max-w-fit mx-auto">
-              {ALPHABET.map((letter) => (
-                <span
-                  key={letter}
-                  className={cn(
-                    "w-6 h-6 sm:w-8 sm:h-8 rounded-md sm:rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold transition-all flex-shrink-0",
-                    completedLetters.has(letter) ? "bg-green-500 text-white" : "bg-muted text-muted-foreground"
-                  )}
-                >
-                  {letter}
-                </span>
-              ))}
             </div>
             <Button 
               onClick={() => { setIsOpen(true); handleStart(); }} 

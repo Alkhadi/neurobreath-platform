@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 
 export const MythsFacts = () => {
   return (
-    <section className="py-12 bg-amber-50 dark:bg-amber-950/10">
-      <div className="container mx-auto max-w-6xl px-4">
+    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <section className="py-12 bg-amber-50 dark:bg-amber-950/10">
         <div className="flex items-center gap-3 mb-8">
           <Lightbulb className="h-8 w-8 text-amber-600" />
           <h2 className="text-3xl font-bold">Myths & Facts</h2>
@@ -51,7 +51,7 @@ export const MythsFacts = () => {
             </Card>
           ))}
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 };

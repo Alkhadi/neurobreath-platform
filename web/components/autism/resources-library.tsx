@@ -169,9 +169,10 @@ export function ResourcesLibrary() {
   }
 
   return (
-    <section className="space-y-6">
-      <Card className="border-indigo-200 dark:border-indigo-800 bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-950/20 dark:to-background">
-        <CardHeader>
+    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <section className="space-y-6">
+        <Card className="border-indigo-200 dark:border-indigo-800 bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-950/20 dark:to-background">
+          <CardHeader>
           <div className="flex items-start gap-3">
             <div className="p-2 bg-indigo-100 dark:bg-indigo-900 rounded-lg">
               <FileText className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
@@ -458,5 +459,6 @@ export function ResourcesLibrary() {
         </Dialog>
       )}
     </section>
+    </div>
   );
 }

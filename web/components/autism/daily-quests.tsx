@@ -56,17 +56,16 @@ export function DailyQuests({ onUpdate }: DailyQuestsProps) {
   };
 
   return (
-    <section id="quests" className="py-16 bg-gradient-to-br from-purple-50 via-pink-50 to-white dark:from-gray-900 dark:via-purple-950 dark:to-gray-900 scroll-mt-20">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Trophy className="h-8 w-8 text-yellow-500" />
-            <h2 className="text-3xl md:text-4xl font-bold">Daily Quests</h2>
-          </div>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Complete daily challenges to earn bonus XP and build consistent practice habits.
-          </p>
+    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <div className="text-center mb-12">
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <Trophy className="h-8 w-8 text-yellow-500" />
+          <h2 className="text-3xl md:text-4xl font-bold">Daily Quests</h2>
         </div>
+        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          Complete daily challenges to earn bonus XP and build consistent practice habits.
+        </p>
+      </div>
 
         {allComplete && (
           <div className="mb-8 p-6 bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg border-2 border-yellow-400 dark:border-yellow-600">
@@ -152,7 +151,6 @@ export function DailyQuests({ onUpdate }: DailyQuestsProps) {
             )}
           </div>
         </div>
-      </div>
-    </section>
+    </div>
   );
 }

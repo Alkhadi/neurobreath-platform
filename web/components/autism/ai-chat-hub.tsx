@@ -147,9 +147,10 @@ export function AIChatHub() {
   };
 
   return (
-    <section className="space-y-6">
-      <Card className="border-violet-200 dark:border-violet-800 bg-gradient-to-br from-violet-50 to-white dark:from-violet-950/20 dark:to-background">
-        <CardHeader>
+    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <section className="space-y-6">
+        <Card className="border-violet-200 dark:border-violet-800 bg-gradient-to-br from-violet-50 to-white dark:from-violet-950/20 dark:to-background">
+          <CardHeader>
           <div className="flex items-start gap-3">
             <div className="p-2 bg-violet-100 dark:bg-violet-900 rounded-lg">
               <Sparkles className="w-6 h-6 text-violet-600 dark:text-violet-400" />
@@ -282,5 +283,6 @@ export function AIChatHub() {
         </CardContent>
       </Card>
     </section>
+    </div>
   );
 }

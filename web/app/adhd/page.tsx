@@ -25,21 +25,21 @@ export default function HomePage() {
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950">
       {/* Hero Section */}
       <section className="py-8 scroll-mt-20">
-        <div className="container mx-auto max-w-6xl px-4">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
           <ADHDHero />
         </div>
       </section>
 
       {/* Treatment Decision Tree - NEW Phase 2 Component */}
       <section id="decision-tree" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="container mx-auto max-w-6xl px-4">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
           <TreatmentDecisionTree />
         </div>
       </section>
 
       {/* Daily Quests Section */}
       <section id="quests" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="container mx-auto max-w-6xl px-4">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
               Daily Quests & Challenges 🎮
@@ -54,7 +54,7 @@ export default function HomePage() {
 
       {/* Focus Timer Section */}
       <section id="focus" className="py-16 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950 dark:via-purple-950 dark:to-pink-950 scroll-mt-20">
-        <div className="container mx-auto max-w-6xl px-4">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
               ADHD Focus Timer ⏱️
@@ -69,21 +69,21 @@ export default function HomePage() {
 
       {/* ADHD Skills Library */}
       <section id="skills" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="container mx-auto max-w-6xl px-4">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
           <ADHDSkillsLibrary />
         </div>
       </section>
 
       {/* ADHD Myths & Facts - Phase 2 Component with Evidence Registry */}
       <section id="myths-facts" className="py-16 bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 dark:from-orange-950 dark:via-yellow-950 dark:to-pink-950 scroll-mt-20">
-        <div className="container mx-auto max-w-6xl px-4">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
           <ADHDMythsFacts />
         </div>
       </section>
 
       {/* Resources & Templates */}
       <section id="resources" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="container mx-auto max-w-6xl px-4">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
               ADHD Resources & Templates 📋
@@ -161,7 +161,7 @@ export default function HomePage() {
 
       {/* PubMed Research */}
       <section id="research" className="py-16 bg-gradient-to-br from-purple-50 via-white to-pink-50 dark:from-purple-950/20 dark:via-gray-900 dark:to-pink-950/20 scroll-mt-20">
-        <div className="container mx-auto max-w-6xl px-4">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
               ADHD Research Database 📚
@@ -176,41 +176,10 @@ export default function HomePage() {
 
       {/* Crisis Support */}
       <section id="crisis" className="py-16 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 dark:from-red-950 dark:via-orange-950 dark:to-yellow-950 scroll-mt-20">
-        <div className="container mx-auto max-w-6xl px-4">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
           <CrisisSupport />
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-gradient-to-r from-purple-900 via-blue-900 to-pink-900 text-white py-12">
-        <div className="container mx-auto max-w-6xl px-4">
-          <div className="text-center space-y-4">
-            <h3 className="text-2xl font-bold flex items-center justify-center gap-2">
-              <Zap className="w-6 h-6 text-yellow-400" />
-              NeuroBreath ADHD Platform
-              <Rocket className="w-6 h-6 text-blue-400" />
-            </h3>
-            <p className="text-sm text-gray-300 max-w-2xl mx-auto">
-              Empowering individuals with ADHD through evidence-based strategies, gamification, and community support.
-              Built by neurodivergent minds, for neurodivergent minds.
-            </p>
-            <div className="flex justify-center gap-6 text-xs text-gray-400 flex-wrap">
-              <span>🎮 Gamified Management</span>
-              <span>📚 Evidence-Based</span>
-              <span>👨‍👩‍👧‍👦 All Ages</span>
-              <span>🌍 Global Resources</span>
-            </div>
-            <p className="text-xs text-gray-500 pt-4 border-t border-white/10">
-              © 2026 NeuroBreath Platform - ADHD Hub. All content is for educational purposes only.
-              Evidence-based information from NICE, NHS, CDC, CHADD, and peer-reviewed research.
-            </p>
-            <p className="text-xs text-gray-600">
-              ⚠️ This platform provides educational support and is not a substitute for professional medical advice.
-              Always consult healthcare providers for diagnosis and treatment.
-            </p>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }

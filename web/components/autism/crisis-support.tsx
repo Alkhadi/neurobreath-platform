@@ -17,8 +17,8 @@ export const CrisisSupport = () => {
   const resources = crisisResources?.filter?.(r => r?.country === preferences?.country) ?? [];
 
   return (
-    <section className="py-12 bg-red-50 dark:bg-red-950/20">
-      <div className="container mx-auto max-w-6xl px-4">
+    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <section className="py-12 bg-red-50 dark:bg-red-950/20">
         <div className="flex items-start gap-4 mb-6">
           <AlertTriangle className="h-8 w-8 text-red-600 flex-shrink-0 mt-1" />
           <div>
@@ -62,7 +62,7 @@ export const CrisisSupport = () => {
             If you or someone else is in immediate danger, call emergency services immediately.
           </p>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 };

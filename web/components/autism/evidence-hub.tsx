@@ -160,18 +160,19 @@ export function EvidenceHub() {
   }[selectedCountry];
 
   return (
-    <Card className="border-2 border-indigo-200 dark:border-indigo-900">
-      <CardHeader>
-        <div className="flex items-center gap-3">
-          <BookOpen className="h-6 w-6 text-indigo-600" />
-          <div>
-            <CardTitle>Evidence & Resources Hub</CardTitle>
-            <CardDescription>
-              Curated, trustworthy resources from official health and education organizations
-            </CardDescription>
+    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <Card className="border-2 border-indigo-200 dark:border-indigo-900">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <BookOpen className="h-6 w-6 text-indigo-600" />
+            <div>
+              <CardTitle>Evidence & Resources Hub</CardTitle>
+              <CardDescription>
+                Curated, trustworthy resources from official health and education organizations
+              </CardDescription>
+            </div>
           </div>
-        </div>
-      </CardHeader>
+        </CardHeader>
       <CardContent>
         <Tabs value={selectedCountry} onValueChange={(val) => setSelectedCountry(val as 'uk' | 'us' | 'eu')}>
           <TabsList className="grid w-full grid-cols-3 mb-6">
@@ -222,6 +223,7 @@ export function EvidenceHub() {
         </div>
       </CardContent>
     </Card>
+    </div>
   );
 }
 

@@ -69,9 +69,8 @@ export function ProgressDashboardEnhanced({ onReset }: ProgressDashboardEnhanced
   const xpProgress = (levelInfo.currentXP / levelInfo.xpToNextLevel) * 100;
 
   return (
-    <section id="progress" className="py-16 bg-gradient-to-br from-indigo-50 via-purple-50 to-white dark:from-gray-900 dark:via-indigo-950 dark:to-gray-900 scroll-mt-20">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
             <TrendingUp className="h-8 w-8 text-indigo-600" />
             <h2 className="text-3xl md:text-4xl font-bold">Your Progress</h2>
@@ -115,8 +114,8 @@ export function ProgressDashboardEnhanced({ onReset }: ProgressDashboardEnhanced
           </CardContent>
         </Card>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        {/* Stats Cards - Full Width */}
+        <div className="space-y-4 mb-8">
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -165,6 +164,7 @@ export function ProgressDashboardEnhanced({ onReset }: ProgressDashboardEnhanced
             </CardContent>
           </Card>
 
+          {/* Skills Practiced */}
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -388,7 +388,6 @@ export function ProgressDashboardEnhanced({ onReset }: ProgressDashboardEnhanced
             </AlertDialogContent>
           </AlertDialog>
         </div>
-      </div>
-    </section>
+    </div>
   );
 }

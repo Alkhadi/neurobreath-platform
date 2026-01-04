@@ -91,9 +91,10 @@ Date: ${new Date().toLocaleDateString()}
   const euPathways = educationPathways.filter(p => p.country === 'EU');
 
   return (
-    <section className="space-y-6">
-      <Card className="border-emerald-200 dark:border-emerald-800 bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/20 dark:to-background">
-        <CardHeader>
+    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <section className="space-y-6">
+        <Card className="border-emerald-200 dark:border-emerald-800 bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/20 dark:to-background">
+          <CardHeader>
           <div className="flex items-start gap-3">
             <div className="p-2 bg-emerald-100 dark:bg-emerald-900 rounded-lg">
               <BookOpen className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
@@ -420,5 +421,6 @@ Date: ${new Date().toLocaleDateString()}
         </CardContent>
       </Card>
     </section>
+    </div>
   );
 }

@@ -41,8 +41,16 @@ export function SiteFooter() {
                 <p>
                   <Link href="/conditions/autism">Autism</Link> ·{' '}
                   <Link href="/conditions/autism-parent">Autism Parent</Link> ·{' '}
+                  <Link href="/conditions/autism-teacher">Autism Teacher</Link> ·{' '}
+                  <Link href="/conditions/autism-carer">Autism Carers</Link>
+                </p>
+                <p>
                   <Link href="/adhd">ADHD</Link> ·{' '}
-                  <Link href="/dyslexia-reading-training">Dyslexia</Link>
+                  <Link href="/conditions/adhd-parent">ADHD Parent</Link> ·{' '}
+                  <Link href="/conditions/adhd-teacher">ADHD Teacher</Link> ·{' '}
+                  <Link href="/conditions/adhd-carer">ADHD Carers</Link> ·{' '}
+                  <Link href="/conditions/dyslexia">Dyslexia Hub</Link> ·{' '}
+                  <Link href="/dyslexia-reading-training">Dyslexia Training</Link>
                 </p>
                 <p>
                   <Link href="/conditions/anxiety">Anxiety</Link> ·{' '}

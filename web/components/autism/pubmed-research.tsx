@@ -94,9 +94,10 @@ export function PubMedResearch() {
   };
 
   return (
-    <section className="space-y-6">
-      <Card className="border-purple-200 dark:border-purple-800 bg-gradient-to-br from-purple-50 to-white dark:from-purple-950/20 dark:to-background">
-        <CardHeader>
+    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <section className="space-y-6">
+        <Card className="border-purple-200 dark:border-purple-800 bg-gradient-to-br from-purple-50 to-white dark:from-purple-950/20 dark:to-background">
+          <CardHeader>
           <div className="flex items-start gap-3">
             <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
               <BookOpen className="w-6 h-6 text-purple-600 dark:text-purple-400" />
@@ -297,5 +298,6 @@ export function PubMedResearch() {
         </CardContent>
       </Card>
     </section>
+    </div>
   );
 }
