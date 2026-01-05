@@ -89,6 +89,8 @@ export function SiteHeader() {
                   <div className="nb-mega-menu-section">
                     <h4 className="nb-mega-menu-heading">Mental Health</h4>
                     <Link href="/conditions/anxiety" onClick={closeMegaMenu}>😰 Anxiety</Link>
+                    <Link href="/conditions/anxiety-parent" onClick={closeMegaMenu}>👨‍👩‍👧 Anxiety Parent Support</Link>
+                    <Link href="/conditions/anxiety-carer" onClick={closeMegaMenu}>❤️ Anxiety Carers Support</Link>
                     <Link href="/conditions/depression" onClick={closeMegaMenu}>💙 Depression</Link>
                     <Link href="/conditions/bipolar" onClick={closeMegaMenu}>⚡ Bipolar</Link>
                     <Link href="/stress" onClick={closeMegaMenu}>😓 Stress</Link>

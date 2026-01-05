@@ -44,7 +44,7 @@ export default function ADHDParentSupportPage() {
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950">
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 overflow-hidden bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 text-white">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 max-w-[86vw]">
           <div className="text-center space-y-6 mb-12">
             <div className="flex justify-center mb-4">
               <div className="p-4 bg-white/20 rounded-full">
@@ -172,7 +172,7 @@ export default function ADHDParentSupportPage() {
 
       {/* Parent Overview */}
       <section id="parent-overview" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 max-w-[86vw]">
           <div className="grid gap-6 lg:grid-cols-3 mb-8">
             <div className="lg:col-span-2">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">ADHD (Parents) — quick overview</h2>
@@ -302,7 +302,7 @@ export default function ADHDParentSupportPage() {
 
       {/* Home Strategies Section */}
       <section id="home-strategies" className="py-16 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950 dark:via-blue-950 dark:to-indigo-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 max-w-[86vw]">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Support at Home: Daily Strategies</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -496,7 +496,7 @@ export default function ADHDParentSupportPage() {
 
       {/* School Collaboration Section */}
       <section id="school-collaboration" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 max-w-[86vw]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Working with School: Advocacy & Support</h2>
           
           <Tabs defaultValue="communication" className="space-y-6">
@@ -698,7 +698,7 @@ export default function ADHDParentSupportPage() {
 
       {/* Treatment Options Section */}
       <section id="treatment-options" className="py-16 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950 dark:via-purple-950 dark:to-pink-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 max-w-[86vw]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Treatment Options: Evidence-Based Approaches</h2>
           
           <Alert className="mb-6">
@@ -819,7 +819,7 @@ export default function ADHDParentSupportPage() {
 
       {/* Age-Specific Guidance */}
       <section id="age-specific" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 max-w-[86vw]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">ADHD by Age Group</h2>
           
           <Tabs defaultValue="early" className="space-y-6">
@@ -1006,7 +1006,7 @@ export default function ADHDParentSupportPage() {
 
       {/* Resources & Support */}
       <section id="resources" className="py-16 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950 dark:via-blue-950 dark:to-indigo-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 max-w-[86vw]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Resources & Support Organizations</h2>
           
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -1123,7 +1123,7 @@ export default function ADHDParentSupportPage() {
 
       {/* Breathing & Regulation */}
       <section id="breathing" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 max-w-[86vw]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
             Breathing & Regulation for ADHD
           </h2>
