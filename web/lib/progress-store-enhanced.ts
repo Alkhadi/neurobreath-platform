@@ -127,8 +127,8 @@ export const awardXP = (amount: number, reason: string): { progress: ProgressDat
   const newAchievements: Achievement[] = [];
   
   // Check for level up
-  let xpNeeded = getXPForLevel(progress.currentLevel + 1);
-  let currentXP = progress.totalXP;
+  const xpNeeded = getXPForLevel(progress.currentLevel + 1);
+  const currentXP = progress.totalXP;
   
   // Calculate current level based on total XP
   let calculatedLevel = 1;
@@ -146,11 +146,15 @@ export const awardXP = (amount: number, reason: string): { progress: ProgressDat
     if (calculatedLevel % 5 === 0) {
       const achievement: Achievement = {
         id: `level-${calculatedLevel}`,
-        title: `Level ${calculatedLevel} ${getLevelTitle(calculatedLevel)}`,
+        name: `Level ${calculatedLevel} ${getLevelTitle(calculatedLevel)}`,
         description: `Reached level ${calculatedLevel}!`,
         icon: '🏆',
-        unlockedAt: new Date().toISOString(),
-        xpReward: calculatedLevel * 10
+        earnedAt: new Date().toISOString(),
+        category: 'general',
+        requirement: {
+          type: 'count',
+          target: calculatedLevel
+        }
       };
       progress.achievements.push(achievement);
       newAchievements.push(achievement);

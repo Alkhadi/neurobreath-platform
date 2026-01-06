@@ -121,15 +121,6 @@ export interface UserLevel {
   title: string;
 }
 
-export interface Achievement {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  unlockedAt: string;
-  xpReward: number;
-}
-
 export interface PersonalBest {
   longestSession: number; // minutes
   mostXPInDay: number;

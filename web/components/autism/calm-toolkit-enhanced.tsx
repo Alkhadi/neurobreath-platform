@@ -71,7 +71,7 @@ const CalmingTechniqueCard = ({ technique, progress, onUpdate }: TechniqueCardPr
     onUpdate();
     
     // Build comprehensive feedback
-    let messages: string[] = [];
+    const messages: string[] = [];
     messages.push(`💎 +${result.xpAwarded} XP earned!`);
     
     if (result.starsEarned > 0) {
@@ -472,7 +472,7 @@ const BreathingExerciseCard = ({ exercise, progress, onUpdate }: ExerciseCardPro
       onUpdate();
       
       // Build comprehensive feedback message
-      let messages: string[] = [];
+      const messages: string[] = [];
       
       // Base XP
       messages.push(`💎 +${result.xpAwarded} XP earned!`);

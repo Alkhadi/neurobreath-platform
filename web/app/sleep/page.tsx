@@ -142,7 +142,11 @@ export default function SleepPage() {
     if (checklist.every(c => c.completed)) updated[6].unlocked = true
     if (sectionsRead.length >= 8) updated[7].unlocked = true
     
-    setBadges(updated)
+    // Only update if badges actually changed
+    const hasChanged = updated.some((badge, index) => badge.unlocked !== badges[index].unlocked)
+    if (hasChanged) {
+      setBadges(updated)
+    }
   }, [sleepEntries, checklist, sectionsRead, badges])
 
   const addSleepEntry = () => {

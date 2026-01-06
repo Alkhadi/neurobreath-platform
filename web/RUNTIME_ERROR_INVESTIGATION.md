@@ -144,3 +144,4 @@ The **Fast Refresh runtime error** is a separate issue that needs browser consol
 **Next Action:** Please open your browser console at `http://localhost:3000/autism` and share the exact error message (including component name and line number). This will allow us to quickly identify and fix the remaining runtime issue.
 
 
+

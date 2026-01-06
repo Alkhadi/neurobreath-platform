@@ -191,7 +191,7 @@ export const calculateStreak = (entries: MoodEntry[]): Streak => {
   if (dayDiff <= 1) {
     // Calculate current streak
     currentStreak = 1;
-    let checkDate = new Date(lastEntry);
+    const checkDate = new Date(lastEntry);
     
     for (let i = 1; i < sorted.length; i++) {
       checkDate.setDate(checkDate.getDate() - 1);

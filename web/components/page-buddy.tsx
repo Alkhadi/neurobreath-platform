@@ -191,7 +191,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
     
     // Clean text: remove all non-text elements
-    let cleanText = text
+    const cleanText = text
       // Remove markdown formatting
       .replace(/\*\*/g, '')
       .replace(/\*/g, '')
