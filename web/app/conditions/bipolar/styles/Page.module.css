@@ -1,0 +1,202 @@
+/* Page-specific styles */
+
+.page {
+  min-height: 100vh;
+  background-color: var(--color-background);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.section {
+  padding: var(--spacing-3xl) 0;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.section:nth-child(even) {
+  background-color: var(--color-surface);
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  color: white;
+  padding: var(--spacing-3xl) 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="rgba(255,255,255,0.1)"></path></svg>') no-repeat;
+  background-size: cover;
+  opacity: 0.3;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+}
+
+.heroTitle {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: var(--spacing-md);
+  color: white;
+  animation: slideDown 0.8s ease-out;
+}
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  opacity: 0.95;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.8;
+  animation: slideUp 0.8s ease-out;
+}
+
+/* Language Toggle */
+.languageToggle {
+  position: fixed;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  z-index: var(--z-fixed);
+  background: white;
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs);
+}
+
+.languageButton {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-full);
+  background: transparent;
+  font-weight: 600;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  transition: all var(--transition-base);
+}
+
+.languageButton:hover {
+  background-color: var(--color-surface);
+}
+
+.languageButton.active {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+/* Content Card */
+.card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--spacing-lg);
+  transition: all var(--transition-base);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  color: var(--color-primary);
+}
+
+.cardContent {
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+}
+
+/* Interactive Section */
+.interactiveSection {
+  background: linear-gradient(135deg, var(--color-surface) 0%, white 100%);
+  padding: var(--spacing-3xl) 0;
+}
+
+.interactiveGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
+}
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 600;
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+}
+
+.badge.success {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
+}
+
+.badge.warning {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: var(--color-warning);
+}
+
+.badge.error {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--color-error);
+}
+
+.badge.info {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: var(--color-info);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 2rem;
+  }
+  
+  .heroSubtitle {
+    font-size: 1rem;
+  }
+  
+  .languageToggle {
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+  }
+  
+  .section {
+    padding: var(--spacing-2xl) 0;
+  }
+  
+  .card {
+    padding: var(--spacing-lg);
+  }
+  
+  .interactiveGrid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+}
