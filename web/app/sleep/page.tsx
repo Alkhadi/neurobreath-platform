@@ -357,10 +357,7 @@ export default function SleepPage() {
                   className="bg-green-500 h-3 rounded-full transition-all" 
                   style={{ width: `${checklistProgress}%` }}
                   role="progressbar"
-                  aria-label="Sleep hygiene checklist progress"
-                  aria-valuenow={Math.round(checklistProgress)}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
+                  aria-label={`Sleep hygiene checklist progress: ${Math.round(checklistProgress)}%`}
                 />
               </div>
             </div>
