@@ -302,7 +302,7 @@ export default function SleepPage() {
                     <div key={i} className="flex-1 flex flex-col items-center">
                       <div 
                         className={`w-full rounded-t-lg transition-all ${entry ? 'bg-indigo-500' : 'bg-gray-200'}`}
-                        style={{ height: `${height}%` }}
+                        style={{ ['--bar-height' as string]: `${height}%`, height: 'var(--bar-height)' } as React.CSSProperties}
                         title={entry ? `${entry.hoursSlept}h - ${entry.quality}⭐` : 'No data'}
                         role="img"
                         aria-label={entry ? `${entry.hoursSlept} hours of sleep` : 'No data'}
@@ -359,7 +359,7 @@ export default function SleepPage() {
               <div className="mt-3 bg-gray-200 rounded-full h-3">
                 <div 
                   className="bg-green-500 h-3 rounded-full transition-all" 
-                  style={{ width: `${checklistProgress}%` }}
+                  style={{ ['--progress-width' as string]: `${checklistProgress}%`, width: 'var(--progress-width)' } as React.CSSProperties}
                   role="progressbar"
                   aria-label={`Sleep hygiene checklist progress: ${Math.round(checklistProgress)}%`}
                 />

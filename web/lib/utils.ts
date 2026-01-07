@@ -55,6 +55,14 @@ export interface Contact {
   category: "Business" | "Personal";
   notes: string;
   createdAt: string;
+  socialMedia?: {
+    instagram?: string;
+    facebook?: string;
+    tiktok?: string;
+    linkedin?: string;
+    twitter?: string;
+    website?: string;
+  };
 }
 
 export const defaultProfile: Profile = {

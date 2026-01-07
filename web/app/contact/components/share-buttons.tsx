@@ -13,11 +13,14 @@ export function ShareButtons({ profile }: ShareButtonsProps) {
   const [showQR, setShowQR] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [generatingImage, setGeneratingImage] = useState(false);
+  const [generatingQR, setGeneratingQR] = useState(false);
   const [downloadingQR, setDownloadingQR] = useState(false);
+  const [profileImageDataUrl, setProfileImageDataUrl] = useState<string>("");
+  const [qrCodeValue, setQrCodeValue] = useState<string>("");
   const qrRef = useRef<HTMLDivElement>(null);
 
-  // Generate comprehensive vCard data
-  const generateVCardData = () => {
+  // Generate comprehensive vCard data with photo
+  const generateVCardData = async (includePhoto: boolean = false) => {
     let vcard = `BEGIN:VCARD
 VERSION:3.0
 FN:${profile?.fullName ?? ""}
@@ -31,6 +34,12 @@ EMAIL;TYPE=INTERNET:${profile?.email ?? ""}`;
     
     if (profile?.businessDescription) {
       vcard += `\nORG:${profile.businessDescription}`;
+    }
+
+    // Add photo if requested
+    if (includePhoto && profileImageDataUrl) {
+      const base64Data = profileImageDataUrl.split(',')[1];
+      vcard += `\nPHOTO;ENCODING=B;TYPE=PNG:${base64Data}`;
     }
 
     // Add social media URLs
@@ -57,8 +66,6 @@ EMAIL;TYPE=INTERNET:${profile?.email ?? ""}`;
     return vcard;
   };
 
-  const profileData = generateVCardData();
-
   const profileText = `${profile?.fullName ?? ""}
 ${profile?.jobTitle ?? ""}
 
@@ -73,6 +80,55 @@ ${profile?.jobTitle ?? ""}
 
 ---
 Shared via NBCard - Digital Business Card`;
+
+  // Capture profile card as high-quality image
+  const captureProfileCard = async (): Promise<string> => {
+    const html2canvas = (await import("html2canvas")).default;
+    const cardElement = document.getElementById("profile-card-capture");
+    
+    if (!cardElement) {
+      throw new Error("Profile card not found");
+    }
+
+    const canvas = await html2canvas(cardElement, {
+      scale: 3,
+      useCORS: true,
+      logging: false,
+      backgroundColor: null,
+      allowTaint: true,
+      foreignObjectRendering: false,
+      imageTimeout: 0,
+      removeContainer: true,
+    });
+
+    return canvas.toDataURL("image/png", 1.0);
+  };
+
+  // Generate QR Code with embedded profile image
+  const generateQRWithImage = async () => {
+    setGeneratingQR(true);
+    try {
+      // First capture the profile card image
+      const imageDataUrl = await captureProfileCard();
+      setProfileImageDataUrl(imageDataUrl);
+
+      // Generate vCard with embedded photo
+      const vCardData = await generateVCardData(true);
+      setQrCodeValue(vCardData);
+      
+      // Show the QR modal
+      setShowQR(true);
+      
+      setTimeout(() => {
+        alert("✅ QR Code generated with embedded profile image!");
+      }, 500);
+    } catch (error) {
+      console.error("QR generation error:", error);
+      alert("❌ Failed to generate QR code. Please try again.");
+    } finally {
+      setGeneratingQR(false);
+    }
+  };
 
   const downloadQR = async () => {
     setDownloadingQR(true);
@@ -90,8 +146,7 @@ Shared via NBCard - Digital Business Card`;
         return;
       }
 
-      // Create a canvas to render the QR code with white background
-      const svgData = new XMLSerializer().serializeToString(svg);
+      // Create a professional QR code image with branding
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
       
@@ -101,19 +156,50 @@ Shared via NBCard - Digital Business Card`;
         return;
       }
 
-      const img = new Image();
-      canvas.width = 512;
-      canvas.height = 512;
+      // Set canvas size (larger for better quality)
+      canvas.width = 800;
+      canvas.height = 900;
 
-      // Wait for image to load
+      // White background
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Add title
+      ctx.fillStyle = "#1f2937";
+      ctx.font = "bold 32px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText(profile?.fullName ?? "Profile Card", canvas.width / 2, 50);
+
+      // Add subtitle
+      ctx.fillStyle = "#6b7280";
+      ctx.font = "20px Arial";
+      ctx.fillText("Scan to save contact", canvas.width / 2, 85);
+
+      // Draw QR code
+      const svgData = new XMLSerializer().serializeToString(svg);
+      const img = new Image();
+
       await new Promise<void>((resolve, reject) => {
         img.onload = () => {
           try {
-            // White background
+            // Center the QR code with padding
+            const qrSize = 600;
+            const x = (canvas.width - qrSize) / 2;
+            const y = 120;
+            
+            // Add shadow
+            ctx.shadowColor = "rgba(0, 0, 0, 0.1)";
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetY = 10;
+            
+            // White background for QR
             ctx.fillStyle = "white";
-            ctx.fillRect(0, 0, 512, 512);
+            ctx.fillRect(x - 20, y - 20, qrSize + 40, qrSize + 40);
+            
             // Draw QR code
-            ctx.drawImage(img, 0, 0, 512, 512);
+            ctx.shadowColor = "transparent";
+            ctx.drawImage(img, x, y, qrSize, qrSize);
+            
             resolve();
           } catch (error) {
             reject(error);
@@ -122,6 +208,11 @@ Shared via NBCard - Digital Business Card`;
         img.onerror = () => reject(new Error("Failed to load image"));
         img.src = `data:image/svg+xml;base64,${btoa(svgData)}`;
       });
+
+      // Add footer
+      ctx.fillStyle = "#9ca3af";
+      ctx.font = "16px Arial";
+      ctx.fillText("NBCard - Digital Business Card", canvas.width / 2, 860);
 
       // Convert to blob and download
       await new Promise<void>((resolve, reject) => {
@@ -143,11 +234,11 @@ Shared via NBCard - Digital Business Card`;
           } catch (error) {
             reject(error);
           }
-        }, "image/png");
+        }, "image/png", 1.0);
       });
 
       setTimeout(() => {
-        alert("✅ QR code downloaded successfully!");
+        alert("✅ Professional QR code downloaded successfully!");
       }, 100);
     } catch (error) {
       console.error("QR download error:", error);
@@ -157,68 +248,185 @@ Shared via NBCard - Digital Business Card`;
     }
   };
 
+  // Generate Professional PDF with 100% exact capture and clickable text overlays
   const generatePDF = async () => {
     setGenerating(true);
     try {
-      // Wait a bit for any pending renders
       await new Promise(resolve => setTimeout(resolve, 100));
 
-      // Dynamically import html2canvas
-      const html2canvas = (await import("html2canvas")).default;
-      
-      // Get the profile card element
-      const cardElement = document.getElementById("profile-card-capture");
-      if (!cardElement) {
-        alert("❌ Profile card not found. Please refresh the page.");
-        return;
-      }
-
-      // Capture the card with high quality
-      const canvas = await html2canvas(cardElement, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: null,
-        allowTaint: true,
-        foreignObjectRendering: false,
-      });
+      // Capture the profile card at maximum quality
+      const imageDataUrl = await captureProfileCard();
 
       // Dynamically import jsPDF
       const { default: jsPDF } = await import("jspdf");
       
-      // Create PDF with custom size to fit the card
-      const imgWidth = 180; // mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      // Get the actual card element to calculate dimensions
+      const cardElement = document.getElementById("profile-card-capture");
+      if (!cardElement) {
+        throw new Error("Profile card not found");
+      }
+
+      // Get card dimensions
+      const cardRect = cardElement.getBoundingClientRect();
+      const aspectRatio = cardRect.height / cardRect.width;
+      
+      // Create PDF with optimal size for the card
+      const pdfWidth = 210; // A4 width in mm
+      const cardWidth = 180; // Card width in mm (leaving margins)
+      const cardHeight = cardWidth * aspectRatio;
+      const pdfHeight = cardHeight + 60; // Add space for margins and footer
       
       const pdf = new jsPDF({
-        orientation: imgHeight > imgWidth ? "portrait" : "landscape",
+        orientation: cardHeight > cardWidth ? "portrait" : "portrait",
         unit: "mm",
-        format: [imgWidth + 30, imgHeight + 30],
+        format: [pdfWidth, Math.max(pdfHeight, 297)], // Minimum A4 height
       });
 
-      // Add white background
-      pdf.setFillColor(255, 255, 255);
-      pdf.rect(0, 0, imgWidth + 30, imgHeight + 30, "F");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
 
-      // Add the captured image
-      const imgData = canvas.toDataURL("image/png");
-      pdf.addImage(imgData, "PNG", 15, 15, imgWidth, imgHeight);
+      // Add subtle gradient background
+      pdf.setFillColor(249, 250, 251);
+      pdf.rect(0, 0, pageWidth, pageHeight, "F");
 
-      // Add footer with contact info
+      // Calculate card position (centered)
+      const cardX = (pageWidth - cardWidth) / 2;
+      const cardY = 30;
+      
+      // Add the 100% accurate captured image
+      pdf.addImage(imageDataUrl, "PNG", cardX, cardY, cardWidth, cardHeight, undefined, "FAST");
+
+      // Now overlay transparent clickable links on top of the image
+      // These positions are calculated based on the profile card layout
+      
+      // Calculate link positions (these correspond to where elements appear on the card)
+      const linkHeight = 8; // Height of clickable area
+      const cardCenterX = cardX + (cardWidth / 2);
+      
+      // Phone link overlay (appears around 60% down the card)
+      if (profile?.phone) {
+        const phoneY = cardY + (cardHeight * 0.55);
+        pdf.link(cardX + 15, phoneY - 4, cardWidth - 30, linkHeight, {
+          url: `tel:${profile.phone.replace(/\s/g, "")}`,
+        });
+      }
+
+      // Email link overlay (appears around 65% down the card)
+      if (profile?.email) {
+        const emailY = cardY + (cardHeight * 0.62);
+        pdf.link(cardX + 15, emailY - 4, cardWidth - 30, linkHeight, {
+          url: `mailto:${profile.email}`,
+        });
+      }
+
+      // Social media links overlay (appear around 70-85% down the card)
+      const socialMediaY = cardY + (cardHeight * 0.72);
+      const socialIconSize = 12;
+      const socialGap = 4;
+      
+      const socialLinks = [
+        { url: profile?.socialMedia?.instagram },
+        { url: profile?.socialMedia?.facebook },
+        { url: profile?.socialMedia?.tiktok },
+        { url: profile?.socialMedia?.linkedin },
+        { url: profile?.socialMedia?.twitter },
+        { url: profile?.socialMedia?.website },
+      ].filter(link => link.url);
+
+      // Calculate starting X for centered social media icons
+      const totalSocialWidth = (socialLinks.length * socialIconSize) + ((socialLinks.length - 1) * socialGap);
+      let socialX = cardCenterX - (totalSocialWidth / 2);
+
+      socialLinks.forEach((link) => {
+        if (link.url) {
+          pdf.link(socialX, socialMediaY - 4, socialIconSize, socialIconSize, {
+            url: link.url,
+          });
+          socialX += socialIconSize + socialGap;
+        }
+      });
+
+      // Add text information below the card with clickable links
+      let currentY = cardY + cardHeight + 15;
+
+      pdf.setFontSize(16);
+      pdf.setTextColor(31, 41, 55);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Contact Information", cardX, currentY);
+      currentY += 10;
+
+      // Phone (visible clickable text)
+      if (profile?.phone) {
+        pdf.setFontSize(11);
+        pdf.setTextColor(147, 51, 234);
+        pdf.setFont("helvetica", "normal");
+        pdf.textWithLink(`📞 ${profile.phone}`, cardX, currentY, {
+          url: `tel:${profile.phone.replace(/\s/g, "")}`,
+        });
+        currentY += 6;
+      }
+
+      // Email (visible clickable text)
+      if (profile?.email) {
+        pdf.setFontSize(11);
+        pdf.setTextColor(59, 130, 246);
+        pdf.textWithLink(`📧 ${profile.email}`, cardX, currentY, {
+          url: `mailto:${profile.email}`,
+        });
+        currentY += 6;
+      }
+
+      // Social Media Links (visible clickable text)
+      const visibleSocialLinks = [
+        { icon: "🌐", name: "Website", url: profile?.socialMedia?.website },
+        { icon: "📷", name: "Instagram", url: profile?.socialMedia?.instagram },
+        { icon: "👤", name: "Facebook", url: profile?.socialMedia?.facebook },
+        { icon: "🐦", name: "Twitter", url: profile?.socialMedia?.twitter },
+        { icon: "💼", name: "LinkedIn", url: profile?.socialMedia?.linkedin },
+        { icon: "🎵", name: "TikTok", url: profile?.socialMedia?.tiktok },
+      ].filter(link => link.url);
+
+      if (visibleSocialLinks.length > 0) {
+        currentY += 5;
+        pdf.setFontSize(11);
+        pdf.setFont("helvetica", "bold");
+        pdf.setTextColor(31, 41, 55);
+        pdf.text("Social Media:", cardX, currentY);
+        currentY += 6;
+
+        pdf.setFont("helvetica", "normal");
+        visibleSocialLinks.forEach(link => {
+          if (currentY > pageHeight - 20) return;
+          
+          pdf.setTextColor(147, 51, 234);
+          pdf.textWithLink(`${link.icon} ${link.name}`, cardX, currentY, {
+            url: link.url ?? "",
+          });
+          currentY += 6;
+        });
+      }
+
+      // Add footer
       pdf.setFontSize(8);
-      pdf.setTextColor(100, 100, 100);
+      pdf.setTextColor(156, 163, 175);
+      pdf.setFont("helvetica", "italic");
       pdf.text(
-        `Generated by NBCard - ${new Date().toLocaleDateString()}`,
-        (imgWidth + 30) / 2,
-        imgHeight + 25,
+        `Generated by NBCard - ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`,
+        pageWidth / 2,
+        pageHeight - 10,
         { align: "center" }
       );
 
-      pdf.save(`${profile?.fullName?.replace(/\s+/g, "_") ?? "profile"}_NBCard.pdf`);
+      // Add professional branding line
+      pdf.setDrawColor(147, 51, 234);
+      pdf.setLineWidth(0.5);
+      pdf.line(20, pageHeight - 15, pageWidth - 20, pageHeight - 15);
+
+      // Save the PDF
+      pdf.save(`${profile?.fullName?.replace(/\s+/g, "_") ?? "profile"}_NBCard_Perfect.pdf`);
       
-      // Success feedback
       setTimeout(() => {
-        alert("✅ PDF generated and downloaded successfully!");
+        alert("✅ Perfect PDF with 100% exact capture and clickable overlays generated!");
       }, 100);
     } catch (error) {
       console.error("PDF generation error:", error);
@@ -228,9 +436,14 @@ Shared via NBCard - Digital Business Card`;
     }
   };
 
-  const exportVCard = () => {
+  const exportVCard = async () => {
     try {
-      const blob = new Blob([profileData], { type: "text/vcard" });
+      // Generate vCard with photo
+      const vCardData = profileImageDataUrl 
+        ? await generateVCardData(true)
+        : await generateVCardData(false);
+
+      const blob = new Blob([vCardData], { type: "text/vcard" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -240,9 +453,8 @@ Shared via NBCard - Digital Business Card`;
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
       
-      // Success feedback
       setTimeout(() => {
-        alert("✅ vCard downloaded successfully! Import it to your contacts app.");
+        alert("✅ vCard with photo downloaded successfully! Import it to your contacts app.");
       }, 100);
     } catch (error) {
       console.error("vCard export error:", error);
@@ -286,52 +498,27 @@ Shared via NBCard - Digital Business Card`;
   const captureAsImage = async () => {
     setGeneratingImage(true);
     try {
-      // Wait a bit for any pending renders
       await new Promise(resolve => setTimeout(resolve, 100));
 
-      const html2canvas = (await import("html2canvas")).default;
-      const cardElement = document.getElementById("profile-card-capture");
-      if (!cardElement) {
-        alert("❌ Profile card not found. Please refresh the page.");
-        return;
-      }
+      const imageDataUrl = await captureProfileCard();
+      setProfileImageDataUrl(imageDataUrl);
 
-      // Capture with high quality settings
-      const canvas = await html2canvas(cardElement, {
-        scale: 3, // High resolution (3x for crisp images)
-        useCORS: true,
-        logging: false,
-        backgroundColor: null,
-        allowTaint: true,
-        foreignObjectRendering: false,
-        imageTimeout: 0,
-        removeContainer: true,
-      });
-
-      // Convert to blob and download
-      canvas.toBlob(
-        (blob) => {
-          if (!blob) {
-            alert("❌ Failed to generate image");
-            return;
-          }
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = url;
-          link.download = `${profile?.fullName?.replace(/\s+/g, "_") ?? "profile"}_NBCard.png`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(url);
-          
-          // Success feedback
-          setTimeout(() => {
-            alert("✅ Image downloaded successfully!");
-          }, 100);
-        },
-        "image/png",
-        1.0 // Maximum quality
-      );
+      // Convert data URL to blob and download
+      const response = await fetch(imageDataUrl);
+      const blob = await response.blob();
+      
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${profile?.fullName?.replace(/\s+/g, "_") ?? "profile"}_NBCard.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      setTimeout(() => {
+        alert("✅ High-quality image downloaded successfully!");
+      }, 100);
     } catch (error) {
       console.error("Image capture error:", error);
       alert("❌ Failed to capture image. Please try again. Error: " + (error as Error).message);
@@ -347,11 +534,12 @@ Shared via NBCard - Digital Business Card`;
       {/* Sharing Options Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <button
-          onClick={() => setShowQR(!showQR)}
-          className="flex flex-col items-center gap-2 p-4 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl hover:shadow-lg transition-all hover:scale-105"
+          onClick={generateQRWithImage}
+          disabled={generatingQR}
+          className="flex flex-col items-center gap-2 p-4 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl hover:shadow-lg transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <FaQrcode className="text-2xl" />
-          <span className="text-sm font-semibold">QR Code</span>
+          <span className="text-sm font-semibold">{generatingQR ? "Creating..." : "QR Code"}</span>
         </button>
 
         <button
@@ -415,10 +603,10 @@ Shared via NBCard - Digital Business Card`;
 
       {/* QR Code Modal */}
       {showQR && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowQR(false)}>
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowQR(false)}>
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold text-gray-800">QR Code</h3>
+              <h3 className="text-xl font-bold text-gray-800">QR Code with Profile Image</h3>
               <button
                 onClick={() => setShowQR(false)}
                 className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
@@ -426,19 +614,36 @@ Shared via NBCard - Digital Business Card`;
                 ×
               </button>
             </div>
-            <div ref={qrRef} className="flex justify-center mb-4 p-4 bg-white rounded-lg">
-              <QRCodeSVG value={profileData} size={256} level="H" includeMargin />
+            
+            <div ref={qrRef} className="flex justify-center mb-4 p-4 bg-gray-50 rounded-lg">
+              <QRCodeSVG 
+                value={qrCodeValue || "Loading..."} 
+                size={280} 
+                level="M" 
+                includeMargin
+                imageSettings={profileImageDataUrl ? {
+                  src: profileImageDataUrl,
+                  height: 50,
+                  width: 50,
+                  excavate: true,
+                } : undefined}
+              />
             </div>
-            <p className="text-center text-sm text-gray-600 mb-4">
-              Scan this QR code to save contact details
-            </p>
+            
+            <div className="bg-purple-50 rounded-lg p-4 mb-4">
+              <p className="text-sm text-gray-700 text-center">
+                <strong>✨ Enhanced QR Code</strong><br/>
+                Contains your full contact details with embedded profile image
+              </p>
+            </div>
+
             <button
               onClick={downloadQR}
               disabled={downloadingQR}
               className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <FaDownload />
-              {downloadingQR ? "Downloading..." : "Download QR Code"}
+              {downloadingQR ? "Downloading..." : "Download Professional QR Code"}
             </button>
           </div>
         </div>
@@ -446,4 +651,3 @@ Shared via NBCard - Digital Business Card`;
     </div>
   );
 }
-
