@@ -158,8 +158,8 @@ export function PhonicsPlayer() {
               <div className="animate-scale-in px-2">
                 <div className="inline-block mb-3 sm:mb-4 px-4 sm:px-6 py-2 sm:py-3 bg-primary/10 rounded-full border-2 border-primary/30">
                   <span className="text-5xl xs:text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-display font-bold text-primary drop-shadow-lg">
-                    {ALPHABET[currentIndex]}
-                  </span>
+                  {ALPHABET[currentIndex]}
+                </span>
                 </div>
                 <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-foreground font-semibold">
                   {ALPHABET[currentIndex]} says its sound
@@ -172,8 +172,8 @@ export function PhonicsPlayer() {
               <div className="py-2 sm:py-4 px-2">
                 <div className="text-4xl sm:text-5xl mb-3 sm:mb-4">🎧</div>
                 <p className="text-base sm:text-lg md:text-xl text-muted-foreground font-medium">
-                  Press play to start the phonics song!
-                </p>
+                Press play to start the phonics song!
+              </p>
                 <p className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">
                   Or click any letter to hear its individual sound
                 </p>
@@ -186,41 +186,41 @@ export function PhonicsPlayer() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
               {/* Play Controls */}
               <div className="flex items-center gap-2 sm:gap-3">
-                <Button
-                  onClick={handlePlay}
-                  size="lg"
+              <Button
+                onClick={handlePlay}
+                size="lg"
                   className="rounded-full w-14 h-14 sm:w-16 sm:h-16 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-                >
-                  {isAutoPlaying ? (
+              >
+                {isAutoPlaying ? (
                     <Pause className="w-6 h-6 sm:w-8 sm:h-8" />
-                  ) : (
+                ) : (
                     <Play className="w-6 h-6 sm:w-8 sm:h-8 ml-0.5 sm:ml-1" />
-                  )}
-                </Button>
-                <Button
-                  onClick={handleReset}
-                  variant="outline"
-                  size="lg"
+                )}
+              </Button>
+              <Button
+                onClick={handleReset}
+                variant="outline"
+                size="lg"
                   className="rounded-full w-11 h-11 sm:w-12 sm:h-12 hover:bg-muted transition-all duration-300 hover:scale-105"
-                >
+              >
                   <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
-                </Button>
-              </div>
+              </Button>
+            </div>
 
               {/* Speed Control */}
               <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-64 bg-card/50 rounded-lg sm:rounded-xl p-2.5 sm:p-3 border border-border/30">
                 <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground flex-shrink-0" />
-                <Slider
-                  value={speed}
-                  onValueChange={setSpeed}
-                  min={0.5}
-                  max={2}
-                  step={0.1}
-                  className="flex-1"
-                />
+              <Slider
+                value={speed}
+                onValueChange={setSpeed}
+                min={0.5}
+                max={2}
+                step={0.1}
+                className="flex-1"
+              />
                 <span className="text-xs sm:text-sm font-semibold text-foreground w-10 sm:w-12 text-right">
-                  {speed[0].toFixed(1)}x
-                </span>
+                {speed[0].toFixed(1)}x
+              </span>
               </div>
             </div>
           </div>
@@ -235,13 +235,13 @@ export function PhonicsPlayer() {
                 </span>
               </div>
               <div className="h-2.5 sm:h-3 bg-muted rounded-full overflow-hidden shadow-inner">
-                <div
+              <div
                   className="h-full bg-gradient-to-r from-primary via-primary/90 to-primary transition-all duration-500 rounded-full shadow-lg"
-                  style={{
-                    width: `${((currentIndex + 1) / ALPHABET.length) * 100}%`,
-                  }}
-                />
-              </div>
+                style={{
+                  width: `${((currentIndex + 1) / ALPHABET.length) * 100}%`,
+                }}
+              />
+            </div>
             </div>
             <p className="text-center text-xs sm:text-sm text-muted-foreground px-2">
               {currentIndex >= 0 ? (
