@@ -208,7 +208,6 @@ export function SiteHeader() {
                   <div className="nb-mega-menu-section">
                     <h4 className="nb-mega-menu-heading">About</h4>
                     <Link href="/about-us" onClick={closeMegaMenu}>ℹ️ About Us</Link>
-                    <Link href="/aims-objectives" onClick={closeMegaMenu}>🎯 Aims & Objectives</Link>
                     <Link href="/blog" onClick={closeMegaMenu}>📝 Blog</Link>
                     <Link href="/contact" onClick={closeMegaMenu}>✉️ Contact</Link>
                   </div>

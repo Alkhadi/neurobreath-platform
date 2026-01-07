@@ -115,7 +115,6 @@ export function SiteFooter() {
               <div className="links">
                 <p>
                   <Link href="/about-us">About</Link> ·{' '}
-                  <Link href="/aims-objectives">Aims &amp; Stories</Link> ·{' '}
                   <Link href="/support-us">Support Us</Link> ·{' '}
                   <Link href="/contact">Contact</Link>
                 </p>
