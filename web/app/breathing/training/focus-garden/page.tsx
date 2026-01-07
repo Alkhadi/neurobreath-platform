@@ -376,49 +376,122 @@ export default function FocusGardenPage() {
           </div>
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-4 gap-8">
-          {/* Sidebar: Task Categories */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-6 sticky top-8">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-xl">
-                  📚
-                </div>
-                Categories
-              </h2>
-              <div className="space-y-3">
-                {Object.entries(TASK_LAYERS).map(([key, layer]) => (
-                  <button
-                    key={key}
-                    onClick={() => setSelectedLayer(key)}
-                    className={cn(
-                      "w-full text-left p-4 rounded-2xl border-2 transition-all duration-200 group",
-                      selectedLayer === key
-                        ? `bg-gradient-to-r ${layer.bgGradient} ${layer.borderColor} shadow-md scale-[1.02]`
-                        : `bg-slate-50 border-slate-200 hover:bg-slate-100 hover:border-slate-300 hover:shadow-sm`
-                    )}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={cn(
-                        "w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-transform group-hover:scale-110",
-                        selectedLayer === key ? layer.iconBg : 'bg-slate-200'
-                      )}>
-                        {layer.icon}
-                      </div>
-                      <div className="flex-1">
-                        <span className="font-semibold text-slate-900 block">{layer.name}</span>
-                        <span className="text-xs text-slate-600">{layer.tasks.length} tasks</span>
-                      </div>
+        {/* Task Categories - Full Width */}
+        <div className="mb-8">
+          <div className="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-2xl border-2 border-slate-200 p-7 overflow-hidden">
+              {/* Decorative background elements */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-200 to-blue-200 rounded-full blur-3xl opacity-20 -mr-16 -mt-16" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-green-200 to-teal-200 rounded-full blur-3xl opacity-20 -ml-16 -mb-16" />
+              
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-slate-200">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center text-2xl shadow-lg animate-pulse">
+                      📚
                     </div>
-                  </button>
-                ))}
+                    <div>
+                      <h2 className="text-2xl font-bold text-slate-900">Categories</h2>
+                      <p className="text-xs text-slate-600">Choose your focus area</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                  {Object.entries(TASK_LAYERS).map(([key, layer]) => {
+                    const isSelected = selectedLayer === key
+                    return (
+                      <button
+                        key={key}
+                        onClick={() => setSelectedLayer(key)}
+                        className={cn(
+                          "w-full text-left p-4 rounded-2xl border-2 transition-all duration-300 group relative overflow-hidden",
+                          isSelected
+                            ? `bg-gradient-to-r ${layer.bgGradient} ${layer.borderColor} shadow-lg scale-[1.03] ring-2 ring-offset-2 ${layer.borderColor.replace('border', 'ring')}`
+                            : `bg-white border-slate-200 hover:bg-gradient-to-r ${layer.bgGradient} hover:border-slate-300 hover:shadow-md hover:scale-[1.01]`
+                        )}
+                      >
+                        {/* Shine effect on hover */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-500 transform -skew-x-12 group-hover:translate-x-full" />
+                        
+                        <div className="flex items-center gap-3 relative z-10">
+                          <div className={cn(
+                            "w-14 h-14 rounded-xl flex items-center justify-center text-3xl transition-all duration-300 shadow-md",
+                            isSelected 
+                              ? `${layer.iconBg} transform scale-110 rotate-3` 
+                              : 'bg-slate-100 group-hover:scale-110 group-hover:-rotate-3'
+                          )}>
+                            {layer.icon}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className={cn(
+                                "font-bold text-sm transition-colors",
+                                isSelected ? "text-slate-900" : "text-slate-700 group-hover:text-slate-900"
+                              )}>
+                                {layer.name}
+                              </span>
+                              {isSelected && (
+                                <div className="w-2 h-2 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 animate-pulse" />
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className={cn(
+                                "text-xs font-semibold px-2 py-0.5 rounded-full transition-colors",
+                                isSelected 
+                                  ? "bg-white/80 text-slate-700" 
+                                  : "bg-slate-200 text-slate-600 group-hover:bg-white/60"
+                              )}>
+                                {layer.tasks.length} tasks
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {/* Progress indicator */}
+                <div className="mt-6 pt-6 border-t-2 border-slate-200">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Trophy className="w-6 h-6 text-amber-500" />
+                    <span className="text-lg font-bold text-slate-700">Your Progress</span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                    {Object.entries(TASK_LAYERS).map(([key, layer]) => {
+                      const completedTasks = garden.filter(p => p.layer === key && p.stage === 'bloom').length
+                      const totalTasks = layer.tasks.length
+                      const percentage = (completedTasks / totalTasks) * 100
+                      
+                      return (
+                        <div key={`progress-${key}`} className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-slate-200">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-2xl">{layer.icon}</span>
+                            <span className="font-semibold text-slate-700 text-sm">{layer.name}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-xs mb-2">
+                            <span className="text-slate-600">Completed</span>
+                            <span className="font-bold text-slate-900">
+                              {completedTasks}/{totalTasks}
+                            </span>
+                          </div>
+                          <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                            <div 
+                              className={cn("h-full rounded-full transition-all duration-500 bg-gradient-to-r", layer.gradient)}
+                              style={{ width: `${percentage}%` }}
+                            />
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Main Content Area */}
-          <div className="lg:col-span-3 space-y-8">
+        {/* Main Content Area */}
+        <div className="space-y-8">
             {/* Available Tasks */}
             <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
               <div className="flex items-center gap-3 mb-6">
@@ -758,7 +831,6 @@ export default function FocusGardenPage() {
                 </Link>
               </div>
             </div>
-          </div>
         </div>
       </div>
     </div>
