@@ -17,7 +17,7 @@ export const CrisisSupport = () => {
   const resources = crisisResources?.filter?.(r => r?.country === preferences?.country) ?? [];
 
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="w-full">
       <section className="py-12 bg-red-50 dark:bg-red-950/20">
         <div className="flex items-start gap-4 mb-6">
           <AlertTriangle className="h-8 w-8 text-red-600 flex-shrink-0 mt-1" />

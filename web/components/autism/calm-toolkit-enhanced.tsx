@@ -121,7 +121,7 @@ const CalmingTechniqueCard = ({ technique, progress, onUpdate }: TechniqueCardPr
 
   return (
     <>
-      <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden" onClick={() => setShowDialog(true)}>
+      <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur group hover:shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden" onClick={() => setShowDialog(true)}>
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300" />
         
         <CardHeader className="relative">
@@ -286,7 +286,7 @@ export function CalmToolkitEnhanced({ onProgressUpdate }: CalmToolkitEnhancedPro
   }, []);
 
   return (
-    <div className="mx-auto px-4 relative z-0" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="w-full relative z-0">
       <div className="text-center mb-12">
         <div className="flex items-center justify-center gap-3 mb-4">
           <Wind className="h-8 w-8 text-blue-600" />
@@ -546,7 +546,7 @@ const BreathingExerciseCard = ({ exercise, progress, onUpdate }: ExerciseCardPro
 
   return (
     <>
-      <Card className="group hover:shadow-lg transition-all duration-300 relative overflow-hidden">
+      <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur group hover:shadow-lg transition-all duration-300 relative overflow-hidden">
         <div className={`absolute inset-0 bg-gradient-to-br opacity-5 pointer-events-none ${
           currentPhase.includes('in') ? 'from-blue-500 to-purple-500' :
           currentPhase.includes('out') ? 'from-green-500 to-teal-500' :

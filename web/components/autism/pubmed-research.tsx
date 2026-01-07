@@ -94,9 +94,9 @@ export function PubMedResearch() {
   };
 
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="w-full">
       <section className="space-y-6">
-        <Card className="border-purple-200 dark:border-purple-800 bg-gradient-to-br from-purple-50 to-white dark:from-purple-950/20 dark:to-background">
+        <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur border-purple-200 dark:border-purple-800">
           <CardHeader>
           <div className="flex items-start gap-3">
             <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
@@ -272,7 +272,7 @@ export function PubMedResearch() {
 
           {/* Empty State */}
           {!loading && !error && articles.length === 0 && activeQuery && (
-            <Card className="border-dashed">
+            <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur border-dashed">
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <BookOpen className="w-12 h-12 text-muted-foreground mb-4" />
                 <p className="text-muted-foreground text-center">
@@ -286,7 +286,7 @@ export function PubMedResearch() {
 
           {/* Initial State */}
           {!loading && !error && articles.length === 0 && !activeQuery && (
-            <Card className="border-dashed">
+            <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur border-dashed">
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <Search className="w-12 h-12 text-muted-foreground mb-4" />
                 <p className="text-muted-foreground text-center">

@@ -91,9 +91,9 @@ Date: ${new Date().toLocaleDateString()}
   const euPathways = educationPathways.filter(p => p.country === 'EU');
 
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="w-full">
       <section className="space-y-6">
-        <Card className="border-emerald-200 dark:border-emerald-800 bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/20 dark:to-background">
+        <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur border-emerald-200 dark:border-emerald-800">
           <CardHeader>
           <div className="flex items-start gap-3">
             <div className="p-2 bg-emerald-100 dark:bg-emerald-900 rounded-lg">
@@ -109,6 +109,7 @@ Date: ${new Date().toLocaleDateString()}
         </CardHeader>
 
         <CardContent className="space-y-6">
+          <div className="w-[84%] mx-auto">
           {/* Pathway Selection Tabs */}
           <Tabs defaultValue="uk" className="space-y-4" onValueChange={() => setCompletedSteps([])}>
             <TabsList className="flex w-full justify-center items-center gap-2 flex-wrap">
@@ -418,6 +419,7 @@ Date: ${new Date().toLocaleDateString()}
               </div>
             </CardContent>
           </Card>
+          </div>
         </CardContent>
       </Card>
     </section>

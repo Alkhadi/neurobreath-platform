@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 
 export const MythsFacts = () => {
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="w-full">
       <section className="py-12 bg-amber-50 dark:bg-amber-950/10">
         <div className="flex items-center gap-3 mb-8">
           <Lightbulb className="h-8 w-8 text-amber-600" />

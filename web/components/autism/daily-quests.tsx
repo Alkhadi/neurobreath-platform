@@ -56,7 +56,7 @@ export function DailyQuests({ onUpdate }: DailyQuestsProps) {
   };
 
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="w-full">
       <div className="text-center mb-12">
         <div className="flex items-center justify-center gap-3 mb-4">
           <Trophy className="h-8 w-8 text-yellow-500" />

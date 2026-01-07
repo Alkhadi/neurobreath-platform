@@ -145,17 +145,8 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
   const selectedSkillData = selectedSkill ? skills.find(s => s.id === selectedSkill) : null;
 
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-      <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">
-          Skills Library
-        </h2>
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          Evidence-based strategies to support autism. Practice, master, and track your progress.
-        </p>
-      </div>
-
-        {/* Search and Filters */}
+    <div className="w-full">
+      {/* Search and Filters */}
         <div className="mb-8 space-y-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />

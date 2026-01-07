@@ -160,8 +160,8 @@ export function EvidenceHub() {
   }[selectedCountry];
 
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-      <Card className="border-2 border-indigo-200 dark:border-indigo-900">
+    <div className="w-full">
+      <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur border-2 border-indigo-200 dark:border-indigo-900">
         <CardHeader>
           <div className="flex items-center gap-3">
             <BookOpen className="h-6 w-6 text-indigo-600" />
@@ -229,7 +229,7 @@ export function EvidenceHub() {
 
 function ResourceCard({ resource }: { resource: Resource }) {
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur hover:shadow-md transition-shadow">
       <CardContent className="pt-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 space-y-2">

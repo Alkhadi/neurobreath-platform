@@ -9,7 +9,7 @@ export const HowToUse = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="w-full">
       <Collapsible open={isOpen} onOpenChange={setIsOpen} className="mb-8">
         <CollapsibleTrigger asChild>
           <Button variant="outline" className="gap-2">

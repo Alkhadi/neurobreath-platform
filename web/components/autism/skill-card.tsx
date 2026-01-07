@@ -21,7 +21,7 @@ export function SkillCard({ skill }: { skill: Skill }) {
   }
 
   return (
-    <Card className="p-5 hover:shadow-lg transition-shadow bg-white/80 backdrop-blur">
+    <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur p-5 hover:shadow-lg transition-shadow">
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-gray-900 mb-2">{skill.title}</h3>

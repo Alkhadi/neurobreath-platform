@@ -149,7 +149,7 @@ export function ResourcesLibrary() {
   if (!mounted) {
     return (
       <section className="space-y-6">
-        <Card className="border-indigo-200 dark:border-indigo-800 bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-950/20 dark:to-background">
+        <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur border-indigo-200 dark:border-indigo-800">
           <CardHeader>
             <div className="flex items-start gap-3">
               <div className="p-2 bg-indigo-100 dark:bg-indigo-900 rounded-lg">
@@ -169,9 +169,9 @@ export function ResourcesLibrary() {
   }
 
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="w-full">
       <section className="space-y-6">
-        <Card className="border-indigo-200 dark:border-indigo-800 bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-950/20 dark:to-background">
+        <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur border-indigo-200 dark:border-indigo-800">
           <CardHeader>
           <div className="flex items-start gap-3">
             <div className="p-2 bg-indigo-100 dark:bg-indigo-900 rounded-lg">

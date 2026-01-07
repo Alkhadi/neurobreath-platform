@@ -69,7 +69,7 @@ export function ProgressDashboardEnhanced({ onReset }: ProgressDashboardEnhanced
   const xpProgress = (levelInfo.currentXP / levelInfo.xpToNextLevel) * 100;
 
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="w-full">
       <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
             <TrendingUp className="h-8 w-8 text-indigo-600" />
@@ -81,7 +81,7 @@ export function ProgressDashboardEnhanced({ onReset }: ProgressDashboardEnhanced
         </div>
 
         {/* Level & XP Card */}
-        <Card className="mb-8 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-purple-500/5">
+        <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur mb-8 border-2 border-primary/20">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between mb-6">
               <div>
@@ -188,7 +188,7 @@ export function ProgressDashboardEnhanced({ onReset }: ProgressDashboardEnhanced
 
           <TabsContent value="charts" className="mt-6">
             {/* Weekly Activity - Full Width */}
-            <Card className="mb-6">
+            <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur mb-6">
               <CardHeader>
                 <CardTitle>Weekly Activity</CardTitle>
                 <CardDescription>Minutes practiced per day</CardDescription>
