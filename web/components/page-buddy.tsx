@@ -450,6 +450,26 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       return `**💤 Sleep Support** – Better sleep tools\n\n**Sleep Hygiene Essentials:**\n• **Consistent Times** – Bed & wake (even weekends)\n• **Dark & Cool** – Bedroom environment\n• **No Screens** – 1 hour before bed\n• **Limit Caffeine** – After 2pm\n• **Exercise** – But not near bedtime\n\n**Bedtime Routine:**\n• Wind-down hour\n• Relaxing activity\n• Breathing exercises\n• Progressive muscle relaxation\n• Worry journal (write & close)\n\n**Sleep-Onset Strategies:**\n• 4-7-8 breathing\n• Body scan meditation\n• Visualization\n• Audio stories/meditations\n• Get up if can't sleep (20-min rule)\n\n**Morning Routine:**\n• Natural light exposure\n• Consistent wake time\n• Light exercise/stretch\n• Healthy breakfast\n• Avoid snoozing\n\n**When to Get Help:**\n• Insomnia > 3 weeks\n• Snoring/breathing stops\n• Excessive daytime sleepiness\n• Leg movements/restlessness\n\n**Visit /sleep for full sleep toolkit!**`;
     }
     
+    if (q.includes('bipolar')) {
+      return `**⚡ Bipolar Support** – Mood management tools\n\n**Understanding Bipolar:**\n• Mood disorder with highs (mania/hypomania) and lows (depression)\n• Medical condition requiring professional care\n• Highly treatable with proper support\n• Affects energy, activity, sleep, behavior\n• Not the same as normal mood swings\n\n**Daily Mood Tracking:**\n• **Monitor Daily** – Track mood, sleep, energy\n• **Identify Patterns** – Spot early warning signs\n• **Share with Doctor** – Help guide treatment\n• **Note Triggers** – Stress, sleep loss, life changes\n• **Medication Tracking** – Record adherence & side effects\n\n**Sleep is Critical:**\n• Consistent sleep/wake times (essential!)\n• Sleep disruption can trigger episodes\n• 7-9 hours nightly recommended\n• Avoid all-nighters\n• Report sleep changes to doctor immediately\n\n**Early Warning Signs:**\n**Mania/Hypomania:**\n• Decreased need for sleep\n• Racing thoughts\n• Increased activity/energy\n• Impulsive decisions\n• Irritability\n\n**Depression:**\n• Excessive sleep or insomnia\n• Loss of interest\n• Low energy\n• Hopelessness\n• Difficulty concentrating\n\n**Crisis Planning:**\n• Emergency contacts list\n• Warning signs documented\n• Preferred hospital/doctor\n• Medication information\n• Support person designated\n\n**Professional Support Essential:**\n• Psychiatrist for medication management\n• Therapist (CBT, DBT, IPSRT)\n• Support groups\n• Family involvement helpful\n\n**Crisis Contacts:**\n• UK: NHS 111, Samaritans 116 123\n• US: 988 Lifeline, Crisis Text 741741\n• EU: 112\n\n**Visit /conditions/bipolar for complete toolkit!**`;
+    }
+    
+    if (q.includes('low mood') || q.includes('burnout')) {
+      return `**🌧️ Low Mood & Burnout** – Recovery support\n\n**Understanding Burnout:**\n• Physical, emotional, mental exhaustion\n• Often work/study/care-related\n• Different from regular tiredness\n• Recovery takes time (weeks to months)\n• Not a personal failure\n\n**Three Core Signs:**\n1. **Exhaustion** – Depleted, drained, can't recharge\n2. **Cynicism** – Detachment, negative feelings about work/life\n3. **Inefficacy** – Reduced performance, sense of inadequacy\n\n**Recovery Strategies:**\n\n**Energy Management:**\n• **Pacing** – Break tasks into tiny steps\n• **Rest Actively** – Not just sleep, but restoration\n• **Say No** – Protect your limited energy\n• **Prioritize Ruthlessly** – Only essentials for now\n• **Celebrate Tiny Wins** – Getting up counts!\n\n**Daily Self-Care:**\n• Basic needs first (eat, sleep, hygiene)\n• Micro-activities (5-10 min max)\n• Gentle movement (short walks)\n• Connection (even brief texts)\n• Nature exposure (even windows)\n\n**What NOT to Do:**\n• Don't push through – makes it worse\n• Don't expect quick recovery\n• Don't compare to others\n• Don't take on new commitments\n• Don't ignore warning signs\n\n**Gentle Activities:**\n• Listen to calming music\n• Simple breathing exercises\n• Read light content\n• Sit in nature\n• Pet an animal\n• Watch comfort shows\n• Color or doodle\n• Warm bath/shower\n\n**When to Get Help:**\n• Symptoms persist > 2 weeks\n• Affecting daily functioning\n• Physical symptoms worsen\n• Thoughts of self-harm\n• Unable to work/care for self\n\n**Recovery Timeline:**\n• Weeks 1-2: Rest, basic self-care\n• Weeks 3-6: Gentle activities, boundaries\n• Months 2-3: Gradual return to activities\n• Months 3-6: Sustained recovery, prevention\n\n**Professional Support:**\n• GP/Doctor consultation\n• Therapy (especially CBT)\n• Occupational health (if work-related)\n• Support groups\n• Consider time off work if severe\n\n**Remember:** Recovery is not linear. Bad days don't erase progress.\n\n**Visit /conditions/low-mood-burnout for full support!**`;
+    }
+    
+    if (q.includes('parent') && q.includes('support')) {
+      return `**👨‍👩‍👧 Parent Support Available** – Comprehensive resources\n\n**For Parents Supporting:**\n\n**ADHD:**\n• Homework & routine strategies\n• Positive behavior management\n• School collaboration tools\n• IEP/504 plan guidance\n• Medication decision support\n• Understanding executive function\n• Organization systems\n• Parent-child communication\n\n**Autism:**\n• EHCP (UK) / IEP & 504 (US) guides\n• Understanding sensory needs\n• Communication strategies\n• Visual schedule templates\n• Meltdown support & prevention\n• School meeting preparation\n• Evidence gathering checklists\n• Social skills support\n\n**Dyslexia:**\n• Home reading strategies\n• Assessment guidance\n• Rights & accommodations\n• Multi-sensory learning\n• Building confidence\n• Technology tools\n• School advocacy\n\n**Mental Health Conditions:**\n• Age-appropriate explanations\n• When to seek help\n• Supporting anxiety/depression\n• Building resilience\n• Family communication\n• Crisis planning\n\n**Universal Parent Tools:**\n\n**Education Support:**\n• Request letter templates (EHCP/IEP/504)\n• Meeting preparation guides\n• Progress tracking templates\n• Rights & legal information\n• Appeal process guidance\n\n**Home Strategies:**\n• Routine building tools\n• Visual schedules\n• Reward systems\n• Communication techniques\n• Homework support\n• Life skills teaching\n\n**Self-Care for Parents:**\n• Managing stress\n• Setting boundaries\n• Finding support networks\n• Celebrating small wins\n• Respite resources\n• Partner/family support\n\n**School Collaboration:**\n• Parent-teacher communication templates\n• Shared progress tracking\n• Consistent strategies\n• Meeting documentation\n• Advocacy skills\n\n**Evidence-Based Guidance:**\nAll strategies backed by NICE, CDC, NHS, AAP guidelines.\n\n**Where to Find:**\n• **/adhd** – ADHD parent section\n• **/autism** – Autism parent section  \n• **/conditions/dyslexia** – Dyslexia parent resources\n• Each hub has dedicated parent support!\n\n**Ask me:** "Show me ADHD parent support" or "Autism resources for parents"`;
+    }
+    
+    if (q.includes('teacher') && q.includes('resource')) {
+      return `**🎓 Teacher Resources Available** – Classroom tools & strategies\n\n**For Teachers Supporting:**\n\n**ADHD:**\n• Classroom management strategies\n• Seating & environment adaptations\n• Movement break guidance (essential!)\n• Attention support techniques\n• Fidget tool guidance\n• Task chunking strategies\n• Time awareness tools\n• Positive reinforcement systems\n• Assessment accommodations\n\n**Autism:**\n• Sensory accommodation plans\n• Visual schedule templates\n• Clear instruction strategies\n• Transition support\n• Quiet space provision\n• Behavior function understanding\n• Social skills support\n• Meltdown prevention & response\n• Communication adaptations\n\n**Dyslexia:**\n• Multi-sensory teaching methods\n• Structured literacy approaches\n• Reading accommodations\n• Assessment modifications\n• Assistive technology\n• Confidence building\n• Phonics-based instruction\n• Text format adaptations\n\n**Universal Teacher Tools:**\n\n**Classroom Adaptations:**\n• Visual supports library\n• Behavior support plans\n• Sensory toolkits\n• Differentiation strategies\n• Flexible seating options\n• Quiet zones\n• Movement breaks\n• Clear routines\n\n**Assessment & Planning:**\n• Accommodation checklists\n• IEP/504 guidance\n• Progress monitoring tools\n• Goal-setting templates\n• Documentation systems\n• Evidence collection\n\n**Communication Tools:**\n• Parent communication templates\n• Meeting preparation guides\n• Progress report formats\n• Positive feedback systems\n• Concern reporting templates\n\n**Professional Development:**\n• Evidence-based strategies (NICE, DfE)\n• Neurodiversity-affirming approaches\n• Legal rights & responsibilities\n• SEND Code of Practice guidance\n• Inclusive teaching methods\n\n**Quick Classroom Strategies:**\n• Clear, concise instructions\n• Visual + verbal information\n• Consistent routines\n• Positive reinforcement (4:1 ratio)\n• Proactive, not reactive\n• Understanding > punishment\n• Strengths-based approach\n\n**Downloadable Resources:**\n• Visual schedules (customizable)\n• Behavior tracking sheets\n• Sensory diet plans\n• Classroom modification guides\n• Parent communication templates\n• IEP/504 templates\n\n**Where to Find:**\n• **/teacher-quick-pack** – Ready-to-use strategies\n• **/schools** – Education sector resources\n• **/adhd** → Teacher section\n• **/autism** → Teacher section\n• **/conditions/dyslexia** → Teacher resources\n\n**Legal Frameworks:**\n• UK: SEND Code of Practice\n• US: IDEA, Section 504\n• EU: Inclusive Education Acts\n\n**Ask me:** "Show me ADHD classroom strategies" or "Autism teacher resources"`;
+    }
+    
+    if (q.includes('carer') && q.includes('support')) {
+      return `**❤️ Carer Support Available** – Tools & wellbeing resources\n\n**For Carers Supporting:**\n\n**ADHD:**\n• Daily structure systems\n• Time management tools\n• Organization strategies\n• Clear communication techniques\n• Attention management tips\n• Impulsivity support\n• Positive reinforcement\n• Self-regulation strategies\n• Understanding executive function\n\n**Autism:**\n• Day-to-day support strategies\n• Sensory needs understanding\n• Communication techniques (verbal & non-verbal)\n• Routine building & maintaining\n• Meltdown support & prevention\n• Managing change & transitions\n• Self-care activities support\n• Social situations guidance\n\n**Dyslexia:**\n• Daily learning support\n• Confidence building strategies\n• Homework assistance\n• Technology tools setup\n• Reading practice routines\n• Understanding challenges\n• Celebrating progress\n• Advocacy support\n\n**Mental Health Conditions:**\n• Supporting daily mood\n• Recognizing warning signs\n• When to seek help\n• Crisis management\n• Medication support\n• Building resilience\n• Communication strategies\n\n**Universal Carer Tools:**\n\n**Daily Support:**\n• Routine templates\n• Visual supports\n• Communication boards\n• Activity planning\n• Medication tracking\n• Appointment management\n• Emergency plans\n\n**Understanding Needs:**\n• Condition-specific guides\n• Behavior understanding\n• Sensory processing\n• Executive function\n• Communication differences\n• Learning styles\n\n**Practical Strategies:**\n• Clear instructions (simple language)\n• Visual + verbal information\n• Consistent routines\n• Positive reinforcement\n• Patience & understanding\n• Celebrating small wins\n• Breaking tasks down\n\n**Carer Wellbeing (Essential!):**\n\n**Self-Care:**\n• Regular breaks (non-negotiable)\n• Personal hobbies/interests\n• Physical health priority\n• Mental health support\n• Social connections\n• Setting boundaries\n• Asking for help\n\n**Respite & Support:**\n• Respite care options\n• Support groups (local & online)\n• Professional support access\n• Family/friend networks\n• Emergency backup plans\n• Shared care arrangements\n\n**Managing Stress:**\n• Breathing exercises\n• Quick relaxation techniques\n• Stress triggers identification\n• Coping strategies\n• Professional therapy access\n• Burnout prevention\n\n**Resources for Carers:**\n• Condition-specific guides\n• Emergency contact lists\n• Medication information sheets\n• Crisis support numbers\n• Professional services directory\n• Legal rights information\n\n**Communication Tools:**\n• Healthcare professional templates\n• School communication guides\n• Family support discussions\n• Progress sharing tools\n\n**Remember:**\n• You can't pour from an empty cup\n• Asking for help is strength, not weakness\n• Your wellbeing matters too\n• Celebrate your care & dedication\n• Small steps are still progress\n\n**Where to Find:**\n• **/adhd** → Carer section\n• **/autism** → Carer section\n• **/conditions/dyslexia** → Carer resources\n• Each hub has dedicated carer support!\n\n**Crisis Support Available 24/7:**\n• UK: Samaritans 116 123, Carers UK 0808 808 7777\n• US: 988 Lifeline, Caregiver Action Network\n• EU: 112 Emergency, local carer organizations\n\n**Ask me:** "Show me ADHD carer strategies" or "Support for autism carers"`;
+    }
+    
     // === NAVIGATION - ADHD HUB ===
     if ((q.includes('take me to') || q.includes('go to') || q.includes('visit') || q.includes('show me')) && q.includes('adhd')) {
       return `**ADHD Hub** is ready for you! 🎯\n\n**What you'll find:**\n• ⏱️ Focus Pomodoro Timer (5-50 min sessions)\n• 🏆 Daily Quests with XP rewards\n• 📚 Skills Library with practical strategies\n• 🔬 Myths vs Facts section\n• 📈 Progress tracking with streaks\n\n👉 **[Click here to visit /adhd](/adhd)**\n\nPerfect for individuals, parents, teachers, and carers supporting ADHD!`;
@@ -644,6 +664,113 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
   
   // Handle quick question click
   const handleQuickQuestion = (question: string) => {
+    const q = question.toLowerCase();
+    
+    // Handle navigation questions
+    if (q.includes('take me to') || q.includes('go to')) {
+      if (q.includes('adhd')) {
+        // Add confirmation message before navigating
+        const confirmMessage: Message = {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: '🎯 Taking you to the **ADHD Hub** now!\n\nYou\'ll find Focus Timer, Daily Quests, Skills Library, and more...',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, { id: (Date.now() - 1).toString(), role: 'user', content: question, timestamp: new Date() }, confirmMessage]);
+        setTimeout(() => router.push('/adhd'), 800);
+        return;
+      }
+      if (q.includes('autism')) {
+        // Add confirmation message before navigating
+        const confirmMessage: Message = {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: '🌟 Taking you to the **Autism Hub** now!\n\nYou\'ll find Calm Toolkit, Education Pathways, Printable Resources, and more...',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, { id: (Date.now() - 1).toString(), role: 'user', content: question, timestamp: new Date() }, confirmMessage]);
+        setTimeout(() => router.push('/autism'), 800);
+        return;
+      }
+      if (q.includes('dyslexia')) {
+        const confirmMessage: Message = {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: '📖 Taking you to the **Dyslexia Hub** now!\n\nYou\'ll find Reading Training, Multi-sensory Tools, and support resources...',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, { id: (Date.now() - 1).toString(), role: 'user', content: question, timestamp: new Date() }, confirmMessage]);
+        setTimeout(() => router.push('/conditions/dyslexia'), 800);
+        return;
+      }
+      if (q.includes('breathing')) {
+        const confirmMessage: Message = {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: '🌬️ Taking you to **Breathing Exercises** now!\n\nTry Box Breathing, Coherent Breathing, and more guided techniques...',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, { id: (Date.now() - 1).toString(), role: 'user', content: question, timestamp: new Date() }, confirmMessage]);
+        setTimeout(() => router.push('/breathing'), 800);
+        return;
+      }
+      if (q.includes('sleep')) {
+        const confirmMessage: Message = {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: '💤 Taking you to **Sleep Support** now!\n\nTrack your sleep, check hygiene tips, and earn achievements...',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, { id: (Date.now() - 1).toString(), role: 'user', content: question, timestamp: new Date() }, confirmMessage]);
+        setTimeout(() => router.push('/sleep'), 800);
+        return;
+      }
+      if (q.includes('anxiety')) {
+        const confirmMessage: Message = {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: '😰 Taking you to **Anxiety Support** now!\n\nGrounding techniques, breathing exercises, and coping strategies await...',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, { id: (Date.now() - 1).toString(), role: 'user', content: question, timestamp: new Date() }, confirmMessage]);
+        setTimeout(() => router.push('/conditions/anxiety'), 800);
+        return;
+      }
+      if (q.includes('depression')) {
+        const confirmMessage: Message = {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: '💙 Taking you to **Depression Support** now!\n\nMood tracking, behavioral activation, and professional support resources...',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, { id: (Date.now() - 1).toString(), role: 'user', content: question, timestamp: new Date() }, confirmMessage]);
+        setTimeout(() => router.push('/conditions/depression'), 800);
+        return;
+      }
+      if (q.includes('stress')) {
+        const confirmMessage: Message = {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: '😓 Taking you to **Stress Management** now!\n\nQuick relief techniques, daily prevention, and burnout guidance...',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, { id: (Date.now() - 1).toString(), role: 'user', content: question, timestamp: new Date() }, confirmMessage]);
+        setTimeout(() => router.push('/stress'), 800);
+        return;
+      }
+      if (q.includes('bipolar')) {
+        const confirmMessage: Message = {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: '⚡ Taking you to **Bipolar Support** now!\n\nMood tracking, sleep routines, and crisis planning tools...',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, { id: (Date.now() - 1).toString(), role: 'user', content: question, timestamp: new Date() }, confirmMessage]);
+        setTimeout(() => router.push('/conditions/bipolar'), 800);
+        return;
+      }
+    }
+    
     handleSend(question);
   };
   

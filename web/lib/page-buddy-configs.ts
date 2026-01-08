@@ -388,6 +388,43 @@ export const pageBuddyConfigs: Record<string, PageBuddyConfig> = {
       }
     ],
     keywords: ['about', 'mission', 'team', 'story', 'values', 'evidence', 'who we are']
+  },
+  '/sleep': {
+    pageId: 'sleep',
+    pageName: 'Sleep Support',
+    audiences: ['everyone', 'neurodivergent individuals', 'parents', 'teachers', 'carers'],
+    welcomeMessage: `Welcome to **Sleep Support**! 💤✨\n\nI'm here to help you improve your sleep with evidence-based tools.\n\n**What you'll find here:**\n• 📊 Sleep Tracker & Diary – Log sleep patterns and quality\n• ✅ Sleep Hygiene Checklist – Evidence-based best practices\n• 🏆 Badges & Achievements – Celebrate consistency\n• 📈 Progress Visualisation – See your sleep patterns\n• 📚 Educational Resources – Understanding sleep science\n\n**Key Features:**\n• Track bedtime, wake time, and sleep quality\n• Build healthy sleep habits with daily checklist\n• Earn badges for streaks and achievements\n• All data stays private on your device\n\nReady to improve your sleep? Let's get started!`,
+    quickQuestions: [
+      'How do I track my sleep?',
+      'What is sleep hygiene?',
+      'Show me the sleep checklist',
+      'How do I earn badges?',
+      'Why is consistent sleep important?',
+      'What causes sleep problems?',
+      'Help me sleep better',
+      'Show me sleep strategies'
+    ],
+    sections: [
+      {
+        id: 'hero',
+        name: 'Measured breathing hero',
+        description: 'Your sleep dashboard showing streak, sleep score, badges unlocked, and quick stats',
+        tips: ['Check your current streak and sleep score', 'View your progress at a glance', 'Open the sleep tracker to log your sleep']
+      },
+      {
+        id: 'tracker',
+        name: 'Breathing challenges & quests',
+        description: 'Sleep tracker with daily logging, progress charts, and sleep diary functionality',
+        tips: ['Log your sleep daily for best results', 'Track bedtime, wake time, and sleep quality (1-5 stars)', 'Add notes about how you felt or any disturbances', 'View your last 7 days in the progress chart']
+      },
+      {
+        id: 'resources',
+        name: 'Rewards & Milestones',
+        description: 'Educational content, sleep hygiene checklist, and badge achievements',
+        tips: ['Complete the sleep hygiene checklist daily', 'Read educational sections to understand sleep science', 'Earn badges by maintaining streaks and good practices', 'Track your progress towards all 8 available badges']
+      }
+    ],
+    keywords: ['sleep', 'insomnia', 'bedtime', 'rest', 'hygiene', 'quality', 'tracker', 'habits', 'routine', 'dreams']
   }
 };
 

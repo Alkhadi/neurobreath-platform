@@ -252,13 +252,12 @@ export default function CredibilitySection() {
         <div className="max-w-3xl mx-auto text-center">
           <Button
             variant="outline"
-            size="lg"
             onClick={() => setShowSources(true)}
-            className="gap-2 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="gap-2 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 w-full sm:w-auto h-11 px-3 sm:px-6 text-xs sm:text-sm"
           >
-            <FlaskConical className="w-4 h-4" />
-            View Full Sources &amp; References
-            <ChevronRight className="w-4 h-4" />
+            <FlaskConical className="w-4 h-4 flex-shrink-0" />
+            <span className="truncate min-w-0">View Full Sources & References</span>
+            <ChevronRight className="w-4 h-4 flex-shrink-0" />
           </Button>
         </div>
 

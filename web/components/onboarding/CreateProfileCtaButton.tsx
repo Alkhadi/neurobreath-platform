@@ -37,8 +37,9 @@ export function CreateProfileCtaButton({ onClick, className = '' }: CreateProfil
       className={`
         group
         relative overflow-hidden
-        w-full p-6 sm:p-8
-        flex items-center gap-4
+        w-full min-w-0
+        p-4 sm:p-6 lg:p-8
+        flex items-center gap-3 sm:gap-4
         text-left
         rounded-lg border-2 border-primary/20
         bg-gradient-to-br from-card via-card to-primary/5
@@ -59,18 +60,18 @@ export function CreateProfileCtaButton({ onClick, className = '' }: CreateProfil
       {/* Text content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground break-words">
             Create Your Profile
           </h2>
-          <Sparkles className="w-5 h-5 text-primary animate-pulse" />
+          <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary animate-pulse flex-shrink-0" />
         </div>
-        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mt-1">
+        <p className="text-xs sm:text-sm lg:text-base text-muted-foreground leading-relaxed mt-1 break-words">
           {subtitle}
         </p>
         {/* CTA Pill */}
-        <span className="inline-flex items-center gap-1.5 mt-3 rounded-full border-2 border-primary/30 bg-primary/10 px-3 py-1.5 text-xs sm:text-sm font-medium text-primary group-hover:border-primary/50 group-hover:bg-primary/20 transition-colors">
-          Click here to get started
-          <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-0.5 transition-transform" />
+        <span className="inline-flex items-center gap-1.5 mt-2 sm:mt-3 rounded-full border-2 border-primary/30 bg-primary/10 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium text-primary group-hover:border-primary/50 group-hover:bg-primary/20 transition-colors">
+          <span className="break-words">Click here to get started</span>
+          <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
         </span>
       </div>
 

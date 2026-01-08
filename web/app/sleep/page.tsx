@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Moon, Trophy, Target, CheckCircle, Calendar, TrendingUp, Award, Flame, Sparkles, Heart, Brain, Users, BookOpen, Lightbulb, Shield } from 'lucide-react'
+import { PageBuddy } from '@/components/page-buddy'
 
 // Types
 interface SleepEntry {
@@ -179,10 +180,13 @@ export default function SleepPage() {
   const checklistProgress = Math.round(checklist.filter(c => c.completed).length / checklist.length * 100)
 
   return (
+    <>
+    <PageBuddy />
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 py-12">
       <div className="container max-w-4xl mx-auto px-4">
         
         {/* Hero Section */}
+        <section id="hero" data-section="hero" aria-label="Measured breathing hero">
         <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 shadow-xl mb-8 text-white">
           <div className="flex items-center gap-3 mb-2">
             <span className="text-4xl">💤</span>
@@ -224,8 +228,10 @@ export default function SleepPage() {
             <Moon className="w-4 h-4 mr-2" /> {showTracker ? 'Hide' : 'Open'} Sleep Tracker
           </Button>
         </div>
+        </section>
 
         {/* Sleep Tracker Panel */}
+        <section id="tracker" data-section="tracker" aria-label="Breathing challenges & quests">
         {showTracker && (
           <div className="bg-white rounded-2xl p-6 shadow-xl mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
@@ -367,8 +373,10 @@ export default function SleepPage() {
             </div>
           </div>
         )}
+        </section>
 
         {/* Navigation Tabs */}
+        <section id="resources" data-section="resources" aria-label="Rewards & Milestones">
         <div className="bg-white rounded-xl p-2 shadow mb-6 overflow-x-auto">
           <div className="flex gap-1 min-w-max">
             {[
@@ -1194,6 +1202,7 @@ export default function SleepPage() {
             </div>
           )}
         </div>
+        </section>
 
         {/* Warning Note */}
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
@@ -1214,5 +1223,6 @@ export default function SleepPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }

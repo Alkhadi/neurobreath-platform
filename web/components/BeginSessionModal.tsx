@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { X, Play, Pause, Square, Volume2, Music } from 'lucide-react'
 import { getTechniqueById } from '@/lib/breathing-data'
+import { FocusOverlayShell, FocusOverlayFooter } from '@/components/focus/FocusOverlayShell'
 
 interface BeginSessionModalProps {
   isOpen: boolean
@@ -448,236 +449,241 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
-  return (
-    <>
-      {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998] animate-in fade-in duration-200"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-      
-      {/* Modal */}
-      <div 
-        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-xl bg-white rounded-2xl shadow-2xl z-[9999] animate-in zoom-in-95 duration-200"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="quick-start-title"
-        onClick={(e) => e.stopPropagation()}
+  // Picker View - Use FocusOverlayShell
+  if (view === 'picker') {
+    return (
+      <FocusOverlayShell
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Choose a breathing technique"
+        subtitle="Pick a warm-up technique and duration. We will start your session with voice guidance."
+        maxWidth="max-w-2xl"
+        testId="breathing-technique-modal"
+        footer={
+          <FocusOverlayFooter
+            secondary={{
+              label: 'Cancel',
+              onClick: onClose,
+            }}
+            primary={{
+              label: 'Start breathing',
+              onClick: handleStartBreathing,
+            }}
+          />
+        }
       >
-        {view === 'picker' ? (
-          <div className="p-6">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-              <h2 id="quick-start-title" className="text-xl font-bold text-gray-900">
-                Choose a breathing technique
-              </h2>
-              <button
-                onClick={onClose}
-                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-                aria-label="Close modal"
-              >
-                <X size={20} className="text-gray-600" />
-              </button>
+        {/* Content - removed old header/footer since shell provides them */}
+        <div className="space-y-6">
+          {/* Narration Voice Section */}
+          <div className="p-4 bg-amber-50 rounded-lg border border-amber-100">
+            <div className="flex items-center gap-2 mb-2">
+              <Volume2 size={16} className="text-gray-600" />
+              <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                Narration Voice
+              </label>
             </div>
-
-            {/* Narration Voice Section */}
-            <div className="mb-6 p-4 bg-amber-50 rounded-lg border border-amber-100">
-              <div className="flex items-center gap-2 mb-2">
-                <Volume2 size={16} className="text-gray-600" />
-                <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                  Narration Voice
-                </label>
-              </div>
-              <p className="text-sm font-medium text-gray-900 mb-3">Choose narration voice</p>
+            <p className="text-sm font-medium text-gray-900 mb-3">Choose narration voice</p>
+            
+            <div className="flex flex-col gap-2 mb-3">
+              <label htmlFor="narration-voice-select" className="sr-only">
+                Select narration voice
+              </label>
+              <select
+                id="narration-voice-select"
+                name="narrationVoice"
+                value={selectedVoice}
+                onChange={(e) => setSelectedVoice(e.target.value)}
+                className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[44px]"
+                aria-label="Select narration voice"
+                title="Choose your preferred narration voice"
+              >
+                {voiceOptions.map(v => (
+                  <option key={v.id} value={v.id}>{v.label}</option>
+                ))}
+              </select>
               
-              <div className="flex flex-wrap gap-2 mb-3">
-                <label htmlFor="narration-voice-select" className="sr-only">
-                  Select narration voice
-                </label>
-                <select
-                  id="narration-voice-select"
-                  name="narrationVoice"
-                  value={selectedVoice}
-                  onChange={(e) => setSelectedVoice(e.target.value)}
-                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  aria-label="Select narration voice"
-                  title="Choose your preferred narration voice"
-                >
-                  {voiceOptions.map(v => (
-                    <option key={v.id} value={v.id}>{v.label}</option>
-                  ))}
-                </select>
+              <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={readInstructions}
-                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+                  className="px-2 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md hover:bg-gray-50 min-h-[44px]"
                   aria-label="Read breathing instructions aloud"
                 >
                   Read instructions
                 </button>
                 <button
                   onClick={stopVoice}
-                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+                  className="px-2 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md hover:bg-gray-50 min-h-[44px]"
                   aria-label="Stop voice narration"
                 >
                   Stop
                 </button>
               </div>
-
-              <button
-                onClick={testVoice}
-                className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50 mb-2"
-                aria-label="Test selected voice"
-              >
-                Voice test
-              </button>
-              
-              <p className="text-xs text-gray-600">Daniel • en-GB</p>
             </div>
 
-            {/* Instruction Text */}
-            <p className="text-sm text-gray-700 mb-4">
-              Pick a warm-up technique and duration. We will start your session with voice guidance.
-            </p>
+            <button
+              onClick={testVoice}
+              className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50 mb-2 min-h-[44px]"
+              aria-label="Test selected voice"
+            >
+              Voice test
+            </button>
+            
+            <p className="text-xs text-gray-600">Daniel • en-GB</p>
+          </div>
 
-            {/* Technique Grid */}
-            <div className="grid grid-cols-2 gap-3 mb-6" role="group" aria-label="Breathing technique options">
-              {techniques.map(tech => (
+          {/* Technique Grid - NOW RESPONSIVE */}
+          <div 
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3" 
+            role="group" 
+            aria-label="Breathing technique options"
+            data-testid="technique-grid"
+          >
+            {techniques.map(tech => (
+              <button
+                key={tech.id}
+                onClick={() => setSelectedTechnique(tech.id)}
+                className={`relative p-4 rounded-lg border-2 text-left transition-all min-h-[44px] ${
+                  selectedTechnique === tech.id ? tech.colorActive : tech.color
+                }`}
+                aria-label={`Select ${tech.name} technique - ${tech.subtitle}`}
+                data-testid={`technique-${tech.id}`}
+              >
+                {selectedTechnique === tech.id && (
+                  <span className="absolute top-2 right-2 px-2 py-0.5 text-xs font-semibold bg-white rounded-full border border-gray-300">
+                    Selected
+                  </span>
+                )}
+                <div className="font-semibold text-gray-900 mb-1 break-words">{tech.name}</div>
+                <div className="text-xs text-gray-600 break-words">{tech.subtitle}</div>
+              </button>
+            ))}
+          </div>
+
+          {/* Session Duration - WRAPPING PILLS */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 mb-2">Session duration</h3>
+            <p className="text-xs text-gray-600 mb-3">Tap a timing that feels doable today.</p>
+
+            <div 
+              className="grid grid-cols-3 sm:grid-cols-5 gap-2" 
+              role="group" 
+              aria-label="Session duration options"
+              data-testid="duration-pills"
+            >
+              {[1, 2, 3, 4, 5].map(min => (
                 <button
-                  key={tech.id}
-                  onClick={() => setSelectedTechnique(tech.id)}
-                  className={`relative p-4 rounded-lg border-2 text-left transition-all ${
-                    selectedTechnique === tech.id ? tech.colorActive : tech.color
+                  key={min}
+                  onClick={() => setSelectedDuration(min)}
+                  className={`px-2 py-2 text-sm font-medium rounded-lg border-2 transition-all min-h-[44px] ${
+                    selectedDuration === min
+                      ? 'bg-blue-50 border-blue-400 text-blue-900'
+                      : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
                   }`}
-                  aria-label={`Select ${tech.name} technique - ${tech.subtitle}`}
+                  aria-label={`Select ${min} minute session`}
+                  data-testid={`duration-${min}min`}
                 >
-                  {selectedTechnique === tech.id && (
-                    <span className="absolute top-2 right-2 px-2 py-0.5 text-xs font-semibold bg-white rounded-full border border-gray-300">
-                      Selected
-                    </span>
-                  )}
-                  <div className="font-semibold text-gray-900 mb-1">{tech.name}</div>
-                  <div className="text-xs text-gray-600">{tech.subtitle}</div>
+                  {min} min
                 </button>
               ))}
             </div>
+          </div>
 
-            {/* Session Duration */}
-            <div className="mb-6">
-              <h3 className="text-sm font-semibold text-gray-900 mb-2">Session duration</h3>
-              <p className="text-xs text-gray-600 mb-3">Tap a timing that feels doable today.</p>
-
-              <div className="flex gap-2" role="group" aria-label="Session duration options">
-                {[1, 2, 3, 4, 5].map(min => (
-                  <button
-                    key={min}
-                    onClick={() => setSelectedDuration(min)}
-                    className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all ${
-                      selectedDuration === min
-                        ? 'bg-blue-50 border-blue-400 text-blue-900'
-                        : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
-                    }`}
-                    aria-label={`Select ${min} minute session`}
-                  >
-                    {min} min
-                  </button>
+          {/* Ambience Sound Section */}
+          <div className="p-4 bg-purple-50 rounded-lg border border-purple-100">
+            <div className="flex items-center gap-2 mb-2">
+              <Music size={16} className="text-purple-600" />
+              <label className="text-xs font-semibold text-purple-700 uppercase tracking-wide">
+                Ambience Sounds
+              </label>
+            </div>
+            <p className="text-sm font-medium text-gray-900 mb-3">Choose background ambience</p>
+            
+            <div className="flex flex-col gap-2 mb-3">
+              <label htmlFor="ambience-sound-select" className="sr-only">
+                Select ambience sound
+              </label>
+              <select
+                id="ambience-sound-select"
+                name="ambienceSound"
+                value={selectedAmbience}
+                onChange={(e) => setSelectedAmbience(e.target.value as AmbienceType)}
+                className="w-full px-3 py-1.5 text-sm border border-purple-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white min-h-[44px]"
+                aria-label="Select ambience sound"
+                title="Choose your preferred background sound"
+              >
+                {AMBIENCE_OPTIONS.map(opt => (
+                  <option key={opt.id} value={opt.id}>{opt.label}</option>
                 ))}
-              </div>
+              </select>
+              <button
+                onClick={() => setIsTestingAmbience(!isTestingAmbience)}
+                className={`w-full px-3 py-1.5 text-sm border rounded-md transition-colors min-h-[44px] ${
+                  isTestingAmbience 
+                    ? 'bg-purple-500 text-white border-purple-500' 
+                    : 'border-purple-300 text-purple-700 hover:bg-purple-100'
+                }`}
+                aria-label={isTestingAmbience ? 'Stop preview' : 'Preview ambience'}
+                disabled={selectedAmbience === 'none'}
+              >
+                {isTestingAmbience ? 'Stop' : 'Preview'}
+              </button>
             </div>
 
-            {/* Ambience Sound Section */}
-            <div className="mb-6 p-4 bg-purple-50 rounded-lg border border-purple-100">
-              <div className="flex items-center gap-2 mb-2">
-                <Music size={16} className="text-purple-600" />
-                <label className="text-xs font-semibold text-purple-700 uppercase tracking-wide">
-                  Ambience Sounds
-                </label>
-              </div>
-              <p className="text-sm font-medium text-gray-900 mb-3">Choose background ambience</p>
-              
-              <div className="flex flex-wrap gap-2 mb-3">
-                <label htmlFor="ambience-sound-select" className="sr-only">
-                  Select ambience sound
-                </label>
-                <select
-                  id="ambience-sound-select"
-                  name="ambienceSound"
-                  value={selectedAmbience}
-                  onChange={(e) => setSelectedAmbience(e.target.value as AmbienceType)}
-                  className="flex-1 px-3 py-1.5 text-sm border border-purple-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
-                  aria-label="Select ambience sound"
-                  title="Choose your preferred background sound"
-                >
-                  {AMBIENCE_OPTIONS.map(opt => (
-                    <option key={opt.id} value={opt.id}>{opt.label}</option>
-                  ))}
-                </select>
-                <button
-                  onClick={() => setIsTestingAmbience(!isTestingAmbience)}
-                  className={`px-3 py-1.5 text-sm border rounded-md transition-colors ${
-                    isTestingAmbience 
-                      ? 'bg-purple-500 text-white border-purple-500' 
-                      : 'border-purple-300 text-purple-700 hover:bg-purple-100'
-                  }`}
-                  aria-label={isTestingAmbience ? 'Stop preview' : 'Preview ambience'}
-                  disabled={selectedAmbience === 'none'}
-                >
-                  {isTestingAmbience ? 'Stop' : 'Preview'}
-                </button>
-              </div>
-
-              {/* Volume Slider */}
-              <div className="flex items-center gap-3">
-                <label htmlFor="ambience-volume-slider" className="text-xs text-gray-600 w-14">
-                  Volume
-                </label>
-                <input
-                  id="ambience-volume-slider"
-                  name="ambienceVolume"
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.05"
-                  value={ambienceVolume}
-                  onChange={(e) => setAmbienceVolume(parseFloat(e.target.value))}
-                  className="flex-1 h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer accent-purple-500"
-                  aria-label="Ambience volume"
-                />
-                <span className="text-xs text-gray-600 w-10 text-right">{Math.round(ambienceVolume * 100)}%</span>
-              </div>
-            </div>
-
-            {/* Footer Buttons */}
-            <div className="flex gap-3">
-              <button
-                onClick={onClose}
-                className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                aria-label="Cancel and close modal"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleStartBreathing}
-                className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
-                aria-label="Start breathing session"
-              >
-                Start breathing
-              </button>
+            {/* Volume Slider */}
+            <div className="flex items-center gap-2">
+              <label htmlFor="ambience-volume-slider" className="text-xs text-gray-600 flex-shrink-0 w-16">
+                Volume
+              </label>
+              <input
+                id="ambience-volume-slider"
+                name="ambienceVolume"
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={ambienceVolume}
+                onChange={(e) => setAmbienceVolume(parseFloat(e.target.value))}
+                className="flex-1 min-w-0 h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                aria-label="Ambience volume"
+              />
+              <span className="text-xs text-gray-600 w-12 text-right flex-shrink-0">{Math.round(ambienceVolume * 100)}%</span>
             </div>
           </div>
-        ) : (
-          /* Session View */
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Breathing Session</h2>
-              <button
-                onClick={handleStop}
-                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-                aria-label="Stop session"
-              >
-                <X size={20} className="text-gray-600" />
-              </button>
-            </div>
+        </div>
+      </FocusOverlayShell>
+    );
+  }
+
+  // Session View - Keep original for now
+  return (
+    <>
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998] animate-in fade-in duration-200"
+        onClick={handleStop}
+        aria-hidden="true"
+      />
+      
+      {/* Modal */}
+      <div 
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-xl max-h-[calc(100dvh-24px)] overflow-y-auto bg-white rounded-2xl shadow-2xl z-[9999] animate-in zoom-in-95 duration-200"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="session-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Session View */}
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 id="session-title" className="text-xl font-bold text-gray-900">Breathing Session</h2>
+            <button
+              onClick={handleStop}
+              className="p-1.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label="Stop session"
+            >
+              <X size={20} className="text-gray-600" />
+            </button>
+          </div>
 
             {/* Timer Display */}
             <div className="text-center mb-8">
@@ -724,39 +730,38 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
               <span className="sr-only">Session progress: {progressPercentage}%</span>
             </div>
 
-            {/* Controls */}
-            <div className="flex gap-3 justify-center">
-              {!isPlaying ? (
-                <button
-                  onClick={handleResume}
-                  className="px-6 py-3 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
-                  aria-label="Resume breathing session"
-                >
-                  <Play size={18} />
-                  Resume
-                </button>
-              ) : (
-                <button
-                  onClick={handlePause}
-                  className="px-6 py-3 text-sm font-medium text-white bg-amber-500 rounded-lg hover:bg-amber-600 transition-colors flex items-center gap-2"
-                  aria-label="Pause breathing session"
-                >
-                  <Pause size={18} />
-                  Pause
-                </button>
-              )}
+          {/* Controls */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            {!isPlaying ? (
               <button
-                onClick={handleStop}
-                className="px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
-                aria-label="Stop breathing session and return to picker"
+                onClick={handleResume}
+                className="w-full sm:w-auto px-6 py-3 min-h-[48px] text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                aria-label="Resume breathing session"
               >
-                <Square size={18} />
-                Stop
+                <Play size={18} />
+                Resume
               </button>
-            </div>
+            ) : (
+              <button
+                onClick={handlePause}
+                className="w-full sm:w-auto px-6 py-3 min-h-[48px] text-sm font-medium text-white bg-amber-500 rounded-lg hover:bg-amber-600 transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+                aria-label="Pause breathing session"
+              >
+                <Pause size={18} />
+                Pause
+              </button>
+            )}
+            <button
+              onClick={handleStop}
+              className="w-full sm:w-auto px-6 py-3 min-h-[48px] text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              aria-label="Stop breathing session and return to picker"
+            >
+              <Square size={18} />
+              Stop
+            </button>
           </div>
-        )}
+        </div>
       </div>
     </>
-  )
+  );
 }
