@@ -1,0 +1,17 @@
+# Dependencies
+node_modules
+.next
+out
+build
+dist
+
+# Legacy assets
+public/legacy-assets/
+public/js/
+
+# Config files
+next-env.d.ts
+next.config.js
+
+# Scripts
+scripts/

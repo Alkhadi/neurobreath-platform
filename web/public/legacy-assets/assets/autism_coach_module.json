@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "id": "autism-coach",
+    "name": "Autism Coach Module",
+    "version": "1.1.0",
+    "locale": "en-UK",
+    "brand": "NeuroBreath",
+    "updated": "2025-11-07",
+    "description": "Guided flows that help caregivers deliver consistent communication, behaviour, sleep, and sensory routines."
+  },
+  "flows": [
+    {
+      "id": "comm",
+      "title": "Communication booster",
+      "minutes": 5,
+      "steps": [
+        { "type": "text", "title": "Warm-up", "body": "Follow the child's lead. Mirror play for 30–60 seconds." },
+        { "type": "multi-select", "title": "Targets", "options": ["Request (more/help)", "Choice (A/B)", "Comment (look/uh-oh)", "Social game (again!)"], "saveAs": "comm.targets" },
+        { "type": "timer", "seconds": 180, "title": "Play & model", "body": "Model 1–2 word phrases. Pause 5–10 s. Accept all attempts (speech/sign/AAC)." },
+        { "type": "log", "metric": "attempts", "title": "Attempts today", "saveAs": "comm.attempts" },
+        { "type": "text", "title": "Wrap", "body": "Celebrate. Snapshot: attempts = {{comm.attempts}}." }
+      ]
+    },
+    {
+      "id": "abc",
+      "title": "Behaviour: ABC coach",
+      "minutes": 6,
+      "steps": [
+        { "type": "text", "title": "Pick one behaviour", "body": "Describe it in observable words." },
+        { "type": "abc", "title": "Record ABC", "saveAs": "abc.row" },
+        { "type": "checklist", "title": "Teach replacement", "items": ["Give simple way to ask (picture/word)", "Reduce trigger (noise, unclear demand)", "Reinforce calm/ask quickly"] },
+        { "type": "log", "metric": "abc.count", "title": "Events today", "saveAs": "abc.count" }
+      ]
+    },
+    {
+      "id": "sleep",
+      "title": "Sleep routine",
+      "minutes": 5,
+      "steps": [
+        { "type": "planner", "title": "Bed routine", "body": "Choose 3–4 calming steps (bath, book, music).", "saveAs": "sleep.plan" },
+        { "type": "timer", "seconds": 60, "title": "Lights down", "body": "Dim lights; no screens. Breathe slowly together." },
+        { "type": "survey", "title": "Latency last night", "scale": [0, 120], "unit": "min", "saveAs": "sleep.latency" }
+      ]
+    },
+    {
+      "id": "sensory",
+      "title": "Sensory regulation",
+      "minutes": 4,
+      "steps": [
+        { "type": "picker", "title": "Need → tool", "options": ["Noise→headphones", "Movement→walk/trampoline", "Deep pressure→weighted lap (if liked)"], "saveAs": "sens.pick" },
+        { "type": "timer", "seconds": 120, "title": "Do the tool", "body": "Stay curious about comfort; stop if disliked." }
+      ]
+    }
+  ],
+  "resources": {
+    "support": [
+      "https://www.nhs.uk/conditions/autism/",
+      "https://www.autism.org.uk/advice-and-guidance",
+      "https://councilfordisabledchildren.org.uk/"
+    ],
+    "notes": "Educational information only; not medical advice. Import into the NeuroBreath app to customise flows and track local progress."
+  }
+}

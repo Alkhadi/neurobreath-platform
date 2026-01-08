@@ -1,8 +1,393 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ============================================================================
+   SITE FOOTER STYLES
+   ============================================================================ */
+
+.site-footer {
+  background: linear-gradient(to bottom, hsl(240 10% 98%), hsl(250 20% 97%));
+  border-top: 1px solid hsl(240 10% 90%);
+  padding: 3rem 0 2rem;
+  margin-top: 4rem;
+  position: relative;
+}
+
+.dark .site-footer {
+  background: linear-gradient(to bottom, hsl(222 47% 11%), hsl(240 30% 8%));
+  border-top: 1px solid hsl(240 20% 20%);
+}
+
+.ft-nav-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.ft-nav-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .ft-nav-inner {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+}
+
+.ft-nav-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .ft-nav-brand {
+    align-items: flex-start;
+  }
+}
+
+.ft-logo {
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.ft-logo:hover {
+  transform: scale(1.05);
+}
+
+.ft-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .ft-nav {
+    width: auto;
+    flex: 1;
+  }
+}
+
+.ft-group {
+  border: none;
+}
+
+.ft-group summary {
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  list-style: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, hsl(250 30% 95%), hsl(260 30% 93%));
+  color: hsl(250 50% 30%);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid hsl(250 20% 85%);
+}
+
+.dark .ft-group summary {
+  background: linear-gradient(135deg, hsl(250 30% 20%), hsl(260 30% 18%));
+  color: hsl(250 30% 80%);
+  border-color: hsl(250 20% 30%);
+}
+
+.ft-group summary:hover {
+  background: linear-gradient(135deg, hsl(260 40% 90%), hsl(270 40% 88%));
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
+}
+
+.dark .ft-group summary:hover {
+  background: linear-gradient(135deg, hsl(260 40% 25%), hsl(270 40% 23%));
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+
+.ft-group summary::-webkit-details-marker,
+.ft-group summary::marker {
+  display: none;
+}
+
+.ft-group[open] summary {
+  background: linear-gradient(135deg, hsl(260 50% 85%), hsl(270 50% 83%));
+  color: hsl(260 70% 30%);
+  border-color: hsl(260 40% 70%);
+}
+
+.dark .ft-group[open] summary {
+  background: linear-gradient(135deg, hsl(260 50% 30%), hsl(270 50% 28%));
+  color: hsl(260 40% 85%);
+  border-color: hsl(260 40% 40%);
+}
+
+.ft-group .links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-left: 0.75rem;
+}
+
+.ft-group .links p {
+  margin: 0;
+  line-height: 1.8;
+}
+
+.ft-group .links a {
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.ft-group .links a:hover {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+}
+
+.inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.ft-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid hsl(240 15% 88%);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.dark .ft-bottom {
+  border-top-color: hsl(240 20% 25%);
+}
+
+@media (max-width: 767px) {
+  .ft-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.ft-bottom__copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.ft-bottom__text {
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.6;
+  margin: 0;
+}
+
+.muted {
+  color: hsl(var(--muted-foreground));
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  background: hsl(var(--muted));
+  border-color: hsl(var(--primary));
+  transform: translateY(-1px);
+}
+
+.back-to-top-btn {
+  background: linear-gradient(135deg, hsl(222 47% 25%), hsl(270 50% 45%));
+  color: white;
+  border: none;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.back-to-top-btn:hover {
+  background: linear-gradient(135deg, hsl(222 47% 30%), hsl(270 50% 50%));
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+}
+
+.dark .back-to-top-btn {
+  background: linear-gradient(135deg, hsl(210 40% 90%), hsl(270 50% 80%));
+  color: hsl(222 47% 15%);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+}
+
+.dark .back-to-top-btn:hover {
+  background: linear-gradient(135deg, hsl(210 40% 95%), hsl(270 50% 85%));
+  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.3);
+}
+
+.back-to-top__label {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .back-to-top__label {
+    display: inline;
+  }
+}
+
+.back-to-top__icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+/* ============================================================================
+   GLOBAL GRID UTILITIES - Last Card Full Width for Odd-Numbered Grids
+   ============================================================================ */
+
+/* Make last card in any grid with odd number of children span full width on all screens */
+[class*="grid"]:not([class*="grid-cols-1"]) > *:last-child:nth-child(odd),
+.grid:not(.grid-cols-1) > *:last-child:nth-child(odd),
+[style*="display: grid"] > *:last-child:nth-child(odd),
+[style*="display:grid"] > *:last-child:nth-child(odd) {
+  grid-column: 1 / -1 !important;
+}
+
+/* For 2-column grids, make last card full width if it's odd (1st, 3rd, 5th, 7th, etc) */
+[class*="grid-cols-2"] > *:last-child:nth-child(odd),
+[class*="md:grid-cols-2"] > *:last-child:nth-child(odd),
+[class*="lg:grid-cols-2"] > *:last-child:nth-child(odd) {
+  grid-column: 1 / -1 !important;
+}
+
+/* For 3-column grids, make last card full width if total items % 3 != 0 */
+/* Targets items that are last and would leave the row incomplete */
+[class*="grid-cols-3"] > *:last-child:nth-child(3n+1),
+[class*="grid-cols-3"] > *:last-child:nth-child(3n+2),
+[class*="md:grid-cols-3"] > *:last-child:nth-child(3n+1),
+[class*="md:grid-cols-3"] > *:last-child:nth-child(3n+2),
+[class*="lg:grid-cols-3"] > *:last-child:nth-child(3n+1),
+[class*="lg:grid-cols-3"] > *:last-child:nth-child(3n+2) {
+  grid-column: 1 / -1 !important;
+}
+
+/* For 4-column grids, make last card full width if total items % 4 != 0 */
+[class*="grid-cols-4"] > *:last-child:nth-child(4n+1),
+[class*="grid-cols-4"] > *:last-child:nth-child(4n+2),
+[class*="grid-cols-4"] > *:last-child:nth-child(4n+3),
+[class*="md:grid-cols-4"] > *:last-child:nth-child(4n+1),
+[class*="md:grid-cols-4"] > *:last-child:nth-child(4n+2),
+[class*="md:grid-cols-4"] > *:last-child:nth-child(4n+3),
+[class*="lg:grid-cols-4"] > *:last-child:nth-child(4n+1),
+[class*="lg:grid-cols-4"] > *:last-child:nth-child(4n+2),
+[class*="lg:grid-cols-4"] > *:last-child:nth-child(4n+3) {
+  grid-column: 1 / -1 !important;
+}
+
+/* Optimize full-width last cards for better readability */
+[class*="grid"] > *:last-child:nth-child(odd) .checklist,
+[class*="grid"] > *:last-child:nth-child(odd) ul:not([class]),
+.grid > *:last-child:nth-child(odd) ul {
+  column-count: 1;
+}
+
+/* Multi-column layout for lists in full-width cards on larger screens */
+@media (min-width: 768px) {
+  [class*="grid"] > *:last-child:nth-child(odd) .checklist,
+  [class*="grid"] > *:last-child:nth-child(odd) ul:not([class*="inline"]) {
+    column-count: 2;
+    column-gap: 2rem;
+  }
+  
+  [class*="grid"] > *:last-child:nth-child(odd) li {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+@media (min-width: 1024px) {
+  [class*="grid"] > *:last-child:nth-child(odd) .checklist,
+  [class*="grid"] > *:last-child:nth-child(odd) ul:not([class*="inline"]) {
+    column-count: 3;
+    column-gap: 2.5rem;
+  }
+}
+
+/* Reset on mobile */
+@media (max-width: 767px) {
+  [class*="grid"] > *:last-child:nth-child(odd) .checklist,
+  [class*="grid"] > *:last-child:nth-child(odd) ul {
+    column-count: 1;
+  }
+}
+
+@layer utilities {
+  /* Full-width overrides for page containers */
+  .w-full-override {
+    width: 100% !important;
+    max-width: none !important;
+  }
+  
+  .page-container-full {
+    max-width: none !important;
+    width: 100% !important;
+  }
+}
  
 @layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Override Tailwind's vendor-prefixed properties with standard versions */
+  button,
+  input,
+  optgroup,
+  select,
+  textarea {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  [type='search'] {
+    -webkit-appearance: textfield;
+    appearance: textfield;
+  }
+
+  .line-clamp-1,
+  .line-clamp-2,
+  .line-clamp-3,
+  .line-clamp-4,
+  .line-clamp-5,
+  .line-clamp-6 {
+    -webkit-line-clamp: var(--line-clamp, 2);
+    line-clamp: var(--line-clamp, 2);
+  }
+
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
@@ -144,6 +529,225 @@
     animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   }
 
+  /* Playful Breathing Lab - Roulette Wheel (no inline styles) */
+  .nb-wheel {
+    transform-origin: center;
+    will-change: transform;
+  }
+
+  .nb-wheel-rest-0 {
+    transform: rotate(0deg);
+  }
+  .nb-wheel-rest-1 {
+    transform: rotate(90deg);
+  }
+  .nb-wheel-rest-2 {
+    transform: rotate(180deg);
+  }
+  .nb-wheel-rest-3 {
+    transform: rotate(270deg);
+  }
+
+  .nb-wheel-slice-0 {
+    clip-path: polygon(50% 50%, 50% 0%, 100% 50%);
+  }
+  .nb-wheel-slice-1 {
+    clip-path: polygon(50% 50%, 100% 50%, 50% 100%);
+  }
+  .nb-wheel-slice-2 {
+    clip-path: polygon(50% 50%, 50% 100%, 0% 50%);
+  }
+  .nb-wheel-slice-3 {
+    clip-path: polygon(50% 50%, 0% 50%, 50% 0%);
+  }
+
+  .nb-wheel[class*="nb-wheel-spin-"] {
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+    animation-iteration-count: 1;
+  }
+
+  .nb-wheel-dur-2500 {
+    animation-duration: 2500ms;
+  }
+  .nb-wheel-dur-2750 {
+    animation-duration: 2750ms;
+  }
+  .nb-wheel-dur-3000 {
+    animation-duration: 3000ms;
+  }
+  .nb-wheel-dur-3250 {
+    animation-duration: 3250ms;
+  }
+  .nb-wheel-dur-3500 {
+    animation-duration: 3500ms;
+  }
+
+  .nb-wheel-spin-s8-from0-to0 { animation-name: nb-wheel-spin-s8-from0-to0; }
+  @keyframes nb-wheel-spin-s8-from0-to0 { to { transform: rotate(2880deg); } }
+  .nb-wheel-spin-s8-from0-to1 { animation-name: nb-wheel-spin-s8-from0-to1; }
+  @keyframes nb-wheel-spin-s8-from0-to1 { to { transform: rotate(2970deg); } }
+  .nb-wheel-spin-s8-from0-to2 { animation-name: nb-wheel-spin-s8-from0-to2; }
+  @keyframes nb-wheel-spin-s8-from0-to2 { to { transform: rotate(3060deg); } }
+  .nb-wheel-spin-s8-from0-to3 { animation-name: nb-wheel-spin-s8-from0-to3; }
+  @keyframes nb-wheel-spin-s8-from0-to3 { to { transform: rotate(3150deg); } }
+  .nb-wheel-spin-s8-from1-to0 { animation-name: nb-wheel-spin-s8-from1-to0; }
+  @keyframes nb-wheel-spin-s8-from1-to0 { to { transform: rotate(3240deg); } }
+  .nb-wheel-spin-s8-from1-to1 { animation-name: nb-wheel-spin-s8-from1-to1; }
+  @keyframes nb-wheel-spin-s8-from1-to1 { to { transform: rotate(2970deg); } }
+  .nb-wheel-spin-s8-from1-to2 { animation-name: nb-wheel-spin-s8-from1-to2; }
+  @keyframes nb-wheel-spin-s8-from1-to2 { to { transform: rotate(3060deg); } }
+  .nb-wheel-spin-s8-from1-to3 { animation-name: nb-wheel-spin-s8-from1-to3; }
+  @keyframes nb-wheel-spin-s8-from1-to3 { to { transform: rotate(3150deg); } }
+  .nb-wheel-spin-s8-from2-to0 { animation-name: nb-wheel-spin-s8-from2-to0; }
+  @keyframes nb-wheel-spin-s8-from2-to0 { to { transform: rotate(3240deg); } }
+  .nb-wheel-spin-s8-from2-to1 { animation-name: nb-wheel-spin-s8-from2-to1; }
+  @keyframes nb-wheel-spin-s8-from2-to1 { to { transform: rotate(3330deg); } }
+  .nb-wheel-spin-s8-from2-to2 { animation-name: nb-wheel-spin-s8-from2-to2; }
+  @keyframes nb-wheel-spin-s8-from2-to2 { to { transform: rotate(3060deg); } }
+  .nb-wheel-spin-s8-from2-to3 { animation-name: nb-wheel-spin-s8-from2-to3; }
+  @keyframes nb-wheel-spin-s8-from2-to3 { to { transform: rotate(3150deg); } }
+  .nb-wheel-spin-s8-from3-to0 { animation-name: nb-wheel-spin-s8-from3-to0; }
+  @keyframes nb-wheel-spin-s8-from3-to0 { to { transform: rotate(3240deg); } }
+  .nb-wheel-spin-s8-from3-to1 { animation-name: nb-wheel-spin-s8-from3-to1; }
+  @keyframes nb-wheel-spin-s8-from3-to1 { to { transform: rotate(3330deg); } }
+  .nb-wheel-spin-s8-from3-to2 { animation-name: nb-wheel-spin-s8-from3-to2; }
+  @keyframes nb-wheel-spin-s8-from3-to2 { to { transform: rotate(3420deg); } }
+  .nb-wheel-spin-s8-from3-to3 { animation-name: nb-wheel-spin-s8-from3-to3; }
+  @keyframes nb-wheel-spin-s8-from3-to3 { to { transform: rotate(3150deg); } }
+
+  .nb-wheel-spin-s9-from0-to0 { animation-name: nb-wheel-spin-s9-from0-to0; }
+  @keyframes nb-wheel-spin-s9-from0-to0 { to { transform: rotate(3240deg); } }
+  .nb-wheel-spin-s9-from0-to1 { animation-name: nb-wheel-spin-s9-from0-to1; }
+  @keyframes nb-wheel-spin-s9-from0-to1 { to { transform: rotate(3330deg); } }
+  .nb-wheel-spin-s9-from0-to2 { animation-name: nb-wheel-spin-s9-from0-to2; }
+  @keyframes nb-wheel-spin-s9-from0-to2 { to { transform: rotate(3420deg); } }
+  .nb-wheel-spin-s9-from0-to3 { animation-name: nb-wheel-spin-s9-from0-to3; }
+  @keyframes nb-wheel-spin-s9-from0-to3 { to { transform: rotate(3510deg); } }
+  .nb-wheel-spin-s9-from1-to0 { animation-name: nb-wheel-spin-s9-from1-to0; }
+  @keyframes nb-wheel-spin-s9-from1-to0 { to { transform: rotate(3600deg); } }
+  .nb-wheel-spin-s9-from1-to1 { animation-name: nb-wheel-spin-s9-from1-to1; }
+  @keyframes nb-wheel-spin-s9-from1-to1 { to { transform: rotate(3330deg); } }
+  .nb-wheel-spin-s9-from1-to2 { animation-name: nb-wheel-spin-s9-from1-to2; }
+  @keyframes nb-wheel-spin-s9-from1-to2 { to { transform: rotate(3420deg); } }
+  .nb-wheel-spin-s9-from1-to3 { animation-name: nb-wheel-spin-s9-from1-to3; }
+  @keyframes nb-wheel-spin-s9-from1-to3 { to { transform: rotate(3510deg); } }
+  .nb-wheel-spin-s9-from2-to0 { animation-name: nb-wheel-spin-s9-from2-to0; }
+  @keyframes nb-wheel-spin-s9-from2-to0 { to { transform: rotate(3600deg); } }
+  .nb-wheel-spin-s9-from2-to1 { animation-name: nb-wheel-spin-s9-from2-to1; }
+  @keyframes nb-wheel-spin-s9-from2-to1 { to { transform: rotate(3690deg); } }
+  .nb-wheel-spin-s9-from2-to2 { animation-name: nb-wheel-spin-s9-from2-to2; }
+  @keyframes nb-wheel-spin-s9-from2-to2 { to { transform: rotate(3420deg); } }
+  .nb-wheel-spin-s9-from2-to3 { animation-name: nb-wheel-spin-s9-from2-to3; }
+  @keyframes nb-wheel-spin-s9-from2-to3 { to { transform: rotate(3510deg); } }
+  .nb-wheel-spin-s9-from3-to0 { animation-name: nb-wheel-spin-s9-from3-to0; }
+  @keyframes nb-wheel-spin-s9-from3-to0 { to { transform: rotate(3600deg); } }
+  .nb-wheel-spin-s9-from3-to1 { animation-name: nb-wheel-spin-s9-from3-to1; }
+  @keyframes nb-wheel-spin-s9-from3-to1 { to { transform: rotate(3690deg); } }
+  .nb-wheel-spin-s9-from3-to2 { animation-name: nb-wheel-spin-s9-from3-to2; }
+  @keyframes nb-wheel-spin-s9-from3-to2 { to { transform: rotate(3780deg); } }
+  .nb-wheel-spin-s9-from3-to3 { animation-name: nb-wheel-spin-s9-from3-to3; }
+  @keyframes nb-wheel-spin-s9-from3-to3 { to { transform: rotate(3510deg); } }
+
+  .nb-wheel-spin-s10-from0-to0 { animation-name: nb-wheel-spin-s10-from0-to0; }
+  @keyframes nb-wheel-spin-s10-from0-to0 { to { transform: rotate(3600deg); } }
+  .nb-wheel-spin-s10-from0-to1 { animation-name: nb-wheel-spin-s10-from0-to1; }
+  @keyframes nb-wheel-spin-s10-from0-to1 { to { transform: rotate(3690deg); } }
+  .nb-wheel-spin-s10-from0-to2 { animation-name: nb-wheel-spin-s10-from0-to2; }
+  @keyframes nb-wheel-spin-s10-from0-to2 { to { transform: rotate(3780deg); } }
+  .nb-wheel-spin-s10-from0-to3 { animation-name: nb-wheel-spin-s10-from0-to3; }
+  @keyframes nb-wheel-spin-s10-from0-to3 { to { transform: rotate(3870deg); } }
+  .nb-wheel-spin-s10-from1-to0 { animation-name: nb-wheel-spin-s10-from1-to0; }
+  @keyframes nb-wheel-spin-s10-from1-to0 { to { transform: rotate(3960deg); } }
+  .nb-wheel-spin-s10-from1-to1 { animation-name: nb-wheel-spin-s10-from1-to1; }
+  @keyframes nb-wheel-spin-s10-from1-to1 { to { transform: rotate(3690deg); } }
+  .nb-wheel-spin-s10-from1-to2 { animation-name: nb-wheel-spin-s10-from1-to2; }
+  @keyframes nb-wheel-spin-s10-from1-to2 { to { transform: rotate(3780deg); } }
+  .nb-wheel-spin-s10-from1-to3 { animation-name: nb-wheel-spin-s10-from1-to3; }
+  @keyframes nb-wheel-spin-s10-from1-to3 { to { transform: rotate(3870deg); } }
+  .nb-wheel-spin-s10-from2-to0 { animation-name: nb-wheel-spin-s10-from2-to0; }
+  @keyframes nb-wheel-spin-s10-from2-to0 { to { transform: rotate(3960deg); } }
+  .nb-wheel-spin-s10-from2-to1 { animation-name: nb-wheel-spin-s10-from2-to1; }
+  @keyframes nb-wheel-spin-s10-from2-to1 { to { transform: rotate(4050deg); } }
+  .nb-wheel-spin-s10-from2-to2 { animation-name: nb-wheel-spin-s10-from2-to2; }
+  @keyframes nb-wheel-spin-s10-from2-to2 { to { transform: rotate(3780deg); } }
+  .nb-wheel-spin-s10-from2-to3 { animation-name: nb-wheel-spin-s10-from2-to3; }
+  @keyframes nb-wheel-spin-s10-from2-to3 { to { transform: rotate(3870deg); } }
+  .nb-wheel-spin-s10-from3-to0 { animation-name: nb-wheel-spin-s10-from3-to0; }
+  @keyframes nb-wheel-spin-s10-from3-to0 { to { transform: rotate(3960deg); } }
+  .nb-wheel-spin-s10-from3-to1 { animation-name: nb-wheel-spin-s10-from3-to1; }
+  @keyframes nb-wheel-spin-s10-from3-to1 { to { transform: rotate(4050deg); } }
+  .nb-wheel-spin-s10-from3-to2 { animation-name: nb-wheel-spin-s10-from3-to2; }
+  @keyframes nb-wheel-spin-s10-from3-to2 { to { transform: rotate(4140deg); } }
+  .nb-wheel-spin-s10-from3-to3 { animation-name: nb-wheel-spin-s10-from3-to3; }
+  @keyframes nb-wheel-spin-s10-from3-to3 { to { transform: rotate(3870deg); } }
+
+  .nb-wheel-spin-s11-from0-to0 { animation-name: nb-wheel-spin-s11-from0-to0; }
+  @keyframes nb-wheel-spin-s11-from0-to0 { to { transform: rotate(3960deg); } }
+  .nb-wheel-spin-s11-from0-to1 { animation-name: nb-wheel-spin-s11-from0-to1; }
+  @keyframes nb-wheel-spin-s11-from0-to1 { to { transform: rotate(4050deg); } }
+  .nb-wheel-spin-s11-from0-to2 { animation-name: nb-wheel-spin-s11-from0-to2; }
+  @keyframes nb-wheel-spin-s11-from0-to2 { to { transform: rotate(4140deg); } }
+  .nb-wheel-spin-s11-from0-to3 { animation-name: nb-wheel-spin-s11-from0-to3; }
+  @keyframes nb-wheel-spin-s11-from0-to3 { to { transform: rotate(4230deg); } }
+  .nb-wheel-spin-s11-from1-to0 { animation-name: nb-wheel-spin-s11-from1-to0; }
+  @keyframes nb-wheel-spin-s11-from1-to0 { to { transform: rotate(4320deg); } }
+  .nb-wheel-spin-s11-from1-to1 { animation-name: nb-wheel-spin-s11-from1-to1; }
+  @keyframes nb-wheel-spin-s11-from1-to1 { to { transform: rotate(4050deg); } }
+  .nb-wheel-spin-s11-from1-to2 { animation-name: nb-wheel-spin-s11-from1-to2; }
+  @keyframes nb-wheel-spin-s11-from1-to2 { to { transform: rotate(4140deg); } }
+  .nb-wheel-spin-s11-from1-to3 { animation-name: nb-wheel-spin-s11-from1-to3; }
+  @keyframes nb-wheel-spin-s11-from1-to3 { to { transform: rotate(4230deg); } }
+  .nb-wheel-spin-s11-from2-to0 { animation-name: nb-wheel-spin-s11-from2-to0; }
+  @keyframes nb-wheel-spin-s11-from2-to0 { to { transform: rotate(4320deg); } }
+  .nb-wheel-spin-s11-from2-to1 { animation-name: nb-wheel-spin-s11-from2-to1; }
+  @keyframes nb-wheel-spin-s11-from2-to1 { to { transform: rotate(4410deg); } }
+  .nb-wheel-spin-s11-from2-to2 { animation-name: nb-wheel-spin-s11-from2-to2; }
+  @keyframes nb-wheel-spin-s11-from2-to2 { to { transform: rotate(4140deg); } }
+  .nb-wheel-spin-s11-from2-to3 { animation-name: nb-wheel-spin-s11-from2-to3; }
+  @keyframes nb-wheel-spin-s11-from2-to3 { to { transform: rotate(4230deg); } }
+  .nb-wheel-spin-s11-from3-to0 { animation-name: nb-wheel-spin-s11-from3-to0; }
+  @keyframes nb-wheel-spin-s11-from3-to0 { to { transform: rotate(4320deg); } }
+  .nb-wheel-spin-s11-from3-to1 { animation-name: nb-wheel-spin-s11-from3-to1; }
+  @keyframes nb-wheel-spin-s11-from3-to1 { to { transform: rotate(4410deg); } }
+  .nb-wheel-spin-s11-from3-to2 { animation-name: nb-wheel-spin-s11-from3-to2; }
+  @keyframes nb-wheel-spin-s11-from3-to2 { to { transform: rotate(4500deg); } }
+  .nb-wheel-spin-s11-from3-to3 { animation-name: nb-wheel-spin-s11-from3-to3; }
+  @keyframes nb-wheel-spin-s11-from3-to3 { to { transform: rotate(4230deg); } }
+
+  .nb-wheel-spin-s12-from0-to0 { animation-name: nb-wheel-spin-s12-from0-to0; }
+  @keyframes nb-wheel-spin-s12-from0-to0 { to { transform: rotate(4320deg); } }
+  .nb-wheel-spin-s12-from0-to1 { animation-name: nb-wheel-spin-s12-from0-to1; }
+  @keyframes nb-wheel-spin-s12-from0-to1 { to { transform: rotate(4410deg); } }
+  .nb-wheel-spin-s12-from0-to2 { animation-name: nb-wheel-spin-s12-from0-to2; }
+  @keyframes nb-wheel-spin-s12-from0-to2 { to { transform: rotate(4500deg); } }
+  .nb-wheel-spin-s12-from0-to3 { animation-name: nb-wheel-spin-s12-from0-to3; }
+  @keyframes nb-wheel-spin-s12-from0-to3 { to { transform: rotate(4590deg); } }
+  .nb-wheel-spin-s12-from1-to0 { animation-name: nb-wheel-spin-s12-from1-to0; }
+  @keyframes nb-wheel-spin-s12-from1-to0 { to { transform: rotate(4680deg); } }
+  .nb-wheel-spin-s12-from1-to1 { animation-name: nb-wheel-spin-s12-from1-to1; }
+  @keyframes nb-wheel-spin-s12-from1-to1 { to { transform: rotate(4410deg); } }
+  .nb-wheel-spin-s12-from1-to2 { animation-name: nb-wheel-spin-s12-from1-to2; }
+  @keyframes nb-wheel-spin-s12-from1-to2 { to { transform: rotate(4500deg); } }
+  .nb-wheel-spin-s12-from1-to3 { animation-name: nb-wheel-spin-s12-from1-to3; }
+  @keyframes nb-wheel-spin-s12-from1-to3 { to { transform: rotate(4590deg); } }
+  .nb-wheel-spin-s12-from2-to0 { animation-name: nb-wheel-spin-s12-from2-to0; }
+  @keyframes nb-wheel-spin-s12-from2-to0 { to { transform: rotate(4680deg); } }
+  .nb-wheel-spin-s12-from2-to1 { animation-name: nb-wheel-spin-s12-from2-to1; }
+  @keyframes nb-wheel-spin-s12-from2-to1 { to { transform: rotate(4770deg); } }
+  .nb-wheel-spin-s12-from2-to2 { animation-name: nb-wheel-spin-s12-from2-to2; }
+  @keyframes nb-wheel-spin-s12-from2-to2 { to { transform: rotate(4500deg); } }
+  .nb-wheel-spin-s12-from2-to3 { animation-name: nb-wheel-spin-s12-from2-to3; }
+  @keyframes nb-wheel-spin-s12-from2-to3 { to { transform: rotate(4590deg); } }
+  .nb-wheel-spin-s12-from3-to0 { animation-name: nb-wheel-spin-s12-from3-to0; }
+  @keyframes nb-wheel-spin-s12-from3-to0 { to { transform: rotate(4680deg); } }
+  .nb-wheel-spin-s12-from3-to1 { animation-name: nb-wheel-spin-s12-from3-to1; }
+  @keyframes nb-wheel-spin-s12-from3-to1 { to { transform: rotate(4770deg); } }
+  .nb-wheel-spin-s12-from3-to2 { animation-name: nb-wheel-spin-s12-from3-to2; }
+  @keyframes nb-wheel-spin-s12-from3-to2 { to { transform: rotate(4860deg); } }
+  .nb-wheel-spin-s12-from3-to3 { animation-name: nb-wheel-spin-s12-from3-to3; }
+  @keyframes nb-wheel-spin-s12-from3-to3 { to { transform: rotate(4590deg); } }
+
   /* Ensure transparent backgrounds for emoji and letter elements */
   .letter-group-emoji,
   .letter-group-text {
@@ -172,12 +776,15 @@
 
   /* Print styles for certificates */
   @media print {
+    /* Note: @page cannot be scoped to a selector; this applies to all print pages. */
+    @page {
+      size: A4 portrait;
+      margin: 0 !important;
+    }
+
     .certificate-print {
-      /* Force single page */
-      @page {
-        size: A4 portrait;
-        margin: 0 !important;
-      }
+      /* Marker class for certificate print views */
+      display: block;
     }
   }
 
@@ -2093,3 +2700,191 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
   }
 }
 
+/* ============================================================================
+   VISUAL LEARNING CARDS - 3D FLIP ANIMATION
+   ============================================================================ */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Print styles for learning cards */
+@media print {
+  #visual-cards {
+    page-break-before: always;
+  }
+  
+  .perspective-1000 > div {
+    transform: none !important;
+  }
+  
+  .backface-hidden.rotate-y-180 {
+    display: none;
+  }
+}
+
+/* ============================================================================
+   PAGE BUDDY - CUSTOM SCROLLBAR STYLES
+   ============================================================================ */
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.2);
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.3);
+}
+
+/* Firefox */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary) / 0.2) transparent;
+}
+
+/* Smooth scrolling for message cards */
+.scrollbar-thin {
+  scroll-behavior: smooth;
+}
+
+/* Progress bar dynamic width */
+[data-progress="0"] { width: 0%; }
+[data-progress="1"] { width: 1%; }
+[data-progress="2"] { width: 2%; }
+[data-progress="3"] { width: 3%; }
+[data-progress="4"] { width: 4%; }
+[data-progress="5"] { width: 5%; }
+[data-progress="6"] { width: 6%; }
+[data-progress="7"] { width: 7%; }
+[data-progress="8"] { width: 8%; }
+[data-progress="9"] { width: 9%; }
+[data-progress="10"] { width: 10%; }
+[data-progress="11"] { width: 11%; }
+[data-progress="12"] { width: 12%; }
+[data-progress="13"] { width: 13%; }
+[data-progress="14"] { width: 14%; }
+[data-progress="15"] { width: 15%; }
+[data-progress="16"] { width: 16%; }
+[data-progress="17"] { width: 17%; }
+[data-progress="18"] { width: 18%; }
+[data-progress="19"] { width: 19%; }
+[data-progress="20"] { width: 20%; }
+[data-progress="21"] { width: 21%; }
+[data-progress="22"] { width: 22%; }
+[data-progress="23"] { width: 23%; }
+[data-progress="24"] { width: 24%; }
+[data-progress="25"] { width: 25%; }
+[data-progress="26"] { width: 26%; }
+[data-progress="27"] { width: 27%; }
+[data-progress="28"] { width: 28%; }
+[data-progress="29"] { width: 29%; }
+[data-progress="30"] { width: 30%; }
+[data-progress="31"] { width: 31%; }
+[data-progress="32"] { width: 32%; }
+[data-progress="33"] { width: 33%; }
+[data-progress="34"] { width: 34%; }
+[data-progress="35"] { width: 35%; }
+[data-progress="36"] { width: 36%; }
+[data-progress="37"] { width: 37%; }
+[data-progress="38"] { width: 38%; }
+[data-progress="39"] { width: 39%; }
+[data-progress="40"] { width: 40%; }
+[data-progress="41"] { width: 41%; }
+[data-progress="42"] { width: 42%; }
+[data-progress="43"] { width: 43%; }
+[data-progress="44"] { width: 44%; }
+[data-progress="45"] { width: 45%; }
+[data-progress="46"] { width: 46%; }
+[data-progress="47"] { width: 47%; }
+[data-progress="48"] { width: 48%; }
+[data-progress="49"] { width: 49%; }
+[data-progress="50"] { width: 50%; }
+[data-progress="51"] { width: 51%; }
+[data-progress="52"] { width: 52%; }
+[data-progress="53"] { width: 53%; }
+[data-progress="54"] { width: 54%; }
+[data-progress="55"] { width: 55%; }
+[data-progress="56"] { width: 56%; }
+[data-progress="57"] { width: 57%; }
+[data-progress="58"] { width: 58%; }
+[data-progress="59"] { width: 59%; }
+[data-progress="60"] { width: 60%; }
+[data-progress="61"] { width: 61%; }
+[data-progress="62"] { width: 62%; }
+[data-progress="63"] { width: 63%; }
+[data-progress="64"] { width: 64%; }
+[data-progress="65"] { width: 65%; }
+[data-progress="66"] { width: 66%; }
+[data-progress="67"] { width: 67%; }
+[data-progress="68"] { width: 68%; }
+[data-progress="69"] { width: 69%; }
+[data-progress="70"] { width: 70%; }
+[data-progress="71"] { width: 71%; }
+[data-progress="72"] { width: 72%; }
+[data-progress="73"] { width: 73%; }
+[data-progress="74"] { width: 74%; }
+[data-progress="75"] { width: 75%; }
+[data-progress="76"] { width: 76%; }
+[data-progress="77"] { width: 77%; }
+[data-progress="78"] { width: 78%; }
+[data-progress="79"] { width: 79%; }
+[data-progress="80"] { width: 80%; }
+[data-progress="81"] { width: 81%; }
+[data-progress="82"] { width: 82%; }
+[data-progress="83"] { width: 83%; }
+[data-progress="84"] { width: 84%; }
+[data-progress="85"] { width: 85%; }
+[data-progress="86"] { width: 86%; }
+[data-progress="87"] { width: 87%; }
+[data-progress="88"] { width: 88%; }
+[data-progress="89"] { width: 89%; }
+[data-progress="90"] { width: 90%; }
+[data-progress="91"] { width: 91%; }
+[data-progress="92"] { width: 92%; }
+[data-progress="93"] { width: 93%; }
+[data-progress="94"] { width: 94%; }
+[data-progress="95"] { width: 95%; }
+[data-progress="96"] { width: 96%; }
+[data-progress="97"] { width: 97%; }
+[data-progress="98"] { width: 98%; }
+[data-progress="99"] { width: 99%; }
+[data-progress="100"] { width: 100%; }
+
+/* Breathing animation dynamic scale and opacity */
+[data-breathing-active="true"] {
+  opacity: 0.8;
+}
+
+[data-breathing-active="false"] {
+  opacity: 0.4;
+}
+
+[data-scale="0.8"] { transform: scale(0.8); }
+[data-scale="0.9"] { transform: scale(0.9); }
+[data-scale="1"] { transform: scale(1); }
+[data-scale="1.1"] { transform: scale(1.1); }
+[data-scale="1.2"] { transform: scale(1.2); }
+[data-scale="1.3"] { transform: scale(1.3); }
+[data-scale="1.4"] { transform: scale(1.4); }
+[data-scale="1.5"] { transform: scale(1.5); }

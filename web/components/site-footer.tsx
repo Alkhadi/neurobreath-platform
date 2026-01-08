@@ -41,8 +41,21 @@ export function SiteFooter() {
                 <p>
                   <Link href="/conditions/autism">Autism</Link> ·{' '}
                   <Link href="/conditions/autism-parent">Autism Parent</Link> ·{' '}
+                  <Link href="/conditions/autism-teacher">Autism Teacher</Link> ·{' '}
+                  <Link href="/conditions/autism-carer">Autism Carers</Link>
+                </p>
+                <p>
                   <Link href="/adhd">ADHD</Link> ·{' '}
-                  <Link href="/dyslexia-reading-training">Dyslexia</Link>
+                  <Link href="/conditions/adhd-parent">ADHD Parent</Link> ·{' '}
+                  <Link href="/conditions/adhd-teacher">ADHD Teacher</Link> ·{' '}
+                  <Link href="/conditions/adhd-carer">ADHD Carers</Link>
+                </p>
+                <p>
+                  <Link href="/conditions/dyslexia">Dyslexia Hub</Link> ·{' '}
+                  <Link href="/conditions/dyslexia-parent">Dyslexia Parent</Link> ·{' '}
+                  <Link href="/conditions/dyslexia-teacher">Dyslexia Teacher</Link> ·{' '}
+                  <Link href="/conditions/dyslexia-carer">Dyslexia Carers</Link> ·{' '}
+                  <Link href="/dyslexia-reading-training">Dyslexia Training</Link>
                 </p>
                 <p>
                   <Link href="/conditions/anxiety">Anxiety</Link> ·{' '}
@@ -102,7 +115,6 @@ export function SiteFooter() {
               <div className="links">
                 <p>
                   <Link href="/about-us">About</Link> ·{' '}
-                  <Link href="/aims-objectives">Aims &amp; Stories</Link> ·{' '}
                   <Link href="/support-us">Support Us</Link> ·{' '}
                   <Link href="/contact">Contact</Link>
                 </p>

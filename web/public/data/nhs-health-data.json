@@ -1,0 +1,124 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2024-12-30T20:00:00Z",
+  "dataSource": "NHS England & UK Health Security Agency",
+  "flu": {
+    "activityLevel": "Medium",
+    "activityLevelColor": "amber",
+    "peakSeason": "December - March",
+    "currentWeek": "Week 52, 2024",
+    "weeklyConsultations": "Increasing trend",
+    "positivityRate": "12.5%",
+    "eligibleGroups": [
+      "Adults aged 65 and over",
+      "Pregnant women",
+      "Adults and children with long-term health conditions (e.g., diabetes, heart disease, respiratory conditions)",
+      "Primary school-aged children (Reception to Year 11)",
+      "Health and social care workers",
+      "Carers and close contacts of immunocompromised individuals"
+    ],
+    "vaccinationInfo": "Free flu vaccination is available through your GP practice or local pharmacy for eligible groups. Book now to protect yourself and others this winter.",
+    "links": [
+      {
+        "title": "NHS Flu Vaccine Information",
+        "url": "https://www.nhs.uk/conditions/vaccinations/flu-influenza-vaccine/"
+      },
+      {
+        "title": "UKHSA Weekly Surveillance Report",
+        "url": "https://www.gov.uk/government/statistics/national-flu-and-covid-19-surveillance-reports-2024-to-2025-season"
+      }
+    ]
+  },
+  "covid19": {
+    "programmeStatus": "Ongoing",
+    "currentCampaign": "Autumn Booster 2024",
+    "campaignStartDate": "2024-09-01",
+    "eligibleGroups": [
+      "Adults aged 65 and over",
+      "Residents in care homes for older adults",
+      "Adults aged 6 months to 64 years in clinical risk groups",
+      "Frontline health and social care workers",
+      "Pregnant women (at any stage of pregnancy)",
+      "Household contacts of people with weakened immune systems"
+    ],
+    "bookingInfo": "Book your COVID-19 vaccination through your GP practice, use the NHS website booking system, or call 119 (free from mobiles and landlines).",
+    "uptakeRate": "Monitoring ongoing",
+    "links": [
+      {
+        "title": "NHS COVID-19 Vaccine Information",
+        "url": "https://www.nhs.uk/conditions/covid-19/covid-19-vaccination/"
+      },
+      {
+        "title": "UK COVID-19 Dashboard",
+        "url": "https://coronavirus.data.gov.uk/"
+      },
+      {
+        "title": "Book Your COVID-19 Vaccination",
+        "url": "https://www.nhs.uk/conditions/covid-19/covid-19-vaccination/book-covid-19-vaccination/"
+      }
+    ]
+  },
+  "pandemicPreparedness": {
+    "status": "Active Monitoring",
+    "currentThreatLevel": "Standard",
+    "keyMeasures": [
+      "Continuous surveillance of respiratory viruses (influenza, COVID-19, RSV)",
+      "National stockpiles of PPE, ventilators, and medical equipment",
+      "Rapid response plans for emerging infectious disease threats",
+      "International collaboration (WHO, ECDC, CDC)",
+      "Vaccination infrastructure ready for rapid mass deployment",
+      "Enhanced laboratory diagnostic capacity"
+    ],
+    "publicGuidance": [
+      "Get vaccinated against flu and COVID-19 if you are eligible",
+      "Wash hands regularly with soap and water for at least 20 seconds",
+      "Cover coughs and sneezes with a tissue (catch it, bin it, kill it)",
+      "Stay home if unwell with respiratory symptoms (fever, cough, cold)",
+      "Wear face coverings in healthcare settings when advised",
+      "Ensure good ventilation in indoor spaces",
+      "Consider wearing a face covering in crowded indoor settings during high transmission periods"
+    ],
+    "links": [
+      {
+        "title": "UK Health Security Agency",
+        "url": "https://www.gov.uk/government/organisations/uk-health-security-agency"
+      },
+      {
+        "title": "NHS Respiratory Infection Guidance",
+        "url": "https://www.nhs.uk/conditions/respiratory-tract-infection/"
+      },
+      {
+        "title": "WHO Global Health Alerts",
+        "url": "https://www.who.int/emergencies/disease-outbreak-news"
+      }
+    ]
+  },
+  "emergencyContacts": {
+    "nhs111": {
+      "number": "111",
+      "description": "For medical help when it's not life-threatening",
+      "availability": "24/7, free from all phones"
+    },
+    "nhs999": {
+      "number": "999",
+      "description": "For life-threatening emergencies (severe breathing difficulty, chest pain, loss of consciousness, severe bleeding)",
+      "availability": "24/7, free from all phones"
+    },
+    "gpSurgery": {
+      "description": "Contact your GP practice for non-urgent medical advice, vaccinations, and health checks"
+    },
+    "pharmacyAdvice": {
+      "description": "Local pharmacies offer free NHS health advice and minor ailment consultations"
+    }
+  },
+  "disclaimer": "This information is sourced from NHS England and UK Health Security Agency. Health statistics and guidance are updated regularly. For the most current information, please visit the official NHS website (www.nhs.uk) or contact your GP practice. Data accuracy cannot be guaranteed. Last reviewed: December 2024."
+}
+
+
+
+
+
+
+
+
+

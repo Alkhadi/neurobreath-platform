@@ -1,0 +1,169 @@
+{
+  "file_name": "dorothy-vowels-join.wav",
+  "sample_rate_hz": 44100,
+  "channels": 1,
+  "sample_width_bytes": 2,
+  "duration_sec": 23.798,
+  "analysis": {
+    "window_size_sec": 0.01,
+    "threshold_rms": 30.0,
+    "min_segment_sec": 0.25,
+    "merge_gap_sec": 0.2
+  },
+  "segments": [
+    {
+      "id": "dorothy_vowels_join_seg_01",
+      "index": 1,
+      "start_sec": 0.09,
+      "end_sec": 0.73,
+      "duration_sec": 0.64
+    },
+    {
+      "id": "dorothy_vowels_join_seg_02",
+      "index": 2,
+      "start_sec": 1.17,
+      "end_sec": 1.79,
+      "duration_sec": 0.62
+    },
+    {
+      "id": "dorothy_vowels_join_seg_03",
+      "index": 3,
+      "start_sec": 2.16,
+      "end_sec": 2.88,
+      "duration_sec": 0.72
+    },
+    {
+      "id": "dorothy_vowels_join_seg_04",
+      "index": 4,
+      "start_sec": 3.18,
+      "end_sec": 3.75,
+      "duration_sec": 0.57
+    },
+    {
+      "id": "dorothy_vowels_join_seg_05",
+      "index": 5,
+      "start_sec": 4.17,
+      "end_sec": 4.84,
+      "duration_sec": 0.67
+    },
+    {
+      "id": "dorothy_vowels_join_seg_06",
+      "index": 6,
+      "start_sec": 5.44,
+      "end_sec": 6.15,
+      "duration_sec": 0.71
+    },
+    {
+      "id": "dorothy_vowels_join_seg_07",
+      "index": 7,
+      "start_sec": 6.54,
+      "end_sec": 7.16,
+      "duration_sec": 0.62
+    },
+    {
+      "id": "dorothy_vowels_join_seg_08",
+      "index": 8,
+      "start_sec": 7.68,
+      "end_sec": 8.31,
+      "duration_sec": 0.63
+    },
+    {
+      "id": "dorothy_vowels_join_seg_09",
+      "index": 9,
+      "start_sec": 8.72,
+      "end_sec": 9.32,
+      "duration_sec": 0.6
+    },
+    {
+      "id": "dorothy_vowels_join_seg_10",
+      "index": 10,
+      "start_sec": 9.75,
+      "end_sec": 10.27,
+      "duration_sec": 0.52
+    },
+    {
+      "id": "dorothy_vowels_join_seg_11",
+      "index": 11,
+      "start_sec": 11.01,
+      "end_sec": 11.57,
+      "duration_sec": 0.56
+    },
+    {
+      "id": "dorothy_vowels_join_seg_12",
+      "index": 12,
+      "start_sec": 12.13,
+      "end_sec": 12.77,
+      "duration_sec": 0.64
+    },
+    {
+      "id": "dorothy_vowels_join_seg_13",
+      "index": 13,
+      "start_sec": 13.2,
+      "end_sec": 13.83,
+      "duration_sec": 0.63
+    },
+    {
+      "id": "dorothy_vowels_join_seg_14",
+      "index": 14,
+      "start_sec": 14.28,
+      "end_sec": 14.93,
+      "duration_sec": 0.65
+    },
+    {
+      "id": "dorothy_vowels_join_seg_15",
+      "index": 15,
+      "start_sec": 15.38,
+      "end_sec": 16.01,
+      "duration_sec": 0.63
+    },
+    {
+      "id": "dorothy_vowels_join_seg_16",
+      "index": 16,
+      "start_sec": 16.46,
+      "end_sec": 17.05,
+      "duration_sec": 0.59
+    },
+    {
+      "id": "dorothy_vowels_join_seg_17",
+      "index": 17,
+      "start_sec": 17.52,
+      "end_sec": 18.13,
+      "duration_sec": 0.61
+    },
+    {
+      "id": "dorothy_vowels_join_seg_18",
+      "index": 18,
+      "start_sec": 18.64,
+      "end_sec": 19.2,
+      "duration_sec": 0.56
+    },
+    {
+      "id": "dorothy_vowels_join_seg_19",
+      "index": 19,
+      "start_sec": 19.7,
+      "end_sec": 20.41,
+      "duration_sec": 0.71
+    },
+    {
+      "id": "dorothy_vowels_join_seg_20",
+      "index": 20,
+      "start_sec": 20.84,
+      "end_sec": 21.5,
+      "duration_sec": 0.66
+    },
+    {
+      "id": "dorothy_vowels_join_seg_21",
+      "index": 21,
+      "start_sec": 21.79,
+      "end_sec": 22.47,
+      "duration_sec": 0.68
+    },
+    {
+      "id": "dorothy_vowels_join_seg_22",
+      "index": 22,
+      "start_sec": 22.97,
+      "end_sec": 23.63,
+      "duration_sec": 0.66
+    }
+  ]
+}

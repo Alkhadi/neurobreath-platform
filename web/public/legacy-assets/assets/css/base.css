@@ -1,0 +1,214 @@
+/* Global Color Palette - from focus-garden.html */
+:root{
+  /* Core palette - soft, calming colors from focus-garden */
+  --color-cream: #FFF6EC;
+  --color-sage: #9DB4A0;
+  --color-sage-light: #C4D4C5;
+  --color-sage-dark: #6B8B6E;
+  --color-earth: #8B7355;
+  --color-earth-light: #C4B5A5;
+  --color-sky: #A8C5D8;
+  --color-sky-light: #D4E5EE;
+  --color-lavender: #B8A9C9;
+  --color-lavender-light: #DDD5E7;
+  --color-coral: #D4A59A;
+  --color-coral-light: #E8CEC8;
+  --color-text: #000000;
+  --color-text-muted: #111111;
+  --color-white: #FFFCF7;
+  --color-overlay: rgba(61, 61, 61, 0.6);
+  
+  /* Zone colors */
+  --zone-blue: #7BA3C9;
+  --zone-blue-bg: #EEF3F2;
+  --zone-green: #7FB285;
+  --zone-green-bg: #E5F2E7;
+  --zone-yellow: #E5C76B;
+  --zone-yellow-bg: #FDF5DC;
+  --zone-red: #D4847C;
+  --zone-red-bg: #F8E5E3;
+  
+  /* Legacy variable mappings for backward compatibility */
+  --ink: var(--color-text);
+  --text-2: var(--color-text-muted);
+  --accent: var(--color-sage);
+  --accent-hover: var(--color-sage-dark);
+  --primary: var(--color-sage);
+  --primary-hover: var(--color-sage-dark);
+  --bg: var(--color-cream);
+  --surface: var(--color-white);
+  --border: var(--color-sage-light);
+  --link: var(--color-sage-dark);
+  --focus: var(--color-sage);
+  
+  /* Typography & Spacing */
+  --fs-base:18px; --lh-base:1.6; --fs-h1:44px; --fs-h2:32px; --fs-h3:24px;
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px; --s-7:48px; --s-8:64px; --s-9:96px;
+  --r-card:16px; --r-btn:12px; --r-chip:999px;
+  --shadow-card:0 1px 2px rgba(107, 139, 110, 0.12), 0 8px 24px rgba(107, 139, 110, 0.12);
+  --shadow-hover:0 2px 12px rgba(107, 139, 110, 0.15);
+  --shadow-medium:0 4px 16px rgba(107, 139, 110, 0.15);
+  --shadow-lifted:0 8px 32px rgba(107, 139, 110, 0.18);
+  --transition-base:250ms ease;
+  --content-max:1200px;
+}
+
+/* Neurobreath Calm theme tokens - updated to use global palette */
+:root{
+  --nb-layer-deep: var(--color-text);
+  --nb-layer-mid: var(--color-text-muted);
+  --nb-layer-soft: var(--color-sage-dark);
+  --nb-layer-tint: var(--color-overlay);
+  --nb-layer-veil: rgba(253, 248, 243, 0.94);
+  --nb-layer-veil-strong: rgba(253, 248, 243, 0.98);
+
+  --nb-hero-border: rgba(196, 212, 197, 0.42);
+  --nb-hero-glow: 0 28px 68px rgba(107, 139, 110, 0.55);
+  --nb-hero-card-border: rgba(61, 61, 61, 0.12);
+  --nb-hero-card-shadow: 0 26px 58px rgba(107, 139, 110, 0.12);
+  --nb-hero-chip-border: rgba(196, 212, 197, 0.3);
+  --nb-hero-chip-shadow: 0 18px 40px rgba(107, 139, 110, 0.12);
+
+  --nb-hero-text-strong: var(--color-text);
+  --nb-hero-text-soft: var(--color-text-muted);
+  --nb-hero-text-muted: var(--color-text-muted);
+  --nb-hero-white: var(--color-white);
+  --nb-hero-ink: var(--color-text);
+
+  --nb-highlight-sky: var(--color-sky);
+  --nb-highlight-sky-dark: var(--color-sage-dark);
+  --nb-highlight-mint: var(--color-sage);
+  --nb-highlight-gold: var(--zone-yellow);
+  --nb-highlight-gold-dark: var(--color-earth);
+
+  --nb-glass-border: rgba(253, 248, 243, 0.2);
+  --nb-glass-shadow: 0 18px 48px rgba(107, 139, 110, 0.52);
+  --nb-glass-depth: 0 24px 44px rgba(107, 139, 110, 0.08);
+  --nb-glass-surface: linear-gradient(150deg, rgba(253, 248, 243, 0.97), rgba(212, 229, 238, 0.9));
+
+  --nb-card-radius: 20px;
+  --nb-chip-radius: 16px;
+  --nb-voice-card-radius: 20px;
+
+  --nb-space-base: 16px;
+  --nb-space-md: clamp(1rem, 2.6vw, 1.6rem);
+  --nb-space-lg: clamp(1.6rem, 3.5vw, 2.4rem);
+  --nb-space-xl: clamp(2rem, 4.2vw, 3rem);
+}
+
+/* Brand Color Palette - updated to use global palette */
+:root{
+  --nb-background: var(--color-cream);
+  --nb-surface: var(--color-white);
+  --nb-ink: var(--color-text);
+  --nb-text-muted: var(--color-text-muted);
+  --nb-primary: var(--color-sky);
+  --nb-primary-dark: var(--color-sage-dark);
+  --nb-primary-light: var(--color-sky-light);
+  --nb-accent-lavender: var(--color-lavender);
+  --nb-accent-mint: var(--color-sage);
+  --nb-focus: var(--color-sage-dark);
+}
+
+html{box-sizing:border-box}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;
+  /* Multi-color gradient background - Focus Garden style */
+  background: 
+    radial-gradient(circle at 20% 30%, var(--color-sage-light) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, var(--color-sky-light) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, var(--color-lavender-light) 0%, transparent 60%),
+    radial-gradient(circle at 10% 80%, var(--color-coral-light) 0%, transparent 40%),
+    radial-gradient(circle at 90% 20%, var(--color-earth-light) 0%, transparent 40%),
+    linear-gradient(135deg, var(--color-cream) 0%, var(--color-white) 50%, var(--color-cream) 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color:var(--color-text);
+  font:400 var(--fs-base)/var(--lh-base) -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, system-ui, Arial, sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  position:relative;
+}
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:2147483645;
+  background:radial-gradient(circle at 20% 20%, rgba(196, 212, 197, .12), transparent 55%),
+    radial-gradient(circle at 80% 0%, rgba(212, 229, 238, .10), transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(221, 213, 231, .08), transparent 60%);
+  mix-blend-mode:multiply;
+  opacity:.6;
+}
+@media print{
+  body::after{display:none}
+}
+h1,h2,h3{margin:0 0 var(--s-4);line-height:1.25}
+h1{font-size:var(--fs-h1);font-weight:700}
+h2{font-size:var(--fs-h2);font-weight:650}
+h3{font-size:var(--fs-h3);font-weight:600}
+p{margin:0 0 var(--s-5)}
+a{color:var(--link);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--content-max);margin-inline:auto;padding-inline:var(--s-6)}
+.skip{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+.skip:focus{left:var(--s-6);top:var(--s-6);width:auto;height:auto;background:#fff;padding:var(--s-3) var(--s-4);border-radius:var(--r-btn);outline:3px solid var(--focus)}
+.header{background:var(--ink);color:#fff;border-bottom:2px solid rgba(13,148,136,.2)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:72px}
+.nav-head{display:flex;align-items:center;gap:var(--s-4)}
+.brand-link{display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:none}
+.logo-mark{width:28px;height:28px;color:#FFFFFF;background-image:url('../icons/neurobreath-logo-square-32.png');background-size:contain;background-repeat:no-repeat;background-position:center}
+.logo-type{font-weight:700;letter-spacing:.3px}
+.nav-links{display:flex;gap:var(--s-6)}
+.nav-links a{color:#CBD5E1}
+.nav-links a:hover{color:#fff}
+.nav-toggle{display:none;background:transparent;border:0;color:#fff;border-radius:var(--r-btn);padding:8px;min-width:44px;min-height:44px}
+.nav-toggle:focus{outline:3px solid var(--focus);outline-offset:2px}
+@media (max-width: 880px){
+  .nav{height:auto;padding-block:var(--s-3)}
+  .nav-toggle{display:inline-flex;align-items:center;justify-content:center}
+  .nav-links{display:none;flex-direction:column;padding-block:var(--s-4)}
+  .nav.open .nav-links{display:flex}
+}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:.65rem 1.1rem;border-radius:var(--r-btn);font-weight:650;cursor:pointer;border:2px solid transparent;margin-bottom:8px}
+.btn:focus{outline:3px solid var(--focus);outline-offset:2px}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-hover)}
+.btn-outline{background:#fff;color:var(--accent);border-color:var(--accent)}
+.btn-outline:hover{background:#ECFEFF}
+.hero{position:relative;padding-block:var(--s-8)}
+.hero::before{content:"";position:absolute;inset:auto 0 calc(100% - 8px) 0;background:var(--accent)}
+.hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:var(--s-8);align-items:center}
+.hero p{color:var(--color-text-muted)}
+.hero-actions{display:flex;gap:var(--s-4);flex-wrap:wrap;margin-block:var(--s-5)}
+.hero-note{color:var(--color-text-muted);font-size:16px}
+@media (max-width:980px){.hero-grid{grid-template-columns:1fr}}
+section{padding-block:var(--s-8)}
+.section-head{margin-bottom:var(--s-6)}
+.card{background:var(--color-white);border:1px solid var(--color-sage-light);border-radius:var(--r-card);box-shadow:var(--shadow-medium);padding:var(--s-6);transition:all var(--transition-base)}
+.card:hover{box-shadow:var(--shadow-lifted);transform:translateY(-2px);border-color:var(--color-sage)}
+.card:hover{box-shadow:var(--shadow-hover)}
+.muted{color:var(--color-text-muted)}
+.grid-3{display:grid;gap:var(--s-6);grid-template-columns:repeat(3,1fr)}
+@media (max-width:1080px){.grid-3{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:720px){.grid-3{grid-template-columns:1fr}}
+body[data-page-variant="downloads"] #adhd .section-head,
+body[data-page-variant="downloads"] #dyslexia .section-head,
+body[data-page-variant="downloads"] #breathing .section-head,
+body[data-page-variant="downloads"] #packs .section-head{position:relative;z-index:0}
+body[data-page-variant="downloads"] #adhd .section-head::before,
+body[data-page-variant="downloads"] #dyslexia .section-head::before,
+body[data-page-variant="downloads"] #breathing .section-head::before,
+body[data-page-variant="downloads"] #packs .section-head::before{content:"";position:absolute;top:calc(var(--s-5) * -1);bottom:calc(var(--s-5) * -1);left:50%;width:100vw;transform:translateX(-50%);background:var(--color-white);z-index:-1;pointer-events:none}
+.tech-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-6)}
+@media (max-width:1080px){.tech-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:720px){.tech-grid{grid-template-columns:1fr}}
+.pill{display:inline-block;background:var(--color-sky-light);color:var(--color-sage-dark);border:1px solid var(--color-sky);border-radius:var(--r-chip);padding:4px 10px;font-size:14px;margin-bottom:var(--s-4)}
+footer{background:var(--color-text);color:var(--color-sage-light);padding-block:var(--s-7);margin-top:var(--s-8)}
+footer a{color:var(--color-white)}
+.prog-grid{display:grid;gap:6px;grid-template-columns:repeat(7,1fr)}
+.prog-cell{border:1px solid var(--color-sage-light);border-radius:.5rem;min-height:60px;padding:6px;position:relative;background:var(--color-white)}
+.prog-cell .date{font-size:.85rem;opacity:.8}
+.prog-cell .mins{position:absolute;left:6px;bottom:6px;font-size:.8rem;opacity:.9}
+.prog-cell.today{outline:2px solid var(--accent);outline-offset:1px}
+

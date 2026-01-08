@@ -97,8 +97,11 @@ export function RhythmTraining() {
     }
 
     return () => {
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
+      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+        audioContextRef.current.close().catch((error) => {
+          // Silently handle already closed context
+          console.debug('AudioContext already closed:', error);
+        });
       }
     };
   }, []);

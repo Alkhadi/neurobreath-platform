@@ -1,20 +1,39 @@
-'use client';
-
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { HeroSection } from './components/hero-section';
+import { ConditionOverview } from './components/condition-overview';
+import { QuickStarter } from './components/quick-starter';
+import { BreathingExercises } from './components/breathing-exercises';
+import { BehavioralActivation } from './components/behavioral-activation';
+import { TreatmentOptions } from './components/treatment-options';
+import { EmergingTherapies } from './components/emerging-therapies';
+import { LifestyleInterventions } from './components/lifestyle-interventions';
+import { StatisticsImpact } from './components/statistics-impact';
+import { SpecialPopulations } from './components/special-populations';
+import { SupportResources } from './components/support-resources';
+import { References } from './components/references';
+import { DownloadPDF } from './components/download-pdf';
+import { Navigation } from './components/navigation';
+import { ScrollToTop } from './components/scroll-to-top';
 
 export default function DepressionPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Card className="w-full">
-        <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50">
-          <CardTitle className="text-3xl font-bold">🌧️ Depression Support</CardTitle>
-        </CardHeader>
-        <CardContent className="pt-6">
-          <p className="text-muted-foreground">
-            This page is under development. Content will be added soon.
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+    <main className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background">
+      <Navigation />
+      <div className="w-[88vw] mx-auto py-8 space-y-16">
+        <HeroSection />
+        <ConditionOverview />
+        <QuickStarter />
+        <BreathingExercises />
+        <BehavioralActivation />
+        <TreatmentOptions />
+        <EmergingTherapies />
+        <LifestyleInterventions />
+        <StatisticsImpact />
+        <SpecialPopulations />
+        <SupportResources />
+        <References />
+        <DownloadPDF />
+      </div>
+      <ScrollToTop />
+    </main>
   );
 }

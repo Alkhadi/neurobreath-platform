@@ -1,0 +1,1196 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Phonics Sounds Celebration Lab • NeuroBreath</title>
+  <meta name="description" content="Launch the NeuroBreath celebration studio for Coach Dorothy’s A–Z phonics sounds, breathing pauses and printable certificates." />
+
+  <link rel="icon" type="image/x-icon" href="/assets/icons/neurobreath-favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/neurobreath-logo-square-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/neurobreath-logo-square-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/neurobreath-logo-square-180.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/neurobreath-logo-square-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icons/neurobreath-logo-square-512.png" />
+
+  <link rel="stylesheet" href="/assets/css/base.css" />
+  <link rel="stylesheet" href="/assets/css/site.css" />
+  <link rel="stylesheet" href="/assets/css/phonics-sounds-lab.css" />
+
+  <script src="/assets/js/site.js" defer></script>
+
+
+</head>
+<body>
+  <main>
+    <section class="hero" aria-labelledby="heroTitle">
+      <h1 id="heroTitle">Phonics Sounds · Celebration Studio</h1>
+      <p>Tap once to open a calm, full-screen phonics studio. Coach Dorothy will guide A–Z sounds while the screen keeps pace, lights the current letter, and rewards each milestone with a breathing-friendly celebration.</p>
+      <button type="button" class="btn btn-primary" id="openPhonicsBtn">Start phonics sounds</button>
+    </section>
+
+    <section id="dlxLetterSoundScreen" class="dlx-focus-screen dlx-letter-sound-screen" aria-live="polite" aria-hidden="true" hidden>
+      <div class="dlx-focus-screen__backdrop" data-letter-sound-close=""></div>
+      <div class="dlx-letter-sound-panel" role="dialog" aria-modal="true" aria-labelledby="dlxLetterSoundTitle">
+        <div class="dlx-letter-sound-lights" aria-hidden="true">
+          <span data-light="gold"></span>
+          <span data-light="rose"></span>
+          <span data-light="aqua"></span>
+          <span data-light="violet"></span>
+        </div>
+        <div class="dlx-letter-sound-confetti" aria-hidden="true">
+          <div class="dlx-letter-sound-confetti__layer" data-speed="base"></div>
+          <div class="dlx-letter-sound-confetti__layer" data-speed="slow"></div>
+          <div class="dlx-letter-sound-confetti__layer" data-speed="sparkle"></div>
+          <div class="dlx-letter-sound-confetti__ribbons">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="dlx-letter-sound-confetti__shapes">
+            <span data-shape="star"></span>
+            <span data-shape="star"></span>
+            <span data-shape="diamond"></span>
+            <span data-shape="diamond"></span>
+            <span data-shape="spark"></span>
+            <span data-shape="spark"></span>
+          </div>
+        </div>
+
+        <div class="dlx-letter-sound-buzz" id="dlxLetterSoundBuzz" aria-live="assertive" hidden>
+          <div class="dlx-letter-sound-buzz__rays" aria-hidden="true"></div>
+          <div class="dlx-letter-sound-buzz__content">
+            <p class="dlx-letter-sound-buzz__label" id="dlxLetterSoundBuzzLabel">Bronze breath break achieved</p>
+            <p class="dlx-letter-sound-buzz__message">
+              <span id="dlxLetterSoundBuzzLetter">A–F</span><br />
+              <span id="dlxLetterSoundBuzzWord" aria-hidden="true"></span>
+            </p>
+            <p class="dlx-letter-sound-buzz__tip" id="dlxLetterSoundBuzzTip"></p>
+          </div>
+        </div>
+
+        <div class="dlx-letter-sound-overview">
+          <header class="dlx-letter-sound-head">
+            <p class="dlx-kicker">Phoneme studio</p>
+            <h3 id="dlxLetterSoundTitle">Phonics Sounds · Letters Only</h3>
+            <p class="muted" id="dlxLetterSoundSubtitle">Watch the animated letter stage while Coach Dorothy speaks every letter sound.</p>
+          </header>
+          <div class="dlx-letter-sound-actions" aria-label="Letter sound controls">
+            <button type="button" class="btn btn-primary btn-sm" id="dlxLetterSoundStart">Start</button>
+            <button type="button" class="btn btn-sm" id="dlxLetterSoundPause" aria-label="Pause or continue letter sounds">Pause</button>
+            <button type="button" class="btn btn-outline btn-sm" id="dlxLetterSoundRandomHead">Shuffle head</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="dlxLetterSoundRestart">↺ Restart</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="dlxLetterSoundClose" data-letter-sound-close="">Close</button>
+          </div>
+        </div>
+
+        <div class="dlx-letter-sound-body">
+          <div class="dlx-letter-sound-layout">
+            <div class="dlx-letter-sound-layout__left">
+              <div class="dlx-mouth-stage" aria-live="polite">
+                <div class="dlx-mouth-head" id="dlxMouthHead" data-variant="sunrise" data-mouth-shape="open-round" aria-hidden="true" data-mouth-phase="call" data-letter="A">
+                  <img id="dlxMouthLetterImage" class="dlx-mouth-letter-img" src="" alt="" loading="lazy" decoding="async" />
+                  <span class="dlx-mouth-eyes" aria-hidden="true"></span>
+                  <span class="dlx-mouth-mouth" aria-hidden="true"></span>
+                  <span class="dlx-mouth-accessory" id="dlxMouthAccessory" aria-hidden="true">⭐</span>
+                </div>
+                <div class="dlx-mouth-info">
+                  <p class="dlx-mouth-letter" id="dlxMouthLetter">A / a</p>
+                  <p class="dlx-mouth-word" id="dlxMouthWord">Focus on the main sound of this letter.</p>
+                  <p class="dlx-mouth-tip" id="dlxMouthTip">Breathe out gently as you repeat the sound once with Coach Dorothy.</p>
+                </div>
+              </div>
+              <div class="dlx-letter-sound-progress">
+                <input type="range" min="0" max="1000" value="0" id="dlxLetterSoundProgress" aria-label="Letter sound progress">
+                <span id="dlxLetterSoundTime">00:00</span>
+              </div>
+              <div class="dlx-letter-sound-gallery" aria-live="polite">
+                <div class="dlx-letter-sound-gallery__track">
+                  <div class="dlx-letter-sound-gallery__item" id="dlxTimelineLetterGroup">
+                    <div class="dlx-letter-sound-gallery__frame">
+                      <span class="dlx-letter-sound-gallery__emoji" aria-hidden="true">
+                        <span id="dlxTimelineLetterIcon" class="dlx-letter-sound-gallery__emoji-inner">🍎</span>
+                      </span>
+                      <span class="dlx-letter-sound-gallery__pulse" aria-hidden="true"></span>
+                    </div>
+                    <p class="dlx-letter-sound-gallery__label" id="dlxTimelineLetterLabel">
+                      <span class="dlx-letter-sound-gallery__letter" id="dlxTimelineLetterChar">A</span>
+                      <span class="dlx-letter-sound-gallery__word" id="dlxTimelineLetterWord">apple</span>
+                    </p>
+                  </div>
+                  <span class="dlx-letter-sound-gallery__spark" aria-hidden="true"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="dlx-letter-sound-layout__right">
+              <div class="dlx-letter-sound-grid" id="dlxLetterSoundGrid" aria-label="Tap any letter to jump to its sound">
+                <!-- Illustrated letter chips A–Z -->
+                <button type="button" class="dlx-letter-sound-chip is-active" data-letter-sound-chip="A" aria-pressed="true">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="A" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">A</span>
+                    <span class="dlx-letter-sound-chip__lower">a</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="B" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="B" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">B</span>
+                    <span class="dlx-letter-sound-chip__lower">b</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="C" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="C" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">C</span>
+                    <span class="dlx-letter-sound-chip__lower">c</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="D" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="D" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">D</span>
+                    <span class="dlx-letter-sound-chip__lower">d</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="E" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="E" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">E</span>
+                    <span class="dlx-letter-sound-chip__lower">e</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="F" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="F" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">F</span>
+                    <span class="dlx-letter-sound-chip__lower">f</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="G" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="G" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">G</span>
+                    <span class="dlx-letter-sound-chip__lower">g</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="H" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="H" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">H</span>
+                    <span class="dlx-letter-sound-chip__lower">h</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="I" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="I" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">I</span>
+                    <span class="dlx-letter-sound-chip__lower">i</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="J" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="J" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">J</span>
+                    <span class="dlx-letter-sound-chip__lower">j</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="K" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="K" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">K</span>
+                    <span class="dlx-letter-sound-chip__lower">k</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="L" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="L" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">L</span>
+                    <span class="dlx-letter-sound-chip__lower">l</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="M" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="M" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">M</span>
+                    <span class="dlx-letter-sound-chip__lower">m</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="N" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="N" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">N</span>
+                    <span class="dlx-letter-sound-chip__lower">n</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="O" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="O" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">O</span>
+                    <span class="dlx-letter-sound-chip__lower">o</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="P" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="P" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">P</span>
+                    <span class="dlx-letter-sound-chip__lower">p</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="Q" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="Q" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">Q</span>
+                    <span class="dlx-letter-sound-chip__lower">q</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="R" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="R" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">R</span>
+                    <span class="dlx-letter-sound-chip__lower">r</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="S" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="S" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">S</span>
+                    <span class="dlx-letter-sound-chip__lower">s</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="T" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="T" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">T</span>
+                    <span class="dlx-letter-sound-chip__lower">t</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="U" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="U" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">U</span>
+                    <span class="dlx-letter-sound-chip__lower">u</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="V" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="V" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">V</span>
+                    <span class="dlx-letter-sound-chip__lower">v</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="W" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="W" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">W</span>
+                    <span class="dlx-letter-sound-chip__lower">w</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="X" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="X" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">X</span>
+                    <span class="dlx-letter-sound-chip__lower">x</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="Y" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="Y" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">Y</span>
+                    <span class="dlx-letter-sound-chip__lower">y</span>
+                  </div>
+                </button>
+                <button type="button" class="dlx-letter-sound-chip" data-letter-sound-chip="Z" aria-pressed="false">
+                  <img class="dlx-letter-sound-chip__img" data-letter-img="Z" alt="" loading="lazy" decoding="async" />
+                  <div class="dlx-letter-sound-chip__labels">
+                    <span class="dlx-letter-sound-chip__upper">Z</span>
+                    <span class="dlx-letter-sound-chip__lower">z</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="dlx-letter-sound-celebration" id="dlxLetterSoundCelebration" aria-live="assertive" hidden data-medal="default" data-state="idle">
+            <div class="dlx-letter-sound-celebration__halo" aria-hidden="true"></div>
+            <div class="dlx-letter-sound-celebration__content" id="dlxLetterSoundCelebrationContent">
+              <p class="dlx-letter-sound-celebration__medal" id="dlxLetterSoundMedal" hidden></p>
+              <div class="dlx-letter-sound-celebration__layout">
+                <div class="dlx-letter-sound-celebration__message">
+                  <p class="dlx-letter-sound-celebration__title" id="dlxLetterSoundCelebrationTitle">Bronze breath break achieved</p>
+                  <p class="dlx-letter-sound-celebration__body" id="dlxLetterSoundCelebrationBody">You just wrapped the A–F repeats with perfect pacing. Hold this bronze pause for a sip of air, then tap Continue to glide into the G–L crew.</p>
+                </div>
+                <div class="dlx-letter-sound-celebration__status">
+                  <div class="dlx-letter-sound-celebration__clock" id="dlxLetterSoundCelebrationClock" aria-hidden="true">
+                    <div class="dlx-letter-sound-celebration__clock-ring">
+                      <span class="dlx-letter-sound-celebration__clock-value" id="dlxLetterSoundCelebrationClockValue">10</span>
+                    </div>
+                  </div>
+                  <p class="dlx-letter-sound-celebration__timer" id="dlxLetterSoundCelebrationTimer" aria-live="polite">Celebration pause: 10 seconds of calm breathing.</p>
+                </div>
+              </div>
+              <div class="dlx-letter-sound-celebration__cta" id="dlxLetterSoundCelebrationCta">
+                <p class="dlx-letter-sound-celebration__prompt" id="dlxLetterSoundCelebrationPrompt">Hold this pause, then tap Continue when the countdown reaches zero.</p>
+                <div class="dlx-letter-sound-celebration__buttons">
+                  <button type="button" class="btn btn-success" id="dlxLetterSoundContinue" disabled>Continue</button>
+                  <button type="button" class="btn btn-outline" id="dlxLetterSoundCloseCelebration">Close</button>
+                </div>
+              </div>
+              <div class="dlx-letter-sound-nav" id="dlxLetterSoundCelebrationNav" aria-label="Celebration navigation">
+                <button type="button" class="btn btn-outline btn-sm" id="dlxLetterSoundCelebrationBack" data-letter-sound-close="">← Back to Dyslexia hub</button>
+                <a class="btn btn-ghost btn-sm" id="dlxLetterSoundCelebrationHome" href="index.html">🏠 NeuroBreath home</a>
+              </div>
+              <div class="dlx-letter-sound-celebration__certificate" id="dlxLetterSoundCertificate">
+                <p class="dlx-letter-sound-celebration__certificate-prompt" id="dlxLetterSoundCertificatePrompt">
+                  Platinum spotlight complete — enter the learner name (required) plus any optional details to personalise their official NeuroBreath certificate.
+                </p>
+                <div class="dlx-letter-sound-certificate-shell">
+                  <div class="dlx-letter-sound-certificate-columns">
+                    <form class="dlx-letter-sound-certificate-form" id="dlxLetterSoundCertificateForm">
+                      <label>
+                        <span>Full name<span class="sr-only"> (required)</span></span>
+                        <input type="text" name="certificateName" id="dlxCertificateNameInput" required minlength="2" autocomplete="name" placeholder="e.g. Maya Solanke">
+                      </label>
+                      <label>
+                        <span>Gender <small>(optional)</small></span>
+                        <select name="certificateGender" id="dlxCertificateGenderInput">
+                          <option value="Prefer not to say" selected>Prefer not to say</option>
+                          <option value="Female">Female</option>
+                          <option value="Male">Male</option>
+                          <option value="Non-binary">Non-binary</option>
+                        </select>
+                      </label>
+                      <label>
+                        <span>Age <small>(optional)</small></span>
+                        <input type="number" name="certificateAge" id="dlxCertificateAgeInput" min="3" max="120" inputmode="numeric" placeholder="10">
+                      </label>
+                      <label>
+                        <span>Faith tradition <small>(optional)</small></span>
+                        <input type="text" name="certificateReligion" id="dlxCertificateReligionInput" minlength="2" placeholder="e.g. Christianity">
+                      </label>
+                      <p class="dlx-letter-sound-certificate-note">Only the official NeuroBreath details and the learner’s name appear on the certificate. Optional fields guide the tone of the award.</p>
+                      <p class="dlx-letter-sound-certificate-buffer" id="dlxCertificateBufferNote">Print note: the certificate keeps a clamp(32px,10vh,120px) top/bottom buffer so PDF exports never crop the border.</p>
+                      <button type="submit" class="btn btn-primary btn-sm">Design certificate</button>
+                    </form>
+                    <div class="dlx-letter-sound-certificate-preview" id="dlxLetterSoundCertificatePreview" hidden>
+                      <div class="dlx-certificate-print-surface" id="dlxCertificatePrintSurface">
+                        <article class="dlx-certificate-card" aria-label="Printable NeuroBreath Academy certificate">
+                          <div class="dlx-certificate-brand" aria-hidden="true">
+                            <span class="dlx-certificate-logo">NB</span>
+                            <p class="dlx-certificate-issuer">NeuroBreath Academy</p>
+                          </div>
+                          <header>
+                            <p class="dlx-certificate-title" id="dlxCertificateTitle">Platinum Letter Sound Mastery</p>
+                            <h4 class="dlx-certificate-name" id="dlxCertificateAwardee">Learner Name</h4>
+                            <p class="dlx-certificate-medal" id="dlxCertificateMedal">Calm Focus Laureate</p>
+                          </header>
+                          <p class="dlx-certificate-message" id="dlxCertificateMessage">This certifies that the learner completed the full phoneme circuit with Platinum mastery.</p>
+                          <ul class="dlx-certificate-meta">
+                            <li>
+                              <span>Certificate ID</span>
+                              <strong id="dlxCertificateId">NB-00000</strong>
+                            </li>
+                            <li>
+                              <span>Issued</span>
+                              <strong id="dlxCertificateIssued">—</strong>
+                            </li>
+                            <li>
+                              <span>Awarded By</span>
+                              <strong>NeuroBreath Lead Faculty</strong>
+                            </li>
+                          </ul>
+                        </article>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="dlx-letter-sound-certificate-actions">
+                    <button type="button" class="btn btn-success btn-sm" id="dlxCertificatePrintBtn" disabled>🖨️ Print certificate</button>
+                    <button type="button" class="btn btn-ghost btn-sm" id="dlxCertificateEditBtn" hidden>✏️ Edit details</button>
+                    <button type="button" class="btn btn-outline btn-sm" id="dlxCertificateCloseBtn">✖ Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <audio id="dlxLetterSoundAudio" preload="auto" src="assets/tts/letters-sounds-only-eleven-labs-phonics-alphabet-sounds-dorothy.mp3"></audio>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="dlxCertificatePrintPortal" aria-hidden="true"></div>
+
+  <script>
+    // Keep all timing + milestone data in plain objects so the player logic stays simple to reason about.
+    const LETTER_TIMINGS = {
+      intro: { start: 0, end: 7.9 },
+      letters: [
+        { letter: "A", start: 7.9, callEnd: 10.74, repeatStart: 11.36, repeatEnd: 13.12, end: 15.26 },
+        { letter: "B", start: 15.26, callEnd: 17.9, repeatStart: 18.22, repeatEnd: 19.94, end: 21.82 },
+        { letter: "C", start: 21.82, callEnd: 24.48, repeatStart: 25.06, repeatEnd: 26.44, end: 27.88 },
+        { letter: "D", start: 27.88, callEnd: 30.4, repeatStart: 30.88, repeatEnd: 32.42, end: 33.78 },
+        { letter: "E", start: 33.78, callEnd: 36.44, repeatStart: 37.24, repeatEnd: 38.54, end: 40.08 },
+        { letter: "F", start: 40.08, callEnd: 42.58, repeatStart: 43.18, repeatEnd: 44.58, end: 62.38, milestoneEnd: 55.0 },
+        { letter: "G", start: 62.38, callEnd: 65.02, repeatStart: 65.42, repeatEnd: 68.12, end: 68.3 },
+        { letter: "H", start: 68.3, callEnd: 71.04, repeatStart: 71.62, repeatEnd: 73.08, end: 74.4 },
+        { letter: "I", start: 74.4, callEnd: 77.22, repeatStart: 77.62, repeatEnd: 79.28, end: 80.5 },
+        { letter: "J", start: 80.5, callEnd: 83.32, repeatStart: 83.92, repeatEnd: 85.36, end: 86.76 },
+        { letter: "K", start: 86.76, callEnd: 89.1, repeatStart: 89.64, repeatEnd: 91.1, end: 92.54 },
+        { letter: "L", start: 92.54, callEnd: 94.84, repeatStart: 95.48, repeatEnd: 97.0, end: 114.72, milestoneEnd: 107.02 },
+        { letter: "M", start: 114.72, callEnd: 117.44, repeatStart: 118.14, repeatEnd: 119.6, end: 120.98 },
+        { letter: "N", start: 120.98, callEnd: 123.56, repeatStart: 124.32, repeatEnd: 125.76, end: 127.4 },
+        { letter: "O", start: 127.4, callEnd: 129.88, repeatStart: 130.36, repeatEnd: 131.96, end: 133.12 },
+        { letter: "P", start: 133.12, callEnd: 135.54, repeatStart: 136.18, repeatEnd: 137.38, end: 138.54 },
+        { letter: "Q", start: 138.54, callEnd: 141.0, repeatStart: 141.56, repeatEnd: 143.06, end: 144.52 },
+        { letter: "R", start: 144.52, callEnd: 147.48, repeatStart: 148.0, repeatEnd: 149.88, end: 167.88, milestoneEnd: 160.02 },
+        { letter: "S", start: 167.88, callEnd: 170.4, repeatStart: 170.9, repeatEnd: 172.48, end: 173.6 },
+        { letter: "T", start: 173.6, callEnd: 176.12, repeatStart: 176.8, repeatEnd: 178.2, end: 179.48 },
+        { letter: "U", start: 179.48, callEnd: 182.04, repeatStart: 182.7, repeatEnd: 184.26, end: 185.36 },
+        { letter: "V", start: 185.36, callEnd: 188.0, repeatStart: 188.6, repeatEnd: 190.06, end: 190.92 },
+        { letter: "W", start: 190.92, callEnd: 193.68, repeatStart: 194.06, repeatEnd: 195.74, end: 196.74 },
+        { letter: "X", start: 196.74, callEnd: 199.2, repeatStart: 199.76, repeatEnd: 201.12, end: 202.26 },
+        { letter: "Y", start: 202.26, callEnd: 204.82, repeatStart: 205.42, repeatEnd: 206.96, end: 208.06 },
+        { letter: "Z", start: 208.06, callEnd: 210.52, repeatStart: 211.18, repeatEnd: 212.64, end: 225.8, milestoneEnd: 225.08 }
+      ]
+    };
+
+    const MILESTONES = [
+      {
+        id: "bronze",
+        label: "Bronze breath break achieved",
+        letters: "A–F",
+        triggerLetter: "F",
+        seconds: 10,
+        body: "You just wrapped the A–F repeats with perfect pacing. Hold this bronze pause for a sip of air, then tap Continue to glide into the G–L crew."
+      },
+      {
+        id: "silver",
+        label: "Silver sound sweep complete",
+        letters: "G–L",
+        triggerLetter: "L",
+        seconds: 10,
+        body: "Beautiful focus through the G–L set. Take this silver pause for ten calm seconds of breathing, then tap Continue to meet the M–R team."
+      },
+      {
+        id: "gold",
+        label: "Gold glide mastered",
+        letters: "M–R",
+        triggerLetter: "R",
+        seconds: 10,
+        body: "You’ve moved through M–R with smooth, steady sound work. Hold this gold pause, breathe out slowly, then tap Continue to glide into the final S–Z stretch."
+      },
+      {
+        id: "platinum",
+        label: "Platinum phoneme circuit",
+        letters: "S–Z",
+        triggerLetter: "Z",
+        seconds: 12,
+        body: "Full alphabet circuit complete — S through Z sounded with calm control. Enjoy this platinum spotlight, then decide if you’d like to claim an official NeuroBreath certificate."
+      }
+    ];
+
+    const LETTER_ART_PALETTE = [
+      { colors: ["#38bdf8", "#0ea5e9"], accent: "#bae6fd" },
+      { colors: ["#f472b6", "#ec4899"], accent: "#fed7e2" },
+      { colors: ["#a78bfa", "#6366f1"], accent: "#ddd6fe" },
+      { colors: ["#34d399", "#059669"], accent: "#bbf7d0" },
+      { colors: ["#facc15", "#f97316"], accent: "#fef08a" },
+      { colors: ["#fbbf77", "#fb7185"], accent: "#fed7aa" }
+    ];
+
+    const LETTER_CALL_HEADROOM = 0.18;
+
+    const PHONICS_LETTER_VISUALS = {
+      A: { word: "apple", icon: "🍎" },
+      B: { word: "ball", icon: "⚽" },
+      C: { word: "cat", icon: "🐱" },
+      D: { word: "dog", icon: "🐶" },
+      E: { word: "egg", icon: "🥚" },
+      F: { word: "fish", icon: "🐟" },
+      G: { word: "goat", icon: "🐐" },
+      H: { word: "hat", icon: "🎩" },
+      I: { word: "igloo", icon: "🏔️" },
+      J: { word: "jam", icon: "🍓" },
+      K: { word: "kite", icon: "🪁" },
+      L: { word: "lion", icon: "🦁" },
+      M: { word: "milk", icon: "🥛" },
+      N: { word: "net", icon: "🎣" },
+      O: { word: "orange", icon: "🍊" },
+      P: { word: "pen", icon: "🖊️" },
+      Q: { word: "queen", icon: "👑" },
+      R: { word: "rabbit", icon: "🐇" },
+      S: { word: "sun", icon: "☀️" },
+      T: { word: "top", icon: "🧢" },
+      U: { word: "umbrella", icon: "🌂" },
+      V: { word: "van", icon: "🚐" },
+      W: { word: "web", icon: "🕸️" },
+      X: { word: "box", icon: "📦" },
+      Y: { word: "yo-yo", icon: "🪀" },
+      Z: { word: "zebra", icon: "🦓" }
+    };
+    PHONICS_LETTER_VISUALS.default = PHONICS_LETTER_VISUALS.A;
+
+    function buildLetterImage(letter, index) {
+      const palette = LETTER_ART_PALETTE[index % LETTER_ART_PALETTE.length];
+      const gradientId = `grad${letter}${index}`;
+      const glowId = `glow${letter}${index}`;
+      const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+  <defs>
+    <linearGradient id="${gradientId}" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="${palette.colors[0]}" />
+      <stop offset="100%" stop-color="${palette.colors[1]}" />
+    </linearGradient>
+    <radialGradient id="${glowId}" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="${palette.accent}" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="${palette.accent}" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="120" height="120" rx="24" fill="#050815" />
+  <rect x="3" y="3" width="114" height="114" rx="22" fill="url(#${gradientId})" fill-opacity="0.12" />
+  <circle cx="60" cy="44" r="40" fill="url(#${glowId})" />
+  <circle cx="28" cy="92" r="24" fill="#ffffff" fill-opacity="0.05" />
+  <circle cx="92" cy="86" r="18" fill="#ffffff" fill-opacity="0.08" />
+  <text x="60" y="80" text-anchor="middle" font-size="64" font-family="'Nunito', 'Poppins', 'Segoe UI', sans-serif" font-weight="700" fill="#ffffff">${letter}</text>
+</svg>`;
+      return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+    }
+
+    const LETTER_IMAGE_MAP = (() => {
+      const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+      const map = {};
+      letters.forEach((letter, index) => {
+        map[letter] = buildLetterImage(letter, index);
+      });
+      map.default = map["A"];
+      return map;
+    })();
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const openBtn = document.getElementById("openPhonicsBtn");
+      const screen = document.getElementById("dlxLetterSoundScreen");
+      const panel = screen.querySelector(".dlx-letter-sound-panel");
+      const closeElements = screen.querySelectorAll("[data-letter-sound-close]");
+      const startBtn = document.getElementById("dlxLetterSoundStart");
+      const pauseBtn = document.getElementById("dlxLetterSoundPause");
+      const restartBtn = document.getElementById("dlxLetterSoundRestart");
+      const randomHeadBtn = document.getElementById("dlxLetterSoundRandomHead");
+      const progressEl = document.getElementById("dlxLetterSoundProgress");
+      const timeEl = document.getElementById("dlxLetterSoundTime");
+      const audio = document.getElementById("dlxLetterSoundAudio");
+      const mouthHead = document.getElementById("dlxMouthHead");
+      const mouthLetterImg = document.getElementById("dlxMouthLetterImage");
+      const mouthLetter = document.getElementById("dlxMouthLetter");
+      const mouthWord = document.getElementById("dlxMouthWord");
+      const mouthTip = document.getElementById("dlxMouthTip");
+      const grid = document.getElementById("dlxLetterSoundGrid");
+      const chips = Array.from(grid.querySelectorAll(".dlx-letter-sound-chip"));
+      const celebration = document.getElementById("dlxLetterSoundCelebration");
+      const celebrationTitle = document.getElementById("dlxLetterSoundCelebrationTitle");
+      const celebrationBody = document.getElementById("dlxLetterSoundCelebrationBody");
+      const celebrationClock = document.getElementById("dlxLetterSoundCelebrationClock");
+      const celebrationClockValue = document.getElementById("dlxLetterSoundCelebrationClockValue");
+      const celebrationTimer = document.getElementById("dlxLetterSoundCelebrationTimer");
+      const celebrationPrompt = document.getElementById("dlxLetterSoundCelebrationPrompt");
+      const continueBtn = document.getElementById("dlxLetterSoundContinue");
+      const closeCelebrationBtn = document.getElementById("dlxLetterSoundCloseCelebration");
+      const buzz = document.getElementById("dlxLetterSoundBuzz");
+      const buzzLabel = document.getElementById("dlxLetterSoundBuzzLabel");
+      const buzzLetter = document.getElementById("dlxLetterSoundBuzzLetter");
+      const buzzTip = document.getElementById("dlxLetterSoundBuzzTip");
+      const certificateBlock = document.getElementById("dlxLetterSoundCertificate");
+      const certForm = document.getElementById("dlxLetterSoundCertificateForm");
+      const certPreview = document.getElementById("dlxLetterSoundCertificatePreview");
+      const certNameInput = document.getElementById("dlxCertificateNameInput");
+      const certAwardee = document.getElementById("dlxCertificateAwardee");
+      const certMedal = document.getElementById("dlxCertificateMedal");
+      const certMessage = document.getElementById("dlxCertificateMessage");
+      const certId = document.getElementById("dlxCertificateId");
+      const certIssued = document.getElementById("dlxCertificateIssued");
+      const certPrintBtn = document.getElementById("dlxCertificatePrintBtn");
+      const certEditBtn = document.getElementById("dlxCertificateEditBtn");
+      const certCloseBtn = document.getElementById("dlxCertificateCloseBtn");
+      const certPrintSurface = document.getElementById("dlxCertificatePrintSurface");
+      const certPrintPortal = document.getElementById("dlxCertificatePrintPortal");
+      const letterImageEls = document.querySelectorAll("[data-letter-img]");
+      const timelineLetterIcon = document.getElementById("dlxTimelineLetterIcon");
+      const timelineLetterChar = document.getElementById("dlxTimelineLetterChar");
+      const timelineLetterWord = document.getElementById("dlxTimelineLetterWord");
+      const timelineLetterGroup = document.getElementById("dlxTimelineLetterGroup");
+
+      letterImageEls.forEach(img => {
+        const key = (img.dataset.letterImg || "").toUpperCase();
+        img.src = LETTER_IMAGE_MAP[key] || LETTER_IMAGE_MAP.default;
+      });
+
+      if (mouthLetterImg) {
+        mouthLetterImg.src = LETTER_IMAGE_MAP["A"] || LETTER_IMAGE_MAP.default;
+      }
+      updateTimelineVisual("A");
+
+      let countdownInterval = null;
+      let countdownSeconds = 0;
+      let currentMilestoneIndex = 0;
+      let lastLetterIndex = -1;
+      let isPlatinumCertificateMode = false;
+      let hasCompletedLetterSoundAudio = false;
+      let timelineSwapTimeout = null;
+      let pendingResumeTime = null;
+      let pendingResumeLetterIndex = null;
+      let didActivatePrintPortal = false;
+      const setCertificateActionState = (hasPreview) => {
+        const enable = !!hasPreview;
+        if (certPrintBtn) {
+          certPrintBtn.disabled = !enable;
+          certPrintBtn.setAttribute("aria-disabled", enable ? "false" : "true");
+        }
+        if (certEditBtn) {
+          certEditBtn.hidden = !enable;
+        }
+      };
+
+      const mountCertificatePrintClone = () => {
+        if (!certPrintPortal || !certPrintSurface) return false;
+        certPrintPortal.innerHTML = "";
+        const clone = certPrintSurface.cloneNode(true);
+        clone.id = "dlxCertificatePrintSurfacePrint";
+        certPrintPortal.appendChild(clone);
+        return true;
+      };
+
+      const clearCertificatePrintClone = () => {
+        if (certPrintPortal) {
+          certPrintPortal.innerHTML = "";
+        }
+      };
+
+      const prepareCertificatePrint = () => {
+        if (!certPreview || certPreview.hidden) return false;
+        if (!mountCertificatePrintClone()) return false;
+        document.body.classList.add("printing-certificate");
+        didActivatePrintPortal = true;
+        return true;
+      };
+
+      const cleanupCertificatePrint = () => {
+        if (didActivatePrintPortal) {
+          document.body.classList.remove("printing-certificate");
+          didActivatePrintPortal = false;
+        }
+        clearCertificatePrintClone();
+      };
+
+      setCertificateActionState(false);
+
+      if (timelineLetterGroup) {
+        timelineLetterGroup.dataset.direction = "right";
+
+        timelineLetterGroup.addEventListener("animationstart", (event) => {
+          if (event.animationName === "nbTimelineGlide") {
+            timelineLetterGroup.dataset.direction = "right";
+          }
+        });
+
+        timelineLetterGroup.addEventListener("animationiteration", (event) => {
+          if (event.animationName !== "nbTimelineGlide") return;
+          const nextDirection = timelineLetterGroup.dataset.direction === "right" ? "left" : "right";
+          timelineLetterGroup.dataset.direction = nextDirection;
+        });
+      }
+
+      function updateTimelineVisual(letter) {
+        const upper = (letter || "A").toUpperCase();
+        const visual = PHONICS_LETTER_VISUALS[upper] || PHONICS_LETTER_VISUALS.default;
+        const applyVisual = () => {
+          if (timelineLetterIcon) {
+            timelineLetterIcon.textContent = visual.icon || PHONICS_LETTER_VISUALS.default.icon;
+          }
+          if (timelineLetterChar) {
+            timelineLetterChar.textContent = upper;
+          }
+          if (timelineLetterWord) {
+            timelineLetterWord.textContent = visual.word || PHONICS_LETTER_VISUALS.default.word;
+          }
+          if (timelineLetterGroup) {
+            timelineLetterGroup.classList.remove("is-outro");
+            timelineLetterGroup.classList.add("is-intro");
+            setTimeout(() => {
+              timelineLetterGroup.classList.remove("is-intro");
+            }, 520);
+          }
+        };
+
+        if (!timelineLetterGroup || !timelineLetterGroup.dataset.ready) {
+          if (timelineLetterGroup) {
+            timelineLetterGroup.dataset.ready = "true";
+          }
+          applyVisual();
+          return;
+        }
+
+        timelineLetterGroup.classList.remove("is-intro");
+        timelineLetterGroup.classList.add("is-outro");
+        clearTimeout(timelineSwapTimeout);
+        timelineSwapTimeout = setTimeout(() => {
+          applyVisual();
+        }, 220);
+      }
+
+      function getLetterCompletionTime(letterObj) {
+        if (!letterObj) return null;
+        if (typeof letterObj.milestoneEnd === "number") return letterObj.milestoneEnd;
+        if (typeof letterObj.repeatEnd === "number") return letterObj.repeatEnd;
+        if (typeof letterObj.callEnd === "number") return letterObj.callEnd;
+        return letterObj.end;
+      }
+
+      function setPendingResumeTargetFromIndex(index) {
+        if (typeof index !== "number" || index < 0) {
+          pendingResumeTime = null;
+          pendingResumeLetterIndex = null;
+          return;
+        }
+        const nextLetter = LETTER_TIMINGS.letters[index + 1];
+        if (nextLetter) {
+          pendingResumeTime = nextLetter.start;
+          pendingResumeLetterIndex = index + 1;
+        } else {
+          const fallback = LETTER_TIMINGS.letters[index];
+          pendingResumeTime = fallback ? fallback.end : null;
+          pendingResumeLetterIndex = LETTER_TIMINGS.letters.length - 1;
+        }
+      }
+
+      function openScreen() {
+        if (screen.hidden) {
+          screen.hidden = false;
+        }
+        requestAnimationFrame(() => {
+          screen.classList.add("is-open");
+          screen.setAttribute("aria-hidden", "false");
+        });
+        audio.currentTime = 0;
+        audio.pause();
+        hasCompletedLetterSoundAudio = false;
+        resetCelebration();
+      }
+
+      function closeScreen() {
+        screen.classList.remove("is-open");
+        screen.setAttribute("aria-hidden", "true");
+        audio.pause();
+        resetCelebration();
+        setTimeout(() => {
+          if (!screen.classList.contains("is-open")) {
+            screen.hidden = true;
+          }
+        }, 220);
+      }
+
+      function formatTime(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = Math.floor(seconds % 60);
+        return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+      }
+
+      function findLetterIndexForTime(t) {
+        const arr = LETTER_TIMINGS.letters;
+        let fallbackIndex = 0;
+        for (let i = 0; i < arr.length; i++) {
+          const letter = arr[i];
+          if (t >= letter.start) fallbackIndex = i;
+          const completion = getLetterCompletionTime(letter) ?? letter.end;
+          if (t >= letter.start && t < completion) {
+            return i;
+          }
+        }
+        return fallbackIndex;
+      }
+
+      function activateChip(letter) {
+        chips.forEach(chip => {
+          const active = chip.dataset.letterSoundChip === letter;
+          chip.classList.toggle("is-active", active);
+          chip.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+      }
+
+      function updateMouthForLetter(letterObj, t) {
+        const { letter, start, callEnd, repeatStart, repeatEnd, end } = letterObj;
+        mouthHead.setAttribute("data-letter", letter);
+        mouthLetter.textContent = `${letter} / ${letter.toLowerCase()}`;
+        mouthWord.textContent = "Focus on the main sound of this letter.";
+        if (mouthLetterImg) {
+          const src = LETTER_IMAGE_MAP[letter] || LETTER_IMAGE_MAP.default;
+          if (mouthLetterImg.dataset.letter !== letter) {
+            mouthLetterImg.src = src;
+            mouthLetterImg.dataset.letter = letter;
+          }
+        }
+        updateTimelineVisual(letter);
+        mouthLetter.dataset.letter = letter;
+
+        let phase = "rest";
+        if (t >= start && t < callEnd) {
+          phase = "call";
+          mouthTip.textContent = "Listen to Coach Dorothy say the sound once.";
+        } else if (repeatStart !== null && repeatStart !== undefined && t >= repeatStart && t < (repeatEnd ?? end)) {
+          phase = "repeat";
+          mouthTip.textContent = "Breathe out gently and repeat the sound with her.";
+        } else {
+          mouthTip.textContent = "Stay relaxed and wait for the next letter.";
+        }
+        mouthHead.setAttribute("data-mouth-phase", phase);
+      }
+
+      function updateUIForTime() {
+        const t = audio.currentTime;
+        const duration = audio.duration || LETTER_TIMINGS.letters[LETTER_TIMINGS.letters.length - 1].end;
+        progressEl.value = Math.round((t / duration) * 1000);
+        timeEl.textContent = formatTime(t);
+
+        const idx = findLetterIndexForTime(t);
+        if (idx !== lastLetterIndex && idx >= 0) {
+          lastLetterIndex = idx;
+          const letterObj = LETTER_TIMINGS.letters[idx];
+          activateChip(letterObj.letter);
+          updateMouthForLetter(letterObj, t);
+        } else if (idx >= 0) {
+          updateMouthForLetter(LETTER_TIMINGS.letters[idx], t);
+        }
+
+        checkMilestones(t);
+      }
+
+      function checkMilestones(t) {
+        if (currentMilestoneIndex >= MILESTONES.length) return;
+        const milestone = MILESTONES[currentMilestoneIndex];
+        const letterIndex = LETTER_TIMINGS.letters.findIndex(l => l.letter === milestone.triggerLetter);
+        if (letterIndex < 0) return;
+        const letterObj = LETTER_TIMINGS.letters[letterIndex];
+        const completionTime = getLetterCompletionTime(letterObj);
+        if (completionTime === null) return;
+
+        if (t >= completionTime && celebration.dataset.state !== "running" && !isPlatinumCertificateMode) {
+          showMilestone(milestone, letterIndex);
+          currentMilestoneIndex += 1;
+        }
+      }
+
+      function resetCelebration(options = {}) {
+        const keepCertificate = !!options.keepCertificate;
+        const keepResumeTarget = !!options.keepResumeTarget;
+        celebration.classList.remove("is-visible");
+        celebration.hidden = true;
+        celebration.dataset.state = "idle";
+        panel.classList.remove("is-celebrating");
+        buzz.classList.remove("is-visible");
+        buzz.hidden = true;
+        continueBtn.disabled = true;
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+
+        if (!keepCertificate) {
+          panel.classList.remove("is-certificate-mode");
+          certificateBlock.classList.remove("is-visible");
+          certPreview.hidden = true;
+          setCertificateActionState(false);
+          isPlatinumCertificateMode = false;
+        }
+        if (!keepResumeTarget) {
+          setPendingResumeTargetFromIndex(null);
+        }
+      }
+
+      function enterCertificateMode(reason = "manual") {
+        isPlatinumCertificateMode = true;
+        hasCompletedLetterSoundAudio = true;
+        setPendingResumeTargetFromIndex(null);
+        if (typeof document !== "undefined" && document.body) {
+          document.body.classList.add("nb-phonics-certificate-unlocked");
+        }
+        panel.classList.add("is-certificate-mode");
+        certificateBlock.classList.add("is-visible");
+        celebration.classList.add("is-visible");
+        celebration.hidden = false;
+        celebration.dataset.state = "certificate";
+        buzz.classList.remove("is-visible");
+        buzz.hidden = true;
+        continueBtn.disabled = true;
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+        countdownSeconds = 0;
+        certPreview.hidden = true;
+        setCertificateActionState(false);
+        if (certForm) {
+          certForm.reset();
+        }
+        if (certificateBlock) {
+          certificateBlock.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        if (certNameInput) {
+          setTimeout(() => {
+            certNameInput.focus({ preventScroll: true });
+          }, reason === "auto" ? 400 : 120);
+        }
+      }
+
+      function showMilestone(milestone, letterIndex) {
+        const letterObj = typeof letterIndex === "number" ? LETTER_TIMINGS.letters[letterIndex] : null;
+        if (letterObj) {
+          const completionTime = getLetterCompletionTime(letterObj);
+          if (typeof completionTime === "number") {
+            audio.currentTime = completionTime;
+          }
+        }
+        audio.pause();
+        celebration.dataset.medal = milestone.id;
+        celebrationTitle.textContent = milestone.label;
+        celebrationBody.textContent = milestone.body;
+        celebrationClockValue.textContent = milestone.seconds;
+        celebrationTimer.textContent = `Celebration pause: ${milestone.seconds} seconds of calm breathing.`;
+        celebrationPrompt.textContent = milestone.id === "platinum"
+          ? "Hold this platinum pause. When the countdown reaches zero, tap Continue to let the audio finish, then decide if you’d like a certificate."
+          : "Hold this pause, then tap Continue when the countdown reaches zero.";
+        continueBtn.textContent = milestone.id === "platinum" ? "Finish audio" : "Continue";
+        continueBtn.disabled = true;
+        buzzLabel.textContent = milestone.label;
+        buzzLetter.textContent = milestone.letters;
+        buzzTip.textContent = milestone.id === "platinum"
+          ? "Crowd applause, drums and lights — enjoy this platinum moment before deciding your next step."
+          : "Crowd applause, gentle drums and stage lights — enjoy this short breathing break.";
+        buzz.classList.add("is-visible");
+        buzz.hidden = false;
+
+        if (milestone.id === "platinum") {
+          if (letterObj) {
+            pendingResumeTime = letterObj.end ?? (audio.duration || getLetterCompletionTime(letterObj));
+            pendingResumeLetterIndex = letterIndex;
+          } else {
+            pendingResumeTime = audio.duration || null;
+            pendingResumeLetterIndex = LETTER_TIMINGS.letters.length - 1;
+          }
+        } else {
+          const safeIndex = typeof letterIndex === "number" ? letterIndex : LETTER_TIMINGS.letters.findIndex(l => l.letter === milestone.triggerLetter);
+          setPendingResumeTargetFromIndex(safeIndex);
+        }
+
+        celebration.classList.add("is-visible");
+        celebration.hidden = false;
+        panel.classList.add("is-celebrating");
+        celebration.dataset.state = "running";
+        startCountdown(milestone.seconds, milestone);
+      }
+
+      function startCountdown(seconds, milestone) {
+        clearInterval(countdownInterval);
+        countdownSeconds = seconds;
+        updateCountdownUI(milestone);
+
+        countdownInterval = setInterval(() => {
+          countdownSeconds -= 1;
+          if (countdownSeconds <= 0) {
+            countdownSeconds = 0;
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+            celebrationTimer.textContent = "Pause finished — tap Continue when you are ready.";
+            continueBtn.disabled = false;
+          }
+          updateCountdownUI(milestone);
+        }, 1000);
+      }
+
+      function updateCountdownUI(milestone) {
+        celebrationClockValue.textContent = countdownSeconds;
+        const progress = milestone.seconds === 0 ? 360 : ((milestone.seconds - countdownSeconds) / milestone.seconds) * 360;
+        celebrationClock.style.setProperty("--clock-progress", `${progress}deg`);
+      }
+
+      function handleContinueClick() {
+        const medal = celebration.dataset.medal;
+        if (countdownSeconds > 0) return;
+
+        const resumeAt = pendingResumeTime;
+        const resumeIndex = pendingResumeLetterIndex;
+        resetCelebration({ keepCertificate: hasCompletedLetterSoundAudio, keepResumeTarget: true });
+
+        const resumeTimeValue = typeof resumeAt === "number"
+          ? resumeAt
+          : audio.currentTime;
+        const playbackTime = typeof resumeAt === "number"
+          ? Math.max(resumeTimeValue - LETTER_CALL_HEADROOM, 0)
+          : resumeTimeValue;
+
+        audio.currentTime = playbackTime;
+        if (typeof resumeIndex === "number") {
+          lastLetterIndex = resumeIndex - 1;
+        }
+        updateUIForTime();
+
+        setPendingResumeTargetFromIndex(null);
+        audio.play().catch(() => {});
+      }
+
+      function jumpToLetter(letter) {
+        const letterObj = LETTER_TIMINGS.letters.find(l => l.letter === letter);
+        if (!letterObj) return;
+        audio.pause();
+        const letterIndex = LETTER_TIMINGS.letters.indexOf(letterObj);
+        audio.currentTime = Math.max((letterObj.start ?? 0) - LETTER_CALL_HEADROOM, 0);
+        lastLetterIndex = Math.max(letterIndex - 1, -1);
+        resetCelebration({ keepCertificate: hasCompletedLetterSoundAudio });
+        audio.play().catch(() => {});
+        updateUIForTime();
+      }
+
+      openBtn.addEventListener("click", openScreen);
+      closeElements.forEach(el => el.addEventListener("click", closeScreen));
+
+      startBtn.addEventListener("click", () => {
+        if (audio.paused) {
+          audio.play().catch(() => {});
+        } else {
+          audio.currentTime = 0;
+          hasCompletedLetterSoundAudio = false;
+          resetCelebration({ keepCertificate: hasCompletedLetterSoundAudio });
+          audio.play().catch(() => {});
+        }
+      });
+
+      pauseBtn.addEventListener("click", () => {
+        if (audio.paused) {
+          audio.play().catch(() => {});
+          pauseBtn.textContent = "Pause";
+        } else {
+          audio.pause();
+          pauseBtn.textContent = "Continue";
+        }
+      });
+
+      restartBtn.addEventListener("click", () => {
+        audio.currentTime = 0;
+        currentMilestoneIndex = 0;
+        lastLetterIndex = -1;
+        hasCompletedLetterSoundAudio = false;
+        resetCelebration({ keepCertificate: hasCompletedLetterSoundAudio });
+        audio.play().catch(() => {});
+      });
+
+      randomHeadBtn.addEventListener("click", () => {
+        const variants = ["sunrise", "onyx", "neon", "aurora"];
+        const pick = variants[Math.floor(Math.random() * variants.length)];
+        mouthHead.setAttribute("data-variant", pick);
+      });
+
+      progressEl.addEventListener("input", () => {
+        const duration = audio.duration || LETTER_TIMINGS.letters[LETTER_TIMINGS.letters.length - 1].end;
+        const t = (progressEl.value / 1000) * duration;
+        audio.currentTime = t;
+        resetCelebration({ keepCertificate: hasCompletedLetterSoundAudio });
+        updateUIForTime();
+
+        // If the learner scrubs very near the end, treat this as a completed run
+        if (duration && t >= duration - 0.5 && !hasCompletedLetterSoundAudio) {
+          enterCertificateMode("scrub-end");
+        }
+      });
+
+      audio.addEventListener("timeupdate", updateUIForTime);
+      audio.addEventListener("ended", () => {
+        const fallbackTime = audio.duration || LETTER_TIMINGS.letters[LETTER_TIMINGS.letters.length - 1].end;
+        checkMilestones(fallbackTime);
+        hasCompletedLetterSoundAudio = true;
+        if (!isPlatinumCertificateMode) {
+          enterCertificateMode("audio-end");
+        }
+      });
+
+      chips.forEach(chip => {
+        chip.addEventListener("click", () => {
+          jumpToLetter(chip.dataset.letterSoundChip);
+        });
+      });
+
+      continueBtn.addEventListener("click", handleContinueClick);
+      closeCelebrationBtn.addEventListener("click", () => {
+        resetCelebration({ keepCertificate: hasCompletedLetterSoundAudio });
+      });
+
+      certForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("dlxCertificateNameInput").value.trim();
+        const gender = document.getElementById("dlxCertificateGenderInput").value;
+        const age = document.getElementById("dlxCertificateAgeInput").value;
+        const faith = document.getElementById("dlxCertificateReligionInput").value.trim();
+
+        if (!name) return;
+
+        certAwardee.textContent = name;
+        let medalText = "Calm Focus Laureate";
+        if (gender === "Female") medalText = "Platinum Sound Scholar";
+        if (gender === "Male") medalText = "Platinum Sound Champion";
+        certMedal.textContent = medalText;
+
+        let message = `${name} has completed the full A–Z phoneme circuit with Platinum mastery, using calm breathing and steady focus.`;
+        if (age) message += ` At the age of ${age}, this is a powerful reading milestone.`;
+        if (faith) message += ` This award respects the learner’s ${faith} faith background.`;
+        certMessage.textContent = message;
+
+        const randId = `NB-${Math.floor(10000 + Math.random() * 90000)}`;
+        certId.textContent = randId;
+        const issued = new Date().toLocaleDateString("en-GB", { year: "numeric", month: "short", day: "numeric" });
+        certIssued.textContent = issued;
+
+        certPreview.hidden = false;
+        certPreview.scrollIntoView({ behavior: "smooth", block: "center" });
+        setCertificateActionState(true);
+      });
+
+      certPrintBtn.addEventListener("click", () => {
+        if (certPrintBtn.disabled) return;
+        if (!prepareCertificatePrint()) return;
+        window.print();
+      });
+
+      certEditBtn.addEventListener("click", () => {
+        certPreview.hidden = true;
+        setCertificateActionState(false);
+        if (certForm) {
+          certForm.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        if (certNameInput) {
+          certNameInput.focus({ preventScroll: true });
+        }
+      });
+
+      if (certCloseBtn) {
+        certCloseBtn.addEventListener("click", () => {
+          resetCelebration();
+        });
+      }
+
+      const handleBeforePrint = () => {
+        if (didActivatePrintPortal) return;
+        prepareCertificatePrint();
+      };
+
+      const handleAfterPrint = () => {
+        cleanupCertificatePrint();
+      };
+
+      window.addEventListener("beforeprint", handleBeforePrint);
+      window.addEventListener("afterprint", handleAfterPrint);
+
+      // Important for reliability: let the browser resolve the MP3 via a relative URL instead of an absolute OS path.
+      audio.addEventListener("error", () => {
+        console.warn("Letter-sound audio could not be loaded. Confirm assets/tts/letters-sounds-only-eleven-labs-phonics-alphabet-sounds-dorothy.mp3 is available.");
+      });
+    });
+  </script>
+</body>
+</html>

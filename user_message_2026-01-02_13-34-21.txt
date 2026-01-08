@@ -1,0 +1,297 @@
+Do  these"YOU ARE: ChatLLM Deep Agent operating as:
+(1) Senior UK-based full-stack engineer (Next.js App Router + Tailwind + shadcn/ui),
+(2) Evidence-focused neurodiversity researcher/editor (UK-first),
+(3) Accessibility specialist (WCAG 2.2 AA),
+(4) Product designer for a premium 2025 “ADHD Hub”.
+
+ABSOLUTE HARD RULES
+- You MUST complete PHASE 0 (AUDIT) then PHASE 1 (RESEARCH + EVIDENCE REGISTRY) BEFORE PHASE 2 (CODE/BUILD). Do not mix phases.
+- Educational information only; not medical advice. No diagnosis. No medication dosing/switching. No “cure” claims.
+- UK-first credibility: NHS + NICE NG87 + GOV.UK/Equality Act + SEND Code.
+- Every non-trivial factual claim must be linked; PubMed items include PMID (and PMCID if available).
+- Keep existing global header/footer/layout. DO NOT add a new global header/footer.
+
+PROJECT CONTEXT
+- Repo: neurobreath-platform (Next.js app in /web OR in nextjs_space; detect actual root and adapt paths accordingly)
+- Goal: Upgrade the ADHD page into the go-to, credible, authentic, plausible, resource-rich ADHD hub:
+  • UK-first but with US/EU tabs
+  • Evidence-led (NHS/NICE + PubMed)
+  • Practical management toolkits
+  • Templates + exports
+  • Gamification that is meaningful (not gimmicky)
+  • Accessibility + performance + maintainability
+
+REFERENCE ZIP (MANDATORY BLUEPRINT)
+Use this uploaded zip as the UI/architecture template:
+- Path: /mnt/data/Autism_Hub_Implementation_Plan (1).zip
+You MUST study and reuse patterns from:
+- components/autism/* (hero, country-switcher, how-to-use, evidence-hub, calm-toolkit-enhanced, skills-library-enhanced, daily-quests, weekly-chart, resources-library)
+- app/api/pubmed/route.ts (E-utilities proxy)
+- lib/progress-store-enhanced.ts + lib/data/*
+
+IMPORTANT: Your prior work already added ADHD components and global CSS. You must now audit, fix, and restructure to meet a higher credibility bar.
+
+OUTPUT CONTRACT (NON-NEGOTIABLE)
+You MUST output:
+1) PHASE 0 AUDIT REPORT (what exists, what changed, risks, fixes)
+2) ADHD RESEARCH PACK (A–K structure below, with citations)
+3) EVIDENCE REGISTRY + CONTENT DATASET files (TS preferred)
+4) FILE TREE of all files touched/created (relative to repo root)
+5) PATCH/DIFF for each file (unified diff)
+6) RUN STEPS (commands + URLs)
+7) QA / ACCEPTANCE TESTS checklist
+
+========================================================
+PHASE 0 — AUDIT (DELIVERABLE 1)
+========================================================
+Perform an audit of the existing ADHD implementation and produce an “AUDIT REPORT” with:
+
+A) What files exist now (list):
+- components/adhd/* and lib/data/adhd-*.ts (skills/quests/myths/templates)
+- any modifications to app/page.tsx, app/layout.tsx, globals.css
+- any dependencies added (framer-motion, react-confetti)
+
+B) Identify and fix these known quality/credibility risks:
+1) Tailwind dynamic class strings like `bg-${color}-600` WILL NOT compile reliably without safelist.
+   - Replace with a safe mapping object (explicit class strings) or use `cn()` with explicit variants.
+2) Global CSS changes MUST NOT hijack the entire site:
+   - Confetti canvas CSS (fixed position, z-index 9999) can break site overlays/modals.
+   - Focus-visible rule must remain accessible but not override component styling unexpectedly.
+   - ADHD color variables in :root are OK only if they do not conflict; otherwise scope them.
+   ACTION: Move ADHD-only styling into:
+   - a scoped CSS module, or
+   - a wrapper class on /adhd route (e.g., `.adhd-scope`) and prefix ADHD-only rules.
+3) “Evidence citations” currently include low-trust sources (e.g., magazines, influencers).
+   - You may include community sources ONLY in a clearly labelled “Community & Lived Experience” section.
+   - Main recommendations must be backed by NHS/NICE/CDC/AAP + PubMed.
+4) “80% platform ADHD focus” changes to homepage/layout:
+   - The primary requirement is an ADHD HUB page (one-stop shop).
+   - If homepage was heavily altered, ensure other conditions hubs remain accessible.
+   - If needed, revert homepage to neutral and route ADHD hub to /adhd with internal linking.
+5) localStorage keys are inconsistent (adhd_quest_progress, adhd_pomodoro_stats, etc).
+   - Standardise using namespaced keys: `nb:adhd:v2:*` and centralise via a progress store utility.
+
+C) Produce a Fix Plan:
+- What will be kept, refactored, moved, or removed.
+- A “risk list” + how you will mitigate.
+
+STOP after producing the AUDIT REPORT, then proceed to PHASE 1.
+
+========================================================
+PHASE 1 — ADHD RESEARCH + EVIDENCE REGISTRY (DELIVERABLES 2–3)
+========================================================
+MANDATORY SOURCES (PRIORITY ORDER)
+UK-first:
+- NHS ADHD pages (children/young people + adults)
+- NICE NG87 (ADHD: diagnosis and management)
+- SEND Code of Practice (0–25)
+- Equality Act 2010 (reasonable adjustments)
+- NHS England ADHD Taskforce materials (ONLY if verifiable)
+- NHS Digital ADHD management information/statistics (ONLY if verifiable)
+- Royal College of Psychiatrists (adult ADHD) where relevant
+
+US:
+- CDC ADHD
+- AAP guideline (children/adolescents) where accessible
+- NIH/NIMH overview where appropriate
+
+EU:
+- European ADHD Guideline Group / EU consensus statements where accessible
+- Reputable EU disability/inclusion resources (avoid country-specific claims unless cited)
+
+Evidence:
+- PubMed/PMC systematic reviews/meta-analyses + high-quality trials as needed (include PMID/PMCID)
+
+PHASE 1 OUTPUT: ADHD RESEARCH PACK (A–K)
+A) Executive Summary (UK-first)
+B) What ADHD is (plain English + clinical framing + strengths-based)
+C) ADHD across the lifespan (child → teen → adult; late diagnosis; women/girls; masking) (cite carefully)
+D) UK pathway & rights (NHS overview; school route via SENCO; SEND support/EHCP overview; Equality Act workplace adjustments) (high-level)
+E) EU + US pathways (high-level; cite)
+F) Evidence-Based Support Matrix (Age × Setting)
+   - Home / School / Workplace
+   - Include: psychoeducation, environmental adjustments, routines, behavioural supports, skills training/CBT (adult), coaching supports, sleep supports, classroom supports, workplace adjustments.
+   - For each: “what it is”, “who it helps”, “how to start”, “common pitfalls”, “evidence strength”.
+G) Co-occurring conditions & overlaps (autism, dyslexia, anxiety, depression, sleep issues, substance risks) (educational)
+H) Crisis and safety signposting (UK-first; US 988)
+I) “Genius Ideas 2025” (label each as Evidence-backed / Evidence-informed / Experimental)
+   - Must include digital tool ideas that are credible: time-blindness aids, frictionless checklists, accountability/body doubling, micro-reward loops, sensory/movement breaks, “plan in 60 seconds”, “appointment prep kit”, “school meeting kit”, “workplace adjustments kit”.
+J) Myths vs Facts (short, citable)
+K) Resource Library (UK-first; then US; then EU) by audience:
+   Adult | Parent/Carer | Teacher/SENCO | Employer/Manager | Young Person
+
+PHASE 1 ALSO MUST OUTPUT: EVIDENCE REGISTRY + CONTENT DATASET (DELIVERABLE 3)
+Create these files (TS preferred):
+1) /web/lib/data/adhd-evidence-registry.ts
+   - A single source of truth for citations:
+     { id, title, org, url, type: "guideline"|"nhs"|"pubmed"|"law"|"research", year, pmid?, pmcid?, notes? }
+2) /web/lib/data/adhd-hub.ts
+   - Content objects for the UI, referencing evidence registry IDs rather than raw text citations.
+   Must include:
+   - hero copy variants by audience + UK-first tone
+   - tags taxonomy (focus, time-blindness, procrastination, emotional regulation, impulsivity, organisation, sleep, school, workplace, relationships, study/exams)
+   - skills cards: why/how/pitfalls/adaptations + evidenceIds[]
+   - quests/challenges definitions + evidenceIds[] where relevant
+   - calm/regulation toolkit: include “no-hold paced breathing” + movement micro-breaks + grounding + safety notes
+   - resources by region (UK/US/EU) grouped by audience
+   - pathway checklists (GP appointment prep, school meeting prep, workplace conversation prep)
+   - template definitions (see PHASE 2)
+   - evidence search presets for PubMed (query + yearFrom + tags)
+   - badges + XP rules + streak rules
+
+========================================================
+PHASE 2 — BUILD “ONE-STOP ADHD HUB” PAGE (DELIVERABLES 4–7)
+========================================================
+PRIMARY OUTCOME
+Upgrade the ADHD page into a structured hub that is the go-to ADHD resource. It must feel premium, credible, and practical.
+
+ROUTING + STRUCTURE
+- Implement /adhd route as the canonical hub (e.g., /app/adhd/page.tsx).
+- If homepage was changed heavily, keep it neutral and link to /adhd prominently (do not destroy other hubs).
+
+REQUIRED SECTIONS (ALL MUST EXIST)
+1) HERO (UK-first, audience-aware)
+- Audience switcher: Adult | Parent/Carer | Teacher/SENCO | Employer/Manager | Young Person
+- Region switcher: UK | US | EU
+- Persist in localStorage: nb:adhd:v2:prefs
+- CTA buttons:
+  • Start 2-minute Focus Sprint
+  • Build Today’s Plan
+  • Browse Skills
+  • Download Templates
+- Collapsible “How to use this hub” mini-tour
+
+2) “PLAN IN 60 SECONDS” WIZARD (high-value)
+Inputs: age band, setting, main challenge, available time (2/5/10/20 min), energy level (low/ok/high)
+Outputs:
+- 3 do-now actions (<5 min)
+- 3 actions for this week
+- 1 measurement suggestion
+- 1 “if you get stuck” fallback
+Save locally + print export
+
+3) SKILLS LIBRARY (credible + searchable + filterable)
+- Uses dataset (adhd-hub.ts)
+- Each skill has:
+  • step-by-step
+  • pitfalls
+  • age adaptations
+  • evidence links (via registry)
+  • “Log practice” (adds XP + minutes + streak)
+
+4) QUESTS / CHALLENGES (meaningful gamification)
+- Keep the existing Daily Quests concept, but:
+  - Make it evidence-informed and not childish
+  - Add “Personalised Quest Pack” based on chosen challenge (focus/time-blindness/etc)
+  - Add “Weekly Review” (rule-based summary, not medical)
+
+5) FOCUS TOOLKIT (ADHD-adapted)
+- Keep Pomodoro but add:
+  - “micro-sprint” (2/5/10 minutes)
+  - “hyperfocus mode” (gentle reminders; no shame)
+  - “distraction capture” mini notepad (external brain) saved locally
+- Ensure notifications are optional and respectful
+
+6) EMOTIONAL REGULATION + RSD SUPPORT (practical, careful)
+- Add a small toolkit:
+  - pause scripts
+  - grounding + movement
+  - “reframe checklist”
+  - “communication scripts”
+- Include clear disclaimer and evidence links where applicable
+
+7) SLEEP & ROUTINES TOOLKIT (high demand)
+- Add:
+  - evening wind-down builder
+  - morning launch checklist
+  - “screens + sleep” short guide
+- Cite NHS/NICE where appropriate
+
+8) SCHOOL SUPPORT BUILDER (Teacher/Parent)
+- Generate a checklist for:
+  - classroom adjustments
+  - exam/study supports
+  - communication plan home-school
+- Provide printable export
+
+9) WORKPLACE ADJUSTMENTS BUILDER (Adult/Employer)
+- Generate:
+  - reasonable adjustments list (UK Equality Act framing)
+  - scripts for requesting adjustments
+  - “task clarity” agreement template
+- Provide printable export
+
+10) ASSESSMENT & APPOINTMENT PREP KIT (UK-first)
+- “GP appointment prep” printable
+- “symptom & impact tracker” (educational; no diagnosis)
+- “questions to ask clinician” (non-medical, safe)
+
+11) TEMPLATES & DOWNLOADS (must be genuinely useful)
+Implement a “Template Generator” section that produces print-friendly pages (via /adhd/print route) for:
+- Daily Plan
+- Weekly Plan
+- External Brain Capture Sheet
+- School Support Checklist
+- Workplace Adjustments Request (UK)
+- Routine Builder (morning/evening)
+- “Body Doubling Session Rules” card
+Each template must cite appropriate guidance sources where needed and be clearly educational.
+
+12) LATEST EVIDENCE (safe, curated + PubMed)
+- UK curated links (NHS/NICE/SEND/Equality Act)
+- PubMed tab:
+  - via server route (E-utilities)
+  - caching + basic rate limiting
+  - show title/year/journal/PMID + link
+- Add “Evidence level” labels:
+  Guideline | Systematic review | Trial | Observational | Other
+
+13) TRUST & SAFETY PANEL (credibility anchor)
+- Prominent “Educational not medical advice”
+- Crisis support block (UK + US)
+- Privacy statement: local-only progress; no names/addresses/health records
+
+PROGRESS + STORAGE STANDARDISATION (MUST DO)
+- Replace ad hoc keys:
+  - adhd_quest_progress, adhd_pomodoro_stats, adhd_practiced_skills
+- With namespaced keys:
+  - nb:adhd:v2:progress
+  - nb:adhd:v2:prefs
+  - nb:adhd:v2:logs
+- Centralise in a progress-store file (reuse progress-store-enhanced pattern from zip) so UI updates in real time.
+
+DESIGN REQUIREMENTS (PREMIUM + ACCESSIBLE)
+- ADHD-friendly but not visually chaotic.
+- Avoid overly aggressive animation; respect prefers-reduced-motion.
+- Ensure color contrast passes WCAG.
+- Ensure keyboard navigation works across tabs/dialogs.
+- Avoid global CSS side effects; scope ADHD-only visuals.
+
+PERFORMANCE REQUIREMENTS
+- No heavy libraries loaded on every page. If confetti exists, lazy-load and only on ADHD route.
+- Code-split large sections, keep initial load reasonable.
+- No unbounded re-renders.
+
+FINAL OUTPUTS (MANDATORY)
+After implementing:
+1) File tree
+2) Unified diffs
+3) Run steps:
+   - yarn lint
+   - yarn typecheck
+   - yarn build
+   - yarn dev + open /adhd
+4) QA checklist with:
+   - Accessibility checks (keyboard, headings, ARIA)
+   - Preferences persistence checks
+   - localStorage namespace checks
+   - Print route checks
+   - Evidence links checks
+   - PubMed route rate-limit/caching checks
+   - Lighthouse quick pass targets (best effort)
+
+NOW START:
+- FIRST: PHASE 0 audit report
+- SECOND: PHASE 1 research pack + evidence registry + dataset
+- THIRD: PHASE 2 code changes + diffs + run steps + QA checklist
+"

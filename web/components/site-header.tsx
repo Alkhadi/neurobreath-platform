@@ -74,12 +74,23 @@ export function SiteHeader() {
                     <h4 className="nb-mega-menu-heading">Neurodevelopmental</h4>
                     <Link href="/conditions/autism" onClick={closeMegaMenu}>🧩 Autism</Link>
                     <Link href="/conditions/autism-parent" onClick={closeMegaMenu}>👨‍👩‍👧 Autism Parent Support</Link>
+                    <Link href="/conditions/autism-teacher" onClick={closeMegaMenu}>🎓 Autism Teacher Support</Link>
+                    <Link href="/conditions/autism-carer" onClick={closeMegaMenu}>❤️ Autism Carers Support</Link>
                     <Link href="/adhd" onClick={closeMegaMenu}>🎯 ADHD</Link>
-                    <Link href="/dyslexia-reading-training" onClick={closeMegaMenu}>📖 Dyslexia Reading Training</Link>
+                    <Link href="/conditions/adhd-parent" onClick={closeMegaMenu}>👨‍👩‍👧 ADHD Parent Support</Link>
+                    <Link href="/conditions/adhd-teacher" onClick={closeMegaMenu}>🎓 ADHD Teacher Support</Link>
+                    <Link href="/conditions/adhd-carer" onClick={closeMegaMenu}>❤️ ADHD Carers Support</Link>
+                    <Link href="/conditions/dyslexia" onClick={closeMegaMenu}>📖 Dyslexia Hub</Link>
+                    <Link href="/conditions/dyslexia-parent" onClick={closeMegaMenu}>👨‍👩‍👧 Dyslexia Parent Support</Link>
+                    <Link href="/conditions/dyslexia-teacher" onClick={closeMegaMenu}>🎓 Dyslexia Teacher Support</Link>
+                    <Link href="/conditions/dyslexia-carer" onClick={closeMegaMenu}>❤️ Dyslexia Carers Support</Link>
+                    <Link href="/dyslexia-reading-training" onClick={closeMegaMenu}>📚 Dyslexia Reading Training</Link>
                   </div>
                   <div className="nb-mega-menu-section">
                     <h4 className="nb-mega-menu-heading">Mental Health</h4>
                     <Link href="/conditions/anxiety" onClick={closeMegaMenu}>😰 Anxiety</Link>
+                    <Link href="/conditions/anxiety-parent" onClick={closeMegaMenu}>👨‍👩‍👧 Anxiety Parent Support</Link>
+                    <Link href="/conditions/anxiety-carer" onClick={closeMegaMenu}>❤️ Anxiety Carers Support</Link>
                     <Link href="/conditions/depression" onClick={closeMegaMenu}>💙 Depression</Link>
                     <Link href="/conditions/bipolar" onClick={closeMegaMenu}>⚡ Bipolar</Link>
                     <Link href="/stress" onClick={closeMegaMenu}>😓 Stress</Link>
@@ -197,7 +208,6 @@ export function SiteHeader() {
                   <div className="nb-mega-menu-section">
                     <h4 className="nb-mega-menu-heading">About</h4>
                     <Link href="/about-us" onClick={closeMegaMenu}>ℹ️ About Us</Link>
-                    <Link href="/aims-objectives" onClick={closeMegaMenu}>🎯 Aims & Objectives</Link>
                     <Link href="/blog" onClick={closeMegaMenu}>📝 Blog</Link>
                     <Link href="/contact" onClick={closeMegaMenu}>✉️ Contact</Link>
                   </div>

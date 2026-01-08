@@ -1,0 +1,283 @@
+ChatLLM). Before the prompt, I am also providing a curated evidence pack your Agent must use and cite inside the page.
+
+Curated evidence pack your Agent must cite (UK/US/EU)
+
+UK (NHS / NICE / GOV.UK / education)
+
+NICE guideline CG170 (support & management for autistic children/young people). 
+NICE
+
+NICE guideline CG128 (recognition/referral/diagnosis under 19s). 
+NICE
+
+NICE guideline CG142 (adults: diagnosis & management). 
+NICE
+
+GOV.UK PINS programme (Partnerships for Inclusion of Neurodiversity in Schools) overview. 
+GOV.UK
+
+DfE SEND Code of Practice (0–25) (updated Sept 2024). 
+GOV.UK
+
+EEF Special Educational Needs in Mainstream Schools guidance (latest PDF). 
+d2tic4wvo1iusb.cloudfront.net
+
+Autism Education Trust (AET) Good Autism Practice training/module pages + practitioner guide PDF. 
+autismeducationtrust.org.uk
++1
+
+NHS-linked prevalence/overview style references you can safely cite (use in a “Facts & context” module): NHS Inform overview. 
+NHS inform
+
+US (CDC + national support)
+
+CDC autism data/research page (latest prevalence reporting). 
+CDC
+
+CDC MMWR prevalence/identification report (ADDM). 
+CDC
+
+Autism Society resources hub (support navigation). 
+Autism Society
+
+EU
+
+Autism-Europe (rights + Europe-wide support orientation). 
+Autism Europe
+
+European Agency for Special Needs & Inclusive Education resources hub. 
+European Agency
+
+PubMed / peer-reviewed interventions to feature (examples your “Latest Evidence” module can query and/or cite)
+
+Visual supports / schedules (evidence base): Visual Activity Schedules as evidence-based practice. 
+PubMed
+
+Visual supports scoping review (home/community). 
+PubMed
+
+PECS teacher training RCT. 
+PubMed
+
+PECS effects summary evidence. 
+PubMed
+
+Peer-mediated interventions systematic review. 
+PMC
+
+Digital activity schedules systematic review (newer “2025 ideas” angle). 
+PubMed
+
+Anxiety treatments in autistic children (recent systematic review). 
+PubMed
+
+School-based inclusion interventions systematic review (recent). 
+PMC
+
+✅ Prompt to give your Agent (copy/paste)
+ROLE & OUTPUT CONTRACT (Cursor IDE)
+You are operating inside Cursor IDE as:
+1) a senior UK-based full-stack engineer (Next.js App Router + Tailwind + shadcn/ui),
+2) an accessibility specialist (WCAG-first),
+3) a neurodiversity researcher/editor (NHS/NICE-first + PubMed evidence).
+
+You MUST output:
+1) A FILE TREE of every file you will touch/create (relative to /web repo root)
+2) A PATCH/DIFF for each file (unified diff format)
+3) RUN STEPS (commands to run + what URL to open)
+4) QA / ACCEPTANCE TESTS checklist
+
+PROJECT CONTEXT
+Repo: neurobreath-platform
+Target: /web (Next.js app)
+
+PRIMARY GOAL
+Professionally rebuild the Autism page into a one-stop “Autism Hub” (UK/US/EU) for:
+- Teachers / SENCO / TAs
+- Parents & carers
+- Autistic children/teens/adults
+- Employers/workplaces (reasonable adjustments + inclusion basics)
+All inside ONE page using an Audience switcher + Country switcher.
+
+INPUTS YOU MUST INTEGRATE
+A) Existing Autism page content currently live in the repo (find it by searching for:
+   "Autism Support for Teachers" OR "Legacy: autism.html" OR the headings in the user-provided content).
+   Keep intent but restructure the entire body for modern 2025 UI/UX.
+
+B) ZIPPED FILE CONTENT (must be integrated):
+   The user provided autism-research-2026.zip which contains Untitleddocument.html.
+   Import that file into the repo (e.g. /web/content/autism/Untitleddocument.html OR convert to MD/MDX/data).
+   Extract the best content blocks from it (do NOT carry over Google Docs inline CSS).
+   Treat it as a long-form draft that must be verified/cited and adapted into structured modules.
+
+C) Blog evidence base integration:
+   Pull/reflect any autism evidence and “how to manage autism” guidance patterns already used on the Blog/AI Hub page:
+   - same tone, safety disclaimers, and citation style
+   - reuse any existing “Ask the AI Coach” widget patterns and PubMed server proxy patterns if they exist
+
+NON-NEGOTIABLE EVIDENCE RULES
+1) NHS/NICE and major public guidance FIRST for UK claims (NICE CG170/CG128/CG142; SEND Code; GOV.UK PINS; EEF SEND guidance; AET).
+2) PubMed for intervention evidence; show PubMed IDs and link to PubMed/PMC.
+3) For US include CDC prevalence pages and Autism Society resources.
+4) For EU include Autism-Europe + EASNIE resources.
+5) Every non-trivial factual claim must be citable (linkable). If evidence is mixed/uncertain, say so.
+6) Add a “Myths & facts” micro-section that clearly states vaccines do NOT cause autism and points to CDC/NHS-quality sources (short, not political).
+
+SAFETY + SCOPE
+- Educational information only; NOT medical advice; no diagnosis.
+- Prominent crisis support module (UK: NHS 111 option 2 + Samaritans; US: 988; include “if immediate danger call emergency services”).
+- No personal data collection. Local-only progress tracking for now.
+- Respect autistic identity: strengths-based, non-stigmatizing language.
+
+TECH CONSTRAINTS
+- Keep the site’s existing header/footer and layout; DO NOT introduce a new global header/footer.
+- Use existing design system + global tokens already in the project.
+- Accessibility: keyboard navigable, correct headings, ARIA for tabs/accordions, reduced motion support, color contrast.
+- Performance: code-split heavy modules; avoid huge client bundles; only fetch PubMed on demand with caching.
+- “Local only with intention to upgrade”: implement a storage abstraction so future sync can be added later.
+
+WHAT TO BUILD (PAGE INFORMATION ARCHITECTURE)
+Rebuild the Autism page body into these modern sections:
+
+1) HERO (audience-aware)
+- Title changes based on audience selection:
+  Teachers / Parents & carers / Autistic people / Employers
+- Quick CTAs:
+  “Start today’s 3-minute calm”
+  “Start a quick plan”
+  “Browse strategies”
+  “Download toolkit PDF”
+- Add a small “How to use this page” collapsible mini-tour.
+
+2) AUDIENCE SWITCHER + COUNTRY SWITCHER (sticky)
+- Audience: Teacher | Parent/Carer | Autistic Person | Employer
+- Country: UK | US | EU
+- The page content blocks, resources and crisis info update based on these settings.
+- Store selections in localStorage.
+
+3) TODAY’S PLAN (genius 2025 feature)
+A guided wizard that generates a practical plan based on:
+- age band (early years / primary / secondary / adult)
+- main need right now (transitions / sensory / communication / anxiety / sleep / school refusal / workplace stress)
+- setting (home / classroom / community / workplace)
+Outputs:
+- 3 “Do now” actions (under 5 minutes)
+- 3 “Build this week” actions
+- 1 measurement suggestion (simple progress marker)
+- Buttons: “Add to Focus Garden”, “Save”, “Export PDF”
+
+4) SKILLS LIBRARY (tagged, searchable)
+A card grid with filters and search:
+- Tags: routines, transitions, visual supports, communication (AAC/PECS/Makaton), sensory, social, anxiety, sleep, school, workplace
+Each skill card includes:
+- Why it helps (1–2 lines)
+- How to do it (steps)
+- Common pitfalls + adaptations by age
+- Evidence links (NHS/NICE + PubMed where relevant)
+- “Log practice” button (adds to stats + streak + rewards)
+
+5) GAMES / CHALLENGES / QUESTS (gamified, practical)
+Add genuinely useful, credible micro-interactives (NOT childish UI):
+- “Now/Next Builder” (create a Now/Next board and print/download)
+- “Transition Timer Script” (choose phrasing + timer length; generates a short script)
+- “Sensory Detective” (quick checklist; outputs a sensory plan and “calm corner” items)
+- “Communication Choice Challenge” (model AAC/PECS options; “offer two choices” script)
+- “Emotion Thermometer” + “Coping Menu” builder
+- “Workplace Adjustments Generator” (for Employer + Adult audience; outputs reasonable adjustments list)
+Each interactive should:
+- Save locally
+- Award XP/badges
+- Provide a “share/print” option (PDF)
+
+6) CALM & CO-REGULATION TOOLKIT
+Keep your breathing tools but upgrade the module:
+- Box breathing, coherent 5–5, SOS 60s, and a no-hold option for people who dislike breath holds
+- Add 2–3 “calming techniques” beyond breathing (grounding, sensory reset, movement break, scripting)
+- Provide age adaptations + “stop if dizzy/uncomfortable” warnings.
+- One-tap “Log a calm minute” button that updates streak + charts instantly.
+
+7) REAL-TIME PROGRESS (local-only)
+Replace the current basic stats with a richer dashboard:
+- Streak, sessions, minutes, “skills practiced”, “plans completed”
+- Weekly view (mini chart)
+- Badges:
+  - First Calm Minute
+  - 3-day streak
+  - Visual Supports Starter
+  - Transition Pro
+  - Sensory Planner
+  - Communication Supporter
+  - Inclusive Classroom Builder
+  - Workplace Ally
+- “Reset stats for this page only” remains.
+
+Implementation:
+- localStorage keys namespaced (e.g., nb:autism:v2:progress)
+- A small state/store hook so UI updates immediately (no refresh).
+
+8) LATEST EVIDENCE (live, safe)
+Add an “Evidence Updates” module:
+- UK tab: NICE + NHS + GOV.UK PINS + SEND Code + EEF + AET (curated links)
+- PubMed tab: fetch latest relevant articles via server route (E-utilities) with:
+  - query presets (visual supports, PECS/AAC, peer-mediated, anxiety CBT adapted, inclusive schooling)
+  - show title, journal, year, PMID, short snippet
+  - caching and rate-limiting
+No scraping. No exposing keys.
+
+9) PATHWAYS & SUPPORT (UK/US/EU)
+Audience-aware guidance:
+- UK: SEND/EHCP overview, school adjustments, signposting (NAS/AET) + “how to prepare for appointments”
+- US: IEP/504 basics and national resources
+- EU: Autism-Europe + inclusive education resources
+Keep this practical and short, with “Downloadable checklists”.
+
+10) DOWNLOADABLES (PDF GENERATORS)
+Generate toolkits on demand (client-side or server route):
+- One-page profile template
+- Visual schedule templates (Now/Next + daily timetable)
+- Calm plan card (what helps / what to avoid / early signs / recovery steps)
+- School-home communication sheet
+- Workplace adjustments sheet
+Allow users to choose audience + country + age band and export PDF.
+
+11) INTERNAL LINKS TO OTHER NEUROBREATH PAGES
+Add a “Related tools” strip that links to existing pages (detect actual routes in repo):
+- Blog/AI Hub (Ask the AI Coach)
+- Focus Garden
+- Breathing technique pages (box / 4-7-8 / coherent / SOS)
+- Dyslexia reading training page (for comorbidity navigation)
+Only link to routes that exist; do not create broken links.
+
+RESEARCH & CITATION REQUIREMENTS (MANDATORY)
+- Build a “References” section with grouped citations:
+  NICE (CG170/CG128/CG142), GOV.UK PINS, SEND Code, EEF SEND guidance, AET resources,
+  CDC autism data pages, Autism-Europe, EASNIE, and selected PubMed PMIDs.
+- Any prevalence stats must be sourced (UK: NHS/NAS; US: CDC).
+- Do not invent statistics. If you can’t verify, remove it.
+
+IMPLEMENTATION STEPS YOU MUST FOLLOW
+1) Locate the current Autism page file(s) and components with ripgrep.
+2) Import Untitleddocument.html from the zip into /web/content/autism/ and parse/extract content into structured data (TS/JSON/MDX).
+3) Rebuild page as modular components under /web/components/autism/ (or similar).
+4) Add local progress store + hooks under /web/lib/ or /web/hooks/.
+5) Add/Reuse server route for PubMed E-utilities (prefer reuse from Blog AI Hub if already implemented).
+6) Add PDF generation (toolkit export) with minimal dependencies.
+7) Ensure a11y + responsive.
+
+ACCEPTANCE CRITERIA (WHAT “DONE” MEANS)
+- The Autism page looks and feels like a modern, premium 2025 hub.
+- Audience and Country switchers work and persist.
+- Skills library is searchable/filterable and logs practice.
+- Quests/games are functional, helpful, and not gimmicky.
+- Calm toolkit logs sessions and updates streak/rewards instantly.
+- Evidence module loads curated links + PubMed results safely.
+- PDF toolkit export works.
+- No broken internal links.
+- No medical claims without citations.
+- Lint/typecheck/build pass.
+
+NOW PRODUCE:
+1) FILE TREE
+2) PATCH DIFFS
+3) RUN STEPS
+4) QA / ACCEPTANCE TESTS

@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+
+  <!-- Brand: NeuroBreath -->
+  <title>Diagnosis decisions · NeuroBreath</title>
+  <meta name="description" content="NeuroBreath provides clinically referenced, neuro-inclusive breathing tools, guides and timers for calm, sleep, focus and emotional regulation.">
+
+  <!-- Social (Open Graph / Twitter) -->
+  <meta property="og:site_name" content="NeuroBreath">
+  <meta property="og:title" content="Diagnosis decisions · NeuroBreath">
+  <meta property="og:description" content="NeuroBreath provides clinically referenced, neuro-inclusive breathing tools, guides and timers for calm, sleep, focus and emotional regulation.">
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://neurobreath.co.uk/adhd-diagnosis.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Standard favicon -->
+  <link rel="icon" type="image/x-icon" href="assets/icons/neurobreath-favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/neurobreath-logo-square-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/neurobreath-logo-square-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/neurobreath-logo-square-180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/neurobreath-logo-square-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icons/neurobreath-logo-square-512.png">
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/site.css" />
+  <script src="assets/js/voice-preferences.js" defer></script>
+  <script src="assets/js/site.js" defer></script>
+    <link rel="stylesheet" href="assets/css/adhd-guide.css" />
+  <script src="assets/js/adhd-guide.js" defer></script>
+  <script src="assets/js/adhd-diagnosis-parallax.js" defer></script>
+  <style>
+    /* Guide-specific styles using global color palette */
+    .page-main {
+      background: var(--color-cream);
+      padding: var(--spacing-2xl) 0;
+      min-height: 100vh;
+    }
+    
+    .page-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-lg);
+    }
+    
+    .card {
+      background: var(--color-white);
+      border: 1px solid var(--color-sage-light);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-xl);
+      box-shadow: var(--shadow-medium);
+      position: relative;
+      z-index: 1;
+      display: block;
+      overflow: visible;
+    }
+    
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--spacing-lg);
+    }
+    
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--spacing-lg);
+    }
+    
+    .small-note {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      font-style: italic;
+      margin-top: var(--spacing-sm);
+    }
+    
+    .muted {
+      color: var(--color-text-muted);
+    }
+
+    /* Full-width divider (spans viewport even inside .page-container) */
+    .section-divider--full {
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100vw;
+      max-width: 100vw;
+    }
+    
+    /* Footer spacing - add 2% margin left and right */
+    .site-footer .ft-nav-wrapper {
+      margin-left: 2%;
+      margin-right: 2%;
+      box-sizing: border-box;
+    }
+    
+    .site-footer .inner {
+      margin-left: 2%;
+      margin-right: 2%;
+      box-sizing: border-box;
+    }
+
+    /* ---------- Hero + 3 quick sections (Diagnosis Decisions) ---------- */
+    .nb-hero {
+      padding: var(--spacing-2xl);
+      border-color: var(--color-sage);
+      --nb-hero-parallax-1: 0px;
+      --nb-hero-parallax-2: 0px;
+      --nb-hero-parallax-3: 0px;
+      --nb-orb-y: 0px;
+      background:
+        radial-gradient(900px 420px at 10% 0%, rgba(120, 170, 150, .18), transparent 55%),
+        radial-gradient(700px 360px at 90% 10%, rgba(120, 170, 150, .12), transparent 60%),
+        linear-gradient(180deg, var(--color-white), var(--color-cream));
+      background-size: 140% 140%, 130% 130%, 100% 100%;
+      background-position:
+        10% calc(0% + var(--nb-hero-parallax-1)),
+        90% calc(10% + var(--nb-hero-parallax-2)),
+        0% calc(0% + var(--nb-hero-parallax-3));
+      overflow: hidden;
+    }
+
+    .nb-hero-grid {
+      display: grid;
+      grid-template-columns: 1.35fr .65fr;
+      gap: var(--spacing-xl);
+      align-items: center;
+    }
+
+    .nb-hero-title {
+      font-size: clamp(1.75rem, 2.6vw, 2.4rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin: var(--spacing-xs) 0 var(--spacing-md);
+    }
+
+    .nb-hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-lg);
+    }
+
+    .nb-hero-panel {
+      position: relative;
+      border: 1px solid var(--color-sage-light);
+      border-radius: var(--radius-lg);
+      background: var(--color-white);
+      padding: var(--spacing-lg);
+      box-shadow: var(--shadow-soft);
+      min-height: 160px;
+      overflow: hidden;
+    }
+
+    .nb-hero-panel--main {
+      min-height: 0;
+      padding: var(--spacing-xl);
+    }
+
+    .nb-hero-orb {
+      position: absolute;
+      inset: -40px -40px auto auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(120, 170, 150, .35), transparent 55%),
+        radial-gradient(circle at 70% 70%, rgba(120, 170, 150, .18), transparent 60%);
+      filter: blur(0px);
+      transform: translate3d(0, var(--nb-orb-y), 0);
+      will-change: transform;
+      pointer-events: none;
+    }
+
+    .nb-hero-panel h3 {
+      margin: 0 0 var(--spacing-sm);
+    }
+
+    .nb-hero-panel ul {
+      margin: 0;
+      padding-left: 1.1rem;
+    }
+
+    .nb-quick-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: var(--spacing-lg);
+    }
+
+    .nb-mini {
+      border: 1px solid var(--color-sage-light);
+      border-radius: var(--radius-lg);
+      background: var(--color-white);
+      padding: var(--spacing-lg);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .nb-mini h3 {
+      margin-top: 0;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .nb-mini p:last-child,
+    .nb-mini ul:last-child {
+      margin-bottom: 0;
+    }
+
+    .nb-callout {
+      border-left: 4px solid var(--color-sage);
+      padding: var(--spacing-md) var(--spacing-lg);
+      background: var(--color-cream);
+      border-radius: var(--radius-md);
+    }
+
+    .nb-callout-text {
+      margin: 0;
+    }
+
+    @media (max-width: 860px) {
+      .nb-hero-grid { grid-template-columns: 1fr; }
+      .nb-quick-3 { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nb-hero {
+        background-size: auto;
+        background-position: initial;
+      }
+
+      .nb-hero-orb {
+        transform: none;
+        will-change: auto;
+      }
+    }
+
+  </style>
+</head>
+<body data-page-id="adhd_diagnosis" >
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<div id="top"></div>
+<header class="site-header">
+  <div class="container navbar">
+    <a id="brandLink" class="brand" href="index.html">
+      <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo" class="logo" /><span class="brand-text">NeuroBreath</span>
+    </a>
+    <nav class="main-nav" id="mainNav" role="navigation" aria-label="Primary">
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Conditions ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Neurodevelopmental</div>
+          <a href="autism.html" data-href="autism.html">Autism</a>
+          <a href="autism-parent.html" data-href="autism-parent.html">Autism Parent</a>
+          <a href="adhd.html" data-href="adhd.html">ADHD</a>
+          <a href="dyslexia-reading-training.html" data-href="dyslexia-reading-training.html">Dyslexia</a>
+          <div class="menu-label" aria-hidden="true">Mental Health</div>
+          <a href="anxiety.html" data-href="anxiety.html">Anxiety</a>
+          <a href="depression.html" data-href="depression.html">Depression</a>
+          <a href="stress.html" data-href="stress.html">Stress</a>
+          <a href="sleep.html" data-href="sleep.html">Sleep</a>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Breathing &amp; Focus ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Guides</div>
+          <a href="breath.html" data-href="breath.html">Breath (how-to)</a>
+          <a href="focus.html" data-href="focus.html">Focus</a>
+          <a href="mindfulness.html" data-href="mindfulness.html">Mindfulness</a>
+          <div class="menu-label" aria-hidden="true">Techniques</div>
+          <a href="sos-60.html" data-href="sos-60.html">🆘 60-second SOS</a>
+          <a href="box-breathing.html" data-href="box-breathing.html">🟩 Box Breathing</a>
+          <a href="4-7-8-breathing.html" data-href="4-7-8-breathing.html">🟦 4-7-8 Breathing</a>
+          <a href="coherent-5-5.html" data-href="coherent-5-5.html">🟪 Coherent 5-5</a>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Tools ▾</button>
+        <div class="submenu">
+          <a href="sleep-tools.html" data-href="sleep-tools.html">Sleep Tools</a>
+          <a href="breath-tools.html" data-href="breath-tools.html">Breath Tools</a>
+          <a href="mood-tools.html" data-href="mood-tools.html">Mood Tools</a>
+          <a href="adhd-tools.html" data-href="adhd-tools.html">ADHD Tools</a>
+          <a href="autism-tools.html" data-href="autism-tools.html">Autism Tools</a>
+          <a href="anxiety-tools.html" data-href="anxiety-tools.html">Anxiety Tools</a>
+          <a href="stress-tools.html" data-href="stress-tools.html">Stress Tools</a>
+          <a href="focus-garden.html" data-href="focus-garden.html">🌱 Focus Training</a>
+          <div class="menu-label" aria-hidden="true">Symptom Guides</div>
+          <a href="stress-anxiety.html" data-href="stress-anxiety.html">Stress &amp; General Anxiety</a>
+          <a href="panic-symptoms.html" data-href="panic-symptoms.html">Panic Symptoms</a>
+          <a href="sleep-onset-insomnia.html" data-href="sleep-onset-insomnia.html">Sleep-Onset Insomnia</a>
+          <a href="focus-test-anxiety.html" data-href="focus-test-anxiety.html">Focus &amp; Test Anxiety</a>
+          <a href="ptsd-regulation.html" data-href="ptsd-regulation.html">PTSD Regulation*</a>
+          <a href="low-mood-burnout.html" data-href="low-mood-burnout.html">Low Mood &amp; Burnout</a>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">About ▾</button>
+        <div class="submenu">
+          <a href="about.html" data-href="about.html">About</a>
+          <a href="aims-objectives.html" data-href="aims-objectives.html">Aims &amp; Stories</a>
+          <a href="coffee.html" data-href="coffee.html">Support Us</a>
+          <a href="contact.html" data-href="contact.html">Contact</a>
+        </div>
+      </div>
+    </nav>
+    <button type="button" id="navToggle" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="mainNav">☰</button>
+  </div>
+</header>
+
+
+<main id="main-content" class="page-main">
+  <div class="page-container">
+    <!-- Hero (premium intro) -->
+    <section class="card nb-hero" aria-label="Diagnosis decisions overview">
+      <div class="nb-hero-grid">
+        <div class="nb-hero-panel nb-hero-panel--main">
+          <p class="kicker">ADHD · Topic 3 of 9 · Diagnosis</p>
+          <h2 class="nb-hero-title">Diagnosis decisions</h2>
+          <p class="muted">
+            A diagnosis can unlock support and understanding — and it can also bring worries about stigma, records,
+            or being treated differently. Use this page to set out your thoughts and prepare for shared decisions.
+          </p>
+          <div class="nb-hero-actions">
+            <a class="btn btn-primary" href="adhd.html">ADHD guide home</a>
+            <a class="btn btn-soft" href="adhd-assessment.html">← Previous</a>
+            <a class="btn btn-soft" href="adhd-support-home.html">Next →</a>
+          </div>
+        </div>
+
+        <aside class="nb-hero-panel" aria-label="Quick notes">
+          <div class="nb-hero-orb" aria-hidden="true"></div>
+          <h3>Quick notes</h3>
+          <ul class="muted">
+            <li>A diagnosis is a tool for planning support, not a judgement.</li>
+            <li>You can take time deciding what to share and with who.</li>
+            <li>Good clinicians explain options and invite your questions.</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 3 quick sections (additive, does not replace existing content) -->
+    <section class="card" aria-label="Quick sections">
+      <h2>Three clear outcomes to consider</h2>
+      <p class="muted">
+        People often land in one of these places. None are “right” — they are just different next steps.
+      </p>
+      <div class="nb-quick-3">
+        <div class="nb-mini">
+          <h3>Proceed with diagnosis</h3>
+          <p class="muted">You want clarity and access to support, and you feel ready to explore options.</p>
+          <ul class="muted">
+            <li>Write down questions for the appointment</li>
+            <li>Ask what support changes with a diagnosis</li>
+          </ul>
+        </div>
+        <div class="nb-mini">
+          <h3>Pause and gather information</h3>
+          <p class="muted">You want more time, examples, and context before making a decision.</p>
+          <ul class="muted">
+            <li>Track what is hard day-to-day</li>
+            <li>Discuss benefits and worries as a family</li>
+          </ul>
+        </div>
+        <div class="nb-mini">
+          <h3>Focus on support first</h3>
+          <p class="muted">You want practical help now, even while you keep the label question open.</p>
+          <ul class="muted">
+            <li>Try routines, school supports, and reasonable adjustments</li>
+            <li>Review later with a clinician if needed</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-label="Appointment preparation">
+      <h2>Appointment prep</h2>
+      <p class="muted">A short checklist to make appointments calmer and more useful.</p>
+      <div class="nb-callout">
+        <ul class="muted">
+          <li>Bring 3 examples of what is hardest at home, school, or work.</li>
+          <li>List any strengths too — what the person is good at and enjoys.</li>
+          <li>Write down your top 5 questions (and keep them visible).</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card" aria-label="Stigma and privacy">
+      <h2>Stigma &amp; privacy</h2>
+      <p class="muted">
+        You can decide how you talk about ADHD and who you tell. It is okay to keep things private until you feel
+        safe.
+      </p>
+      <div class="nb-callout">
+        <p class="muted nb-callout-text">
+          If you are unsure, you can ask: “Who will see this information?”, “What is recorded?”, and “What are our
+          choices about sharing it?”
+        </p>
+      </div>
+    </section>
+
+    <!-- Intro / summary card -->
+    <section class="card">
+      <p class="kicker">ADHD · Topic 3 of 9 · Diagnosis</p>
+      <h1>Diagnosis decisions</h1>
+      <p class="lede muted">
+        An ADHD diagnosis can feel like a relief, a worry, or both at once. This page explores the pros and cons,
+        how to think about labels, and what to do if you are unsure, for parents, young people and clinicians.
+      </p>
+      <div class="pill-row">
+        <span class="pill">Understanding labels</span>
+        <span class="pill">Balancing benefits &amp; worries</span>
+        <span class="pill">Shared decision-making</span>
+      </div>
+    </section>
+
+    <!-- Family guide navigation -->
+    <nav class="card guide-nav" aria-label="ADHD family guide navigation">
+      <h2 class="guide-nav-title">ADHD family guide · Sections</h2>
+      <ol class="guide-nav-list">
+        <li><a href="adhd-what-is.html">1. What is ADHD?</a></li>
+        <li><a href="adhd-assessment.html">2. Getting an ADHD assessment</a></li>
+        <li><span class="current">3. Diagnosis decisions</span></li>
+        <li><a href="adhd-support-home.html">4. Support at home</a></li>
+        <li><a href="adhd-school.html">5. Working with school</a></li>
+        <li><a href="adhd-teens.html">6. Teens &amp; older pupils</a></li>
+        <li><a href="adhd-young-people.html">7. Young people &amp; adults</a></li>
+        <li><a href="adhd-self-care.html">8. Parent &amp; carer self-care</a></li>
+        <li><a href="adhd-helplines.html">9. Helplines &amp; community</a></li>
+      </ol>
+    </nav>
+
+    <hr class="section-divider--thick section-divider--full" aria-hidden="true" />
+
+      <!-- For parents & carers -->
+      <section class="card">
+        <h2>For parents &amp; carers · “Do we want this label?”</h2>
+        <div class="grid-2">
+          <div>
+            <p class="muted">
+              Many parents feel pulled in two directions. On one side, a diagnosis can bring understanding and unlock
+              support. On the other, they may worry about stigma, future records, or their child being treated
+              differently.
+            </p>
+            <h3>Possible benefits of a diagnosis</h3>
+            <ul class="muted">
+              <li>A clear explanation for long-standing struggles with focus, organisation or behaviour.</li>
+              <li>Access to structured support at school or college (SEND support, exam access arrangements).</li>
+              <li>Better understanding from family members, friends and teachers.</li>
+              <li>Ability to explore evidence-based treatments, including non-medication options and medication.</li>
+              <li>Validation that challenges are linked to a recognised condition, not “bad parenting”.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Common worries</h3>
+            <ul class="muted">
+              <li>“Will this label follow them forever?”</li>
+              <li>“Will teachers or employers lower their expectations?”</li>
+              <li>“Does this mean they must take medication?”</li>
+              <li>“What will family or our community think?”</li>
+            </ul>
+            <p class="muted">
+              These questions are normal. A good clinician should invite them into the conversation, not dismiss them.
+              A diagnosis is an invitation to tailor support — it does not force any one treatment plan.
+            </p>
+          </div>
+        </div>
+        <p class="small-note">
+          You can ask the clinician directly: <em>“What are the pros and cons of formally diagnosing ADHD in our
+          situation?”</em> and <em>“What choices will we have after that?”</em>
+        </p>
+      </section>
+
+      <!-- For teens & adults -->
+      <section class="card">
+        <h2>For teens &amp; adults · Making sense of the label</h2>
+        <div class="grid-2-1">
+          <div>
+            <p class="muted">
+              If you are a teenager or adult, you might already see yourself in ADHD descriptions and feel relief,
+              anger or mixed emotions about getting a formal diagnosis.
+            </p>
+            <h3>Things people often say</h3>
+            <ul class="muted">
+              <li>“Now my life finally makes sense.”</li>
+              <li>“Why did no one notice sooner?”</li>
+              <li>“I’m scared this will go in my records for ever.”</li>
+              <li>“I don’t want people to roll their eyes when I say ADHD.”</li>
+            </ul>
+            <p class="muted">
+              A diagnosis does not define your whole identity. Many people think of it as one chapter in their story
+              that helps explain certain patterns, not the title of the book.
+            </p>
+          </div>
+          <div>
+            <h3>Private vs public information</h3>
+            <p class="muted">
+              In most situations, you can choose who to tell about your diagnosis. Some people share it with close
+              friends, partners or tutors; others share it only when they need adjustments at work or university.
+            </p>
+            <label class="field-label" for="diagnosisShareNotes">Who (if anyone) would you like to tell?</label>
+            <textarea id="diagnosisShareNotes" class="note-field" rows="6"
+              data-autosave="adhdDiag_sharePlan"
+              placeholder="Use this space to think about who feels safe to tell, and what you might say. Saved on this device only."></textarea>
+            <p class="small-note">
+              You are allowed to take time deciding who to tell and when. There is no single “correct” answer.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    <hr class="section-divider--thick section-divider--full" aria-hidden="true" />
+
+      <!-- Balancing pros and cons · Decision helper -->
+      <section class="card">
+        <h2>Balancing benefits and worries · Decision helper</h2>
+        <p class="muted">
+          This tool is not a test. It simply helps you set out your thoughts before talking with a clinician. You can
+          use it as a family, with a trusted adult, or on your own.
+        </p>
+
+        <div class="grid-2">
+          <div>
+            <h3>Reasons to pursue / accept a diagnosis</h3>
+            <textarea class="note-field" rows="7"
+              data-autosave="adhdDiag_reasonsFor"
+              placeholder="Examples: clearer understanding, access to reasonable adjustments, language for self-advocacy, feeling less alone…"></textarea>
+          </div>
+          <div>
+            <h3>Concerns &amp; questions to ask</h3>
+            <textarea class="note-field" rows="7"
+              data-autosave="adhdDiag_reasonsAgainst"
+              placeholder="Examples: stigma, records, medication worries, cultural views, fear of being treated differently…"></textarea>
+          </div>
+        </div>
+
+        <div class="timer-shell" data-widget="timer" data-seconds="300" data-label="Diagnosis decision focus">
+          <div class="timer-display" data-role="display">05:00</div>
+          <div class="timer-bar">
+            <div class="timer-bar-fill" data-role="bar"></div>
+          </div>
+          <div class="timer-status small-note" data-role="status">
+            Use a 5-minute block to focus on writing honestly. You do not have to solve everything today.
+          </div>
+          <div class="timer-controls">
+            <button type="button" class="btn btn-primary" data-action="start">▶ Start 5-minute reflection</button>
+            <button type="button" class="btn btn-soft" data-action="reset">■ Reset</button>
+          </div>
+        </div>
+
+        <p class="small-note">
+          You can show these notes to your clinician to guide a shared decision-making conversation.
+        </p>
+      </section>
+
+      <!-- Treatment and next steps (high level, non-prescriptive) -->
+      <section class="card">
+        <h2>After a diagnosis · What might happen next?</h2>
+        <p class="muted">
+          A diagnosis opens up options; it does not lock anyone into a single route. Plans should be personalised,
+          evidence-informed and reviewed regularly.
+        </p>
+
+        <div class="grid-3">
+          <div>
+            <h3>Understanding &amp; education</h3>
+            <ul class="muted">
+              <li>Psychoeducation for the young person and family about ADHD and how it affects everyday life.</li>
+              <li>Strengths-based conversation: what the person enjoys and where ADHD may be an advantage.</li>
+              <li>Information for school/college/work to support reasonable adjustments.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Environment &amp; routines</h3>
+            <ul class="muted">
+              <li>Structured routines at home and school, with visual supports and clear expectations.</li>
+              <li>Movement breaks, sensory strategies and sleep hygiene to support regulation.</li>
+              <li>Tools such as timers, planners and digital reminders to reduce “working memory overload”.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Therapies &amp; medication</h3>
+            <ul class="muted">
+              <li>Behavioural and organisational support; parenting programmes for younger children.</li>
+              <li>Talking therapies (for example CBT or coaching) for older children, teens and adults.</li>
+              <li>Medication may be offered where symptoms remain significant, following guidelines and careful monitoring.</li>
+            </ul>
+            <p class="small-note">
+              You can always ask: <em>“What are our non-medication options?”</em> and <em>“How will we review medication
+              if we try it?”</em>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Clinician snapshot -->
+      <section class="card">
+        <h2>Clinician snapshot · Shared decision-making in ADHD</h2>
+        <p class="muted">
+          This section is written for professionals and assumes familiarity with diagnostic criteria. It focuses on
+          collaborative practice and explaining risk/benefit in accessible terms.
+        </p>
+
+        <div class="grid-2">
+          <div>
+            <h3>Framing the diagnosis</h3>
+            <ul class="muted">
+              <li>Describe ADHD as a neurodevelopmental pattern with both vulnerabilities and strengths.</li>
+              <li>Make explicit that diagnosis is a tool for planning support, not a judgement on character or parenting.</li>
+              <li>Be transparent about uncertainty, borderline presentations and the option of review over time.</li>
+              <li>Discuss the role of co-occurring conditions and systemic factors (e.g. poverty, exclusion, trauma).</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Discussing options &amp; consent</h3>
+            <ul class="muted">
+              <li>Outline evidence-based interventions by age group, including when medication is and is not indicated.</li>
+              <li>Use plain language to explain potential benefits, common side-effects and monitoring plans.</li>
+              <li>Involve children and young people in decisions at a level appropriate to their age and understanding.</li>
+              <li>Document shared decision-making, including family preferences and agreed review points.</li>
+            </ul>
+            <p class="small-note">
+              Local protocols, national guidelines and individual context should all inform the final plan.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Small reflective “check-in” game -->
+      <section class="card">
+        <h2>Quick check-in · “How do we feel about this?”</h2>
+        <p class="muted">
+          Use this simple slider-style reflection as a family or on your own. There are no right or wrong answers.
+        </p>
+
+        <div class="jar-shell" data-widget="jar" data-jar-id="adhdDiag_feelings">
+          <div class="grid-3">
+            <button type="button" class="btn btn-soft" data-jar-value="overwhelmed">
+              😵‍💫 Mostly overwhelmed
+            </button>
+            <button type="button" class="btn btn-soft" data-jar-value="mixed">
+              😐 Mixed feelings
+            </button>
+            <button type="button" class="btn btn-soft" data-jar-value="relieved">
+              😊 Mainly relieved/hopeful
+            </button>
+          </div>
+          <p class="small-note" data-role="jarStatus">
+            Tap the option that fits best right now. This is just for you and stays on this device.
+          </p>
+        </div>
+      </section>
+
+      <!-- Downloads -->
+      <section class="card">
+        <h2>Downloads &amp; conversation prompts</h2>
+        <p class="muted">
+          These tools can help guide diagnosis conversations and capture questions before appointments.
+        </p>
+        <div class="actions">
+          <button type="button" class="btn btn-primary" data-download="adhd_diag_family_questions.pdf">
+            🗂 Family questions for diagnosis appointments (PDF)
+          </button>
+          <button type="button" class="btn btn-soft" data-download="adhd_diag_pros_cons.pdf">
+            ⚖ Pros &amp; cons worksheet (PDF)
+          </button>
+          <button type="button" class="btn btn-soft" data-download="adhd_diag_clinician_brief.pdf">
+            🩺 Clinician briefing template (PDF)
+          </button>
+        </div>
+        <p class="small-note">
+          PDFs open in a new tab so you can keep this page open. You can print or save them for later.
+        </p>
+      </section>
+
+      <!-- Guide pager -->
+      <section class="card guide-pager" aria-label="Next ADHD guide sections">
+        <div class="pager-grid">
+          <a class="pager-prev" href="adhd-assessment.html">
+            ← Previous: Getting an ADHD assessment
+          </a>
+          <a class="pager-next" href="adhd-support-home.html">
+            Next: Support at home →
+          </a>
+        </div>
+        <p class="small-note">
+          Or return to the main ADHD page: <a href="adhd.html">ADHD — Focus, Workouts &amp; Everyday Wins</a>.
+        </p>
+      </section>
+
+      <!-- External links at the bottom -->
+      <section class="card external-links" aria-label="Further reading on ADHD diagnosis">
+        <h2>Further reading &amp; guidelines (opens in a new tab)</h2>
+        <p class="muted">
+          These trusted sources give more detail for families and professionals. They open separately so this page
+          stays put.
+        </p>
+        <ul class="muted">
+          <li><a href="https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/" target="_blank" rel="noopener">
+            NHS · ADHD overview, diagnosis and treatment</a></li>
+          <li><a href="https://www.nice.org.uk/guidance/ng87" target="_blank" rel="noopener">
+            NICE NG87 · ADHD: diagnosis and management</a></li>
+          <li><a href="https://www.adhdfoundation.org.uk" target="_blank" rel="noopener">
+            ADHD Foundation · UK information and campaigns</a></li>
+          <li><a href="https://chadd.org" target="_blank" rel="noopener">
+            CHADD · Children and Adults with Attention-Deficit/Hyperactivity Disorder</a></li>
+        </ul>
+        <p class="small-note">
+          External links are optional extras. Our aim is that you can get the main answers you need without leaving
+          this guide.
+        </p>
+      </section>
+
+  </div>
+</main>
+
+<footer class="site-footer" id="siteFooter">
+  <!-- Footer navigation - Full Width -->
+  <div class="ft-nav-wrapper">
+    <div class="ft-nav-inner">
+      <!-- Brand + Support in Navigation Area -->
+      <div class="ft-nav-brand">
+        <a class="ft-logo" href="index.html" data-href="index.html" aria-label="NeuroBreath home">
+          <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo" />
+        </a>
+        <a href="coffee.html" class="btn" data-href="coffee.html">☕ Support Us</a>
+      </div>
+      <nav class="ft-nav" aria-label="Footer">
+        <details class="ft-group">
+          <summary>Conditions <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="autism.html" data-href="autism.html">Autism</a> · <a href="autism-parent.html" data-href="autism-parent.html">Autism Parent</a> · <a href="adhd.html" data-href="adhd.html">ADHD</a> · <a href="dyslexia-reading-training.html" data-href="dyslexia-reading-training.html">Dyslexia</a></p>
+            <p><a href="anxiety.html" data-href="anxiety.html">Anxiety</a> · <a href="depression.html" data-href="depression.html">Depression</a> · <a href="stress.html" data-href="stress.html">Stress</a> · <a href="sleep.html" data-href="sleep.html">Sleep</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Breathing &amp; Focus <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="breath.html" data-href="breath.html">Breath (how-to)</a> · <a href="focus.html" data-href="focus.html">Focus</a> · <a href="mindfulness.html" data-href="mindfulness.html">Mindfulness</a></p>
+            <p><a href="sos-60.html" data-href="sos-60.html">60-second Reset</a> · <a href="box-breathing.html" data-href="box-breathing.html">Box Breathing</a> · <a href="4-7-8-breathing.html" data-href="4-7-8-breathing.html">4-7-8 Breathing</a> · <a href="coherent-5-5.html" data-href="coherent-5-5.html">Coherent 5-5</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Toolkits <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="sleep-tools.html" data-href="sleep-tools.html">Sleep Tools</a> · <a href="breath-tools.html" data-href="breath-tools.html">Breath Tools</a> · <a href="mood-tools.html" data-href="mood-tools.html">Mood Tools</a> · <a href="adhd-tools.html" data-href="adhd-tools.html">ADHD Tools</a> · <a href="autism-tools.html" data-href="autism-tools.html">Autism Tools</a> · <a href="anxiety-tools.html" data-href="anxiety-tools.html">Anxiety Tools</a> · <a href="stress-tools.html" data-href="stress-tools.html">Stress Tools</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Symptom Guides <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="stress-anxiety.html" data-href="stress-anxiety.html">Stress &amp; General Anxiety</a> · <a href="panic-symptoms.html" data-href="panic-symptoms.html">Panic Symptoms</a> · <a href="sleep-onset-insomnia.html" data-href="sleep-onset-insomnia.html">Sleep-Onset Insomnia</a></p>
+            <p><a href="focus-test-anxiety.html" data-href="focus-test-anxiety.html">Focus &amp; Test Anxiety</a> · <a href="ptsd-regulation.html" data-href="ptsd-regulation.html">PTSD Regulation*</a> · <a href="low-mood-burnout.html" data-href="low-mood-burnout.html">Low Mood &amp; Burnout</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>About <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="about.html" data-href="about.html">About</a> · <a href="aims-objectives.html" data-href="aims-objectives.html">Aims &amp; Stories</a> · <a href="coffee.html" data-href="coffee.html">Support Us</a> · <a href="contact.html" data-href="contact.html">Contact</a></p>
+          </div>
+        </details>
+      </nav>
+    </div>
+  </div>
+
+  <div class="inner">
+    <div class="ft-bottom">
+      <div class="ft-bottom__copy" aria-label="Site notice">
+        <p class="muted ft-bottom__text">Educational information only. Not medical advice. NeuroBreath is a free resource by NeuroBreath. © <span id="yearFooter"></span> NeuroBreath. All rights reserved.</p>
+      </div>
+      <button type="button" class="btn back-to-top-btn" data-action="back-to-top" aria-label="Back to top">
+        <span class="back-to-top__label">Back to top</span>
+        <span class="back-to-top__icon" aria-hidden="true">↑</span>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/app.js" defer></script>
+</body>
+</html>
+

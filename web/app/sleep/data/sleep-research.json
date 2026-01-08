@@ -1,0 +1,928 @@
+{
+  "metadata": {
+    "title": "Comprehensive Sleep Issues Research",
+    "compiled_by": "Senior Healthcare Scientist (UK-based)",
+    "date_compiled": "2026-01-06",
+    "sources": [
+      "NHS (UK)",
+      "PubMed",
+      "Mayo Clinic (US)",
+      "CDC (US)",
+      "NICE (UK)",
+      "WHO",
+      "Cochrane Library",
+      "European Sleep Research Society"
+    ],
+    "language_conventions": {
+      "UK_Europe_content": "UK English",
+      "US_content": "US English"
+    }
+  },
+
+  "sleep_disorders_types_and_definitions": {
+    "UK_NHS_Europe": {
+      "insomnia": {
+        "definition": "The most common sleep disorder, characterised by difficulty falling asleep, staying asleep, or achieving good quality sleep",
+        "subtypes": {
+          "initial_insomnia": "Difficulty falling asleep (sleep onset insomnia)",
+          "sleep_maintenance_insomnia": "Waking up during the night and struggling to return to sleep",
+          "early_waking_insomnia": "Waking significantly earlier than desired and being unable to fall back asleep",
+          "mixed_insomnia": "A combination of initial and sleep maintenance insomnia",
+          "paradoxical_insomnia": "Underestimating the amount of sleep obtained despite having a normal sleep cycle",
+          "acute_insomnia": "Short-term, lasting less than three months, often due to stressful life events",
+          "chronic_insomnia": "Persists for three months or longer, occurring at least three nights per week"
+        }
+      },
+      "sleep_related_breathing_disorders": {
+        "obstructive_sleep_apnoea": "The most common breathing-related sleep disorder where airways repeatedly collapse during sleep, causing breathing pauses and reduced oxygen levels",
+        "central_sleep_apnoea": "Occurs when the brain fails to send proper signals to respiratory muscles, leading to pauses in breathing",
+        "sleep_related_hypoventilation": "Insufficient air circulation in the lungs, resulting in elevated carbon dioxide levels",
+        "sleep_related_hypoxemia_disorder": "A drop in blood oxygen concentration levels during sleep",
+        "chronic_snoring": "If chronic and frequent, classified as a sleep disorder",
+        "catathrenia": "Repeated episodes of groaning or moaning during sleep (nocturnal groaning)"
+      },
+      "hypersomnias": {
+        "narcolepsy": "A rare, long-term brain condition causing irresistible daytime sleepiness and sudden sleep attacks, often linked to lack of hypocretin (orexin) in the brain",
+        "narcolepsy_features": ["Cataplexy (sudden muscle weakness triggered by emotion)", "Hypnagogic hallucinations (vivid dreams at sleep onset)", "Sleep paralysis (inability to move upon waking)"],
+        "idiopathic_hypersomnia": "Long sleep duration yet waking up feeling unrefreshed, with sleep inertia and excessive daytime sleepiness",
+        "kleine_levin_syndrome": "Characterised by hypersomnolence, excessive eating, and behavioural abnormalities"
+      },
+      "parasomnias": {
+        "rem_sleep_behaviour_disorder": "Acting out vivid, often action-filled or violent, dreams during REM sleep",
+        "non_rem_sleep_behaviour_disorder": "Occurs during non-REM sleep, includes confusional arousals, sleepwalking, sleep terrors",
+        "sleepwalking": "Walking or performing other activities while asleep (somnambulism)",
+        "night_terrors": "Episodes of screaming, intense fear, and flailing during sleep, often without memory of the event",
+        "sexsomnia": "Engaging in sexual behaviours during sleep",
+        "sleep_related_eating_disorder": "Eating or drinking while asleep or partially awake",
+        "exploding_head_syndrome": "Hearing loud noises as one falls asleep or wakes up",
+        "sleep_related_hallucinations": "Hallucinations occurring at sleep onset or awakening"
+      },
+      "sleep_related_movement_disorders": {
+        "restless_legs_syndrome": "An irresistible urge to move the legs, especially during inactivity, accompanied by uncomfortable sensations like tingling, burning, or cramping. Symptoms worse in the evening and relieved by movement",
+        "periodic_limb_movement_disorder": "Repetitive cramping or jerking of the legs or body every 30-60 seconds during sleep",
+        "sleep_bruxism": "Involuntary teeth grinding and clenching during sleep",
+        "sleep_related_rhythmic_movement_disorder": "Repetitive, rhythmic movements of limbs, body, or head during sleep (e.g., head banging)"
+      },
+      "circadian_rhythm_disorders": {
+        "delayed_sleep_phase_disorder": "An unusual sleep-wake cycle where an individual cannot sleep until much later than considered normal",
+        "advanced_sleep_phase_disorder": "Characterised by sleeping early in the evening and waking early in the morning",
+        "shift_work_disorder": "Common in individuals working irregular shifts, disrupting their natural circadian rhythm"
+      }
+    },
+    "US_sources": {
+      "note": "US classification aligns with International Classification of Sleep Disorders (ICSD)",
+      "primary_categories": [
+        "Insomnia",
+        "Sleep-related breathing disorders",
+        "Central disorders of hypersomnolence",
+        "Circadian rhythm sleep-wake disorders",
+        "Parasomnias",
+        "Sleep-related movement disorders"
+      ],
+      "total_recognized_disorders": "Over 80 different sleep disorders recognized"
+    }
+  },
+
+  "signs_and_symptoms": {
+    "general_symptoms": {
+      "sleep_difficulties": [
+        "Difficulty falling asleep",
+        "Difficulty staying asleep",
+        "Waking up too early",
+        "Waking frequently during the night",
+        "Not feeling well-rested after sleep"
+      ],
+      "daytime_symptoms": [
+        "Excessive daytime sleepiness, tiredness, or fatigue",
+        "Irritability, anxiety, or depression",
+        "Difficulty concentrating, focusing, or remembering",
+        "Increased errors or accidents",
+        "Low mood or decreased motivation",
+        "Frequent headaches",
+        "Low sex drive",
+        "Social withdrawal"
+      ],
+      "nocturnal_symptoms": [
+        "Snoring, gasping, or choking during sleep",
+        "Unusual movements or behaviours during sleep (sleepwalking, jerking limbs)"
+      ]
+    },
+    "age_specific_symptoms": {
+      "children": {
+        "common_presentations": [
+          "Bedtime resistance and settling difficulties",
+          "Night waking",
+          "Nightmares and sleepwalking",
+          "Rhythmic movement disorders (head-banging)",
+          "Nocturnal enuresis",
+          "Daytime fatigue manifesting as hyperactivity (may be misdiagnosed as ADHD)"
+        ],
+        "behavioural_indicators": [
+          "Difficulty waking in the morning",
+          "Poor concentration at school",
+          "Mood swings and irritability",
+          "Hyperactivity (in some cases, opposite to adult sleepiness)"
+        ]
+      },
+      "adolescents": {
+        "common_presentations": [
+          "Delayed Sleep Phase Syndrome (late bedtimes 1-4 AM, late awakening)",
+          "Severe sleep deprivation",
+          "Excessive daytime sleepiness",
+          "Poor decision-making and increased risk-taking behaviours"
+        ],
+        "impact_areas": [
+          "Educational performance",
+          "Social functioning",
+          "Increased risk of depression and anxiety",
+          "Risk of obesity due to metabolic disruption"
+        ]
+      },
+      "adults": {
+        "common_presentations": [
+          "Chronic insomnia",
+          "Obstructive sleep apnoea",
+          "Restless legs syndrome",
+          "Work-related sleep disorders"
+        ]
+      },
+      "elderly": {
+        "common_presentations": [
+          "Sleep-maintenance insomnia",
+          "Early awakening",
+          "Decreased total sleep time",
+          "Reduced sleep efficiency",
+          "Less slow-wave sleep",
+          "Increased waking after sleep onset"
+        ],
+        "associated_conditions": [
+          "REM Sleep Behaviour Disorder (common in those over 50)",
+          "Advanced sleep phase (earlier sleep and wake times)",
+          "Increased prevalence of OSA (20-60% over 65)"
+        ]
+      }
+    },
+    "health_consequences": {
+      "physical": [
+        "Weakened immune system",
+        "Increased risk of obesity",
+        "Type 2 diabetes",
+        "High blood pressure",
+        "Cardiovascular disease",
+        "Stroke"
+      ],
+      "mental_health": [
+        "Anxiety",
+        "Depression",
+        "Psychosis exacerbation"
+      ]
+    }
+  },
+
+  "diagnosis_methods": {
+    "initial_assessment": {
+      "UK_NHS": {
+        "first_step": "Consultation with General Practitioner (GP)",
+        "assessment_components": [
+          "Review of symptoms and medical history",
+          "Review of current medications",
+          "Sleep diary (recommended for 1-2 weeks)",
+          "Assessment of lifestyle factors"
+        ],
+        "diagnostic_criteria": "Symptoms occurring at least three times per week for minimum three months"
+      }
+    },
+    "screening_tools": {
+      "questionnaires": {
+        "epworth_sleepiness_scale": "Assesses daytime sleepiness (UK/US)",
+        "stop_bang_questionnaire": "Identifies risk of obstructive sleep apnoea",
+        "insomnia_severity_index": "Baseline symptom measurement for insomnia",
+        "rbdsq_questionnaire": "Screens for REM Sleep Behaviour Disorder (score ≥5 suggests probable RBD)",
+        "scisd_r": "Structured Clinical Interview for Sleep Disorders-Revised"
+      }
+    },
+    "diagnostic_tests": {
+      "polysomnography": {
+        "description": "Overnight sleep study monitoring brain waves, oxygen levels, heart rate, breathing, eye and leg movements",
+        "settings": ["Hospital sleep disorders unit", "Sleep centre", "Home (for some conditions)"],
+        "UK_term": "Sleep Study",
+        "US_term": "Polysomnography (PSG)"
+      },
+      "actigraphy": {
+        "description": "Non-invasive wrist-worn device monitoring sleep-wake cycles over extended period"
+      },
+      "home_sleep_apnea_test": {
+        "description": "Records breathing rate, airflow, oxygen levels, and heart rate at home",
+        "US_note": "Results can be uploaded to smartphone app and sent to sleep specialist"
+      },
+      "multiple_sleep_latency_test": {
+        "description": "Measures daytime sleepiness by observing how quickly a person falls asleep during 4-5 naps"
+      },
+      "maintenance_of_wakefulness_test": {
+        "description": "Assesses daytime alertness by measuring ability to stay awake during scheduled periods"
+      },
+      "overnight_oximetry_test": {
+        "description": "Finger-attached monitor measuring heart rate and blood oxygen throughout the night"
+      },
+      "orexin_a_hypocretin_1_test": {
+        "description": "Cerebrospinal fluid analysis for narcolepsy diagnosis, particularly type 1"
+      },
+      "blood_tests": {
+        "purpose": "Rule out underlying conditions like anaemia (UK)/anemia (US) or metabolic disorders"
+      }
+    }
+  },
+
+  "treatment_options": {
+    "medical_treatments": {
+      "UK_NICE_guidelines": {
+        "first_line": "Non-pharmacological approaches (CBT-I, sleep hygiene)",
+        "pharmacological_principles": {
+          "general_advice": "Hypnotics for short-term use only (maximum 4 weeks including tapering)",
+          "when_to_use": "Only when insomnia is severe, disabling, or causing significant distress",
+          "cautions": ["Avoid in elderly due to falls and confusion risk", "Caution with respiratory disease", "Risk of dependence and tolerance"]
+        },
+        "medications": {
+          "z_drugs": {
+            "zopiclone": {
+              "status": "First-line if hypnotic needed",
+              "dose": "3.75mg to 7.5mg at night (3.75mg in elderly)",
+              "max_duration": "Usually 2 weeks, maximum 4 weeks"
+            },
+            "zolpidem": {
+              "status": "Second-line",
+              "dose": "5mg to 10mg at night (5mg maximum for elderly)",
+              "note": "Associated with next-day drowsiness"
+            }
+          },
+          "melatonin_modified_release": {
+            "indication": "Primary insomnia in adults aged 55 or over",
+            "duration": "Up to 13 weeks",
+            "paediatric_use": "Off-label for children with ADHD/ASD where behavioural management failed (specialist services)"
+          },
+          "daridorexant": {
+            "brand_name": "QUVIVIQ",
+            "indication": "Chronic insomnia where symptoms last 3+ nights/week for 3+ months and daytime functioning affected",
+            "condition": "Only if CBT-I tried but ineffective, unavailable, or unsuitable",
+            "mechanism": "Dual Orexin Receptor Antagonist (DORA)",
+            "benefits": "No association with physical dependency, tolerance, or rebound insomnia"
+          },
+          "not_recommended": ["Antihistamines for insomnia", "Antidepressants for insomnia (unless depression present)", "Antipsychotics", "Long-acting benzodiazepines", "Clomethiazole", "Chloral hydrate"]
+        },
+        "digital_therapeutics": {
+          "sleepio": {
+            "status": "NICE recommended",
+            "indication": "Cost-saving option for treating insomnia symptoms in primary care"
+          }
+        }
+      },
+      "US_Mayo_Clinic_treatments": {
+        "cpap_therapy": {
+          "description": "Continuous Positive Airway Pressure - delivers pressurized air through mask to keep airway open",
+          "indication": "Standard treatment for obstructive sleep apnea",
+          "alternative": "Bilevel positive airway pressure (BPAP) for those intolerant to CPAP"
+        },
+        "oral_appliances": {
+          "description": "Custom-made mouthpieces worn during sleep to lessen airway blockage",
+          "mechanism": "Moves lower jaw and tongue forward"
+        },
+        "surgical_options": {
+          "types": ["Procedures on nose, jaws, or upper airway soft tissue"],
+          "upper_airway_nerve_stimulation": {
+            "brand": "Inspire system",
+            "description": "Surgically implanted device stimulating nerve under tongue to open airway",
+            "indication": "OSA patients who cannot tolerate CPAP"
+          }
+        },
+        "medications": {
+          "for_insomnia": ["Eszopiclone", "Ramelteon", "Temazepam", "Triazolam", "Zaleplon", "Zolpidem tartrate"],
+          "for_rls": ["Dopamine agonists (ropinirole, pramipexole, rotigotine patch)", "Painkillers", "Sleeping tablets"],
+          "for_plmd": ["Clonazepam", "Other muscle relaxants"],
+          "for_narcolepsy": ["Modafinil"],
+          "for_rbd": ["Melatonin", "Clonazepam"]
+        }
+      },
+      "European_ESRS_guidelines": {
+        "first_line": "Cognitive-Behavioural Therapy for Insomnia (CBT-I) - very strong recommendation",
+        "digital_cbt_i": "Very strong recommendation for delivery in person or digitally",
+        "pharmacological": {
+          "doras": "Very strong recommendation for up to 3 months if CBT-I ineffective",
+          "daridorexant": "Only DORA currently available in Europe",
+          "benzodiazepines_gaba_agonists": "Recommended for short-term treatment only (≤4 weeks)"
+        }
+      }
+    },
+    "behavioural_treatments": {
+      "cbt_i": {
+        "description": "Cognitive Behavioural Therapy for Insomnia - structured, short-term treatment addressing thoughts, feelings, and behaviours interfering with sleep",
+        "evidence_status": "First-line treatment recommended by NICE, ESRS, American College of Physicians, NIH",
+        "effectiveness": "Improves symptoms in up to 80% of individuals; 90% reduce or discontinue sleep medications",
+        "duration": "Typically 6-8 sessions, 30-90 minutes each",
+        "components": {
+          "sleep_restriction_therapy": {
+            "description": "Limits time in bed to actual sleep duration to increase homeostatic sleep drive and consolidate sleep",
+            "contraindications": ["Bipolar disorder", "Untreated sleep apnoea", "Parasomnias", "Seizure disorder"]
+          },
+          "stimulus_control_therapy": {
+            "description": "Re-associates bed/bedroom with sleep rather than wakefulness",
+            "techniques": ["Go to bed only when sleepy", "Use bed only for sleep and sex", "Get out of bed if unable to sleep within 15-20 minutes", "Maintain consistent wake time"]
+          },
+          "sleep_hygiene_education": {
+            "description": "Information about lifestyle and environmental factors affecting sleep"
+          },
+          "cognitive_therapy": {
+            "description": "Identifies and modifies dysfunctional thoughts and beliefs about sleep",
+            "techniques": ["Cognitive restructuring", "Disputation of dysfunctional beliefs", "Decatastrophization"]
+          },
+          "relaxation_training": {
+            "techniques": ["Progressive muscle relaxation", "Deep breathing", "Autogenic training", "Biofeedback"]
+          }
+        },
+        "delivery_formats": {
+          "individual_therapy": "One-on-one sessions",
+          "group_therapy": "Group setting delivery",
+          "telehealth": "Virtual delivery",
+          "digital_cbt_i": {
+            "description": "Fully automated digital programs",
+            "examples": ["Sleepio (UK)", "Bedtime Window", "A Mindful Way", "This Way Up: Managing Insomnia", "RESTORE"]
+          },
+          "mobile_apps": {
+            "examples": ["CBT-I Coach"]
+          },
+          "self_help_literature": "Books and workbooks"
+        }
+      }
+    },
+    "lifestyle_treatments": {
+      "sleep_hygiene_practices": {
+        "UK_NHS_recommendations": [
+          "Go to bed and wake up at consistent times, even on weekends",
+          "Avoid daytime naps",
+          "Exercise regularly but avoid strenuous activity close to bedtime",
+          "Reduce caffeine, alcohol, and nicotine intake, particularly in the evening",
+          "Avoid heavy meals before bed",
+          "Ensure bedroom is dark, quiet, cool, and comfortable",
+          "Use earplugs or eye masks if needed",
+          "Practice relaxation before bed (warm bath, reading, calm music)",
+          "Avoid backlit devices (phones, tablets, TVs) before bed",
+          "Write down concerns before bed to clear the mind"
+        ],
+        "US_CDC_recommendations": [
+          "Keep bedroom quiet, dark, relaxing, and at cool temperature (65°F to 68°F)",
+          "Turn off electronic devices at least 30 minutes before bedtime",
+          "Avoid large meals, alcohol, and caffeine before bedtime",
+          "Get regular physical activity during the day",
+          "Limit naps to 30 minutes or less, not too late in the day",
+          "Establish a wind-down routine an hour before bed"
+        ]
+      },
+      "environmental_modifications": [
+        "Dark curtains or shades",
+        "Minimise or mask noise",
+        "Comfortable mattress and bedding",
+        "Remove work-related items from bedroom",
+        "Optimal room temperature"
+      ]
+    }
+  },
+
+  "management_strategies": {
+    "by_age_group": {
+      "children": {
+        "behavioural_strategies": {
+          "bedtime_routines": "Consistent, calming routine before bed",
+          "sleep_scheduling": "Regular bed and wake times",
+          "behavioural_techniques": {
+            "faded_bedtime_with_response_cost": "Gradually adjusting bedtime with rewards for meeting goals",
+            "graduated_extinction": "Gradually separating parent from child at bedtime",
+            "positive_reinforcement": "Rewards for desired sleep behaviours"
+          }
+        },
+        "parent_involvement": "Parents are primary agents of change, establishing and enforcing rules",
+        "tools": ["Sleep diaries", "Reward charts", "Visual schedules"],
+        "when_to_seek_help": "If sleep hygiene practices do not resolve difficulties within reasonable time"
+      },
+      "adolescents": {
+        "key_challenges": ["Delayed Sleep Phase Syndrome", "Academic and social demands", "Screen time"],
+        "strategies": [
+          "Direct engagement with teen",
+          "Motivational interviewing for behaviour change",
+          "School-based interventions",
+          "CBT-I adapted for adolescents",
+          "Bright light therapy for delayed sleep phase"
+        ],
+        "school_involvement": "Education about sleep importance, later school start times recommended"
+      },
+      "adults": {
+        "stepped_care_approach": [
+          "Sleep hygiene education",
+          "CBT-I (first-line for chronic insomnia)",
+          "Digital CBT-I as accessible alternative",
+          "Pharmacotherapy if non-pharmacological approaches insufficient"
+        ],
+        "occupational_considerations": ["Shift work management", "Work-life balance"]
+      },
+      "elderly": {
+        "specific_considerations": [
+          "Age-related physiological changes in sleep architecture",
+          "Comorbid conditions management",
+          "Medication review (polypharmacy)",
+          "Fall risk with hypnotics"
+        ],
+        "recommended_approaches": {
+          "first_line": "CBT-I and sleep hygiene",
+          "light_therapy": "Timed exposure to bright light for circadian rhythm reset",
+          "medication_cautions": [
+            "Avoid benzodiazepines and Z-drugs long-term",
+            "Increased risk of cognitive impairment, falls, hip fractures",
+            "If medication needed, lowest dose for shortest duration"
+          ]
+        }
+      }
+    },
+    "condition_specific": {
+      "obstructive_sleep_apnoea": {
+        "primary": "CPAP therapy",
+        "alternatives": ["Oral appliances", "Weight loss", "Positional therapy", "Surgery"],
+        "lifestyle": ["Weight management", "Avoid alcohol and sedatives", "Sleep position modification"]
+      },
+      "restless_legs_syndrome": {
+        "lifestyle": ["Regular exercise", "Good sleep hygiene", "Reduce caffeine"],
+        "medical": ["Iron replacement if deficient", "Dopamine agonists", "Alpha-2-delta ligands"]
+      },
+      "narcolepsy": {
+        "medical": ["Stimulant medications", "Sodium oxybate", "Antidepressants for cataplexy"],
+        "behavioural": ["Scheduled naps", "Good sleep hygiene", "Support and counselling"]
+      }
+    }
+  },
+
+  "support_for_stakeholders": {
+    "parents": {
+      "resources_and_guidance": {
+        "UK_sources": {
+          "nhs": "NHS sleep advice pages and local sleep clinics",
+          "sleep_charity_uk": "The Sleep Charity - UK-based support organisation",
+          "nice_guidance": "NICE-recommended digital tools like Sleepio"
+        },
+        "key_support_areas": [
+          "Understanding normal sleep development",
+          "Recognising when to seek professional help",
+          "Implementing behavioural strategies at home",
+          "Managing own stress and wellbeing",
+          "Accessing online parent-focused programmes"
+        ],
+        "intervention_programmes": {
+          "lights_out_online": "Unguided online intervention showing positive effects on child sleep and parental wellbeing"
+        }
+      },
+      "practical_strategies": [
+        "Establish consistent bedtime routines",
+        "Create sleep-conducive environment",
+        "Model good sleep habits",
+        "Use positive reinforcement",
+        "Keep sleep diary to track patterns",
+        "Limit screen time before bed",
+        "Address bedtime fears and anxieties"
+      ]
+    },
+    "teachers": {
+      "role_in_sleep_education": [
+        "Delivering classroom-based sleep education",
+        "Recognising signs of sleep deprivation in students",
+        "Providing feedback to parents about attention levels",
+        "Supporting school-based sleep programmes"
+      ],
+      "educational_resources": {
+        "school_based_programmes": "Curriculum-integrated sleep education",
+        "head_start_programmes": "Sleep health integrated into teacher training and parent workshops",
+        "teaching_resources": ["Sleep education worksheets", "Interactive games about sleep", "Age-appropriate sleep curriculum"]
+      }
+    },
+    "carers": {
+      "UK_context": {
+        "guidance_areas": [
+          "Understanding sleep needs of those in their care",
+          "Managing sleep disturbances in care settings",
+          "Safe sleep practices",
+          "Recognising sleep disorders requiring referral",
+          "Supporting sleep routines in residential settings"
+        ],
+        "special_populations": {
+          "neurodevelopmental_disorders": {
+            "autism_intellectual_disabilities": {
+              "approach": "Behavioural sleep interventions with carer training",
+              "effectiveness": "9 out of 11 studies showed reduction in sleep problems",
+              "components": ["Sleep hygiene", "Reinforcement of desirable behaviour", "Ignoring undesirable behaviours", "Environmental changes"]
+            }
+          },
+          "elderly_care": {
+            "considerations": [
+              "Age-related sleep changes",
+              "Medication management",
+              "Fall risk assessment",
+              "Dementia-related sleep disturbances"
+            ]
+          }
+        }
+      }
+    },
+    "affected_persons": {
+      "self_help_resources": {
+        "UK_based": {
+          "nhs_resources": "NHS website sleep section and self-help guides",
+          "sleep_charity": "The Sleep Charity information and support",
+          "mind_uk": "Mind mental health charity - sleep and mental health resources"
+        },
+        "US_based": {
+          "sleep_foundation": "National Sleep Foundation resources and information",
+          "aasm": "American Academy of Sleep Medicine patient resources"
+        }
+      },
+      "peer_support": [
+        "Sleep disorder support groups",
+        "Online forums and communities",
+        "Charity helplines"
+      ],
+      "self_management_tools": [
+        "Sleep diary apps",
+        "CBT-I mobile applications",
+        "Relaxation apps",
+        "Sleep tracking devices"
+      ]
+    }
+  },
+
+  "intervention_tactics_and_skills": {
+    "clinical_interventions": {
+      "assessment_skills": [
+        "Taking comprehensive sleep history",
+        "Using validated screening tools",
+        "Interpreting sleep diaries",
+        "Recognising red flags for referral"
+      ],
+      "therapeutic_skills": {
+        "cbt_i_delivery": [
+          "Sleep restriction implementation",
+          "Stimulus control instruction",
+          "Cognitive restructuring techniques",
+          "Relaxation training facilitation"
+        ],
+        "motivational_interviewing": "For ambivalent patients, especially adolescents",
+        "psychoeducation": "Using 3P Model (predisposing, precipitating, perpetuating factors)"
+      }
+    },
+    "behavioural_intervention_tactics": {
+      "for_children": {
+        "bedtime_fading": "Gradually adjusting bedtime to match natural sleep onset",
+        "graduated_extinction": "Systematically reducing parental presence at bedtime",
+        "positive_reinforcement": "Reward systems for meeting sleep goals",
+        "sleep_restriction_adapted": "Modified for paediatric use"
+      },
+      "for_adolescents": {
+        "chronotherapy": "Gradually shifting sleep schedule",
+        "bright_light_therapy": "Morning light exposure to advance sleep phase",
+        "motivational_enhancement": "Addressing ambivalence about changing behaviours"
+      },
+      "for_adults_and_elderly": {
+        "standard_cbt_i": "Full protocol with all components",
+        "brief_interventions": "Abbreviated CBT-I for primary care settings",
+        "mindfulness_based_interventions": "Complementary approaches"
+      }
+    },
+    "environmental_interventions": [
+      "Bedroom environment optimisation",
+      "Light exposure management",
+      "Noise reduction strategies",
+      "Temperature regulation"
+    ]
+  },
+
+  "evidence_based_tools_and_resources": {
+    "assessment_tools": {
+      "questionnaires_and_scales": {
+        "epworth_sleepiness_scale": {
+          "purpose": "Measure daytime sleepiness",
+          "format": "8-item questionnaire",
+          "scoring": "Score >10 indicates excessive daytime sleepiness"
+        },
+        "insomnia_severity_index": {
+          "purpose": "Assess insomnia severity",
+          "format": "7-item questionnaire",
+          "use": "Baseline and progress monitoring"
+        },
+        "pittsburgh_sleep_quality_index": {
+          "purpose": "Assess sleep quality over past month",
+          "format": "19-item questionnaire"
+        },
+        "stop_bang": {
+          "purpose": "Screen for obstructive sleep apnoea risk",
+          "format": "8-item screening tool"
+        }
+      },
+      "monitoring_tools": {
+        "sleep_diaries": {
+          "purpose": "Track sleep patterns and behaviours",
+          "duration": "Typically 1-2 weeks",
+          "metrics": ["Sleep onset latency", "Wake after sleep onset", "Total sleep time", "Sleep efficiency"]
+        },
+        "actigraphy_devices": {
+          "purpose": "Objective sleep-wake monitoring",
+          "use": "Extended monitoring in natural environment"
+        },
+        "consumer_wearables": {
+          "purpose": "Sleep tracking",
+          "note": "Increasingly used but varying accuracy"
+        }
+      }
+    },
+    "treatment_resources": {
+      "digital_therapeutics": {
+        "UK_nice_recommended": {
+          "sleepio": {
+            "description": "Digital CBT-I programme",
+            "status": "NICE recommended for primary care",
+            "evidence": "Cost-saving compared to sleep hygiene or sleeping pills"
+          }
+        },
+        "other_digital_cbt_i": [
+          "Bedtime Window",
+          "A Mindful Way",
+          "This Way Up: Managing Insomnia",
+          "RESTORE"
+        ]
+      },
+      "mobile_applications": {
+        "therapeutic_apps": {
+          "cbt_i_coach": {
+            "description": "Interactive sleep diary, adjustable schedules, reminders, relaxation exercises",
+            "purpose": "Support face-to-face CBT-I therapy"
+          }
+        },
+        "sleep_tracking_apps": [
+          "Sleep Cycle",
+          "Pillow"
+        ]
+      },
+      "educational_resources": {
+        "professional_training": {
+          "esrs_catalogue": "European Sleep Research Society knowledge and skills catalogue",
+          "certification_programmes": "Sleep medicine professional certification"
+        },
+        "patient_education": {
+          "nhs_resources": "NHS sleep information pages",
+          "sleep_foundation_us": "Sleep Foundation educational content",
+          "sleep_charity_uk": "The Sleep Charity information resources"
+        }
+      }
+    },
+    "clinical_guidelines": {
+      "UK": {
+        "nice_insomnia_guidance": "NICE guidelines on insomnia management",
+        "nice_technology_appraisals": "Including Sleepio and daridorexant"
+      },
+      "Europe": {
+        "esrs_insomnia_guideline": "European Insomnia Guideline (2023 update)",
+        "esrs_accreditation": "Guidelines for sleep medicine centre accreditation"
+      },
+      "US": {
+        "aasm_guidelines": "American Academy of Sleep Medicine clinical practice guidelines",
+        "cdc_recommendations": "CDC sleep health recommendations"
+      },
+      "international": {
+        "who_guidelines": "WHO guidelines on sleep for children under 5",
+        "cochrane_reviews": "Systematic reviews on sleep interventions"
+      }
+    }
+  },
+
+  "gamification_and_interactive_tools": {
+    "gamification_principles_for_sleep": {
+      "psychological_mechanisms": {
+        "accomplishment": "Sense of achievement through rewards, badges, and progress tracking",
+        "avoidance": "Fear of losing progress or being 'punished' motivates compliance",
+        "social_relatedness": "Connecting with friends/family boosts intrinsic motivation",
+        "empowerment": "Customisation and impact on game world enhances engagement"
+      },
+      "key_features": {
+        "streaks": {
+          "description": "Reward for maintaining continuous habit over time",
+          "psychological_impact": "Leverages loss aversion - users motivated to avoid losing progress",
+          "evidence": "Users 7+ day streak significantly more likely to engage daily"
+        },
+        "rewards": {
+          "types": ["Points", "Badges", "Virtual currency", "Unlockable content"],
+          "purpose": "Incentivise desired sleep behaviours"
+        },
+        "progress_trackers": {
+          "features": ["Visual progress indicators", "Levels", "Achievement milestones"],
+          "purpose": "Foster sense of advancement and accomplishment"
+        },
+        "awards_and_achievements": {
+          "examples": ["Consistency badges", "Sleep goal medals", "Challenge completion awards"]
+        }
+      }
+    },
+    "prominent_sleep_management_games_and_apps": {
+      "gamified_alarm_apps": {
+        "sleepy_bird": {
+          "description": "Gamified alarm clock using avoidance/punishment mechanics",
+          "features": ["Lose 'lives' for snoozing", "Faster bird movement for sleeping off-schedule"],
+          "evidence": "Positive modifications to sleep-wake behaviours"
+        }
+      },
+      "virtual_pet_sleep_apps": {
+        "sleepagotchi": {
+          "description": "Transforms sleep into a game with virtual pet",
+          "features": ["Build healthy sleep habits", "Earn rewards", "Social features with friends"]
+        },
+        "sleep_tamagochi": {
+          "features": ["Virtual pet care", "Social play features"]
+        }
+      },
+      "city_building_sleep_games": {
+        "sleeptown": {
+          "platform": "Android/iOS",
+          "description": "Build virtual town by achieving sleep goals",
+          "features": {
+            "core_mechanic": "Construct buildings by meeting bedtime and wake-up goals",
+            "rewards": "Earn coins, unlock buildings, extra revenue for consecutive days",
+            "streaks": "Extra rewards for consecutive successful nights",
+            "social": "Invite friends to circles, build 'wonders of the world' together",
+            "customisation": "Design town with land, buildings, decorations, themes",
+            "achievements": "Unlock achievements for extra rewards"
+          }
+        }
+      },
+      "journey_exploration_games": {
+        "restful_journey": {
+          "description": "Mobile app teaching sleep hygiene through mini-games",
+          "evidence": "Pilot study showed significant improvements in sleep quality and state anxiety after 30 days",
+          "features": ["Earn coins to explore virtual islands", "Collect jewels", "Learn sleep concepts"]
+        }
+      },
+      "character_based_apps": {
+        "sleep_ninja": {
+          "features": ["Avatar level-ups", "Sleep skill training"],
+          "target": "Children and adolescents"
+        },
+        "pokemon_sleep": {
+          "description": "Gamifies sleep goals using Pokémon franchise",
+          "features": ["Records and measures sleep patterns", "Higher scores for longer sleep"]
+        },
+        "finch": {
+          "description": "Self-care app with pet bird",
+          "features": ["Complete self-care tasks including sleep habits", "Earn rewards for pet bird"]
+        }
+      },
+      "meditation_and_relaxation_apps_with_gamification": {
+        "calm": {
+          "features": ["Streaks for consistent meditation", "Badges for milestones", "Daily streak tracking"]
+        },
+        "pillow": {
+          "features": ["Sleep analysis dashboard", "Scoring system", "Unique rewards for reaching sleep goals"]
+        }
+      },
+      "fitness_integrated_apps": {
+        "fitbit": {
+          "sleep_features": ["Sleep tracking", "Challenges and badges", "Social leaderboards", "Goal setting"]
+        },
+        "sleep_cycle": {
+          "features": ["Smart alarm", "Points for waking at same time daily", "Sleep analysis"]
+        }
+      }
+    },
+    "interactive_therapy_tools": {
+      "for_children": {
+        "educational_games": {
+          "sleep_for_kids": "Crosswords, word searches, mazes about sleep importance",
+          "the_sleep_game": "Interactive board game for professionals working with children and families",
+          "perfect_bedroom": "Serious game showing positive changes in sleep routines",
+          "sleep_deprivation_game": "Board game teaching effects of sleep on brain"
+        },
+        "interactive_companions": {
+          "snorble": {
+            "description": "AI companion growing with child",
+            "features": ["Soundscapes for newborns", "Play-based learning games for toddlers", "Mindfulness activities", "Yoga"]
+          }
+        },
+        "creative_tools": ["Interactive art tools", "Virtual sand trays", "Emotion exploration games"]
+      },
+      "for_adults": {
+        "cognitive_training": {
+          "description": "Games like Sudoku shown to improve sleep quality",
+          "evidence": "15 days of cognitive training improved cognitive performance, mood, and sleep"
+        },
+        "therapy_platforms": {
+          "therapist_aid": "Interactive tools explaining mental health concepts, games for emotion identification"
+        }
+      },
+      "for_professionals": {
+        "training_resources": [
+          "The Sleep Game (professional education)",
+          "Digital CBT-I training modules",
+          "Sleep diary templates"
+        ]
+      }
+    },
+    "gamification_design_recommendations": {
+      "for_children": [
+        "Visual rewards and characters",
+        "Simple streak mechanics",
+        "Parent-child collaborative features",
+        "Story-based progression",
+        "Immediate feedback"
+      ],
+      "for_adolescents": [
+        "Social features and competition",
+        "Customisation options",
+        "Challenge-based progression",
+        "Integration with social media (optional)",
+        "Mobile-first design"
+      ],
+      "for_adults": [
+        "Data-driven insights",
+        "Flexible goal setting",
+        "Minimal gamification (optional features)",
+        "Integration with other health apps",
+        "Privacy-focused design"
+      ],
+      "for_elderly": [
+        "Simple, clear interfaces",
+        "Large text and buttons",
+        "Gentle reminders",
+        "Family connection features",
+        "Minimal complexity"
+      ]
+    }
+  },
+
+  "recommended_sleep_duration_by_age": {
+    "WHO_CDC_combined": {
+      "newborns_0_3_months": "14-17 hours",
+      "infants_4_12_months": "12-16 hours (including naps)",
+      "toddlers_1_2_years": "11-14 hours (including naps)",
+      "preschool_3_5_years": "10-13 hours (including naps)",
+      "school_age_6_12_years": "9-12 hours",
+      "teens_13_17_years": "8-10 hours",
+      "adults_18_60_years": "7 or more hours",
+      "adults_61_64_years": "7-9 hours",
+      "older_adults_65_plus": "7-8 hours"
+    },
+    "source_notes": {
+      "who": "WHO guidelines specifically for children under 5",
+      "cdc_aasm": "Joint consensus statement from American Academy of Sleep Medicine and Sleep Research Society, endorsed by CDC"
+    }
+  },
+
+  "references": {
+    "UK_NHS_sources": [
+      "NHS sleep advice pages",
+      "ESHT NHS Sleep Disorder Service",
+      "NBT NHS Neuropsychiatry Sleep Disorders",
+      "QVH NHS Sleep Disorder Centre",
+      "UHNM NHS Adult Sleep Service",
+      "NHS Scotland MyApp Sleep Problems",
+      "AWP NHS CAMHS Sleep Problems"
+    ],
+    "NICE_guidelines": [
+      "NICE Sleep and Sleep Conditions Guidance",
+      "NICE MTG70 Sleepio Recommendation",
+      "NICE Insomnia Management Guidelines",
+      "NICE Daridorexant Guidance"
+    ],
+    "PubMed_sources": [
+      "PMC3181901 - Sleep disorders in children",
+      "PMC6301929 - Adolescent sleep",
+      "PMC10136689 - Sleep and brain maturation",
+      "PMC9897137 - Cochrane insomnia review",
+      "PMC5689397 - Sleep disorders in elderly"
+    ],
+    "US_sources": {
+      "mayo_clinic": [
+        "Mayo Clinic Sleep Disorders Diagnosis Treatment",
+        "Mayo Clinic Center for Sleep Medicine",
+        "Mayo Clinic Insomnia Treatment"
+      ],
+      "cdc": [
+        "CDC Sleep and Health Guidelines",
+        "CDC Healthy Sleep Healthy Brain",
+        "CDC Sleep Duration Recommendations"
+      ]
+    },
+    "European_sources": [
+      "European Sleep Research Society Guidelines",
+      "European Insomnia Guideline 2023",
+      "World Sleep Society Guidelines"
+    ],
+    "WHO_sources": [
+      "WHO Guidelines on Physical Activity, Sedentary Behaviour and Sleep for Children Under 5",
+      "WHO Technical Meeting on Sleep and Health 2004"
+    ],
+    "Cochrane_sources": [
+      "Cochrane Systematic Reviews on Insomnia Interventions",
+      "Cochrane Reviews on CBT-I",
+      "Cochrane Reviews on Pharmacological Treatments"
+    ]
+  }
+}

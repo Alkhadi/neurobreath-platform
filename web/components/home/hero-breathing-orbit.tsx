@@ -21,7 +21,7 @@ export function HeroBreathingOrbit() {
   const [isRunning, setIsRunning] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [phase, setPhase] = useState<Phase>('Ready')
-  const [orbPosition, setOrbPosition] = useState({ x: 0, y: 50 }) // Start on left middle
+  const [orbitId, setOrbitId] = useState<string>('')
   const [stats, setStats] = useState<BreathingStats>({
     todayMinutes: 0,
     sessions: 0,
@@ -37,7 +37,31 @@ export function HeroBreathingOrbit() {
   const startTimeRef = useRef<number>(0)
   const pausedTimeRef = useRef<number>(0)
 
+  const orbStyleRef = useRef<HTMLStyleElement | null>(null)
+  const lastPhaseRef = useRef<Phase>('Ready')
+
+  const setOrbPositionCss = (position: { x: number; y: number }) => {
+    if (!orbStyleRef.current || !orbitId) return
+    const x = Number.isFinite(position.x) ? position.x : 0
+    const y = Number.isFinite(position.y) ? position.y : 50
+    orbStyleRef.current.textContent = `[data-orbit-id="${orbitId}"] .orbit-orb { left: ${x.toFixed(3)}%; top: ${y.toFixed(3)}%; }`
+  }
+
   useEffect(() => {
+    // Generate unique ID client-side only (prevents hydration mismatch)
+    setOrbitId(`orbit-${Math.random().toString(36).slice(2)}`)
+  }, [])
+
+  useEffect(() => {
+    if (!orbitId) return // Wait for ID to be generated
+
+    // Create a scoped stylesheet so we can move the orb without inline styles
+    const styleEl = document.createElement('style')
+    styleEl.setAttribute('data-orbit-style', orbitId)
+    document.head.appendChild(styleEl)
+    orbStyleRef.current = styleEl
+    setOrbPositionCss({ x: 0, y: 50 })
+
     // Load stats from localStorage and calculate streak
     if (typeof window !== 'undefined') {
       const savedStats = localStorage.getItem('nb-breathing-stats')
@@ -76,7 +100,11 @@ export function HeroBreathingOrbit() {
         setStats({ ...parsedStats, ...streakInfo })
       }
     }
-  }, [])
+
+    return () => {
+      styleEl.remove()
+    }
+  }, [orbitId])
 
   const calculateStreakInfo = (streak: number, sessions: number) => {
     let message = ''
@@ -138,7 +166,8 @@ export function HeroBreathingOrbit() {
     setIsRunning(false)
     setIsPaused(false)
     setPhase('Ready')
-    setOrbPosition({ x: 0, y: 50 })
+    setOrbPositionCss({ x: 0, y: 50 })
+    lastPhaseRef.current = 'Ready'
     pausedTimeRef.current = 0
 
     if (animationRef.current) {
@@ -212,12 +241,15 @@ export function HeroBreathingOrbit() {
       phaseStart += p.duration
     }
 
-    setPhase(currentPhase.name)
+    if (lastPhaseRef.current !== currentPhase.name) {
+      lastPhaseRef.current = currentPhase.name
+      setPhase(currentPhase.name)
+    }
 
     // Calculate orb position on the pill-shaped track
     const trackProgress = (cyclePosition / totalCycle) * 100
     const position = calculateOrbPosition(trackProgress)
-    setOrbPosition(position)
+    setOrbPositionCss(position)
 
     animationRef.current = requestAnimationFrame(animateBreathing)
   }
@@ -284,7 +316,7 @@ export function HeroBreathingOrbit() {
   }, [])
 
   return (
-    <div className="orbit-container">
+    <div className="orbit-container" data-orbit-id={orbitId || ''}>
       {/* Title */}
       <h3 className="orbit-title">Inhale Hold Exhale</h3>
 
@@ -316,10 +348,6 @@ export function HeroBreathingOrbit() {
         {/* Orb - Using transform for dynamic animation positioning */}
         <div
           className="orbit-orb"
-          style={{
-            left: `${orbPosition.x}%`,
-            top: `${orbPosition.y}%`,
-          } as React.CSSProperties}
         />
 
         {/* Phase label */}

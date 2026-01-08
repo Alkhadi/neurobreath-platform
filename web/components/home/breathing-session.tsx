@@ -987,7 +987,12 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
               
               {/* Voice Control Row */}
               <div className="voice-control-row">
+                <label htmlFor="voice-control-select" className="sr-only">
+                  Voice selection for coaching
+                </label>
                 <select 
+                  id="voice-control-select"
+                  name="voiceControl"
                   className="voice-select"
                   value={settings.ttsVoice}
                   onChange={(e) => setSettings(prev => ({ ...prev, ttsVoice: e.target.value }))}
@@ -1031,47 +1036,59 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
               {/* Phase Inputs */}
               <div className="phase-grid">
                 <div className="tile">
-                  <label>Inhale (s)</label>
+                  <label htmlFor="inhale-duration">Inhale (s)</label>
                   <input
+                    id="inhale-duration"
+                    name="inhale"
                     type="number"
                     min="1"
                     max="20"
                     value={settings.inhale}
                     onChange={(e) => setSettings(prev => ({ ...prev, inhale: Number(e.target.value) }))}
                     title="Inhale duration in seconds"
+                    aria-label="Inhale duration in seconds"
                   />
                 </div>
                 <div className="tile">
-                  <label>Hold (s)</label>
+                  <label htmlFor="hold-duration">Hold (s)</label>
                   <input
+                    id="hold-duration"
+                    name="hold1"
                     type="number"
                     min="0"
                     max="20"
                     value={settings.hold1}
                     onChange={(e) => setSettings(prev => ({ ...prev, hold1: Number(e.target.value) }))}
                     title="Hold duration after inhale in seconds"
+                    aria-label="Hold duration after inhale in seconds"
                   />
                 </div>
                 <div className="tile">
-                  <label>Exhale (s)</label>
+                  <label htmlFor="exhale-duration">Exhale (s)</label>
                   <input
+                    id="exhale-duration"
+                    name="exhale"
                     type="number"
                     min="1"
                     max="20"
                     value={settings.exhale}
                     onChange={(e) => setSettings(prev => ({ ...prev, exhale: Number(e.target.value) }))}
                     title="Exhale duration in seconds"
+                    aria-label="Exhale duration in seconds"
                   />
                 </div>
                 <div className="tile">
-                  <label>Hold (after exhale) (s)</label>
+                  <label htmlFor="hold2-duration">Hold (after exhale) (s)</label>
                   <input
+                    id="hold2-duration"
+                    name="hold2"
                     type="number"
                     min="0"
                     max="20"
                     value={settings.hold2}
                     onChange={(e) => setSettings(prev => ({ ...prev, hold2: Number(e.target.value) }))}
                     title="Hold duration after exhale in seconds"
+                    aria-label="Hold duration after exhale in seconds"
                   />
                 </div>
               </div>
@@ -1081,7 +1098,12 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
               
               {/* Voice Control Row */}
               <div className="vc-row">
+                <label htmlFor="voice-selection-dropdown" className="sr-only">
+                  Voice selection
+                </label>
                 <select 
+                  id="voice-selection-dropdown"
+                  name="ttsVoice"
                   className="vc-voice"
                   value={settings.ttsVoice}
                   onChange={(e) => setSettings(prev => ({ ...prev, ttsVoice: e.target.value }))}
@@ -1099,11 +1121,17 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
               </div>
 
               <div className="btn-row mt-3">
+                <label htmlFor="preset-selection-dropdown" className="sr-only">
+                  Select session preset
+                </label>
                 <select 
+                  id="preset-selection-dropdown"
+                  name="preset"
                   className="preset-select"
                   value={selectedPreset}
                   onChange={(e) => setSelectedPreset(Number(e.target.value))}
                   title="Select session preset"
+                  aria-label="Select session preset"
                 >
                   {QUICK_PRESETS.map((preset, idx) => (
                     <option key={idx} value={idx}>{preset.label}</option>
@@ -1117,11 +1145,14 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
               <div className="ui-panel">
                 <div className="kv-grid">
                   <div className="tile">
-                    <label>Minutes</label>
+                    <label htmlFor="session-minutes">Minutes</label>
                     <select
+                      id="session-minutes"
+                      name="minutes"
                       value={settings.minutes}
                       onChange={(e) => setSettings(prev => ({ ...prev, minutes: Number(e.target.value) }))}
                       title="Session duration in minutes"
+                      aria-label="Session duration in minutes"
                     >
                       <option value="1">1 minute</option>
                       <option value="3">3 minutes</option>
@@ -1131,8 +1162,10 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
                   </div>
 
                   <div className="tile">
-                    <label>Breaths/min</label>
+                    <label htmlFor="breaths-per-minute">Breaths/min</label>
                     <input
+                      id="breaths-per-minute"
+                      name="bpm"
                       type="number"
                       min="3"
                       max="8"
@@ -1140,15 +1173,19 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
                       value={settings.bpm}
                       onChange={(e) => setSettings(prev => ({ ...prev, bpm: Number(e.target.value) }))}
                       title="Breaths per minute"
+                      aria-label="Breaths per minute"
                     />
                   </div>
 
                   <div className="tile">
-                    <label>Voice coach (TTS)</label>
+                    <label htmlFor="voice-coach">Voice coach (TTS)</label>
                     <select
+                      id="voice-coach"
+                      name="tts"
                       value={settings.tts ? 'on' : 'off'}
                       onChange={(e) => setSettings(prev => ({ ...prev, tts: e.target.value === 'on' }))}
                       title="Enable or disable voice coaching"
+                      aria-label="Enable or disable voice coaching"
                     >
                       <option value="off">Off</option>
                       <option value="on">On</option>
@@ -1156,11 +1193,14 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
                   </div>
 
                   <div className="tile">
-                    <label>Voice</label>
+                    <label htmlFor="voice-type">Voice</label>
                     <select
+                      id="voice-type"
+                      name="ttsVoiceType"
                       value={settings.ttsVoice}
                       onChange={(e) => setSettings(prev => ({ ...prev, ttsVoice: e.target.value }))}
                       title="Select voice for coaching"
+                      aria-label="Select voice for coaching"
                     >
                       <option value="">System default</option>
                       {voices.filter(v => v.lang.startsWith('en')).map(voice => (
@@ -1173,11 +1213,14 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
                   </div>
 
                   <div className="tile">
-                    <label>Haptics</label>
+                    <label htmlFor="haptics">Haptics</label>
                     <select
+                      id="haptics"
+                      name="vibration"
                       value={settings.vibration ? 'on' : 'off'}
                       onChange={(e) => setSettings(prev => ({ ...prev, vibration: e.target.value === 'on' }))}
                       title="Enable or disable haptic feedback"
+                      aria-label="Enable or disable haptic feedback"
                     >
                       <option value="off">Off</option>
                       <option value="on">On</option>
@@ -1185,11 +1228,14 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
                   </div>
 
                   <div className="tile">
-                    <label>Ambience</label>
+                    <label htmlFor="ambience-type">Ambience</label>
                     <select
+                      id="ambience-type"
+                      name="ambience"
                       value={settings.ambience}
                       onChange={(e) => setSettings(prev => ({ ...prev, ambience: e.target.value as AmbienceType }))}
                       title="Select ambient sound"
+                      aria-label="Select ambient sound"
                     >
                       {(Object.keys(AMBIENCE_OPTIONS) as AmbienceType[]).map((key) => (
                         <option key={key} value={key}>{AMBIENCE_OPTIONS[key].label}</option>
@@ -1198,8 +1244,10 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
                   </div>
 
                   <div className="tile">
-                    <label>Ambience volume</label>
+                    <label htmlFor="ambience-volume">Ambience volume</label>
                     <input
+                      id="ambience-volume"
+                      name="ambienceVolume"
                       type="range"
                       min="0"
                       max="1"
@@ -1207,15 +1255,19 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
                       value={settings.ambienceVolume}
                       onChange={(e) => setSettings(prev => ({ ...prev, ambienceVolume: Number(e.target.value) }))}
                       title="Adjust ambience volume"
+                      aria-label="Adjust ambience volume"
                     />
                   </div>
 
                   <div className="tile">
-                    <label>Reduced motion</label>
+                    <label htmlFor="reduced-motion">Reduced motion</label>
                     <select
+                      id="reduced-motion"
+                      name="reducedMotion"
                       value={settings.reducedMotion}
                       onChange={(e) => setSettings(prev => ({ ...prev, reducedMotion: e.target.value as 'auto' | 'on' | 'off' }))}
                       title="Reduced motion setting"
+                      aria-label="Reduced motion setting"
                     >
                       <option value="auto">Auto</option>
                       <option value="on">Force reduce</option>
@@ -1224,11 +1276,14 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
                   </div>
 
                   <div className="tile">
-                    <label>Focus mode</label>
+                    <label htmlFor="focus-mode">Focus mode</label>
                     <select
+                      id="focus-mode"
+                      name="focusMode"
                       value={settings.focusMode ? 'on' : 'off'}
                       onChange={(e) => setSettings(prev => ({ ...prev, focusMode: e.target.value === 'on' }))}
                       title="Enable or disable focus mode"
+                      aria-label="Enable or disable focus mode"
                     >
                       <option value="off">Off</option>
                       <option value="on">On</option>
@@ -1248,12 +1303,6 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
                 <button className="btn" onClick={handleStop}>Stop</button>
               </div>
             </section>
-
-            {/* Footer */}
-            <div className="footer">
-              <p>© {new Date().getFullYear()} <strong>NeuroBreath</strong> — Empowering minds through breath.</p>
-              <p className="mt-2">Educational content only, not medical advice. <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/support-us">Support Us</a></p>
-            </div>
           </div>
         )}
 
@@ -1264,11 +1313,17 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
               <h2 className="text-2xl font-bold mb-4">How to Practice</h2>
               
               <div className="vc-row">
+                <label htmlFor="instructions-voice-select" className="sr-only">
+                  Select voice for instructions
+                </label>
                 <select 
+                  id="instructions-voice-select"
+                  name="instructionsVoice"
                   className="vc-voice"
                   value={settings.ttsVoice}
                   onChange={(e) => setSettings(prev => ({ ...prev, ttsVoice: e.target.value }))}
                   title="Select voice for instructions"
+                  aria-label="Select voice for instructions"
                 >
                   <option value="">System default</option>
                   {voices.filter(v => v.lang.startsWith('en')).map(voice => (
@@ -1291,11 +1346,6 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
                 <button className="btn btn-success" onClick={handleStartSession}>Begin Session</button>
                 <button className="btn" onClick={() => setStage('quick')}>Back to Setup</button>
               </div>
-            </div>
-
-            <div className="footer">
-              <p>© {new Date().getFullYear()} <strong>NeuroBreath</strong> — Empowering minds through breath.</p>
-              <p className="mt-2">Educational content only, not medical advice. <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/support-us">Support Us</a></p>
             </div>
           </div>
         )}
@@ -1425,11 +1475,6 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
                 }}>Again</button>
                 <button className="btn" onClick={onClose}>Back to Hub</button>
               </div>
-            </div>
-
-            <div className="footer">
-              <p>© {new Date().getFullYear()} <strong>NeuroBreath</strong> — Empowering minds through breath.</p>
-              <p className="mt-2">Educational content only, not medical advice. <a href="/about">About</a> · <a href="/contact">Contact</a> · <a href="/support-us">Support Us</a></p>
             </div>
           </div>
         )}
@@ -2057,31 +2102,6 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
         .ring.progress {
           stroke: #10b981;
           transition: stroke-dashoffset 0.3s linear;
-        }
-
-        /* Footer */
-        .footer {
-          text-align: center;
-          padding: 32px 16px;
-          font-size: 0.875rem;
-          color: #6b7280;
-          border-top: 1px solid #e5e7eb;
-          margin-top: 32px;
-          background: white;
-        }
-
-        .footer strong {
-          color: #111827;
-        }
-
-        .footer a {
-          color: #3b82f6;
-          text-decoration: none;
-          font-weight: 500;
-        }
-
-        .footer a:hover {
-          text-decoration: underline;
         }
 
         /* Animations */

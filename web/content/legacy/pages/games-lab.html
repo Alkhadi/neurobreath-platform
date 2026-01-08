@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <title>NeuroBreath • Games & Rewards Lab</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="description" content="NeuroBreath Games & Rewards Lab – gentle breathing and focus mini-games with badges, coupons and progress tracking, designed for neurodivergent learners and their supporters.">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/x-icon" href="assets/icons/neurobreath-favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/neurobreath-logo-square-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/neurobreath-logo-square-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/neurobreath-logo-square-180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/neurobreath-logo-square-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icons/neurobreath-logo-square-512.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/site.css" />
+  <link rel="stylesheet" href="assets/css/games-lab.css" />
+  <script src="assets/js/voice-preferences.js" defer></script>
+  <script src="assets/js/site.js" defer></script>
+</head>
+<body data-page-id="games-lab">
+<a class="skip-link" href="#main">Skip to content</a>
+<div id="top"></div>
+<header class="site-header">
+  <div class="container navbar">
+    <a id="brandLink" class="brand" href="index.html">
+      <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo" class="logo" /><span class="brand-text">NeuroBreath</span>
+    </a>
+    <nav class="main-nav" id="mainNav" role="navigation" aria-label="Primary">
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Conditions ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Neurodevelopmental</div>
+          <a href="autism.html" data-href="autism.html">Autism</a>
+          <a href="autism-parent.html" data-href="autism-parent.html">Autism Parent</a>
+          <a href="adhd.html" data-href="adhd.html">ADHD</a>
+          <a href="dyslexia-reading-training.html" data-href="dyslexia-reading-training.html">Dyslexia</a>
+          <div class="menu-label" aria-hidden="true">Mental Health</div>
+          <a href="anxiety.html" data-href="anxiety.html">Anxiety</a>
+          <a href="depression.html" data-href="depression.html">Depression</a>
+          <a href="stress.html" data-href="stress.html">Stress</a>
+          <a href="sleep.html" data-href="sleep.html">Sleep</a>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Breathing &amp; Focus ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Guides</div>
+          <a href="breath.html" data-href="breath.html">Breath (how-to)</a>
+          <a href="focus.html" data-href="focus.html">Focus</a>
+          <a href="mindfulness.html" data-href="mindfulness.html">Mindfulness</a>
+          <div class="menu-label" aria-hidden="true">Techniques</div>
+          <a href="sos-60.html" data-href="sos-60.html">🆘 60-second SOS</a>
+          <a href="box-breathing.html" data-href="box-breathing.html">🟩 Box Breathing</a>
+          <a href="4-7-8-breathing.html" data-href="4-7-8-breathing.html">🟦 4-7-8 Breathing</a>
+          <a href="coherent-5-5.html" data-href="coherent-5-5.html">🟪 Coherent 5-5</a>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Tools ▾</button>
+        <div class="submenu">
+          <a href="sleep-tools.html" data-href="sleep-tools.html">Sleep Tools</a>
+          <a href="breath-tools.html" data-href="breath-tools.html">Breath Tools</a>
+          <a href="mood-tools.html" data-href="mood-tools.html">Mood Tools</a>
+          <a href="adhd-tools.html" data-href="adhd-tools.html">ADHD Tools</a>
+          <a href="autism-tools.html" data-href="autism-tools.html">Autism Tools</a>
+          <a href="anxiety-tools.html" data-href="anxiety-tools.html">Anxiety Tools</a>
+          <a href="stress-tools.html" data-href="stress-tools.html">Stress Tools</a>
+          <a href="focus-garden.html" data-href="focus-garden.html">🌱 Focus Training</a>
+          <div class="menu-label" aria-hidden="true">Progress &amp; Rewards</div>
+          <a href="progress.html" data-href="progress.html">📊 Progress Dashboard</a>
+          <a href="rewards.html" data-href="rewards.html">🏆 Rewards &amp; Badges</a>
+          <a href="games-lab.html" data-href="games-lab.html">🎮 Games &amp; Rewards Lab</a>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">About ▾</button>
+        <div class="submenu">
+          <a href="about.html" data-href="about.html">About</a>
+          <a href="aims-objectives.html" data-href="aims-objectives.html">Aims &amp; Stories</a>
+          <a href="coffee.html" data-href="coffee.html">Support Us</a>
+          <a href="contact.html" data-href="contact.html">Contact</a>
+        </div>
+      </div>
+    </nav>
+    <button type="button" id="navToggle" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="mainNav">☰</button>
+  </div>
+</header>
+
+<main id="main" class="nb-shell" aria-label="NeuroBreath games and rewards lab">
+  <header class="nb-page-header">
+    <div class="nb-page-header-inner">
+      <div class="nb-kicker">NeuroBreath · Practice Hub Prototype</div>
+      <div class="nb-title-row">
+        <div class="nb-title-emoji">🎮</div>
+        <h1 class="nb-title-main">Games &amp; Rewards Lab</h1>
+        </div>
+        <p class="nb-subtitle">
+          A gentle practice space blending <strong>breathing adventures</strong>, <strong>focus games</strong>,
+          <strong>badges</strong> and <strong>local progress</strong> for neurodivergent learners, parents, teachers
+          and carers. Everything on this page is stored only in <strong>this browser</strong> (no accounts yet).
+        </p>
+      <div class="nb-header-meta">
+        <div class="nb-pill"><span class="dot"></span> Neuro-inclusive · low pressure</div>
+        <div class="nb-pill">Local streaks, badges &amp; coupons</div>
+        <div class="nb-pill">Ready for future integration with your multi-page site</div>
+      </div>
+
+      <div class="nb-nav-row" aria-label="Quick navigation">
+        <button class="nb-nav-btn" type="button" data-scroll-target="#breathing"><span>🌬</span> Breathing games</button>
+        <button class="nb-nav-btn" type="button" data-scroll-target="#focus"><span>🎯</span> Focus Quest</button>
+        <button class="nb-nav-btn" type="button" data-scroll-target="#progress"><span>📊</span> Progress</button>
+        <button class="nb-nav-btn" type="button" data-scroll-target="#rewards"><span>🏅</span> Badges &amp; coupons</button>
+        <button class="nb-nav-btn" type="button" data-scroll-target="#teacher"><span>👩‍🏫</span> Teacher helper</button>
+        <button class="nb-nav-btn" type="button" data-scroll-target="#challenges"><span>📣</span> Challenges</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Intro card -------------------------------------------------------- -->
+  <section class="nb-section" aria-label="Intro and overview">
+    <div class="nb-card">
+      <div class="nb-card-header">
+        <div>
+          <div class="nb-card-kicker">Overview</div>
+          <div class="nb-card-title"><span class="emoji">✨</span><span>What this page is about</span></div>
+        </div>
+      </div>
+      <div class="nb-card-body">
+        <p>
+          This prototype hub turns your NeuroBreath tools into a <strong>lightweight practice environment</strong>:
+          users can play breathing and focus games, <strong>earn badges</strong>, unlock <strong>family/classroom
+          coupons</strong>, and quietly track <strong>local streaks</strong>. Later you can split these ideas across
+          pages like <em>4-7-8-breathing.html</em>, <em>focus.html</em>, <em>progress.html</em>,
+          <em>rewards.html</em> and <em>teacher-quick-pack.html</em>.
+        </p>
+        <p class="nb-small-muted">
+          Rewards and challenges are <strong>gentle and optional</strong>. The aim is to celebrate effort,
+          micro-progress and regulation practice – not perfection.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Breathing games --------------------------------------------------- -->
+  <section class="nb-section" id="breathing" aria-label="Breathing games">
+    <div class="nb-card">
+      <div class="nb-card-header">
+        <div>
+          <div class="nb-card-kicker">Idea 1 · Gamified Breathing</div>
+          <div class="nb-card-title"><span class="emoji">🌬</span><span>Breathing Adventures · Calm Bubble Trainer</span></div>
+        </div>
+      </div>
+      <div class="nb-card-body">
+        <p>
+          Choose a breathing pattern, select a session length and let the calm bubble guide you through
+          <strong>inhale, hold and exhale</strong>. Each pattern has a different visual orbit and feel. You can
+          switch between <strong>Simple</strong> and <strong>Interactive</strong> visuals and enable
+          <strong>low-stimulation</strong> mode at any time.
+        </p>
+
+        <div class="nb-tag-row" aria-label="Breathing patterns">
+          <button class="nb-chip" type="button" data-breath-pattern="478">
+            4-7-8 · Sleep wind-down
+          </button>
+          <button class="nb-chip" type="button" data-breath-pattern="box">
+            Box · Steady square
+          </button>
+          <button class="nb-chip" type="button" data-breath-pattern="coherent">
+            5-5 · Coherent wave
+          </button>
+          <button class="nb-chip" type="button" data-breath-pattern="sos60">
+            SOS-60 · Quick rescue
+          </button>
+        </div>
+
+        <div class="nb-field-row" aria-label="Session length and visuals">
+          <span>Session length:</span>
+          <select id="breathDurationSelect" aria-label="Session length in minutes">
+            <option value="1">1 minute · Micro reset</option>
+            <option value="2">2 minutes</option>
+            <option value="3">3 minutes</option>
+            <option value="4">4 minutes</option>
+            <option value="5">5 minutes · Deep reset</option>
+          </select>
+
+          <span>Visual mode:</span>
+          <label class="nb-toggle">
+            <input type="radio" name="breathMode" id="breathModeSimple" value="simple">
+            <span>Simple pulse</span>
+          </label>
+          <label class="nb-toggle">
+            <input type="radio" name="breathMode" id="breathModeInteractive" value="interactive" checked>
+            <span>Interactive orbit</span>
+          </label>
+        </div>
+
+        <div class="nb-toggle-row">
+          <label class="nb-toggle">
+            <input type="checkbox" id="lowStimToggle">
+            <span>Low-stimulation mode</span>
+          </label>
+          <label class="nb-toggle">
+            <input type="checkbox" id="musicToggle">
+            <span>Soft ambient music</span>
+          </label>
+        </div>
+
+        <p class="nb-small-muted">
+          Tip: on days when your brain feels "full", toggle <strong>Low-stimulation mode</strong>. This calms the
+          orbit, softens colours and turns off music.
+        </p>
+
+        <div class="nb-breath-layout">
+          <div>
+            <div class="nb-breath-visual" id="breathVisual" data-pattern="478" data-mode="interactive" data-low-stim="0">
+              <div class="nb-breath-orbit" id="breathOrbit" aria-hidden="true"></div>
+              <div class="nb-breath-orbit-ring" id="breathOrbitRing" aria-hidden="true"></div>
+              <div class="nb-breath-bubble" id="breathBubble" aria-live="polite" aria-atomic="true">
+                <div class="nb-breath-phase-label" id="breathPhaseLabel">Ready</div>
+                <div class="nb-breath-phase-counter" id="breathPhaseCounter">0</div>
+              </div>
+              <div class="nb-breath-satellite" id="breathSatellite" aria-hidden="true"></div>
+            </div>
+
+            <div class="nb-breath-metrics">
+              <div class="nb-pill-stat">
+                <span class="label">Goal</span>
+                <span class="value" id="breathGoalLabel">1 min calm practice</span>
+              </div>
+              <div class="nb-pill-stat">
+                <span class="label">Cycles</span>
+                <span class="value" id="breathCyclesCount">0</span>
+              </div>
+              <div class="nb-pill-stat">
+                <span class="label">Session seconds</span>
+                <span class="value" id="breathSecondsCount">0</span>
+              </div>
+            </div>
+
+            <div class="nb-dragon" id="breathDragonText">
+              <span>🐉</span> Dragon is resting. Calm breaths help it feel safe.
+            </div>
+          </div>
+
+          <div>
+            <div class="nb-breath-meta" id="breathPatternExplainer">
+              <!-- Filled by JS -->
+            </div>
+
+            <div class="nb-btn-row">
+              <button type="button" class="nb-btn nb-btn-primary" id="breathStartBtn">
+                ▶ Start
+              </button>
+              <button type="button" class="nb-btn nb-btn-soft" id="breathPauseBtn">
+                ⏸ Pause &amp; save
+              </button>
+              <button type="button" class="nb-btn nb-btn-soft" id="breathResetBtn">
+                ⟲ Reset session
+              </button>
+            </div>
+            <p class="nb-status" id="breathStatusText">
+              Status: <strong>Not started</strong>. When you are ready, press <strong>Start</strong>. You can stop at
+              any time.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Focus Quest ------------------------------------------------------- -->
+  <section class="nb-section" id="focus" aria-label="Focus Quest mini-game">
+    <div class="nb-card">
+      <div class="nb-card-header">
+        <div>
+          <div class="nb-card-kicker">Idea 1 · Focus & Regulation Game</div>
+          <div class="nb-card-title"><span class="emoji">🎯</span><span>Focus Quest · Gentle Spot-the-Star</span></div>
+        </div>
+      </div>
+      <div class="nb-card-body">
+        <p>
+          A short, low-pressure focus game. When you press <strong>Start</strong>, one circle becomes a star (★).
+          Tap it calmly when you are ready. There is no "fail": each round is simply an opportunity to practise
+          steady attention.
+        </p>
+
+        <div class="nb-metric-row">
+          <span>Round: <strong><span id="focusRoundLabel">0 / 5</span></strong></span>
+          <span>Score: <strong><span id="focusScoreLabel">0</span></strong></span>
+          <span>Session secs: <strong><span id="focusSecondsLabel">0</span></strong></span>
+        </div>
+
+        <div class="nb-focus-grid" id="focusGrid" role="group" aria-label="Focus Quest grid">
+          <button type="button" class="nb-focus-cell" data-cell="0" aria-label="Empty spot"></button>
+          <button type="button" class="nb-focus-cell" data-cell="1" aria-label="Empty spot"></button>
+          <button type="button" class="nb-focus-cell" data-cell="2" aria-label="Empty spot"></button>
+          <button type="button" class="nb-focus-cell" data-cell="3" aria-label="Empty spot"></button>
+          <button type="button" class="nb-focus-cell" data-cell="4" aria-label="Empty spot"></button>
+          <button type="button" class="nb-focus-cell" data-cell="5" aria-label="Empty spot"></button>
+          <button type="button" class="nb-focus-cell" data-cell="6" aria-label="Empty spot"></button>
+          <button type="button" class="nb-focus-cell" data-cell="7" aria-label="Empty spot"></button>
+          <button type="button" class="nb-focus-cell" data-cell="8" aria-label="Empty spot"></button>
+        </div>
+
+        <div class="nb-btn-row">
+          <button type="button" class="nb-btn nb-btn-primary" id="focusStartBtn">
+            ▶ Start Focus Quest
+          </button>
+          <button type="button" class="nb-btn nb-btn-soft" id="focusResetBtn" disabled>
+            ⟲ Reset game
+          </button>
+        </div>
+        <p class="nb-status" id="focusStatusText">
+          Status: <strong>Not started</strong>. You can also use this together as a class or family and talk about
+          what "steady focus" feels like in the body.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Progress ---------------------------------------------------------- -->
+  <section class="nb-section" id="progress" aria-label="Progress tracking">
+    <div class="nb-card">
+      <div class="nb-card-header">
+        <div>
+          <div class="nb-card-kicker">Idea 2 · Progress Tracking</div>
+          <div class="nb-card-title"><span class="emoji">📊</span><span>Calm Progress Overview (this device only)</span></div>
+        </div>
+      </div>
+      <div class="nb-card-body">
+        <p>
+          Each time you complete a breathing or focus session on this page, a gentle record is stored in your
+          browser. No personal names, no accounts – just simple local streaks and counts.
+        </p>
+
+        <div class="nb-grid nb-grid-2">
+          <div>
+            <p class="nb-small-muted"><strong>Calm practice towards 30 sessions</strong></p>
+            <div class="nb-progress-line" aria-hidden="true">
+              <div class="nb-progress-fill" id="overallProgressBar"></div>
+            </div>
+            <p class="nb-small-muted">
+              <span id="overallProgressLabel">0%</span> &middot;
+              <span id="overallSessionsLabel">0 / 30</span> calm activities
+            </p>
+            <p class="nb-small-muted">
+              Approx. minutes practised: <strong><span id="totalMinutesLabel">0</span></strong>
+            </p>
+
+            <hr class="nb-divider" />
+
+            <p class="nb-small-muted"><strong>Calm streak</strong> (consecutive days with at least one session)</p>
+            <div class="nb-progress-line" aria-hidden="true">
+              <div class="nb-progress-fill" id="streakProgressBar"></div>
+            </div>
+            <p class="nb-small-muted">
+              Current: <strong><span id="streakCurrentLabel">0</span> day(s)</strong> &middot;
+              Best: <strong><span id="streakBestLabel">0</span></strong>
+            </p>
+          </div>
+
+          <div>
+            <p class="nb-small-muted"><strong>Last 5 sessions</strong></p>
+            <ul class="nb-list" id="lastSessionsList">
+              <li>No sessions recorded yet. A short calm session will appear here.</li>
+            </ul>
+
+            <p class="nb-small-muted nb-mt-medium"><strong>Activity totals</strong></p>
+            <ul class="nb-list" id="activityTotalsList">
+              <li>No activity yet.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="nb-btn-row nb-mt-large">
+          <button type="button" class="nb-btn nb-btn-soft" id="resetProgressBtn">
+            🧹 Reset local progress on this hub
+          </button>
+        </div>
+        <p class="nb-small-muted">
+          This clears sessions, badges and coupons stored for this page only on this device. It does not affect the
+          rest of your NeuroBreath project.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rewards, badges, coupons & certificates --------------------------- -->
+  <section class="nb-section" id="rewards" aria-label="Badges, coupons and certificates">
+    <div class="nb-card">
+      <div class="nb-card-header">
+        <div>
+          <div class="nb-card-kicker">Idea 2 · Rewards & Recognition</div>
+          <div class="nb-card-title"><span class="emoji">🏅</span><span>Calm Badges, Coupons &amp; Certificates</span></div>
+        </div>
+      </div>
+      <div class="nb-card-body">
+        <p>
+          Recognition is gentle and optional. Badges are earned automatically from your practice.
+          Coupons are <strong>family/classroom reward ideas</strong> you can redeem offline (for example,
+          choosing the story tonight or picking a takeaway). Certificates can be printed when learners complete
+          a block of calm work.
+        </p>
+
+        <h3 class="nb-heading-small-mt-large">Badges</h3>
+        <p class="nb-small-muted">
+          These unlock as you complete more calm sessions and build streaks. They are calculated from your
+          local progress (no data is sent anywhere).
+        </p>
+        <div class="nb-badge-list" id="badgesList">
+          <!-- Filled by JS -->
+        </div>
+
+        <hr class="nb-divider" />
+
+        <h3 class="nb-heading-small-mt">Coupons · Food & clothing treats</h3>
+        <p class="nb-small-muted">
+          Use <strong>food-themed coupons</strong> (e.g. "McTreat movie night") for short tasks and
+          <strong>clothing-themed coupons</strong> (e.g. "Choose new trainers budget") for harder, sustained
+          challenges. These are <strong>local reward tokens</strong> – adults decide if/how to link them to
+          real-world offers or official brand deals.
+        </p>
+
+        <div class="nb-field-row" aria-label="Generate a coupon">
+          <span>Category:</span>
+          <select id="couponCategorySelect" aria-label="Coupon category">
+            <option value="food">Food treat (McDonald's, KFC, pizza…)</option>
+            <option value="clothing">Clothing / trainers (Nike, Footlocker…)</option>
+          </select>
+          <span>Challenge size:</span>
+          <select id="couponDifficultySelect" aria-label="Challenge difficulty">
+            <option value="small">Small task / micro challenge</option>
+            <option value="big">Big challenge / multi-day goal</option>
+          </select>
+        </div>
+        <div class="nb-field-row">
+          <span>Brand theme (optional):</span>
+          <input id="couponBrandInput" type="text" placeholder="e.g. McDonald's, Nike, local caf&eacute;">
+        </div>
+        <div class="nb-btn-row">
+          <button type="button" class="nb-btn nb-btn-primary" id="generateCouponBtn">
+            🎁 Generate local reward coupon
+          </button>
+        </div>
+        <div id="couponList">
+          <p class="nb-small-muted">No coupons yet – calm sessions and goals can unlock them.</p>
+        </div>
+
+        <hr class="nb-divider" />
+
+        <h3 class="nb-heading-small-mt">Calm Certificate</h3>
+        <p class="nb-small-muted">
+          Create a simple certificate when a learner completes a run of calm practice – for example, finishing
+          10 sessions of 4-7-8 or a 30-day calm challenge.
+        </p>
+
+        <div class="nb-field-row nb-cert-name-row">
+          <span class="nb-cert-name-label">Recipient name <span class="nb-cert-name-required">*</span>:</span>
+          <input id="certNameInput" type="text" class="nb-cert-name-input" placeholder="Enter learner or group name" required>
+        </div>
+        <p class="nb-small-muted nb-cert-name-hint">
+          <strong>Required:</strong> Please enter a name before generating the certificate.
+        </p>
+        <div class="nb-field-row">
+          <span>Technique:</span>
+          <select id="certTechniqueSelect" aria-label="Breathing technique">
+            <option value="478">4-7-8 · Sleep wind-down</option>
+            <option value="box">Box · Steady square</option>
+            <option value="coherent">5-5 · Coherent wave</option>
+            <option value="sos60">SOS-60 · Quick rescue</option>
+          </select>
+          <span>Minutes focus:</span>
+          <select id="certMinutesSelect" aria-label="Minutes of focus">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5+</option>
+          </select>
+          <span>Mode:</span>
+          <select id="certModeSelect" aria-label="Practice mode">
+            <option value="solo">Solo practice</option>
+            <option value="group">Group / class session</option>
+          </select>
+        </div>
+        <div class="nb-btn-row">
+          <button type="button" class="nb-btn nb-btn-primary" id="printCertBtn">
+            🖨 Generate &amp; print certificate
+          </button>
+        </div>
+        <p class="nb-small-muted">
+          The certificate opens in a separate window with a clean layout for printing. You can later match the
+          visual style to your wider NeuroBreath branding.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Teacher helper ---------------------------------------------------- -->
+  <section class="nb-section" id="teacher" aria-label="Teacher and facilitator helper">
+    <div class="nb-card">
+      <div class="nb-card-header">
+        <div>
+          <div class="nb-card-kicker">Idea 2 · Teacher / Facilitator Mode</div>
+          <div class="nb-card-title"><span class="emoji">👩‍🏫</span><span>Running Group Calm Sessions</span></div>
+        </div>
+      </div>
+      <div class="nb-card-body">
+        <p>
+          Use this helper to structure shared sessions in classrooms, therapy groups or families. It mirrors
+          what you can later place in <em>teacher-quick-pack.html</em>, <em>4-7-8-breathing.html</em>,
+          <em>box-breathing.html</em> and <em>focus.html</em>.
+        </p>
+
+        <p class="nb-small-muted nb-mt-small"><strong>Suggested group flow</strong></p>
+        <ul class="nb-list">
+          <li>Ask everyone to open this page on their device (or watch the shared screen).</li>
+          <li>Choose a pattern in the breathing section, for example <em>4-7-8 · Sleep wind-down</em>.</li>
+          <li>Invite learners to notice how their body feels before, during and after the calm bubble session.</li>
+          <li>Optionally play one round of Focus Quest and talk about what "steady focus" feels like.</li>
+          <li>Celebrate effort, not perfection – use badges and coupons to support that conversation.</li>
+        </ul>
+
+        <hr class="nb-divider" />
+
+        <p class="nb-small-muted"><strong>Quick group tracker (local only)</strong></p>
+        <div class="nb-group-row">
+          <label>Estimated number of participants:
+            <input type="number" id="groupTotalInput" min="0" value="10">
+          </label>
+          <label>Activity you ran:
+            <select id="groupActivitySelect" aria-label="Activity type">
+              <option value="breathing">Breathing game</option>
+              <option value="focus">Focus Quest</option>
+              <option value="combined">Breathing + focus</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="nb-btn-row nb-btn-row-mt">
+          <button type="button" class="nb-btn nb-btn-primary" id="groupAddCompletedBtn">
+            +1 completed calm session
+          </button>
+          <button type="button" class="nb-btn nb-btn-soft" id="groupResetBtn">
+            ⟲ Reset counts
+          </button>
+        </div>
+        <p class="nb-status">
+          Completed calm session: <strong><span id="groupCompletedLabel">0</span></strong>
+          (<span id="groupPercentLabel">0% of estimated group</span>)
+        </p>
+        <p class="nb-small-muted">
+          You might note this percentage and activity type in your teaching or SEND records if helpful.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Challenges & campaigns -------------------------------------------- -->
+  <section class="nb-section" id="challenges" aria-label="Challenges and campaigns">
+    <div class="nb-card">
+      <div class="nb-card-header">
+        <div>
+          <div class="nb-card-kicker">Idea 2 · Campaigns & Media</div>
+          <div class="nb-card-title"><span class="emoji">📣</span><span>Challenges &amp; Story-Based Learning</span></div>
+        </div>
+      </div>
+      <div class="nb-card-body">
+        <p>
+          These challenge ideas can be turned into <strong>blog posts, videos or social media campaigns</strong>
+          linked from your future <em>blog.html</em>. The button below lets learners "join" a 30-day calm
+          challenge on this device, powered by the streak from the Progress section.
+        </p>
+
+        <div class="nb-btn-row">
+          <button type="button" class="nb-btn nb-btn-primary" id="joinChallengeBtn">
+            🌱 Join 30-Day Calm Challenge
+          </button>
+        </div>
+        <p class="nb-challenge-label">
+          Challenge status: <strong><span id="challengeStatusLabel">Not joined yet</span></strong><br>
+          Days of calm activity in current streak: <strong><span id="challengeDaysLabel">0</span> / 30</strong>
+        </p>
+
+        <hr class="nb-divider" />
+
+        <p class="nb-small-muted"><strong>"Breathe, Believe, Achieve" · 30-Day Calm Challenge</strong></p>
+        <p class="nb-small-muted">
+          Invite learners, families or staff to complete one calm activity per day for 30 days. This could be a
+          4-7-8 bubble session, a Box breath, or a single round of Focus Quest. Each activity on this page adds
+          to the streak in the Progress overview and may unlock additional badges and coupons.
+        </p>
+
+        <p class="nb-small-muted nb-mt-medium"><strong>"How to Use Breathing Games in Your Classroom"</strong></p>
+        <p class="nb-small-muted">
+          Turn the breathing bubble into a short routine at the start of lessons. Use the Teacher Helper counts
+          to keep track of how often your class takes a regulation break. In your future <em>blog.html</em>, you
+          can include screenshots and scripts from this page.
+        </p>
+
+        <p class="nb-small-muted nb-mt-medium"><strong>"Neurodivergent and Thriving: Stories from Parents and Teachers"</strong></p>
+        <p class="nb-small-muted">
+          Pair this hub with short written or video stories about real experiences of ADHD, autism, dyslexia,
+          anxiety and sleep issues. Show how small, repeatable tools – like these games – help build confidence
+          over time.
+        </p>
+
+        <p class="nb-small-muted nb-mt-large">
+          <strong>Note:</strong> NeuroBreath Games &amp; Rewards Lab is a prototype hub. All data here is stored
+          only in your browser's <code>localStorage</code> and can be cleared at any time. In your full project,
+          these ideas can be distributed across <em>4-7-8-breathing.html</em>, <em>focus.html</em>,
+          <em>progress.html</em>, <em>rewards.html</em>, <em>teacher-quick-pack.html</em> and <em>blog.html</em>.
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" id="siteFooter">
+  <div class="ft-nav-wrapper">
+    <div class="ft-nav-inner">
+      <div class="ft-nav-brand">
+        <a class="ft-logo" href="index.html" data-href="index.html" aria-label="NeuroBreath home">
+          <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo" />
+        </a>
+        <a href="coffee.html" class="btn" data-href="coffee.html">☕ Support Us</a>
+      </div>
+      <nav class="ft-nav" aria-label="Footer">
+        <details class="ft-group">
+          <summary>Conditions <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="autism.html" data-href="autism.html">Autism</a> · <a href="autism-parent.html" data-href="autism-parent.html">Autism Parent</a> · <a href="adhd.html" data-href="adhd.html">ADHD</a> · <a href="dyslexia-reading-training.html" data-href="dyslexia-reading-training.html">Dyslexia</a></p>
+            <p><a href="anxiety.html" data-href="anxiety.html">Anxiety</a> · <a href="depression.html" data-href="depression.html">Depression</a> · <a href="stress.html" data-href="stress.html">Stress</a> · <a href="sleep.html" data-href="sleep.html">Sleep</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Breathing &amp; Focus <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="breath.html" data-href="breath.html">Breath (how-to)</a> · <a href="focus.html" data-href="focus.html">Focus</a> · <a href="mindfulness.html" data-href="mindfulness.html">Mindfulness</a></p>
+            <p><a href="sos-60.html" data-href="sos-60.html">60-second Reset</a> · <a href="box-breathing.html" data-href="box-breathing.html">Box Breathing</a> · <a href="4-7-8-breathing.html" data-href="4-7-8-breathing.html">4-7-8 Breathing</a> · <a href="coherent-5-5.html" data-href="coherent-5-5.html">Coherent 5-5</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Toolkits <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="sleep-tools.html" data-href="sleep-tools.html">Sleep Tools</a> · <a href="breath-tools.html" data-href="breath-tools.html">Breath Tools</a> · <a href="mood-tools.html" data-href="mood-tools.html">Mood Tools</a> · <a href="adhd-tools.html" data-href="adhd-tools.html">ADHD Tools</a> · <a href="autism-tools.html" data-href="autism-tools.html">Autism Tools</a> · <a href="anxiety-tools.html" data-href="anxiety-tools.html">Anxiety Tools</a> · <a href="stress-tools.html" data-href="stress-tools.html">Stress Tools</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>About <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="about.html" data-href="about.html">About</a> · <a href="aims-objectives.html" data-href="aims-objectives.html">Aims &amp; Stories</a> · <a href="coffee.html" data-href="coffee.html">Support Us</a> · <a href="contact.html" data-href="contact.html">Contact</a></p>
+          </div>
+        </details>
+      </nav>
+    </div>
+  </div>
+  <div class="inner">
+    <div class="ft-bottom">
+      <div class="ft-bottom__copy" aria-label="Site notice">
+        <p class="muted ft-bottom__text">Educational information only. Not medical advice. NeuroBreath is a free resource by NeuroBreath. © <span id="yearFooter"></span> NeuroBreath. All rights reserved.</p>
+      </div>
+      <button type="button" class="btn back-to-top-btn" data-action="back-to-top" aria-label="Back to top">
+        <span class="back-to-top__label">Back to top</span>
+        <span class="back-to-top__icon" aria-hidden="true">↑</span>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script src="assets/js/games-lab.js" defer></script>
+</body>
+</html>
+

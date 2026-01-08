@@ -7,7 +7,6 @@ import { VowelUniverse } from '@/components/VowelUniverse';
 import { PrintableWorksheets } from '@/components/PrintableWorksheets';
 import { RewardCards } from '@/components/RewardCards';
 import { StreakToolkit } from '@/components/StreakToolkit';
-import { CreateProfile } from '@/components/CreateProfile';
 import { PracticeTimer } from '@/components/PracticeTimer';
 import { BreathingExercise } from '@/components/BreathingExercise';
 // ReadingAssessment - legacy component, replaced by ReadingCheckIn
@@ -64,11 +63,11 @@ export default function DyslexiaReadingTrainingPage() {
     <ReadingLevelProvider>
       <ProgressProvider>
         <div className="min-h-screen bg-background pt-4">
-          <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8 md:space-y-12">
+          <main className="mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8 md:space-y-12" style={{ width: '86vw', maxWidth: '86vw' }}>
             
-            {/* Hero Section with Profile Creation - Two Card Layout */}
-            <section data-tutorial="hero" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Left Card - Hero/Introduction */}
+            {/* Hero Section */}
+            <section data-tutorial="hero" className="space-y-6">
+              {/* Hero/Introduction Card */}
               <Card className="overflow-hidden border-2 border-primary/20">
                 <CardContent className="p-6 sm:p-8 space-y-6">
                   <div className="space-y-3">
@@ -133,9 +132,6 @@ export default function DyslexiaReadingTrainingPage() {
                   </div>
                 </CardContent>
               </Card>
-
-              {/* Right Card - Profile Creation */}
-              <CreateProfile />
             </section>
 
             {/* Evidence-Based Research Banner */}
@@ -455,19 +451,6 @@ export default function DyslexiaReadingTrainingPage() {
                 </CardContent>
               </Card>
             </section>
-
-            {/* Footer */}
-            <footer className="text-center py-6 sm:py-8 border-t border-border space-y-3">
-              <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl mx-auto">
-                <strong>NeuroBreath Reading Development Hub</strong> • All progress saves privately on your device
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Implementing Structured Literacy principles and evidence-based interventions from leading dyslexia research organizations
-              </p>
-              <p className="text-xs text-muted-foreground italic">
-                Educational tool only. Not a substitute for professional diagnosis or therapy.
-              </p>
-            </footer>
           </main>
         </div>
 

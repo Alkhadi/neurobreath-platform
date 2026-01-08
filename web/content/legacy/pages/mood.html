@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+
+  <!-- Brand: NeuroBreath -->
+  <title>Mood · NeuroBreath</title>
+  <meta name="description" content="NeuroBreath provides clinically referenced, neuro-inclusive breathing tools, guides and timers for calm, sleep, focus and emotional regulation.">
+
+  <!-- Social (Open Graph / Twitter) -->
+  <meta property="og:site_name" content="NeuroBreath">
+  <meta property="og:title" content="Mood · NeuroBreath">
+  <meta property="og:description" content="NeuroBreath provides clinically referenced, neuro-inclusive breathing tools, guides and timers for calm, sleep, focus and emotional regulation.">
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://neurobreath.co.uk/blog.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Standard favicon -->
+  <link rel="icon" type="image/x-icon" href="assets/icons/neurobreath-favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/neurobreath-logo-square-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/neurobreath-logo-square-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/neurobreath-logo-square-180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/neurobreath-logo-square-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icons/neurobreath-logo-square-512.png">
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/site.css" />
+  <script src="assets/js/voice-preferences.js" defer></script>
+  <script src="assets/js/site.js" defer></script>
+    <style>
+    /* Core page structure */
+    .page-main {
+      background: var(--color-cream);
+      padding: var(--spacing-2xl) 0;
+      min-height: 100vh;
+    }
+    
+    .page-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-lg);
+    }
+    
+    .card {
+      background: var(--color-white);
+      border: 1px solid var(--color-sage-light);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-xl);
+      box-shadow: var(--shadow-medium);
+      position: relative;
+      z-index: 1;
+      display: block;
+      overflow: visible;
+      width: 100%;
+      clear: both;
+      margin-bottom: var(--spacing-lg);
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+    
+    /* Force full width - break out of any grid layout */
+    .page-container > section.card {
+      grid-column: 1 / -1;
+      width: 100%;
+      max-width: 100%;
+    }
+    
+    /* Ensure cards are not inside grid containers */
+    section.card {
+      position: relative;
+      isolation: isolate;
+    }
+    
+    /* Utility classes */
+    .flex {
+      display: flex;
+    }
+    
+    .justify-end {
+      justify-content: flex-end;
+    }
+    
+    .justify-between {
+      justify-content: space-between;
+    }
+    
+    .align-center {
+      align-items: center;
+    }
+    
+    .muted {
+      color: var(--color-text-muted);
+      font-size: 0.9375rem;
+    }
+    
+    .small-note {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      font-style: italic;
+    }
+    
+    /* Screen reader only class */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+    
+    /* Footer margins */
+    .site-footer .ft-nav-wrapper {
+      margin-left: 2%;
+      margin-right: 2%;
+    }
+    
+    .site-footer .inner {
+      margin-left: 2%;
+      margin-right: 2%;
+    }
+    
+    .ft-nav-brand {
+      margin-left: 0;
+      margin-right: 0;
+    }
+    
+    .ft-bottom {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  </style>
+</head>
+<body data-page-id="mood" >
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<div id="top"></div>
+<header class="site-header">
+  <div class="container navbar">
+    <a id="brandLink" class="brand" href="index.html">
+      <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo" class="logo" /><span class="brand-text">NeuroBreath</span>
+    </a>
+    <nav class="main-nav" id="mainNav" role="navigation" aria-label="Primary">
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Conditions ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Neurodevelopmental</div>
+          <a href="autism.html" data-href="autism.html">Autism</a>
+          <a href="autism-parent.html" data-href="autism-parent.html">Autism Parent</a>
+          <a href="adhd.html" data-href="adhd.html">ADHD</a>
+          <a href="dyslexia-reading-training.html" data-href="dyslexia-reading-training.html">Dyslexia</a>
+          <div class="menu-label" aria-hidden="true">Mental Health</div>
+          <a href="anxiety.html" data-href="anxiety.html">Anxiety</a>
+          <a href="depression.html" data-href="depression.html">Depression</a>
+          <a href="stress.html" data-href="stress.html">Stress</a>
+          <a href="sleep.html" data-href="sleep.html">Sleep</a>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Breathing &amp; Focus ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Guides</div>
+          <a href="breath.html" data-href="breath.html">Breath (how-to)</a>
+          <a href="focus.html" data-href="focus.html">Focus</a>
+          <a href="mindfulness.html" data-href="mindfulness.html">Mindfulness</a>
+          <div class="menu-label" aria-hidden="true">Techniques</div>
+          <a href="sos-60.html" data-href="sos-60.html">🆘 60-second SOS</a>
+          <a href="box-breathing.html" data-href="box-breathing.html">🟩 Box Breathing</a>
+          <a href="4-7-8-breathing.html" data-href="4-7-8-breathing.html">🟦 4-7-8 Breathing</a>
+          <a href="coherent-5-5.html" data-href="coherent-5-5.html">🟪 Coherent 5-5</a>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Tools ▾</button>
+        <div class="submenu">
+          <a href="sleep-tools.html" data-href="sleep-tools.html">Sleep Tools</a>
+          <a href="breath-tools.html" data-href="breath-tools.html">Breath Tools</a>
+          <a href="mood-tools.html" data-href="mood-tools.html">Mood Tools</a>
+          <a href="adhd-tools.html" data-href="adhd-tools.html">ADHD Tools</a>
+          <a href="autism-tools.html" data-href="autism-tools.html">Autism Tools</a>
+          <a href="anxiety-tools.html" data-href="anxiety-tools.html">Anxiety Tools</a>
+          <a href="stress-tools.html" data-href="stress-tools.html">Stress Tools</a>
+          <a href="focus-garden.html" data-href="focus-garden.html">🌱 Focus Training</a>
+          <div class="menu-label" aria-hidden="true">Symptom Guides</div>
+          <a href="stress-anxiety.html" data-href="stress-anxiety.html">Stress &amp; General Anxiety</a>
+          <a href="panic-symptoms.html" data-href="panic-symptoms.html">Panic Symptoms</a>
+          <a href="sleep-onset-insomnia.html" data-href="sleep-onset-insomnia.html">Sleep-Onset Insomnia</a>
+          <a href="focus-test-anxiety.html" data-href="focus-test-anxiety.html">Focus &amp; Test Anxiety</a>
+          <a href="ptsd-regulation.html" data-href="ptsd-regulation.html">PTSD Regulation*</a>
+          <a href="low-mood-burnout.html" data-href="low-mood-burnout.html">Low Mood &amp; Burnout</a>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">About ▾</button>
+        <div class="submenu">
+          <a href="about.html" data-href="about.html">About</a>
+          <a href="aims-objectives.html" data-href="aims-objectives.html">Aims &amp; Stories</a>
+          <a href="coffee.html" data-href="coffee.html">Support Us</a>
+          <a href="contact.html" data-href="contact.html">Contact</a>
+        </div>
+      </div>
+    </nav>
+    <button type="button" id="navToggle" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="mainNav">☰</button>
+  </div>
+</header>
+
+<main id="main-content" class="page-main">
+  <div class="page-container">
+
+  <section class="section">
+    <div class="section-inner">
+section class="section">
+    <div class="section-inner">
+
+<section class="container">
+    <div class="card">
+      <h1>Mood</h1>
+            <div class="page-content">
+
+  
+
+  
+    <h1>Mood Regulation</h1>
+
+    <div class="card">
+      <p>
+        Use breathing as a speed‑control knob for the nervous system. Long exhales nudge toward
+        calm; slightly quicker inhales raise energy. Keep sessions short and repeatable.
+      </p>
+      <p class="muted">Educational information only; not medical advice or a diagnosis.</p>
+    </div>
+
+    <!-- Three tools (with buttons as requested) -->
+    <h2>Three tools</h2>
+    <ol>
+      <li>
+        <strong>60‑second SOS</strong> for spikes; 6–10 slow breaths focusing on the exhale.
+      </li>
+      <li>
+        <strong>Coherent 5‑5</strong> for balance; 3–10 minutes most days.
+      </li>
+      <li>
+        <strong>Physiological sigh</strong>: two short inhales + long exhale, 1–3 times.
+      </li>
+    </ol>
+    <div class="actions">
+      <a class="btn btn-success" href="sos.html">Start 60‑second SOS</a>
+      <a class="btn btn-success" href="coherent-5-5.html">Start Coherent 5‑5</a>
+      <a class="btn" href="#physSigh" id="psJump">Physiological Sigh Coach</a>
+    </div>
+
+    <h2>Track what helps</h2>
+    <ul>
+      <li>Note which technique works in which situation.</li>
+      <li>Keep it tiny; consistency beats intensity.</li>
+    </ul>
+
+    <!-- Micro‑tool: Physiological Sigh Coach -->
+    <div id="physSigh" class="card" aria-labelledby="psH">
+      <h3 id="psH">Physiological Sigh Coach</h3>
+      <p class="muted">
+        Two short inhales through the nose, then a long, easy exhale through the mouth. Repeat
+        1–3 times. Use when tense or stuck.
+      </p>
+      <div class="grid cols-3">
+        <div class="tile">
+          <label for="psCycles">Cycles</label>
+          <select id="psCycles" title="Select option">
+            <option>1</option>
+            <option selected="">3</option>
+            <option>5</option>
+          </select>
+        </div>
+        <div class="tile">
+          <label for="psVoice">Voice (optional)</label>
+          <select id="psVoice" title="Select option">
+            <option value="off" selected="">Off</option>
+          </select>
+        </div>
+        <div class="tile">
+          <label>&nbsp;</label>
+          <div class="actions">
+            <button id="psStart" class="btn btn-success" type="button">Start</button>
+            <button id="psStop" class="btn" type="button" disabled="">Stop</button>
+          </div>
+        </div>
+      </div>
+      <div id="psStage" aria-live="polite">
+        Idle — choose cycles and press Start.
+      </div>
+      <div class="muted" id="psStat">0/0 done</div>
+    </div>
+
+    <!-- Micro‑tool: Mood Technique Tracker -->
+    <div id="moodTrack" class="card" aria-labelledby="mtH">
+      <h3 id="mtH">Mood Technique Tracker</h3>
+      <p class="muted">
+        Log what you tried and how you felt before/after. The summary shows what helps most for
+        you. Data stays on this device.
+      </p>
+      <div class="grid cols-3">
+        <div class="tile">
+          <label for="mtTech">Technique</label>
+          <select id="mtTech" title="Select option">
+            <option>60‑second SOS</option>
+            <option>Coherent 5‑5</option>
+            <option>Physiological sigh</option>
+            <option>Short walk</option>
+            <option>Light stretch</option>
+            <option>Hydration</option>
+            <option>Social check‑in</option>
+          </select>
+        </div>
+        <div class="tile">
+          <label for="mtBefore">Mood before (0–10)</label>
+          <input id="mtBefore" type="number" min="0" max="10" value="4" title="Input" placeholder=" ">
+        </div>
+        <div class="tile">
+          <label for="mtAfter">Mood after (0–10)</label>
+          <input id="mtAfter" type="number" min="0" max="10" value="6" title="Input" placeholder=" ">
+        </div>
+      </div>
+      <div class="grid">
+        <div class="tile">
+          <label for="mtNote">Note (optional)</label>
+          <input id="mtNote" type="text" placeholder="Where/when/how you used it">
+        </div>
+      </div>
+      <div class="actions">
+        <button id="mtAdd" class="btn btn-success" type="button">Add entry</button>
+        <button id="mtClear" class="btn" type="button">Clear all</button>
+        <span id="mtMsg" class="muted" aria-live="polite"></span>
+      </div>
+      <div id="mtSummary" class="muted"></div>
+    </div>
+
+    <!-- Audience tabs -->
+    <div class="card" id="audTabs" aria-label="Audience sections">
+      <div class="actions">
+        <button type="button" class="btn btn-success" data-aud="bpadhd">Bipolar + ADHD</button>
+        <button type="button" class="btn" data-aud="autistic">Autistic adults</button>
+        <button type="button" class="btn" data-aud="peri">Perimenopause</button>
+      </div>
+      <div id="aud-bpadhd" class="aud-panel">
+        <h2>Bipolar disorder with ADHD</h2>
+        <p class="muted">
+          Focus on regular sleep and daily anchors first. Add ADHD tools once mood is steady.
+        </p>
+        <ul>
+          <li>
+            <strong>Social rhythm:</strong> fixed wake time, meals, daylight, movement, wind‑down.
+          </li>
+          <li>
+            <strong>Sleep guard:</strong> protect 7–9h opportunity; use Coherent 5‑5 if keyed up.
+          </li>
+          <li>
+            <strong>ADHD scaffolds:</strong> one task timer (10–20 min), 3‑item list, hide
+            distractions, calendar nudges.
+          </li>
+          <li>
+            <strong>Watch‑outs:</strong> sleep loss, alcohol/cannabis, night shifts.
+          </li>
+        </ul>
+        <div class="actions">
+          <a class="btn" href="#rhythm">Open Rhythm Builder</a>
+          <a class="btn" href="#focusTimer">Open Focus Timer</a>
+        </div>
+      </div>
+
+      <div id="aud-autistic" class="aud-panel">
+        <h2>Autistic adults</h2>
+        <p class="muted">Minimize overload. Make routines predictable. Use direct, concrete cues.</p>
+        <ul>
+          <li>
+            <strong>Sensory kit:</strong> headphones, visor/tinted lens, soft clothing, low‑glare
+            theme.
+          </li>
+          <li>
+            <strong>Energy budgeting:</strong> match demands to fuel; schedule recovery blocks.
+          </li>
+          <li>
+            <strong>Scripts:</strong> “If meeting is noisy, I’ll use headphones and camera‑off.”
+          </li>
+          <li>
+            <strong>Sleep:</strong> fixed wake; calming breath set before bed.
+          </li>
+        </ul>
+        <div class="actions">
+          <a class="btn" href="#sensory">Open Sensory Planner</a>
+          <a class="btn" href="#focusTimer">Open Focus Timer</a>
+        </div>
+      </div>
+
+      <div id="aud-peri" class="aud-panel">
+        <h2>Perimenopause</h2>
+        <p class="muted">
+          Track vasomotor symptoms and sleep; combine lifestyle, behavioral strategies, and
+          clinician‑guided options if needed.
+        </p>
+        <ul>
+          <li>
+            <strong>Heat triggers:</strong> moderate alcohol/spicy food; breathable layers; cool
+            room.
+          </li>
+          <li>
+            <strong>Night‑waking coach:</strong> short exhale‑focused breath on waking; minimal
+            light; back to bed.
+          </li>
+          <li>
+            <strong>Discuss options:</strong> MHT or nonhormonal supports where appropriate.
+          </li>
+        </ul>
+        <div class="actions">
+          <a class="btn" href="#flushDiary">Open Flush &amp; Mood Diary</a>
+          <a class="btn" href="#nightCoach">Open Night‑Waking Coach</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Micro‑tool: Rhythm Builder -->
+    <div id="rhythm" class="card" aria-labelledby="rhH">
+      <h3 id="rhH">Rhythm Builder</h3>
+      <p class="muted">Pick anchor times. Aim for small day‑to‑day variation.</p>
+      <div class="grid cols-3">
+        <div class="tile">
+          <label for="rhWake">Wake time</label>
+          <input id="rhWake" type="time" value="07:00" title="Input" placeholder=" ">
+        </div>
+        <div class="tile">
+          <label for="rhLunch">Mid‑day meal</label>
+          <input id="rhLunch" type="time" value="12:30" title="Input" placeholder=" ">
+        </div>
+        <div class="tile">
+          <label for="rhWind">Wind‑down start</label>
+          <input id="rhWind" type="time" value="21:30" title="Input" placeholder=" ">
+        </div>
+      </div>
+      <div class="actions">
+        <button id="rhLog" class="btn btn-success" type="button">Log today</button>
+        <button id="rhClear" class="btn" type="button">Clear log</button>
+        <span id="rhMsg" class="muted" aria-live="polite"></span>
+      </div>
+      <div id="rhOut" class="muted">
+        0 days logged • Regularity score —.
+      </div>
+    </div>
+
+    <!-- Micro‑tool: Focus Timer (Pomodoro‑style with breath breaks) -->
+    <div id="focusTimer" class="card" aria-labelledby="ftH">
+      <h3 id="ftH">Focus Timer</h3>
+      <p class="muted">
+        Short, repeatable focus blocks with a brief breath break. Stop while it’s still going
+        well.
+      </p>
+      <div class="grid cols-3">
+        <div class="tile">
+          <label for="ftWork">Focus (min)</label>
+          <input id="ftWork" type="number" min="5" max="45" value="15" title="Input" placeholder=" ">
+        </div>
+        <div class="tile">
+          <label for="ftBreak">Break (min)</label>
+          <input id="ftBreak" type="number" min="2" max="10" value="3" title="Input" placeholder=" ">
+        </div>
+        <div class="tile">
+          <label>&nbsp;</label>
+          <div class="actions">
+            <button id="ftStart" class="btn btn-success" type="button">Start</button>
+            <button id="ftStop" class="btn" type="button" disabled="">Stop</button>
+          </div>
+        </div>
+      </div>
+      <div id="ftOut" aria-live="polite">
+        Idle — set minutes and press Start.
+      </div>
+    </div>
+
+    <!-- Micro‑tool: Sensory Planner -->
+    <div id="sensory" class="card" aria-labelledby="snH">
+      <h3 id="snH">Sensory Planner</h3>
+      <p class="muted">Choose supports for common contexts and save your card.</p>
+      <div class="grid cols-3">
+        <div class="tile">
+          <label for="snCtx">Context</label>
+          <select id="snCtx" title="Select option">
+            <option>Travel</option>
+            <option>Work/Study</option>
+            <option>Store/Errands</option>
+            <option>Home wind‑down</option>
+          </select>
+        </div>
+        <div class="tile">
+          <label for="snPick">Supports (comma‑separated)</label>
+          <input id="snPick" type="text" placeholder="e.g., headphones, tinted lens, fidget">
+        </div>
+        <div class="tile">
+          <label>&nbsp;</label>
+          <div class="actions">
+            <button id="snSave" class="btn btn-success" type="button">Save</button>
+            <button id="snClear" class="btn" type="button">Clear all</button>
+          </div>
+        </div>
+      </div>
+      <div id="snOut" class="muted"></div>
+    </div>
+
+    <!-- Micro‑tool: Flush & Mood Diary -->
+    <div id="flushDiary" class="card" aria-labelledby="fdH">
+      <h3 id="fdH">Flush &amp; Mood Diary</h3>
+      <p class="muted">30‑second log to spot triggers and timing patterns.</p>
+      <div class="grid cols-3">
+        <div class="tile">
+          <label for="fdHeat">Heat (0–10)</label>
+          <input id="fdHeat" type="number" min="0" max="10" value="5" title="Input" placeholder=" ">
+        </div>
+        <div class="tile">
+          <label for="fdMood">Mood (0–10)</label>
+          <input id="fdMood" type="number" min="0" max="10" value="5" title="Input" placeholder=" ">
+        </div>
+        <div class="tile">
+          <label for="fdTrig">Trigger (optional)</label>
+          <input id="fdTrig" type="text" placeholder="e.g., wine, stress, room heat">
+        </div>
+      </div>
+      <div class="actions">
+        <button id="fdAdd" class="btn btn-success" type="button">Add</button>
+        <button id="fdClear" class="btn" type="button">Clear</button>
+        <span id="fdMsg" class="muted" aria-live="polite"></span>
+      </div>
+      <div id="fdOut" class="muted">0 entries.</div>
+    </div>
+
+    <!-- Micro‑tool: Night‑Waking Coach -->
+    <div id="nightCoach" class="card" aria-labelledby="nwH">
+      <h3 id="nwH">Night‑Waking Coach</h3>
+      <p class="muted">
+        If you wake at night: keep lights low, one minute of gentle exhale‑focused breathing, then
+        back to bed.
+      </p>
+      <div class="actions">
+        <button id="nwStart" class="btn btn-success" type="button">Begin 1‑minute calm</button>
+        <button id="nwStop" class="btn" type="button" disabled="">Stop</button>
+        <span id="nwStat" class="muted" aria-live="polite">Idle</span>
+      </div>
+      <div id="nwOut"></div>
+    </div>
+
+    <hr>
+    <p class="muted">
+      This site is educational only and not medical advice. If you notice severe mood changes,
+      safety concerns, or sleep/wake reversal, seek local clinical help.
+    </p>
+  
+    </div>
+  </section>
+    </div>
+  </section>
+
+  </div>
+</main>
+
+<footer class="site-footer" id="siteFooter">
+  <!-- Footer navigation - Full Width -->
+  <div class="ft-nav-wrapper">
+    <div class="ft-nav-inner">
+      <!-- Brand + Support in Navigation Area -->
+      <div class="ft-nav-brand">
+        <a class="ft-logo" href="index.html" data-href="index.html" aria-label="NeuroBreath home">
+          <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo" />
+        </a>
+        <a href="coffee.html" class="btn" data-href="coffee.html">☕ Support Us</a>
+      </div>
+      <nav class="ft-nav" aria-label="Footer">
+        <details class="ft-group">
+          <summary>Conditions <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="autism.html" data-href="autism.html">Autism</a> · <a href="autism-parent.html" data-href="autism-parent.html">Autism Parent</a> · <a href="adhd.html" data-href="adhd.html">ADHD</a> · <a href="dyslexia-reading-training.html" data-href="dyslexia-reading-training.html">Dyslexia</a></p>
+            <p><a href="anxiety.html" data-href="anxiety.html">Anxiety</a> · <a href="depression.html" data-href="depression.html">Depression</a> · <a href="stress.html" data-href="stress.html">Stress</a> · <a href="sleep.html" data-href="sleep.html">Sleep</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Breathing &amp; Focus <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="breath.html" data-href="breath.html">Breath (how-to)</a> · <a href="focus.html" data-href="focus.html">Focus</a> · <a href="mindfulness.html" data-href="mindfulness.html">Mindfulness</a></p>
+            <p><a href="sos-60.html" data-href="sos-60.html">60-second Reset</a> · <a href="box-breathing.html" data-href="box-breathing.html">Box Breathing</a> · <a href="4-7-8-breathing.html" data-href="4-7-8-breathing.html">4-7-8 Breathing</a> · <a href="coherent-5-5.html" data-href="coherent-5-5.html">Coherent 5-5</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Toolkits <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="sleep-tools.html" data-href="sleep-tools.html">Sleep Tools</a> · <a href="breath-tools.html" data-href="breath-tools.html">Breath Tools</a> · <a href="mood-tools.html" data-href="mood-tools.html">Mood Tools</a> · <a href="adhd-tools.html" data-href="adhd-tools.html">ADHD Tools</a> · <a href="autism-tools.html" data-href="autism-tools.html">Autism Tools</a> · <a href="anxiety-tools.html" data-href="anxiety-tools.html">Anxiety Tools</a> · <a href="stress-tools.html" data-href="stress-tools.html">Stress Tools</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Symptom Guides <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="stress-anxiety.html" data-href="stress-anxiety.html">Stress &amp; General Anxiety</a> · <a href="panic-symptoms.html" data-href="panic-symptoms.html">Panic Symptoms</a> · <a href="sleep-onset-insomnia.html" data-href="sleep-onset-insomnia.html">Sleep-Onset Insomnia</a></p>
+            <p><a href="focus-test-anxiety.html" data-href="focus-test-anxiety.html">Focus &amp; Test Anxiety</a> · <a href="ptsd-regulation.html" data-href="ptsd-regulation.html">PTSD Regulation*</a> · <a href="low-mood-burnout.html" data-href="low-mood-burnout.html">Low Mood &amp; Burnout</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>About <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="about.html" data-href="about.html">About</a> · <a href="aims-objectives.html" data-href="aims-objectives.html">Aims &amp; Stories</a> · <a href="coffee.html" data-href="coffee.html">Support Us</a> · <a href="contact.html" data-href="contact.html">Contact</a></p>
+          </div>
+        </details>
+      </nav>
+    </div>
+  </div>
+
+  <div class="inner">
+    <div class="ft-bottom">
+      <div class="ft-bottom__copy" aria-label="Site notice">
+        <p class="muted ft-bottom__text">Educational information only. Not medical advice. NeuroBreath is a free resource by NeuroBreath. © <span id="yearFooter"></span> NeuroBreath. All rights reserved.</p>
+      </div>
+      <button type="button" class="btn back-to-top-btn" data-action="back-to-top" aria-label="Back to top">
+        <span class="back-to-top__label">Back to top</span>
+        <span class="back-to-top__icon" aria-hidden="true">↑</span>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/app.js" defer></script>
+<script>
+  // Footer year and back to top
+  document.addEventListener('DOMContentLoaded', function() {
+    const yearFooter = document.getElementById('yearFooter');
+    if (yearFooter) {
+      yearFooter.textContent = new Date().getFullYear();
+    }
+    
+    const backToTopBtn = document.querySelector('[data-action="back-to-top"]');
+    if (backToTopBtn) {
+      backToTopBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const topElement = document.getElementById('top') || document.body;
+        try {
+          topElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } catch {
+          location.hash = '#top';
+        }
+      });
+    }
+  });
+</script>
+</body>
+</html>
+

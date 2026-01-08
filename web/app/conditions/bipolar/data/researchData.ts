@@ -1,0 +1,25 @@
+// This file will be populated with processed research data
+// In production, you would import the JSON file and process it
+// For now, we'll create a function to load and process the data
+
+import { ResearchData } from '../types';
+
+export const getResearchData = (): ResearchData | null => {
+  // This would normally load from the JSON file
+  // For the actual implementation, you'll need to copy the JSON content here
+  // or use dynamic imports in Next.js
+  return null;
+};
+
+// Helper function to extract text content with language support
+export const extractContent = (data: any, language: 'en-GB' | 'en-US'): string => {
+  if (!data) return '';
+  
+  if (typeof data === 'string') return data;
+  
+  if (data.uk_content && language === 'en-GB') return data.uk_content;
+  if (data.us_content && language === 'en-US') return data.us_content;
+  if (data.description) return data.description;
+  
+  return '';
+};

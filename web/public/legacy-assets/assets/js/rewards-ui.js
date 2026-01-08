@@ -1,0 +1,103 @@
+// assets/js/rewards-ui.js
+(() => {
+  function renderBadges(snapshot){
+    const grid = document.getElementById('nb-badges-grid');
+    if (!grid) return;
+
+    const catalog = window.NB_REWARDS_CATALOG || {};
+    const badges = snapshot?.badges || {};
+    const ids = Object.keys(badges);
+
+    grid.innerHTML = '';
+    if (!ids.length){
+      grid.innerHTML = '<p class="muted">No badges yet — complete a 1-minute session to unlock your first badge.</p>';
+      return;
+    }
+
+    ids.forEach(id => {
+      const meta = catalog?.badges?.[id] || { label:id, icon:'🏷️' };
+      const card = document.createElement('div');
+      card.className = 'nb-badge-card';
+      card.innerHTML = `
+        <div class="nb-badge-icon">${meta.icon || '🏷️'}</div>
+        <div class="nb-badge-title">${meta.label || id}</div>
+        <div class="nb-badge-sub">Earned: ${new Date(badges[id].earnedAt).toLocaleDateString('en-GB')}</div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function renderCoupons(snapshot){
+    const wrap = document.getElementById('nb-coupons');
+    if (!wrap) return;
+    const coupons = snapshot?.coupons || {};
+    const ids = Object.keys(coupons);
+
+    wrap.innerHTML = '';
+    if (!ids.length){
+      wrap.innerHTML = '<p class="muted">No coupons unlocked yet.</p>';
+      return;
+    }
+
+    ids.forEach(id => {
+      const c = coupons[id];
+      const card = document.createElement('div');
+      card.className = 'nb-coupon-card';
+      card.innerHTML = `
+        <strong>${c.meta?.title || 'Coupon'}</strong>
+        <div>${c.meta?.description || ''}</div>
+        <div class="code">Code: <code>${c.code || ''}</code></div>
+        <div>Status: ${c.status}</div>
+        <button type="button" data-redeem="${id}">Mark redeemed</button>
+      `;
+      wrap.appendChild(card);
+    });
+
+    wrap.querySelectorAll('[data-redeem]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-redeem');
+        window.NBRewardsStore?.redeemCoupon?.(id);
+        const snap = window.NBRewardsStore?.get?.();
+        if (snap) renderCoupons(snap);
+      });
+    });
+  }
+
+  function renderPrompts(snapshot){
+    const wrap = document.getElementById('nb-prompts');
+    if (!wrap) return;
+    const prompts = snapshot?.prompts || {};
+    const ids = Object.keys(prompts);
+
+    wrap.innerHTML = '';
+    if (!ids.length){
+      wrap.innerHTML = '<p class="muted">No prompt wins yet.</p>';
+      return;
+    }
+
+    ids.forEach(id => {
+      const p = prompts[id];
+      const card = document.createElement('div');
+      card.className = 'nb-prompt-card';
+      card.innerHTML = `<strong>${p.title}</strong><p>${p.body}</p>`;
+      wrap.appendChild(card);
+    });
+  }
+
+  function refresh(snapshot){
+    renderBadges(snapshot);
+    renderCoupons(snapshot);
+    renderPrompts(snapshot);
+  }
+
+  window.addEventListener('nb:rewards-update', (evt) => {
+    refresh(evt?.detail?.snapshot);
+  });
+
+  // initial paint
+  try{
+    const snap = window.NBRewardsStore?.get?.();
+    if (snap) refresh(snap);
+  }catch{}
+})();
+

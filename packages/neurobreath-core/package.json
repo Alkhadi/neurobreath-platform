@@ -1,0 +1,35 @@
+{
+  "name": "@neurobreath/core",
+  "version": "0.1.0",
+  "description": "Open-source core utilities for NeuroBreath platform - offline-first learning engine",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "keywords": [
+    "neurobreath",
+    "offline-first",
+    "learning",
+    "sync",
+    "education"
+  ],
+  "author": "NeuroBreath Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neurobreath/neurobreath-platform",
+    "directory": "packages/neurobreath-core"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
+

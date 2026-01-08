@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Neurobreath abstract calming background</title>
+  <desc id="desc">Layered gradients with soft shapes evoking calm breathing and regulated rhythm.</desc>
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0c1524" />
+      <stop offset="55%" stop-color="#142a4a" />
+      <stop offset="100%" stop-color="#081024" />
+    </linearGradient>
+    <radialGradient id="aquaGlow" cx="0.24" cy="0.18" r="0.68">
+      <stop offset="0%" stop-color="#38e0f3" stop-opacity="0.65" />
+      <stop offset="55%" stop-color="#38e0f3" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#38e0f3" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="amberGlow" cx="0.82" cy="0.1" r="0.55">
+      <stop offset="0%" stop-color="#fca46f" stop-opacity="0.58" />
+      <stop offset="60%" stop-color="#fca46f" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#fca46f" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="indigoGlow" cx="0.58" cy="0.92" r="0.72">
+      <stop offset="0%" stop-color="#7096ff" stop-opacity="0.5" />
+      <stop offset="55%" stop-color="#7096ff" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#7096ff" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0f3b46" stop-opacity="0.65" />
+      <stop offset="45%" stop-color="#10908d" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#10908d" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="waveGradientAlt" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5169ff" stop-opacity="0.55" />
+      <stop offset="60%" stop-color="#5169ff" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#5169ff" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="pulse" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#10a79a" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#10a79a" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bgGradient)" />
+  <ellipse cx="430" cy="220" rx="520" ry="420" fill="url(#aquaGlow)" />
+  <ellipse cx="1280" cy="160" rx="460" ry="360" fill="url(#amberGlow)" />
+  <ellipse cx="960" cy="860" rx="580" ry="420" fill="url(#indigoGlow)" />
+  <path d="M-80 580 C 220 520 360 540 600 620 C 920 720 1140 700 1660 520 L 1660 940 L -80 940 Z" fill="url(#waveGradient)" />
+  <path d="M-60 620 C 320 500 580 500 920 600 C 1140 665 1320 662 1660 560 L 1660 940 L -60 940 Z" fill="url(#waveGradientAlt)" />
+  <circle cx="340" cy="540" r="240" fill="url(#pulse)" />
+  <circle cx="1240" cy="360" r="200" fill="url(#pulse)" opacity="0.6" />
+</svg>

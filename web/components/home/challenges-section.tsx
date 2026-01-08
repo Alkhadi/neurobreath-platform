@@ -179,7 +179,7 @@ export default function ChallengesSection() {
 
   return (
     <section id="breathing-challenges" className="py-16 bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50">
-      <div className="container max-w-7xl mx-auto px-4">
+      <div className="px-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -207,7 +207,7 @@ export default function ChallengesSection() {
               <p className="text-gray-600 mb-6">
                 Pick the quest that fits today. Each card logs locally so you can evidence care without pressure.
               </p>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="space-y-6">
                 {challenges?.map((challenge) => {
                   const def = challengeDefinitions.find(c => c.key === challenge?.challengeKey)
 

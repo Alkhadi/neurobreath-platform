@@ -1,0 +1,118 @@
+yarn run v1.22.22
+$ next build
+   ▲ Next.js 15.5.9
+   - Environments: .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 8.4s
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/71) ...
+   Generating static pages (17/71) 
+   Generating static pages (35/71) 
+   Generating static pages (53/71) 
+ ✓ Generating static pages (71/71)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                       Size  First Load JS
+┌ ○ /                                          30.4 kB         188 kB
+├ ○ /_not-found                                  197 B         102 kB
+├ ○ /about                                       287 B         105 kB
+├ ○ /about-us                                    287 B         105 kB
+├ ○ /adhd                                        287 B         105 kB
+├ ○ /ai-blog                                     287 B         105 kB
+├ ○ /aims-objectives                             287 B         105 kB
+├ ○ /anxiety                                     287 B         105 kB
+├ ƒ /api/ai-coach                                197 B         102 kB
+├ ƒ /api/ai-coach/cards                          197 B         102 kB
+├ ƒ /api/assessment/save-attempt                 197 B         102 kB
+├ ƒ /api/assessment/save-full-attempt            197 B         102 kB
+├ ƒ /api/autism/pubmed                           197 B         102 kB
+├ ƒ /api/badges                                  197 B         102 kB
+├ ƒ /api/challenges                              197 B         102 kB
+├ ƒ /api/download-resource                       197 B         102 kB
+├ ƒ /api/lessons                                 197 B         102 kB
+├ ƒ /api/lessons/complete                        197 B         102 kB
+├ ƒ /api/parent/auth                             197 B         102 kB
+├ ƒ /api/parent/progress                         197 B         102 kB
+├ ƒ /api/placement/calculate                     197 B         102 kB
+├ ƒ /api/profile/create                          197 B         102 kB
+├ ƒ /api/progress                                197 B         102 kB
+├ ƒ /api/quests/today                            197 B         102 kB
+├ ƒ /api/send-report/generate                    197 B         102 kB
+├ ƒ /api/sessions                                197 B         102 kB
+├ ƒ /api/sync                                    197 B         102 kB
+├ ƒ /api/teacher/analytics                       197 B         102 kB
+├ ○ /autism                                    23.9 kB         173 kB
+├ ○ /autism/focus-garden                       5.59 kB         118 kB
+├ ○ /blog                                       182 kB         303 kB
+├ ○ /breathing/breath                            287 B         105 kB
+├ ○ /breathing/focus                             287 B         105 kB
+├ ○ /breathing/mindfulness                       287 B         105 kB
+├ ○ /breathing/techniques/sos-60                 287 B         105 kB
+├ ○ /breathing/training/focus-garden           9.03 kB         121 kB
+├ ○ /coach                                       287 B         105 kB
+├ ○ /conditions/anxiety                          287 B         105 kB
+├ ○ /conditions/autism                           197 B         102 kB
+├ ○ /conditions/autism-parent                    287 B         105 kB
+├ ○ /conditions/bipolar                          287 B         105 kB
+├ ○ /conditions/depression                       287 B         105 kB
+├ ○ /conditions/low-mood-burnout                 287 B         105 kB
+├ ○ /conditions/mood                             287 B         105 kB
+├ ○ /contact                                   2.59 kB         124 kB
+├ ○ /downloads                                   287 B         105 kB
+├ ○ /dyslexia-reading-training                  152 kB         312 kB
+├ ○ /get-started                                 287 B         105 kB
+├ ƒ /parent/[parentCode]                         197 B         102 kB
+├ ○ /progress                                  3.69 kB         116 kB
+├ ○ /resources                                   287 B         105 kB
+├ ○ /rewards                                   3.96 kB         116 kB
+├ ○ /schools                                     287 B         105 kB
+├ ○ /send-report                                 287 B         105 kB
+├ ○ /sleep                                       287 B         105 kB
+├ ○ /stress                                      287 B         105 kB
+├ ○ /support-us                                  287 B         105 kB
+├ ○ /teacher-quick-pack                          287 B         105 kB
+├ ○ /teacher/dashboard                         1.68 kB         111 kB
+├ ○ /techniques/4-7-8                          4.96 kB         130 kB
+├ ○ /techniques/box-breathing                  4.96 kB         130 kB
+├ ○ /techniques/coherent                       4.92 kB         130 kB
+├ ○ /techniques/sos                            4.95 kB         130 kB
+├ ○ /tools                                       287 B         105 kB
+├ ○ /tools/adhd-deep-dive/assessment             287 B         105 kB
+├ ○ /tools/adhd-deep-dive/diagnosis              287 B         105 kB
+├ ○ /tools/adhd-deep-dive/helplines              287 B         105 kB
+├ ○ /tools/adhd-deep-dive/self-care              287 B         105 kB
+├ ○ /tools/adhd-deep-dive/support-at-home        287 B         105 kB
+├ ○ /tools/adhd-deep-dive/teens                  287 B         105 kB
+├ ○ /tools/adhd-deep-dive/what-is-adhd           287 B         105 kB
+├ ○ /tools/adhd-deep-dive/working-with-school    287 B         105 kB
+├ ○ /tools/adhd-deep-dive/young-people           287 B         105 kB
+├ ○ /tools/adhd-focus-lab                        287 B         105 kB
+├ ○ /tools/adhd-tools                            287 B         105 kB
+├ ○ /tools/anxiety-tools                         287 B         105 kB
+├ ○ /tools/autism-tools                          287 B         105 kB
+├ ○ /tools/breath-ladder                       2.46 kB         124 kB
+├ ○ /tools/breath-tools                          287 B         105 kB
+├ ○ /tools/colour-path                         2.65 kB         124 kB
+├ ○ /tools/depression-tools                      287 B         105 kB
+├ ○ /tools/focus-tiles                         3.65 kB         116 kB
+├ ○ /tools/focus-training                        287 B         105 kB
+├ ○ /tools/mood-tools                            287 B         105 kB
+├ ○ /tools/roulette                            3.63 kB         125 kB
+├ ○ /tools/sleep-tools                           287 B         105 kB
+└ ○ /tools/stress-tools                          287 B         105 kB
++ First Load JS shared by all                   102 kB
+  ├ chunks/1255-48374b87ff5c229a.js            45.6 kB
+  ├ chunks/4bd1b696-100b9d70ed4e49c1.js        54.2 kB
+  └ other shared chunks (total)                1.95 kB
+
+
+ƒ Middleware                                     34 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+Done in 23.54s.

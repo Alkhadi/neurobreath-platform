@@ -1,90 +1,185 @@
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { ArrowLeft } from 'lucide-react'
+'use client';
 
-export default function ADHDPage() {
+import { useEffect } from 'react';
+import { ADHDHero } from '@/components/adhd/adhd-hero';
+import { DailyQuestsADHD } from '@/components/adhd/daily-quests-adhd';
+import { FocusPomodoro } from '@/components/adhd/focus-pomodoro';
+import { ADHDSkillsLibrary } from '@/components/adhd/adhd-skills-library';
+import { ADHDMythsFacts } from '@/components/adhd/adhd-myths-facts';
+import { TreatmentDecisionTree } from '@/components/adhd/treatment-decision-tree';
+import { PubMedResearch } from '@/components/autism/pubmed-research';
+import { CrisisSupport } from '@/components/autism/crisis-support';
+import { initializeMilestones } from '@/lib/progress-store-enhanced';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Heart, Rocket, Zap, Star, BookOpen, Users } from 'lucide-react';
+
+export default function HomePage() {
+  // Initialize milestones on first load
+  useEffect(() => {
+    initializeMilestones();
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 py-12">
-      <div className="container max-w-4xl mx-auto px-4">
-        <Button asChild variant="ghost" className="mb-6">
-          <Link href="/"><ArrowLeft className="w-4 h-4 mr-2" /> Back to Home</Link>
-        </Button>
+    <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950">
+      {/* Hero Section */}
+      <section className="py-8 scroll-mt-20">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+          <ADHDHero />
+        </div>
+      </section>
 
-        <div className="bg-white rounded-2xl p-8 shadow-xl mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Breathing Tools for ADHD</h1>
-          <p className="text-lg text-gray-600 mb-6">
-            Short, engaging breathing exercises designed for ADHD brains. Build focus, reduce impulsivity, and create calm without boredom.
-          </p>
+      {/* Treatment Decision Tree - NEW Phase 2 Component */}
+      <section id="decision-tree" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+          <TreatmentDecisionTree />
+        </div>
+      </section>
 
-          <div className="prose max-w-none">
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Why Breathing Helps ADHD</h2>
-            <p className="text-gray-700 mb-4">
-              Breathing exercises help ADHD brains by activating the prefrontal cortex (executive function), reducing hyperactivity, 
-              and providing a physical anchor for wandering attention. Short, varied patterns keep things interesting.
-            </p>
-
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Recommended Techniques</h2>
-            <div className="space-y-4">
-              <div className="bg-purple-50 rounded-lg p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">🟪 Coherent 5-5</h3>
-                <p className="text-gray-700 mb-3">
-                  Simple in-and-out pattern that boosts heart rate variability and steadies prefrontal attention. Perfect before focused work.
-                </p>
-                <Button asChild size="sm">
-                  <Link href="/techniques/coherent">Try Coherent Breathing</Link>
-                </Button>
-              </div>
-
-              <div className="bg-orange-50 rounded-lg p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">🟩 Box Breathing</h3>
-                <p className="text-gray-700 mb-3">
-                  The 4-4-4-4 pattern provides structure without being too long. Great for transitions between tasks or calming hyperactivity.
-                </p>
-                <Button asChild size="sm">
-                  <Link href="/techniques/box-breathing">Try Box Breathing</Link>
-                </Button>
-              </div>
-
-              <div className="bg-pink-50 rounded-lg p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">🆘 60-second SOS</h3>
-                <p className="text-gray-700 mb-3">
-                  Ultra-short reset for impulsive moments or when you can't sit still. One minute is often enough to break the pattern.
-                </p>
-                <Button asChild size="sm">
-                  <Link href="/techniques/sos">Try SOS Reset</Link>
-                </Button>
-              </div>
-            </div>
-
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">ADHD-Friendly Tips</h2>
-            <ul className="list-disc pl-6 space-y-2 text-gray-700">
-              <li>Start with 1-3 minute sessions (longer isn't always better)</li>
-              <li>Use visual cues and timers to maintain focus</li>
-              <li>Vary techniques to prevent boredom</li>
-              <li>Link breathing to existing routines or transitions</li>
-              <li>Don't force it—if your brain isn't ready, try later</li>
-              <li>Gamify with the challenge system and badges</li>
-            </ul>
-
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">When to Use</h2>
-            <p className="text-gray-700">
-              <strong>Before tasks:</strong> Prime your prefrontal cortex for focus.<br />
-              <strong>During transitions:</strong> Reset between activities or meetings.<br />
-              <strong>When overwhelmed:</strong> Quick intervention to reduce emotional intensity.<br />
-              <strong>Before bed:</strong> Downshift from hyperarousal to sleep-ready state.
+      {/* Daily Quests Section */}
+      <section id="quests" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+              Daily Quests & Challenges 🎮
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Level up your ADHD management with gamified daily quests. Earn XP, unlock badges, and build streaks!
             </p>
           </div>
+          <DailyQuestsADHD />
         </div>
+      </section>
 
-        <div className="flex justify-center gap-4">
-          <Button asChild size="lg" className="bg-orange-600 hover:bg-orange-700">
-            <Link href="/">Start Practice</Link>
-          </Button>
-          <Button asChild size="lg" variant="outline">
-            <Link href="/progress">Track Progress</Link>
-          </Button>
+      {/* Focus Timer Section */}
+      <section id="focus" className="py-16 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950 dark:via-purple-950 dark:to-pink-950 scroll-mt-20">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+              ADHD Focus Timer ⏱️
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Flexible Pomodoro technique adapted for ADHD brains - adjust intervals based on your energy and hyperfocus
+            </p>
+          </div>
+          <FocusPomodoro />
         </div>
-      </div>
-    </div>
-  )
+      </section>
+
+      {/* ADHD Skills Library */}
+      <section id="skills" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+          <ADHDSkillsLibrary />
+        </div>
+      </section>
+
+      {/* ADHD Myths & Facts - Phase 2 Component with Evidence Registry */}
+      <section id="myths-facts" className="py-16 bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 dark:from-orange-950 dark:via-yellow-950 dark:to-pink-950 scroll-mt-20">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+          <ADHDMythsFacts />
+        </div>
+      </section>
+
+      {/* Resources & Templates */}
+      <section id="resources" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+              ADHD Resources & Templates 📋
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Downloadable templates for 504 plans, workplace accommodations, dopamine menus, and more
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              {
+                title: "504 Plan Request Letter",
+                description: "Request ADHD accommodations at school (US)",
+                icon: <BookOpen className="w-8 h-8 text-blue-600" />,
+                badge: "Parents"
+              },
+              {
+                title: "Workplace Accommodations",
+                description: "Request ADA accommodations at work",
+                icon: <Heart className="w-8 h-8 text-purple-600" />,
+                badge: "Adults"
+              },
+              {
+                title: "Dopamine Menu",
+                description: "Create your personalized activity menu",
+                icon: <Zap className="w-8 h-8 text-yellow-600" />,
+                badge: "All Ages"
+              },
+              {
+                title: "Focus Block Planner",
+                description: "Visual time-blocking for ADHD brains",
+                icon: <Rocket className="w-8 h-8 text-orange-600" />,
+                badge: "All Ages"
+              },
+              {
+                title: "Medication Tracker",
+                description: "Track effectiveness and side effects",
+                icon: <Star className="w-8 h-8 text-green-600" />,
+                badge: "All Ages"
+              },
+              {
+                title: "Parent-Teacher Plan",
+                description: "Collaboration plan for school support",
+                icon: <Users className="w-8 h-8 text-pink-600" />,
+                badge: "Parents & Teachers"
+              }
+            ].map((resource, index) => (
+              <Card key={index} className="hover:shadow-lg transition-all hover:scale-105 cursor-pointer border-2">
+                <CardHeader>
+                  <div className="flex items-start justify-between gap-2">
+                    <div>{resource.icon}</div>
+                    <Badge variant="outline">{resource.badge}</Badge>
+                  </div>
+                  <CardTitle className="text-lg mt-2">{resource.title}</CardTitle>
+                  <CardDescription>{resource.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button 
+                    className="w-full" 
+                    variant="outline"
+                    disabled
+                  >
+                    Coming Soon 🚧
+                  </Button>
+                  <p className="text-xs text-muted-foreground mt-2 text-center">
+                    Template editor in development
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PubMed Research */}
+      <section id="research" className="py-16 bg-gradient-to-br from-purple-50 via-white to-pink-50 dark:from-purple-950/20 dark:via-gray-900 dark:to-pink-950/20 scroll-mt-20">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+              ADHD Research Database 📚
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Search 35+ million peer-reviewed articles on ADHD, executive function, and neurodevelopmental research
+            </p>
+          </div>
+          <PubMedResearch />
+        </div>
+      </section>
+
+      {/* Crisis Support */}
+      <section id="crisis" className="py-16 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 dark:from-red-950 dark:via-orange-950 dark:to-yellow-950 scroll-mt-20">
+        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+          <CrisisSupport />
+        </div>
+      </section>
+    </main>
+  );
 }

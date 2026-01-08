@@ -47,16 +47,15 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ challenges: challenges ?? [] })
   } catch (error) {
-    console.error('Failed to fetch challenges:', error)
+    console.error('[Challenges API] Failed to fetch challenges:', error)
     markDbDown(error)
-    if (isDbDown()) {
-      return NextResponse.json({
-        challenges: [],
-        dbUnavailable: true,
-        dbUnavailableReason: getDbDownReason()
-      })
-    }
-    return NextResponse.json({ error: 'Failed to fetch challenges' }, { status: 500 })
+    // Always return 200 with fallback data (never 500)
+    return NextResponse.json({
+      challenges: [],
+      dbUnavailable: true,
+      dbUnavailableReason: getDbDownReason() || 'Database error',
+      source: 'fallback'
+    })
   }
 }
 

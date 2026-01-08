@@ -1,0 +1,431 @@
+/* =============================================
+   NeuroBreath – Breathing Games Styles
+   ============================================= */
+
+/* Game selector buttons */
+.game-selector {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 1.5rem 0;
+}
+
+/* Shift breathing game text + buttons as one group (not the whole card) */
+#breathing-game-section .breathing-game-intro {
+  margin-left: 20%;
+  margin-top: 8%;
+}
+
+/* 4-7-8 page: make the card LOOK full-width without shifting its contents */
+body[data-page-id="4-7-8-breathing"] #breathing-game-section {
+  position: relative;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: visible;
+  padding: var(--spacing-lg);
+}
+
+body[data-page-id="4-7-8-breathing"] #breathing-game-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  left: calc(50% - 50vw);
+  right: calc(50% - 50vw);
+  width: auto;
+  background: var(--color-white);
+  border: 1px solid var(--color-sage-light);
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+  box-shadow: var(--shadow-medium);
+  z-index: 0;
+}
+
+body[data-page-id="4-7-8-breathing"] #breathing-game-section:hover::before {
+  box-shadow: var(--shadow-lifted);
+  transform: translateY(-2px);
+  border-color: var(--color-sage);
+}
+
+body[data-page-id="4-7-8-breathing"] #breathing-game-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* 4-7-8 page: make intro text follow the active theme (same as dark mode) */
+body[data-page-id="4-7-8-breathing"] #breathing-game-section .breathing-game-intro h2 {
+  color: var(--color-text);
+}
+
+body[data-page-id="4-7-8-breathing"] #breathing-game-section .breathing-game-intro p {
+  color: var(--color-text-muted);
+}
+
+/* Light theme: remove the intro "card" behind text + buttons (keep spacing) */
+body[data-page-id="4-7-8-breathing"] #breathing-game-section .breathing-game-intro {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: var(--spacing-lg);
+}
+
+/* Higher-contrast buttons on light theme: white background, logo-green text */
+body[data-page-id="4-7-8-breathing"] #breathing-game-section .btn {
+  background: var(--color-white);
+  color: var(--color-sage-dark);
+  border-color: var(--color-sage-dark);
+}
+
+body[data-page-id="4-7-8-breathing"] #breathing-game-section .btn:hover {
+  background: var(--color-cream);
+}
+
+/* Make the breathing game card ~10% taller via extra vertical padding */
+#breathing-game-section {
+  padding-bottom: calc(var(--s-6) + (var(--s-6) / 10));
+}
+
+@media (max-width: 880px) {
+  #breathing-game-section .breathing-game-intro {
+    margin-left: 0;
+    margin-top: 0;
+  }
+}
+
+/* Game container visibility */
+.game-container-hidden {
+  display: none;
+}
+
+/* Section spacing for breathing game sections */
+.breathing-game-section-spacing {
+  margin-top: var(--space-xl);
+}
+
+.breathing-game-container {
+  background: var(--color-cream);
+  border: 2px solid var(--color-sage-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin: var(--space-lg) 0;
+}
+
+/* Focus screen (distraction-free fullscreen) */
+body.nb-focus-screen {
+  overflow: hidden;
+}
+
+body.nb-focus-screen .site-header,
+body.nb-focus-screen .site-footer,
+body.nb-focus-screen .skip-link,
+body.nb-focus-screen #top {
+  display: none !important;
+}
+
+/* Prevent hover-lift transforms from affecting layout while focusing */
+body.nb-focus-screen .card:hover {
+  transform: none !important;
+}
+
+/* Hide surrounding page content on technique pages while focusing */
+body.nb-focus-screen main .page-container > :not(#breathing-game-section) {
+  display: none !important;
+}
+
+.breathing-game-container.is-focus {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  margin: 0;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  padding:
+    calc(var(--space-lg) + env(safe-area-inset-top))
+    calc(var(--space-lg) + env(safe-area-inset-right))
+    calc(var(--space-lg) + env(safe-area-inset-bottom))
+    calc(var(--space-lg) + env(safe-area-inset-left));
+  overflow: auto;
+  background: var(--color-cream);
+}
+
+.breathing-game-container.is-focus .breathing-game-area {
+  min-height: 52vh;
+}
+
+/* Bigger visual target in focus mode */
+.breathing-game-container.is-focus .dragon-body {
+  width: 180px;
+  height: 180px;
+}
+
+.breathing-game-container.is-focus .bubble-label,
+.breathing-game-container.is-focus .dragon-label,
+.breathing-game-container.is-focus .balloon-label {
+  font-size: 1.15rem;
+}
+
+.nb-focus-controls {
+  position: absolute;
+  top: calc(var(--space-md) + env(safe-area-inset-top));
+  right: calc(var(--space-md) + env(safe-area-inset-right));
+  z-index: 2;
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.breathing-game-area {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+  overflow: hidden;
+}
+
+/* Calm Bubble Game */
+.bubble-animated,
+.bubble-static {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+  position: relative;
+}
+
+.bubble-animated {
+  animation: bubble-pulse 2s ease-in-out infinite;
+}
+
+@keyframes bubble-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.bubble-label {
+  color: var(--color-white);
+  font-weight: 600;
+  font-size: 1.2rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Dragon Calm Game */
+.dragon-animated,
+.dragon-static {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.dragon-animated {
+  animation: dragon-breathe 3s ease-in-out infinite;
+}
+
+@keyframes dragon-breathe {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(2deg); }
+}
+
+.dragon-body {
+  width: 120px;
+  height: 120px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.dragon-label {
+  color: var(--color-white);
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Balloon Float Game */
+.balloon-animated,
+.balloon-static {
+  position: absolute;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: linear-gradient(135deg, var(--color-sky), var(--color-lavender));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: bottom 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+
+.balloon-animated {
+  animation: balloon-float 2s ease-in-out infinite;
+}
+
+@keyframes balloon-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.balloon-label {
+  color: var(--color-white);
+  font-weight: 600;
+  font-size: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Game Controls */
+.breathing-game-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-sage-light);
+  background: linear-gradient(135deg, var(--color-white), var(--color-cream));
+  box-shadow: var(--shadow-medium);
+}
+
+.game-status {
+  text-align: center;
+  padding: var(--space-md);
+  background: var(--zone-green-bg);
+  border: 1px solid var(--color-sage-light);
+  border-radius: var(--radius-md);
+}
+
+.game-phase {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-sage-dark);
+  display: block;
+  margin-bottom: var(--space-xs);
+}
+
+.game-countdown {
+  font-size: 1.2rem;
+  color: var(--color-text-muted);
+}
+
+.game-progress {
+  margin: 0;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 12px;
+  background: linear-gradient(90deg, var(--color-sage-light), var(--color-cream));
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--color-sage);
+  border-radius: var(--radius-sm);
+  transition: width 0.1s linear;
+  width: 0%;
+}
+
+.cycle-counter {
+  text-align: center;
+  margin-top: var(--space-sm);
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--color-white);
+  border: 1px solid var(--color-sage-light);
+}
+
+.game-actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.low-stim-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.9rem;
+  color: var(--color-text);
+  cursor: pointer;
+  margin-left: auto;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--color-white);
+  border: 1px solid var(--color-sage-light);
+}
+
+.low-stim-toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* Game Complete Message */
+.game-complete {
+  text-align: center;
+  padding: var(--space-xl);
+  background: linear-gradient(135deg, var(--color-sage-light), var(--color-sky-light));
+  border-radius: var(--radius-md);
+}
+
+.complete-icon {
+  font-size: 4rem;
+  margin-bottom: var(--space-md);
+}
+
+.game-complete h3 {
+  font-size: 1.5rem;
+  color: var(--color-sage-dark);
+  margin-bottom: var(--space-sm);
+}
+
+.game-complete p {
+  font-size: 1.1rem;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.complete-message {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* Low Stimulation Mode */
+.low-stim-mode .bubble-animated,
+.low-stim-mode .dragon-animated,
+.low-stim-mode .balloon-animated {
+  animation: none !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .breathing-game-area {
+    min-height: 250px;
+  }
+
+  .game-actions {
+    flex-direction: column;
+  }
+
+  .low-stim-toggle {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+}

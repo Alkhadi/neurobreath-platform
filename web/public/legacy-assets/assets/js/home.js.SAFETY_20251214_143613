@@ -1,0 +1,712 @@
+(function(){
+  const root = window.__MSHARE__ = window.__MSHARE__ || {};
+  const Stats = root.Stats || null;
+  const PAGE_ID = root.pageId || 'index';
+
+  const scrollTriggers = document.querySelectorAll('[data-scroll]');
+  if (scrollTriggers.length){
+    scrollTriggers.forEach(trigger => {
+      trigger.addEventListener('click', event => {
+        const selector = trigger.getAttribute('data-scroll');
+        if (!selector) return;
+        const target = document.querySelector(selector);
+        if (!target) return;
+        event.preventDefault();
+        try{
+          target.scrollIntoView({ behavior:'smooth', block:'start' });
+        }catch{
+          window.scrollTo({ top: target.offsetTop || 0, behavior:'smooth' });
+        }
+        if (selector.startsWith('#')){
+          try{
+            history.replaceState(null, document.title, selector);
+          }catch{
+            location.hash = selector;
+          }
+        }
+      });
+    });
+  }
+
+  const player = document.getElementById('homePlayer');
+  if (!player) return;
+
+  const TECHNIQUES = {
+    'box-4444': {
+      label: 'Box Breathing · 4-4-4-4',
+      breathsPerCycle: 1,
+      recommendedMinutes: 3,
+      phases: [
+        { id:'inhale', label:'Inhale', cue:'Inhale softly through the nose.', seconds:4 },
+        { id:'hold-1', label:'Hold', cue:'Hold gently, relax the jaw.', seconds:4 },
+        { id:'exhale', label:'Exhale', cue:'Exhale through the mouth slowly.', seconds:4 },
+        { id:'hold-2', label:'Hold', cue:'Pause with lungs empty.', seconds:4 }
+      ]
+    },
+    'coherent-55': {
+      label: 'Coherent Breathing · 5-5',
+      breathsPerCycle: 1,
+      recommendedMinutes: 5,
+      phases: [
+        { id:'inhale', label:'Inhale', cue:'Breathe in for five seconds.', seconds:5 },
+        { id:'exhale', label:'Exhale', cue:'Slowly exhale for five seconds.', seconds:5 }
+      ]
+    },
+    'four-7-8': {
+      label: '4-7-8 Reset',
+      breathsPerCycle: 1,
+      recommendedMinutes: 4,
+      phases: [
+        { id:'inhale', label:'Inhale', cue:'Inhale quietly through the nose for four.', seconds:4 },
+        { id:'hold', label:'Hold', cue:'Hold the breath for seven seconds.', seconds:7 },
+        { id:'exhale', label:'Exhale', cue:'Exhale with a soft whoosh for eight.', seconds:8 }
+      ]
+    },
+    'sos-1m': {
+      label: 'SOS Reset · 60s',
+      breathsPerCycle: 1,
+      recommendedMinutes: 1,
+      phases: [
+        { id:'inhale', label:'Inhale', cue:'Quick inhale through the nose.', seconds:3 },
+        { id:'hold', label:'Hold', cue:'Steady hold for three.', seconds:3 },
+        { id:'exhale', label:'Exhale', cue:'Exhale for three seconds, feel shoulders drop.', seconds:3 }
+      ]
+    }
+  };
+
+  const techniqueSelect = document.getElementById('homeTechnique');
+  const minutesSlider = document.getElementById('homeMinutes');
+  const minutesLabel = document.getElementById('homeMinutesLabel');
+  const metaRound = player.querySelector('[data-role="round"]');
+  const metaRoundTotal = player.querySelector('[data-role="roundTotal"]');
+  const metaBreaths = player.querySelector('[data-role="breaths"]');
+  const metaTime = player.querySelector('[data-role="time"]');
+  const statusEl = player.querySelector('[data-role="status"]');
+  const diagramEl = player.querySelector('[data-role="diagram"]');
+  const startBtn = player.querySelector('[data-action="start"]');
+  const pauseBtn = player.querySelector('[data-action="pause"]');
+  const resetBtn = player.querySelector('[data-action="reset"]');
+  const voiceBtn = player.querySelector('[data-action="voice"]');
+
+  if (!techniqueSelect || !minutesSlider || !minutesLabel || !metaRound || !metaRoundTotal || !metaBreaths || !metaTime || !statusEl || !diagramEl || !startBtn || !pauseBtn || !resetBtn || !voiceBtn){
+    return;
+  }
+
+  const diagramProgress = document.createElement('div');
+  diagramProgress.className = 'home-tech__progress';
+  const diagramBar = document.createElement('div');
+  diagramBar.className = 'home-tech__progress-bar';
+  diagramProgress.appendChild(diagramBar);
+  const phasesContainer = document.createElement('div');
+  phasesContainer.className = 'home-tech__phases';
+  diagramEl.innerHTML = '';
+  diagramEl.append(diagramProgress, phasesContainer);
+
+  const canSpeak = typeof window.speechSynthesis !== 'undefined' && typeof window.SpeechSynthesisUtterance !== 'undefined';
+  const VoicePrefs = window.NeurobreathVoicePreferences || null;
+
+  function normalizeVoiceProfile(value){
+    if (value === 'female') return 'female';
+    if (value === 'male') return 'male';
+    return 'uk-male';
+  }
+
+  let sharedVoiceProfile = normalizeVoiceProfile(
+    (VoicePrefs && typeof VoicePrefs.get === 'function' && VoicePrefs.get()) ||
+    (VoicePrefs && typeof VoicePrefs.getDefault === 'function' && VoicePrefs.getDefault()) ||
+    'uk-male'
+  );
+
+  const maleVoiceHints = [/google uk english male/i, /microsoft george/i, /microsoft ryan/i, /microsoft guy/i, /daniel/i, /brian/i, /arthur/i, /matthew/i];
+  const femaleVoiceHints = [/female/i, /hazel/i, /sonia/i, /libby/i, /serena/i, /kate/i, /victoria/i, /emma/i, /samantha/i];
+  let preferredVoice = null;
+  let voiceListenerAttached = false;
+
+  const state = {
+    techniqueKey: techniqueSelect.value || 'box-4444',
+    minutes: Number(minutesSlider.value) || 3,
+    totalSeconds: (Number(minutesSlider.value) || 3) * 60,
+    cycleSeconds: 0,
+    estimatedRounds: 0,
+    estimatedBreaths: 0,
+    isActive: false,
+    isPaused: false,
+    timerId: null,
+    elapsedSeconds: 0,
+    phaseElapsed: 0,
+    phaseIndex: 0,
+    roundIndex: 0,
+    voiceEnabled: false,
+    voiceProfile: sharedVoiceProfile
+  };
+
+  if (VoicePrefs && typeof VoicePrefs.subscribe === 'function'){
+    VoicePrefs.subscribe(value => {
+      sharedVoiceProfile = normalizeVoiceProfile(value);
+      state.voiceProfile = sharedVoiceProfile;
+      preferredVoice = null;
+      ensurePreferredVoice(true);
+    });
+  }
+
+  let phaseNodes = [];
+
+  function pickPreferredVoice(voices){
+    if (!Array.isArray(voices) || !voices.length) return null;
+    const profile = state.voiceProfile;
+    const gender = profile === 'female' ? 'female' : 'male';
+    const preferGb = profile !== 'male';
+    const hints = gender === 'female' ? femaleVoiceHints : maleVoiceHints;
+    const lowerLang = voice => (voice.lang || '').toLowerCase();
+
+    if (preferGb){
+      const gbVoices = voices.filter(v => lowerLang(v).startsWith('en-gb'));
+      const gbMatch = gbVoices.find(v => hints.some(pattern => pattern.test(v.name)));
+      if (gbMatch) return gbMatch;
+      if (gbVoices[0]) return gbVoices[0];
+    }
+
+    const enVoices = voices.filter(v => /^en-/i.test(v.lang || ''));
+    const enMatch = enVoices.find(v => hints.some(pattern => pattern.test(v.name)));
+    if (enMatch) return enMatch;
+    if (enVoices[0]) return enVoices[0];
+
+    const anyMatch = voices.find(v => hints.some(pattern => pattern.test(v.name)));
+    if (anyMatch) return anyMatch;
+    return voices[0];
+  }
+
+  function ensurePreferredVoice(forceRefresh){
+    if (!canSpeak) return null;
+    const synth = window.speechSynthesis;
+    if (!synth) return null;
+    if (forceRefresh) preferredVoice = null;
+    const voices = synth.getVoices();
+    if (voices.length){
+      preferredVoice = pickPreferredVoice(voices) || preferredVoice;
+      return preferredVoice;
+    }
+    if (!voiceListenerAttached){
+      voiceListenerAttached = true;
+      const handler = () => {
+        const updated = synth.getVoices();
+        if (updated.length){
+          preferredVoice = pickPreferredVoice(updated) || preferredVoice;
+        }
+      };
+      if (typeof synth.addEventListener === 'function'){
+        synth.addEventListener('voiceschanged', handler);
+      } else if ('onvoiceschanged' in synth){
+        synth.onvoiceschanged = handler;
+      }
+    }
+    return preferredVoice;
+  }
+
+  function getConfig(){
+    return TECHNIQUES[state.techniqueKey] || TECHNIQUES['box-4444'];
+  }
+
+  function calculateCycleSeconds(config){
+    return config.phases.reduce((acc, phase) => acc + Number(phase.seconds || 0), 0);
+  }
+
+  function formatTime(seconds){
+    const safe = Math.max(0, Math.round(seconds));
+    const mins = String(Math.floor(safe / 60)).padStart(2,'0');
+    const secs = String(safe % 60).padStart(2,'0');
+    return `${mins}:${secs}`;
+  }
+
+  function resetSpeech(){
+    try{ window.speechSynthesis?.cancel(); }catch{}
+  }
+
+  function speak(text){
+    if (!state.voiceEnabled || !canSpeak) return;
+    resetSpeech();
+    try{
+      const msg = new window.SpeechSynthesisUtterance(text);
+      const chosenVoice = ensurePreferredVoice();
+      if (chosenVoice) msg.voice = chosenVoice;
+      msg.lang = (chosenVoice && chosenVoice.lang) || 'en-GB';
+      msg.rate = 0.94;
+      msg.pitch = state.voiceProfile === 'female' ? 1.08 : 0.95;
+      window.speechSynthesis.speak(msg);
+    }catch{}
+  }
+
+  function updateVoiceButton(){
+    voiceBtn.textContent = state.voiceEnabled ? 'Voice cues on' : 'Voice cues off';
+    voiceBtn.setAttribute('aria-pressed', state.voiceEnabled ? 'true' : 'false');
+  }
+
+  function updateStaticMeta(){
+    const config = getConfig();
+    state.cycleSeconds = Math.max(1, calculateCycleSeconds(config));
+    const totalSeconds = Math.max(60, state.minutes * 60);
+    state.totalSeconds = totalSeconds;
+    const exactRounds = totalSeconds / state.cycleSeconds;
+    state.estimatedRounds = Math.max(1, Math.ceil(exactRounds));
+    state.estimatedBreaths = Math.max(1, Math.ceil(exactRounds * (config.breathsPerCycle || 1)));
+    metaRoundTotal.textContent = String(state.estimatedRounds);
+    metaBreaths.textContent = String(state.estimatedBreaths);
+    metaTime.textContent = formatTime(state.totalSeconds - state.elapsedSeconds);
+  }
+
+  function updateDynamicMeta(){
+    metaRound.textContent = state.isActive ? String(Math.min(state.estimatedRounds, state.roundIndex + 1)) : '0';
+    metaTime.textContent = formatTime(state.totalSeconds - state.elapsedSeconds);
+  }
+
+  function setStatus(message){
+    statusEl.textContent = message;
+  }
+
+  function highlightPhase(){
+    const activeId = getConfig().phases[state.phaseIndex]?.id;
+    phaseNodes.forEach(node => {
+      node.classList.toggle('is-active', node.dataset.phase === activeId);
+    });
+  }
+
+  function renderPhases(){
+    phasesContainer.innerHTML = '';
+    phaseNodes = [];
+    const config = getConfig();
+    config.phases.forEach(phase => {
+      const item = document.createElement('div');
+      item.className = 'home-tech__phase';
+      item.dataset.phase = phase.id;
+      const title = document.createElement('strong');
+      title.textContent = phase.label;
+      const detail = document.createElement('small');
+      detail.textContent = `${phase.seconds}s`;
+      item.append(title, detail);
+      phasesContainer.appendChild(item);
+      phaseNodes.push(item);
+    });
+    highlightPhase();
+  }
+
+  function updateProgressBar(){
+    const progress = state.totalSeconds > 0 ? Math.min(1, state.elapsedSeconds / state.totalSeconds) : 0;
+    diagramBar.style.width = `${Math.round(progress * 100)}%`;
+  }
+
+  function setControlsDisabled(disabled){
+    techniqueSelect.disabled = disabled;
+    minutesSlider.disabled = disabled;
+  }
+
+  function stopTimer(){
+    if (state.timerId){
+      clearInterval(state.timerId);
+      state.timerId = null;
+    }
+  }
+
+  function finishSession(completed){
+    stopTimer();
+    state.isActive = false;
+    state.isPaused = false;
+    startBtn.disabled = false;
+    pauseBtn.disabled = true;
+    resetBtn.disabled = false;
+    setControlsDisabled(false);
+    if (completed){
+      setStatus('Session complete. Take a sip of water.');
+      const config = getConfig();
+      const safeSeconds = Math.max(0, Math.round(state.elapsedSeconds));
+      if (safeSeconds >= 30 && Stats?.addSession){
+        const breaths = Math.max(1, Math.round((safeSeconds / state.cycleSeconds) * (config.breathsPerCycle || 1)));
+        Stats.addSession({
+          seconds: safeSeconds,
+          breaths,
+          techId: state.techniqueKey,
+          pageId: PAGE_ID,
+          source: 'home-player'
+        });
+      }
+    } else {
+      setStatus('Session reset. Pick a technique to preview the timing, then press start.');
+    }
+    updateDynamicMeta();
+    updateProgressBar();
+    highlightPhase();
+    resetSpeech();
+  }
+
+  function resetSession(){
+    stopTimer();
+    state.isActive = false;
+    state.isPaused = false;
+    state.elapsedSeconds = 0;
+    state.phaseElapsed = 0;
+    state.phaseIndex = 0;
+    state.roundIndex = 0;
+    startBtn.disabled = false;
+    pauseBtn.disabled = true;
+    pauseBtn.textContent = 'Pause';
+    resetBtn.disabled = true; // Keep reset button disabled when idle
+    setControlsDisabled(false);
+    updateStaticMeta();
+    updateDynamicMeta();
+    updateProgressBar();
+    highlightPhase();
+    setStatus('Pick a technique to preview the timing, then press start.');
+    resetSpeech();
+  }
+
+  function advancePhase(){
+    const config = getConfig();
+    state.phaseIndex += 1;
+    if (state.phaseIndex >= config.phases.length){
+      state.phaseIndex = 0;
+      state.roundIndex += 1;
+    }
+    state.phaseElapsed = 0;
+    highlightPhase();
+    const cue = config.phases[state.phaseIndex]?.cue;
+    if (cue) speak(cue);
+  }
+
+  function tick(){
+    if (!state.isActive || state.isPaused) return;
+    state.elapsedSeconds += 1;
+    state.phaseElapsed += 1;
+    const config = getConfig();
+    const currentPhase = config.phases[state.phaseIndex];
+    if (state.phaseElapsed >= (currentPhase?.seconds || 0)){
+      advancePhase();
+    }
+    updateDynamicMeta();
+    updateProgressBar();
+    if (state.elapsedSeconds >= state.totalSeconds){
+      finishSession(true);
+    }
+  }
+
+  function startSession(){
+    if (state.isActive) return;
+    state.isActive = true;
+    state.isPaused = false;
+    state.elapsedSeconds = 0;
+    state.phaseElapsed = 0;
+    state.phaseIndex = 0;
+    state.roundIndex = 0;
+    startBtn.disabled = true;
+    pauseBtn.disabled = false;
+    pauseBtn.textContent = 'Pause';
+    resetBtn.disabled = false; // Enable reset button while session is active
+    setControlsDisabled(true);
+    updateDynamicMeta();
+    updateProgressBar();
+    highlightPhase();
+    const firstCue = getConfig().phases[0]?.cue;
+    if (firstCue) speak(firstCue);
+    stopTimer();
+    state.timerId = setInterval(tick, 1000);
+    setStatus('Session running. Follow the phase cues or pause anytime.');
+  }
+
+  function togglePause(){
+    if (!state.isActive) return;
+    state.isPaused = !state.isPaused;
+    if (state.isPaused){
+      pauseBtn.textContent = 'Resume';
+      setStatus('Paused. Press resume to continue.');
+      stopTimer();
+      resetSpeech();
+    } else {
+      pauseBtn.textContent = 'Pause';
+      setStatus('Session running. Follow the phase cues or pause anytime.');
+      stopTimer();
+      state.timerId = setInterval(tick, 1000);
+      const cue = getConfig().phases[state.phaseIndex]?.cue;
+      if (cue) speak(cue);
+    }
+  }
+
+  techniqueSelect.addEventListener('change', () => {
+    state.techniqueKey = techniqueSelect.value;
+    const config = getConfig();
+    if (!state.isActive){
+      const recommended = Math.max(1, config.recommendedMinutes || state.minutes);
+      state.minutes = recommended;
+      minutesSlider.value = String(recommended);
+      minutesSlider.setAttribute('aria-valuenow', minutesSlider.value);
+      minutesSlider.setAttribute('aria-valuetext', `${recommended} minutes`);
+      minutesLabel.textContent = String(recommended);
+    }
+    renderPhases();
+    resetSession();
+  });
+
+  minutesSlider.addEventListener('input', () => {
+    const value = Math.max(Number(minutesSlider.min) || 1, Math.min(Number(minutesSlider.max) || 10, Number(minutesSlider.value) || 1));
+    minutesSlider.value = String(value);
+    minutesSlider.setAttribute('aria-valuenow', minutesSlider.value);
+    minutesSlider.setAttribute('aria-valuetext', `${value} minutes`);
+    minutesLabel.textContent = String(value);
+    state.minutes = value;
+    if (!state.isActive){
+      updateStaticMeta();
+      updateDynamicMeta();
+    }
+  });
+
+  startBtn.addEventListener('click', event => {
+    event.preventDefault();
+    if (state.isActive) return;
+    startSession();
+  });
+
+  pauseBtn.addEventListener('click', event => {
+    event.preventDefault();
+    if (!state.isActive) return;
+    togglePause();
+  });
+
+  resetBtn.addEventListener('click', event => {
+    event.preventDefault();
+    resetSession();
+  });
+
+  voiceBtn.addEventListener('click', event => {
+    event.preventDefault();
+    if (!canSpeak){
+      alert('Voice cues are not supported on this device.');
+      return;
+    }
+    state.voiceEnabled = !state.voiceEnabled;
+    updateVoiceButton();
+    if (!state.voiceEnabled){
+      resetSpeech();
+    } else if (state.isActive && !state.isPaused){
+      const cue = getConfig().phases[state.phaseIndex]?.cue;
+      if (cue) speak(cue);
+    }
+  });
+
+  renderPhases();
+  updateStaticMeta();
+  updateDynamicMeta();
+  updateProgressBar();
+  updateVoiceButton();
+  setStatus('Pick a technique to preview the timing, then press start.');
+})();
+
+(function(){
+  const globalRef = window.__NBProgress__ = window.__NBProgress__ || {};
+  const STORAGE_KEY = 'nb_home_progress_v3';
+  const listeners = new Set();
+  const techniqueDefaults = {
+    box: 0,
+    coherent: 0,
+    four78: 0,
+    sos: 0,
+    ladder: 0,
+    colour: 0,
+    roulette: 0
+  };
+  const partOfDayDefaults = { morning: 0, afternoon: 0, evening: 0, night: 0 };
+  let cache = null;
+
+  const storageSupported = (() => {
+    try {
+      const key = '__nb_support_test__';
+      window.localStorage.setItem(key, '1');
+      window.localStorage.removeItem(key);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  })();
+
+  function clone(obj){
+    return JSON.parse(JSON.stringify(obj));
+  }
+
+  function dayKey(date){
+    const d = date ? new Date(date) : new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function yesterdayKey(date){
+    const d = date ? new Date(date) : new Date();
+    d.setDate(d.getDate() - 1);
+    return dayKey(d);
+  }
+
+  function getPartOfDay(date){
+    const hour = (date ? new Date(date) : new Date()).getHours();
+    if (hour < 12) return 'morning';
+    if (hour < 17) return 'afternoon';
+    if (hour < 21) return 'evening';
+    return 'night';
+  }
+
+  function defaultData(){
+    return {
+      total: { minutes: 0, sessions: 0, breaths: 0 },
+      techniqueMinutes: Object.assign({}, techniqueDefaults),
+      logs: [],
+      byDate: {},
+      partOfDay: Object.assign({}, partOfDayDefaults),
+      meta: { lastDay: null, currentStreak: 0, bestStreak: 0 },
+      challengeProgress: {}
+    };
+  }
+
+  function mergeData(base, incoming){
+    if (!incoming || typeof incoming !== 'object') return clone(base);
+    const output = clone(base);
+    if (incoming.total) output.total = Object.assign({}, output.total, incoming.total);
+    if (incoming.techniqueMinutes) output.techniqueMinutes = Object.assign({}, output.techniqueMinutes, incoming.techniqueMinutes);
+    if (incoming.byDate) output.byDate = Object.assign({}, output.byDate, incoming.byDate);
+    if (incoming.partOfDay) output.partOfDay = Object.assign({}, output.partOfDay, incoming.partOfDay);
+    if (incoming.meta) output.meta = Object.assign({}, output.meta, incoming.meta);
+    if (Array.isArray(incoming.logs)) output.logs = incoming.logs.slice(0, 20);
+    if (incoming.challengeProgress) output.challengeProgress = Object.assign({}, output.challengeProgress, incoming.challengeProgress);
+    return output;
+  }
+
+  function load(){
+    if (cache) return cache;
+    let data = defaultData();
+    if (storageSupported){
+      try {
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        if (raw) data = mergeData(data, JSON.parse(raw));
+      } catch (err) {
+        data = defaultData();
+      }
+    } else if (globalRef.__memoryCache) {
+      data = mergeData(data, globalRef.__memoryCache);
+    }
+    cache = data;
+    return cache;
+  }
+
+  function persist(data){
+    cache = data;
+    if (storageSupported){
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (err) {
+        // ignore write issues
+      }
+    } else {
+      globalRef.__memoryCache = data;
+    }
+  }
+
+  function ensureChallengeRecord(data, id){
+    if (!id) return null;
+    if (!data.challengeProgress[id]){
+      data.challengeProgress[id] = { currentDays: 0, bestDays: 0, lastDate: null, totalSessions: 0, totalMinutes: 0 };
+    }
+    return data.challengeProgress[id];
+  }
+
+  function notify(event){
+    listeners.forEach(listener => {
+      try { listener(load(), event); } catch (err) { /* noop */ }
+    });
+  }
+
+  function logSession(options){
+    const minutes = Number(options?.minutes) > 0 ? Number(options.minutes) : 1;
+    const technique = options?.technique || 'box';
+    const label = options?.label || 'Breathing session';
+    const challengeId = options?.challengeId || options?.id || null;
+    const breathsPerMinute = Number(options?.breathsPerMinute) || 6;
+    const data = load();
+    const now = new Date();
+    const today = dayKey(now);
+    const yest = yesterdayKey(now);
+    const breathsLogged = Math.max(1, Math.round(minutes * breathsPerMinute));
+
+    data.total.minutes += minutes;
+    data.total.sessions += 1;
+    data.total.breaths += breathsLogged;
+    data.techniqueMinutes[technique] = (data.techniqueMinutes[technique] || 0) + minutes;
+
+    const entry = { label, minutes, technique, challengeId, date: today, time: now.toISOString() };
+    data.logs.unshift(entry);
+    data.logs = data.logs.slice(0, 12);
+
+    const dayRecord = data.byDate[today] || { minutes: 0, sessions: 0, breaths: 0 };
+    dayRecord.minutes += minutes;
+    dayRecord.sessions += 1;
+    dayRecord.breaths = (dayRecord.breaths || 0) + breathsLogged;
+    data.byDate[today] = dayRecord;
+
+    const part = getPartOfDay(now);
+    data.partOfDay[part] = (data.partOfDay[part] || 0) + 1;
+
+    if (!data.meta.lastDay){
+      data.meta.currentStreak = 1;
+    } else if (data.meta.lastDay === today){
+      // streak unchanged for same day
+    } else if (data.meta.lastDay === yest){
+      data.meta.currentStreak += 1;
+    } else {
+      data.meta.currentStreak = 1;
+    }
+    data.meta.lastDay = today;
+    if (data.meta.currentStreak > data.meta.bestStreak){
+      data.meta.bestStreak = data.meta.currentStreak;
+    }
+
+    if (challengeId){
+      const tracker = ensureChallengeRecord(data, challengeId);
+      if (tracker){
+        tracker.totalSessions += 1;
+        tracker.totalMinutes += minutes;
+        if (!tracker.lastDate){
+          tracker.currentDays = 1;
+        } else if (tracker.lastDate === today){
+          // same day, no change
+        } else if (tracker.lastDate === yest){
+          tracker.currentDays += 1;
+        } else {
+          tracker.currentDays = 1;
+        }
+        tracker.lastDate = today;
+        if (tracker.currentDays > tracker.bestDays){
+          tracker.bestDays = tracker.currentDays;
+        }
+      }
+    }
+
+    persist(data);
+    notify({ type: 'log', entry: clone(entry) });
+    return { data: clone(data), entry: clone(entry) };
+  }
+
+  function reset(){
+    const fresh = defaultData();
+    persist(fresh);
+    notify({ type: 'reset' });
+    return clone(fresh);
+  }
+
+  function subscribe(fn){
+    if (typeof fn !== 'function') return () => {};
+    listeners.add(fn);
+    return () => listeners.delete(fn);
+  }
+
+  globalRef.supported = storageSupported;
+  globalRef.getData = () => load();
+  globalRef.logSession = logSession;
+  globalRef.reset = reset;
+  globalRef.subscribe = subscribe;
+  globalRef.todayKey = dayKey;
+  globalRef.yesterdayKey = yesterdayKey;
+})();

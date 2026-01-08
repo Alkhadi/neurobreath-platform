@@ -1,10 +1,11 @@
 import Link from 'next/link'
+import { LiveBreathingPreview } from './live-breathing-preview'
 
 export default function EvidenceSection() {
   return (
-    <section className="content-section section-bg-sky-lavender" id="why-breathing-works">
-      <div className="page-container">
-        <article className="card card-elevated card-full-width home-evidence card-share-theme">
+    <section className="content-section section-bg-sky-lavender w-full" id="why-breathing-works">
+      <div className="page-container-full px-4 md:px-6 lg:px-8">
+        <article className="card card-elevated card-full-width home-evidence card-share-theme w-full-override">
           
           <div className="home-evidence__heading">
             <h2>Why these techniques work</h2>
@@ -90,29 +91,32 @@ export default function EvidenceSection() {
             </div>
 
             <aside className="home-evidence__live-orbit" aria-labelledby="liveOrbitTitle">
-              <div className="live-orbit-badge">LIVE ORBIT</div>
+              <div className="live-orbit-badge">INTERACTIVE DEMO</div>
               
-              <h3 id="liveOrbitTitle" className="live-orbit-title">Guided inhale · hold · exhale</h3>
+              <h3 id="liveOrbitTitle" className="live-orbit-title">Try it now: Guided breathing</h3>
               
               <p className="live-orbit-description muted">
-                Preview the same visual pacing used in the hero controls and narration. Inhale, hold, and exhale 
-                cues keep timing predictable for sensory-sensitive learners.
+                Experience our visual breathing guide in action. Click &quot;Start Preview&quot; to see how the orb expands, 
+                holds, and contracts — giving you predictable, sensory-friendly timing cues that match your breath.
               </p>
 
+              {/* Live breathing visualization */}
+              <LiveBreathingPreview />
+
               <div className="live-orbit-footer">
-                <p className="live-orbit-footer-prompt">Click here to explore:</p>
+                <p className="live-orbit-footer-prompt">Want full sessions with audio guidance?</p>
                 <div className="live-orbit-pointer-wrapper">
                   <span className="live-orbit-pointer-icon">👇</span>
                 </div>
                 <Link 
-                  href="/breathing/training/focus-garden" 
+                  href="/breathing/breath" 
                   className="btn live-orbit-focus-btn"
                   role="button" 
-                  aria-label="Go to Focus Training - Interactive plant-based focus exercises"
+                  aria-label="Explore all breathing techniques and full guided sessions"
                 >
-                  <span className="live-orbit-focus-icon">🌱</span>
+                  <span className="live-orbit-focus-icon">🫁</span>
                   <span className="live-orbit-focus-text">
-                    <strong>Focus Training</strong> — Interactive plant-based focus exercises for sustained attention
+                    <strong>Explore All Techniques</strong> — Full sessions with narration, timers &amp; progress tracking
                   </span>
                 </Link>
               </div>

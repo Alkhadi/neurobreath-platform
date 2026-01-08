@@ -1,7 +1,6 @@
 generator client {
-    provider = "prisma-client-js"
-    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
-    output = "../node_modules/.prisma/client"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
 }
 
 datasource db {
@@ -367,4 +366,88 @@ model LearnerPlacement {
   
   @@index([deviceId])
   @@index([currentLevel])
+}
+
+// ============================================================================
+// SEND REPORTING SYSTEM
+// ============================================================================
+
+// AI-assisted SEND (Special Educational Needs & Disabilities) reports
+// NOT diagnostic - training recommendations only
+model SENDReport {
+  id              String   @id @default(cuid())
+  deviceId        String
+  learnerName     String?
+  reportDate      DateTime @default(now())
+  
+  // Data inputs
+  assessmentIds   String[] @default([]) // References to ReadingAttempt IDs
+  sessionIds      String[] @default([]) // References to Session IDs
+  dateRangeJson   Json     // { from: ISO date, to: ISO date }
+  
+  // AI Analysis or Rules-Based Summary
+  patternSummary  String   @db.Text // AI-generated or rule-based summary
+  strengths       String[] @default([])
+  challenges      String[] @default([])
+  recommendations String[] @default([])
+  confidence      String   @default("medium") // high, medium, low
+  
+  // Metadata
+  generatedBy     String   // "ai-gpt4", "ai-abacus", "rules-engine"
+  isEdited        Boolean  @default(false)
+  editedContent   String?  @db.Text
+  
+  // Print settings
+  isPrintFriendly Boolean  @default(true)
+  disclaimerShown Boolean  @default(true)
+  
+  // Disclaimer text (always included)
+  disclaimer      String   @default("This report provides training recommendations only and is NOT a diagnostic assessment. For formal educational or clinical assessment, please consult qualified professionals.")
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+  
+  @@index([deviceId, reportDate])
+  @@index([deviceId, createdAt])
+}
+
+// ============================================================================
+// PARENT COMPANION SYSTEM
+// ============================================================================
+
+// Parent/Guardian read-only access to learner progress
+model ParentAccess {
+  id            String   @id @default(cuid())
+  parentEmail   String?  // Optional - for notifications
+  parentCode    String   @unique // 6-digit code for simple auth
+  deviceId      String   // Learner's device ID
+  learnerName   String?  // Optional display name
+  
+  // Access control
+  isActive      Boolean  @default(true)
+  canEdit       Boolean  @default(false) // Always false for v1 - read-only
+  
+  // Expiry (optional)
+  createdAt     DateTime @default(now())
+  expiresAt     DateTime? // Optional expiry date
+  lastAccessedAt DateTime? // Track when parent last viewed
+  
+  @@index([parentCode])
+  @@index([deviceId])
+  @@index([isActive])
+}
+
+// ============================================================================
+// USER PROFILE & ONBOARDING SYSTEM
+// ============================================================================
+
+// User profile for onboarding completion tracking
+model UserProfile {
+  id                String   @id @default(cuid())
+  deviceId          String   @unique
+  profileComplete   Boolean  @default(false)
+  name              String?
+  age               Int?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now()) @updatedAt
 }

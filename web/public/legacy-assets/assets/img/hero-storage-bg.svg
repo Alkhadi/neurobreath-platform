@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Neurobreath storage console background</title>
+  <desc id="desc">Abstract flowing gradients in teal and violet hues representing secure data flow.</desc>
+  <defs>
+    <linearGradient id="storageBase" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#071224" />
+      <stop offset="52%" stop-color="#0f233c" />
+      <stop offset="100%" stop-color="#050c1a" />
+    </linearGradient>
+    <radialGradient id="storageAqua" cx="0.2" cy="0.15" r="0.65">
+      <stop offset="0%" stop-color="#2ed3c6" stop-opacity="0.68" />
+      <stop offset="55%" stop-color="#2ed3c6" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#2ed3c6" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="storageAmber" cx="0.82" cy="0.1" r="0.52">
+      <stop offset="0%" stop-color="#fbbf76" stop-opacity="0.6" />
+      <stop offset="60%" stop-color="#fbbf76" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#fbbf76" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="storageIndigo" cx="0.6" cy="0.92" r="0.7">
+      <stop offset="0%" stop-color="#6b79ff" stop-opacity="0.48" />
+      <stop offset="55%" stop-color="#6b79ff" stop-opacity="0.14" />
+      <stop offset="100%" stop-color="#6b79ff" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="storageWave" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#116a7c" stop-opacity="0.52" />
+      <stop offset="45%" stop-color="#1391a4" stop-opacity="0.24" />
+      <stop offset="100%" stop-color="#1391a4" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="storageWaveAlt" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5546ff" stop-opacity="0.5" />
+      <stop offset="60%" stop-color="#5546ff" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#5546ff" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="storagePulse" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#1de6d3" stop-opacity="0.26" />
+      <stop offset="100%" stop-color="#1de6d3" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#storageBase)" />
+  <ellipse cx="350" cy="210" rx="520" ry="420" fill="url(#storageAqua)" />
+  <ellipse cx="1280" cy="160" rx="440" ry="340" fill="url(#storageAmber)" />
+  <ellipse cx="980" cy="880" rx="600" ry="420" fill="url(#storageIndigo)" />
+  <path d="M-40 560 C 260 500 420 520 700 610 C 980 698 1180 690 1660 520 L 1660 940 L -40 940 Z" fill="url(#storageWave)" />
+  <path d="M-60 600 C 300 480 580 500 940 600 C 1180 664 1380 658 1660 560 L 1660 940 L -60 940 Z" fill="url(#storageWaveAlt)" />
+  <circle cx="360" cy="520" r="240" fill="url(#storagePulse)" />
+  <circle cx="1240" cy="360" r="200" fill="url(#storagePulse)" opacity="0.6" />
+</svg>

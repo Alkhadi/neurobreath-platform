@@ -56,7 +56,13 @@ export default function PlayfulBreathingLab() {
   // Roulette state
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedTechnique, setSelectedTechnique] = useState<typeof WHEEL_TECHNIQUES[0] | null>(null);
-  const [rotation, setRotation] = useState(0);
+  const [wheelRestIndex, setWheelRestIndex] = useState(0);
+  const [wheelSpin, setWheelSpin] = useState<{
+    fromIndex: number;
+    toIndex: number;
+    spins: number;
+    durationMs: number;
+  } | null>(null);
   
   // Focus Tiles state
   const [selectedContext, setSelectedContext] = useState<typeof FOCUS_CONTEXTS[0] | null>(null);
@@ -163,20 +169,28 @@ export default function PlayfulBreathingLab() {
   };
   
   const spinWheel = () => {
+    if (isSpinning) return;
+
+    setSelectedTechnique(null);
     setIsSpinning(true);
+
     // REQUIREMENT #4: 8-12 full rotations
     const spins = 8 + Math.floor(Math.random() * 5);
     const finalIndex = Math.floor(Math.random() * WHEEL_TECHNIQUES.length);
-    const finalRotation = spins * 360 + finalIndex * (360 / WHEEL_TECHNIQUES.length);
-    
-    setRotation(finalRotation);
-    
+
     // REQUIREMENT #4: 2.5s-3.5s duration (random within range)
-    const duration = 2500 + Math.random() * 1000;
+    const DURATIONS_MS = [2500, 2750, 3000, 3250, 3500] as const;
+    const durationMs = DURATIONS_MS[Math.floor(Math.random() * DURATIONS_MS.length)];
+
+    const fromIndex = wheelRestIndex;
+    setWheelSpin({ fromIndex, toIndex: finalIndex, spins, durationMs });
+
     setTimeout(() => {
       setSelectedTechnique(WHEEL_TECHNIQUES[finalIndex]);
+      setWheelRestIndex(finalIndex);
+      setWheelSpin(null);
       setIsSpinning(false);
-    }, duration);
+    }, durationMs);
   };
   
   const selectContext = (context: typeof FOCUS_CONTEXTS[0]) => {
@@ -428,20 +442,21 @@ export default function PlayfulBreathingLab() {
               {/* REQUIREMENT #4: Wheel Visual - Perfect Circle */}
               <div className="relative mb-6 flex items-center justify-center">
                 <div
-                  className="relative w-56 rounded-full overflow-hidden transition-transform ease-out"
-                  style={{ 
-                    transform: `rotate(${rotation}deg)`,
-                    transitionDuration: isSpinning ? '3000ms' : '0ms',
-                    aspectRatio: '1 / 1'
-                  }}
+                  className={
+                    [
+                      "nb-wheel",
+                      "relative w-56 rounded-full overflow-hidden aspect-square",
+                      `nb-wheel-rest-${wheelRestIndex}`,
+                      wheelSpin
+                        ? `nb-wheel-spin-s${wheelSpin.spins}-from${wheelSpin.fromIndex}-to${wheelSpin.toIndex} nb-wheel-dur-${wheelSpin.durationMs}`
+                        : "",
+                    ].join(" ")
+                  }
                 >
                   {WHEEL_TECHNIQUES.map((tech, idx) => (
                     <div
                       key={tech.id}
-                      className={`absolute w-full h-full ${tech.color} opacity-80`}
-                      style={{
-                        clipPath: `polygon(50% 50%, ${50 + 50 * Math.cos((idx * Math.PI) / 2 - Math.PI / 2)}% ${50 + 50 * Math.sin((idx * Math.PI) / 2 - Math.PI / 2)}%, ${50 + 50 * Math.cos(((idx + 1) * Math.PI) / 2 - Math.PI / 2)}% ${50 + 50 * Math.sin(((idx + 1) * Math.PI) / 2 - Math.PI / 2)}%)`,
-                      }}
+                      className={`nb-wheel-slice-${idx} absolute w-full h-full ${tech.color} opacity-80`}
                     >
                       <div className="absolute inset-0 flex items-center justify-center text-white font-bold text-2xl">
                         {tech.emoji}

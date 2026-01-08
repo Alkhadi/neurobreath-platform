@@ -1,0 +1,27 @@
+// assets/js/rewards-catalog.js
+(() => {
+  window.NB_REWARDS_CATALOG = {
+    badges: {
+      'first-session': { label:'First Session', icon:'✅' },
+      'calm-starter':  { label:'Calm Starter', icon:'🧘' },
+      'streak-3':      { label:'3-Day Streak', icon:'🔥' },
+      'week-60':       { label:'60-Minute Week', icon:'🏅' }
+    },
+    coupons: {
+      'teacher-token': {
+        id:'teacher-token',
+        code:'NB-TEACHER-TOKEN',
+        meta:{ title:'Teacher Time-Saver Token', description:'Unlock a printable pack or bonus resource.' }
+      }
+    },
+    prompts: {
+      'focus-script-1': {
+        id:'focus-script-1',
+        title:'Focus Script (60 seconds)',
+        body:'"For one minute, I only do the next tiny step. When the minute ends, I can stop."',
+        meta:{ category:'focus' }
+      }
+    }
+  };
+})();
+

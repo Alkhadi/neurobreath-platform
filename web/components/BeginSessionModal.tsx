@@ -492,7 +492,12 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
               <p className="text-sm font-medium text-gray-900 mb-3">Choose narration voice</p>
               
               <div className="flex flex-wrap gap-2 mb-3">
+                <label htmlFor="narration-voice-select" className="sr-only">
+                  Select narration voice
+                </label>
                 <select
+                  id="narration-voice-select"
+                  name="narrationVoice"
                   value={selectedVoice}
                   onChange={(e) => setSelectedVoice(e.target.value)}
                   className="px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -591,7 +596,12 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
               <p className="text-sm font-medium text-gray-900 mb-3">Choose background ambience</p>
               
               <div className="flex flex-wrap gap-2 mb-3">
+                <label htmlFor="ambience-sound-select" className="sr-only">
+                  Select ambience sound
+                </label>
                 <select
+                  id="ambience-sound-select"
+                  name="ambienceSound"
                   value={selectedAmbience}
                   onChange={(e) => setSelectedAmbience(e.target.value as AmbienceType)}
                   className="flex-1 px-3 py-1.5 text-sm border border-purple-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
@@ -618,8 +628,12 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
 
               {/* Volume Slider */}
               <div className="flex items-center gap-3">
-                <label className="text-xs text-gray-600 w-14">Volume</label>
+                <label htmlFor="ambience-volume-slider" className="text-xs text-gray-600 w-14">
+                  Volume
+                </label>
                 <input
+                  id="ambience-volume-slider"
+                  name="ambienceVolume"
                   type="range"
                   min="0"
                   max="1"

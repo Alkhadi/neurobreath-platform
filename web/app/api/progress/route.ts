@@ -39,19 +39,18 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(progress)
   } catch (error) {
-    console.error('Failed to fetch progress:', error)
+    console.error('[Progress API] Failed to fetch progress:', error)
     markDbDown(error)
-    if (isDbDown()) {
-      return NextResponse.json({
-        totalSessions: 0,
-        totalMinutes: 0,
-        totalBreaths: 0,
-        currentStreak: 0,
-        longestStreak: 0,
-        dbUnavailable: true,
-        dbUnavailableReason: getDbDownReason()
-      })
-    }
-    return NextResponse.json({ error: 'Failed to fetch progress' }, { status: 500 })
+    // Always return 200 with fallback data (never 500)
+    return NextResponse.json({
+      totalSessions: 0,
+      totalMinutes: 0,
+      totalBreaths: 0,
+      currentStreak: 0,
+      longestStreak: 0,
+      dbUnavailable: true,
+      dbUnavailableReason: getDbDownReason() || 'Database error',
+      source: 'fallback'
+    })
   }
 }

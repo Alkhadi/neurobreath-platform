@@ -354,15 +354,16 @@ interface RewardCardsProps {
 }
 
 export function RewardCards({ className, compact = false }: RewardCardsProps) {
-  const { gamesCompleted, streakDays } = useProgress();
+  const { gamesCompleted, streakDays, hydrated } = useProgress();
   // const { currentProfile } = useUserProfile();
   const currentProfile = null;
   const [selectedCard, setSelectedCard] = useState<typeof REWARD_CARDS[0] | null>(null);
   const [activeCategory, setActiveCategory] = useState('all');
 
-  // Calculate progress stats
+  // Calculate progress stats - safe for SSR/hydration
   const stats = useMemo(() => {
-    if (typeof window === 'undefined') {
+    // Always return zeros until hydrated to match SSR
+    if (!hydrated) {
       return {
         games: 0,
         streak: 0,
@@ -370,13 +371,14 @@ export function RewardCards({ className, compact = false }: RewardCardsProps) {
         minutes: 0
       };
     }
-    
+
+    // After hydration, load from localStorage
     const storageKey = localStorage.getItem('dlx_current_profile');
     const profileId = storageKey || 'default';
     const progressKey = `dlx_progress_${profileId}`;
     const storedData = localStorage.getItem(progressKey);
     const progressData = storedData ? JSON.parse(storedData) : null;
-    
+
     const letterProgress = progressData?.letterProgress || {};
     const masteredLetters = Object.values(letterProgress).filter((l): l is { mastered: boolean } =>
       typeof l === 'object' && l !== null && 'mastered' in l && (l as { mastered?: boolean }).mastered === true
@@ -388,7 +390,7 @@ export function RewardCards({ className, compact = false }: RewardCardsProps) {
       letters: masteredLetters,
       minutes: progressData?.totalMinutes || 0
     };
-  }, [gamesCompleted, streakDays]);
+  }, [gamesCompleted, streakDays, hydrated]);
 
   const isUnlocked = (card: typeof REWARD_CARDS[0]) => {
     const { type, count } = card.requirement;
@@ -622,12 +624,12 @@ export function RewardCards({ className, compact = false }: RewardCardsProps) {
                       
                       {!unlocked && (
                         <div className="mt-3">
-                          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-primary/50 rounded-full transition-all"
-                              style={{ width: `${progress}%` }}
-                            />
-                          </div>
+                          <progress
+                            className="h-1.5 w-full overflow-hidden rounded-full"
+                            value={Math.round(progress)}
+                            max={100}
+                            aria-label="Badge progress"
+                          />
                           <p className="text-xs text-muted-foreground mt-1">
                             {Math.round(progress)}% complete
                           </p>
@@ -683,12 +685,12 @@ export function RewardCards({ className, compact = false }: RewardCardsProps) {
                   </p>
                   {!isUnlocked(selectedCard) && (
                     <div className="mt-2">
-                      <div className="h-2 bg-muted rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-primary rounded-full"
-                          style={{ width: `${getProgress(selectedCard)}%` }}
-                        />
-                      </div>
+                      <progress
+                        className="h-2 w-full overflow-hidden rounded-full"
+                        value={Math.round(getProgress(selectedCard))}
+                        max={100}
+                        aria-label="Badge completion progress"
+                      />
                       <p className="text-xs text-muted-foreground mt-1 text-right">
                         {Math.round(getProgress(selectedCard))}% complete
                       </p>

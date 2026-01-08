@@ -38,7 +38,7 @@ export function PracticeCredibility() {
   }
 
   return (
-    <section className="practice-credibility-compact">
+    <section className="practice-credibility-compact w-full">
       <h4 className="practice-credibility__title">Clinical backing &amp; credibility</h4>
       <div className="practice-credibility__compact-grid">
         <div className="practice-credibility__compact-item">

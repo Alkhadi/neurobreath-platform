@@ -1,0 +1,2984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NeuroBreath • Reward Prompt Library</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+/* ------------------------------------------------------
+   ROOT THEME VARIABLES (ADAPTIVE GRADIENT ENGINE)
+------------------------------------------------------ */
+
+:root {
+    --grad-1-start: #4c6ef5;
+    --grad-1-end:   #9775fa;
+
+    --grad-2-start: #22b8cf;
+    --grad-2-end:   #3bc9db;
+
+    --grad-3-start: #f783ac;
+    --grad-3-end:   #feca57;
+
+    --card-radius: 18px;
+    --card-padding: 18px;
+    --transition: 0.35s ease;
+    --text-dark: #1e1e1e;
+    --text-light: #ffffff;
+    --bg: #f8f9fa;
+}
+
+/* BODY + GLOBAL CLEANUP */
+
+body {
+    font-family: "Inter", Arial, sans-serif;
+    background: var(--bg);
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    line-height: 1.55;
+}
+
+h1, h2, h3 {
+    font-weight: 700;
+    margin: 0 0 12px 0;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* ------------------------------------------------------
+   NAVIGATION BAR
+------------------------------------------------------ */
+
+#topNav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: white;
+    padding: 10px 0;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+}
+
+#topNav .nav-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.top-btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: #4c6ef5;
+    color: white;
+    font-size: 14px;
+    transition: var(--transition);
+}
+
+.top-btn:hover {
+    opacity: 0.8;
+}
+
+/* ------------------------------------------------------
+   CATEGORY ACCORDION
+------------------------------------------------------ */
+
+.category {
+    margin: 25px 0;
+    border-radius: 14px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.category-header {
+    padding: 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, var(--grad-1-start), var(--grad-1-end));
+    color: var(--text-light);
+    font-size: 20px;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.category-header:hover {
+    filter: brightness(1.1);
+}
+
+.arrow {
+    transition: var(--transition);
+}
+
+.category-content {
+    display: none;
+    padding: 20px;
+    background: white;
+}
+
+/* ------------------------------------------------------
+   MODERN GRADIENT CARD
+------------------------------------------------------ */
+
+.card {
+    background: linear-gradient(135deg, var(--grad-1-start), var(--grad-1-end));
+    padding: var(--card-padding);
+    border-radius: var(--card-radius);
+    margin-bottom: 18px;
+    color: white;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    transition: var(--transition);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+.card-title {
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.card-purpose {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 10px;
+}
+
+.card-prompt-box {
+    background: rgba(255,255,255,0.12);
+    padding: 12px;
+    border-radius: 10px;
+    white-space: pre-wrap;
+    font-size: 14px;
+}
+
+.copy-btn {
+    margin-top: 10px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    background: white;
+    color: #333;
+    transition: var(--transition);
+}
+
+.copy-btn:hover {
+    background: #e5e5e5;
+}
+
+/* ------------------------------------------------------
+   ADD YOUR OWN PROMPT CARD
+------------------------------------------------------ */
+
+.add-card {
+    background: #ffffff;
+    border: 2px dashed #adb5bd;
+    padding: 20px;
+    border-radius: var(--card-radius);
+    margin-top: 20px;
+    text-align: center;
+}
+
+textarea {
+    width: 100%;
+    min-height: 110px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+.save-btn {
+    margin-top: 10px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: none;
+    background: #4c6ef5;
+    color: white;
+    cursor: pointer;
+}
+
+/* ------------------------------------------------------
+   THEME SWITCHER BUTTONS
+------------------------------------------------------ */
+
+.theme-controls {
+    margin: 15px 0;
+    display: flex;
+    gap: 10px;
+}
+
+.theme-btn {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    color: white;
+}
+
+.theme-blue    { background: linear-gradient(135deg, #4c6ef5, #9775fa); }
+.theme-teal    { background: linear-gradient(135deg, #22b8cf, #3bc9db); }
+.theme-sunset  { background: linear-gradient(135deg, #f783ac, #feca57); }
+
+</style>
+
+<script src="assets/js/site.js" defer></script>
+</head>
+<body data-no-auto-layout="true">
+
+<!-- ------------------------------------------------------
+     TOP NAVIGATION BAR
+------------------------------------------------------ -->
+<div id="topNav">
+    <div class="nav-inner">
+        <button class="top-btn" onclick="scrollToCat(1)">Category 1</button>
+        <button class="top-btn" onclick="scrollToCat(2)">Category 2</button>
+        <button class="top-btn" onclick="scrollToCat(3)">Category 3</button>
+        <button class="top-btn" onclick="scrollToCat(4)">Category 4</button>
+        <button class="top-btn" onclick="scrollToCat(5)">Category 5</button>
+        <button class="top-btn" onclick="scrollToCat(6)">Category 6</button>
+        <button class="top-btn" onclick="scrollToCat(7)">Category 7</button>
+        <button class="top-btn" onclick="scrollToCat(8)">Category 8</button>
+        <button class="top-btn" onclick="scrollToCat(9)">Category 9</button>
+        <button class="top-btn" onclick="scrollToCat(10)">Category 10</button>
+        <button class="top-btn" onclick="scrollToCat(11)">Category 11</button>
+        <button class="top-btn" onclick="scrollToCat(12)">Category 12</button>
+    </div>
+</div>
+
+<div class="container">
+
+<h1>NeuroBreath — 12-Category Interactive Prompt Reward Library</h1>
+<p>All prompts are delivered as interactive reward cards. Use them to help learners, creators, professionals, and neurodivergent individuals thrive.</p>
+
+<!-- ------------------------------------------------------
+     ADAPTIVE THEME SWITCHER
+------------------------------------------------------ -->
+
+<h3>Theme Selector</h3>
+<div class="theme-controls">
+    <button class="theme-btn theme-blue" onclick="setTheme('blue')">Blue / Purple</button>
+    <button class="theme-btn theme-teal" onclick="setTheme('teal')">Aqua / Teal</button>
+    <button class="theme-btn theme-sunset" onclick="setTheme('sunset')">Sunset / Gold</button>
+</div>
+
+<!-- ------------------------------------------------------
+     CATEGORY PLACEHOLDERS
+------------------------------------------------------ -->
+
+<div id="category1" class="category">
+    <div class="category-header">Category 1 — Prompt Engineering Essentials <span class="arrow">▼</span></div>
+    <div class="category-content">
+        <!-- Category 1 cards will be inserted in Part 1 -->
+    <!-- --------------------------
+ CATEGORY 1 — PROMPT ENGINEERING ESSENTIALS
+--------------------------- -->
+
+<!-- CARD 1 -->
+<div class="card">
+    <div class="card-title">1. Ask for more than 1 option</div>
+    <div class="card-purpose">Helps users request multiple diverse solutions instead of a single answer.</div>
+    <div class="card-prompt-box" id="cat1p1">
+You are a strategic business consultant with 20+ years of
+experience helping companies overcome growth challenges. I need
+your help exploring different approaches for [specific business
+challenge].
+
+Please generate 4 distinctly different strategies that represent
+various approaches to solving this problem (not just variations of the
+same idea). Structure your response with clear headings for each
+option and a summary at the end highlighting the key differences
+between the approaches.
+    </div>
+    <button class="copy-btn" onclick="copyText('cat1p1')">Copy Prompt</button>
+</div>
+
+<!-- CARD 2 -->
+<div class="card">
+    <div class="card-title">2. Assign a character to the AI</div>
+    <div class="card-purpose">Gives the AI a persona, improving tone and consistency.</div>
+    <div class="card-prompt-box" id="cat1p2">
+You are Chef Marco, a passionate Italian chef with 20+ years of
+experience.
+- You specialise in authentic regional Italian cooking with simple,
+fresh ingredients
+- You explain techniques clearly for home cooks with limited
+equipment
+- You suggest substitutions for hard-to-find ingredients
+- You share brief stories about dishes' origins when relevant
+
+My cooking question is: [your question]
+
+You are a strategic business consultant with 20+ years of
+experience helping companies overcome growth challenges. I need
+your help exploring different approaches for [specific business
+challenge].
+
+Please generate 4 distinctly different strategies that represent
+various approaches to solving this problem (not just variations of the
+same idea). Structure your response with clear headings for each
+option and a summary at the end highlighting the key differences
+between the approaches.
+    </div>
+    <button class="copy-btn" onclick="copyText('cat1p2')">Copy Prompt</button>
+</div>
+
+<!-- CARD 3 -->
+<div class="card">
+    <div class="card-title">3. Ask for a specific style of response</div>
+    <div class="card-purpose">Ensures the AI replies in a particular voice or communication style.</div>
+    <div class="card-prompt-box" id="cat1p3">
+I want you to respond as The Explainer
+- imagine you're a friendly neighbourhood expert who loves making
+complex things simple.
+
+Here's how to approach our conversation:
+1. Use everyday language instead of technical jargon - explain
+things like you would to a smart friend at a coffee shop
+2. Don’t give typical AI responses
+3. Start your explanations with a brief real-world example or
+analogy
+4. Keep sentences short and conversational - aim for 5th-8th grade
+reading level. Be like the ELI5 subreddit.
+5. If you need to list information, limit it to 3-5 key points, not
+exhaustive lists
+6. If you are unsure, rather than guessing, you can ask me clarifying
+questions.
+7. End your response with a simple, practical takeaway 
+
+Most importantly, make sure your explanations are crystal clear while
+feeling like they come from a real person having a genuine
+conversation.
+
+My question is: [your question]
+    </div>
+    <button class="copy-btn" onclick="copyText('cat1p3')">Copy Prompt</button>
+</div>
+
+<!-- CARD 4 -->
+<div class="card">
+    <div class="card-title">4. Ask for a specific type/format of output</div>
+    <div class="card-purpose">Allows the AI to structure its answers with precision.</div>
+    <div class="card-prompt-box" id="cat1p4">
+You are a nutrition expert specializing in meal planning. I need your
+help creating a 7-day healthy meal plan for someone looking to
+increase their protein intake while maintaining a calorie deficit.
+
+Please format your response exactly as follows:
+1. Begin with a brief introduction (max 3 sentences) explaining the
+nutritional approach.
+2. Present the meal plan in a structured table with these exact
+columns:
+- Day (Monday-Sunday)
+- Breakfast (including calories and protein)
+- Lunch (including calories and protein)
+- Dinner (including calories and protein)
+- Snack (including calories and protein)
+- Daily Totals (sum of calories and protein)
+3. After the table, include a section titled Shopping List organized
+by:
+- Proteins
+- Vegetables
+- Fruits
+- Grains
+- Dairy/Alternatives
+- Pantry Items
+4. End with exactly 3 bullet points of Preparation Tips that would
+make following this meal plan easier.
+
+The meal plan should total approximately 1,800 calories per day
+with at least 120g of protein, featuring whole foods that are widely
+available.
+    </div>
+    <button class="copy-btn" onclick="copyText('cat1p4')">Copy Prompt</button>
+</div>
+
+<!-- CARD 5 -->
+<div class="card">
+    <div class="card-title">5. Chained Prompting</div>
+    <div class="card-purpose">Breaks complex tasks into multi-step interactions.</div>
+    <div class="card-prompt-box" id="cat1p5">
+Prompt 1: Brainstorm 10 blog post titles about the benefits of
+meditation for busy professionals.
+Prompt 2 (after choosing one): Great, I like title #4. Now, create a
+detailed outline for a blog post with that title. Include an
+introduction, three main body sections with bullet points, and a
+conclusion.
+Prompt 3: Excellent outline. Now, write the full blog post based on
+this outline, with a word count of approximately 800 words and a
+conversational tone.
+    </div>
+    <button class="copy-btn" onclick="copyText('cat1p5')">Copy Prompt</button>
+</div>
+
+<!-- CARD 6 -->
+<div class="card">
+    <div class="card-title">6. Few Shot Prompting</div>
+    <div class="card-purpose">Shows the AI examples to improve accuracy.</div>
+    <div class="card-prompt-box" id="cat1p6">
+Example 1:
+Our UltraComfort Camping Chair combines lightweight portability
+with ergonomic support. Built for outdoor adventures, it folds flat
+for easy packing and comes with a built-in cup holder.
+
+Example 2:
+The Nomad Trail Kettle is your perfect hiking companion. Crafted
+from lightweight stainless steel, it boils water fast and packs neatly
+into any bag.
+
+Now write a product description for a travel backpack.
+    </div>
+    <button class="copy-btn" onclick="copyText('cat1p6')">Copy Prompt</button>
+</div>
+
+<!-- CARD 7 -->
+<div class="card">
+    <div class="card-title">7. Provide More Context</div>
+    <div class="card-purpose">Gives the AI enough background to produce accurate results.</div>
+    <div class="card-prompt-box" id="cat1p7">
+Act as a marketing consultant who specializes in helping new, local
+businesses. I need a marketing strategy for my coffee shop.
+
+Here is the context:
+Business: A brand-new, independent coffee shop.
+Location: We are in a central part of Bristol, UK, with a lot of
+offices and a nearby university campus.
+Target Audience: Our primary customers are office workers on
+their lunch breaks and university students.
+Unique Selling Points: We specialize in high-quality, ethically
+sourced coffee and offer a range of vegan pastries. Our
+atmosphere is quiet and ideal for working or studying.
+Budget: We have a very small starting budget of about £400
+for the first month's marketing.
+Goal: My main goal for the next 3 months is to increase
+weekday foot traffic and build a base of regular customers.
+
+Please provide a low-cost, actionable marketing plan focused on
+achieving this specific goal.
+    </div>
+    <button class="copy-btn" onclick="copyText('cat1p7')">Copy Prompt</button>
+</div>
+
+<!-- ADD YOUR OWN PROMPT -->
+<div class="add-card">
+    <h3>Add Your Own Prompt</h3>
+    <textarea id="newPrompt1" placeholder="Write your own prompt here..."></textarea>
+    <button class="save-btn" onclick="copyText('newPrompt1')">Copy My Prompt</button>
+</div>
+
+    </div>
+</div>
+
+<div id="category2" class="category">
+    <div class="category-header">Category 2 — Writing, Communication & Emails <span class="arrow">▼</span></div>
+    <div class="category-content"></div>
+    <!-- --------------------------
+ CATEGORY 2 — WRITING & COMMUNICATION
+--------------------------- -->
+
+<!-- CARD 1 -->
+<div class="card">
+    <div class="card-title">The Smart Email Drafter</div>
+    <div class="card-purpose">Helps produce well-structured, professional emails quickly.</div>
+
+    <div class="card-prompt-box" id="cat2p1">
+Act as a professional communications assistant. Draft an email to
+[Recipient Name] at [Recipient's Company/Department].
+The purpose of this email is to [state your objective clearly, e.g.,
+follow up on the project proposal, request specific information,
+confirm meeting details].
+The tone should be [e.g., formal, friendly and professional, assertive,
+empathetic].
+
+Key points to include are:
+Reference our last conversation/email on [Date].
+Mention [Point 1].
+Ask for [Specific question or required action].
+State the desired deadline or next step: [e.g., I would appreciate
+a response by EOD Friday].
+
+Sign off as [Your Name], [Your Title].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat2p1')">Copy Prompt</button>
+</div>
+
+<!-- CARD 2 -->
+<div class="card">
+    <div class="card-title">The Meeting Summariser</div>
+    <div class="card-purpose">Turns transcripts or meeting notes into clear summaries with action items.</div>
+
+    <div class="card-prompt-box" id="cat2p2">
+Please summarize the following meeting notes/transcript. Your
+summary should be structured into three sections:
+
+1. Key Decisions Made: (List the main conclusions reached).
+2. Action Items: (Use a table with columns for 'Task', 'Owner', and 'Deadline').
+3. Open Questions: (List any topics that require further discussion).
+
+Here is the text: [Paste your meeting notes or transcript here]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat2p2')">Copy Prompt</button>
+</div>
+
+<!-- CARD 3 -->
+<div class="card">
+    <div class="card-title">The Tone Adjuster</div>
+    <div class="card-purpose">Rewrites any text into the perfect tone for your audience.</div>
+
+    <div class="card-prompt-box" id="cat2p3">
+Rewrite the following text to make it sound more [desired tone, e.g.,
+persuasive, empathetic, confident, concise and professional].
+
+Original Text: [Paste your text here]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat2p3')">Copy Prompt</button>
+</div>
+
+<!-- CARD 4 -->
+<div class="card">
+    <div class="card-title">The Proofreader & Editor</div>
+    <div class="card-purpose">Improves clarity, correctness, flow, and overall readability of any text.</div>
+
+    <div class="card-prompt-box" id="cat2p4">
+Please proofread the following text. Correct any spelling, grammar,
+and punctuation errors. In addition, suggest improvements to
+enhance clarity, conciseness, and overall readability.
+
+Provide the revised text.
+
+Text: [Paste your text here]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat2p4')">Copy Prompt</button>
+</div>
+
+<!-- CARD 5 -->
+<div class="card">
+    <div class="card-title">The Content Starter</div>
+    <div class="card-purpose">Helps users break creative block and begin writing anything.</div>
+
+    <div class="card-prompt-box" id="cat2p5">
+I need to prioritize my tasks for today. My main goal is [Your
+primary objective, e.g., to prepare for the client presentation]. Here
+is my to-do list: [List all your tasks]. Please organize these tasks
+using the Eisenhower Matrix (Urgent/Important). Provide the output
+as a four-quadrant list.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat2p5')">Copy Prompt</button>
+</div>
+
+<!-- CARD 6 -->
+<div class="card">
+    <div class="card-title">The Difficult Conversation Planner</div>
+    <div class="card-purpose">Helps prepare tactful, structured talking points for sensitive discussions.</div>
+
+    <div class="card-prompt-box" id="cat2p6">
+I need to have a difficult conversation with [Person, e.g., my
+manager, my team member] about [Topic, e.g., my workload, their
+performance, a project delay]. Help me structure the conversation.
+
+Provide key talking points that are clear, constructive, and
+professional.
+
+My goal is to [state your desired outcome].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat2p6')">Copy Prompt</button>
+</div>
+
+<!-- CARD 7 -->
+<div class="card">
+    <div class="card-title">The Angle Finder</div>
+    <div class="card-purpose">Creates unique content angles to explore a topic creatively.</div>
+
+    <div class="card-prompt-box" id="cat2p7">
+I need to write about [Topic, e.g., the future of remote work]. Give
+me 5 different angles or perspectives to approach this topic from.
+
+The angles should be:
+1. Technological  
+2. Sociological/Cultural  
+3. Economic  
+4. Psychological (individual well-being)  
+5. A contrarian or controversial view.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat2p7')">Copy Prompt</button>
+</div>
+
+<!-- ADD YOUR OWN PROMPT -->
+<div class="add-card">
+    <h3>Add Your Own Prompt</h3>
+    <textarea id="newPrompt2" placeholder="Write your own writing or communication prompt..."></textarea>
+    <button class="save-btn" onclick="copyText('newPrompt2')">Copy My Prompt</button>
+</div>
+
+</div>
+
+<div id="category3" class="category">
+    <div class="category-header">Category 3 — Learning, Study, Memory & Breakdown Tools <span class="arrow">▼</span></div>
+    <div class="category-content"></div>
+    <!-- -----------------------------------------
+ CATEGORY 3 — LEARNING, STUDY & KNOWLEDGE EXTRACTION
+------------------------------------------ -->
+
+<!-- CARD 1 -->
+<div class="card">
+    <div class="card-title">The Concept Explainer</div>
+    <div class="card-purpose">Breaks down complex subjects into simple, clear explanations for any audience.</div>
+
+    <div class="card-prompt-box" id="cat3p1">
+Explain the concept of [insert complex topic, e.g., blockchain,
+general relativity, machine learning] to me. Assume I am a [target
+audience, e.g., a high school student, a marketing manager with no
+tech background, a curious 10-year-old]. Use analogies and simple
+language, and avoid jargon where possible.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat3p1')">Copy Prompt</button>
+</div>
+
+<!-- CARD 2 -->
+<div class="card">
+    <div class="card-title">The Study Planner</div>
+    <div class="card-purpose">Creates structured study plans for learning any subject or skill.</div>
+
+    <div class="card-prompt-box" id="cat3p2">
+I want to learn [skill or subject, e.g., Python programming for data
+analysis, conversational Spanish]. I can dedicate [number] hours per
+week. Create a [duration, e.g., 4-week] study plan for me. The plan
+should include:
+
+Weekly topics to cover.
+Recommended resources (e.g., free online courses, books,
+websites).
+A small project or practice exercise for each week to test my
+knowledge.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat3p2')">Copy Prompt</button>
+</div>
+
+<!-- CARD 3 -->
+<div class="card">
+    <div class="card-title">The Key Takeaway Extractor</div>
+    <div class="card-purpose">Extracts the essential ideas from long texts.</div>
+
+    <div class="card-prompt-box" id="cat3p3">
+Read the following text and extract the 5 most important
+takeaways. For each takeaway, provide a one-sentence summary.
+The intended audience for this summary is a [e.g., busy executive,
+college student]. Text: [Paste the article or text here]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat3p3')">Copy Prompt</button>
+</div>
+
+<!-- CARD 4 -->
+<div class="card">
+    <div class="card-title">YouTube Watcher</div>
+    <div class="card-purpose">Summarises YouTube videos into main learning points with timestamps.</div>
+
+    <div class="card-prompt-box" id="cat3p4">
+Please watch (or read the transcript of) this YouTube video [INSERT
+VIDEO URL] and provide a concise summary of the main learning
+points. Focus on the key ideas, actionable insights, or step-by-step
+methods the speaker shares. Avoid filler, anecdotes, or repetition.
+Present the output as a clear, structured bullet-point list with time
+stamps to review. If relevant, group the points under short subheadings for clarity.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat3p4')">Copy Prompt</button>
+</div>
+
+<!-- CARD 5 -->
+<div class="card">
+    <div class="card-title">The Flash Card Maker</div>
+    <div class="card-purpose">Turns long content into ready-to-import Anki flashcards.</div>
+
+    <div class="card-prompt-box" id="cat3p5">
+You are an expert educator skilled at creating effective flashcards.
+From the following content, generate high-quality flashcards in
+Question–Answer format.
+
+Guidelines:
+Output in tab-separated format (Q ⟶ A). Each line = one
+flashcard.
+No extra formatting, labels, or numbering. Just:
+Question<TAB>Answer
+(where &lt;TAB&gt; means a literal tab character).
+
+Phrase questions so they are clear, testable, and concise.
+Ensure answers are accurate, complete, but not overly verbose.
+Vary the flashcard types:
+Definition (What is X?)
+Application (How does X work? Why does Y happen?)
+Comparison (What’s the difference between X and Y?)
+Example-based (Give an example of X).
+
+Break down long or complex content into multiple smaller cards.
+Exclude filler, anecdotes, or redundant details.
+
+Content to convert into flashcards:
+[PASTE CONTENT HERE]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat3p5')">Copy Prompt</button>
+</div>
+
+<!-- CARD 6 -->
+<div class="card">
+    <div class="card-title">Dictate & Punctuate</div>
+    <div class="card-purpose">Transforms raw dictation into clean, well-written text.</div>
+
+    <div class="card-prompt-box" id="cat3p6">
+You are my transcription assistant. I will paste in a raw transcript
+or dictation. Please clean it up into well-written prose with correct
+punctuation, capitalization, and paragraph breaks. Keep my original
+meaning and tone intact, but remove filler words, hesitations, and
+repeated phrases. Do not add extra commentary or change the
+meaning. Format the result so it reads as natural, polished writing.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat3p6')">Copy Prompt</button>
+</div>
+
+<!-- ADD YOUR OWN PROMPT -->
+<div class="add-card">
+    <h3>Add Your Own Prompt</h3>
+    <textarea id="newPrompt3" placeholder="Write your own learning/study/research prompt..."></textarea>
+    <button class="save-btn" onclick="copyText('newPrompt3')">Copy My Prompt</button>
+</div>
+
+</div>
+
+<div id="category4" class="category">
+    <div class="category-header">Category 4 — Productivity, Task Management & Decision Aids <span class="arrow">▼</span></div>
+    <div class="category-content"></div>
+    <!-- -----------------------------------------
+ CATEGORY 4 — WORK, PRODUCTIVITY & COMMUNICATION
+------------------------------------------ -->
+
+<!-- CARD 1 -->
+<div class="card">
+    <div class="card-title">The SMART Email Drafter</div>
+    <div class="card-purpose">Creates perfectly structured, professional emails for any situation.</div>
+
+    <div class="card-prompt-box" id="cat4p1">
+Act as a professional communications assistant. Draft an email to
+[Recipient Name] at [Recipient's Company/Department].
+The purpose of this email is to [state your objective clearly, e.g.,
+follow up on the project proposal, request specific information,
+confirm meeting details].
+The tone should be [e.g., formal, friendly and professional, assertive,
+empathetic].
+Key points to include are:
+Reference our last conversation/email on [Date].
+Mention [Point 1].
+Ask for [Specific question or required action].
+State the desired deadline or next step: [e.g., I would appreciate
+a response by EOD Friday]. Sign off as [Your Name], [Your Title].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat4p1')">Copy Prompt</button>
+</div>
+
+<!-- CARD 2 -->
+<div class="card">
+    <div class="card-title">The Meeting Summarizer</div>
+    <div class="card-purpose">Turns long meetings into clear summaries with decisions and action lists.</div>
+
+    <div class="card-prompt-box" id="cat4p2">
+Please summarize the following meeting notes/transcript. Your
+summary should be structured into three sections:
+1.Key Decisions Made: (List the main conclusions reached).
+2.Action Items: (Use a table with columns for 'Task'
+,
+'Owner'
+, and
+'Deadline').
+3.Open Questions: (List any topics that require further discussion).
+Here is the text: [Paste your meeting notes or transcript here]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat4p2')">Copy Prompt</button>
+</div>
+
+<!-- CARD 3 -->
+<div class="card">
+    <div class="card-title">The Task Prioritizer</div>
+    <div class="card-purpose">Organises your to-do list using the Eisenhower Matrix.</div>
+
+    <div class="card-prompt-box" id="cat4p3">
+I need to prioritize my tasks for today. My main goal is [Your
+primary objective, e.g., to prepare for the client presentation]. Here
+is my to-do list: [List all your tasks]. Please organize these tasks
+using the Eisenhower Matrix (Urgent/Important). Provide the output
+as a four-quadrant list.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat4p3')">Copy Prompt</button>
+</div>
+
+<!-- CARD 4 -->
+<div class="card">
+    <div class="card-title">The Content Starter</div>
+    <div class="card-purpose">Transforms overwhelm into a clear action plan.</div>
+
+    <div class="card-prompt-box" id="cat4p4">
+When you're overwhelmed with tasks, use this prompt to get a
+clear, logical plan.
+
+I need to prioritize my tasks for today. My main goal is [Your
+primary objective, e.g., to prepare for the client presentation]. Here
+is my to-do list: [List all your tasks]. Please organize these tasks
+using the Eisenhower Matrix (Urgent/Important). Provide the output
+as a four-quadrant list.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat4p4')">Copy Prompt</button>
+</div>
+
+<!-- CARD 5 -->
+<div class="card">
+    <div class="card-title">The Difficult Conversation Planner</div>
+    <div class="card-purpose">Prepares talking points and structure for challenging work conversations.</div>
+
+    <div class="card-prompt-box" id="cat4p5">
+I need to have a difficult conversation with [Person, e.g., my
+manager, my team member] about [Topic, e.g., my workload, their
+performance, a project delay]. Help me structure the conversation.
+Provide key talking points that are clear, constructive, and
+professional. My goal is to [state your desired outcome].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat4p5')">Copy Prompt</button>
+</div>
+
+<!-- CARD 6 -->
+<div class="card">
+    <div class="card-title">The Angle Finder</div>
+    <div class="card-purpose">Generates fresh unique perspectives for articles, presentations, or content.</div>
+
+    <div class="card-prompt-box" id="cat4p6">
+I need to write about [Topic, e.g., the future of remote work]. Give
+me 5 different angles or perspectives to approach this topic from.
+The angles should be:
+1.Technological
+2.Sociological/Cultural
+3.Economic
+4.Psychological (individual well-being)
+5.A contrarian or controversial view.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat4p6')">Copy Prompt</button>
+</div>
+
+<!-- CARD 7 -->
+<div class="card">
+    <div class="card-title">The Tone Adjuster</div>
+    <div class="card-purpose">Instantly rewrites text to fit a desired professional tone.</div>
+
+    <div class="card-prompt-box" id="cat4p7">
+Rewrite the following text to make it sound more [desired tone, e.g.,
+persuasive, empathetic, confident, concise and professional].
+Original Text: [Paste your text here]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat4p7')">Copy Prompt</button>
+</div>
+
+<!-- CARD 8 -->
+<div class="card">
+    <div class="card-title">The Proofreader & Editor</div>
+    <div class="card-purpose">Improves clarity, quality and impact of your writing.</div>
+
+    <div class="card-prompt-box" id="cat4p8">
+Please proofread the following text. Correct any spelling, grammar,
+and punctuation errors. In addition, suggest improvements to
+enhance clarity, conciseness, and overall readability.
+Provide the revised text. Text: [Paste your text here]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat4p8')">Copy Prompt</button>
+</div>
+
+<!-- CARD 9 -->
+<div class="card">
+    <div class="card-title">The Persuasion Artist</div>
+    <div class="card-purpose">Builds strong arguments with counters & rebuttals for workplace success.</div>
+
+    <div class="card-prompt-box" id="cat4p9">
+I need to argue my case at work. Please help me structure a persuasive
+argument. I’ll give you the situation, my position, and the audience. Your
+task is to:
+1.Identify the key points I should emphasize.
+2.Anticipate possible counterarguments and prepare strong
+rebuttals.
+3.Suggest persuasive language and framing that fits a professional
+workplace setting.
+4.Provide a clear structure (e.g., opening statement, main points,
+conclusion/call-to-action) that I can use in an email, meeting, or
+presentation.
+5.Give me a short version (2–3 sentences) for quick discussions and a
+longer version (2–3 paragraphs) for formal communication.
+Here’s my situation: [insert details here]. My position: [position]. My
+audience: [audience].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat4p9')">Copy Prompt</button>
+</div>
+
+<!-- CARD 10 -->
+<div class="card">
+    <div class="card-title">The Checklist Creator</div>
+    <div class="card-purpose">Builds structured checklists for tasks, projects or workflows.</div>
+
+    <div class="card-prompt-box" id="cat4p10">
+I want you to act as a checklist creator. Please create a clear,
+structured checklist for [insert topic, task, or project].
+The checklist should be:
+Organized into logical sections (if relevant).
+Action-oriented, with each item starting with a verb.
+Concise but detailed enough to be actionable.
+Presented in a clean, bullet-point or checkbox format that I can
+easily copy or use in a tool like Notion, Excel, or an app.
+Optional: Include a short description or example for each item to
+clarify what success looks like.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat4p10')">Copy Prompt</button>
+</div>
+
+<!-- ADD YOUR OWN PROMPT -->
+<div class="add-card">
+    <h3>Add Your Own Prompt</h3>
+    <textarea id="newPrompt4" placeholder="Write your own productivity or communication prompt..."></textarea>
+    <button class="save-btn" onclick="copyText('newPrompt4')">Copy My Prompt</button>
+</div>
+
+</div>
+
+<div id="category5" class="category">
+    <div class="category-header">Category 5 — Creativity, Content Creation & Media Production <span class="arrow">▼</span></div>
+    <div class="category-content"></div>
+    <!-- -----------------------------------------
+ CATEGORY 5 — CREATIVITY, INNOVATION & IDEA DEVELOPMENT
+------------------------------------------ -->
+
+<!-- CARD 1 -->
+<div class="card">
+    <div class="card-title">The Idea Generator</div>
+    <div class="card-purpose">Generates fresh, diverse creative ideas for any project or audience.</div>
+
+    <div class="card-prompt-box" id="cat5p1">
+I am working on [project, e.g., a new marketing campaign, a blog, a
+YouTube channel].
+The target audience is [describe audience, e.g., young professionals
+interested in sustainable living].
+Generate [number] creative ideas for [what you need, e.g., blog
+post titles, campaign slogans, video concepts].
+For each idea, provide a brief description.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat5p1')">Copy Prompt</button>
+</div>
+
+<!-- CARD 2 -->
+<div class="card">
+    <div class="card-title">The $Million Consultant</div>
+    <div class="card-purpose">Uses elite consulting frameworks to solve complex business challenges.</div>
+
+    <div class="card-prompt-box" id="cat5p2">
+You are a senior strategy consultant trained in the style of
+McKinsey, BCG, and Bain. I will present you with a problem, and your
+job is to:
+1.Diagnose the situation – ask clarifying questions if needed and
+summarize the core challenge.
+2.Provide at least 2 different strategic frameworks (e.g., MECE
+breakdowns, 2x2 matrices, value-driver trees, Porter’s Five
+Forces, growth-share matrix, etc.) to structure and analyze the
+problem.
+3.Apply each framework to my problem step by step, showing
+how it helps me think about root causes, trade-offs, and
+possible solutions.
+4.Synthesize recommendations into 2–3 clear, actionable paths
+forward, highlighting risks and benefits.
+5.Keep your reasoning structured, concise, and professional (as if
+presenting slides to an executive team).
+Here’s my problem: [insert your problem here].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat5p2')">Copy Prompt</button>
+</div>
+
+<!-- CARD 3 -->
+<div class="card">
+    <div class="card-title">The Creative Style Explainer</div>
+    <div class="card-purpose">Explains concepts using engaging storytelling and simple analogies.</div>
+
+    <div class="card-prompt-box" id="cat5p3">
+I want you to respond as The Explainer
+- imagine you're a friendly neighbourhood expert who loves making
+complex things simple.
+Here's how to approach our conversation:
+1. Use everyday language instead of technical jargon - explain
+things like you would to a smart friend at a coffee shop
+2. Don’t give typical AI responses
+3. Start your explanations with a brief real-world example or
+analogy
+4. Keep sentences short and conversational - aim for 5th-8th grade
+reading level. Be like the ELI5 subreddit.
+5. If you need to list information, limit it to 3-5 key points, not
+exhaustive lists
+6. If you are unsure, rather than guessing, you can ask me clarifying
+questions.
+7. End your response with a simple, practical takeaway Most
+importantly, make sure your explanations are crystal clear while
+feeling like they come from a real person having a genuine
+conversation.
+My question is: [your question]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat5p3')">Copy Prompt</button>
+</div>
+
+<!-- CARD 4 -->
+<div class="card">
+    <div class="card-title">Few-Shot Creative Booster</div>
+    <div class="card-purpose">Uses examples to generate content that matches a desired pattern.</div>
+
+    <div class="card-prompt-box" id="cat5p4">
+Example Scenario: Writing an ad copy.
+
+Example 1:
+Our UltraComfort Camping Chair combines lightweight portability
+with ergonomic support. Built for outdoor adventures, it folds flat
+for easy packing and comes with a built-in cup holder.
+
+Example 2:
+The Nomad Trail Kettle is your perfect hiking companion. Crafted
+from lightweight stainless steel, it boils water fast and packs neatly
+into any bag.
+
+Now write a product description for a travel backpack.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat5p4')">Copy Prompt</button>
+</div>
+
+<!-- CARD 5 -->
+<div class="card">
+    <div class="card-title">The Perspective Expander</div>
+    <div class="card-purpose">Explores a topic from multiple creative and strategic angles.</div>
+
+    <div class="card-prompt-box" id="cat5p5">
+I need to write about [Topic, e.g., the future of remote work]. Give
+me 5 different angles or perspectives to approach this topic from.
+The angles should be:
+1.Technological
+2.Sociological/Cultural
+3.Economic
+4.Psychological (individual well-being)
+5.A contrarian or controversial view.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat5p5')">Copy Prompt</button>
+</div>
+
+<!-- CARD 6 -->
+<div class="card">
+    <div class="card-title">High-Context Creativity Prompt</div>
+    <div class="card-purpose">Generates ideas based on rich context for better precision and relevance.</div>
+
+    <div class="card-prompt-box" id="cat5p6">
+Act as a marketing consultant who specializes in helping new, local
+businesses. I need a marketing strategy for my coffee shop.
+Here is the context:
+Business: A brand-new, independent coffee shop.
+Location: We are in a central part of Bristol, UK, with a lot of
+offices and a nearby university campus.
+Target Audience: Our primary customers are office workers on
+their lunch breaks and university students.
+Unique Selling Points: We specialize in high-quality, ethically-
+sourced coffee and offer a range of vegan pastries. Our
+atmosphere is quiet and ideal for working or studying.
+Budget: We have a very small starting budget of about £400
+for the first month's marketing.
+Goal: My main goal for the next 3 months is to increase
+weekday foot traffic and build a base of regular customers.
+Please provide a low-cost, actionable marketing plan focused on
+achieving this specific goal.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat5p6')">Copy Prompt</button>
+</div>
+
+<!-- CARD 7 -->
+<div class="card">
+    <div class="card-title">The Backwards Planning Method</div>
+    <div class="card-purpose">Breaks big goals into milestones, actions, habits, and metrics.</div>
+
+    <div class="card-prompt-box" id="cat5p7">
+I have a big ambitious goal: [describe your specific goal]. Help me
+break this down into manageable milestones and daily actions using
+the Backwards Planning Method.
+Please:
+1.Identify the minimum requirements needed to qualify for this
+goal
+2.Break down the main goal into yearly milestones working
+backwards from achievement
+3.Convert these milestones into monthly targets
+4.Translate these into specific weekly actions
+5.Suggest daily habits or tasks that would contribute to progress
+6.Identify any particularly challenging obstacles and how to
+overcome them
+7.Suggest metrics to track progress
+My advantages to achieving this goal are: [insert advantages].
+My hindrances to achieving this goal are: [insert hindrances].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat5p7')">Copy Prompt</button>
+</div>
+
+<!-- CARD 8 -->
+<div class="card">
+    <div class="card-title">The Linear Calendar Generator</div>
+    <div class="card-purpose">Creates printable linear timelines for planning large goals visually.</div>
+
+    <div class="card-prompt-box" id="cat5p8">
+Generate a single-page HTML document of a linear timeline
+calendar formatted for printing on A4 paper in landscape
+orientation. The calendar should span the date range from [START
+MONTH YEAR] to [END MONTH YEAR] and be laid out as separate
+horizontal strips (one per month) that can be printed on a single
+page, cut out, and joined together into one long physical calendar.
+[Full prompt exactly as provided...]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat5p8')">Copy Prompt</button>
+</div>
+
+<!-- ADD YOUR OWN PROMPT -->
+<div class="add-card">
+    <h3>Add Your Own Prompt</h3>
+    <textarea id="newPrompt5" placeholder="Write your own creative or innovation prompt..."></textarea>
+    <button class="save-btn" onclick="copyText('newPrompt5')">Copy My Prompt</button>
+</div>
+
+</div>
+
+<div id="category6" class="category">
+    <div class="category-header">Category 6 — Business, Strategy, Consulting & Work Performance <span class="arrow">▼</span></div>
+    <div class="category-content"></div>
+    <!-- -----------------------------------------
+ CATEGORY 6 — PERSONAL DEVELOPMENT & LIFE SKILLS
+------------------------------------------ -->
+
+<!-- CARD 1 -->
+<div class="card">
+    <div class="card-title">The Free Therapist</div>
+    <div class="card-purpose">Uses reflective questioning to develop emotional clarity and wellbeing.</div>
+
+    <div class="card-prompt-box" id="cat6p1">
+[Speak:] I’d like you to act as a supportive therapist. Please listen
+actively, ask thoughtful and gentle follow-up questions, and give me
+time to reflect before offering insights. Use an empathetic, non-
+judgmental tone. Don’t just give quick solutions—help me explore my
+feelings, patterns, and possible coping strategies. If I get stuck,
+guide me with open-ended questions.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat6p1')">Copy Prompt</button>
+</div>
+
+<!-- CARD 2 -->
+<div class="card">
+    <div class="card-title">The Recipe Generator</div>
+    <div class="card-purpose">Creates personalised meal ideas based on ingredients and dietary needs.</div>
+
+    <div class="card-prompt-box" id="cat6p2">
+I need a recipe for [dinner/lunch/breakfast] tonight. I have the
+following ingredients: [list ingredients]. I have [e.g., 30 minutes] to
+cook. My dietary restrictions are [e.g., gluten-free, vegetarian].
+Please provide a simple, step-by-step recipe.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat6p2')">Copy Prompt</button>
+</div>
+
+<!-- CARD 3 -->
+<div class="card">
+    <div class="card-title">The Fitness & Workout Planner</div>
+    <div class="card-purpose">Generates personalised workouts to meet specific health goals.</div>
+
+    <div class="card-prompt-box" id="cat6p3">
+Create a [number]-day workout plan for me. My primary goal is
+[e.g., to build muscle, lose weight, improve cardiovascular health].
+I have access to [list available equipment, e.g., dumbbells, resistance
+bands, or just my bodyweight].
+I am at a [beginner/intermediate/advanced] fitness level. The plan
+should include warm-ups and cool-downs.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat6p3')">Copy Prompt</button>
+</div>
+
+<!-- CARD 4 -->
+<div class="card">
+    <div class="card-title">The Coupon Finder</div>
+    <div class="card-purpose">Finds valid discount codes for online shopping.</div>
+
+    <div class="card-prompt-box" id="cat6p4">
+Act as a smart shopping assistant. Search the web for currently
+valid and active discount or promo codes for [RETAILER NAME]. I
+need codes that work today for online checkout (not expired or
+region-locked). If possible, provide multiple options, list the discount
+amount (percentage or fixed), and include any conditions (e.g.,
+minimum spend, new customers only). Prioritize the most reliable
+and highest-value codes.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat6p4')">Copy Prompt</button>
+</div>
+
+<!-- CARD 5 -->
+<div class="card">
+    <div class="card-title">The Personal Travel Agent</div>
+    <div class="card-purpose">Designs complete holidays including flights, stays, itineraries & budgets.</div>
+
+    <div class="card-prompt-box" id="cat6p5">
+You are my expert travel planner. Plan a complete holiday for me
+including:
+1.Flights – realistic flight options (times, airlines, airports, costs).
+2.Accommodation – 2–3 options at different budget levels
+(budget, mid-range, luxury).
+3.Itinerary – a day-by-day plan with sightseeing, cultural
+activities, relaxation, and food recommendations.
+4.Packing list – tailored to the destination, season, and activities.
+5.Travel tips – include local customs, transport, safety tips, and
+estimated daily budget.
+Here are my details:
+Travel dates: [insert dates or note if flexible]
+Departure city + preferred airports: [insert city + airports]
+Destination(s): [insert destination(s) or ask for suggestions]
+Preferred travel style: [adventurous / relaxed / luxury / budget /
+family-friendly / etc.]
+Main interests: [nature / food / history / shopping / nightlife /
+culture / beaches / etc.]
+Restrictions or special needs: [dietary restrictions, pregnancy,
+mobility, etc.]
+Format the answer in clear sections with headings and finish with a
+concise summary table of the trip.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat6p5')">Copy Prompt</button>
+</div>
+
+<!-- CARD 6 -->
+<div class="card">
+    <div class="card-title">The Handyman</div>
+    <div class="card-purpose">Provides step-by-step troubleshooting for home repairs & DIY issues.</div>
+
+    <div class="card-prompt-box" id="cat6p6">
+Act as my experienced handyman. I have this issue [Insert Issue],
+and you will guide me step by step on how to troubleshoot and fix it
+safely. Start by asking me clarifying questions to understand the
+exact problem, tools I have available, and my skill level. Then explain
+what’s going on in simple terms, provide clear instructions, and
+suggest alternative solutions if needed. Point out any safety
+precautions, materials, or tools required.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat6p6')">Copy Prompt</button>
+</div>
+
+<!-- CARD 7 -->
+<div class="card">
+    <div class="card-title">The Personal Dietician</div>
+    <div class="card-purpose">Creates 7-day meal plans for any diet, health goal or restriction.</div>
+
+    <div class="card-prompt-box" id="cat6p7">
+You are a professional dietician. Please create a detailed meal plan
+for me.
+Type of diet/dietary restrictions: [insert here, e.g., vegetarian,
+gluten-free, Mediterranean, keto, pregnancy-safe, etc.]
+Health goals: [insert here, e.g., weight loss, muscle gain, balanced
+nutrition, improve energy levels, manage blood sugar, etc.]
+The plan should:
+1.Be structured day by day (e.g., 7-day plan).
+2.Include breakfast, lunch, dinner, and 1–2 snacks each day.
+3.Provide portion guidance and approximate
+calorie/macronutrient breakdown per meal if possible.
+4.Suggest whole food ingredients and avoid highly processed
+foods.
+5.Be practical and realistic for home cooking.
+6.Include variety across the days to prevent repetition.
+7.Optionally, add a shopping list at the end.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat6p7')">Copy Prompt</button>
+</div>
+
+<!-- CARD 8 -->
+<div class="card">
+    <div class="card-title">Dictate & Punctuate</div>
+    <div class="card-purpose">Turns raw voice dictation into polished, clean written text.</div>
+
+    <div class="card-prompt-box" id="cat6p8">
+You are my transcription assistant. I will paste in a raw transcript
+or dictation. Please clean it up into well-written prose with correct
+punctuation, capitalization, and paragraph breaks. Keep my original
+meaning and tone intact, but remove filler words, hesitations, and
+repeated phrases. Do not add extra commentary or change the
+meaning. Format the result so it reads as natural, polished writing.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat6p8')">Copy Prompt</button>
+</div>
+
+<!-- CARD 9 -->
+<div class="card">
+    <div class="card-title">Live Interpreter</div>
+    <div class="card-purpose">Real-time language translation for multilingual conversations.</div>
+
+    <div class="card-prompt-box" id="cat6p9">
+You are my live interpreter. When you hear [Language A],
+immediately translate it to [Language B]. When you hear [Language
+B], immediately translate it to [Language A]. You are interpreting for
+people talking face-to-face. Do not add commentary or
+explanations, do not respond—just translate and speak the target
+language every time.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat6p9')">Copy Prompt</button>
+</div>
+
+<!-- CARD 10 (Build Your Own Prompt) -->
+<div class="add-card">
+    <h3>Add Your Own Prompt</h3>
+    <textarea id="newPrompt6" placeholder="Write your own personal development prompt..."></textarea>
+    <button class="save-btn" onclick="copyText('newPrompt6')">Copy My Prompt</button>
+</div>
+
+</div>
+
+<div id="category7" class="category">
+    <div class="category-header">Category 7 — Technical, Coding & Software Engineering <span class="arrow">▼</span></div>
+    <div class="category-content"></div>
+    <!-- -----------------------------------------
+ CATEGORY 7 — TECHNICAL & CODING SKILLS
+------------------------------------------ -->
+
+<!-- CARD 1 -->
+<div class="card">
+    <div class="card-title">The Function Generator</div>
+    <div class="card-purpose">Creates fully commented standalone functions in any programming language.</div>
+
+    <div class="card-prompt-box" id="cat7p1">
+Write a function in [Programming Language, e.g., Python] that takes
+[function inputs, e.g., a list of strings] and [function purpose, e.g.,
+returns a new list with all strings converted to uppercase]. Add
+comments to explain the code step by step.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat7p1')">Copy Prompt</button>
+</div>
+
+<!-- CARD 2 -->
+<div class="card">
+    <div class="card-title">The Code Debugger</div>
+    <div class="card-purpose">Finds errors, explains them clearly, and provides fixed code.</div>
+
+    <div class="card-prompt-box" id="cat7p2">
+I am getting an error in my [Programming Language] code. The
+error is [paste the error message]. Here is the code that is causing
+the problem: [Paste your code snippet here]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat7p2')">Copy Prompt</button>
+</div>
+
+<!-- CARD 3 -->
+<div class="card">
+    <div class="card-title">The Code Explainer</div>
+    <div class="card-purpose">Breaks down any piece of code into simple, understandable English.</div>
+
+    <div class="card-prompt-box" id="cat7p3">
+You are my coding explainer. I will give you some code, and you will:
+1. Explain in plain English what the code does, step by step.
+2. Highlight the purpose of each key part (functions, variables,
+classes, loops, etc.).
+3. Point out any potential pitfalls, edge cases, or things to watch
+out for.
+Here’s the code: [Paste your code snippet here or link to VSCode
+tab in ChatGPT].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat7p3')">Copy Prompt</button>
+</div>
+
+<!-- CARD 4 -->
+<div class="card">
+    <div class="card-title">The Regex Creator</div>
+    <div class="card-purpose">Generates complex regex patterns from plain English rules.</div>
+
+    <div class="card-prompt-box" id="cat7p4">
+Create a regular expression (regex) that can be used to validate a
+[what you want to validate, e.g., a strong password that must
+contain at least 8 characters, one uppercase letter, one lowercase
+letter, one number, and one special character].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat7p4')">Copy Prompt</button>
+</div>
+
+<!-- CARD 5 -->
+<div class="card">
+    <div class="card-title">The Code Review</div>
+    <div class="card-purpose">Simulates a senior engineer reviewing your code with full corrections.</div>
+
+    <div class="card-prompt-box" id="cat7p5">
+Simulate a code review by a senior engineer.
+Goals: correctness, readability, performance, security, testability,
+and maintainability.
+Constraints: keep the existing public API stable; no framework
+changes.
+Deliverables:
+1) High-level summary (what’s good / risky),
+2) Concrete issues with code quotes/line refs,
+3) Actionable fixes (show diffs or pseudocode),
+4) Priority labels [P0/P1/P2] and impact [low/med/high],
+5) A 10–15 line refactor plan,
+6) 3–5 unit tests (or property tests) that would catch
+current/future bugs.
+Be direct, specific, and concise, don’t flatter me. Avoid
+bikeshedding.
+[Paste your code]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat7p5')">Copy Prompt</button>
+</div>
+
+<!-- CARD 6 -->
+<div class="card">
+    <div class="card-title">The Documentation Generator</div>
+    <div class="card-purpose">Creates full README-style technical documentation for any project.</div>
+
+    <div class="card-prompt-box" id="cat7p6">
+Act as a senior technical writer. Generate clear, developer-friendly
+documentation for the following project/code.
+Context:
+- Audience: [new contributors / internal team / open-source
+developers / end users]
+- Tech stack: [Node.js + React, PostgreSQL, Docker, etc.]
+- Style: [concise, example-driven, friendly, professional]
+Tasks:
+1. Executive summary (1-2 paras: what it is, why it exists)
+2. Architecture overview (diagram in text, modules/components,
+flow)
+3. Setup guide (prereqs, install, configure, run, test)
+4. Usage guide (examples, CLI/API endpoints, screenshots if relevant)
+5. Configuration (env vars, config files, secrets handling)
+6. Testing (how to run tests, test strategy, coverage)
+7. Deployment (local, staging, production; CI/CD notes)
+8. Contributing guide (branching, PRs, lint/test rules)
+9. FAQ & Troubleshooting (common errors, fixes)
+10. License and credits
+Deliverable:
+- Well-structured Markdown (README.md) with headings,
+subheadings, fenced code blocks, tables if needed.
+- Use language suitable for [junior devs / senior devs / external
+contributors].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat7p6')">Copy Prompt</button>
+</div>
+
+<!-- CARD 7 -->
+<div class="card">
+    <div class="card-title">The Technical Planner</div>
+    <div class="card-purpose">Turns any project idea into a full engineering plan with architecture.</div>
+
+    <div class="card-prompt-box" id="cat7p7">
+You are my technical project planner. I will give you a project idea,
+and you will help me turn it into a detailed, actionable plan.
+For the project idea I give you, do the following:
+1.Clarify the Vision: Restate my idea in your own words, highlight
+any missing details, and ask me 3–5 clarifying questions to
+better define the project.
+2.Define Outcomes: Write a clear project goal, success criteria,
+and 2–3 user stories that show what a user should be able to
+do when the project is complete.
+3.Break Down Features: List the main features, group them into
+epics, and identify the MVP (minimum viable product) vs. nice-
+to-have features.
+4.Choose Tech Stack: Suggest an appropriate tech stack
+(frontend, backend, database, deployment) and explain why it’s
+a good fit.
+5.Plan Architecture: Sketch a high-level architecture
+(components, APIs, data flows) and describe how the pieces fit
+together.
+6.Create a Timeline: Break work into phases (MVP, polish, launch)
+and suggest a rough timeline with priorities.
+7.List Risks & Unknowns: Point out potential challenges,
+bottlenecks, or open questions I need to research.
+Format your answer in a clean, structured way (use headings, bullet
+points, and tables where helpful).
+My project idea is: [insert your project idea here]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat7p7')">Copy Prompt</button>
+</div>
+
+<!-- CARD 8 -->
+<div class="card">
+    <div class="card-title">The Prompt-to-Prompt Generator</div>
+    <div class="card-purpose">Creates high-quality coding prompts tailored to your needs.</div>
+
+    <div class="card-prompt-box" id="cat7p8">
+I want to build a project called [Project Name].
+It will be a [1 sentence description].
+Here are the features [Bullet point list of features].
+Ask me clarifying questions and check your assumptions. DO NOT
+BUILD ANYTHING YET.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat7p8')">Copy Prompt</button>
+</div>
+
+<!-- CARD 9 -->
+<div class="card">
+    <div class="card-title">AI-Recommended Tech Stack</div>
+    <div class="card-purpose">Provides 3–5 expert tech stack options with pros/cons and comparison.</div>
+
+    <div class="card-prompt-box" id="cat7p9">
+Act as a senior solutions architect. Recommend [3–5] different
+tech stacks to build this project. For each option, explain in plain
+English (no jargon) what it includes (front end, back end, database,
+hosting), why it’s a good fit for my situation, the main trade-offs,
+rough build/time. Use simple analogies a non-technical stakeholder
+would understand. Finish with a comparison table and a clear
+recommendation. DO NOT WRITE ANY CODE YET.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat7p9')">Copy Prompt</button>
+</div>
+
+<!-- CARD 10 -->
+<div class="card">
+    <div class="card-title">The Simple Tech Stack Chooser</div>
+    <div class="card-purpose">Helps beginners choose a front-end stack using simple clarifying questions.</div>
+
+    <div class="card-prompt-box" id="cat7p10">
+I want this to be a vanilla JS, HTML CSS project that is front-end
+only. It should use localstorage for data storage. I'm happy to use
+React via CDN if necessary and Canvas API for the garden
+graphics.
+Now ask me any clarifying questions you have. DO NOT WRITE ANY
+CODE YET.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat7p10')">Copy Prompt</button>
+</div>
+
+<!-- CARD 11 -->
+<div class="card">
+    <div class="card-title">The Work-With-AI Tech Stack Planner</div>
+    <div class="card-purpose">Guides experienced developers to choose an optimal build system.</div>
+
+    <div class="card-prompt-box" id="cat7p11">
+Act as a senior solutions architect. Help me choose the optimal
+tech stack through a structured, iterative conversation.
+Assume I’m an experienced developer. Be concise, opinionated, and
+practical. Start by asking up to **10 high-leverage questions** to
+close critical unknowns.
+- Offer suggested defaults in [brackets] I can accept quickly.
+Propose **3–5 stack options**
+. DO NOT WRITE ANY CODE YET.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat7p11')">Copy Prompt</button>
+</div>
+
+<!-- CARD 12 (Add Your Own Prompt) -->
+<div class="add-card">
+    <h3>Add Your Own Technical Prompt</h3>
+    <textarea id="newPrompt7" placeholder="Write your own coding/tech prompt..."></textarea>
+    <button class="save-btn" onclick="copyText('newPrompt7')">Copy My Prompt</button>
+</div>
+
+</div>
+
+<div id="category8" class="category">
+    <div class="category-header">Category 8 — Creativity, Mindset, Confidence & Personal Growth <span class="arrow">▼</span></div>
+    <div class="category-content"></div>
+    <!-- -----------------------------------------
+ CATEGORY 8 — CREATIVITY, MINDSET & PERSONAL GROWTH
+------------------------------------------ -->
+
+<!-- CARD 1 -->
+<div class="card">
+    <div class="card-title">The Angle Finder</div>
+    <div class="card-purpose">Helps you explore any topic from unique creative angles.</div>
+
+    <div class="card-prompt-box" id="cat8p1">
+I need to write about [Topic, e.g., the future of remote work]. Give
+me 5 different angles or perspectives to approach this topic from.
+The angles should be:
+1.Technological
+2.Sociological/Cultural
+3.Economic
+4.Psychological (individual well-being)
+5.A contrarian or controversial view.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat8p1')">Copy Prompt</button>
+</div>
+
+<!-- CARD 2 -->
+<div class="card">
+    <div class="card-title">The Creative Idea Generator</div>
+    <div class="card-purpose">Generates creative ideas for projects, stories, campaigns or art.</div>
+
+    <div class="card-prompt-box" id="cat8p2">
+I am working on [project, e.g., a new marketing campaign, a blog, a
+YouTube channel].
+The target audience is [describe audience, e.g., young professionals
+interested in sustainable living].
+Generate [number] creative ideas for [what you need, e.g., blog
+post titles, campaign slogans, video concepts].
+For each idea, provide a brief description.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat8p2')">Copy Prompt</button>
+</div>
+
+<!-- CARD 3 -->
+<div class="card">
+    <div class="card-title">The Concept Explainer</div>
+    <div class="card-purpose">Breaks down any difficult topic into simple, confidence-building explanations.</div>
+
+    <div class="card-prompt-box" id="cat8p3">
+Explain the concept of [insert complex topic, e.g., blockchain,
+general relativity, machine learning] to me. Assume I am a [target
+audience, e.g., a high school student, a marketing manager with no
+tech background, a curious 10-year-old]. Use analogies and simple
+language, and avoid jargon where possible.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat8p3')">Copy Prompt</button>
+</div>
+
+<!-- CARD 4 -->
+<div class="card">
+    <div class="card-title">The Study Planner</div>
+    <div class="card-purpose">Creates structured learning plans that build confidence & mastery.</div>
+
+    <div class="card-prompt-box" id="cat8p4">
+I want to learn [skill or subject, e.g., Python programming for data
+analysis, conversational Spanish]. I can dedicate [number] hours per
+week. Create a [duration, e.g., 4-week] study plan for me. The plan
+should include:
+Weekly topics to cover.
+Recommended resources (e.g., free online courses, books,
+websites).
+A small project or practice exercise for each week to test my
+knowledge.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat8p4')">Copy Prompt</button>
+</div>
+
+<!-- CARD 5 -->
+<div class="card">
+    <div class="card-title">The Key Takeaway Extractor</div>
+    <div class="card-purpose">Builds summarising skills & mental clarity by extracting main ideas.</div>
+
+    <div class="card-prompt-box" id="cat8p5">
+Read the following text and extract the 5 most important
+takeaways. For each takeaway, provide a one-sentence summary.
+The intended audience for this summary is a [e.g., busy executive,
+college student]. Text: [Paste the article or text here]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat8p5')">Copy Prompt</button>
+</div>
+
+<!-- CARD 6 -->
+<div class="card">
+    <div class="card-title">YouTube Watcher</div>
+    <div class="card-purpose">Helps extract insights from any video for faster learning & reduced overwhelm.</div>
+
+    <div class="card-prompt-box" id="cat8p6">
+Please watch (or read the transcript of) this YouTube video [INSERT
+VIDEO URL] and provide a concise summary of the main learning
+points. Focus on the key ideas, actionable insights, or step-by-step
+methods the speaker shares. Avoid filler, anecdotes, or repetition.
+Present the output as a clear, structured bullet-point list with time
+stamps to review. If relevant, group the points under short subh⸻eadings for clarity.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat8p6')">Copy Prompt</button>
+</div>
+
+<!-- CARD 7 -->
+<div class="card">
+    <div class="card-title">The Language Tutor</div>
+    <div class="card-purpose">Live conversational tutor that builds confidence & expressive ability.</div>
+
+    <div class="card-prompt-box" id="cat8p7">
+You are my personal language tutor. I am
+learning [TARGET LANGUAGE] at a [BEGINNER / INTERMEDIATE /
+ADVANCED] level. Please speak with me slowly and clearly, correct
+my mistakes in grammar and vocabulary. Mix conversation practice
+with short teaching moments — ask me questions, encourage me
+to respond in the language I’m learning, and only switch to English if
+I’m really stuck.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat8p7')">Copy Prompt</button>
+</div>
+
+<!-- CARD 8 -->
+<div class="card">
+    <div class="card-title">The Flash Card Maker</div>
+    <div class="card-purpose">Helps build memory skills, recall, and confidence using active learning.</div>
+
+    <div class="card-prompt-box" id="cat8p8">
+You are an expert educator skilled at creating effective flashcards.
+From the following content, generate high-quality flashcards in
+Question–Answer format.
+Guidelines:
+Output in tab-separated format (Q ⟶ A). Each line = one
+flashcard.
+No extra formatting, labels, or numbering. Just:
+Question<TAB>Answer
+(where <TAB> means a literal tab character).
+Phrase questions so they are clear, testable, and concise.
+Ensure answers are accurate, complete, but not overly verbose.
+Vary the flashcard types:
+Definition (What is X?)
+Application (How does X work? Why does Y happen?)
+Comparison (What’s the difference between X and Y?)
+Example-based (Give an example of X).
+Break down long or complex content into multiple smaller cards.
+Exclude filler, anecdotes, or redundant details.
+Content to convert into flashcards:
+[PASTE CONTENT HERE]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat8p8')">Copy Prompt</button>
+</div>
+
+<!-- CARD 9 -->
+<div class="card">
+    <div class="card-title">Self-Growth Planning Prompt</div>
+    <div class="card-purpose">A neuro-inclusive method to set goals, build confidence, and plan progress.</div>
+
+    <div class="card-prompt-box" id="cat8p9">
+I have a big ambitious goal: [describe your specific goal]. Help me
+break this down into manageable milestones and daily actions using
+the Backwards Planning Method.
+Please:
+1.Identify the minimum requirements needed to qualify for this
+goal
+2.Break down the main goal into yearly milestones working
+backwards from achievement
+3.Convert these milestones into monthly targets
+4.Translate these into specific weekly actions
+5.Suggest daily habits or tasks that would contribute to progress
+6.Identify any particularly challenging obstacles and how to
+overcome them
+7.Suggest metrics to track progress
+My advantages to achieving this goal are: [insert advantages e.g. I
+already have a medical degree and more than 2 years work
+experience as a doctor]
+My hindrances to achieving this goal are: [insert hinderances e.g. I
+don’t have US citizenship, I am a UK citizen].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat8p9')">Copy Prompt</button>
+</div>
+
+<!-- CARD 10 (Add Your Own Prompt) -->
+<div class="add-card">
+    <h3>Add Your Own Creativity / Mindset Prompt</h3>
+    <textarea id="newPrompt8" placeholder="Write your own mindset or creativity prompt..."></textarea>
+    <button class="save-btn" onclick="copyText('newPrompt8')">Copy My Prompt</button>
+</div>
+
+</div>
+
+<div id="category9" class="category">
+    <div class="category-header">Category 9 — Parenting, Teaching & Neurodivergent Support <span class="arrow">▼</span></div>
+    <div class="category-content"></div>
+    <!-- -----------------------------------------
+ CATEGORY 9 — PARENTING, TEACHING & NEURODIVERGENT SUPPORT
+------------------------------------------ -->
+
+<!-- CARD 1 -->
+<div class="card">
+    <div class="card-title">The Meeting Summariser</div>
+    <div class="card-purpose">Turns school meetings, EHCP discussions, therapy notes into clear action plans.</div>
+
+    <div class="card-prompt-box" id="cat9p1">
+Please summarize the following meeting notes/transcript. Your
+summary should be structured into three sections:
+1.Key Decisions Made: (List the main conclusions reached).
+2.Action Items: (Use a table with columns for 'Task'
+,
+'Owner'
+, and
+'Deadline').
+3.Open Questions: (List any topics that require further discussion).
+Here is the text: [Paste your meeting notes or transcript here]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat9p1')">Copy Prompt</button>
+</div>
+
+<!-- CARD 2 -->
+<div class="card">
+    <div class="card-title">The Checklist Creator</div>
+    <div class="card-purpose">Creates structured checklists for parents, teachers, therapists & carers.</div>
+
+    <div class="card-prompt-box" id="cat9p2">
+I want you to act as a checklist creator. Please create a clear,
+structured checklist for [insert topic, task, or project].
+The checklist should be:
+Organized into logical sections (if relevant).
+Action-oriented, with each item starting with a verb.
+Concise but detailed enough to be actionable.
+Presented in a clean, bullet-point or checkbox format that I can
+easily copy or use in a tool like Notion, Excel, or an app.
+Optional: Include a short description or example for each item to
+clarify what success looks like.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat9p2')">Copy Prompt</button>
+</div>
+
+<!-- CARD 3 -->
+<div class="card">
+    <div class="card-title">The Persuasion Artist</div>
+    <div class="card-purpose">Helps parents & teachers advocate professionally for SEND needs.</div>
+
+    <div class="card-prompt-box" id="cat9p3">
+I need to argue my case at work. Please help me structure a persuasive
+argument. I’ll give you the situation, my position, and the audience. Your
+task is to:
+1.Identify the key points I should emphasize.
+2.Anticipate possible counterarguments and prepare strong
+rebuttals.
+3.Suggest persuasive language and framing that fits a professional
+workplace setting.
+4.Provide a clear structure (e.g., opening statement, main points,
+conclusion/call-to-action) that I can use in an email, meeting, or
+presentation.
+5.Give me a short version (2–3 sentences) for quick discussions and a
+longer version (2–3 paragraphs) for formal communication.
+Here’s my situation: [insert details here]. My position: [position]. My
+audience: [audience].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat9p3')">Copy Prompt</button>
+</div>
+
+<!-- CARD 4 -->
+<div class="card">
+    <div class="card-title">The Difficult Conversation Planner</div>
+    <div class="card-purpose">Helps adults speak clearly & calmly about sensitive behavioural issues.</div>
+
+    <div class="card-prompt-box" id="cat9p4">
+I need to have a difficult conversation with [Person, e.g., my
+manager, my team member] about [Topic, e.g., my workload, their
+performance, a project delay]. Help me structure the conversation.
+Provide key talking points that are clear, constructive, and
+professional. My goal is to [state your desired outcome].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat9p4')">Copy Prompt</button>
+</div>
+
+<!-- CARD 5 -->
+<div class="card">
+    <div class="card-title">The Strategic Frameworks Applicator</div>
+    <div class="card-purpose">Helps educators & parents analyse school challenges using proven models.</div>
+
+    <div class="card-prompt-box" id="cat9p5">
+I am developing a [product/business idea, e.g., a mobile app for local
+gardeners]. Please perform a SWOT analysis (Strengths,
+Weaknesses, Opportunities, Threats) for this idea. Present the
+output in four distinct lists.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat9p5')">Copy Prompt</button>
+</div>
+
+<!-- CARD 6 -->
+<div class="card">
+    <div class="card-title">The Pro–Con Analyst</div>
+    <div class="card-purpose">Helps parents and carers make balanced decisions for a child’s wellbeing.</div>
+
+    <div class="card-prompt-box" id="cat9p6">
+I am considering [Decision, e.g., accepting a new job offer, moving to
+a new city, buying a new car].
+Act as a decision-making consultant and create a detailed table of
+pros and cons. Consider factors like:
+Financial implications
+Impact on work-life balance
+Long-term opportunities
+Personal happiness and stress
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat9p6')">Copy Prompt</button>
+</div>
+
+<!-- CARD 7 -->
+<div class="card">
+    <div class="card-title">The Second Brain Sounding Board</div>
+    <div class="card-purpose">Helps overwhelmed parents & teachers think more clearly.</div>
+
+    <div class="card-prompt-box" id="cat9p7">
+Act as a critical thinking partner. I am facing a problem: [Describe
+your problem in detail]. Ask me 5 probing questions that will help me
+think through this problem more deeply and identify potential
+solutions I may have overlooked.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat9p7')">Copy Prompt</button>
+</div>
+
+<!-- CARD 8 (NEW — NEURO-INCLUSIVE PROMPT) -->
+<div class="card">
+    <div class="card-title">Neurodivergent Daily Support Planner</div>
+    <div class="card-purpose">Creates visual, simple daily support routines for autism, ADHD, dyslexia & anxiety.</div>
+
+    <div class="card-prompt-box" id="cat9p8">
+I am supporting someone with [autism/ADHD/dyslexia/anxiety]. Create
+a simple daily structure with:
+- Predictable routines
+- Low-demand periods
+- Sensory breaks
+- Regulation strategies
+- Short achievable goals  
+Make it visual, easy to follow, and neurodivergent-friendly.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat9p8')">Copy Prompt</button>
+</div>
+
+<!-- CARD 9 (NEW — FOR PARENTS & TEACHERS) -->
+<div class="card">
+    <div class="card-title">Behaviour Reflection Sheet Generator</div>
+    <div class="card-purpose">Builds gentle behaviour-reflection sheets for classrooms, families & SEND support.</div>
+
+    <div class="card-prompt-box" id="cat9p9">
+Create a behaviour reflection sheet for a child who experienced a
+challenging moment. The sheet should use:
+- Gentle language
+- No shame-based words
+- A focus on feelings, triggers, and support strategies
+- A place for the child’s voice  
+Make it appropriate for [age group].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat9p9')">Copy Prompt</button>
+</div>
+
+<!-- CARD 10 (NEW — TEACHER/SEND TOOL) -->
+<div class="card">
+    <div class="card-title">EHCP Evidence Builder</div>
+    <div class="card-purpose">Helps teachers collect structured evidence for EHCP applications.</div>
+
+    <div class="card-prompt-box" id="cat9p10">
+Help me create structured evidence for an EHCP assessment. I need:
+- Strengths
+- Needs
+- Barriers to learning
+- Examples of support provided
+- Impact of support
+- Unmet needs requiring specialist involvement  
+Use professional UK SEND language.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat9p10')">Copy Prompt</button>
+</div>
+
+<!-- CARD 11 (Add Your Own Prompt) -->
+<div class="add-card">
+    <h3>Add Your Own Parenting/Teaching Prompt</h3>
+    <textarea id="newPrompt9" placeholder="Write your own SEND or teaching prompt..."></textarea>
+    <button class="save-btn" onclick="copyText('newPrompt9')">Copy My Prompt</button>
+</div>
+
+</div>
+
+<div id="category10" class="category">
+    <div class="category-header">Category 10 — Career Growth, Job Hunting & Interview Excellence <span class="arrow">▼</span></div>
+    <div class="category-content"></div>
+    <!-- -----------------------------------------
+ CATEGORY 10 — CAREER GROWTH, JOB HUNTING & INTERVIEW EXCELLENCE
+------------------------------------------ -->
+
+<!-- CARD 1 -->
+<div class="card">
+    <div class="card-title">The Interview Coach</div>
+    <div class="card-purpose">Simulates full professional interviews with coaching feedback.</div>
+
+    <div class="card-prompt-box" id="cat10p1">
+I want you to act as my interview coach. Please conduct a realistic
+mock interview for the role of [job title] at [company/industry]. Ask
+me questions one at a time, just like in a real interview. Cover a mix
+of:
+Common behavioral questions (e.g., teamwork, conflict,
+leadership, problem-solving).
+Role-specific technical or domain knowledge questions.
+Situational/what-would-you-do questions.
+Closing questions (e.g., why I want the role, what I’d bring to the
+team).
+After each of my answers, give me structured feedback with:
+1.Strengths in my response.
+2.Areas to improve.
+3.A suggested stronger version of my answer (if needed).
+At the end, summarize my overall performance and key points to
+work on. Keep the tone professional but encouraging. Start now
+with your first question.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat10p1')">Copy Prompt</button>
+</div>
+
+<!-- CARD 2 -->
+<div class="card">
+    <div class="card-title">The Task Prioritizer (Work Edition)</div>
+    <div class="card-purpose">Organises complex work tasks into a priority matrix for performance success.</div>
+
+    <div class="card-prompt-box" id="cat10p2">
+I need to prioritize my tasks for today. My main goal is [Your
+primary objective, e.g., to prepare for the client presentation]. Here
+is my to-do list: [List all your tasks]. Please organize these tasks
+using the Eisenhower Matrix (Urgent/Important). Provide the output
+as a four-quadrant list.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat10p2')">Copy Prompt</button>
+</div>
+
+<!-- CARD 3 -->
+<div class="card">
+    <div class="card-title">The Tone Adjuster</div>
+    <div class="card-purpose">Rewrites emails, reports and applications into the perfect professional tone.</div>
+
+    <div class="card-prompt-box" id="cat10p3">
+Rewrite the following text to make it sound more [desired tone, e.g.,
+persuasive, empathetic, confident, concise and professional].
+Original Text: [Paste your text here]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat10p3')">Copy Prompt</button>
+</div>
+
+<!-- CARD 4 -->
+<div class="card">
+    <div class="card-title">The Proofreader & Editor</div>
+    <div class="card-purpose">Cleans CVs, cover letters, applications and LinkedIn profiles professionally.</div>
+
+    <div class="card-prompt-box" id="cat10p4">
+Please proofread the following text. Correct any spelling, grammar,
+and punctuation errors. In addition, suggest improvements to
+enhance clarity, conciseness, and overall readability.
+Provide the revised text. Text: [Paste your text here]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat10p4')">Copy Prompt</button>
+</div>
+
+<!-- CARD 5 -->
+<div class="card">
+    <div class="card-title">The Content Starter (Work Edition)</div>
+    <div class="card-purpose">Helps professionals begin complex work tasks with clarity and strategy.</div>
+
+    <div class="card-prompt-box" id="cat10p5">
+I need to prioritize my tasks for today. My main goal is [Your
+primary objective, e.g., to prepare for the client presentation]. Here
+is my to-do list: [List all your tasks]. Please organize these tasks
+using the Eisenhower Matrix (Urgent/Important). Provide the output
+as a four-quadrant list.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat10p5')">Copy Prompt</button>
+</div>
+
+<!-- CARD 6 -->
+<div class="card">
+    <div class="card-title">The Idea Generator (Career Edition)</div>
+    <div class="card-purpose">Generates creative ideas for career strategy, portfolios and positioning.</div>
+
+    <div class="card-prompt-box" id="cat10p6">
+I am working on [project, e.g., a new marketing campaign, a blog, a
+YouTube channel].
+The target audience is [describe audience, e.g., young professionals
+interested in sustainable living].
+Generate [number] creative ideas for [what you need, e.g., blog
+post titles, campaign slogans, video concepts].
+For each idea, provide a brief description.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat10p6')">Copy Prompt</button>
+</div>
+
+<!-- CARD 7 -->
+<div class="card">
+    <div class="card-title">The $Million Consultant</div>
+    <div class="card-purpose">Applies elite consulting frameworks to career problems & job strategy.</div>
+
+    <div class="card-prompt-box" id="cat10p7">
+You are a senior strategy consultant trained in the style of
+McKinsey, BCG, and Bain. I will present you with a problem, and your
+job is to:
+1.Diagnose the situation – ask clarifying questions if needed and
+summarize the core challenge.
+2.Provide at least 2 different strategic frameworks (e.g., MECE
+breakdowns, 2x2 matrices, value-driver trees, Porter’s Five
+Forces, growth-share matrix, etc.) to structure and analyze the
+problem.
+3.Apply each framework to my problem step by step, showing
+how it helps me think about root causes, trade-offs, and
+possible solutions.
+4.Synthesize recommendations into 2–3 clear, actionable paths
+forward, highlighting risks and benefits.
+5.Keep your reasoning structured, concise, and professional (as if
+presenting slides to an executive team).
+Here’s my problem: [insert your problem here].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat10p7')">Copy Prompt</button>
+</div>
+
+<!-- CARD 8 -->
+<div class="card">
+    <div class="card-title">The Career Clarity Diagnostic (NEW)</div>
+    <div class="card-purpose">Helps users identify their ideal career path based on strengths & values.</div>
+
+    <div class="card-prompt-box" id="cat10p8">
+Help me discover my ideal career direction. Ask me questions about:
+- my strengths  
+- my weaknesses  
+- the environments where I thrive  
+- my motivations  
+- the lifestyle I want  
+Then create 3–5 well-defined career paths that realistically match the answers.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat10p8')">Copy Prompt</button>
+</div>
+
+<!-- CARD 9 -->
+<div class="card">
+    <div class="card-title">The CV Achievement Rewriter (NEW)</div>
+    <div class="card-purpose">Transforms weak bullet points into powerful achievement statements.</div>
+
+    <div class="card-prompt-box" id="cat10p9">
+Rewrite the following CV bullet points to follow the formula:
+ACTION + IMPACT + METRIC (if possible).
+Make them strong, employer-focused, and achievement-based.
+Here are the bullets: [paste text here]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat10p9')">Copy Prompt</button>
+</div>
+
+<!-- CARD 10 -->
+<div class="card">
+    <div class="card-title">The Salary Negotiation Coach (NEW)</div>
+    <div class="card-purpose">Gives scripts & strategies to negotiate job offers confidently.</div>
+
+    <div class="card-prompt-box" id="cat10p10">
+I have a job offer with the following details: [insert].  
+Create:
+- a negotiation script,  
+- alternative phrases if the employer pushes back,  
+- metrics or justification I can use,  
+- risks and how to handle them.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat10p10')">Copy Prompt</button>
+</div>
+
+<!-- CARD 11 -->
+<div class="card">
+    <div class="card-title">The Professional Development Planner (NEW)</div>
+    <div class="card-purpose">Creates a 1-year skill development plan for promotion readiness.</div>
+
+    <div class="card-prompt-box" id="cat10p11">
+Create a 12-month professional development plan for someone aiming for a promotion in [field].  
+Include:
+- monthly goals  
+- skill targets  
+- recommended courses  
+- measurable progress indicators  
+- confidence-building milestones  
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat10p11')">Copy Prompt</button>
+</div>
+
+<!-- CARD 12 (ADD YOUR OWN) -->
+<div class="add-card">
+    <h3>Add Your Own Career Prompt</h3>
+    <textarea id="newPrompt10" placeholder="Write your own career or interview prompt..."></textarea>
+    <button class="save-btn" onclick="copyText('newPrompt10')">Copy My Prompt</button>
+</div>
+
+</div>
+
+<div id="category11" class="category">
+    <div class="category-header">Category 11 — AI Agents, Automation & Productivity Systems <span class="arrow">▼</span></div>
+    <div class="category-content"></div>
+    <!-- -----------------------------------------
+ CATEGORY 11 — AI AGENTS, AUTOMATION & PRODUCTIVITY SYSTEMS
+------------------------------------------ -->
+
+<!-- CARD 1 -->
+<div class="card">
+    <div class="card-title">The Technical Planner</div>
+    <div class="card-purpose">Turns any technical idea into a structured, multi-phase project plan.</div>
+
+    <div class="card-prompt-box" id="cat11p1">
+You are my technical project planner. I will give you a project idea,
+and you will help me turn it into a detailed, actionable plan.
+For the project idea I give you, do the following:
+1.Clarify the Vision: Restate my idea in your own words, highlight
+any missing details, and ask me 3–5 clarifying questions to
+better define the project.
+2.Define Outcomes: Write a clear project goal, success criteria,
+and 2–3 user stories that show what a user should be able to
+do when the project is complete.
+3.Break Down Features: List the main features, group them into
+epics, and identify the MVP (minimum viable product) vs. nice-
+to-have features.
+4.Choose Tech Stack: Suggest an appropriate tech stack
+(frontend, backend, database, deployment) and explain why it’s
+a good fit.
+5.Plan Architecture: Sketch a high-level architecture
+(components, APIs, data flows) and describe how the pieces fit
+together.
+6.Create a Timeline: Break work into phases (MVP, polish, launch)
+and suggest a rough timeline with priorities.
+7.List Risks & Unknowns: Point out potential challenges,
+bottlenecks, or open questions I need to research.
+Format your answer in a clean, structured way (use headings, bullet
+points, and tables where helpful).
+My project idea is: [insert your project idea here]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat11p1')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 2 -->
+<div class="card">
+    <div class="card-title">The Prompt-to-Prompt Generator</div>
+    <div class="card-purpose">Helps users design perfect coding prompts by asking clarifying questions.</div>
+
+    <div class="card-prompt-box" id="cat11p2">
+I want to build a project called [Project Name].
+It will be a [1 sentence description].
+Here are the features [Bullet point list of features].
+Ask me clarifying questions and check your assumptions. DO NOT
+BUILD ANYTHING YET.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat11p2')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 3 -->
+<div class="card">
+    <div class="card-title">AI Recommended Tech Stack</div>
+    <div class="card-purpose">Gives multiple stack options with pros, cons, trade-offs & final recommendation.</div>
+
+    <div class="card-prompt-box" id="cat11p3">
+Act as a senior solutions architect. Recommend [3–5] different
+tech stacks to build this project. For each option, explain in plain
+English (no jargon) what it includes (front end, back end, database,
+hosting), why it’s a good fit for my situation, the main trade-offs,
+rough build/time. Use simple analogies a non-technical stakeholder
+would understand. Finish with a comparison table and a clear
+recommendation. DO NOT WRITE ANY CODE YET.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat11p3')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 4 -->
+<div class="card">
+    <div class="card-title">The Simple Tech Stack Narrower</div>
+    <div class="card-purpose">Helps non-technical users define a tech stack with clarity and simplicity.</div>
+
+    <div class="card-prompt-box" id="cat11p4">
+I want this to be a vanilla JS, HTML CSS project that is front-end
+only. It should use localstorage for data storage. I'm happy to use
+React via CDN if necessary and Canvas API for the garden
+graphics.
+Now ask me any clarifying questions you have. DO NOT WRITE ANY
+CODE YET.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat11p4')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 5 -->
+<div class="card">
+    <div class="card-title">The Work With AI Tech Stack Selector</div>
+    <div class="card-purpose">An iterative, expert-led system that chooses the optimal tech stack.</div>
+
+    <div class="card-prompt-box" id="cat11p5">
+Act as a senior solutions architect. Help me choose the optimal
+tech stack through a structured, iterative conversation.
+Assume I’m an experienced developer. Be concise, opinionated, and
+practical. Start by asking up to **10 high-leverage questions** to
+close critical unknowns.
+- Offer suggested defaults in [brackets] I can accept quickly.
+Propose **3–5 stack options**. DO NOT WRITE ANY CODE YET.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat11p5')">Copy Prompt</button>
+</div>
+
+
+<!-- ------------------ NEW PROMPTS FOR CATEGORY 11 ------------------ -->
+
+
+<!-- CARD 6 -->
+<div class="card">
+    <div class="card-title">AI Agent Builder (NEW)</div>
+    <div class="card-purpose">Designs a personalised autonomous AI agent with clear roles & workflows.</div>
+
+    <div class="card-prompt-box" id="cat11p6">
+Help me design a fully-defined AI agent.  
+Include:
+- Agent name & purpose  
+- Capabilities  
+- Tools it should use  
+- Workflow steps  
+- Safety rules  
+- Memory strategy  
+- Example tasks it can complete  
+The agent should be specialised for: [insert your purpose].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat11p6')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 7 -->
+<div class="card">
+    <div class="card-title">Workflow Automation Designer (NEW)</div>
+    <div class="card-purpose">Creates end-to-end automated workflows for business, home or study.</div>
+
+    <div class="card-prompt-box" id="cat11p7">
+Design an automated workflow for: [insert task or business process].  
+Include:
+- trigger  
+- inputs  
+- processing steps  
+- AI tools or APIs  
+- outputs  
+- fallback steps  
+Provide a diagram-style explanation.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat11p7')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 8 -->
+<div class="card">
+    <div class="card-title">AI Email Automation Engine (NEW)</div>
+    <div class="card-purpose">Generates automated email handling rules & smart templates.</div>
+
+    <div class="card-prompt-box" id="cat11p8">
+Create an AI-powered email automation system for me.  
+Tasks:
+- auto-sort incoming mail  
+- auto-draft replies  
+- generate summary digests  
+- escalate urgent messages  
+- archive or label non-important messages  
+Explain each rule clearly.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat11p8')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 9 -->
+<div class="card">
+    <div class="card-title">Calendar & Task AI Assistant (NEW)</div>
+    <div class="card-purpose">Creates a smart scheduling system that organises tasks automatically.</div>
+
+    <div class="card-prompt-box" id="cat11p9">
+Build a calendar automation assistant that:
+- sorts my tasks by urgency  
+- schedules deep-focus sessions  
+- blocks rest and buffer time  
+- reminds me of habits  
+- adjusts the plan when delays happen  
+Use my inputs:
+Tasks: [paste tasks]  
+Availability: [paste schedule]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat11p9')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 10 -->
+<div class="card">
+    <div class="card-title">The Document Automation Engine (NEW)</div>
+    <div class="card-purpose">Creates automated document templates with smart fields.</div>
+
+    <div class="card-prompt-box" id="cat11p10">
+Create an automated document generation system for: [insert need].  
+Include:
+- template fields  
+- dynamic placeholders  
+- conditional text rules  
+- output formatting  
+Provide a downloadable structure.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat11p10')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 11 -->
+<div class="card">
+    <div class="card-title">The AI Business Process Optimiser (NEW)</div>
+    <div class="card-purpose">Analyses current workflows and proposes AI-powered improvements.</div>
+
+    <div class="card-prompt-box" id="cat11p11">
+Analyse this workflow: [insert workflow].  
+Identify:
+- inefficiencies  
+- bottlenecks  
+- tasks suitable for automation  
+- recommended AI tools  
+- redesigned process  
+Include a before/after diagram explanation.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat11p11')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 12 (ADD YOUR OWN) -->
+<div class="add-card">
+    <h3>Add Your Own AI Automation Prompt</h3>
+    <textarea id="newPrompt11" placeholder="Write your own AI agent or automation prompt..."></textarea>
+    <button class="save-btn" onclick="copyText('newPrompt11')">Copy My Prompt</button>
+</div>
+
+</div>
+
+<div id="category12" class="category">
+    <div class="category-header">Category 12 — Elite Skills, Mastery Tools & Life Advancement <span class="arrow">▼</span></div>
+    <div class="category-content"></div>
+    <!-- -----------------------------------------
+ CATEGORY 12 — ELITE SKILLS, MASTERY TOOLS & LIFE ADVANCEMENT
+------------------------------------------ -->
+
+<!-- CARD 1 — ORIGINAL STYLE -->
+<div class="card">
+    <div class="card-title">The Million-Dollar Consultant</div>
+    <div class="card-purpose">Apply elite consulting frameworks (McKinsey/BCG/Bain style) to any major life or business challenge.</div>
+
+    <div class="card-prompt-box" id="cat12p1">
+You are a senior strategy consultant trained in the style of
+McKinsey, BCG, and Bain. I will present you with a problem, and your
+job is to:
+1.Diagnose the situation – ask clarifying questions if needed and
+summarize the core challenge.
+2.Provide at least 2 different strategic frameworks (e.g., MECE
+breakdowns, 2x2 matrices, value-driver trees, Porter’s Five
+Forces, growth-share matrix, etc.) to structure and analyze the
+problem.
+3.Apply each framework to my problem step by step, showing
+how it helps me think about root causes, trade-offs, and
+possible solutions.
+4.Synthesize recommendations into 2–3 clear, actionable paths
+forward, highlighting risks and benefits.
+5.Keep your reasoning structured, concise, and professional (as if
+presenting slides to an executive team).
+Here’s my problem: [insert your problem here].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p1')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 2 — ELITE INTERVIEW SYSTEM -->
+<div class="card">
+    <div class="card-title">The Interview Coach</div>
+    <div class="card-purpose">A full professional mock interview system with feedback and revised answers.</div>
+
+    <div class="card-prompt-box" id="cat12p2">
+I want you to act as my interview coach. Please conduct a realistic
+mock interview for the role of [job title] at [company/industry]. Ask
+me questions one at a time, just like in a real interview. Cover a mix
+of:
+Common behavioral questions (e.g., teamwork, conflict,
+leadership, problem-solving).
+Role-specific technical or domain knowledge questions.
+Situational/what-would-you-do questions.
+Closing questions (e.g., why I want the role, what I’d bring to the
+team).
+After each of my answers, give me structured feedback with:
+1.Strengths in my response.
+2.Areas to improve.
+3.A suggested stronger version of my answer (if needed).
+At the end, summarize my overall performance and key points to
+work on. Keep the tone professional but encouraging. Start now
+with your first question.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p2')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 3 — TONE MASTER -->
+<div class="card">
+    <div class="card-title">The Tone Adjuster</div>
+    <div class="card-purpose">Instantly rewrite content into any tone with precision.</div>
+
+    <div class="card-prompt-box" id="cat12p3">
+Rewrite the following text to make it sound more [desired tone, e.g.,
+persuasive, empathetic, confident, concise and professional].
+Original Text: [Paste your text here]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p3')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 4 — MASTER EDITOR -->
+<div class="card">
+    <div class="card-title">The Proofreader & Editor</div>
+    <div class="card-purpose">Improves accuracy, clarity, structure & impact of any text.</div>
+
+    <div class="card-prompt-box" id="cat12p4">
+Please proofread the following text. Correct any spelling, grammar,
+and punctuation errors. In addition, suggest improvements to
+enhance clarity, conciseness, and overall readability.
+Provide the revised text. Text: [Paste your text here]
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p4')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 5 — CONTENT GENERATOR -->
+<div class="card">
+    <div class="card-title">The Content Starter</div>
+    <div class="card-purpose">Helps break overwhelm by generating structured content direction.</div>
+
+    <div class="card-prompt-box" id="cat12p5">
+I need to prioritize my tasks for today. My main goal is [Your
+primary objective, e.g., to prepare for the client presentation]. Here
+is my to-do list: [List all your tasks]. Please organize these tasks
+using the Eisenhower Matrix (Urgent/Important). Provide the output
+as a four-quadrant list.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p5')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 6 — DIFFICULT CONVERSATION ARCHITECT -->
+<div class="card">
+    <div class="card-title">The Difficult Conversation Planner</div>
+    <div class="card-purpose">Creates scripts & talking points for emotionally challenging discussions.</div>
+
+    <div class="card-prompt-box" id="cat12p6">
+I need to have a difficult conversation with [Person, e.g., my
+manager, my team member] about [Topic, e.g., my workload, their
+performance, a project delay]. Help me structure the conversation.
+Provide key talking points that are clear, constructive, and
+professional. My goal is to [state your desired outcome].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p6')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 7 — ANGLE THINKER -->
+<div class="card">
+    <div class="card-title">The Angle Finder</div>
+    <div class="card-purpose">Generates multiple perspectives for more creative or strategic thinking.</div>
+
+    <div class="card-prompt-box" id="cat12p7">
+I need to write about [Topic, e.g., the future of remote work]. Give
+me 5 different angles or perspectives to approach this topic from.
+The angles should be:
+1.Technological
+2.Sociological/Cultural
+3.Economic
+4.Psychological (individual well-being)
+5.A contrarian or controversial view.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p7')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 8 — STRATEGIC THINKER -->
+<div class="card">
+    <div class="card-title">The Strategic Frameworks Applicator</div>
+    <div class="card-purpose">Applies business thinking models to analyse real-world problems.</div>
+
+    <div class="card-prompt-box" id="cat12p8">
+I am developing a [product/business idea, e.g., a mobile app for local
+gardeners]. Please perform a SWOT analysis (Strengths,
+Weaknesses, Opportunities, Threats) for this idea. Present the
+output in four distinct lists.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p8')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 9 — PRO/CON ANALYST -->
+<div class="card">
+    <div class="card-title">The Pro-Con Analyst</div>
+    <div class="card-purpose">Provides a balanced decision-making framework for major life choices.</div>
+
+    <div class="card-prompt-box" id="cat12p9">
+I am considering [Decision, e.g., accepting a new job offer, moving to
+a new city, buying a new car].
+Act as a decision-making consultant and create a detailed table of
+pros and cons. Consider factors like:
+Financial implications
+Impact on work-life balance
+Long-term opportunities
+Personal happiness and stress
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p9')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 10 — SECOND BRAIN -->
+<div class="card">
+    <div class="card-title">The Second-Brain Sounding Board</div>
+    <div class="card-purpose">Generates reflective, probing questions to improve thinking & clarity.</div>
+
+    <div class="card-prompt-box" id="cat12p10">
+Act as a critical thinking partner. I am facing a problem: [Describe
+your problem in detail]. Ask me 5 probing questions that will help me
+think through this problem more deeply and identify potential
+solutions I may have overlooked.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p10')">Copy Prompt</button>
+</div>
+
+
+<!-- --------------------- 10 NEW ELITE PROMPTS ---------------------- -->
+
+<!-- CARD 11 — ELITE DECISION SYSTEM -->
+<div class="card">
+    <div class="card-title">High-Performance Decision Model (NEW)</div>
+    <div class="card-purpose">Uses elite mental models to help make world-class decisions.</div>
+
+    <div class="card-prompt-box" id="cat12p11">
+Help me make a high-performance decision using mental models such as:
+- First Principles  
+- Inversion  
+- Expected Value  
+- OODA Loop  
+Apply each model to my situation: [insert decision].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p11')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 12 — ULTRA LEARNING -->
+<div class="card">
+    <div class="card-title">Ultra-Learning Roadmap (NEW)</div>
+    <div class="card-purpose">Creates aggressive learning paths used by elite performers.</div>
+
+    <div class="card-prompt-box" id="cat12p12">
+Create an ultra-learning roadmap to master [skill].  
+Include:
+- benchmark standards  
+- immersion strategies  
+- drills  
+- feedback loops  
+- 30-day, 90-day & 6-month phases  
+This should be intense but achievable.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p12')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 13 — ELON MUSK THINKING -->
+<div class="card">
+    <div class="card-title">First-Principles Problem Solver (NEW)</div>
+    <div class="card-purpose">Breaks massive problems into solvable components like elite innovators.</div>
+
+    <div class="card-prompt-box" id="cat12p13">
+Help me solve this using first-principles thinking: [insert problem].  
+Break it into:
+- fundamental truths  
+- constraints  
+- resources  
+- possible redesigns  
+Then rebuild a solution from scratch.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p13')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 14 — BILLIONAIRE TIME SYSTEM -->
+<div class="card">
+    <div class="card-title">The Billionaire Time Architect (NEW)</div>
+    <div class="card-purpose">Designs a schedule that maximises return on time like top CEOs.</div>
+
+    <div class="card-prompt-box" id="cat12p14">
+Design a weekly schedule for me using elite time-allocation principles:
+- High-ROI time blocks  
+- Delegation  
+- Energy-matching  
+- Deep-work cycles  
+My constraints: [insert constraints].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p14')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 15 — LIFE SYSTEMS DESIGN -->
+<div class="card">
+    <div class="card-title">Design My Life Operating System (NEW)</div>
+    <div class="card-purpose">Maps your long-term life into systems, not goals.</div>
+
+    <div class="card-prompt-box" id="cat12p15">
+Help me design a personal Life Operating System using systems-thinking.  
+Include:
+- identity  
+- values  
+- daily systems  
+- feedback loops  
+- yearly compass  
+My life direction: [insert].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p15')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 16 — ELITE COMMUNICATION -->
+<div class="card">
+    <div class="card-title">Executive Communication Coach (NEW)</div>
+    <div class="card-purpose">Trains you to speak & write like a senior executive.</div>
+
+    <div class="card-prompt-box" id="cat12p16">
+Train me to communicate like a senior executive.  
+Help me improve:
+- clarity  
+- brevity  
+- authority  
+- storytelling  
+Use examples based on my role: [insert role].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p16')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 17 — RESILIENCE & MINDSET -->
+<div class="card">
+    <div class="card-title">Elite Resilience Builder (NEW)</div>
+    <div class="card-purpose">Develops the mindset patterns used by elite performers.</div>
+
+    <div class="card-prompt-box" id="cat12p17">
+Help me build elite resilience.  
+Focus on:
+- cognitive reframing  
+- stress inoculation  
+- identity reinforcement  
+- motivation cycles  
+My challenge: [insert situation].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p17')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 18 — MASTER NEGOTIATOR -->
+<div class="card">
+    <div class="card-title">High-Stakes Negotiation Coach (NEW)</div>
+    <div class="card-purpose">Provides strategies for high-value negotiations.</div>
+
+    <div class="card-prompt-box" id="cat12p18">
+Act as my negotiation strategist.  
+My negotiation: [describe].  
+Provide:
+- BATNA  
+- leverage map  
+- concession strategy  
+- persuasion tactics  
+- final script.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p18')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 19 — FUTURE MAPPING -->
+<div class="card">
+    <div class="card-title">10-Year Vision Architect (NEW)</div>
+    <div class="card-purpose">Builds long-term future scenarios for personal or professional growth.</div>
+
+    <div class="card-prompt-box" id="cat12p19">
+Help me design a 10-year vision.  
+Include:
+- 3 possible future scenarios  
+- risk map  
+- opportunity map  
+- capability building roadmap  
+My starting point: [describe].
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p19')">Copy Prompt</button>
+</div>
+
+
+<!-- CARD 20 — ULTIMATE SELF-MASTERY -->
+<div class="card">
+    <div class="card-title">The Mastery Blueprint (NEW)</div>
+    <div class="card-purpose">Creates a complete mastery plan for any domain.</div>
+
+    <div class="card-prompt-box" id="cat12p20">
+Create a mastery plan for me to become exceptional at: [insert skill].  
+Include:
+- long-term cycles  
+- skill trees  
+- progressive challenges  
+- evaluation milestones  
+- expert habits  
+Use evidence-based skill acquisition.
+    </div>
+
+    <button class="copy-btn" onclick="copyText('cat12p20')">Copy Prompt</button>
+</div>
+
+
+<!-- ADD YOUR OWN -->
+<div class="add-card">
+    <h3>Add Your Own Elite Mastery Prompt</h3>
+    <textarea id="newPrompt12" placeholder="Write your advanced mastery prompt..."></textarea>
+    <button class="save-btn" onclick="copyText('newPrompt12')">Copy My Prompt</button>
+</div>
+
+</div>
+
+</div><!-- end container -->
+
+<script>
+
+/* ------------------------------------------------------
+   THEME ENGINE — ADAPTIVE GRADIENTS
+------------------------------------------------------ */
+
+function setTheme(theme) {
+    let root = document.documentElement;
+
+    if (theme === "blue") {
+        root.style.setProperty("--grad-1-start", "#4c6ef5");
+        root.style.setProperty("--grad-1-end", "#9775fa");
+    }
+
+    if (theme === "teal") {
+        root.style.setProperty("--grad-1-start", "#22b8cf");
+        root.style.setProperty("--grad-1-end", "#3bc9db");
+    }
+
+    if (theme === "sunset") {
+        root.style.setProperty("--grad-1-start", "#f783ac");
+        root.style.setProperty("--grad-1-end", "#feca57");
+    }
+
+    localStorage.setItem("nbTheme", theme);
+}
+
+// Load saved theme
+(function(){
+    let saved = localStorage.getItem("nbTheme");
+    if (saved) setTheme(saved);
+})();
+
+/* ------------------------------------------------------
+   NAVIGATION JUMP
+------------------------------------------------------ */
+
+function scrollToCat(n) {
+    document.getElementById("category" + n).scrollIntoView({ behavior: "smooth" });
+}
+
+/* ------------------------------------------------------
+   ACCORDION BEHAVIOUR — ONLY ONE OPEN AT A TIME
+------------------------------------------------------ */
+
+document.querySelectorAll(".category-header").forEach(header => {
+    header.addEventListener("click", function () {
+        let content = this.nextElementSibling;
+
+        // Close all others
+        document.querySelectorAll(".category-content").forEach(c => c.style.display = "none");
+        document.querySelectorAll(".arrow").forEach(a => a.style.transform = "rotate(0deg)");
+
+        // Open this one
+        content.style.display = "block";
+        this.querySelector(".arrow").style.transform = "rotate(180deg)";
+    });
+});
+
+/* ------------------------------------------------------
+   COPY PROMPT
+------------------------------------------------------ */
+function copyText(id) {
+    let txt = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(txt);
+    alert("Prompt copied!");
+}
+
+</script>
+
+</body>
+</html>

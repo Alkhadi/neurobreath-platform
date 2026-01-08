@@ -8,9 +8,24 @@ import { getDeviceId } from '@/lib/device-id'
 async function fetchWithRetry(url: string, retries = 3, delay = 1000): Promise<Response | null> {
   for (let i = 0; i < retries; i++) {
     try {
-      const response = await fetch(url)
+      const response = await fetch(url, {
+        cache: 'no-store',
+        // Suppress fetch errors in console by handling them gracefully
+        headers: { 'Accept': 'application/json' }
+      })
+      
       if (response?.ok) return response
-    } catch {
+      
+      // Check if DB is unavailable (expected in dev without DB setup)
+      if (response?.status === 500 || response?.status === 503) {
+        const data = await response.json().catch(() => ({}))
+        if (data?.dbUnavailable) {
+          // DB is down - no point retrying
+          return null
+        }
+      }
+    } catch (error) {
+      // Network error or fetch failed - silently handle
       if (i < retries - 1) {
         await new Promise(r => setTimeout(r, delay * Math.pow(2, i)))
       }
@@ -21,23 +36,39 @@ async function fetchWithRetry(url: string, retries = 3, delay = 1000): Promise<R
 
 export default function QuestPassPill() {
   const [questData, setQuestData] = useState({ quests: 0, points: 0 })
+  const [isDbAvailable, setIsDbAvailable] = useState(true)
 
   const fetchQuestData = useCallback(async () => {
+    // Skip fetching if DB is known to be unavailable
+    if (!isDbAvailable) return
+    
     try {
       const deviceId = getDeviceId()
       const response = await fetchWithRetry(`/api/quests/today?deviceId=${deviceId}`)
-      if (response?.ok) {
+      
+      if (response) {
         const data = await response.json()
+        
+        // Check if DB is unavailable
+        if (data?.dbUnavailable) {
+          setIsDbAvailable(false)
+          return
+        }
+        
         setQuestData({
           quests: data?.completedQuests ?? 0,
           points: data?.totalPoints ?? 0
         })
+        setIsDbAvailable(true)
       }
     } catch (error) {
       // Silently fail - the UI will show default values
-      console.debug('Quest data unavailable:', error)
+      // Only log in development for debugging
+      if (process.env.NODE_ENV === 'development') {
+        console.debug('[QuestPassPill] Quest data unavailable (this is normal without a database)')
+      }
     }
-  }, [])
+  }, [isDbAvailable])
 
   useEffect(() => {
     fetchQuestData()

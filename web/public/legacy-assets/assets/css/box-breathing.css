@@ -1,0 +1,317 @@
+/* Box breathing page-specific layout and focus-mode rules.
+   Extracted from inline <style> in box-breathing.html to satisfy no-inline-styles. */
+
+/* Core page structure */
+.page-main {
+  background: var(--color-cream);
+  padding: var(--spacing-2xl) 0;
+  min-height: 100vh;
+}
+
+.page-container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.card {
+  background: var(--color-white);
+  border: 1px solid var(--color-sage-light);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+  box-shadow: var(--shadow-medium);
+  position: relative;
+  z-index: 1;
+  display: block;
+  overflow: visible;
+  width: 100%;
+  clear: both;
+  margin-bottom: var(--spacing-lg);
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+/* Force full width - break out of any grid layout */
+.page-container > section.card {
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Ensure cards are not inside grid containers */
+section.card {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Utility classes */
+.flex {
+  display: flex;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.muted {
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+}
+
+.small-note {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* Screen reader only class */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Footer margins */
+.site-footer .ft-nav-wrapper {
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
+.site-footer .inner {
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
+.ft-nav-brand {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.ft-bottom {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.nb-tts-test {
+  margin-top: var(--spacing-xs);
+}
+
+/* Session circle UI */
+.orb-wrap {
+  position: relative;
+  width: min(320px, 78vw);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.orb-wrap .radial {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.orb-wrap .ring {
+  fill: none;
+  stroke-width: 7;
+}
+
+.orb-wrap .ring.base {
+  stroke: var(--color-sage-light);
+  opacity: 0.75;
+}
+
+.orb-wrap .ring.progress {
+  stroke: var(--color-sage-dark);
+  stroke-linecap: round;
+}
+
+.orb {
+  width: 72%;
+  height: 72%;
+  border-radius: 999px;
+  background: var(--color-white);
+  border: 1px solid var(--color-sage-light);
+  box-shadow: var(--shadow-medium);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: var(--spacing-lg);
+  transform: scale(1);
+  transition: transform var(--transition-slow);
+}
+
+.orb.inhale {
+  transform: scale(1.08);
+}
+
+.orb.hold {
+  transform: scale(1.04);
+}
+
+.orb.exhale {
+  transform: scale(0.92);
+}
+
+body.rm .orb {
+  transition: none;
+}
+
+.phase {
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+}
+
+.count {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+/* Focus mode hides site chrome during a session */
+body.focus-mode header.site-header,
+body.focus-mode footer.site-footer {
+  display: none !important;
+}
+
+/* While a session is running, show only the session screen */
+body.nb-session-running {
+  overflow: hidden;
+}
+
+body.nb-session-running .site-header,
+body.nb-session-running .site-footer,
+body.nb-session-running .skip-link,
+body.nb-session-running #top {
+  display: none !important;
+}
+
+body.nb-session-running #vp-tech-quick,
+body.nb-session-running #technique-instruction,
+body.nb-session-running #breathing-game-section,
+body.nb-session-running #vp-tech-progress,
+body.nb-session-running .setup,
+body.nb-session-running #inst,
+body.nb-session-running #done {
+  display: none !important;
+}
+
+/* If structure changes, keep this robust: show only the session card within the page content */
+body.nb-session-running .page-content > :not(#session) {
+  display: none !important;
+}
+
+/* Clean wrapper chrome during session-only view */
+body.nb-session-running .section-inner > .card {
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+body.nb-session-running .section-inner > .card > h1 {
+  display: none !important;
+}
+
+/* Focus mode should be a true "session-only" screen */
+body.focus-mode .page-main {
+  padding: 0 !important;
+}
+
+body.focus-mode #vp-tech-quick,
+body.focus-mode #technique-instruction,
+body.focus-mode #breathing-game-section,
+body.focus-mode #vp-tech-progress {
+  display: none !important;
+}
+
+/* The page has an outer wrapper card; neutralize it in focus mode */
+body.focus-mode .section-inner > .card {
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+body.focus-mode .section-inner > .card > h1 {
+  display: none !important;
+}
+
+body.focus-mode #session.card.session {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Session focus screen (distraction-free fullscreen) */
+body.nb-focus-screen #session.card.session.is-focus {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  margin: 0;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  padding:
+    calc(var(--space-lg) + env(safe-area-inset-top))
+    calc(var(--space-lg) + env(safe-area-inset-right))
+    calc(var(--space-lg) + env(safe-area-inset-bottom))
+    calc(var(--space-lg) + env(safe-area-inset-left));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+body.nb-focus-screen #session.card.session.is-focus > h2 {
+  display: none;
+}
+
+body.nb-focus-screen #session.card.session.is-focus .orb-wrap {
+  width: min(420px, 86vw);
+}
+
+body.nb-focus-screen #session.card.session.is-focus .btn-row {
+  width: 100%;
+  max-width: 560px;
+  margin-top: var(--space-lg);
+  justify-content: center;
+}
+
+.nb-session-focus-controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(35%, -35%);
+  z-index: 3;
+  display: flex;
+  gap: var(--space-sm);
+}

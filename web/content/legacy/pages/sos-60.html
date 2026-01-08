@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+
+  <!-- Brand: NeuroBreath -->
+  <title>Wellbeing · NeuroBreath</title>
+  <meta name="description" content="NeuroBreath provides clinically referenced, neuro-inclusive breathing tools, guides and timers for calm, sleep, focus and emotional regulation.">
+
+  <!-- Social (Open Graph / Twitter) -->
+  <meta property="og:site_name" content="NeuroBreath">
+  <meta property="og:title" content="Wellbeing · NeuroBreath">
+  <meta property="og:description" content="NeuroBreath provides clinically referenced, neuro-inclusive breathing tools, guides and timers for calm, sleep, focus and emotional regulation.">
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://neurobreath.co.uk/blog.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Standard favicon -->
+  <link rel="icon" type="image/x-icon" href="assets/icons/neurobreath-favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/neurobreath-logo-square-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/neurobreath-logo-square-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/neurobreath-logo-square-180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/neurobreath-logo-square-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icons/neurobreath-logo-square-512.png">
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/site.css" />
+  <script src="assets/js/voice-preferences.js" defer></script>
+  <script src="assets/js/site.js" defer></script>
+    <style>
+    /* Core page structure */
+    .page-main {
+      background: var(--color-cream);
+      padding: var(--spacing-2xl) 0;
+      min-height: 100vh;
+    }
+    
+    .page-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-lg);
+    }
+    
+    .card {
+      background: var(--color-white);
+      border: 1px solid var(--color-sage-light);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-xl);
+      box-shadow: var(--shadow-medium);
+      position: relative;
+      z-index: 1;
+      display: block;
+      overflow: visible;
+      width: 100%;
+      clear: both;
+      margin-bottom: var(--spacing-lg);
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+    
+    /* Force full width - break out of any grid layout */
+    .page-container > section.card {
+      grid-column: 1 / -1;
+      width: 100%;
+      max-width: 100%;
+    }
+    
+    /* Ensure cards are not inside grid containers */
+    section.card {
+      position: relative;
+      isolation: isolate;
+    }
+    
+    /* Utility classes */
+    .flex {
+      display: flex;
+    }
+    
+    .justify-end {
+      justify-content: flex-end;
+    }
+    
+    .justify-between {
+      justify-content: space-between;
+    }
+    
+    .align-center {
+      align-items: center;
+    }
+    
+    .muted {
+      color: var(--color-text-muted);
+      font-size: 0.9375rem;
+    }
+    
+    .small-note {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      font-style: italic;
+    }
+    
+    /* Footer margins */
+    .site-footer .ft-nav-wrapper {
+      margin-left: 2%;
+      margin-right: 2%;
+    }
+    
+    .site-footer .inner {
+      margin-left: 2%;
+      margin-right: 2%;
+    }
+    
+    .ft-nav-brand {
+      margin-left: 0;
+      margin-right: 0;
+    }
+    
+    .ft-bottom {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  </style>
+</head>
+<body data-page-id="sos_60" >
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<div id="top"></div>
+<header class="site-header">
+  <div class="container navbar">
+    <a id="brandLink" class="brand" href="index.html">
+      <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo" class="logo" /><span class="brand-text">NeuroBreath</span>
+    </a>
+    <nav class="main-nav" id="mainNav" role="navigation" aria-label="Primary">
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Conditions ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Neurodevelopmental</div>
+          <a href="autism.html" data-href="autism.html">Autism</a>
+          <a href="autism-parent.html" data-href="autism-parent.html">Autism Parent</a>
+          <a href="adhd.html" data-href="adhd.html">ADHD</a>
+          <a href="dyslexia-reading-training.html" data-href="dyslexia-reading-training.html">Dyslexia</a>
+          <div class="menu-label" aria-hidden="true">Mental Health</div>
+          <a href="anxiety.html" data-href="anxiety.html">Anxiety</a>
+          <a href="depression.html" data-href="depression.html">Depression</a>
+          <a href="stress.html" data-href="stress.html">Stress</a>
+          <a href="sleep.html" data-href="sleep.html">Sleep</a>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Breathing &amp; Focus ▾</button>
+        <div class="submenu">
+          <div class="menu-label" aria-hidden="true">Guides</div>
+          <a href="breath.html" data-href="breath.html">Breath (how-to)</a>
+          <a href="focus.html" data-href="focus.html">Focus</a>
+          <a href="mindfulness.html" data-href="mindfulness.html">Mindfulness</a>
+          <div class="menu-label" aria-hidden="true">Techniques</div>
+          <a href="sos-60.html" data-href="sos-60.html">🆘 60-second SOS</a>
+          <a href="box-breathing.html" data-href="box-breathing.html">🟩 Box Breathing</a>
+          <a href="4-7-8-breathing.html" data-href="4-7-8-breathing.html">🟦 4-7-8 Breathing</a>
+          <a href="coherent-5-5.html" data-href="coherent-5-5.html">🟪 Coherent 5-5</a>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">Tools ▾</button>
+        <div class="submenu">
+          <a href="sleep-tools.html" data-href="sleep-tools.html">Sleep Tools</a>
+          <a href="breath-tools.html" data-href="breath-tools.html">Breath Tools</a>
+          <a href="mood-tools.html" data-href="mood-tools.html">Mood Tools</a>
+          <a href="adhd-tools.html" data-href="adhd-tools.html">ADHD Tools</a>
+          <a href="autism-tools.html" data-href="autism-tools.html">Autism Tools</a>
+          <a href="anxiety-tools.html" data-href="anxiety-tools.html">Anxiety Tools</a>
+          <a href="stress-tools.html" data-href="stress-tools.html">Stress Tools</a>
+          <a href="focus-garden.html" data-href="focus-garden.html">🌱 Focus Training</a>
+          <div class="menu-label" aria-hidden="true">Symptom Guides</div>
+          <a href="stress-anxiety.html" data-href="stress-anxiety.html">Stress &amp; General Anxiety</a>
+          <a href="panic-symptoms.html" data-href="panic-symptoms.html">Panic Symptoms</a>
+          <a href="sleep-onset-insomnia.html" data-href="sleep-onset-insomnia.html">Sleep-Onset Insomnia</a>
+          <a href="focus-test-anxiety.html" data-href="focus-test-anxiety.html">Focus &amp; Test Anxiety</a>
+          <a href="ptsd-regulation.html" data-href="ptsd-regulation.html">PTSD Regulation*</a>
+          <a href="low-mood-burnout.html" data-href="low-mood-burnout.html">Low Mood &amp; Burnout</a>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button type="button" class="menu-toggle" aria-expanded="false">About ▾</button>
+        <div class="submenu">
+          <a href="about.html" data-href="about.html">About</a>
+          <a href="aims-objectives.html" data-href="aims-objectives.html">Aims &amp; Stories</a>
+          <a href="coffee.html" data-href="coffee.html">Support Us</a>
+          <a href="contact.html" data-href="contact.html">Contact</a>
+        </div>
+      </div>
+    </nav>
+    <button type="button" id="navToggle" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="mainNav">☰</button>
+  </div>
+</header>
+
+<main id="main-content" class="page-main">
+  <div class="page-container">
+
+  <section class="section">
+    <div class="section-inner">
+    <div class="section-inner">
+
+<section class="container">
+    <div class="card">
+      <h1>Wellbeing</h1>
+            <div class="page-content">
+<!-- Header preserved exactly as provided -->
+  
+
+  
+
+  
+
+<!-- mshare:value-pack:v1:start -->
+
+<section class="card mshare-value-pack" id="vp-sos-info">
+  <h2>About SOS-60</h2>
+  
+  <p class="muted">A single, quiet minute with minimal UI. Start/stop any time. If you feel worse, stop and use UK crisis links.</p>
+  <div class="grid cols-3">
+    <div><a class="btn" href="https://www.samaritans.org/">Samaritans 116 123</a></div>
+    <div><a class="btn" href="https://111.nhs.uk/">NHS 111 Online</a></div>
+    <div><a class="btn" href="https://giveusashout.org/">Shout 85258</a></div>
+  </div>
+
+</section>
+<!-- mshare:value-pack:v1:end -->
+
+<section class="card instruction-card" id="technique-instruction">
+  <header class="instruction-head">
+    <h2>How to use this breathing technique</h2>
+    <p class="muted">Educational information only; not medical advice.</p>
+  </header>
+  <p class="instruction-highlight badge">Practice anchor: 10–20 min per day in 2–4 gentle bouts (~4.5–6 breaths/min). Pair a 60-second SOS before or after stressful moments.</p>
+  <div class="instruction-quick">
+    <h3>Quick start (90 seconds)</h3>
+    <ol class="instruction-list">
+      <li>Sit or stand comfortably; soften shoulders and jaw.</li>
+      <li>Inhale quietly through the nose, exhale slightly longer.</li>
+      <li>Keep rhythm light—aim around 4.5–6 breaths each minute.</li>
+    </ol>
+    <div class="actions">
+      <a class="btn btn-success" href="sos-60.html?minutes=1" data-href="sos-60.html?minutes=1">▶ SOS 60-second reset</a>
+      <a class="btn" href="breath.html" data-href="breath.html">Breath basics</a>
+    </div>
+  </div>
+  <div class="instruction-grid">
+    <div class="instruction-tile">
+      <h3>Daily dose ideas</h3>
+      <ul>
+        <li><strong>Minimum:</strong> 2–5 min once or twice daily + SOS before/after stress.</li>
+        <li><strong>Standard:</strong> 10 min/day (for example, 2×5 min) on most days.</li>
+        <li><strong>Training:</strong> Up to 20 min/day for 4–8 weeks, then maintain.</li>
+      </ul>
+    </div>
+    <div class="instruction-tile">
+      <h3>Neurodivergent tips</h3>
+      <ul>
+        <li><strong>ADHD:</strong> stack short, predictable bouts; pair with visual timers.</li>
+        <li><strong>Autism:</strong> offer silent/low-stimulus modes and steady counts.</li>
+        <li>Allow visual pacing around 4.5–7 breaths/min when preferred.</li>
+      </ul>
+    </div>
+  </div>
+  <details class="instruction-details">
+    <summary>More daily plans, safety, and rationale</summary>
+    <div class="instruction-details-grid">
+      <div class="instruction-tile">
+        <h3>Where it fits in the day</h3>
+        <ul>
+          <li><strong>Before a demand:</strong> run 60–90 s to settle.</li>
+          <li><strong>Breaks:</strong> 3–5 min mid-morning or afternoon.</li>
+          <li><strong>Wind-down:</strong> 5–8 min before bed.</li>
+        </ul>
+        <h4>Example plan</h4>
+        <ul>
+          <li><strong>Busy day:</strong> SOS on waking → 5 min mid-morning → 1 min pre-meeting → 5–8 min at night.</li>
+          <li><strong>Training phase:</strong> 10 min morning + 10 min evening.</li>
+        </ul>
+      </div>
+      <div class="instruction-tile">
+        <h3>Safety &amp; adaptations</h3>
+        <ul>
+          <li>Stop if dizzy, air-hungry, or tingling; resume normal breathing.</li>
+          <li>Keep breathing gentle; avoid straining holds or forced exhales.</li>
+          <li>Check with a clinician if you have asthma, POTS, cardiac/respiratory conditions, are pregnant, or manage panic hyperventilation.</li>
+        </ul>
+        <p class="muted">Adjust intensity to comfort; aim for calm regulation, not performance.</p>
+      </div>
+      <div class="instruction-tile instruction-evidence">
+        <h3>Evidence &amp; rationale</h3>
+        <ul>
+          <li>NHS practice guides often suggest ~10 minutes twice daily for self-regulation skills.</li>
+          <li>HRV-biofeedback programmes typically use ~20 minutes per day in short blocks during training.</li>
+          <li>Resonance/coherent breathing usually lands around 4.5–7 breaths/min for safe autonomic down-regulation.</li>
+        </ul>
+        <h4>Trusted sources</h4>
+        <ul>
+          <li><a href="https://www.cuh.nhs.uk/" target="_blank" rel="noopener">Cambridge University Hospitals NHS Foundation Trust</a></li>
+          <li><a href="https://www.nhs.uk/" target="_blank" rel="noopener">NHS — breathing &amp; self-regulation overviews</a></li>
+          <li><a href="https://www.frontiersin.org/" target="_blank" rel="noopener">Frontiers — HRV-biofeedback reviews</a></li>
+        </ul>
+      </div>
+    </div>
+  </details>
+</section>
+
+    <div class="card setup">
+      <h1>60-second SOS — Setup</h1>
+      <p class="muted">One-minute reset: gentle <b>inhale 4</b> → <b>exhale 4</b> to calm.</p>
+      <div class="grid cols-2">
+        <div class="tile"><label for="inS">Inhale (s)</label><input id="inS" type="number" min="1" max="20" value="4" /></div>
+        <div class="tile"><label for="h1S">Hold (s)</label><input id="h1S" type="number" min="0" max="20" value="0" /></div>
+        <div class="tile"><label for="outS">Exhale (s)</label><input id="outS" type="number" min="1" max="30" value="4" /></div>
+        <div class="tile"><label for="h2S">Hold (after exhale) (s)</label><input id="h2S" type="number" min="0" max="20" value="0" /></div>
+      </div>
+      <h2>Quick Session</h2>
+      <div class="btn-row">
+        <label class="visually-hidden" for="qsPreset">Quick session preset</label>
+        <select id="qsPreset">
+          <option value="4,0,4,0,1,6.0,off,cosmic,0.22,auto,on">1 min reset</option>
+          <option value="4,0,4,0,3,6.0,off,rain,0.24,auto,on">3 min · rain ambience</option>
+          <option value="4,0,6,0,1,5.0,off,cosmic,0.20,auto,on">1 min · longer exhale</option>
+        </select>
+        <button id="qsStart" class="btn btn-success" type="button">▶ Start</button>
+        <button id="qsStop" class="btn" type="button">■ Stop</button>
+      </div>
+      <div class="grid cols-2 ui">
+        <div class="kv3">
+          <div class="tile"><label for="minutes">Minutes</label>
+            <select id="minutes">
+              <option value="1" selected>1 minute</option>
+              <option value="3">3 minutes</option>
+              <option value="5">5 minutes</option>
+            </select>
+          </div>
+          <div class="tile"><label for="bpm">Breaths/min</label><input id="bpm" type="number" min="4" max="8" step="0.1" value="6.0" /></div>
+          <div class="tile"><label for="vib">Haptics</label>
+            <select id="vib">
+              <option value="off">Off</option>
+              <option value="on" selected>On</option>
+            </select>
+          </div>
+          <div class="tile"><label for="bg">Ambience</label>
+            <select id="bg">
+              <option value="none">None</option>
+              <option value="cosmic" selected>Cosmic Waves</option>
+              <option value="rain">Soft Rain</option>
+            </select>
+          </div>
+          <div class="tile"><label for="bgv">Ambience volume</label><input id="bgv" type="range" min="0" max="1" step="0.01" value="0.22" /></div>
+          <div class="tile"><label for="rm">Reduced motion</label>
+            <select id="rm">
+              <option value="auto" selected>Auto</option>
+              <option value="on">Force reduce</option>
+              <option value="off">Full motion</option>
+            </select>
+          </div>
+          <div class="tile"><label for="focus">Focus mode</label>
+            <select id="focus">
+              <option value="off">Off</option>
+              <option value="on" selected>On</option>
+            </select>
+          </div>
+        </div>
+        <div class="tile hint">Tip: Keep it soft and effortless. Tap orb or press <b>Space</b> to pause/resume.</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-success" id="startBtn" type="button">Start</button>
+        <button class="btn" id="instBtn" type="button">Instructions</button>
+        <button class="btn" id="resetBtn" type="button">Stop</button>
+      </div>
+    </div>
+
+    <div id="inst" class="card hidden">
+      <h2>How to Practice</h2>
+      <ol>
+        <li>Ground your feet; soften jaw and brow.</li>
+        <li>In 4 seconds through the nose; out 4 seconds through the mouth.</li>
+        <li>One minute is enough to reset. Repeat if needed.</li>
+      </ol>
+      <div class="btn-row">
+        <button class="btn btn-success" id="beginFromInst" type="button">Begin Session</button>
+        <button class="btn" id="backSetup" type="button">Back to Setup</button>
+      </div>
+    </div>
+
+    <div id="session" class="card session hidden">
+      <h2>Session</h2>
+      <div class="orb-wrap" id="tapArea" aria-live="polite" aria-atomic="true" title="Tap to pause/resume">
+        <svg class="radial" viewBox="0 0 100 100" aria-hidden="true">
+          <circle class="ring base" cx="50" cy="50" r="42"></circle>
+          <circle id="progressRing" class="ring progress" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="264"></circle>
+        </svg>
+        <div id="orb" class="orb inhale">
+          <div>
+            <div id="phase" class="phase">Inhale</div>
+            <div id="count" class="count">4</div>
+            <div class="mini"><span id="idx">1</span>/<span id="total">0</span> breaths</div>
+          </div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="pauseBtn" type="button">Pause</button>
+        <button class="btn" id="adjustBtn" type="button">Adjust
+          Settings</button>
+        <button class="btn" id="hardStopBtn" type="button">Stop</button>
+      </div>
+    </div>
+
+    <div id="done" class="card hidden">
+      <h2>Session Complete</h2>
+      <div class="grid cols-3">
+        <div class="tile"><label>Total Minutes</label>
+          <div id="doneMin" class="val">0</div>
+        </div>
+        <div class="tile"><label>Day Streak</label>
+          <div id="doneStreak" class="val">0</div>
+        </div>
+        <div class="tile"><label>Total Breaths</label>
+          <div id="doneBreaths" class="val">0</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-success" id="againBtn" type="button">Again</button>
+        <a class="btn" data-href="index.html" href="index.html">Back to Hub</a>
+      </div>
+    </div>
+
+    <div id="progressCardAnchor" class="card-anchor" aria-hidden="true"></div>
+  
+    </div>
+  </section>
+    </div>
+  </section>
+
+  </div>
+</main>
+
+<footer class="site-footer" id="siteFooter">
+  <!-- Footer navigation - Full Width -->
+  <div class="ft-nav-wrapper">
+    <div class="ft-nav-inner">
+      <!-- Brand + Support in Navigation Area -->
+      <div class="ft-nav-brand">
+        <a class="ft-logo" href="index.html" data-href="index.html" aria-label="NeuroBreath home">
+          <img src="assets/icons/neurobreath-logo-square-64.png" alt="NeuroBreath Logo" />
+        </a>
+        <a href="coffee.html" class="btn" data-href="coffee.html">☕ Support Us</a>
+      </div>
+      <nav class="ft-nav" aria-label="Footer">
+        <details class="ft-group">
+          <summary>Conditions <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="autism.html" data-href="autism.html">Autism</a> · <a href="autism-parent.html" data-href="autism-parent.html">Autism Parent</a> · <a href="adhd.html" data-href="adhd.html">ADHD</a> · <a href="dyslexia-reading-training.html" data-href="dyslexia-reading-training.html">Dyslexia</a></p>
+            <p><a href="anxiety.html" data-href="anxiety.html">Anxiety</a> · <a href="depression.html" data-href="depression.html">Depression</a> · <a href="stress.html" data-href="stress.html">Stress</a> · <a href="sleep.html" data-href="sleep.html">Sleep</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Breathing &amp; Focus <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="breath.html" data-href="breath.html">Breath (how-to)</a> · <a href="focus.html" data-href="focus.html">Focus</a> · <a href="mindfulness.html" data-href="mindfulness.html">Mindfulness</a></p>
+            <p><a href="sos-60.html" data-href="sos-60.html">60-second Reset</a> · <a href="box-breathing.html" data-href="box-breathing.html">Box Breathing</a> · <a href="4-7-8-breathing.html" data-href="4-7-8-breathing.html">4-7-8 Breathing</a> · <a href="coherent-5-5.html" data-href="coherent-5-5.html">Coherent 5-5</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Toolkits <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="sleep-tools.html" data-href="sleep-tools.html">Sleep Tools</a> · <a href="breath-tools.html" data-href="breath-tools.html">Breath Tools</a> · <a href="mood-tools.html" data-href="mood-tools.html">Mood Tools</a> · <a href="adhd-tools.html" data-href="adhd-tools.html">ADHD Tools</a> · <a href="autism-tools.html" data-href="autism-tools.html">Autism Tools</a> · <a href="anxiety-tools.html" data-href="anxiety-tools.html">Anxiety Tools</a> · <a href="stress-tools.html" data-href="stress-tools.html">Stress Tools</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>Symptom Guides <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="stress-anxiety.html" data-href="stress-anxiety.html">Stress &amp; General Anxiety</a> · <a href="panic-symptoms.html" data-href="panic-symptoms.html">Panic Symptoms</a> · <a href="sleep-onset-insomnia.html" data-href="sleep-onset-insomnia.html">Sleep-Onset Insomnia</a></p>
+            <p><a href="focus-test-anxiety.html" data-href="focus-test-anxiety.html">Focus &amp; Test Anxiety</a> · <a href="ptsd-regulation.html" data-href="ptsd-regulation.html">PTSD Regulation*</a> · <a href="low-mood-burnout.html" data-href="low-mood-burnout.html">Low Mood &amp; Burnout</a></p>
+          </div>
+        </details>
+        <details class="ft-group">
+          <summary>About <span aria-hidden="true">▾</span></summary>
+          <div class="links">
+            <p><a href="about.html" data-href="about.html">About</a> · <a href="aims-objectives.html" data-href="aims-objectives.html">Aims &amp; Stories</a> · <a href="coffee.html" data-href="coffee.html">Support Us</a> · <a href="contact.html" data-href="contact.html">Contact</a></p>
+          </div>
+        </details>
+      </nav>
+    </div>
+  </div>
+
+  <div class="inner">
+    <div class="ft-bottom">
+      <div class="ft-bottom__copy" aria-label="Site notice">
+        <p class="muted ft-bottom__text">Educational information only. Not medical advice. NeuroBreath is a free resource by NeuroBreath. © <span id="yearFooter"></span> NeuroBreath. All rights reserved.</p>
+      </div>
+      <button type="button" class="btn back-to-top-btn" data-action="back-to-top" aria-label="Back to top">
+        <span class="back-to-top__label">Back to top</span>
+        <span class="back-to-top__icon" aria-hidden="true">↑</span>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/app.js" defer></script>
+<script>
+  // Footer year and back to top
+  document.addEventListener('DOMContentLoaded', function() {
+    const yearFooter = document.getElementById('yearFooter');
+    if (yearFooter) {
+      yearFooter.textContent = new Date().getFullYear();
+    }
+    
+    const backToTopBtn = document.querySelector('[data-action="back-to-top"]');
+    if (backToTopBtn) {
+      backToTopBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const topElement = document.getElementById('top') || document.body;
+        try {
+          topElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } catch {
+          location.hash = '#top';
+        }
+      });
+    }
+  });
+</script>
+</body>
+</html>
+

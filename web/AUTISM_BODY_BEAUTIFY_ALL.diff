@@ -1,0 +1,2214 @@
+diff --git a/web/app/autism/page.tsx b/web/app/autism/page.tsx
+index 8380858..1796b94 100644
+--- a/web/app/autism/page.tsx
++++ b/web/app/autism/page.tsx
+@@ -1,77 +1,150 @@
++import { AudienceSwitcher } from '@/components/autism/audience-switcher'
++import { CountrySwitcher } from '@/components/autism/country-switcher'
++import { HeroSection } from '@/components/autism/hero-section'
++import { TodaysPlanWizard } from '@/components/autism/todays-plan-wizard'
++import { SkillsLibrary } from '@/components/autism/skills-library'
++import { QuestsSection } from '@/components/autism/quests-section'
++import { CalmToolkit } from '@/components/autism/calm-toolkit'
++import { ProgressDashboard } from '@/components/autism/progress-dashboard'
++import { EvidenceUpdates } from '@/components/autism/evidence-updates'
++import { CrisisSupport } from '@/components/autism/crisis-support'
++import { PathwaysSupport } from '@/components/autism/pathways-support'
++import { PDFToolkit } from '@/components/autism/pdf-toolkit'
++import { ReferencesSection } from '@/components/autism/references-section'
+ import Link from 'next/link'
+ import { Button } from '@/components/ui/button'
+ import { ArrowLeft } from 'lucide-react'
+ 
+-export default function AutismPage() {
++export const metadata = {
++  title: 'Autism Support Hub | Evidence-Based Strategies & Tools | NeuroBreath',
++  description: 'Comprehensive autism support for teachers, parents, autistic individuals, and employers. Evidence-based strategies, interactive tools, progress tracking, and resources from NICE, NHS, CDC & peer-reviewed research.',
++  keywords: 'autism support, autism strategies, visual schedules, PECS, AAC, sensory support, calm corners, autism school, autism workplace, autism UK, autism US, SEND, IEP',
++  openGraph: {
++    title: 'Autism Support Hub | NeuroBreath',
++    description: 'Evidence-based autism support strategies and tools for UK, US & EU',
++    type: 'website'
++  }
++}
++
++export default function AutismHubPage() {
+   return (
+-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-12">
+-      <div className="container max-w-4xl mx-auto px-4">
+-        <Button asChild variant="ghost" className="mb-6">
+-          <Link href="/"><ArrowLeft className="w-4 h-4 mr-2" /> Back to Home</Link>
+-        </Button>
+-
+-        <div className="bg-white rounded-2xl p-8 shadow-xl mb-8">
+-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Breathing Tools for Autism</h1>
+-          <p className="text-lg text-gray-600 mb-6">
+-            Breathing techniques adapted for autistic individuals, with clear patterns, predictable timing, and sensory-friendly guidance.
+-          </p>
++    <div className="min-h-screen bg-white">
++      {/* Back Navigation */}
++      <div className="bg-white border-b">
++        <div className="container max-w-6xl mx-auto px-4 py-4">
++          <Button variant="ghost" size="sm" asChild>
++            <Link href="/">
++              <ArrowLeft className="w-4 h-4 mr-2" />
++              Back to Home
++            </Link>
++          </Button>
++        </div>
++      </div>
++
++      {/* Sticky Switchers */}
++      <div className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b shadow-sm">
++        <div className="container max-w-6xl mx-auto px-4 py-4">
++          <div className="grid md:grid-cols-2 gap-4">
++            <AudienceSwitcher />
++            <CountrySwitcher />
++          </div>
++        </div>
++      </div>
++
++      {/* Hero */}
++      <HeroSection />
++
++      <main>
++        {/* Crisis Support (High visibility) */}
++        <CrisisSupport />
++
++        {/* Today's Plan Wizard */}
++        <TodaysPlanWizard />
++
++        {/* Skills Library */}
++        <SkillsLibrary />
++
++        {/* Quests/Games */}
++        <QuestsSection />
++
++        {/* Calm Toolkit */}
++        <CalmToolkit />
+ 
+-          <div className="prose max-w-none">
+-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Why Breathing Matters</h2>
+-            <p className="text-gray-700 mb-4">
+-              For autistic individuals, breathing exercises can help manage sensory overload, reduce anxiety, and create predictable routines for emotional regulation. 
+-              The structured patterns provide a clear framework that works with autistic cognitive strengths.
+-            </p>
+-
+-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Recommended Techniques</h2>
+-            <div className="space-y-4">
+-              <div className="bg-purple-50 rounded-lg p-6">
+-                <h3 className="text-xl font-semibold text-gray-900 mb-2">🟩 Box Breathing (4-4-4-4)</h3>
+-                <p className="text-gray-700 mb-3">
+-                  The equal pattern provides clear structure and predictability. Visual cues help maintain attention through each phase.
+-                </p>
+-                <Button asChild size="sm">
+-                  <Link href="/techniques/box-breathing">Try Box Breathing</Link>
+-                </Button>
+-              </div>
+-
+-              <div className="bg-blue-50 rounded-lg p-6">
+-                <h3 className="text-xl font-semibold text-gray-900 mb-2">🆘 60-second SOS Reset</h3>
+-                <p className="text-gray-700 mb-3">
+-                  Quick intervention for meltdown prevention or sensory overload. One minute of structured breathing to restore calm.
+-                </p>
+-                <Button asChild size="sm">
+-                  <Link href="/techniques/sos">Try SOS Reset</Link>
+-                </Button>
+-              </div>
++        {/* Progress Dashboard */}
++        <ProgressDashboard />
++
++        {/* Evidence Updates */}
++        <EvidenceUpdates />
++
++        {/* Pathways & Support */}
++        <PathwaysSupport />
++
++        {/* PDF Toolkits */}
++        <PDFToolkit />
++
++      {/* Internal Links to Other Pages */}
++        <section className="scroll-mt-24 py-16 md:py-20 bg-gradient-to-br from-blue-50 to-purple-50">
++          <div className="container max-w-6xl mx-auto px-4">
++            <div className="mb-8 flex flex-col gap-2">
++              <p className="text-sm font-medium text-blue-700">Explore</p>
++              <h2 className="text-3xl font-bold text-gray-900">Related NeuroBreath tools</h2>
++              <p className="text-gray-600">Evidence-aware support across breathing, focus, and learning.</p>
+             </div>
+ 
+-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Sensory Considerations</h2>
+-            <ul className="list-disc pl-6 space-y-2 text-gray-700">
+-              <li>Visual timers and progress indicators help maintain focus</li>
+-              <li>Optional voice guidance can be adjusted or turned off</li>
+-              <li>No sudden sounds or flashing animations</li>
+-              <li>Clear, consistent patterns reduce cognitive load</li>
+-              <li>Practice in a quiet, low-stimulation environment</li>
+-            </ul>
+-
+-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Building a Routine</h2>
+-            <p className="text-gray-700">
+-              Start with 1-minute sessions and gradually increase. Consistency is more important than duration. 
+-              Link breathing practice to existing routines (morning, before bed, after school) to build lasting habits.
+-            </p>
++            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
++              <Link href="/blog" className="group">
++                <div className="bg-white/80 backdrop-blur p-6 rounded-xl shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 border border-transparent group-hover:border-blue-600">
++                  <div className="text-4xl mb-3">🤖</div>
++                  <h3 className="font-semibold text-gray-900 mb-2">AI Coach</h3>
++                  <p className="text-sm text-gray-600">Ask evidence-based questions</p>
++                </div>
++              </Link>
++
++              <Link href="/breathing/training/focus-garden" className="group">
++                <div className="bg-white/80 backdrop-blur p-6 rounded-xl shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 border border-transparent group-hover:border-green-600">
++                  <div className="text-4xl mb-3">🌱</div>
++                  <h3 className="font-semibold text-gray-900 mb-2">Focus Garden</h3>
++                  <p className="text-sm text-gray-600">Neurodivergent focus training</p>
++                </div>
++              </Link>
++
++              <Link href="/tools/dyslexia-reading-training" className="group">
++                <div className="bg-white/80 backdrop-blur p-6 rounded-xl shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 border border-transparent group-hover:border-purple-600">
++                  <div className="text-4xl mb-3">📚</div>
++                  <h3 className="font-semibold text-gray-900 mb-2">Dyslexia Tools</h3>
++                  <p className="text-sm text-gray-600">Reading & phonics support</p>
++                </div>
++              </Link>
++
++              <Link href="/techniques/box-breathing" className="group">
++                <div className="bg-white/80 backdrop-blur p-6 rounded-xl shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 border border-transparent group-hover:border-orange-600">
++                  <div className="text-4xl mb-3">🫁</div>
++                  <h3 className="font-semibold text-gray-900 mb-2">Breathing Tools</h3>
++                  <p className="text-sm text-gray-600">Box, SOS, Coherent 5-5</p>
++                </div>
++              </Link>
++            </div>
+           </div>
+-        </div>
++        </section>
+ 
+-        <div className="flex justify-center gap-4">
+-          <Button asChild size="lg" className="bg-purple-600 hover:bg-purple-700">
+-            <Link href="/">Start Practice</Link>
+-          </Button>
+-          <Button asChild size="lg" variant="outline">
+-            <Link href="/progress">Track Progress</Link>
+-          </Button>
++      {/* References & Myths */}
++      <ReferencesSection />
++      </main>
++
++      {/* Final Disclaimer */}
++      <section className="py-8 bg-gray-100 border-t">
++        <div className="container max-w-4xl mx-auto px-4 text-center">
++          <p className="text-sm text-gray-600 mb-2">
++            <strong>Educational information only. Not medical advice.</strong>
++          </p>
++          <p className="text-xs text-gray-500">
++            This page provides evidence-based strategies for supporting autistic individuals based on NICE, NHS, CDC, and peer-reviewed research. It is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of a qualified healthcare provider with any questions about autism or medical conditions. If you are in crisis, please contact the crisis services listed above.
++          </p>
++          <p className="text-xs text-gray-500 mt-4">
++            © {new Date().getFullYear()} NeuroBreath. All progress tracking is local-only. No personal data is collected or shared.
++          </p>
+         </div>
+-      </div>
++      </section>
+     </div>
+   )
+ }
+
+diff --git a/web/components/autism/hero-section.tsx b/web/components/autism/hero-section.tsx
+new file mode 100644
+index 0000000..08cab2e
+--- /dev/null
++++ b/web/components/autism/hero-section.tsx
+@@ -0,0 +1,275 @@
++'use client'
++
++import { Button } from '@/components/ui/button'
++import { Card } from '@/components/ui/card'
++import { useUserContext, useAutismProgress } from '@/hooks/useAutismProgress'
++import { Badge } from '@/components/ui/badge'
++import { cn } from '@/lib/utils'
++import { ArrowDownRight, BookOpen, ClipboardList, ExternalLink, ShieldAlert, Sparkles, Target } from 'lucide-react'
++import Link from 'next/link'
++
++const HERO_TITLES = {
++  teacher: 'Predictable routines, visual supports & calmer classrooms',
++  parent: 'Evidence-based strategies for home & everyday life',
++  autistic: 'Tools & strategies to support your journey',
++  employer: 'Building inclusive, accessible workplaces'
++}
++
++const HERO_DESCRIPTIONS = {
++  teacher: 'Practical, evidence-based strategies to foster inclusion, promote sensory comfort and strengthen home-school collaboration.',
++  parent: 'Understand your child\'s needs and build routines that reduce anxiety and support development.',
++  autistic: 'Self-advocacy tools, calm techniques, and strategies to navigate daily challenges.',
++  employer: 'Reasonable adjustments, communication strategies, and inclusive practices that work.'
++}
++
++export function HeroSection() {
++  const { context } = useUserContext()
++  const { progress, hydrated } = useAutismProgress()
++
++  const audienceLabel =
++    context.audience === 'teacher'
++      ? 'Teacher / SENCO'
++      : context.audience === 'parent'
++        ? 'Parent / Carer'
++        : context.audience === 'autistic'
++          ? 'Autistic person'
++          : 'Employer'
++
++  const countryLabel =
++    context.country === 'uk' ? 'UK' : context.country === 'us' ? 'US' : 'EU'
++
++  return (
++    <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/70 via-white to-white py-12 md:py-16">
++      {/* background accents */}
++      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
++        <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-purple-200/40 blur-3xl" />
++        <div className="absolute top-16 -right-24 h-72 w-72 rounded-full bg-blue-200/40 blur-3xl" />
++        <div className="absolute bottom-0 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-pink-200/25 blur-3xl" />
++      </div>
++
++      <div className="container relative max-w-6xl mx-auto px-4">
++        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] items-start">
++          {/* Left */}
++          <div className="space-y-7">
++            <div className="flex flex-wrap items-center gap-2">
++              <Badge variant="secondary" className="gap-1">
++                <Sparkles className="h-3.5 w-3.5" />
++                Autism Hub
++              </Badge>
++              <Badge variant="outline">{audienceLabel}</Badge>
++              <Badge variant="outline">{countryLabel}</Badge>
++            </div>
++
++            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 leading-tight">
++              {HERO_TITLES[context.audience]}
++            </h1>
++
++            <p className="text-lg leading-relaxed text-gray-700 max-w-[65ch]">
++              {HERO_DESCRIPTIONS[context.audience]}
++            </p>
++
++            <div className="flex flex-col sm:flex-row gap-3">
++              <Button
++                size="lg"
++                asChild
++                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
++              >
++                <a href="#todays-plan" className="gap-2">
++                  <Target className="h-4 w-4" />
++                  Start a 3‑minute plan
++                </a>
++              </Button>
++
++              <Button size="lg" variant="outline" asChild>
++                <a href="#skills" className="gap-2">
++                  <BookOpen className="h-4 w-4" />
++                  Browse strategies
++                </a>
++              </Button>
++
++              <Button size="lg" variant="ghost" asChild className="justify-start">
++                <a href="#crisis" className="gap-2">
++                  <ShieldAlert className="h-4 w-4" />
++                  Crisis support
++                </a>
++              </Button>
++            </div>
++
++            {/* quick jumps */}
++            <div className="grid gap-3 sm:grid-cols-2">
++              <a
++                href="#todays-plan"
++                className="group rounded-xl border bg-white/80 backdrop-blur px-4 py-3 shadow-sm hover:shadow transition-shadow"
++              >
++                <div className="flex items-start justify-between gap-3">
++                  <div>
++                    <div className="text-sm font-semibold text-gray-900">Today’s plan</div>
++                    <div className="text-xs text-gray-600">Do-now actions + this week + a simple measure.</div>
++                  </div>
++                  <ArrowDownRight className="h-4 w-4 text-gray-400 group-hover:text-gray-700" />
++                </div>
++              </a>
++
++              <a
++                href="#evidence"
++                className="group rounded-xl border bg-white/80 backdrop-blur px-4 py-3 shadow-sm hover:shadow transition-shadow"
++              >
++                <div className="flex items-start justify-between gap-3">
++                  <div>
++                    <div className="text-sm font-semibold text-gray-900">Latest evidence</div>
++                    <div className="text-xs text-gray-600">NICE/NHS/CDC + PubMed on demand.</div>
++                  </div>
++                  <ArrowDownRight className="h-4 w-4 text-gray-400 group-hover:text-gray-700" />
++                </div>
++              </a>
++
++              <a
++                href="#downloads"
++                className="group rounded-xl border bg-white/80 backdrop-blur px-4 py-3 shadow-sm hover:shadow transition-shadow"
++              >
++                <div className="flex items-start justify-between gap-3">
++                  <div>
++                    <div className="text-sm font-semibold text-gray-900">Toolkits</div>
++                    <div className="text-xs text-gray-600">Printables for home, school, or work.</div>
++                  </div>
++                  <ArrowDownRight className="h-4 w-4 text-gray-400 group-hover:text-gray-700" />
++                </div>
++              </a>
++
++              <Link
++                href="/blog"
++                className="group rounded-xl border bg-white/80 backdrop-blur px-4 py-3 shadow-sm hover:shadow transition-shadow"
++              >
++                <div className="flex items-start justify-between gap-3">
++                  <div>
++                    <div className="text-sm font-semibold text-gray-900">Ask the AI Coach</div>
++                    <div className="text-xs text-gray-600">Evidence-aware guidance and sources.</div>
++                  </div>
++                  <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-gray-700" />
++                </div>
++              </Link>
++            </div>
++
++            <details className="rounded-xl border bg-white/70 backdrop-blur px-4 py-3">
++              <summary className="cursor-pointer list-none select-none text-sm font-medium text-gray-900">
++                How to use this page (1 minute)
++                <span className="ml-2 text-xs text-gray-500">quick tour</span>
++              </summary>
++              <div className="mt-3 space-y-2 text-sm text-gray-700">
++                <p>
++                  <strong>1.</strong> Set <strong>Audience</strong> and <strong>Country</strong> to tailor guidance.
++                </p>
++                <p>
++                  <strong>2.</strong> Start with <strong>Today’s plan</strong> for immediate next steps.
++                </p>
++                <p>
++                  <strong>3.</strong> Use the <strong>Skills library</strong> for structured strategies and adaptations.
++                </p>
++                <p>
++                  <strong>4.</strong> Log practice to track progress locally (no account needed).
++                </p>
++              </div>
++            </details>
++
++            <p className="text-xs text-gray-500">
++              Educational information only; not medical advice. For urgent help, use the crisis section below.
++            </p>
++          </div>
++
++          {/* Right */}
++          <Card className="relative overflow-hidden p-6 bg-white/80 backdrop-blur shadow-sm">
++            <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-br from-blue-50/40 to-purple-50/40" />
++            <div className="relative">
++              <div className="flex items-center justify-between gap-3 mb-4">
++                <h2 className="text-lg font-semibold text-gray-900">Your progress</h2>
++                <Badge variant="secondary" className="gap-1">
++                  <ClipboardList className="h-3.5 w-3.5" />
++                  Local only
++                </Badge>
++              </div>
++
++              {hydrated ? (
++                <>
++                  <div className="grid grid-cols-2 gap-3 mb-5">
++                    <MetricTile label="Streak" value={String(progress.streak)} sublabel="days" accent="orange" />
++                    <MetricTile label="Sessions" value={String(progress.sessions)} sublabel="total" accent="blue" />
++                    <MetricTile label="Minutes" value={String(progress.minutes)} sublabel="total" accent="purple" />
++                    <MetricTile
++                      label="Skills"
++                      value={String(progress.skillsPracticed.size)}
++                      sublabel="tried"
++                      accent="green"
++                    />
++                  </div>
++
++                  <div className="rounded-lg border bg-white/70 p-3 text-sm text-gray-700">
++                    <div className="flex items-center justify-between">
++                      <span className="text-gray-600">Plans completed</span>
++                      <span className="font-semibold text-gray-900">{progress.plansCompleted}</span>
++                    </div>
++                    <div className="flex items-center justify-between mt-1">
++                      <span className="text-gray-600">Badges</span>
++                      <span className="font-semibold text-gray-900">{progress.badges.size} / 10</span>
++                    </div>
++                  </div>
++
++                  {progress.sessions === 0 && (
++                    <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-gray-700">
++                      Start small: log a 1–2 minute calm tool to unlock your first badge.
++                    </div>
++                  )}
++                </>
++              ) : (
++                <div className="space-y-3">
++                  <div className="h-24 bg-gray-100 animate-pulse rounded-lg" />
++                  <div className="h-24 bg-gray-100 animate-pulse rounded-lg" />
++                </div>
++              )}
++            </div>
++          </Card>
++        </div>
++      </div>
++    </section>
++  )
++}
++
++function MetricTile({
++  label,
++  value,
++  sublabel,
++  accent
++}: {
++  label: string
++  value: string
++  sublabel: string
++  accent: 'orange' | 'blue' | 'purple' | 'green'
++}) {
++  return (
++    <div
++      className={cn(
++        'rounded-xl border bg-white/70 p-3 shadow-sm',
++        accent === 'orange' && 'border-orange-200',
++        accent === 'blue' && 'border-blue-200',
++        accent === 'purple' && 'border-purple-200',
++        accent === 'green' && 'border-green-200'
++      )}
++    >
++      <div className="text-xs font-medium text-gray-600">{label}</div>
++      <div className="mt-1 flex items-end gap-1">
++        <div
++          className={cn(
++            'text-2xl font-bold tracking-tight',
++            accent === 'orange' && 'text-orange-700',
++            accent === 'blue' && 'text-blue-700',
++            accent === 'purple' && 'text-purple-700',
++            accent === 'green' && 'text-green-700'
++          )}
++        >
++          {value}
++        </div>
++        <div className="text-xs text-gray-500 pb-1">{sublabel}</div>
++      </div>
++    </div>
++  )
++}
++
+
+diff --git a/web/components/autism/crisis-support.tsx b/web/components/autism/crisis-support.tsx
+new file mode 100644
+index 0000000..67eaf74
+--- /dev/null
++++ b/web/components/autism/crisis-support.tsx
+@@ -0,0 +1,80 @@
++'use client'
++
++import { Card } from '@/components/ui/card'
++import { Alert, AlertDescription } from '@/components/ui/alert'
++import { useUserContext } from '@/hooks/useAutismProgress'
++import { Phone, AlertCircle } from 'lucide-react'
++
++export function CrisisSupport() {
++  const { context } = useUserContext()
++
++  const crisisInfo = {
++    uk: {
++      lines: [
++        { name: 'NHS 111 (option 2)', number: '111', desc: 'Mental health crisis support' },
++        { name: 'Samaritans', number: '116 123', desc: '24/7 emotional support (free)' },
++        { name: 'Shout Crisis Text Line', number: 'Text SHOUT to 85258', desc: '24/7 text support' }
++      ],
++      emergency: '999'
++    },
++    us: {
++      lines: [
++        { name: '988 Suicide & Crisis Lifeline', number: '988', desc: '24/7 crisis support' },
++        { name: 'Crisis Text Line', number: 'Text HOME to 741741', desc: '24/7 text support' },
++        { name: 'Autism Society Helpline', number: '1-800-328-8476', desc: 'Autism-specific support' }
++      ],
++      emergency: '911'
++    },
++    eu: {
++      lines: [
++        { name: 'EU-wide emergency', number: '112', desc: 'General emergency services' },
++        { name: 'National crisis lines', number: 'varies', desc: 'Check local resources' }
++      ],
++      emergency: '112'
++    }
++  }
++
++  const info = crisisInfo[context.country]
++
++  return (
++    <section id="crisis" className="scroll-mt-24 bg-red-50/70 border-y border-red-200 py-10">
++      <div className="container max-w-5xl mx-auto px-4">
++        <Alert className="bg-white/90 backdrop-blur border-red-300 shadow-sm">
++          <AlertCircle className="h-5 w-5 text-red-600" />
++          <AlertDescription>
++            <div className="flex flex-col gap-1">
++              <h2 className="text-base font-semibold text-gray-900">Crisis support</h2>
++              <p className="text-sm text-gray-600">
++                If you or someone else is at risk of harm, use the options below. If in immediate danger, call{' '}
++                <strong className="text-gray-900">{info.emergency}</strong>.
++              </p>
++            </div>
++
++            <div className="mt-4 grid gap-3 sm:grid-cols-2">
++              {info.lines.map((line, i) => (
++                <div key={i} className="rounded-lg border bg-white p-3">
++                  <div className="flex items-start gap-3">
++                    <div className="mt-0.5 rounded-md bg-red-100 p-2">
++                      <Phone className="h-4 w-4 text-red-700" />
++                    </div>
++                    <div className="min-w-0">
++                      <div className="text-sm font-semibold text-gray-900">{line.name}</div>
++                      <div className="text-sm text-gray-700">{line.number}</div>
++                      <div className="text-xs text-gray-600 mt-1">{line.desc}</div>
++                    </div>
++                  </div>
++                </div>
++              ))}
++            </div>
++
++            <p className="mt-4 text-xs text-gray-600">
++              Educational site only — we can’t provide emergency response. If you can, stay with the person and
++              remove immediate means of harm while you contact emergency services.
++            </p>
++          </AlertDescription>
++        </Alert>
++      </div>
++    </section>
++  )
++}
++
+
+diff --git a/web/components/autism/todays-plan-wizard.tsx b/web/components/autism/todays-plan-wizard.tsx
+new file mode 100644
+index 0000000..1a8ba40
+--- /dev/null
++++ b/web/components/autism/todays-plan-wizard.tsx
+@@ -0,0 +1,240 @@
++'use client'
++
++import { useState } from 'react'
++import { Button } from '@/components/ui/button'
++import { Card } from '@/components/ui/card'
++import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
++import type { AgeBand, SettingType, Plan } from '@/types/autism'
++import { savePlan, completePlan } from '@/lib/autism/storage'
++import { useAutismProgress } from '@/hooks/useAutismProgress'
++import { toast } from 'sonner'
++
++const MAIN_NEEDS = [
++  'Transitions',
++  'Sensory overwhelm',
++  'Communication',
++  'Anxiety',
++  'Sleep',
++  'School refusal',
++  'Workplace stress',
++  'Social situations'
++]
++
++export function TodaysPlanWizard() {
++  const [step, setStep] = useState(0)
++  const [ageBand, setAgeBand] = useState<AgeBand>('primary')
++  const [mainNeed, setMainNeed] = useState('')
++  const [setting, setSetting] = useState<SettingType>('home')
++  const [plan, setPlan] = useState<Plan | null>(null)
++  const { logSession } = useAutismProgress()
++
++  const generatePlan = () => {
++    const planId = `plan-${Date.now()}`
++    const created = new Date().toISOString()
++
++    // Generate contextual plan based on inputs
++    const newPlan: Plan = {
++      id: planId,
++      title: `${mainNeed} support plan`,
++      created,
++      ageBand,
++      mainNeed,
++      setting,
++      doNow: generateDoNow(mainNeed, ageBand, setting),
++      buildThisWeek: generateBuildThisWeek(mainNeed, ageBand, setting),
++      measurement: generateMeasurement(mainNeed)
++    }
++
++    setPlan(newPlan)
++    savePlan(newPlan)
++    setStep(3)
++  }
++
++  const handleComplete = () => {
++    if (plan) {
++      completePlan(plan.id)
++      logSession(5, 'plan-completion')
++    }
++    toast.success('Plan saved', {
++      description: 'You can track your progress below (stored locally on this device).'
++    })
++    reset()
++  }
++
++  const reset = () => {
++    setStep(0)
++    setPlan(null)
++    setAgeBand('primary')
++    setMainNeed('')
++    setSetting('home')
++  }
++
++  return (
++    <section id="todays-plan" className="scroll-mt-24 py-16 md:py-20 bg-white">
++      <div className="container max-w-4xl mx-auto px-4">
++        <div className="mb-8 flex flex-col gap-2">
++          <p className="text-sm font-medium text-blue-700">Quick start</p>
++          <h2 className="text-3xl font-bold text-gray-900">Today's plan</h2>
++          <p className="text-gray-600">A practical 3-step plan with do-now actions, a weekly build, and a simple measure.</p>
++        </div>
++
++        <Card className="p-6 md:p-8 bg-white/80 backdrop-blur shadow-sm">
++          {step === 0 && (
++            <div className="space-y-6">
++              <div>
++                <label className="block text-sm font-medium text-gray-700 mb-2">Age band:</label>
++                <Select value={ageBand} onValueChange={(v) => setAgeBand(v as AgeBand)}>
++                  <SelectTrigger>
++                    <SelectValue />
++                  </SelectTrigger>
++                  <SelectContent>
++                    <SelectItem value="early-years">Early years (0-5)</SelectItem>
++                    <SelectItem value="primary">Primary (5-11)</SelectItem>
++                    <SelectItem value="secondary">Secondary (11-18)</SelectItem>
++                    <SelectItem value="adult">Adult (18+)</SelectItem>
++                  </SelectContent>
++                </Select>
++              </div>
++              <Button onClick={() => setStep(1)} className="w-full">Next</Button>
++            </div>
++          )}
++
++          {step === 1 && (
++            <div className="space-y-6">
++              <div>
++                <label className="block text-sm font-medium text-gray-700 mb-2">Main need right now:</label>
++                <Select value={mainNeed} onValueChange={setMainNeed}>
++                  <SelectTrigger>
++                    <SelectValue placeholder="Choose..." />
++                  </SelectTrigger>
++                  <SelectContent>
++                    {MAIN_NEEDS.map(need => (
++                      <SelectItem key={need} value={need}>{need}</SelectItem>
++                    ))}
++                  </SelectContent>
++                </Select>
++              </div>
++              <div className="flex gap-3">
++                <Button variant="outline" onClick={() => setStep(0)}>Back</Button>
++                <Button onClick={() => setStep(2)} disabled={!mainNeed} className="flex-1">Next</Button>
++              </div>
++            </div>
++          )}
++
++          {step === 2 && (
++            <div className="space-y-6">
++              <div>
++                <label className="block text-sm font-medium text-gray-700 mb-2">Setting:</label>
++                <Select value={setting} onValueChange={(v) => setSetting(v as SettingType)}>
++                  <SelectTrigger>
++                    <SelectValue />
++                  </SelectTrigger>
++                  <SelectContent>
++                    <SelectItem value="home">Home</SelectItem>
++                    <SelectItem value="classroom">Classroom</SelectItem>
++                    <SelectItem value="community">Community</SelectItem>
++                    <SelectItem value="workplace">Workplace</SelectItem>
++                  </SelectContent>
++                </Select>
++              </div>
++              <div className="flex gap-3">
++                <Button variant="outline" onClick={() => setStep(1)}>Back</Button>
++                <Button onClick={generatePlan} className="flex-1">Generate Plan</Button>
++              </div>
++            </div>
++          )}
++
++          {step === 3 && plan && (
++            <div className="space-y-6">
++              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
++                <h3 className="font-bold text-lg text-gray-900 mb-2">{plan.title}</h3>
++                <p className="text-sm text-gray-600">Created: {new Date(plan.created).toLocaleDateString()}</p>
++              </div>
++
++              <div>
++                <h4 className="font-semibold text-gray-900 mb-3">✅ Do now (under 5 min):</h4>
++                <ul className="space-y-2">
++                  {plan.doNow.map(step => (
++                    <li key={step.id} className="flex items-start gap-2 text-sm">
++                      <span className="text-green-600 mt-0.5">•</span>
++                      <span>{step.title}</span>
++                    </li>
++                  ))}
++                </ul>
++              </div>
++
++              <div>
++                <h4 className="font-semibold text-gray-900 mb-3">🔨 Build this week:</h4>
++                <ul className="space-y-2">
++                  {plan.buildThisWeek.map(step => (
++                    <li key={step.id} className="flex items-start gap-2 text-sm">
++                      <span className="text-blue-600 mt-0.5">•</span>
++                      <span>{step.title}</span>
++                    </li>
++                  ))}
++                </ul>
++              </div>
++
++              <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
++                <h4 className="font-semibold text-gray-900 mb-2">📊 Measure:</h4>
++                <p className="text-sm text-gray-700">{plan.measurement}</p>
++              </div>
++
++              <div className="flex flex-wrap gap-3">
++                <Button onClick={handleComplete} className="flex-1">Mark Complete & Save</Button>
++                <Button variant="outline" onClick={reset}>Start New Plan</Button>
++              </div>
++            </div>
++          )}
++        </Card>
++      </div>
++    </section>
++  )
++}
++
++// Helper functions to generate contextual plans
++function generateDoNow(need: string, age: AgeBand, setting: SettingType) {
++  const base = [
++    { id: '1', title: 'Take 3 slow breaths (belly breathing)', description: '', duration: '1 min', completed: false },
++    { id: '2', title: 'Identify one trigger or early sign to watch for', description: '', duration: '2 min', completed: false },
++    { id: '3', title: 'Choose one small support to try today', description: '', duration: '2 min', completed: false }
++  ]
++  
++  if (need.includes('Sensory')) {
++    base[2].title = 'Create a mini calm kit (3 items: fidget, headphones, weighted item)'
++  } else if (need.includes('Transitions')) {
++    base[2].title = 'Make a simple Now/Next visual (2 pictures)'
++  } else if (need.includes('Communication')) {
++    base[2].title = 'Write down 5 core words/symbols to model today'
++  }
++  
++  return base
++}
++
++function generateBuildThisWeek(need: string, age: AgeBand, setting: SettingType) {
++  const base = [
++    { id: 'w1', title: 'Practice the "do now" actions daily', description: '', duration: '', completed: false },
++    { id: 'w2', title: 'Observe and note what helps most', description: '', duration: '', completed: false },
++    { id: 'w3', title: 'Share your approach with one other person (co-parent, teacher, colleague)', description: '', duration: '', completed: false }
++  ]
++  
++  if (need.includes('Visual')) {
++    base[1].title = 'Expand visual schedule to include 5-7 daily activities'
++  } else if (need.includes('Anxiety')) {
++    base[1].title = 'Build a "calm menu" with 5 regulation strategies'
++  }
++  
++  return base
++}
++
++function generateMeasurement(need: string) {
++  if (need.includes('Transitions')) {
++    return 'Count successful transitions this week (no meltdown/refusal). Target: 50% improvement.'
++  } else if (need.includes('Anxiety')) {
++    return 'Rate anxiety 1-10 before/after trying a calm strategy. Track daily.'
++  } else if (need.includes('Sensory')) {
++    return 'Note how many times calm corner/kit is used. Does it help prevent escalation?'
++  }
++  return 'Track frequency of target behaviour. Note any patterns or improvements.'
++}
++
+
+diff --git a/web/components/autism/skills-library.tsx b/web/components/autism/skills-library.tsx
+new file mode 100644
+index 0000000..7ea164a
+--- /dev/null
++++ b/web/components/autism/skills-library.tsx
+@@ -0,0 +1,126 @@
++'use client'
++
++import { useState } from 'react'
++import { Input } from '@/components/ui/input'
++import { Button } from '@/components/ui/button'
++import { Badge } from '@/components/ui/badge'
++import { SKILLS } from '@/lib/autism/evidence-base'
++import { SkillCard } from './skill-card'
++import { Search, Filter } from 'lucide-react'
++
++const ALL_TAGS = [
++  'routines', 'transitions', 'visual supports', 'communication', 'AAC', 'PECS',
++  'sensory', 'social', 'anxiety', 'breathing', 'sleep', 'workplace', 'peer-mediated', 'inclusion'
++]
++
++export function SkillsLibrary() {
++  const [searchTerm, setSearchTerm] = useState('')
++  const [selectedTags, setSelectedTags] = useState<string[]>([])
++  const [showFilters, setShowFilters] = useState(false)
++
++  const toggleTag = (tag: string) => {
++    setSelectedTags(prev =>
++      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
++    )
++  }
++
++  const filtered = SKILLS.filter(skill => {
++    const matchesSearch = searchTerm === '' ||
++      skill.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
++      skill.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
++      skill.whyItHelps.toLowerCase().includes(searchTerm.toLowerCase())
++
++    const matchesTags = selectedTags.length === 0 ||
++      selectedTags.some(tag => skill.tags.includes(tag))
++
++    return matchesSearch && matchesTags
++  })
++
++  return (
++    <section id="skills" className="scroll-mt-24 py-16 md:py-20 bg-gray-50">
++      <div className="container max-w-6xl mx-auto px-4">
++        <div className="mb-8 flex flex-col gap-2">
++          <p className="text-sm font-medium text-blue-700">Strategies</p>
++          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
++            <div>
++              <h2 className="text-3xl font-bold text-gray-900">Skills library</h2>
++              <p className="text-gray-600">Evidence-based supports with steps, pitfalls, and age adaptations.</p>
++            </div>
++            <div className="text-sm text-gray-600">
++              Showing <span className="font-semibold text-gray-900">{filtered.length}</span> of{' '}
++              <span className="font-semibold text-gray-900">{SKILLS.length}</span>
++            </div>
++          </div>
++        </div>
++
++        {/* Search & Filter */}
++        <div className="bg-white/80 backdrop-blur rounded-xl p-4 shadow-sm mb-6 space-y-4 border">
++          <div className="flex gap-3">
++            <div className="relative flex-1">
++              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
++              <Input
++                type="text"
++                placeholder="Search skills..."
++                value={searchTerm}
++                onChange={(e) => setSearchTerm(e.target.value)}
++                className="pl-10"
++              />
++            </div>
++            <Button
++              variant="outline"
++              onClick={() => setShowFilters(!showFilters)}
++              className="flex items-center gap-2"
++            >
++              <Filter className="w-4 h-4" />
++              Filters
++              {selectedTags.length > 0 && (
++                <Badge variant="secondary" className="ml-2">{selectedTags.length}</Badge>
++              )}
++            </Button>
++          </div>
++
++          {showFilters && (
++            <div className="pt-4 border-t">
++              <div className="flex flex-wrap gap-2">
++                {ALL_TAGS.map(tag => (
++                  <Button
++                    key={tag}
++                    size="sm"
++                    variant={selectedTags.includes(tag) ? 'default' : 'outline'}
++                    onClick={() => toggleTag(tag)}
++                    className="text-xs"
++                  >
++                    {tag}
++                  </Button>
++                ))}
++              </div>
++              {selectedTags.length > 0 && (
++                <Button
++                  size="sm"
++                  variant="ghost"
++                  onClick={() => setSelectedTags([])}
++                  className="mt-3"
++                >
++                  Clear filters
++                </Button>
++              )}
++            </div>
++          )}
++        </div>
++
++        <div className="grid md:grid-cols-2 gap-6">
++          {filtered.map(skill => (
++            <SkillCard key={skill.id} skill={skill} />
++          ))}
++        </div>
++
++        {filtered.length === 0 && (
++          <div className="text-center py-12 text-gray-500">
++            <p>No skills found. Try adjusting your search or filters.</p>
++          </div>
++        )}
++      </div>
++    </section>
++  )
++}
++
+
+diff --git a/web/components/autism/skill-card.tsx b/web/components/autism/skill-card.tsx
+new file mode 100644
+index 0000000..13a18a0
+--- /dev/null
++++ b/web/components/autism/skill-card.tsx
+@@ -0,0 +1,115 @@
++'use client'
++
++import { useState } from 'react'
++import { Card } from '@/components/ui/card'
++import { Button } from '@/components/ui/button'
++import { Badge } from '@/components/ui/badge'
++import type { Skill } from '@/types/autism'
++import { useAutismProgress } from '@/hooks/useAutismProgress'
++import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
++import { toast } from 'sonner'
++
++export function SkillCard({ skill }: { skill: Skill }) {
++  const [expanded, setExpanded] = useState(false)
++  const { logSession } = useAutismProgress()
++
++  const handleLogPractice = () => {
++    logSession(5, skill.id)
++    toast.success('Practice logged', {
++      description: `${skill.title} (+5 XP)`
++    })
++  }
++
++  return (
++    <Card className="p-5 hover:shadow-lg transition-shadow bg-white/80 backdrop-blur">
++      <div className="flex items-start justify-between mb-3">
++        <div className="flex-1">
++          <div className="flex items-center gap-2 mb-2">
++            <h3 className="text-lg font-semibold text-gray-900">{skill.title}</h3>
++            <Badge variant="secondary" className="text-xs">{skill.category}</Badge>
++          </div>
++          <p className="text-sm text-gray-700 mb-3">{skill.whyItHelps}</p>
++          <div className="flex flex-wrap gap-1 mb-3">
++            {skill.tags.map(tag => (
++              <span key={tag} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
++                {tag}
++              </span>
++            ))}
++          </div>
++        </div>
++      </div>
++
++      <Button
++        variant="ghost"
++        size="sm"
++        onClick={() => setExpanded(!expanded)}
++        className="w-full flex items-center justify-between text-sm"
++      >
++        <span>{expanded ? 'Hide details' : 'Show how-to steps'}</span>
++        {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
++      </Button>
++
++      {expanded && (
++        <div className="mt-4 space-y-4 pt-4 border-t">
++          <div>
++            <h4 className="font-semibold text-sm text-gray-900 mb-2">How to do it:</h4>
++            <ol className="list-decimal list-inside space-y-1 text-sm text-gray-700">
++              {skill.howToSteps.map((step, i) => (
++                <li key={i}>{step}</li>
++              ))}
++            </ol>
++          </div>
++
++          <div>
++            <h4 className="font-semibold text-sm text-gray-900 mb-2">Common pitfalls:</h4>
++            <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
++              {skill.pitfalls.map((pitfall, i) => (
++                <li key={i}>{pitfall}</li>
++              ))}
++            </ul>
++          </div>
++
++          <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
++            <h4 className="font-semibold text-sm text-gray-900 mb-2">Age adaptations:</h4>
++            <div className="space-y-1 text-xs text-gray-700">
++              {Object.entries(skill.adaptations).map(([age, adaptation]) => (
++                <p key={age}>
++                  <strong className="capitalize">{age.replace('-', ' ')}:</strong> {adaptation}
++                </p>
++              ))}
++            </div>
++          </div>
++
++          {skill.evidenceLinks.length > 0 && (
++            <div>
++              <h4 className="font-semibold text-sm text-gray-900 mb-2">Evidence:</h4>
++              <div className="space-y-1">
++                {skill.evidenceLinks.map((link, i) => (
++                  <a
++                    key={i}
++                    href={link.url}
++                    target="_blank"
++                    rel="noopener noreferrer"
++                    className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1"
++                  >
++                    <ExternalLink className="w-3 h-3" />
++                    <span>{link.title}</span>
++                  </a>
++                ))}
++              </div>
++            </div>
++          )}
++
++          <Button
++            onClick={handleLogPractice}
++            size="sm"
++            className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
++          >
++            Log practice +5 XP
++          </Button>
++        </div>
++      )}
++    </Card>
++  )
++}
++
+
+diff --git a/web/components/autism/quests-section.tsx b/web/components/autism/quests-section.tsx
+new file mode 100644
+index 0000000..d32b801
+--- /dev/null
++++ b/web/components/autism/quests-section.tsx
+@@ -0,0 +1,116 @@
++'use client'
++
++import { Card } from '@/components/ui/card'
++import { Button } from '@/components/ui/button'
++import { useAutismProgress } from '@/hooks/useAutismProgress'
++import Link from 'next/link'
++
++const QUESTS = [
++  {
++    id: 'now-next-builder',
++    title: 'Now/Next Board Builder',
++    description: 'Create and print a personalized Now/Next visual support',
++    icon: '📋',
++    xp: 10,
++    href: '#quest-now-next'
++  },
++  {
++    id: 'transition-timer',
++    title: 'Transition Timer Script',
++    description: 'Generate a transition warning script you can use',
++    icon: '⏰',
++    xp: 10,
++    href: '#quest-transition'
++  },
++  {
++    id: 'sensory-detective',
++    title: 'Sensory Detective',
++    description: 'Quick checklist to create a sensory support plan',
++    icon: '🔍',
++    xp: 15,
++    href: '#quest-sensory'
++  },
++  {
++    id: 'calm-corner-kit',
++    title: 'Calm Corner Kit Builder',
++    description: 'Design your own calm corner with evidence-based items',
++    icon: '🛋️',
++    xp: 15,
++    href: '#quest-calm-corner'
++  },
++  {
++    id: 'communication-choice',
++    title: 'Communication Choice Challenge',
++    description: 'Learn to offer choices using AAC/PECS principles',
++    icon: '💬',
++    xp: 10,
++    href: '#quest-communication'
++  },
++  {
++    id: 'emotion-thermometer',
++    title: 'Emotion Thermometer + Coping Menu',
++    description: 'Build a visual emotion scale with coping strategies',
++    icon: '🌡️',
++    xp: 15,
++    href: '#quest-emotion'
++  },
++  {
++    id: 'workplace-adjustments',
++    title: 'Workplace Adjustments Generator',
++    description: 'Create a reasonable adjustments checklist (for employers/adults)',
++    icon: '💼',
++    xp: 20,
++    href: '#quest-workplace'
++  }
++]
++
++export function QuestsSection() {
++  const { logSession } = useAutismProgress()
++
++  const handleQuestStart = (questId: string, xp: number) => {
++    logSession(Math.ceil(xp / 2), questId)
++  }
++
++  return (
++    <section id="quests" className="scroll-mt-24 py-16 md:py-20 bg-gradient-to-br from-purple-50 to-pink-50">
++      <div className="container max-w-6xl mx-auto px-4">
++        <div className="mb-8 flex flex-col gap-2">
++          <p className="text-sm font-medium text-purple-700">Practice tools</p>
++          <h2 className="text-3xl font-bold text-gray-900">Interactive quests</h2>
++          <p className="text-gray-600">Short, practical builders that turn strategies into something you can use.</p>
++        </div>
++
++        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
++          {QUESTS.map(quest => (
++            <Card key={quest.id} className="p-6 hover:shadow-xl transition-all hover:-translate-y-1">
++              <div className="text-4xl mb-3" aria-hidden="true">{quest.icon}</div>
++              <h3 className="text-lg font-semibold text-gray-900 mb-2">{quest.title}</h3>
++              <p className="text-sm text-gray-600 mb-4">{quest.description}</p>
++              <div className="flex items-center justify-between">
++                <span className="text-xs font-medium text-purple-600 bg-purple-100 px-2 py-1 rounded">
++                  +{quest.xp} XP
++                </span>
++                <Button
++                  size="sm"
++                  onClick={() => handleQuestStart(quest.id, quest.xp)}
++                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
++                >
++                  Start
++                </Button>
++              </div>
++            </Card>
++          ))}
++        </div>
++
++        <div className="mt-8 rounded-xl border bg-white/70 backdrop-blur p-4 text-sm text-gray-700">
++          <p className="font-medium text-gray-900">What you’ll get</p>
++          <p className="mt-1 text-gray-600">
++            Each quest is designed to become a printable/shareable resource. For now, starting a quest logs practice locally
++            and helps you build a streak.
++          </p>
++        </div>
++      </div>
++    </section>
++  )
++}
++
+
+diff --git a/web/components/autism/calm-toolkit.tsx b/web/components/autism/calm-toolkit.tsx
+new file mode 100644
+index 0000000..f35d5c7
+--- /dev/null
++++ b/web/components/autism/calm-toolkit.tsx
+@@ -0,0 +1,101 @@
++'use client'
++
++import { Card } from '@/components/ui/card'
++import { Button } from '@/components/ui/button'
++import { CALM_TECHNIQUES } from '@/lib/autism/evidence-base'
++import { useAutismProgress } from '@/hooks/useAutismProgress'
++import Link from 'next/link'
++import { Play } from 'lucide-react'
++import { toast } from 'sonner'
++
++export function CalmToolkit() {
++  const { logSession } = useAutismProgress()
++
++  const handleTechniqueComplete = (techniqueId: string, duration: number) => {
++    logSession(duration, `calm-${techniqueId}`)
++    toast.success('Session logged', {
++      description: `+${duration} minute${duration === 1 ? '' : 's'} added to your progress.`
++    })
++  }
++
++  return (
++    <section id="calm-toolkit" className="scroll-mt-24 py-16 md:py-20 bg-white">
++      <div className="container max-w-6xl mx-auto px-4">
++        <div className="mb-8 flex flex-col gap-2">
++          <p className="text-sm font-medium text-blue-700">Regulation</p>
++          <h2 className="text-3xl font-bold text-gray-900">Calm &amp; co-regulation toolkit</h2>
++          <p className="text-gray-600">Breathing and calming techniques with sensory-friendly adaptations.</p>
++        </div>
++
++        <div className="grid md:grid-cols-2 gap-6 mb-8">
++          {CALM_TECHNIQUES.map(technique => (
++            <Card key={technique.id} className="p-6 bg-white/80 backdrop-blur shadow-sm">
++              <h3 className="text-xl font-semibold text-gray-900 mb-2">{technique.name}</h3>
++              <div className="flex items-center gap-3 mb-3 text-sm text-gray-600">
++                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
++                  {technique.duration} min
++                </span>
++              </div>
++              <p className="text-sm text-gray-700 mb-4">{technique.description}</p>
++
++              <div className="space-y-3 mb-4">
++                <div>
++                  <h4 className="text-sm font-semibold text-gray-900 mb-1">Steps:</h4>
++                  <ol className="list-decimal list-inside space-y-1 text-xs text-gray-700">
++                    {technique.steps.map((step, i) => (
++                      <li key={i}>{step}</li>
++                    ))}
++                  </ol>
++                </div>
++
++                <div className="bg-yellow-50 p-3 rounded border border-yellow-200">
++                  <h4 className="text-xs font-semibold text-gray-900 mb-1">⚠️ Warnings:</h4>
++                  <ul className="list-disc list-inside text-xs text-gray-700">
++                    {technique.warnings.map((warning, i) => (
++                      <li key={i}>{warning}</li>
++                    ))}
++                  </ul>
++                </div>
++
++                <div className="bg-green-50 p-3 rounded border border-green-200">
++                  <h4 className="text-xs font-semibold text-gray-900 mb-1">Age adaptations:</h4>
++                  <p className="text-xs text-gray-700">{technique.ageAdaptations}</p>
++                </div>
++              </div>
++
++              <div className="flex gap-2">
++                <Button
++                  size="sm"
++                  className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
++                  onClick={() => handleTechniqueComplete(technique.id, technique.duration)}
++                >
++                  <Play className="w-4 h-4 mr-2" />
++                  Practice & Log
++                </Button>
++              </div>
++            </Card>
++          ))}
++        </div>
++
++        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
++          <h3 className="font-semibold text-gray-900 mb-2">Want full interactive breathing exercises?</h3>
++          <p className="text-sm text-gray-700 mb-4">
++            Try our dedicated breathing technique pages with visual timers and audio guidance.
++          </p>
++          <div className="flex flex-wrap justify-center gap-3">
++            <Button size="sm" variant="outline" asChild>
++              <Link href="/techniques/box-breathing">Box Breathing</Link>
++            </Button>
++            <Button size="sm" variant="outline" asChild>
++              <Link href="/techniques/sos">SOS 60s</Link>
++            </Button>
++            <Button size="sm" variant="outline" asChild>
++              <Link href="/techniques/coherent">Coherent 5-5</Link>
++            </Button>
++          </div>
++        </div>
++      </div>
++    </section>
++  )
++}
++
+
+diff --git a/web/components/autism/progress-dashboard.tsx b/web/components/autism/progress-dashboard.tsx
+new file mode 100644
+index 0000000..cc0b6e9
+--- /dev/null
++++ b/web/components/autism/progress-dashboard.tsx
+@@ -0,0 +1,184 @@
++'use client'
++
++import { Card } from '@/components/ui/card'
++import { Button } from '@/components/ui/button'
++import { useAutismProgress } from '@/hooks/useAutismProgress'
++import { BADGES } from '@/lib/autism/evidence-base'
++import { resetProgress } from '@/lib/autism/storage'
++import { Trophy, Flame, Clock, Star, TrendingUp } from 'lucide-react'
++
++export function ProgressDashboard() {
++  const { progress, hydrated } = useAutismProgress()
++
++  const handleReset = () => {
++    if (confirm('Are you sure? This will clear all progress on this page (local only).')) {
++      resetProgress()
++      window.location.reload()
++    }
++  }
++
++  if (!hydrated) {
++    return (
++      <section id="progress" className="scroll-mt-24 py-16 md:py-20 bg-gray-50">
++        <div className="container max-w-6xl mx-auto px-4">
++          <Card className="p-8">
++            <div className="space-y-4">
++              <div className="h-8 bg-gray-200 animate-pulse rounded" />
++              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
++                {[1, 2, 3, 4].map(i => (
++                  <div key={i} className="h-24 bg-gray-200 animate-pulse rounded" />
++                ))}
++              </div>
++            </div>
++          </Card>
++        </div>
++      </section>
++    )
++  }
++
++  const weeklyData = Object.entries(progress.weeklyMinutes)
++    .sort(([a], [b]) => a.localeCompare(b))
++    .slice(-7)
++
++  const earnedBadges = BADGES.filter(b => progress.badges.has(b.id))
++  const unearnedBadges = BADGES.filter(b => !progress.badges.has(b.id))
++
++  return (
++    <section id="progress" className="scroll-mt-24 py-16 md:py-20 bg-gray-50">
++      <div className="container max-w-6xl mx-auto px-4">
++        <div className="mb-8 flex flex-col gap-2">
++          <p className="text-sm font-medium text-blue-700">Progress</p>
++          <h2 className="text-3xl font-bold text-gray-900">Your progress</h2>
++          <p className="text-gray-600">Local-only tracking: streaks, minutes, skills, and badges.</p>
++        </div>
++
++        <Card className="p-6 md:p-8 mb-6 bg-white/80 backdrop-blur shadow-sm">
++          {/* Main Stats */}
++          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
++            <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-5 rounded-xl border border-orange-200">
++              <Flame className="w-8 h-8 text-orange-600 mb-2" />
++              <div className="text-3xl font-bold text-orange-600">{progress.streak}</div>
++              <div className="text-sm text-gray-700">Day streak</div>
++            </div>
++
++            <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-xl border border-blue-200">
++              <Clock className="w-8 h-8 text-blue-600 mb-2" />
++              <div className="text-3xl font-bold text-blue-600">{progress.sessions}</div>
++              <div className="text-sm text-gray-700">Total sessions</div>
++            </div>
++
++            <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-5 rounded-xl border border-purple-200">
++              <TrendingUp className="w-8 h-8 text-purple-600 mb-2" />
++              <div className="text-3xl font-bold text-purple-600">{progress.minutes}</div>
++              <div className="text-sm text-gray-700">Total minutes</div>
++            </div>
++
++            <div className="bg-gradient-to-br from-green-50 to-green-100 p-5 rounded-xl border border-green-200">
++              <Star className="w-8 h-8 text-green-600 mb-2" />
++              <div className="text-3xl font-bold text-green-600">{progress.skillsPracticed.size}</div>
++              <div className="text-sm text-gray-700">Skills practiced</div>
++            </div>
++          </div>
++
++          {/* Weekly Chart */}
++          <div className="mb-8">
++            <h3 className="text-lg font-semibold text-gray-900 mb-4">Last 7 Days</h3>
++            <div className="flex items-end justify-between gap-2 h-32">
++              {weeklyData.map(([date, minutes]) => {
++                const maxMinutes = Math.max(...weeklyData.map(([, m]) => m), 1)
++                const height = (minutes / maxMinutes) * 100
++                const dayName = new Date(date).toLocaleDateString('en-US', { weekday: 'short' })
++
++                return (
++                  <div key={date} className="flex-1 flex flex-col items-center">
++                    <div className="w-full bg-gray-200 rounded-t relative" style={{ height: '100%' }}>
++                      <div
++                        className="absolute bottom-0 w-full bg-gradient-to-t from-blue-600 to-purple-600 rounded-t transition-all"
++                        style={{ height: `${height}%` }}
++                      />
++                    </div>
++                    <div className="text-xs text-gray-600 mt-2">{dayName}</div>
++                    <div className="text-xs font-medium text-gray-900">{minutes}m</div>
++                  </div>
++                )
++              })}
++            </div>
++            {weeklyData.length === 0 && (
++              <p className="text-center text-gray-500 text-sm">No activity yet this week</p>
++            )}
++          </div>
++
++          {/* Additional Stats */}
++          <div className="grid md:grid-cols-2 gap-6 mb-8">
++            <div className="bg-gray-50 p-4 rounded-lg">
++              <h4 className="font-semibold text-gray-900 mb-2">Plans completed</h4>
++              <div className="text-2xl font-bold text-blue-600">{progress.plansCompleted}</div>
++            </div>
++            <div className="bg-gray-50 p-4 rounded-lg">
++              <h4 className="font-semibold text-gray-900 mb-2">Last session</h4>
++              <div className="text-sm text-gray-700">
++                {progress.lastSessionDate
++                  ? new Date(progress.lastSessionDate).toLocaleDateString()
++                  : 'Not yet logged'}
++              </div>
++            </div>
++          </div>
++
++          {/* Badges */}
++          <div>
++            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
++              <Trophy className="w-5 h-5 text-yellow-600" />
++              Badges ({earnedBadges.length} / {BADGES.length})
++            </h3>
++
++            {earnedBadges.length > 0 && (
++              <div className="mb-6">
++                <h4 className="text-sm font-medium text-gray-700 mb-3">Earned:</h4>
++                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
++                  {earnedBadges.map(badge => (
++                    <div
++                      key={badge.id}
++                      className="bg-gradient-to-br from-yellow-50 to-orange-50 p-3 rounded-lg border-2 border-yellow-300 text-center"
++                      title={badge.description}
++                    >
++                      <div className="text-3xl mb-1">{badge.icon}</div>
++                      <div className="text-xs font-semibold text-gray-900">{badge.title}</div>
++                    </div>
++                  ))}
++                </div>
++              </div>
++            )}
++
++            {unearnedBadges.length > 0 && (
++              <div>
++                <h4 className="text-sm font-medium text-gray-700 mb-3">Available:</h4>
++                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
++                  {unearnedBadges.map(badge => (
++                    <div
++                      key={badge.id}
++                      className="bg-gray-100 p-3 rounded-lg border border-gray-300 text-center opacity-60"
++                      title={`${badge.description} - ${badge.criteria}`}
++                    >
++                      <div className="text-3xl mb-1 grayscale">{badge.icon}</div>
++                      <div className="text-xs font-medium text-gray-600">{badge.title}</div>
++                    </div>
++                  ))}
++                </div>
++              </div>
++            )}
++          </div>
++        </Card>
++
++        <div className="text-center">
++          <Button variant="outline" size="sm" onClick={handleReset} className="text-red-600 hover:text-red-700">
++            Reset progress (local only)
++          </Button>
++          <p className="text-xs text-gray-500 mt-2">
++            Progress is stored locally on this device only. No data is synced or shared.
++          </p>
++        </div>
++      </div>
++    </section>
++  )
++}
++
+
+diff --git a/web/components/autism/evidence-updates.tsx b/web/components/autism/evidence-updates.tsx
+new file mode 100644
+index 0000000..093bacd
+--- /dev/null
++++ b/web/components/autism/evidence-updates.tsx
+@@ -0,0 +1,207 @@
++'use client'
++
++import { useState } from 'react'
++import { Card } from '@/components/ui/card'
++import { Button } from '@/components/ui/button'
++import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
++import { EVIDENCE_LINKS, PUBMED_PRESETS } from '@/lib/autism/evidence-base'
++import { ExternalLink, Loader2 } from 'lucide-react'
++import type { PubMedArticle } from '@/types/autism'
++import { toast } from 'sonner'
++
++export function EvidenceUpdates() {
++  const [pubmedResults, setPubmedResults] = useState<PubMedArticle[]>([])
++  const [loading, setLoading] = useState(false)
++  const [selectedPreset, setSelectedPreset] = useState('')
++
++  const fetchPubMed = async (query: string) => {
++    setLoading(true)
++    setSelectedPreset(query)
++    try {
++      const res = await fetch(`/api/autism/pubmed?query=${encodeURIComponent(query)}`)
++      const data = await res.json()
++      setPubmedResults(data.articles || [])
++    } catch (e) {
++      console.error('PubMed fetch error:', e)
++      toast.error('Could not fetch PubMed', {
++        description: 'Please try again in a moment.'
++      })
++    } finally {
++      setLoading(false)
++    }
++  }
++
++  return (
++    <section id="evidence" className="scroll-mt-24 py-16 md:py-20 bg-white">
++      <div className="container max-w-6xl mx-auto px-4">
++        <div className="mb-8 flex flex-col gap-2">
++          <p className="text-sm font-medium text-blue-700">Evidence</p>
++          <h2 className="text-3xl font-bold text-gray-900">Latest evidence</h2>
++          <p className="text-gray-600">
++            UK guidance first (NICE/NHS/GOV.UK), plus US/EU links and PubMed research you can fetch on demand.
++          </p>
++        </div>
++
++        <Tabs defaultValue="uk" className="w-full">
++          <TabsList className="grid w-full grid-cols-3 mb-6">
++            <TabsTrigger value="uk">UK Guidance</TabsTrigger>
++            <TabsTrigger value="us-eu">US / EU</TabsTrigger>
++            <TabsTrigger value="pubmed">PubMed Research</TabsTrigger>
++          </TabsList>
++
++          <TabsContent value="uk" className="space-y-4">
++            <Card className="p-5">
++              <h3 className="font-semibold text-gray-900 mb-3">NICE Guidelines</h3>
++              <div className="space-y-2">
++                <a href={EVIDENCE_LINKS.NICE_CG170.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 text-sm text-blue-600 hover:text-blue-800">
++                  <ExternalLink className="w-4 h-4 mt-0.5 flex-shrink-0" />
++                  <span>{EVIDENCE_LINKS.NICE_CG170.title}</span>
++                </a>
++                <a href={EVIDENCE_LINKS.NICE_CG128.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 text-sm text-blue-600 hover:text-blue-800">
++                  <ExternalLink className="w-4 h-4 mt-0.5 flex-shrink-0" />
++                  <span>{EVIDENCE_LINKS.NICE_CG128.title}</span>
++                </a>
++                <a href={EVIDENCE_LINKS.NICE_CG142.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 text-sm text-blue-600 hover:text-blue-800">
++                  <ExternalLink className="w-4 h-4 mt-0.5 flex-shrink-0" />
++                  <span>{EVIDENCE_LINKS.NICE_CG142.title}</span>
++                </a>
++              </div>
++            </Card>
++
++            <Card className="p-5">
++              <h3 className="font-semibold text-gray-900 mb-3">GOV.UK & Education</h3>
++              <div className="space-y-2">
++                <a href={EVIDENCE_LINKS.GOV_PINS.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 text-sm text-blue-600 hover:text-blue-800">
++                  <ExternalLink className="w-4 h-4 mt-0.5 flex-shrink-0" />
++                  <span>{EVIDENCE_LINKS.GOV_PINS.title}</span>
++                </a>
++                <a href={EVIDENCE_LINKS.SEND_CODE.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 text-sm text-blue-600 hover:text-blue-800">
++                  <ExternalLink className="w-4 h-4 mt-0.5 flex-shrink-0" />
++                  <span>{EVIDENCE_LINKS.SEND_CODE.title}</span>
++                </a>
++                <a href={EVIDENCE_LINKS.EEF_SEND.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 text-sm text-blue-600 hover:text-blue-800">
++                  <ExternalLink className="w-4 h-4 mt-0.5 flex-shrink-0" />
++                  <span>{EVIDENCE_LINKS.EEF_SEND.title}</span>
++                </a>
++                <a href={EVIDENCE_LINKS.AET.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 text-sm text-blue-600 hover:text-blue-800">
++                  <ExternalLink className="w-4 h-4 mt-0.5 flex-shrink-0" />
++                  <span>{EVIDENCE_LINKS.AET.title}</span>
++                </a>
++              </div>
++            </Card>
++
++            <Card className="p-5">
++              <h3 className="font-semibold text-gray-900 mb-3">NHS Resources</h3>
++              <div className="space-y-2">
++                <a href={EVIDENCE_LINKS.NHS_AUTISM.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 text-sm text-blue-600 hover:text-blue-800">
++                  <ExternalLink className="w-4 h-4 mt-0.5 flex-shrink-0" />
++                  <span>{EVIDENCE_LINKS.NHS_AUTISM.title}</span>
++                </a>
++              </div>
++            </Card>
++          </TabsContent>
++
++          <TabsContent value="us-eu" className="space-y-4">
++            <Card className="p-5">
++              <h3 className="font-semibold text-gray-900 mb-3">United States (CDC & National)</h3>
++              <div className="space-y-2">
++                <a href={EVIDENCE_LINKS.CDC_DATA.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 text-sm text-blue-600 hover:text-blue-800">
++                  <ExternalLink className="w-4 h-4 mt-0.5 flex-shrink-0" />
++                  <span>{EVIDENCE_LINKS.CDC_DATA.title}</span>
++                </a>
++                <a href={EVIDENCE_LINKS.CDC_PREVALENCE.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 text-sm text-blue-600 hover:text-blue-800">
++                  <ExternalLink className="w-4 h-4 mt-0.5 flex-shrink-0" />
++                  <span>{EVIDENCE_LINKS.CDC_PREVALENCE.title}</span>
++                </a>
++                <a href={EVIDENCE_LINKS.AUTISM_SOCIETY.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 text-sm text-blue-600 hover:text-blue-800">
++                  <ExternalLink className="w-4 h-4 mt-0.5 flex-shrink-0" />
++                  <span>{EVIDENCE_LINKS.AUTISM_SOCIETY.title}</span>
++                </a>
++              </div>
++            </Card>
++
++            <Card className="p-5">
++              <h3 className="font-semibold text-gray-900 mb-3">European Union</h3>
++              <div className="space-y-2">
++                <a href={EVIDENCE_LINKS.AUTISM_EUROPE.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 text-sm text-blue-600 hover:text-blue-800">
++                  <ExternalLink className="w-4 h-4 mt-0.5 flex-shrink-0" />
++                  <span>{EVIDENCE_LINKS.AUTISM_EUROPE.title}</span>
++                </a>
++                <a href={EVIDENCE_LINKS.EASNIE.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 text-sm text-blue-600 hover:text-blue-800">
++                  <ExternalLink className="w-4 h-4 mt-0.5 flex-shrink-0" />
++                  <span>{EVIDENCE_LINKS.EASNIE.title}</span>
++                </a>
++              </div>
++            </Card>
++          </TabsContent>
++
++          <TabsContent value="pubmed" className="space-y-4">
++            <Card className="p-5">
++              <h3 className="font-semibold text-gray-900 mb-4">Search Peer-Reviewed Research</h3>
++              <p className="text-sm text-gray-600 mb-4">
++                Choose a topic to find recent systematic reviews and intervention studies:
++              </p>
++              <div className="flex flex-wrap gap-2">
++                {PUBMED_PRESETS.map(preset => (
++                  <Button
++                    key={preset.query}
++                    size="sm"
++                    variant={selectedPreset === preset.query ? 'default' : 'outline'}
++                    onClick={() => fetchPubMed(preset.query)}
++                    disabled={loading}
++                  >
++                    {preset.label}
++                  </Button>
++                ))}
++              </div>
++            </Card>
++
++            {loading && (
++              <Card className="p-8 text-center">
++                <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-3" />
++                <p className="text-sm text-gray-600">Searching PubMed...</p>
++              </Card>
++            )}
++
++            {!loading && pubmedResults.length > 0 && (
++              <div className="space-y-4">
++                {pubmedResults.map(article => (
++                  <Card key={article.pmid} className="p-5">
++                    <h4 className="font-semibold text-gray-900 mb-2">{article.title}</h4>
++                    <p className="text-xs text-gray-600 mb-2">
++                      {article.journal} {article.year && `(${article.year})`}
++                    </p>
++                    {article.authors.length > 0 && (
++                      <p className="text-xs text-gray-500 mb-2">
++                        {article.authors.join(', ')}
++                      </p>
++                    )}
++                    {article.abstract && (
++                      <p className="text-sm text-gray-700 mb-3 line-clamp-3">{article.abstract}</p>
++                    )}
++                    <a
++                      href={article.url}
++                      target="_blank"
++                      rel="noopener noreferrer"
++                      className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
++                    >
++                      <ExternalLink className="w-4 h-4" />
++                      View on PubMed (PMID: {article.pmid})
++                    </a>
++                  </Card>
++                ))}
++              </div>
++            )}
++
++            {!loading && pubmedResults.length === 0 && selectedPreset && (
++              <Card className="p-8 text-center">
++                <p className="text-gray-600">No results found. Try a different topic.</p>
++              </Card>
++            )}
++          </TabsContent>
++        </Tabs>
++      </div>
++    </section>
++  )
++}
++
+
+diff --git a/web/components/autism/pathways-support.tsx b/web/components/autism/pathways-support.tsx
+new file mode 100644
+index 0000000..af02f37
+--- /dev/null
++++ b/web/components/autism/pathways-support.tsx
+@@ -0,0 +1,140 @@
++'use client'
++
++import { Card } from '@/components/ui/card'
++import { useUserContext } from '@/hooks/useAutismProgress'
++import { ExternalLink } from 'lucide-react'
++
++export function PathwaysSupport() {
++  const { context } = useUserContext()
++
++  const pathways = {
++    uk: {
++      title: 'UK Pathways & Support',
++      sections: [
++        {
++          heading: 'SEND & EHCP Process',
++          items: [
++            'Request SEND assessment through school SENCO',
++            'Prepare evidence: reports, observations, parent/child views',
++            'EHCP assessment takes up to 20 weeks',
++            'Annual reviews to update support',
++            'Appeal rights if refused'
++          ],
++          links: [
++            { text: 'SEND Code of Practice', url: 'https://www.gov.uk/government/publications/send-code-of-practice-0-to-25' },
++            { text: 'IPSEA (legal advice)', url: 'https://www.ipsea.org.uk/' }
++          ]
++        },
++        {
++          heading: 'Diagnosis & Assessment',
++          items: [
++            'GP referral to community paediatrics or CAMHS',
++            'Current NHS wait times: 12–24+ months in many areas',
++            'Private assessment option (£1,000–£2,500)',
++            'Right to Support referral scheme (some areas)'
++          ],
++          links: [
++            { text: 'National Autistic Society guidance', url: 'https://www.autism.org.uk/' }
++          ]
++        }
++      ]
++    },
++    us: {
++      title: 'US Pathways & Support',
++      sections: [
++        {
++          heading: 'IEP & 504 Plans',
++          items: [
++            'Request evaluation in writing to school district',
++            'IEP for students needing specialized instruction',
++            '504 Plan for accommodations without special education',
++            'IDEA protects right to free appropriate public education (FAPE)',
++            'Dispute resolution and mediation available'
++          ],
++          links: [
++            { text: 'Parent Training & Information Centers', url: 'https://www.parentcenterhub.org/' },
++            { text: 'Understood.org', url: 'https://www.understood.org/' }
++          ]
++        },
++        {
++          heading: 'Medicaid & Funding',
++          items: [
++            'Medicaid waiver programs for autism services',
++            'State-specific autism insurance mandates',
++            'Early intervention (0–3) through state programs',
++            'Supplemental Security Income (SSI) eligibility'
++          ],
++          links: [
++            { text: 'Autism Speaks Resource Guide', url: 'https://www.autismspeaks.org/tool-kit' }
++          ]
++        }
++      ]
++    },
++    eu: {
++      title: 'EU Pathways & Support',
++      sections: [
++        {
++          heading: 'Country-Specific Systems',
++          items: [
++            'Education support varies by member state',
++            'Check national autism organizations',
++            'UN Convention on Rights of Persons with Disabilities applies',
++            'EU disability card pilot (travel/culture access)'
++          ],
++          links: [
++            { text: 'Autism-Europe country resources', url: 'https://www.autismeurope.org/' },
++            { text: 'European Agency for SEN', url: 'https://www.european-agency.org/' }
++          ]
++        }
++      ]
++    }
++  }
++
++  const data = pathways[context.country]
++
++  return (
++    <section id="pathways" className="scroll-mt-24 py-16 md:py-20 bg-gray-50">
++      <div className="container max-w-6xl mx-auto px-4">
++        <div className="mb-8 flex flex-col gap-2">
++          <p className="text-sm font-medium text-blue-700">Pathways</p>
++          <h2 className="text-3xl font-bold text-gray-900">{data.title}</h2>
++          <p className="text-gray-600">Practical signposting and what to do next.</p>
++        </div>
++
++        <div className="grid md:grid-cols-2 gap-6">
++          {data.sections.map((section, i) => (
++            <Card key={i} className="p-6 bg-white/80 backdrop-blur shadow-sm">
++              <h3 className="text-xl font-semibold text-gray-900 mb-4">{section.heading}</h3>
++              <ul className="space-y-2 mb-4 text-sm text-gray-700">
++                {section.items.map((item, j) => (
++                  <li key={j} className="flex items-start gap-2">
++                    <span className="text-blue-600 mt-1">•</span>
++                    <span>{item}</span>
++                  </li>
++                ))}
++              </ul>
++              {section.links && section.links.length > 0 && (
++                <div className="pt-4 border-t space-y-2">
++                  <h4 className="text-sm font-semibold text-gray-900 mb-2">Resources:</h4>
++                  {section.links.map((link, k) => (
++                    <a
++                      key={k}
++                      href={link.url}
++                      target="_blank"
++                      rel="noopener noreferrer"
++                      className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
++                    >
++                      <ExternalLink className="w-4 h-4" />
++                      {link.text}
++                    </a>
++                  ))}
++                </div>
++              )}
++            </Card>
++          ))}
++        </div>
++      </div>
++    </section>
++  )
++}
++
+
+diff --git a/web/components/autism/pdf-toolkit.tsx b/web/components/autism/pdf-toolkit.tsx
+new file mode 100644
+index 0000000..fab4267
+--- /dev/null
++++ b/web/components/autism/pdf-toolkit.tsx
+@@ -0,0 +1,81 @@
++'use client'
++
++import { Button } from '@/components/ui/button'
++import { Card } from '@/components/ui/card'
++import { Download } from 'lucide-react'
++import { toast } from 'sonner'
++
++export function PDFToolkit() {
++  const toolkits = [
++    {
++      id: 'one-page-profile',
++      title: 'One-Page Profile Template',
++      description: 'Key information about the individual in one place'
++    },
++    {
++      id: 'visual-schedule',
++      title: 'Visual Schedule Templates',
++      description: 'Now/Next boards and daily timetables'
++    },
++    {
++      id: 'calm-plan',
++      title: 'Calm Plan Card',
++      description: 'What helps / what to avoid / early signs / recovery'
++    },
++    {
++      id: 'home-school',
++      title: 'Home-School Communication Sheet',
++      description: 'Daily handover template'
++    },
++    {
++      id: 'workplace-adjustments',
++      title: 'Workplace Adjustments Checklist',
++      description: 'For employers and employees'
++    }
++  ]
++
++  const handleDownload = async (toolkitId: string) => {
++    toast.message('PDF export coming soon', {
++      description: 'For now, use the existing templates in Resources. We can wire up full exports next.'
++    })
++    // Future: Call API route to generate PDF
++    // const res = await fetch(`/api/autism/pdf?toolkit=${toolkitId}`)
++    // const blob = await res.blob()
++    // const url = window.URL.createObjectURL(blob)
++    // const a = document.createElement('a')
++    // a.href = url
++    // a.download = `${toolkitId}.pdf`
++    // a.click()
++  }
++
++  return (
++    <section id="downloads" className="scroll-mt-24 py-16 md:py-20 bg-white">
++      <div className="container max-w-6xl mx-auto px-4">
++        <div className="mb-8 flex flex-col gap-2">
++          <p className="text-sm font-medium text-blue-700">Downloads</p>
++          <h2 className="text-3xl font-bold text-gray-900">Downloadable toolkits</h2>
++          <p className="text-gray-600">Print-ready resources you can customize and share.</p>
++        </div>
++
++        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
++          {toolkits.map(toolkit => (
++            <Card key={toolkit.id} className="p-6 hover:shadow-lg transition-shadow bg-white/80 backdrop-blur">
++              <h3 className="text-lg font-semibold text-gray-900 mb-2">{toolkit.title}</h3>
++              <p className="text-sm text-gray-600 mb-4">{toolkit.description}</p>
++              <Button
++                size="sm"
++                variant="outline"
++                onClick={() => handleDownload(toolkit.id)}
++                className="w-full flex items-center justify-center gap-2"
++              >
++                <Download className="w-4 h-4" />
++                Download PDF
++              </Button>
++            </Card>
++          ))}
++        </div>
++      </div>
++    </section>
++  )
++}
++
+
+diff --git a/web/components/autism/references-section.tsx b/web/components/autism/references-section.tsx
+new file mode 100644
+index 0000000..72ffb50
+--- /dev/null
++++ b/web/components/autism/references-section.tsx
+@@ -0,0 +1,142 @@
++'use client'
++
++import { Card } from '@/components/ui/card'
++import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
++import { EVIDENCE_LINKS, MYTHS_FACTS } from '@/lib/autism/evidence-base'
++import { ExternalLink } from 'lucide-react'
++
++export function ReferencesSection() {
++  return (
++    <section id="references" className="scroll-mt-24 py-16 md:py-20 bg-gray-50">
++      <div className="container max-w-6xl mx-auto px-4">
++        <div className="mb-8 flex flex-col gap-2">
++          <p className="text-sm font-medium text-blue-700">Safety & sources</p>
++          <h2 className="text-3xl font-bold text-gray-900">References &amp; myths vs. facts</h2>
++          <p className="text-gray-600">
++            UK-first public guidance (NICE/NHS/GOV.UK), plus US/EU support links and clarity on common misconceptions.
++          </p>
++        </div>
++
++        <Tabs defaultValue="references" className="w-full">
++          <TabsList className="grid w-full grid-cols-2 mb-6">
++            <TabsTrigger value="references">References</TabsTrigger>
++            <TabsTrigger value="myths">Myths vs. Facts</TabsTrigger>
++          </TabsList>
++
++          <TabsContent value="references">
++            <Card className="p-6">
++              <h3 className="font-semibold text-lg text-gray-900 mb-4">Curated Evidence Pack</h3>
++
++              <div className="space-y-6">
++                <div>
++                  <h4 className="font-semibold text-gray-900 mb-3">UK (NHS / NICE / GOV.UK / Education)</h4>
++                  <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700">
++                    {[
++                      EVIDENCE_LINKS.NICE_CG170,
++                      EVIDENCE_LINKS.NICE_CG128,
++                      EVIDENCE_LINKS.NICE_CG142,
++                      EVIDENCE_LINKS.GOV_PINS,
++                      EVIDENCE_LINKS.SEND_CODE,
++                      EVIDENCE_LINKS.EEF_SEND,
++                      EVIDENCE_LINKS.AET,
++                      EVIDENCE_LINKS.NHS_AUTISM
++                    ].map((link, i) => (
++                      <li key={i} className="pl-2">
++                        <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 inline-flex items-center gap-1">
++                          {link.title}
++                          <ExternalLink className="w-3 h-3" />
++                        </a>
++                        {link.citation && <p className="text-xs text-gray-500 mt-1 ml-4">{link.citation}</p>}
++                      </li>
++                    ))}
++                  </ol>
++                </div>
++
++                <div>
++                  <h4 className="font-semibold text-gray-900 mb-3">US (CDC & National Support)</h4>
++                  <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700" start={9}>
++                    {[
++                      EVIDENCE_LINKS.CDC_DATA,
++                      EVIDENCE_LINKS.CDC_PREVALENCE,
++                      EVIDENCE_LINKS.AUTISM_SOCIETY
++                    ].map((link, i) => (
++                      <li key={i} className="pl-2">
++                        <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 inline-flex items-center gap-1">
++                          {link.title}
++                          <ExternalLink className="w-3 h-3" />
++                        </a>
++                        {link.citation && <p className="text-xs text-gray-500 mt-1 ml-4">{link.citation}</p>}
++                      </li>
++                    ))}
++                  </ol>
++                </div>
++
++                <div>
++                  <h4 className="font-semibold text-gray-900 mb-3">EU</h4>
++                  <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700" start={12}>
++                    {[
++                      EVIDENCE_LINKS.AUTISM_EUROPE,
++                      EVIDENCE_LINKS.EASNIE
++                    ].map((link, i) => (
++                      <li key={i} className="pl-2">
++                        <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 inline-flex items-center gap-1">
++                          {link.title}
++                          <ExternalLink className="w-3 h-3" />
++                        </a>
++                        {link.citation && <p className="text-xs text-gray-500 mt-1 ml-4">{link.citation}</p>}
++                      </li>
++                    ))}
++                  </ol>
++                </div>
++
++                <p className="text-xs text-gray-500 mt-6">
++                  All URLs verified December 2024 / January 2025. For PubMed peer-reviewed studies, see the "Latest Evidence" section above.
++                </p>
++              </div>
++            </Card>
++          </TabsContent>
++
++          <TabsContent value="myths">
++            <div className="space-y-4">
++              {MYTHS_FACTS.map((item, i) => (
++                <Card key={i} className="p-6">
++                  <div className="flex items-start gap-4">
++                    <div className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-bold flex-shrink-0">
++                      MYTH
++                    </div>
++                    <div className="flex-1">
++                      <p className="text-gray-900 font-medium mb-3">"{item.myth}"</p>
++                      <div className="bg-green-50 border-l-4 border-green-600 p-4 rounded">
++                        <div className="flex items-start gap-2">
++                          <div className="bg-green-600 text-white px-2 py-0.5 rounded text-xs font-bold flex-shrink-0">
++                            FACT
++                          </div>
++                          <p className="text-gray-900 text-sm">{item.fact}</p>
++                        </div>
++                      </div>
++                      <div className="mt-3 flex flex-wrap gap-2">
++                        {item.sources.map((source, j) => (
++                          <a
++                            key={j}
++                            href={source.url}
++                            target="_blank"
++                            rel="noopener noreferrer"
++                            className="text-xs text-blue-600 hover:text-blue-800 inline-flex items-center gap-1"
++                          >
++                            Source: {source.type}
++                            <ExternalLink className="w-3 h-3" />
++                          </a>
++                        ))}
++                      </div>
++                    </div>
++                  </div>
++                </Card>
++              ))}
++            </div>
++          </TabsContent>
++        </Tabs>
++      </div>
++    </section>
++  )
++}
++
+
+diff --git a/web/components/autism/audience-switcher.tsx b/web/components/autism/audience-switcher.tsx
+new file mode 100644
+index 0000000..e4c92cb
+--- /dev/null
++++ b/web/components/autism/audience-switcher.tsx
+@@ -0,0 +1,46 @@
++'use client'
++
++import { Button } from '@/components/ui/button'
++import type { AudienceType } from '@/types/autism'
++import { useUserContext } from '@/hooks/useAutismProgress'
++
++const AUDIENCES: { value: AudienceType; label: string; icon: string }[] = [
++  { value: 'teacher', label: 'Teacher / SENCO', icon: '👩‍🏫' },
++  { value: 'parent', label: 'Parent / Carer', icon: '👨‍👩‍👧' },
++  { value: 'autistic', label: 'Autistic Person', icon: '✨' },
++  { value: 'employer', label: 'Employer', icon: '💼' }
++]
++
++export function AudienceSwitcher() {
++  const { context, updateContext, hydrated } = useUserContext()
++
++  if (!hydrated) {
++    return <div className="h-12 bg-gray-100 animate-pulse rounded-lg" />
++  }
++
++  return (
++    <div className="bg-white/80 backdrop-blur border rounded-xl p-4 shadow-sm">
++      <div className="flex items-center justify-between gap-3 mb-3">
++        <div>
++          <div className="text-xs font-medium text-gray-600">Audience</div>
++          <div className="text-sm font-semibold text-gray-900">Who is this for?</div>
++        </div>
++      </div>
++      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
++        {AUDIENCES.map((audience) => (
++          <Button
++            key={audience.value}
++            variant={context.audience === audience.value ? 'default' : 'outline'}
++            size="sm"
++            onClick={() => updateContext({ audience: audience.value })}
++            className="justify-start text-left h-auto py-3 rounded-lg"
++          >
++            <span className="mr-2 text-lg" aria-hidden="true">{audience.icon}</span>
++            <span className="text-xs md:text-sm">{audience.label}</span>
++          </Button>
++        ))}
++      </div>
++    </div>
++  )
++}
++
+
+diff --git a/web/components/autism/country-switcher.tsx b/web/components/autism/country-switcher.tsx
+new file mode 100644
+index 0000000..f97a3f4
+--- /dev/null
++++ b/web/components/autism/country-switcher.tsx
+@@ -0,0 +1,45 @@
++'use client'
++
++import { Button } from '@/components/ui/button'
++import type { CountryType } from '@/types/autism'
++import { useUserContext } from '@/hooks/useAutismProgress'
++
++const COUNTRIES: { value: CountryType; label: string; flag: string }[] = [
++  { value: 'uk', label: 'United Kingdom', flag: '🇬🇧' },
++  { value: 'us', label: 'United States', flag: '🇺🇸' },
++  { value: 'eu', label: 'European Union', flag: '🇪🇺' }
++]
++
++export function CountrySwitcher() {
++  const { context, updateContext, hydrated } = useUserContext()
++
++  if (!hydrated) {
++    return <div className="h-12 bg-gray-100 animate-pulse rounded-lg" />
++  }
++
++  return (
++    <div className="bg-white/80 backdrop-blur border rounded-xl p-4 shadow-sm">
++      <div className="flex items-center justify-between gap-3 mb-3">
++        <div>
++          <div className="text-xs font-medium text-gray-600">Region</div>
++          <div className="text-sm font-semibold text-gray-900">Where should we signpost?</div>
++        </div>
++      </div>
++      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
++        {COUNTRIES.map((country) => (
++          <Button
++            key={country.value}
++            variant={context.country === country.value ? 'default' : 'outline'}
++            size="sm"
++            onClick={() => updateContext({ country: country.value })}
++            className="justify-start text-left rounded-lg"
++          >
++            <span className="mr-2 text-lg" aria-hidden="true">{country.flag}</span>
++            <span className="text-sm">{country.label}</span>
++          </Button>
++        ))}
++      </div>
++    </div>
++  )
++}
++

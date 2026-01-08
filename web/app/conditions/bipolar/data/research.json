@@ -1,0 +1,2720 @@
+{
+  "metadata": {
+    "title": "Comprehensive Evidence-Based Research on Bipolar Disorder",
+    "description": "Authoritative research compilation from NHS, PubMed, WHO, CDC, NICE, EMA, and APA",
+    "compiled_date": "2026-01-06",
+    "compiled_by": "Senior Healthcare Scientist, UK",
+    "version": "1.0",
+    "language_coverage": ["UK English", "US English"],
+    "primary_sources": [
+      "NHS (National Health Service, UK)",
+      "PubMed Database",
+      "WHO (World Health Organization)",
+      "CDC (Centers for Disease Control and Prevention, US)",
+      "NICE (National Institute for Health and Care Excellence, UK)",
+      "EMA (European Medicines Agency)",
+      "APA (American Psychiatric Association)"
+    ]
+  },
+  
+  "diagnosis": {
+    "overview": {
+      "uk_terminology": "Bipolar disorder (formerly manic depression)",
+      "us_terminology": "Bipolar disorder",
+      "description": "A mental health condition characterized by extreme mood swings, including periods of high mood (mania or hypomania) and low mood (depression), affecting mood, energy, activity levels, and functional ability."
+    },
+    
+    "diagnostic_criteria": {
+      "dsm5": {
+        "source": "American Psychiatric Association DSM-5",
+        "general_principles": [
+          "Symptoms must not be attributable to substance effects or another medical condition",
+          "Episodes not better explained by schizoaffective disorder, schizophrenia, or delusional disorder",
+          "Emphasis on changes in activity and energy alongside mood disturbances"
+        ],
+        "bipolar_i_disorder": {
+          "criteria": "At least one manic episode (major depressive episode common but not required)",
+          "manic_episode_definition": {
+            "duration": "At least 7 consecutive days (or any duration if hospitalization necessary)",
+            "core_features": "Abnormally and persistently elevated, expansive, or irritable mood AND abnormally increased activity or energy",
+            "required_symptoms": "3 or more symptoms (4 if mood only irritable)",
+            "symptoms": [
+              "Inflated self-esteem or grandiosity",
+              "Decreased need for sleep",
+              "More talkative than usual or pressure to keep talking",
+              "Flight of ideas or racing thoughts",
+              "Distractibility",
+              "Increase in goal-directed activity or psychomotor agitation",
+              "Excessive involvement in activities with high potential for painful consequences"
+            ],
+            "severity": "Marked impairment in functioning, hospitalization necessary, or psychotic features present"
+          }
+        },
+        "bipolar_ii_disorder": {
+          "criteria": "At least one hypomanic episode AND at least one major depressive episode, with no history of full manic episode",
+          "hypomanic_episode_definition": {
+            "duration": "At least 4 consecutive days",
+            "core_features": "Persistently elevated, expansive, or irritable mood AND increased activity or energy",
+            "required_symptoms": "3 or more symptoms (4 if mood only irritable)",
+            "symptoms": "Same as manic episode",
+            "severity": "Unequivocal change in functioning observable by others, NOT severe enough to cause marked impairment or require hospitalization, no psychotic features"
+          }
+        },
+        "cyclothymic_disorder": {
+          "criteria": "Numerous periods of hypomanic symptoms (not meeting full criteria) and depressive symptoms (not meeting full criteria) for at least 2 years (1 year in children/adolescents)",
+          "exclusions": "Criteria for major depressive, manic, or hypomanic episodes never met during this period"
+        },
+        "major_depressive_episode": {
+          "duration": "2-week period",
+          "required_symptoms": "5 or more symptoms, including depressed mood or loss of interest/pleasure",
+          "symptoms": [
+            "Depressed mood most of the day, nearly every day",
+            "Markedly diminished interest or pleasure in activities",
+            "Significant weight loss/gain or appetite changes",
+            "Insomnia or hypersomnia",
+            "Psychomotor agitation or retardation",
+            "Fatigue or loss of energy",
+            "Feelings of worthlessness or excessive guilt",
+            "Decreased ability to think or concentrate",
+            "Recurrent thoughts of death or suicidal ideation"
+          ],
+          "impairment": "Clinically significant distress or impairment in functioning"
+        },
+        "specifiers": [
+          "With rapid cycling (4+ mood episodes in 12 months)",
+          "With psychotic features (mood-congruent or mood-incongruent)",
+          "With mixed features",
+          "With anxious distress",
+          "With catatonia",
+          "With peripartum onset",
+          "With seasonal pattern"
+        ]
+      },
+      
+      "icd11": {
+        "source": "WHO ICD-11 (effective January 2022)",
+        "nomenclature": "Bipolar disorders (updated from 'bipolar affective disorders' in ICD-10)",
+        "organizational_structure": "Grouped under 'Bipolar or Related Disorders', with 'Mood Disorders' as superordinate grouping",
+        "building_blocks_approach": "Mood episodes (depressive, manic, mixed, hypomanic) described first; longitudinal pattern determines diagnosis",
+        "bipolar_i_disorder": "At least one past or present manic or mixed episode (depressive episodes may occur but not obligatory)",
+        "bipolar_ii_disorder": "At least one hypomanic episode and major depressive episode, no history of manic episodes",
+        "manic_episode": {
+          "core_criteria": "Extreme and persistent mood changes (euphoria, irritability, expansiveness, mood lability) AND abnormally increased activity or subjective experience of increased energy",
+          "accessory_symptoms": "Several of the following: increased talkativeness, flight of ideas, increased self-esteem/grandiosity, decreased need for sleep, distractibility, impulsive/reckless behavior, increased goal-directed activity",
+          "duration": "Most of the day, nearly every day for minimum 1 week (unless shortened by treatment/hospitalization)",
+          "functional_impairment": "Significant impairment in all areas of functioning, potentially requiring intensive treatment or hospitalization, may include psychotic symptoms"
+        },
+        "hypomanic_episode": {
+          "core_criteria": "Same as manic episode",
+          "duration": "Several days (interpreted as 4+ consecutive days)",
+          "functional_impairment": "Significant change in usual mood and behavior apparent to those who know the individual well, does NOT involve marked impairment or psychosis"
+        },
+        "mixed_episodes": "Retained in ICD-11 (several prominent manic and depressive symptoms occurring simultaneously or alternating rapidly for at least 2 weeks)",
+        "cyclothymic_disorder": "2-year period with multiple hypomanic and dysthymic symptoms not reaching threshold for mania or formal depressive episode; symptoms can cause significant impairment",
+        "key_differences_from_dsm5": [
+          "ICD-11 retains mixed episodes as separate category",
+          "ICD-11 maintains bereavement exclusion for depressive episodes",
+          "ICD-11 retains dysthymic disorder as separate entity",
+          "Less restrictive criteria for hypomanic functional impairment"
+        ]
+      }
+    },
+    
+    "types_of_bipolar_disorder": {
+      "bipolar_i": {
+        "uk_description": "Characterised by at least one manic episode, which may be preceded or followed by hypomanic or major depressive episodes",
+        "us_description": "Characterized by at least one manic episode, which may be preceded or followed by hypomanic or major depressive episodes",
+        "severity": "Most severe form, with full manic episodes"
+      },
+      "bipolar_ii": {
+        "description": "At least one hypomanic episode and one major depressive episode, without full manic episodes",
+        "characteristics": "Hypomania less severe than mania, but depressive episodes can be equally severe"
+      },
+      "cyclothymic_disorder": {
+        "uk_description": "Chronic fluctuating mood disturbance with numerous hypomanic and depressive symptoms that do not meet full criteria for episodes",
+        "us_description": "Chronic fluctuating mood disturbance with numerous hypomanic and depressive symptoms that do not meet full criteria for episodes",
+        "duration": "At least 2 years (1 year in children/adolescents)"
+      },
+      "rapid_cycling": {
+        "definition": "Four or more distinct mood episodes within 12 months",
+        "prevalence": "Occurs in 10-20% of bipolar disorder cases",
+        "characteristics": "More common in women, associated with worse prognosis"
+      },
+      "mixed_episodes": {
+        "uk_description": "Simultaneous or rapidly alternating manic and depressive symptoms",
+        "us_description": "Simultaneous or rapidly alternating manic and depressive symptoms",
+        "risk": "Increased risk of suicide",
+        "dsm5_approach": "Uses 'with mixed features' specifier",
+        "icd11_approach": "Retains as separate diagnostic category"
+      }
+    },
+    
+    "assessment_tools": {
+      "screening_methods": [
+        {
+          "name": "Mood Disorder Questionnaire (MDQ)",
+          "purpose": "Screening tool for bipolar disorder",
+          "setting": "Primary care and research"
+        },
+        {
+          "name": "Young Mania Rating Scale (YMRS)",
+          "purpose": "Assess severity of manic symptoms",
+          "setting": "Clinical assessment and research"
+        },
+        {
+          "name": "Hamilton Depression Rating Scale (HDRS)",
+          "purpose": "Assess severity of depressive symptoms",
+          "setting": "Clinical assessment"
+        },
+        {
+          "name": "Beck Depression Inventory (BDI)",
+          "purpose": "Self-report measure of depression severity",
+          "setting": "Clinical and research"
+        },
+        {
+          "name": "Structured Clinical Interview for DSM (SCID)",
+          "purpose": "Comprehensive diagnostic assessment",
+          "setting": "Research and specialist clinical settings"
+        },
+        {
+          "name": "MINI International Neuropsychiatric Interview",
+          "purpose": "Brief structured diagnostic interview",
+          "setting": "Clinical and research"
+        }
+      ],
+      "clinical_assessment_components": [
+        "Detailed psychiatric history including mood episodes",
+        "Episodes of overactivity/disinhibition",
+        "Symptoms between episodes",
+        "Triggers and relapse patterns",
+        "Family history of mood disorders",
+        "Developmental and lifelong mood changes",
+        "Social and personal functioning",
+        "Psychosocial stressors",
+        "Mental and physical comorbidities",
+        "Medication history and treatment response",
+        "Risk assessment (self-harm, suicide, harm to others)"
+      ],
+      "nice_recommendations": {
+        "primary_care": "Inquire about previous periods of overactivity or disinhibited behaviour lasting 4+ days when adults present with depression",
+        "specialist_assessment": "Full psychiatric assessment in service capable of offering comprehensive interventions",
+        "questionnaire_use": "Should NOT be used in primary care to identify bipolar disorder"
+      }
+    },
+    
+    "differential_diagnosis": {
+      "conditions_to_consider": [
+        {
+          "condition": "Major Depressive Disorder (Unipolar Depression)",
+          "key_differences": "No history of manic or hypomanic episodes; bipolar disorder often misdiagnosed as MDD initially"
+        },
+        {
+          "condition": "Schizophrenia Spectrum Disorders",
+          "key_differences": "Psychotic symptoms persist beyond mood episodes in schizophrenia; negative symptoms more prominent"
+        },
+        {
+          "condition": "Schizoaffective Disorder",
+          "key_differences": "Psychotic symptoms occur in absence of mood episodes"
+        },
+        {
+          "condition": "Personality Disorders (especially Borderline)",
+          "key_differences": "Mood instability more reactive to interpersonal events; identity disturbance; chronic pattern"
+        },
+        {
+          "condition": "Attention-Deficit/Hyperactivity Disorder (ADHD)",
+          "key_differences": "Symptoms present since childhood; no distinct mood episodes; different quality of symptoms"
+        },
+        {
+          "condition": "Substance Use Disorders",
+          "key_differences": "Mood symptoms directly related to substance use/withdrawal; temporal relationship crucial"
+        },
+        {
+          "condition": "Medical Conditions",
+          "examples": "Hyperthyroidism, hypothyroidism, Cushing's syndrome, multiple sclerosis, brain tumours",
+          "key_differences": "Physical examination and laboratory tests reveal underlying medical cause"
+        }
+      ],
+      "misdiagnosis_statistics": {
+        "prevalence": "Up to 76.8% of individuals with bipolar disorder experience misdiagnosis",
+        "common_misdiagnoses": ["Major depressive disorder", "Schizophrenia", "Borderline personality disorder"],
+        "diagnostic_delay": "Average 5-10 years from symptom onset to correct diagnosis",
+        "racial_disparities": "African-American men 25% more likely to be misdiagnosed with schizophrenia vs 7% for Caucasian men"
+      }
+    }
+  },
+  
+  "treatment_options": {
+    "overview": {
+      "general_principles": [
+        "Bipolar disorder cannot be cured but can be effectively managed",
+        "Treatment combines pharmacological and psychosocial interventions",
+        "Individualised treatment plans essential",
+        "Lifelong management typically required",
+        "Shared decision-making with patients and carers"
+      ],
+      "treatment_goals": [
+        "Stabilise mood and prevent episodes",
+        "Reduce severity and frequency of episodes",
+        "Improve functioning and quality of life",
+        "Prevent relapse",
+        "Reduce suicide risk",
+        "Manage comorbid conditions"
+      ]
+    },
+    
+    "pharmacological_interventions": {
+      "mood_stabilisers": {
+        "uk_spelling": "mood stabilisers",
+        "us_spelling": "mood stabilizers",
+        "overview": "Cornerstone of bipolar disorder treatment for acute episodes and long-term maintenance",
+        "medications": [
+          {
+            "name": "Lithium",
+            "indications": [
+              "Acute mania/hypomania",
+              "Bipolar depression",
+              "Long-term relapse prevention (especially manic episodes)",
+              "Suicide prevention"
+            ],
+            "efficacy": "Gold standard with strongest evidence for long-term relapse prevention",
+            "monitoring_requirements": [
+              "Serum lithium levels (therapeutic range 0.6-1.2 mmol/L)",
+              "Renal function (creatinine, eGFR)",
+              "Thyroid function (TSH, T4)",
+              "Calcium levels",
+              "ECG in patients with cardiac risk factors"
+            ],
+            "monitoring_frequency": "Every 3-6 months once stable",
+            "side_effects": [
+              "Tremor",
+              "Weight gain",
+              "Polyuria and polydipsia",
+              "Hypothyroidism",
+              "Renal impairment",
+              "Cognitive effects",
+              "Nausea",
+              "Diarrhoea"
+            ],
+            "contraindications": [
+              "Severe renal impairment",
+              "Addison's disease",
+              "Untreated hypothyroidism"
+            ],
+            "pregnancy_considerations": "Avoid if possible, especially first trimester (risk of Ebstein's anomaly); if essential, use lowest effective dose with careful monitoring",
+            "nice_guidance": "Should not be initiated in primary care except under shared-care arrangements",
+            "ema_status": "Authorised for bipolar disorder treatment",
+            "predictors_of_response": [
+              "Family history of bipolar disorder and lithium response",
+              "Preserved euthymic intervals",
+              "Classical mania-depression-interval cycles"
+            ]
+          },
+          {
+            "name": "Valproate (Valproic acid, Divalproex sodium)",
+            "uk_spelling": "Valproate",
+            "us_spelling": "Valproate",
+            "indications": [
+              "Acute mania/hypomania",
+              "Mixed episodes",
+              "Maintenance treatment (especially for atypical forms, rapid cycling, dysphoric mania)"
+            ],
+            "efficacy": "Effective for acute mania and maintenance; particularly useful for rapid cycling and mixed states",
+            "monitoring_requirements": [
+              "Liver function tests",
+              "Full blood count",
+              "Serum valproate levels (therapeutic range 50-125 mg/L)"
+            ],
+            "side_effects": [
+              "Weight gain",
+              "Tremor",
+              "Hair loss",
+              "Hepatotoxicity",
+              "Pancreatitis",
+              "Thrombocytopenia",
+              "Sedation"
+            ],
+            "critical_safety_warnings": {
+              "mhra_ema_restrictions": [
+                "Must NOT be initiated in individuals under 55 years unless two specialists independently agree no other effective/tolerated treatment exists",
+                "Must NOT be used in women and girls of childbearing potential unless other options unsuitable AND Pregnancy Prevention Programme in place",
+                "Boys and men must use effective contraception during treatment and for 3 months after stopping",
+                "Men planning family within next year should discuss fertility risks with healthcare professional"
+              ],
+              "teratogenic_risks": [
+                "11% risk of malformations in babies if taken during pregnancy",
+                "30-40% risk of developmental disorders in children exposed in utero",
+                "Includes neural tube defects, facial abnormalities, limb defects, cardiac malformations"
+              ],
+              "pregnancy_prevention_programme_requirements": [
+                "Assessment of pregnancy potential",
+                "Pregnancy tests before starting and regularly during treatment",
+                "Counselling on risks",
+                "Effective contraception (two forms recommended)",
+                "Regular specialist reviews (at least annually)",
+                "Risk acknowledgement form completion"
+              ]
+            },
+            "nice_guidance": "Should not be initiated in primary care",
+            "ema_authorisation": "Treatment of manic episode in bipolar disorder when lithium is contraindicated or not tolerated; continuation after manic episode may be considered in responders",
+            "fda_approval": "Acute mania (divalproex); acute mania and mixed episodes (divalproex extended release)"
+          },
+          {
+            "name": "Lamotrigine",
+            "indications": [
+              "Bipolar depression (less severe episodes)",
+              "Long-term maintenance (especially for preventing depressive episodes)",
+              "Bipolar II disorder"
+            ],
+            "efficacy": "Strong evidence for preventing depressive relapses; modest effect in acute bipolar depression",
+            "titration": "Requires slow dose escalation over several weeks to reduce risk of serious rash",
+            "side_effects": [
+              "Rash (including Stevens-Johnson syndrome - rare but serious)",
+              "Headache",
+              "Nausea",
+              "Dizziness",
+              "Insomnia"
+            ],
+            "monitoring": "Clinical monitoring for rash, especially during titration",
+            "pregnancy_considerations": "Relatively safer than valproate; folic acid supplementation recommended"
+          },
+          {
+            "name": "Carbamazepine",
+            "indications": [
+              "Acute mania/hypomania",
+              "Maintenance treatment (alternative when lithium ineffective)",
+              "Rapid cycling and dysphoric mania"
+            ],
+            "efficacy": "Effective for acute mania; may be better than lithium for rapid cycling",
+            "monitoring_requirements": [
+              "Liver function tests",
+              "Full blood count",
+              "Serum carbamazepine levels"
+            ],
+            "side_effects": [
+              "Dizziness",
+              "Drowsiness",
+              "Nausea",
+              "Rash",
+              "Hyponatraemia",
+              "Leucopenia",
+              "Hepatotoxicity"
+            ],
+            "drug_interactions": "Significant enzyme inducer - multiple drug interactions",
+            "pregnancy_considerations": "Avoid if possible; risk of neural tube defects"
+          }
+        ]
+      },
+      
+      "antipsychotics": {
+        "overview": "Used for acute episodes and maintenance treatment; many have mood-stabilising properties",
+        "first_generation_antipsychotics": {
+          "examples": ["Haloperidol", "Chlorpromazine"],
+          "use": "Primarily for acute mania; less commonly used long-term due to side effect profile",
+          "side_effects": [
+            "Extrapyramidal symptoms (EPS)",
+            "Tardive dyskinesia",
+            "Akathisia",
+            "Parkinsonism"
+          ]
+        },
+        "second_generation_atypical_antipsychotics": {
+          "overview": "Broader therapeutic spectrum; fewer motor side effects than FGAs",
+          "medications": [
+            {
+              "name": "Olanzapine",
+              "indications": [
+                "Acute mania/hypomania",
+                "Bipolar depression (especially with fluoxetine combination)",
+                "Maintenance treatment"
+              ],
+              "efficacy": "Highly effective for acute mania; FDA-approved for bipolar depression (with fluoxetine)",
+              "side_effects": [
+                "Significant weight gain",
+                "Metabolic syndrome",
+                "Diabetes risk",
+                "Dyslipidaemia",
+                "Sedation"
+              ],
+              "nice_recommendations": "First-line option for acute mania/hypomania",
+              "ema_approval": "Approved for bipolar disorders",
+              "monitoring": "Weight, BMI, glucose, lipids, blood pressure"
+            },
+            {
+              "name": "Quetiapine",
+              "indications": [
+                "Acute mania",
+                "Bipolar depression (monotherapy)",
+                "Maintenance treatment"
+              ],
+              "efficacy": "Only medication specifically approved by EMA for bipolar depression in adults; effective across all phases",
+              "side_effects": [
+                "Sedation",
+                "Weight gain",
+                "Metabolic effects",
+                "Hypotension",
+                "Dry mouth"
+              ],
+              "benefits": "Can improve sleep quality and comorbid anxiety",
+              "nice_recommendations": "First-line option for acute mania/hypomania and bipolar depression",
+              "monitoring": "Weight, glucose, lipids, blood pressure"
+            },
+            {
+              "name": "Risperidone",
+              "indications": [
+                "Acute mania/hypomania",
+                "Maintenance treatment"
+              ],
+              "efficacy": "Effective for acute mania",
+              "side_effects": [
+                "Extrapyramidal symptoms (higher risk than other SGAs)",
+                "Hyperprolactinaemia",
+                "Weight gain",
+                "Metabolic effects"
+              ],
+              "formulations": "Oral and long-acting injectable available",
+              "nice_recommendations": "First-line option for acute mania/hypomania"
+            },
+            {
+              "name": "Aripiprazole",
+              "indications": [
+                "Acute mania/hypomania (including adolescents aged 13+)",
+                "Maintenance treatment",
+                "Prevention of recurrence"
+              ],
+              "mechanism": "Partial dopamine D2 receptor agonist (third-generation antipsychotic)",
+              "efficacy": "Effective for acute mania and maintenance; inconsistent results for bipolar depression",
+              "side_effects": [
+                "Akathisia",
+                "Restlessness",
+                "Insomnia",
+                "Nausea",
+                "Lower risk of weight gain and metabolic effects"
+              ],
+              "ema_approval": "Approved for moderate to severe manic episodes in Bipolar I Disorder in adolescents aged 13+",
+              "nice_recommendations": "First-line option for acute mania/hypomania",
+              "formulations": "Oral and long-acting injectable"
+            },
+            {
+              "name": "Lurasidone",
+              "indications": [
+                "Bipolar depression (monotherapy or with lithium/valproate)",
+                "Prevention of recurrence"
+              ],
+              "efficacy": "Effective for bipolar depression; may improve cognition",
+              "side_effects": [
+                "Akathisia",
+                "Nausea",
+                "Sedation",
+                "Favourable rates of weight gain"
+              ],
+              "ema_approval": "Approved for bipolar depression",
+              "fda_approval": "Approved for bipolar depression"
+            },
+            {
+              "name": "Cariprazine",
+              "indications": [
+                "Acute mania",
+                "Bipolar depression",
+                "Maintenance treatment"
+              ],
+              "mechanism": "Partial dopamine D2/D3 receptor agonist (third-generation antipsychotic)",
+              "efficacy": "Significant antidepressant effect on bipolar depression; effective for mania",
+              "side_effects": [
+                "Akathisia",
+                "Extrapyramidal symptoms",
+                "Restlessness",
+                "Favourable rates of weight gain"
+              ],
+              "fda_approval": "Approved for manic and depressive episodes in bipolar disorder"
+            },
+            {
+              "name": "Asenapine",
+              "indications": [
+                "Acute mania/hypomania",
+                "Maintenance treatment"
+              ],
+              "efficacy": "Effective for acute mania and preventing recurrence",
+              "administration": "Sublingual",
+              "side_effects": [
+                "Oral hypoaesthesia",
+                "Dysgeusia",
+                "Sedation",
+                "Weight gain"
+              ],
+              "ema_approval": "Approved for bipolar disorders"
+            },
+            {
+              "name": "Ziprasidone",
+              "indications": [
+                "Acute mania/mixed episodes"
+              ],
+              "efficacy": "Effective for acute mania; inconsistent results for bipolar depression",
+              "side_effects": [
+                "QTc prolongation (requires ECG monitoring)",
+                "Akathisia",
+                "Sedation",
+                "Lower risk of weight gain"
+              ]
+            },
+            {
+              "name": "Paliperidone",
+              "indications": [
+                "Acute mania (doses >6mg)"
+              ],
+              "efficacy": "Effective for acute mania",
+              "formulations": "Oral and long-acting injectable"
+            },
+            {
+              "name": "Lumateperone",
+              "indications": [
+                "Bipolar depression",
+                "Prevention of recurrence"
+              ],
+              "mechanism": "Partial D3 and 5-HT1A agonist; serotonin transporter inhibitor",
+              "fda_approval": "Approved for depressive episodes in bipolar I or II disorder"
+            }
+          ]
+        },
+        "general_considerations": [
+          "Choice depends on episode type, previous response, side effect profile, patient preference",
+          "Combination with mood stabilisers often used",
+          "Regular monitoring for metabolic side effects essential",
+          "Long-acting injectables available for some agents (improve adherence)"
+        ]
+      },
+      
+      "antidepressants": {
+        "overview": "Controversial use in bipolar disorder due to risk of inducing mania",
+        "indications": "Bipolar depression (only with mood stabiliser or antipsychotic)",
+        "risks": [
+          "Switching to mania/hypomania",
+          "Rapid cycling",
+          "Mood destabilisation"
+        ],
+        "recommendations": [
+          "Should NOT be used as monotherapy",
+          "Should NOT be used during manic/hypomanic episodes",
+          "SSRIs preferred over tricyclics (lower switch risk)",
+          "Combine with mood stabiliser or antipsychotic",
+          "Use for shortest duration necessary",
+          "Monitor closely for mood elevation"
+        ],
+        "evidence": "Meta-analyses show limited efficacy in bipolar depression; some studies show no difference from placebo",
+        "nice_guidance": "Consider stopping antidepressant if person develops mania/hypomania while on antidepressant monotherapy"
+      },
+      
+      "other_medications": {
+        "benzodiazepines": {
+          "examples": ["Lorazepam", "Clonazepam"],
+          "indications": [
+            "Short-term management of agitation",
+            "Acute behavioural disturbance",
+            "Insomnia",
+            "Anxiety"
+          ],
+          "duration": "Short-term use only (risk of dependence)",
+          "nice_guidance": "Can be considered for initial management of acute behavioural disturbance in addition to antimanic agent"
+        }
+      },
+      
+      "medication_management_principles": {
+        "general_guidelines": [
+          "Provide age-appropriate information on medication purpose, side effects, monitoring",
+          "Collaborate with individual in medication choice",
+          "Regularly review overall medication regimen",
+          "Discuss impact of alcohol, tobacco, prescription/non-prescription, and illicit drugs",
+          "Do not stop medication suddenly without medical guidance"
+        ],
+        "older_people": [
+          "Use lower doses",
+          "Consider increased risk of drug interactions",
+          "Be aware of anticholinergic effects on cognitive function and mobility",
+          "Ensure medical comorbidities are treated"
+        ],
+        "contraindicated_medications": [
+          "Gabapentin (not recommended for bipolar disorder)",
+          "Topiramate (not recommended for bipolar disorder)"
+        ]
+      }
+    },
+    
+    "psychotherapy_approaches": {
+      "overview": "Essential adjunct to pharmacotherapy; improves outcomes, adherence, and relapse prevention",
+      "general_principles": [
+        "Should be specifically developed for bipolar disorder or adapted appropriately",
+        "Delivered by trained and experienced therapists",
+        "Typically 12-30 sessions",
+        "Can be individual, group, or family-based",
+        "Evidence-based manuals should guide delivery"
+      ],
+      
+      "cognitive_behavioural_therapy": {
+        "uk_abbreviation": "CBT",
+        "us_abbreviation": "CBT",
+        "description": "Structured psychological intervention helping individuals identify and change negative thought patterns and behaviours",
+        "typical_duration": "Average 20 sessions, followed by enhancement sessions",
+        "phases": [
+          {
+            "phase": "Assessment (1-2 sessions)",
+            "components": [
+              "Clarify diagnosis using SCID or MINI",
+              "Assess symptom severity (BDI, YMRS)",
+              "Create life chart to identify triggers and early signs",
+              "Formulate biopsychosocial understanding"
+            ]
+          },
+          {
+            "phase": "Psychoeducation (1-2 sessions)",
+            "components": [
+              "Information about bipolar disorder nature, symptoms, etiology",
+              "Explain interaction between environment, thoughts, emotions, physiology, behaviours",
+              "Emphasise biological factors and medication importance"
+            ]
+          },
+          {
+            "phase": "Interventions (20-25 sessions)",
+            "components": [
+              "Behavioural activation (for depression)",
+              "Behavioural inhibition (for mania/hypomania)",
+              "Cognitive restructuring",
+              "Schema work",
+              "Skill development (decision-making, assertiveness, problem-solving, social skills)"
+            ]
+          },
+          {
+            "phase": "Relapse/Recurrence Prevention (1-2 sessions)",
+            "components": [
+              "Medication compliance strategies",
+              "Identifying early warning signs",
+              "Creating functional coping plans",
+              "Regulating daily rhythms",
+              "Self-monitoring techniques"
+            ]
+          }
+        ],
+        "efficacy": {
+          "relapse_reduction": "Pooled odds ratio 0.506 for reduced relapse rates",
+          "depression_improvement": "Hedges's g of -0.494 for decreased depression",
+          "mania_reduction": "Hedges's g of -0.581 for reduced mania severity",
+          "functioning_improvement": "Hedges's g of 0.457 for increased psychosocial functioning",
+          "time_considerations": "Most effective in first year; benefits may diminish beyond 18 months without booster sessions"
+        },
+        "nice_recommendations": "Second-line adjunctive treatment for acute depression and maintenance phase",
+        "canmat_isbd_recommendations": "Second-line adjunctive treatment"
+      },
+      
+      "family_focused_therapy": {
+        "abbreviation": "FFT",
+        "description": "Involves family members in psychoeducation, communication improvement, and problem-solving",
+        "typical_duration": "At least 10 planned sessions over 3 months to 1 year",
+        "components": [
+          "Psychoeducation about bipolar disorder",
+          "Communication enhancement training",
+          "Problem-solving skills training",
+          "Relapse prevention planning"
+        ],
+        "efficacy": [
+          "Reduces relapse rates compared to individual psychoeducation",
+          "Reduces hospitalisation rates",
+          "Enhances family communication",
+          "Improves medication adherence"
+        ],
+        "nice_recommendations": "Should be offered to individuals living with or in close contact with family; second-line adjunctive treatment for acute depression and maintenance",
+        "canmat_isbd_recommendations": "Second-line adjunctive treatment"
+      },
+      
+      "interpersonal_and_social_rhythm_therapy": {
+        "abbreviation": "IPSRT",
+        "description": "Focuses on stabilising daily routines and interpersonal relationships to regulate mood",
+        "key_components": [
+          "Establishing regular sleep-wake cycles",
+          "Maintaining consistent daily routines (meals, work, exercise)",
+          "Managing interpersonal relationships",
+          "Addressing role transitions and disputes",
+          "Medication adherence",
+          "Managing stressful life events",
+          "Reducing disruptions in social rhythms"
+        ],
+        "efficacy": [
+          "Associated with delayed recurrences when social and circadian rhythms regulated",
+          "Improves mood stability",
+          "Enhances medication adherence"
+        ],
+        "nice_recommendations": "Can be offered as psychological intervention for bipolar disorder",
+        "canmat_isbd_recommendations": "Third-line intervention in maintenance phase"
+      },
+      
+      "psychoeducation": {
+        "description": "Educates individuals and families about bipolar disorder, symptoms, triggers, and management strategies",
+        "delivery_formats": [
+          "Individual psychoeducation",
+          "Group psychoeducation (often more effective)",
+          "Family psychoeducation"
+        ],
+        "components": [
+          "Information about bipolar disorder nature and course",
+          "Medication adherence promotion",
+          "Early detection of prodromal symptoms",
+          "Lifestyle regularity encouragement",
+          "Trigger identification",
+          "Relapse prevention strategies"
+        ],
+        "efficacy": {
+          "group_psychoeducation": [
+            "Effective in preventing overall relapses (NNT 5-8)",
+            "Effective in preventing manic/hypomanic relapses",
+            "Not effective for preventing depressive relapses",
+            "Improves medication adherence",
+            "Improves short-term illness knowledge"
+          ],
+          "individual_psychoeducation": "May be less effective than group interventions"
+        },
+        "nice_recommendations": "Carer-focused education and support program should be offered early",
+        "canmat_isbd_recommendations": "First-line adjunctive intervention for all patients"
+      },
+      
+      "other_psychological_interventions": [
+        {
+          "name": "Interpersonal Therapy (IPT)",
+          "description": "Focuses on relationships and their impact on mood",
+          "nice_recommendations": "Can be offered as choice for bipolar depression"
+        },
+        {
+          "name": "Behavioural Couples Therapy",
+          "description": "Involves partner in treatment to improve relationship functioning and mood management",
+          "nice_recommendations": "Can be offered as choice for bipolar depression"
+        },
+        {
+          "name": "Peer Interventions",
+          "description": "Support from individuals with lived experience of bipolar disorder",
+          "canmat_isbd_recommendations": "Third-line intervention"
+        },
+        {
+          "name": "Functional Remediation",
+          "description": "Targets cognitive and functional impairments",
+          "status": "Promising modality requiring further research"
+        },
+        {
+          "name": "Mindfulness-Based Cognitive Therapy",
+          "description": "Combines mindfulness practices with cognitive therapy",
+          "status": "Promising modality; conflicting results as first-line treatment"
+        },
+        {
+          "name": "Illness Management and Recovery",
+          "description": "Structured program for self-management and recovery",
+          "status": "Promising modality"
+        }
+      ]
+    },
+    
+    "lifestyle_interventions": {
+      "overview": "Modifiable lifestyle factors significantly impact bipolar disorder onset, trajectory, and outcomes",
+      "six_pillars_of_lifestyle_psychiatry": [
+        "Diet",
+        "Physical activity",
+        "Avoiding substance use",
+        "Stress management",
+        "Restorative sleep",
+        "Social relationships"
+      ],
+      
+      "specific_interventions": {
+        "sleep_and_circadian_rhythm": {
+          "importance": "Sleep disturbances prominent in bipolar disorder; can trigger mood episodes",
+          "recommendations": [
+            "Maintain regular sleep-wake schedule",
+            "Aim for 7-9 hours sleep per night",
+            "Avoid shift work if possible",
+            "Limit caffeine intake, especially afternoon/evening",
+            "Create conducive sleep environment (dark, quiet, cool)",
+            "Avoid screens before bedtime"
+          ],
+          "interventions": [
+            "Bright light exposure therapy",
+            "Melatonin supplementation",
+            "Interpersonal and social rhythm therapy",
+            "Sleep hygiene education"
+          ]
+        },
+        "physical_activity": {
+          "benefits": [
+            "Reduces depression and anxiety",
+            "Promotes better sleep",
+            "Improves overall physical health",
+            "Enhances mood stability"
+          ],
+          "recommendations": [
+            "Regular aerobic exercise (150 minutes moderate intensity per week)",
+            "Anaerobic/resistance training",
+            "Yoga and tai chi",
+            "Avoid excessive exercise during manic episodes"
+          ]
+        },
+        "diet_and_nutrition": {
+          "recommendations": [
+            "Balanced, healthy diet",
+            "Mediterranean diet pattern",
+            "Omega-3 fatty acids (may have mood-stabilising properties)",
+            "Limit processed foods and sugar",
+            "Maintain stable eating patterns",
+            "Avoid excessive caffeine"
+          ],
+          "considerations": "Dietary interventions important for improving depressive symptoms and functioning"
+        },
+        "stress_management": {
+          "importance": "Chronic stress can trigger manic or depressive episodes",
+          "techniques": [
+            "Mindfulness meditation",
+            "Relaxation techniques (progressive muscle relaxation, deep breathing)",
+            "Yoga",
+            "Time management",
+            "Problem-solving skills",
+            "Setting realistic goals",
+            "Avoiding overcommitment"
+          ]
+        },
+        "substance_use_avoidance": {
+          "substances_to_avoid": [
+            "Recreational drugs (cannabis, cocaine, amphetamines)",
+            "Excessive alcohol",
+            "Smoking/tobacco"
+          ],
+          "reasons": [
+            "Can trigger mood episodes",
+            "Interfere with medication effectiveness",
+            "Worsen symptoms",
+            "Increase risk of rapid cycling",
+            "Contribute to illness progression"
+          ],
+          "recommendations": "Aggressive screening and management of substance use disorders essential"
+        },
+        "social_relationships": {
+          "importance": "Healthy social support crucial for mood stability",
+          "recommendations": [
+            "Maintain supportive relationships",
+            "Communicate openly with family and friends",
+            "Join support groups",
+            "Avoid socially isolating",
+            "Manage interpersonal conflicts constructively"
+          ]
+        },
+        "routine_and_structure": {
+          "recommendations": [
+            "Maintain regular daily routines",
+            "Consistent meal times",
+            "Regular work/activity schedule",
+            "Avoid frequent time zone changes",
+            "Limit night flights if possible"
+          ]
+        }
+      },
+      
+      "multidimensional_approach": "Research suggests multidimensional lifestyle interventions (addressing multiple domains) may have greater impact than single-domain interventions"
+    },
+    
+    "emergency_crisis_treatment": {
+      "overview": "Urgent intervention required for severe episodes or risk situations",
+      
+      "crisis_situations": [
+        "Severe mania with psychotic features",
+        "Severe depression with suicidal ideation",
+        "Acute risk of self-harm or suicide",
+        "Risk of harm to others",
+        "Severe agitation or behavioural disturbance",
+        "Inability to care for self",
+        "Medical complications"
+      ],
+      
+      "immediate_interventions": {
+        "assessment": [
+          "Urgent psychiatric assessment",
+          "Risk assessment (suicide, self-harm, harm to others)",
+          "Medical assessment (rule out organic causes)",
+          "Collateral history from family/carers"
+        ],
+        "pharmacological": [
+          {
+            "indication": "Acute agitation/behavioural disturbance",
+            "options": [
+              "Intramuscular olanzapine",
+              "Intramuscular aripiprazole",
+              "Haloperidol (with caution due to EPS risk)",
+              "Lorazepam (alone or with antipsychotic)"
+            ]
+          },
+          {
+            "indication": "Severe mania",
+            "options": [
+              "Antipsychotics (haloperidol, olanzapine, quetiapine, risperidone)",
+              "Combination therapy (antipsychotic + mood stabiliser)",
+              "Benzodiazepines for agitation"
+            ]
+          },
+          {
+            "indication": "Severe depression with suicidality",
+            "options": [
+              "Quetiapine",
+              "Olanzapine-fluoxetine combination",
+              "Electroconvulsive therapy (ECT) if medication ineffective or rapid response needed"
+            ]
+          }
+        ],
+        "non_pharmacological": [
+          "Calming environment with reduced stimulation",
+          "De-escalation techniques",
+          "Safety planning",
+          "Removal of means of self-harm",
+          "Constant observation if high risk"
+        ]
+      },
+      
+      "hospitalisation": {
+        "indications": [
+          "Severe risk of self-harm or suicide",
+          "Risk of harm to others",
+          "Severe psychotic symptoms",
+          "Inability to care for self",
+          "Lack of adequate support at home",
+          "Need for intensive monitoring",
+          "Medical complications requiring inpatient care"
+        ],
+        "types": [
+          "Voluntary admission",
+          "Involuntary admission (under Mental Health Act in UK; varies by jurisdiction)"
+        ]
+      },
+      
+      "crisis_team_support": {
+        "description": "Community-based intensive support as alternative to hospitalisation when appropriate",
+        "services": [
+          "Daily visits",
+          "Medication management",
+          "Risk monitoring",
+          "Support for family/carers",
+          "Liaison with other services"
+        ]
+      },
+      
+      "electroconvulsive_therapy": {
+        "abbreviation": "ECT",
+        "indications": [
+          "Severe depression not responding to medication",
+          "Severe mania not responding to medication",
+          "Rapid symptom control needed to prevent harm",
+          "Catatonia",
+          "Patient preference (previous good response)"
+        ],
+        "efficacy": "Highly effective for severe episodes; rapid onset of action",
+        "procedure": "Brief electrical stimulation of brain under general anaesthesia",
+        "side_effects": [
+          "Short-term memory impairment",
+          "Confusion immediately post-treatment",
+          "Headache",
+          "Muscle aches"
+        ],
+        "nice_recommendations": "Second-line treatment for acute mania; consider for severe depression",
+        "considerations": "Better tolerated in elderly; may be considered earlier in this population"
+      },
+      
+      "other_brain_stimulation_therapies": [
+        {
+          "name": "Repetitive Transcranial Magnetic Stimulation (rTMS)",
+          "indications": "Bipolar depression not responding to antidepressants",
+          "status": "Being studied; low risk of memory/thinking effects",
+          "nice_recommendations": "Third-line treatment for acute mania"
+        },
+        {
+          "name": "Light Therapy",
+          "indications": "Seasonal pattern bipolar depression",
+          "efficacy": "Effective for seasonal affective disorder; may help bipolar depression with seasonal worsening"
+        },
+        {
+          "name": "Ketamine",
+          "indications": "Treatment-resistant bipolar depression",
+          "status": "Under investigation; shows potential for short-term relief of depressive and suicidal symptoms",
+          "considerations": "More research needed for long-term use and guidelines"
+        }
+      ],
+      
+      "crisis_planning": {
+        "components": [
+          "Doctor's contact information",
+          "Support group contacts",
+          "Trusted friends and family contacts",
+          "Information on other health problems, medications, allergies",
+          "Insurance details and preferred treatment facilities",
+          "Triggers for episodes",
+          "Warning signs of impending episode",
+          "Calming and reassuring phrases",
+          "Actions others should take during crisis",
+          "Preferences for emergency staff interaction",
+          "Reasons for living and importance of recovery"
+        ],
+        "nice_recommendations": "Joint risk management plan should be developed with patient and carer, including triggers, early warning signs, coping strategies, medication adjustment protocols, and crisis contact information"
+      },
+      
+      "uk_crisis_contacts": [
+        "NHS 111 (urgent mental health helpline)",
+        "Local mental health crisis team",
+        "GP (during surgery hours)",
+        "Samaritans: 116 123 (24/7 confidential support)",
+        "999 (emergency services for immediate danger)"
+      ],
+      
+      "us_crisis_contacts": [
+        "988 Suicide & Crisis Lifeline (call or text 988)",
+        "911 (emergency services)",
+        "Crisis Text Line: Text HOME to 741741",
+        "SAMHSA National Helpline: 1-800-662-4357"
+      ]
+    }
+  },
+  
+  "management_strategies": {
+    "daily_management": {
+      "self_monitoring": {
+        "importance": "Essential for recognising patterns, triggers, and early warning signs",
+        "methods": [
+          "Mood diary/journal",
+          "Mood tracking apps",
+          "Sleep logs",
+          "Activity logs",
+          "Medication tracking",
+          "Symptom checklists"
+        ],
+        "what_to_track": [
+          "Daily mood ratings",
+          "Sleep duration and quality",
+          "Energy levels",
+          "Medication adherence",
+          "Stressful events",
+          "Substance use",
+          "Physical symptoms",
+          "Social interactions"
+        ],
+        "benefits": [
+          "Identify patterns and triggers",
+          "Recognise early warning signs",
+          "Facilitate communication with healthcare providers",
+          "Inform treatment decisions",
+          "Increase self-awareness",
+          "Empower self-management"
+        ]
+      },
+      
+      "medication_adherence": {
+        "importance": "Critical for preventing relapse and maintaining stability",
+        "barriers": [
+          "Side effects",
+          "Feeling well (questioning need for medication)",
+          "Missing the 'highs' of mania",
+          "Complexity of regimen",
+          "Cost",
+          "Stigma",
+          "Lack of insight during episodes"
+        ],
+        "strategies_to_improve_adherence": [
+          "Education about importance of medication",
+          "Simplify medication regimen when possible",
+          "Use pill organisers or reminder apps",
+          "Address side effects promptly",
+          "Involve family/carers in medication management",
+          "Regular review with healthcare provider",
+          "Shared decision-making about treatment",
+          "Long-acting injectable formulations (for some antipsychotics)"
+        ]
+      },
+      
+      "routine_and_structure": {
+        "importance": "Helps stabilise circadian rhythms and mood",
+        "recommendations": [
+          "Maintain consistent sleep-wake schedule",
+          "Regular meal times",
+          "Structured daily activities",
+          "Balance between activity and rest",
+          "Avoid overcommitment",
+          "Plan for transitions and changes"
+        ]
+      },
+      
+      "stress_management_techniques": [
+        "Mindfulness meditation",
+        "Deep breathing exercises",
+        "Progressive muscle relaxation",
+        "Yoga",
+        "Tai chi",
+        "Journaling",
+        "Time in nature",
+        "Creative activities (art, music)",
+        "Problem-solving strategies",
+        "Assertiveness training"
+      ],
+      
+      "social_support": {
+        "importance": "Strong social support associated with better outcomes",
+        "strategies": [
+          "Maintain connections with supportive family and friends",
+          "Join support groups (in-person or online)",
+          "Communicate openly about needs",
+          "Educate loved ones about bipolar disorder",
+          "Set boundaries when needed",
+          "Seek peer support from others with lived experience"
+        ]
+      },
+      
+      "wellness_recovery_action_plan": {
+        "abbreviation": "WRAP",
+        "description": "Structured self-management tool for recognising triggers and relapse signs",
+        "components": [
+          "Wellness toolbox (strategies that help)",
+          "Daily maintenance plan",
+          "Triggers and action plans",
+          "Early warning signs and action plans",
+          "Crisis planning",
+          "Post-crisis planning"
+        ],
+        "nice_recommendations": "Excellent tool for engaging individuals in self-management"
+      }
+    },
+    
+    "mood_tracking_and_monitoring": {
+      "importance": "Enables early detection of mood changes and informed treatment decisions",
+      
+      "traditional_methods": [
+        "Paper mood charts",
+        "Life charts",
+        "Mood diaries",
+        "Symptom checklists"
+      ],
+      
+      "digital_tools": {
+        "overview": "Smartphone apps and wearable devices offer convenient, real-time mood monitoring",
+        "benefits": [
+          "Ease of use and accessibility",
+          "Real-time data collection",
+          "Visualisation of mood patterns",
+          "Reminders and prompts",
+          "Data sharing with healthcare providers",
+          "Integration with other health data"
+        ],
+        "challenges": [
+          "Privacy and data security concerns",
+          "Variable quality and evidence base",
+          "User engagement and adherence",
+          "Not all apps specifically designed for bipolar disorder"
+        ],
+        "examples": [
+          {
+            "name": "eMoods Bipolar Mood Tracker",
+            "features": [
+              "Track daily highs and lows",
+              "Record symptoms, irritability, sleep",
+              "Medication tracking",
+              "Generate downloadable reports",
+              "Safety plan for suicide prevention",
+              "Data stored locally on device (privacy feature)"
+            ],
+            "target_audience": "Individuals with bipolar disorder, depression, PTSD, anxiety"
+          },
+          {
+            "name": "Bipolar UK Mood Tracker",
+            "features": [
+              "Record daily mood, medications, emotions, sleep",
+              "Mood scale",
+              "Descriptive words for mood",
+              "Review and export data",
+              "Data stored privately on device"
+            ],
+            "cost": "Free to download"
+          },
+          {
+            "name": "PolarUs",
+            "features": [
+              "Measure and monitor quality of life using evidence-backed scale",
+              "Self-management strategies",
+              "Community-based participatory research framework"
+            ],
+            "target_audience": "People with bipolar disorder"
+          },
+          {
+            "name": "LiveWell",
+            "features": [
+              "Daily self-monitoring",
+              "Personalised wellness plans"
+            ]
+          },
+          {
+            "name": "ORBIT (Online, Recovery-Oriented Bipolar Individualised Tool)",
+            "features": [
+              "Web-based self-management intervention",
+              "Interactive tools",
+              "Educational materials",
+              "Moderated discussion forums",
+              "Multimedia content"
+            ]
+          }
+        ],
+        "considerations": [
+          "Clinicians should inquire about patients' app use",
+          "Discuss potential benefits and limitations",
+          "Ensure apps have clear privacy policies",
+          "Prefer apps with evidence base and clinical input",
+          "Regular review of consumer-facing apps needed"
+        ]
+      },
+      
+      "passive_sensing_and_digital_phenotyping": {
+        "description": "Collecting data from smartphone sensors and wearables to infer mental states",
+        "data_sources": [
+          "Geolocation (GPS)",
+          "Accelerometer (activity levels)",
+          "Call and text logs (social interaction)",
+          "Screen time",
+          "Typing speed and patterns",
+          "Voice analysis",
+          "Sleep patterns (from wearables)",
+          "Heart rate and physiological data"
+        ],
+        "potential_benefits": [
+          "Early detection of mood changes",
+          "Continuous, objective monitoring",
+          "Reduced recall bias",
+          "Personalised predictions"
+        ],
+        "challenges": [
+          "Privacy and ethical concerns",
+          "Data validity and standardisation",
+          "User comfort with data sharing",
+          "Need for external validation of predictive models"
+        ],
+        "examples": [
+          "BiAffect (tracks keyboard dynamics)",
+          "Apps using GPS for activity monitoring"
+        ]
+      }
+    },
+    
+    "trigger_identification_and_avoidance": {
+      "common_triggers": [
+        {
+          "trigger": "Sleep disruption",
+          "examples": ["Insomnia", "Oversleeping", "Irregular sleep schedule", "Shift work", "Jet lag"],
+          "management": "Maintain regular sleep-wake schedule; prioritise sleep hygiene; avoid shift work if possible"
+        },
+        {
+          "trigger": "Stress",
+          "examples": ["Work stress", "Relationship problems", "Financial difficulties", "Major life changes"],
+          "management": "Stress management techniques; problem-solving; seek support; avoid overcommitment"
+        },
+        {
+          "trigger": "Substance use",
+          "examples": ["Alcohol", "Recreational drugs", "Excessive caffeine"],
+          "management": "Avoid alcohol and recreational drugs; limit caffeine; seek treatment for substance use disorders"
+        },
+        {
+          "trigger": "Medication non-adherence",
+          "examples": ["Stopping medication", "Missing doses", "Changing doses without medical advice"],
+          "management": "Maintain medication adherence; discuss concerns with healthcare provider before making changes"
+        },
+        {
+          "trigger": "Seasonal changes",
+          "examples": ["Reduced daylight in winter", "Increased daylight in summer"],
+          "management": "Light therapy; maintain routine; monitor mood closely during seasonal transitions"
+        },
+        {
+          "trigger": "Overactivity and overstimulation",
+          "examples": ["Taking on too many projects", "Excessive social activity", "Lack of downtime"],
+          "management": "Pace activities; schedule rest periods; set realistic goals; learn to say no"
+        },
+        {
+          "trigger": "Interpersonal conflicts",
+          "examples": ["Arguments", "Relationship breakdowns", "Family tensions"],
+          "management": "Communication skills; conflict resolution; family therapy; set boundaries"
+        },
+        {
+          "trigger": "Hormonal changes",
+          "examples": ["Menstrual cycle", "Pregnancy", "Postpartum", "Menopause"],
+          "management": "Monitor mood in relation to hormonal changes; discuss with healthcare provider; consider hormonal treatments if appropriate"
+        }
+      ],
+      
+      "strategies_for_trigger_management": [
+        "Keep detailed mood diary to identify personal triggers",
+        "Develop action plans for each identified trigger",
+        "Communicate triggers to family/carers",
+        "Modify environment to reduce exposure to triggers when possible",
+        "Build coping skills for unavoidable triggers",
+        "Regular review of triggers with healthcare provider"
+      ]
+    },
+    
+    "sleep_hygiene_and_routine_management": {
+      "importance": "Sleep disturbances both symptom and trigger of mood episodes",
+      
+      "sleep_hygiene_recommendations": [
+        "Maintain consistent sleep-wake schedule (even on weekends)",
+        "Create conducive sleep environment (dark, quiet, cool, comfortable)",
+        "Limit screen time 1-2 hours before bed",
+        "Avoid caffeine after midday",
+        "Avoid alcohol close to bedtime",
+        "Avoid large meals close to bedtime",
+        "Regular physical activity (but not close to bedtime)",
+        "Relaxation routine before bed (reading, warm bath, meditation)",
+        "Use bed only for sleep and intimacy (not work or TV)",
+        "If unable to sleep after 20 minutes, get up and do relaxing activity"
+      ],
+      
+      "monitoring_sleep": [
+        "Track sleep duration and quality",
+        "Note factors affecting sleep",
+        "Recognise changes in sleep as early warning sign",
+        "Use sleep tracking apps or wearables if helpful"
+      ],
+      
+      "when_to_seek_help": [
+        "Persistent insomnia (difficulty falling or staying asleep)",
+        "Hypersomnia (excessive sleeping)",
+        "Significant changes in sleep pattern",
+        "Sleep disturbances affecting daytime functioning"
+      ]
+    },
+    
+    "relapse_prevention": {
+      "importance": "Preventing relapse crucial for long-term stability and quality of life",
+      
+      "early_warning_signs": {
+        "manic_hypomanic_episode": [
+          "Decreased need for sleep",
+          "Increased energy and activity",
+          "Racing thoughts",
+          "Increased talkativeness",
+          "Irritability",
+          "Impulsive behaviour",
+          "Increased confidence",
+          "Distractibility",
+          "Increased spending or risky behaviour"
+        ],
+        "depressive_episode": [
+          "Low mood or sadness",
+          "Loss of interest in activities",
+          "Fatigue or low energy",
+          "Sleep changes (insomnia or hypersomnia)",
+          "Appetite changes",
+          "Difficulty concentrating",
+          "Feelings of worthlessness or guilt",
+          "Social withdrawal",
+          "Thoughts of death or suicide"
+        ]
+      },
+      
+      "relapse_prevention_strategies": {
+        "pharmacological": [
+          "Maintain mood stabiliser or antipsychotic medication",
+          "Regular medication reviews",
+          "Prompt adjustment of medication if early warning signs",
+          "Long-term maintenance treatment (lithium, valproate, lamotrigine, antipsychotics)"
+        ],
+        "psychological": [
+          "Cognitive behavioural therapy (CBT)",
+          "Family-focused therapy",
+          "Interpersonal and social rhythm therapy",
+          "Psychoeducation",
+          "Regular therapy sessions or booster sessions"
+        ],
+        "self_management": [
+          "Daily mood monitoring",
+          "Maintain regular routines",
+          "Prioritise sleep",
+          "Manage stress",
+          "Avoid triggers",
+          "Maintain social support",
+          "Wellness Recovery Action Plan (WRAP)"
+        ],
+        "early_intervention": [
+          "Recognise early warning signs",
+          "Implement action plan promptly",
+          "Contact healthcare provider early",
+          "Increase monitoring and support",
+          "Medication adjustment if needed",
+          "Increase therapy sessions temporarily"
+        ]
+      },
+      
+      "evidence_for_relapse_prevention": {
+        "pharmacological": [
+          "Lithium: Strong evidence for preventing all relapses, especially manic",
+          "Valproate: Effective for preventing all relapses and depressive relapses",
+          "Lamotrigine: Strong evidence for preventing all relapses and depressive relapses",
+          "Olanzapine: Effective for preventing all relapses and manic relapses",
+          "Quetiapine: Effective for preventing all relapses",
+          "Aripiprazole: Effective for preventing manic relapses"
+        ],
+        "psychological": [
+          "CBT: Effective in first year; may need booster sessions for sustained effect",
+          "Group psychoeducation: Effective for preventing overall and manic/hypomanic relapses (NNT 5-8)",
+          "Family-focused therapy: May be beneficial",
+          "Enhanced relapse prevention training for CMHT workers: Increases median time to next episode by ~8.5 weeks"
+        ]
+      },
+      
+      "nice_recommendations": [
+        "Develop joint risk management plan with patient and carer",
+        "Include identifiable triggers, early warning signs, coping strategies",
+        "Protocols for medication adjustments",
+        "Agreements between primary and secondary care for responding to increased risk",
+        "Contact information for crisis situations"
+      ]
+    }
+  },
+  
+  "support_resources": {
+    "for_affected_persons": {
+      "all_ages": {
+        "self_management_strategies": [
+          "Education about bipolar disorder",
+          "Mood tracking and monitoring",
+          "Medication adherence",
+          "Recognising early warning signs",
+          "Developing coping strategies",
+          "Maintaining regular routines",
+          "Stress management techniques",
+          "Building support network"
+        ],
+        "coping_strategies": [
+          "Mindfulness and meditation",
+          "Relaxation techniques",
+          "Physical exercise",
+          "Creative outlets (art, music, writing)",
+          "Journaling",
+          "Problem-solving skills",
+          "Assertiveness training",
+          "Time management"
+        ],
+        "peer_support": [
+          {
+            "organisation": "Bipolar UK",
+            "services": [
+              "Support groups (local and online)",
+              "Forums and blogs",
+              "Information resources",
+              "Peer support network",
+              "eCommunity online support"
+            ],
+            "website": "www.bipolaruk.org",
+            "uk_specific": true
+          },
+          {
+            "organisation": "Depression and Bipolar Support Alliance (DBSA)",
+            "services": [
+              "Support groups",
+              "Online resources",
+              "Wellness tools",
+              "Peer support"
+            ],
+            "website": "www.dbsalliance.org",
+            "us_specific": true
+          },
+          {
+            "organisation": "Mind",
+            "services": [
+              "Information on bipolar disorder",
+              "Local support groups",
+              "Online support",
+              "Helpline"
+            ],
+            "website": "www.mind.org.uk",
+            "uk_specific": true
+          },
+          {
+            "organisation": "Rethink Mental Illness",
+            "services": [
+              "Advice and information",
+              "Support groups",
+              "Advocacy services"
+            ],
+            "website": "www.rethink.org",
+            "uk_specific": true
+          },
+          {
+            "organisation": "National Alliance on Mental Illness (NAMI)",
+            "services": [
+              "Education programs",
+              "Support groups",
+              "Helpline",
+              "Advocacy"
+            ],
+            "website": "www.nami.org",
+            "us_specific": true
+          }
+        ],
+        "online_resources": [
+          "Bipolar UK website and eCommunity",
+          "Mind website",
+          "NHS mental health pages",
+          "DBSA website (US)",
+          "NAMI website (US)",
+          "International Bipolar Foundation",
+          "Mental Health America"
+        ]
+      },
+      
+      "children_and_adolescents": {
+        "specific_considerations": [
+          "Age-appropriate education about bipolar disorder",
+          "School accommodations and support",
+          "Family involvement in treatment",
+          "Peer support groups for young people",
+          "Transition planning to adult services"
+        ],
+        "resources": [
+          "CAMHS (Child and Adolescent Mental Health Services) - UK",
+          "Young Minds - UK",
+          "The Mix (support for under 25s) - UK",
+          "Childline - UK"
+        ]
+      },
+      
+      "adults": {
+        "employment_support": [
+          "Disclosure considerations",
+          "Workplace accommodations",
+          "Occupational health services",
+          "Vocational rehabilitation",
+          "Supported employment programs"
+        ],
+        "financial_support": [
+          "Disability benefits (if eligible)",
+          "Financial advice services",
+          "Lasting power of attorney (for financial management during episodes)"
+        ]
+      },
+      
+      "older_adults": {
+        "specific_considerations": [
+          "Medication adjustments for age",
+          "Management of comorbid physical conditions",
+          "Cognitive assessment if concerns",
+          "Social isolation prevention",
+          "Carer support"
+        ]
+      }
+    },
+    
+    "for_parents_and_family": {
+      "supporting_loved_ones": [
+        "Learn about bipolar disorder",
+        "Recognise warning signs of episodes",
+        "Encourage treatment adherence",
+        "Provide emotional support without enabling",
+        "Maintain boundaries",
+        "Take care of own wellbeing",
+        "Involve other family and friends with consent"
+      ],
+      
+      "communication_strategies": [
+        "Listen without judgement",
+        "Validate feelings",
+        "Avoid criticism or blame",
+        "Use calm, clear communication",
+        "Choose appropriate times for discussions (not during acute episodes)",
+        "Express concerns constructively",
+        "Encourage professional help"
+      ],
+      
+      "crisis_planning": [
+        "Develop crisis plan together when person is well",
+        "Know warning signs",
+        "Have emergency contacts readily available",
+        "Understand when to seek urgent help",
+        "Know person's preferences for crisis management",
+        "Agree on code words for distress",
+        "Plan for practical matters (childcare, work, finances)"
+      ],
+      
+      "family_interventions": {
+        "family_focused_therapy": "Evidence-based intervention involving family in treatment",
+        "family_psychoeducation": "Education about bipolar disorder for family members",
+        "nice_recommendations": "Family intervention should be offered, ideally involving person with bipolar disorder, for 3 months to 1 year, with at least 10 planned sessions"
+      },
+      
+      "carer_support": {
+        "nice_recommendations": [
+          "Carers should receive written and verbal information on diagnosis, management, recovery, support available, roles of care teams, and crisis help",
+          "Carer-focused education and support program should be offered early",
+          "Information sharing between person and carers should be negotiated early",
+          "Carers may be entitled to carer's assessment from social care services"
+        ],
+        "resources": [
+          {
+            "organisation": "Bipolar UK",
+            "services": "Resources specifically for family, friends, and carers",
+            "uk_specific": true
+          },
+          {
+            "organisation": "Carers UK",
+            "services": "Information and support for carers",
+            "uk_specific": true
+          },
+          {
+            "organisation": "Rethink Mental Illness",
+            "services": "Carer support services",
+            "uk_specific": true
+          },
+          {
+            "organisation": "NAMI Family Support Group",
+            "services": "Support groups for family members",
+            "us_specific": true
+          }
+        ]
+      },
+      
+      "self_care_for_carers": [
+        "Prioritise own physical and mental health",
+        "Take breaks and respite care",
+        "Maintain own social connections",
+        "Seek support from other carers",
+        "Set realistic expectations",
+        "Recognise own limits",
+        "Access carer support services"
+      ]
+    },
+    
+    "for_teachers_and_educators": {
+      "classroom_accommodations": [
+        "Flexible deadlines during difficult periods",
+        "Quiet space for breaks if needed",
+        "Modified workload during episodes",
+        "Extra time for assignments or exams",
+        "Note-taking assistance",
+        "Reduced sensory stimulation if needed",
+        "Communication plan with parents/carers"
+      ],
+      
+      "recognising_signs": {
+        "manic_hypomanic_signs": [
+          "Increased energy and activity",
+          "Decreased need for sleep",
+          "Rapid speech",
+          "Difficulty concentrating",
+          "Impulsive behaviour",
+          "Irritability or aggression",
+          "Overconfidence",
+          "Inappropriate behaviour"
+        ],
+        "depressive_signs": [
+          "Low mood or sadness",
+          "Loss of interest in activities",
+          "Fatigue or low energy",
+          "Difficulty concentrating",
+          "Social withdrawal",
+          "Decline in academic performance",
+          "Expressions of hopelessness",
+          "Absence from school"
+        ]
+      },
+      
+      "supporting_students": [
+        "Maintain consistent routines",
+        "Provide clear expectations and structure",
+        "Offer encouragement and positive reinforcement",
+        "Be aware of triggers (stress, sleep deprivation)",
+        "Communicate regularly with parents/carers and mental health professionals",
+        "Ensure student has access to school counsellor or mental health support",
+        "Educate other staff about student's needs (with consent)",
+        "Have plan for managing crises at school"
+      ],
+      
+      "resources_for_educators": [
+        "School mental health policies and procedures",
+        "Training on mental health awareness",
+        "Consultation with educational psychologists",
+        "Liaison with CAMHS (UK) or school mental health services",
+        "Mental health charities' educational resources"
+      ]
+    },
+    
+    "for_healthcare_professionals_and_carers": {
+      "best_practices": [
+        "Comprehensive assessment including collateral history",
+        "Collaborative care planning with patient and family",
+        "Regular monitoring and review",
+        "Integrated care across services",
+        "Evidence-based treatment approaches",
+        "Cultural sensitivity and individualised care",
+        "Trauma-informed care",
+        "Recovery-oriented approach"
+      ],
+      
+      "care_coordination": [
+        "Clear communication between primary and secondary care",
+        "Care coordinator or key worker assigned",
+        "Regular multidisciplinary team meetings",
+        "Shared care protocols for medication management",
+        "Crisis plans in place and accessible",
+        "Smooth transitions between services (e.g., CAMHS to adult services)"
+      ],
+      
+      "professional_resources": {
+        "guidelines": [
+          {
+            "name": "NICE Guideline CG185",
+            "title": "Bipolar disorder: assessment and management",
+            "year": "2014 (updated 2025)",
+            "organisation": "National Institute for Health and Care Excellence",
+            "uk_specific": true
+          },
+          {
+            "name": "CANMAT/ISBD Guidelines",
+            "title": "Guidelines for the management of patients with bipolar disorder",
+            "year": "2018 (updated 2023)",
+            "organisation": "Canadian Network for Mood and Anxiety Treatments / International Society for Bipolar Disorders"
+          },
+          {
+            "name": "APA Practice Guideline",
+            "title": "Practice Guideline for the Treatment of Patients With Bipolar Disorder",
+            "year": "2002",
+            "organisation": "American Psychiatric Association",
+            "us_specific": true
+          },
+          {
+            "name": "BAP Guidelines",
+            "title": "Evidence-based guidelines for treating bipolar disorder",
+            "year": "2016",
+            "organisation": "British Association for Psychopharmacology",
+            "uk_specific": true
+          },
+          {
+            "name": "WHO mhGAP Intervention Guide",
+            "title": "Mental Health Gap Action Programme Intervention Guide",
+            "organisation": "World Health Organization",
+            "focus": "Non-specialised health settings, particularly LMICs"
+          }
+        ],
+        "training": [
+          "Family interventions for psychosis and bipolar disorder training (HEE - UK)",
+          "Psychological therapy training specific to bipolar disorder",
+          "Medication management and monitoring",
+          "Risk assessment and management",
+          "Crisis intervention"
+        ],
+        "professional_organisations": [
+          "Royal College of Psychiatrists (UK)",
+          "American Psychiatric Association (US)",
+          "International Society for Bipolar Disorders",
+          "British Association for Psychopharmacology (UK)",
+          "Canadian Network for Mood and Anxiety Treatments"
+        ]
+      },
+      
+      "monitoring_and_follow_up": {
+        "primary_care": [
+          "Annual review minimum (more frequent if concerns)",
+          "Medication review",
+          "Physical health monitoring (weight, BMI, cardiovascular, metabolic, liver, renal, thyroid function)",
+          "Mental health review",
+          "Support adherence to care plans and crisis plans",
+          "Referral to secondary care if needed"
+        ],
+        "secondary_care": [
+          "Regular appointments with psychiatrist and/or care coordinator",
+          "Medication monitoring (including blood levels for lithium, valproate)",
+          "Psychological therapy sessions",
+          "Risk assessment",
+          "Care plan reviews",
+          "Physical health monitoring",
+          "Transition planning (e.g., back to primary care when stable)"
+        ]
+      },
+      
+      "addressing_comorbidities": [
+        "Anxiety disorders (40-60% lifetime prevalence)",
+        "Substance use disorders (33-45%)",
+        "ADHD",
+        "Personality disorders",
+        "Physical health conditions (diabetes, cardiovascular disease, obesity, thyroid disorders)",
+        "Integrated treatment approaches",
+        "Screening and management as per relevant guidelines"
+      ]
+    }
+  },
+  
+  "intervention_skills_and_tactics": {
+    "early_warning_signs_recognition": {
+      "importance": "Early recognition enables prompt intervention and may prevent full episode",
+      
+      "manic_hypomanic_warning_signs": [
+        "Decreased need for sleep (feeling rested after few hours)",
+        "Increased energy and restlessness",
+        "Racing thoughts or mind feeling 'sped up'",
+        "Increased talkativeness",
+        "Increased goal-directed activity or starting multiple projects",
+        "Increased irritability or impatience",
+        "Increased confidence or grandiose ideas",
+        "Impulsive decisions (spending, travel, commitments)",
+        "Increased sociability or sexual interest",
+        "Difficulty concentrating or being easily distracted"
+      ],
+      
+      "depressive_warning_signs": [
+        "Low mood or feeling sad",
+        "Loss of interest in usual activities",
+        "Fatigue or low energy",
+        "Sleep changes (difficulty sleeping or sleeping too much)",
+        "Appetite changes",
+        "Difficulty concentrating or making decisions",
+        "Feelings of worthlessness or excessive guilt",
+        "Social withdrawal",
+        "Slowed thinking or movement",
+        "Thoughts of death or suicide"
+      ],
+      
+      "individual_variation": "Warning signs can vary between individuals; important to identify personal patterns",
+      
+      "monitoring_strategies": [
+        "Daily mood tracking",
+        "Sleep monitoring",
+        "Activity level monitoring",
+        "Feedback from family/friends",
+        "Regular check-ins with healthcare provider",
+        "Use of mood tracking apps or wearables"
+      ]
+    },
+    
+    "crisis_intervention_protocols": {
+      "assessment": {
+        "immediate_priorities": [
+          "Ensure safety of individual and others",
+          "Assess level of risk (suicide, self-harm, harm to others)",
+          "Assess severity of symptoms",
+          "Assess capacity and insight",
+          "Identify immediate needs"
+        ],
+        "information_gathering": [
+          "Current symptoms and duration",
+          "Recent stressors or triggers",
+          "Medication adherence",
+          "Substance use",
+          "Previous episodes and what helped",
+          "Support system available",
+          "Collateral information from family/carers if possible"
+        ]
+      },
+      
+      "immediate_interventions": {
+        "for_mania_hypomania": [
+          "Reduce stimulation (calm, quiet environment)",
+          "Set clear, simple boundaries",
+          "Avoid arguing or confrontation",
+          "Offer medication if prescribed for acute use",
+          "Remove access to credit cards, car keys if impulsive behaviour risk",
+          "Ensure adequate hydration and nutrition",
+          "Contact mental health team or crisis services",
+          "Consider hospitalisation if severe or high risk"
+        ],
+        "for_depression": [
+          "Ensure safety (remove means of self-harm)",
+          "Provide supportive presence",
+          "Encourage expression of feelings",
+          "Offer medication if prescribed",
+          "Encourage basic self-care (eating, hygiene)",
+          "Avoid leaving person alone if suicidal",
+          "Contact mental health team or crisis services",
+          "Consider hospitalisation if high suicide risk"
+        ],
+        "for_mixed_episodes": [
+          "Recognise increased suicide risk",
+          "Combine strategies for both mania and depression",
+          "Prioritise safety",
+          "Seek urgent professional help",
+          "Close monitoring essential"
+        ]
+      },
+      
+      "when_to_seek_urgent_help": [
+        "Suicidal thoughts or plans",
+        "Self-harm behaviour",
+        "Risk of harm to others",
+        "Severe psychotic symptoms",
+        "Severe agitation or aggression",
+        "Inability to care for self",
+        "Refusal of necessary treatment",
+        "Rapid deterioration"
+      ],
+      
+      "crisis_contacts": {
+        "uk": [
+          "NHS 111 (urgent mental health helpline)",
+          "Local mental health crisis team",
+          "GP (during surgery hours)",
+          "Samaritans: 116 123",
+          "999 (emergency services)"
+        ],
+        "us": [
+          "988 Suicide & Crisis Lifeline",
+          "911 (emergency services)",
+          "Crisis Text Line: Text HOME to 741741",
+          "SAMHSA National Helpline: 1-800-662-4357"
+        ]
+      }
+    },
+    
+    "de_escalation_techniques": {
+      "general_principles": [
+        "Remain calm and composed",
+        "Speak slowly and clearly",
+        "Use non-threatening body language",
+        "Maintain appropriate personal space",
+        "Show respect and empathy",
+        "Listen actively",
+        "Avoid arguing or confrontation",
+        "Offer choices when possible",
+        "Be patient"
+      ],
+      
+      "verbal_techniques": [
+        "Use person's name",
+        "Speak in calm, reassuring tone",
+        "Use simple, clear language",
+        "Acknowledge person's feelings",
+        "Validate concerns without agreeing with delusional content",
+        "Redirect conversation if needed",
+        "Offer reassurance",
+        "Set clear, reasonable limits",
+        "Avoid threats or ultimatums"
+      ],
+      
+      "non_verbal_techniques": [
+        "Maintain open, relaxed posture",
+        "Avoid sudden movements",
+        "Respect personal space",
+        "Use appropriate eye contact (not staring)",
+        "Position yourself at angle rather than directly facing",
+        "Ensure exit route available",
+        "Remove potential weapons or dangerous objects from environment"
+      ],
+      
+      "environmental_modifications": [
+        "Reduce noise and stimulation",
+        "Provide calm, quiet space",
+        "Ensure adequate lighting",
+        "Remove audience if possible",
+        "Offer comfortable seating",
+        "Provide water or refreshments if appropriate"
+      ],
+      
+      "what_to_avoid": [
+        "Arguing or debating",
+        "Raising voice",
+        "Making threats",
+        "Touching without permission",
+        "Crowding or cornering",
+        "Dismissing concerns",
+        "Making promises you can't keep",
+        "Showing fear or anxiety",
+        "Using sarcasm or humour inappropriately"
+      ],
+      
+      "when_de_escalation_not_working": [
+        "Call for additional support",
+        "Consider medication if prescribed and appropriate",
+        "May need to involve emergency services",
+        "Prioritise safety of all involved",
+        "Document incident"
+      ]
+    },
+    
+    "safety_planning": {
+      "components": [
+        "Warning signs of crisis",
+        "Internal coping strategies (things person can do alone)",
+        "People and social settings that provide distraction",
+        "People to ask for help",
+        "Professionals or agencies to contact during crisis",
+        "Making environment safe (removing means of self-harm)",
+        "Reasons for living"
+      ],
+      
+      "development_process": [
+        "Develop collaboratively with person when they are well",
+        "Involve family/carers if person agrees",
+        "Make it specific and personalised",
+        "Write it down and keep copies accessible",
+        "Review and update regularly",
+        "Share with healthcare team"
+      ],
+      
+      "nice_recommendations": "Joint risk management plan should be developed with patient and carer, including triggers, early warning signs, coping strategies, medication adjustment protocols, and crisis contact information"
+    },
+    
+    "communication_strategies": {
+      "general_principles": [
+        "Choose appropriate time and place",
+        "Ensure privacy",
+        "Allow adequate time",
+        "Minimise distractions",
+        "Be prepared to listen",
+        "Show empathy and respect"
+      ],
+      
+      "during_different_mood_states": {
+        "during_mania_hypomania": [
+          "Keep communication brief and simple",
+          "Avoid lengthy discussions or debates",
+          "Set clear boundaries",
+          "Redirect if conversation becomes tangential",
+          "Avoid making important decisions",
+          "Document agreements in writing"
+        ],
+        "during_depression": [
+          "Be patient and allow time for responses",
+          "Offer reassurance",
+          "Avoid minimising feelings",
+          "Encourage small steps",
+          "Avoid pressuring for immediate decisions",
+          "Check understanding"
+        ],
+        "during_stable_periods": [
+          "Discuss treatment plans and preferences",
+          "Develop crisis plans",
+          "Address concerns about medication or treatment",
+          "Plan for future (work, relationships, goals)",
+          "Review what helps and what doesn't"
+        ]
+      },
+      
+      "with_family_and_carers": [
+        "Respect confidentiality while sharing necessary information",
+        "Negotiate information sharing early",
+        "Provide education about bipolar disorder",
+        "Acknowledge carer's role and challenges",
+        "Involve in treatment planning when appropriate",
+        "Provide information on support services"
+      ],
+      
+      "cultural_considerations": [
+        "Be aware of cultural beliefs about mental illness",
+        "Respect cultural values and practices",
+        "Use interpreters if language barrier",
+        "Adapt communication style to cultural norms",
+        "Involve family in culturally appropriate ways"
+      ]
+    }
+  },
+  
+  "evidence_based_interactive_management_tools": {
+    "overview": {
+      "importance": "Digital tools and gamification can enhance engagement, self-management, and treatment outcomes",
+      "challenges": [
+        "Variable quality and evidence base of available apps",
+        "Privacy and data security concerns",
+        "User engagement and long-term adherence",
+        "Need for apps specifically designed for bipolar disorder",
+        "Translational lag from research to publicly available tools"
+      ]
+    },
+    
+    "gamification_approaches": {
+      "definition": "Application of game design elements to non-game contexts to boost engagement and motivate behaviour change",
+      
+      "common_elements": [
+        "Levels or progress feedback",
+        "Points or scoring",
+        "Rewards or prizes",
+        "Badges or achievements",
+        "Narrative or theme",
+        "Personalization",
+        "Customization",
+        "Challenges or quests",
+        "Leaderboards (with caution in mental health)",
+        "Unlockable content"
+      ],
+      
+      "evidence": {
+        "general_mental_health": [
+          "Can improve resilience",
+          "Can reduce attrition",
+          "Positive impact on psychological well-being",
+          "May reduce depressive symptoms",
+          "Effectiveness depends on quality and integration of elements"
+        ],
+        "bipolar_disorder_specific": [
+          "Under-researched area",
+          "Bipolar disorder among least commonly targeted domains for gamified interventions",
+          "Potential for enhancing engagement in mood tracking and self-management",
+          "Need for further research on effectiveness and safety"
+        ]
+      },
+      
+      "examples": [
+        {
+          "name": "eQuoo",
+          "description": "Gamified mental health app with levels, progress feedback, points, narratives, personalization, mini-games, and badges",
+          "target": "General mental health, resilience",
+          "evidence": "Demonstrated increases in resilience and decreases in anxiety and depression in student population; higher retention than control groups"
+        }
+      ],
+      
+      "considerations_for_bipolar_disorder": [
+        "Ensure game elements don't overstimulate during manic phases",
+        "Balance challenge with achievability to avoid frustration during depressive phases",
+        "Personalise to individual's current mood state",
+        "Include educational content alongside gamification",
+        "Ensure privacy and data security",
+        "Involve individuals with lived experience in design"
+      ]
+    },
+    
+    "progress_tracking_systems": {
+      "mood_tracking": {
+        "features": [
+          "Daily mood ratings (visual scales, numerical scales)",
+          "Sleep tracking",
+          "Energy level tracking",
+          "Symptom checklists",
+          "Medication tracking",
+          "Trigger and event logging",
+          "Notes or journaling"
+        ],
+        "visualisation": [
+          "Mood charts and graphs",
+          "Colour-coded calendars",
+          "Trend analysis",
+          "Pattern recognition",
+          "Correlation displays (e.g., sleep vs mood)"
+        ],
+        "benefits": [
+          "Increased self-awareness",
+          "Early warning sign detection",
+          "Facilitates communication with healthcare providers",
+          "Informs treatment decisions",
+          "Empowers self-management"
+        ]
+      },
+      
+      "quality_of_life_tracking": {
+        "description": "Monitoring broader aspects of wellbeing beyond mood",
+        "domains": [
+          "Physical health",
+          "Psychological wellbeing",
+          "Social relationships",
+          "Environmental factors",
+          "Functioning in daily activities"
+        ],
+        "example": "PolarUs app uses evidence-backed quality of life scale specific to bipolar disorder"
+      },
+      
+      "goal_tracking": {
+        "features": [
+          "Set personal wellness goals",
+          "Track progress towards goals",
+          "Break goals into manageable steps",
+          "Celebrate achievements",
+          "Adjust goals as needed"
+        ],
+        "example": "Life Goals app helps align coping strategies with personal goals"
+      }
+    },
+    
+    "reward_and_streak_systems": {
+      "purpose": "Motivate consistent engagement and positive behaviours",
+      
+      "types": [
+        {
+          "type": "Streak counters",
+          "description": "Track consecutive days of app use or healthy behaviours",
+          "benefits": "Encourages consistency; provides sense of achievement",
+          "considerations": "Avoid excessive pressure; allow for 'grace days' during difficult periods"
+        },
+        {
+          "type": "Achievement badges",
+          "description": "Unlock badges for reaching milestones",
+          "examples": "7-day streak, 30-day streak, completing educational modules, consistent mood tracking",
+          "benefits": "Provides positive reinforcement; visualises progress"
+        },
+        {
+          "type": "Points systems",
+          "description": "Earn points for completing activities",
+          "uses": "Can be purely motivational or unlock content/features",
+          "considerations": "Ensure points don't create unhealthy competition or pressure"
+        },
+        {
+          "type": "Virtual rewards",
+          "description": "Unlock content, themes, or features",
+          "examples": "New mood tracking options, relaxation exercises, educational articles",
+          "benefits": "Provides tangible reward; encourages exploration of app features"
+        }
+      ],
+      
+      "evidence": "Suggested by users as potential motivators for app engagement; limited research on effectiveness specifically for bipolar disorder",
+      
+      "cautions": [
+        "Avoid creating pressure that could worsen symptoms",
+        "Ensure rewards are meaningful and not trivialising",
+        "Allow flexibility for difficult periods",
+        "Focus on intrinsic motivation alongside extrinsic rewards"
+      ]
+    },
+    
+    "interactive_management_games": {
+      "concept": "Games designed to teach skills or provide therapeutic benefit",
+      
+      "potential_applications": [
+        "Cognitive training games (attention, memory, executive function)",
+        "Emotion regulation games",
+        "Social skills training games",
+        "Stress management games (relaxation, mindfulness)",
+        "Problem-solving games",
+        "Psychoeducation games"
+      ],
+      
+      "examples_from_general_mental_health": [
+        "SPARX (for depression in adolescents) - fantasy game teaching CBT skills",
+        "MindLight (for anxiety in children) - neurofeedback game",
+        "Personal Investigator (for depression) - detective game with CBT elements"
+      ],
+      
+      "bipolar_disorder_specific": "Limited examples; area requiring development and research",
+      
+      "design_considerations": [
+        "Evidence-based therapeutic content",
+        "Engaging and enjoyable gameplay",
+        "Appropriate difficulty level",
+        "Personalisation to individual needs",
+        "Integration with broader treatment plan",
+        "Monitoring and feedback mechanisms",
+        "Safety features (e.g., crisis resources)"
+      ]
+    },
+    
+    "digital_health_tools_and_apps": {
+      "categories": [
+        {
+          "category": "Mood tracking apps",
+          "examples": ["eMoods", "Bipolar UK Mood Tracker", "Daylio", "Moodpath"],
+          "features": "Daily mood logging, symptom tracking, medication tracking, data visualisation, export for healthcare providers"
+        },
+        {
+          "category": "Self-management apps",
+          "examples": ["PolarUs", "Life Goals", "LiveWell"],
+          "features": "Quality of life monitoring, goal setting, coping strategies, psychoeducation, personalised wellness plans"
+        },
+        {
+          "category": "Web-based platforms",
+          "examples": ["ORBIT"],
+          "features": "Comprehensive self-management interventions, interactive tools, educational materials, moderated forums, multimedia content"
+        },
+        {
+          "category": "Digital phenotyping apps",
+          "examples": ["BiAffect"],
+          "features": "Passive data collection (keyboard dynamics, GPS, activity, sleep), early warning sign detection, personalised predictions"
+        },
+        {
+          "category": "Meditation and mindfulness apps",
+          "examples": ["Headspace", "Calm", "Insight Timer"],
+          "features": "Guided meditations, breathing exercises, sleep stories, mindfulness training",
+          "note": "General mental health apps; not bipolar-specific but may be helpful adjuncts"
+        },
+        {
+          "category": "CBT-based apps",
+          "examples": ["MoodGYM", "Sanvello"],
+          "features": "CBT exercises, thought records, behavioural activation, relaxation techniques",
+          "note": "General mental health apps; may need adaptation for bipolar disorder"
+        }
+      ],
+      
+      "evaluation_frameworks": [
+        {
+          "name": "MIND Framework",
+          "purpose": "Assess mental health app quality, safety, and functionality",
+          "domains": "Clinical foundation, user engagement, data privacy and security, interoperability"
+        },
+        {
+          "name": "Mobile App Rating Scale (MARS)",
+          "purpose": "Evaluate quality of mobile health apps",
+          "domains": "Engagement, functionality, aesthetics, information quality"
+        }
+      ],
+      
+      "recommendations_for_users": [
+        "Look for apps with evidence base or clinical input",
+        "Check privacy policy and data security measures",
+        "Prefer apps specifically designed for bipolar disorder when available",
+        "Discuss app use with healthcare provider",
+        "Be aware that apps are adjuncts, not replacements for professional treatment",
+        "Monitor own response to app use (helpful vs stressful)"
+      ],
+      
+      "recommendations_for_clinicians": [
+        "Inquire about patients' app use",
+        "Discuss potential benefits and limitations",
+        "Recommend evidence-based apps when appropriate",
+        "Review data from apps if patient wishes to share",
+        "Stay informed about available digital tools",
+        "Provide guidance on evaluating app quality"
+      ]
+    },
+    
+    "age_appropriate_interventions": {
+      "children": {
+        "age_range": "Under 12 years",
+        "considerations": [
+          "Diagnosis rare in this age group",
+          "Symptoms may present differently",
+          "Family involvement essential",
+          "School-based interventions important"
+        ],
+        "digital_tools": [
+          "Age-appropriate educational games",
+          "Simple mood tracking with visual aids (emoji scales, colour coding)",
+          "Parent-assisted digital tools",
+          "Interactive psychoeducation"
+        ]
+      },
+      
+      "adolescents": {
+        "age_range": "13-18 years",
+        "considerations": [
+          "Increased prevalence compared to children",
+          "Peer influence significant",
+          "Transition planning to adult services",
+          "Technology-native generation"
+        ],
+        "digital_tools": [
+          "Smartphone apps for mood tracking",
+          "Social media-style interfaces",
+          "Gamified interventions",
+          "Peer support forums (moderated)",
+          "Educational videos and interactive content",
+          "Text-based crisis support"
+        ],
+        "medications": [
+          "Aripiprazole approved by EMA for moderate to severe manic episodes in Bipolar I (age 13+)",
+          "FDA-approved medications include olanzapine (13+), lithium (12+), quetiapine, risperidone, aripiprazole (10+)"
+        ]
+      },
+      
+      "adults": {
+        "age_range": "18-64 years",
+        "considerations": [
+          "Peak prevalence",
+          "Work and family responsibilities",
+          "Varied technology literacy"
+        ],
+        "digital_tools": [
+          "Full range of mood tracking and self-management apps",
+          "Web-based platforms",
+          "Digital phenotyping",
+          "Telehealth options",
+          "Online support groups",
+          "Comprehensive psychoeducation resources"
+        ]
+      },
+      
+      "elderly": {
+        "age_range": "65+ years",
+        "considerations": [
+          "Comorbid physical health conditions",
+          "Medication interactions",
+          "Cognitive changes",
+          "May have lower technology literacy",
+          "Social isolation risk"
+        ],
+        "digital_tools": [
+          "Simple, user-friendly interfaces",
+          "Large text and clear visuals",
+          "Voice-activated options",
+          "Telehealth for accessibility",
+          "Family-assisted digital tools",
+          "Focus on medication management and physical health monitoring"
+        ],
+        "medications": "Lower doses recommended; ECT may be considered earlier due to better tolerability"
+      }
+    }
+  },
+  
+  "language_considerations": {
+    "uk_english_terminology": {
+      "spelling_differences": [
+        {"uk": "Bipolar disorder", "us": "Bipolar disorder", "note": "Same spelling"},
+        {"uk": "Stabilise", "us": "Stabilize"},
+        {"uk": "Recognise", "us": "Recognize"},
+        {"uk": "Behaviour", "us": "Behavior"},
+        {"uk": "Colour", "us": "Color"},
+        {"uk": "Favour", "us": "Favor"},
+        {"uk": "Honour", "us": "Honor"},
+        {"uk": "Neighbour", "us": "Neighbor"},
+        {"uk": "Analyse", "us": "Analyze"},
+        {"uk": "Paralyse", "us": "Paralyze"},
+        {"uk": "Centre", "us": "Center"},
+        {"uk": "Metre", "us": "Meter"},
+        {"uk": "Litre", "us": "Liter"},
+        {"uk": "Defence", "us": "Defense"},
+        {"uk": "Licence (noun)", "us": "License"},
+        {"uk": "Practise (verb)", "us": "Practice"}
+      ],
+      "medical_terms": [
+        {"uk": "Paediatric", "us": "Pediatric"},
+        {"uk": "Anaesthesia", "us": "Anesthesia"},
+        {"uk": "Oestrogen", "us": "Estrogen"},
+        {"uk": "Haemoglobin", "us": "Hemoglobin"},
+        {"uk": "Leukaemia", "us": "Leukemia"}
+      ],
+      "service_terminology": [
+        {"uk": "GP (General Practitioner)", "us": "Primary care physician"},
+        {"uk": "A&E (Accident and Emergency)", "us": "ER (Emergency Room)"},
+        {"uk": "CAMHS (Child and Adolescent Mental Health Services)", "us": "Child and adolescent psychiatry services"},
+        {"uk": "NHS (National Health Service)", "us": "Healthcare system (varies)"},
+        {"uk": "Mental Health Act", "us": "Mental health laws (vary by state)"},
+        {"uk": "Care coordinator", "us": "Case manager"},
+        {"uk": "Carer", "us": "Caregiver"}
+      ]
+    },
+    
+    "us_english_terminology": {
+      "spelling_differences": "See UK English section for comparison",
+      "service_terminology": [
+        {"us": "Primary care physician", "uk": "GP"},
+        {"us": "ER (Emergency Room)", "uk": "A&E"},
+        {"us": "Psychiatrist", "uk": "Psychiatrist", "note": "Same"},
+        {"us": "Therapist/Counselor", "uk": "Therapist/Counsellor"},
+        {"us": "Case manager", "uk": "Care coordinator"},
+        {"us": "Caregiver", "uk": "Carer"}
+      ]
+    },
+    
+    "regional_medical_terminology_differences": [
+      {
+        "term": "Manic depression",
+        "status": "Outdated term for bipolar disorder; still recognised but not preferred",
+        "regions": "Both UK and US"
+      },
+      {
+        "term": "Bipolar affective disorder",
+        "status": "ICD-10 term; updated to 'bipolar disorder' in ICD-11",
+        "regions": "International"
+      },
+      {
+        "term": "Sectioned",
+        "uk_usage": "Informal term for involuntary admission under Mental Health Act",
+        "us_equivalent": "Committed or involuntarily admitted"
+      }
+    ],
+    
+    "cultural_considerations": [
+      "Mental health stigma varies across cultures",
+      "Some cultures may have different conceptualisations of mental illness",
+      "Family involvement in treatment may be more or less expected depending on culture",
+      "Use of interpreters important for non-English speakers",
+      "Culturally adapted interventions may be more effective"
+    ]
+  },
+  
+  "statistics_and_epidemiology": {
+    "global_burden": {
+      "prevalence": "Approximately 0.5% of global population (37 million people in 2021)",
+      "breakdown": "34 million adults and 3.8 million adolescents aged 10-19",
+      "trends": "Global incidence and prevalence showed consistent upward trend from 1990 to 2021",
+      "age_standardised_rates": {
+        "incidence": "31.35 per 100,000 (1990) to 32.12 per 100,000 (2021)",
+        "prevalence": "490.1 per 100,000 (1990) to 489.8 per 100,000 (2019)"
+      },
+      "regional_variations": "Americas had highest YLD number and rate; Southern Latin America saw largest increase in incidence",
+      "gender": "Females and adolescents bear greater burden; higher incidence and prevalence rates",
+      "who_ranking": "Fifth leading cause of disease burden among mental disorders"
+    },
+    
+    "united_states": {
+      "prevalence": {
+        "past_year": "2.8% of US adults (approximately 7.3 million)",
+        "lifetime": "1.5-4.4% of US adults",
+        "adolescents": "2.9% lifetime prevalence (ages 13-18)",
+        "comparison": "US has highest lifetime rate (4.4%) among 11 nations studied"
+      },
+      "age_of_onset": {
+        "median": "25 years",
+        "highest_rates": "Ages 25-29 (0.7%)",
+        "early_onset": "Up to one-third of children/adolescents with depression may have early-onset bipolar disorder"
+      },
+      "gender_distribution": {
+        "past_year": "Males 2.9%, Females 2.8% (similar)",
+        "characteristics": "Women more likely to experience rapid cycling and depressive episodes; men slightly more prone to manic episodes and younger age at first episode"
+      },
+      "racial_ethnic_differences": {
+        "highest_rate": "Native American/Alaskan Natives (1.5%)",
+        "lowest_rate": "Asians (0.2%)",
+        "treatment_disparities": "Native Hawaiian/Other Pacific Islanders 49% less likely to receive medication; non-Hispanic Blacks 46% less likely compared to non-Hispanic Whites",
+        "misdiagnosis": "African-American men 25% more likely to be misdiagnosed with schizophrenia vs 7% for Caucasian men"
+      },
+      "impairment": {
+        "serious": "82.9% of adults with bipolar disorder",
+        "moderate": "17.1%",
+        "adolescents": "2.6% experienced severe impairment"
+      },
+      "economic_burden": {
+        "annual_cost": "$219.1 billion",
+        "direct_medical": "$55 billion (25%)",
+        "indirect_costs": "$164 billion (72-80%, primarily lost productivity)",
+        "lost_productivity_alone": "$145 billion"
+      },
+      "mortality": {
+        "life_expectancy_reduction": "Average 9.2 years",
+        "suicide_risk": "10-30 times higher than general population",
+        "suicide_attempts": "25-60% will attempt suicide in lifetime",
+        "suicide_deaths": "4-19% die by suicide",
+        "contribution_to_suicides": "3-14% of all suicide deaths annually"
+      },
+      "treatment_gaps": {
+        "untreated": "50% in any given year",
+        "diagnostic_delay": "Average 10 years from symptom onset to correct diagnosis",
+        "accurate_diagnosis_timeline": "Only 1 in 4 get accurate diagnosis in less than 3 years",
+        "treatment_resistance": "20-30% of Bipolar I patients continue experiencing symptoms despite treatment"
+      },
+      "regional_variations": "Inpatient stays range from 33.2 per 100,000 (Washington) to 150.6 per 100,000 (Illinois)"
+    },
+    
+    "united_kingdom": {
+      "prevalence": "Estimated 1-2% of population",
+      "service_provision": "NHS provides comprehensive mental health services including specialist bipolar disorder teams",
+      "challenges": "Concerns about under-diagnosis, under-treatment, and high threshold for specialist referral"
+    },
+    
+    "comorbidity": {
+      "psychiatric": [
+        "Anxiety disorders: 40-60% lifetime prevalence",
+        "Substance use disorders: 33-45%",
+        "ADHD: Significant comorbidity",
+        "Personality disorders: Common"
+      ],
+      "physical_health": [
+        "Cardiovascular disease",
+        "Diabetes",
+        "Obesity",
+        "Thyroid disorders",
+        "Migraine",
+        "Asthma"
+      ],
+      "impact": "Comorbidities lead to lower use of medical care, reduced treatment adherence, higher risk of adverse outcomes, and reduced life expectancy (13 years shorter than general population)"
+    },
+    
+    "misdiagnosis": {
+      "prevalence": "Up to 76.8% experience misdiagnosis",
+      "common_misdiagnoses": ["Major depressive disorder", "Schizophrenia", "Borderline personality disorder"],
+      "diagnostic_delay": "Average 5-10 years from symptom onset to correct diagnosis",
+      "consequences": "Delayed appropriate treatment, inappropriate treatments (e.g., antidepressants alone), worse outcomes"
+    }
+  },
+  
+  "references_and_citations": {
+    "primary_sources": [
+      {
+        "organisation": "NHS (National Health Service, UK)",
+        "key_resources": [
+          "NHS Mental Health Conditions: Bipolar Disorder",
+          "NHS Trust Bipolar Services (Birmingham and Solihull, Lancashire and South Cumbria, etc.)",
+          "NHS Inform Scotland: Bipolar Disorder"
+        ],
+        "urls": [
+          "https://www.nhs.uk/mental-health/conditions/bipolar-disorder/",
+          "https://www.nhsinform.scot/illnesses-and-conditions/mental-health/bipolar-disorder/"
+        ]
+      },
+      {
+        "organisation": "PubMed/NCBI",
+        "key_topics": [
+          "DSM-5 and ICD-11 diagnostic criteria",
+          "Evidence-based treatment guidelines",
+          "Psychotherapy effectiveness (CBT, FFT, IPSRT)",
+          "Pharmacological interventions",
+          "Relapse prevention strategies"
+        ],
+        "database": "https://pubmed.ncbi.nlm.nih.gov/"
+      },
+      {
+        "organisation": "WHO (World Health Organization)",
+        "key_resources": [
+          "ICD-11 Classification of Bipolar Disorders",
+          "Mental Health Gap Action Programme (mhGAP) Intervention Guide",
+          "Bipolar Disorder Fact Sheet",
+          "Global Burden of Disease Data"
+        ],
+        "urls": [
+          "https://www.who.int/news-room/fact-sheets/detail/bipolar-disorder",
+          "https://www.who.int/teams/mental-health-and-substance-use/treatment-care/mental-health-gap-action-programme"
+        ]
+      },
+      {
+        "organisation": "CDC (Centers for Disease Control and Prevention, US)",
+        "key_resources": [
+          "Mental Health Surveillance Data",
+          "Bipolar Disorder Statistics",
+          "Public Health Approaches to Mental Health"
+        ],
+        "urls": [
+          "https://www.cdc.gov/nchs/fastats/mental-health.htm",
+          "https://www.cdc.gov/mental-health/"
+        ]
+      },
+      {
+        "organisation": "NICE (National Institute for Health and Care Excellence, UK)",
+        "key_resources": [
+          "Clinical Guideline CG185: Bipolar disorder: assessment and management (2014, updated 2025)",
+          "Quality Standards for Bipolar Disorder"
+        ],
+        "url": "https://www.nice.org.uk/guidance/cg185"
+      },
+      {
+        "organisation": "EMA (European Medicines Agency)",
+        "key_resources": [
+          "Approved medications for bipolar disorder",
+          "Valproate safety restrictions and Pregnancy Prevention Programme",
+          "Antipsychotic authorisations",
+          "Clinical development guidelines for bipolar disorder treatments"
+        ],
+        "url": "https://www.ema.europa.eu/"
+      },
+      {
+        "organisation": "APA (American Psychiatric Association)",
+        "key_resources": [
+          "DSM-5 Diagnostic Criteria for Bipolar Disorder",
+          "DSM-5-TR Updates",
+          "Practice Guideline for the Treatment of Patients With Bipolar Disorder (2002)"
+        ],
+        "url": "https://www.psychiatry.org/"
+      }
+    ],
+    
+    "additional_guidelines": [
+      {
+        "name": "CANMAT/ISBD Guidelines",
+        "full_title": "Canadian Network for Mood and Anxiety Treatments and International Society for Bipolar Disorders Guidelines for the Management of Patients with Bipolar Disorder",
+        "year": "2018 (updated 2023)",
+        "focus": "Comprehensive evidence-based recommendations for assessment and treatment across lifespan"
+      },
+      {
+        "name": "BAP Guidelines",
+        "full_title": "British Association for Psychopharmacology Evidence-Based Guidelines for Treating Bipolar Disorder",
+        "year": "2016",
+        "focus": "Pharmacological management, psychoeducation, and behaviour change"
+      },
+      {
+        "name": "IPS Clinical Practice Guidelines",
+        "full_title": "Indian Psychiatric Society Clinical Practice Guidelines for Management of Bipolar Disorder",
+        "year": "2017",
+        "focus": "Pharmacological and psychosocial interventions"
+      }
+    ],
+    
+    "key_research_areas": [
+      "Diagnostic criteria harmonisation (DSM-5 vs ICD-11)",
+      "Pharmacological efficacy and safety",
+      "Psychotherapy effectiveness",
+      "Digital health interventions",
+      "Relapse prevention strategies",
+      "Comorbidity management",
+      "Lifestyle interventions",
+      "Early intervention and prevention",
+      "Biomarkers and predictive models",
+      "Health disparities and access to care"
+    ]
+  }
+}
