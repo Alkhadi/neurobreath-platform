@@ -16,27 +16,31 @@ export function SiteFooter() {
   }
 
   return (
-    <footer className="site-footer" id="siteFooter">
+    <footer className="site-footer" id="siteFooter" role="contentinfo">
       {/* Footer navigation - Full Width */}
       <div className="ft-nav-wrapper">
         <div className="ft-nav-inner">
           {/* Brand + Support in Navigation Area */}
           <div className="ft-nav-brand">
-            <Link className="ft-logo" href="/" aria-label="NeuroBreath home">
+            <Link className="ft-logo" href="/" aria-label="Return to NeuroBreath homepage">
               <Image 
                 src="/icons/neurobreath-logo-square-64.png" 
-                alt="NeuroBreath" 
+                alt="NeuroBreath logo" 
                 width={64}
                 height={64}
+                priority={false}
               />
             </Link>
-            <Link href="/support-us" className="btn">
-              ☕ Support Us
+            <Link href="/support-us" className="btn" aria-label="Support NeuroBreath">
+              <span aria-hidden="true">☕</span> Support Us
             </Link>
           </div>
-          <nav className="ft-nav" aria-label="Footer">
+          <nav className="ft-nav" aria-label="Footer navigation">
             <details className="ft-group">
-              <summary>Conditions <span aria-hidden="true">▾</span></summary>
+              <summary>
+                <span>Conditions</span>
+                <span aria-hidden="true">▾</span>
+              </summary>
               <div className="links">
                 <p>
                   <Link href="/conditions/autism">Autism</Link> ·{' '}
@@ -66,7 +70,10 @@ export function SiteFooter() {
               </div>
             </details>
             <details className="ft-group">
-              <summary>Breathing &amp; Focus <span aria-hidden="true">▾</span></summary>
+              <summary>
+                <span>Breathing &amp; Focus</span>
+                <span aria-hidden="true">▾</span>
+              </summary>
               <div className="links">
                 <p>
                   <Link href="/breathing/breath">Breath (how-to)</Link> ·{' '}
@@ -96,7 +103,10 @@ export function SiteFooter() {
               </div>
             </details>
             <details className="ft-group">
-              <summary>Symptom Guides <span aria-hidden="true">▾</span></summary>
+              <summary>
+                <span>Symptom Guides</span>
+                <span aria-hidden="true">▾</span>
+              </summary>
               <div className="links">
                 <p>
                   <Link href="/conditions/anxiety">Stress &amp; General Anxiety</Link> ·{' '}
@@ -126,17 +136,18 @@ export function SiteFooter() {
 
       <div className="inner">
         <div className="ft-bottom">
-          <div className="ft-bottom__copy" aria-label="Site notice">
+          <div className="ft-bottom__copy">
             <p className="muted ft-bottom__text">
-              Educational information only. Not medical advice. NeuroBreath is a free resource by NeuroBreath. ©{' '}
-              <span id="yearFooter">{currentYear}</span> NeuroBreath. All rights reserved.
+              <strong>Educational information only.</strong> Not medical advice. NeuroBreath is a free resource. ©{' '}
+              <time dateTime={currentYear.toString()} id="yearFooter">{currentYear}</time> NeuroBreath. All rights reserved.
             </p>
           </div>
           <button 
             type="button" 
             className="btn back-to-top-btn" 
             onClick={scrollToTop}
-            aria-label="Back to top"
+            aria-label="Scroll back to top of page"
+            title="Back to top"
           >
             <span className="back-to-top__label">Back to top</span>
             <span className="back-to-top__icon" aria-hidden="true">↑</span>

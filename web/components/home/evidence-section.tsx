@@ -116,7 +116,8 @@ export default function EvidenceSection() {
                 >
                   <span className="live-orbit-focus-icon">🫁</span>
                   <span className="live-orbit-focus-text">
-                    <strong>Explore All Techniques</strong> — Full sessions with narration, timers &amp; progress tracking
+                    <strong>Explore All Techniques</strong>
+                    <span className="live-orbit-focus-subtext">Full sessions with narration, timers &amp; progress tracking</span>
                   </span>
                 </Link>
               </div>
