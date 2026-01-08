@@ -104,17 +104,21 @@ export default function ScienceSection() {
               <LiveBreathingPreview />
             </div>
 
-            <div className="text-center">
+            <div className="text-center px-2 sm:px-4">
               <p className="text-sm text-slate-600 mb-4">Want full sessions with audio guidance?</p>
               <div className="mb-4 text-2xl">👇</div>
-              <Button asChild size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                <Link href="/breathing/breath" className="flex items-center gap-2">
-                  <span className="text-lg">🫁</span>
-                  <div className="text-left">
-                    <div className="font-semibold">Explore All Techniques</div>
-                    <div className="text-xs opacity-90">Full sessions with narration &amp; progress tracking</div>
+              <Button asChild size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 w-full sm:w-auto sm:max-w-lg mx-auto h-auto py-3 sm:py-4">
+                <Link href="/breathing/breath" className="flex items-center justify-start gap-2 sm:gap-3 px-3 sm:px-5 md:px-6">
+                  <span className="text-lg sm:text-xl md:text-2xl flex-shrink-0 leading-none">🫁</span>
+                  <div className="text-left flex-1 min-w-0 overflow-hidden">
+                    <div className="font-semibold text-[11px] xs:text-xs sm:text-sm md:text-base leading-tight sm:leading-snug truncate">
+                      Explore All Techniques
+                    </div>
+                    <div className="text-[9px] xs:text-[10px] sm:text-xs md:text-sm opacity-90 leading-tight mt-0.5 sm:mt-1">
+                      Full sessions with narration &amp; progress tracking
+                    </div>
                   </div>
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 flex-shrink-0 hidden sm:block" />
                 </Link>
               </Button>
             </div>
