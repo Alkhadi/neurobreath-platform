@@ -746,30 +746,46 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
   
   // Handle quick question click
   const handleQuickQuestion = (question: string) => {
-    // Check for navigation requests
-    const lowerQuestion = question.toLowerCase();
+    // Check for navigation requests - match exact button text
+    const normalizedQuestion = question.trim().toLowerCase();
     
-    if (lowerQuestion.includes('take me to the adhd hub') || lowerQuestion.includes('adhd hub')) {
-      router.push('/adhd');
-      const navMessage: Message = {
-        id: `nav-adhd-${Date.now()}`,
-        role: 'assistant',
-        content: `🎯 **Navigating to ADHD Hub...**\n\nTaking you to the ADHD Hub with focus tools, gamified quests, and evidence-based strategies!`,
+    // ADHD Hub navigation
+    if (normalizedQuestion === 'take me to the adhd hub' || 
+        normalizedQuestion.includes('adhd hub')) {
+      // Add user message first
+      const userMessage: Message = {
+        id: `user-${Date.now()}`,
+        role: 'user',
+        content: question,
         timestamp: new Date()
       };
-      setMessages(prev => [...prev, navMessage]);
+      setMessages(prev => [...prev, userMessage]);
+      
+      // Then navigate
+      setTimeout(() => {
+        router.push('/adhd');
+      }, 100);
+      
       return;
     }
     
-    if (lowerQuestion.includes('take me to the autism hub') || lowerQuestion.includes('autism hub')) {
-      router.push('/autism');
-      const navMessage: Message = {
-        id: `nav-autism-${Date.now()}`,
-        role: 'assistant',
-        content: `🌟 **Navigating to Autism Hub...**\n\nTaking you to the Autism Hub with calming tools, education pathways, and printable resources!`,
+    // Autism Hub navigation
+    if (normalizedQuestion === 'take me to the autism hub' || 
+        normalizedQuestion.includes('autism hub')) {
+      // Add user message first
+      const userMessage: Message = {
+        id: `user-${Date.now()}`,
+        role: 'user',
+        content: question,
         timestamp: new Date()
       };
-      setMessages(prev => [...prev, navMessage]);
+      setMessages(prev => [...prev, userMessage]);
+      
+      // Then navigate
+      setTimeout(() => {
+        router.push('/autism');
+      }, 100);
+      
       return;
     }
     
