@@ -744,6 +744,7 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
           )}
           size="icon"
           aria-label="Open NeuroBreath Buddy assistant (Cmd+K)"
+          data-pagebuddy-trigger="true"
         >
           <MessageCircle className="h-6 w-6 text-white" />
           <span className="absolute -top-8 right-0 bg-popover text-popover-foreground text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md">
@@ -851,8 +852,8 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
                         : 'bg-muted rounded-bl-md'
                     )}
                   >
-                    <div className="max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent pr-2 flex-shrink min-h-0">
-                      <div className="whitespace-pre-wrap leading-relaxed">
+                    <div className="max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent pr-2 flex-shrink min-h-0 pb-2">
+                      <div className="whitespace-pre-wrap leading-relaxed pb-[2%]">
                         {message.content.split('\n').map((line, i) => (
                           <span key={i}>
                             {renderMessage(line)}
