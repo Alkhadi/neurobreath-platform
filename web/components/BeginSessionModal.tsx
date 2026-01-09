@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { X, Play, Pause, Square, Volume2, Music } from 'lucide-react'
+import { Volume2, Music } from 'lucide-react'
 import { getTechniqueById } from '@/lib/breathing-data'
+import { FocusOverlayShell, FocusButton } from '@/components/focus/FocusOverlayShell'
 
 interface BeginSessionModalProps {
   isOpen: boolean
@@ -39,12 +40,12 @@ class AmbientSoundGenerator {
     const bufferSize = this.audioContext!.sampleRate * 2
     const buffer = this.audioContext!.createBuffer(1, bufferSize, this.audioContext!.sampleRate)
     const output = buffer.getChannelData(0)
-    
+
     let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0
-    
+
     for (let i = 0; i < bufferSize; i++) {
       const white = Math.random() * 2 - 1
-      
+
       if (type === 'white') {
         output[i] = white * 0.5
       } else if (type === 'pink') {
@@ -76,7 +77,7 @@ class AmbientSoundGenerator {
 
   play(type: AmbienceType) {
     if (!this.audioContext || type === 'none') return
-    
+
     this.stop()
     this.isPlaying = true
 
@@ -94,7 +95,7 @@ class AmbientSoundGenerator {
         this.oscillators.push(this.createOscillator(180, 'sine', 0.05))
         break
       }
-        
+
       case 'rain': {
         // Rain-like white noise with filtering
         const rainBuffer = this.createNoiseBuffer('pink')
@@ -112,7 +113,7 @@ class AmbientSoundGenerator {
         this.noiseNode.start()
         break
       }
-        
+
       case 'ocean': {
         // Ocean waves with brown noise
         const oceanBuffer = this.createNoiseBuffer('brown')
@@ -132,7 +133,7 @@ class AmbientSoundGenerator {
         this.oscillators.push(this.createOscillator(0.1, 'sine', 0.02))
         break
       }
-        
+
       case 'birds': {
         // Nature sounds with high frequency chirps
         this.oscillators.push(this.createOscillator(2000, 'sine', 0.02))
@@ -154,7 +155,7 @@ class AmbientSoundGenerator {
         this.noiseNode.start()
         break
       }
-        
+
       case 'forest': {
         // Forest stream with gentle water sounds
         const forestBuffer = this.createNoiseBuffer('pink')
@@ -173,7 +174,7 @@ class AmbientSoundGenerator {
         this.noiseNode.start()
         break
       }
-        
+
       case 'tibetan': {
         // Tibetan singing bowls - harmonic tones
         this.oscillators.push(this.createOscillator(174, 'sine', 0.12))
@@ -183,7 +184,7 @@ class AmbientSoundGenerator {
         this.oscillators.push(this.createOscillator(639, 'triangle', 0.04))
         break
       }
-        
+
       case 'meditation': {
         // Deep meditation drone with binaural-like tones
         this.oscillators.push(this.createOscillator(100, 'sine', 0.15))
@@ -192,7 +193,7 @@ class AmbientSoundGenerator {
         this.oscillators.push(this.createOscillator(300, 'triangle', 0.05))
         break
       }
-        
+
       case 'spiritual': {
         // Ethereal spiritual sounds with harmonics
         this.oscillators.push(this.createOscillator(256, 'sine', 0.1))
@@ -259,13 +260,13 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
   const [ambienceVolume, setAmbienceVolume] = useState<number>(0.25)
   const [isTestingAmbience, setIsTestingAmbience] = useState(false)
   const voiceEnabled = true
-  
+
   // Session state
   const [isPlaying, setIsPlaying] = useState(false)
   const [phase, setPhase] = useState<Phase>('ready')
   const [timeRemaining, setTimeRemaining] = useState(0)
   const [totalTime, setTotalTime] = useState(0)
-  
+
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
   const ambientSoundRef = useRef<AmbientSoundGenerator | null>(null)
@@ -284,9 +285,9 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
   useEffect(() => {
     if (!ambientSoundRef.current) return
 
-    const shouldPlay = (view === 'session' && isPlaying && selectedAmbience !== 'none') || 
+    const shouldPlay = (view === 'session' && isPlaying && selectedAmbience !== 'none') ||
                        (view === 'picker' && isTestingAmbience && selectedAmbience !== 'none')
-    
+
     if (shouldPlay) {
       ambientSoundRef.current.setVolume(ambienceVolume)
       ambientSoundRef.current.play(selectedAmbience)
@@ -305,8 +306,6 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
       if (ambientSoundRef.current) ambientSoundRef.current.stop()
     }
   }, [isOpen])
-
-  if (!isOpen) return null
 
   // Calculate progress percentage
   const progressPercentage = totalTime > 0 ? Math.round(((totalTime - timeRemaining) / totalTime) * 100) : 0
@@ -351,7 +350,7 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
 
   const speak = (text: string) => {
     if (!voiceEnabled || typeof window === 'undefined' || !window.speechSynthesis) return
-    
+
     window.speechSynthesis.cancel()
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.rate = 0.9
@@ -450,103 +449,87 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
 
   return (
     <>
-      {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998] animate-in fade-in duration-200"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-      
-      {/* Modal */}
-      <div 
-        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-xl bg-white rounded-2xl shadow-2xl z-[9999] animate-in zoom-in-95 duration-200"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="quick-start-title"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {view === 'picker' ? (
-          <div className="p-6">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-              <h2 id="quick-start-title" className="text-xl font-bold text-gray-900">
-                Choose a breathing technique
-              </h2>
-              <button
-                onClick={onClose}
-                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-                aria-label="Close modal"
+      {view === 'picker' ? (
+        <FocusOverlayShell
+          isOpen={isOpen}
+          onClose={onClose}
+          title="Choose a breathing technique"
+          subtitle="Pick a warm-up technique and duration. We will start your session with voice guidance."
+          maxWidth="xl"
+          footerActions={
+            <>
+              <FocusButton onClick={onClose} variant="outline">
+                Cancel
+              </FocusButton>
+              <FocusButton onClick={handleStartBreathing} variant="primary">
+                Start breathing
+              </FocusButton>
+            </>
+          }
+        >
+          {/* Narration Voice Section */}
+          <div className="mb-6 p-4 bg-amber-50 rounded-lg border border-amber-100">
+            <div className="flex items-center gap-2 mb-2">
+              <Volume2 size={16} className="text-gray-600" />
+              <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                Narration Voice
+              </label>
+            </div>
+            <p className="text-sm font-medium text-gray-900 mb-3">Choose narration voice</p>
+
+            <div className="flex flex-wrap gap-2 mb-3">
+              <label htmlFor="narration-voice-select" className="sr-only">
+                Select narration voice
+              </label>
+              <select
+                id="narration-voice-select"
+                name="narrationVoice"
+                value={selectedVoice}
+                onChange={(e) => setSelectedVoice(e.target.value)}
+                className="min-w-0 flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                aria-label="Select narration voice"
+                title="Choose your preferred narration voice"
               >
-                <X size={20} className="text-gray-600" />
+                {voiceOptions.map(v => (
+                  <option key={v.id} value={v.id}>{v.label}</option>
+                ))}
+              </select>
+              <button
+                onClick={readInstructions}
+                className="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 whitespace-nowrap"
+                aria-label="Read breathing instructions aloud"
+              >
+                Read instructions
+              </button>
+              <button
+                onClick={stopVoice}
+                className="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+                aria-label="Stop voice narration"
+              >
+                Stop
               </button>
             </div>
 
-            {/* Narration Voice Section */}
-            <div className="mb-6 p-4 bg-amber-50 rounded-lg border border-amber-100">
-              <div className="flex items-center gap-2 mb-2">
-                <Volume2 size={16} className="text-gray-600" />
-                <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                  Narration Voice
-                </label>
-              </div>
-              <p className="text-sm font-medium text-gray-900 mb-3">Choose narration voice</p>
-              
-              <div className="flex flex-wrap gap-2 mb-3">
-                <label htmlFor="narration-voice-select" className="sr-only">
-                  Select narration voice
-                </label>
-                <select
-                  id="narration-voice-select"
-                  name="narrationVoice"
-                  value={selectedVoice}
-                  onChange={(e) => setSelectedVoice(e.target.value)}
-                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  aria-label="Select narration voice"
-                  title="Choose your preferred narration voice"
-                >
-                  {voiceOptions.map(v => (
-                    <option key={v.id} value={v.id}>{v.label}</option>
-                  ))}
-                </select>
-                <button
-                  onClick={readInstructions}
-                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
-                  aria-label="Read breathing instructions aloud"
-                >
-                  Read instructions
-                </button>
-                <button
-                  onClick={stopVoice}
-                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
-                  aria-label="Stop voice narration"
-                >
-                  Stop
-                </button>
-              </div>
+            <button
+              onClick={testVoice}
+              className="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 mb-2"
+              aria-label="Test selected voice"
+            >
+              Voice test
+            </button>
 
-              <button
-                onClick={testVoice}
-                className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50 mb-2"
-                aria-label="Test selected voice"
-              >
-                Voice test
-              </button>
-              
-              <p className="text-xs text-gray-600">Daniel • en-GB</p>
-            </div>
+            <p className="text-xs text-gray-600">Daniel • en-GB</p>
+          </div>
 
-            {/* Instruction Text */}
-            <p className="text-sm text-gray-700 mb-4">
-              Pick a warm-up technique and duration. We will start your session with voice guidance.
-            </p>
-
-            {/* Technique Grid */}
-            <div className="grid grid-cols-2 gap-3 mb-6" role="group" aria-label="Breathing technique options">
+          {/* Technique Grid - NOW FULLY RESPONSIVE */}
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Select technique</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" role="group" aria-label="Breathing technique options">
               {techniques.map(tech => (
                 <button
                   key={tech.id}
                   onClick={() => setSelectedTechnique(tech.id)}
-                  className={`relative p-4 rounded-lg border-2 text-left transition-all ${
+                  className={`relative p-4 rounded-lg border-2 text-left transition-all min-h-[80px] ${
                     selectedTechnique === tech.id ? tech.colorActive : tech.color
                   }`}
                   aria-label={`Select ${tech.name} technique - ${tech.subtitle}`}
@@ -561,202 +544,153 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
                 </button>
               ))}
             </div>
+          </div>
 
-            {/* Session Duration */}
-            <div className="mb-6">
-              <h3 className="text-sm font-semibold text-gray-900 mb-2">Session duration</h3>
-              <p className="text-xs text-gray-600 mb-3">Tap a timing that feels doable today.</p>
+          {/* Session Duration - WRAPPING PILLS */}
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold text-gray-900 mb-2">Session duration</h3>
+            <p className="text-xs text-gray-600 mb-3">Tap a timing that feels doable today.</p>
 
-              <div className="flex gap-2" role="group" aria-label="Session duration options">
-                {[1, 2, 3, 4, 5].map(min => (
-                  <button
-                    key={min}
-                    onClick={() => setSelectedDuration(min)}
-                    className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all ${
-                      selectedDuration === min
-                        ? 'bg-blue-50 border-blue-400 text-blue-900'
-                        : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
-                    }`}
-                    aria-label={`Select ${min} minute session`}
-                  >
-                    {min} min
-                  </button>
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Session duration options">
+              {[1, 2, 3, 4, 5].map(min => (
+                <button
+                  key={min}
+                  onClick={() => setSelectedDuration(min)}
+                  className={`px-4 py-2 text-sm font-medium rounded-lg border-2 transition-all min-w-[64px] ${
+                    selectedDuration === min
+                      ? 'bg-blue-50 border-blue-400 text-blue-900'
+                      : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
+                  }`}
+                  aria-label={`Select ${min} minute session`}
+                >
+                  {min} min
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Ambience Sound Section - WRAPPING CONTROLS */}
+          <div className="p-4 bg-purple-50 rounded-lg border border-purple-100">
+            <div className="flex items-center gap-2 mb-2">
+              <Music size={16} className="text-purple-600" />
+              <label className="text-xs font-semibold text-purple-700 uppercase tracking-wide">
+                Ambience Sounds
+              </label>
+            </div>
+            <p className="text-sm font-medium text-gray-900 mb-3">Choose background ambience</p>
+
+            <div className="flex flex-wrap gap-2 mb-3">
+              <label htmlFor="ambience-sound-select" className="sr-only">
+                Select ambience sound
+              </label>
+              <select
+                id="ambience-sound-select"
+                name="ambienceSound"
+                value={selectedAmbience}
+                onChange={(e) => setSelectedAmbience(e.target.value as AmbienceType)}
+                className="min-w-0 flex-1 px-3 py-2 text-sm border border-purple-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+                aria-label="Select ambience sound"
+                title="Choose your preferred background sound"
+              >
+                {AMBIENCE_OPTIONS.map(opt => (
+                  <option key={opt.id} value={opt.id}>{opt.label}</option>
                 ))}
-              </div>
+              </select>
+              <button
+                onClick={() => setIsTestingAmbience(!isTestingAmbience)}
+                className={`px-3 py-2 text-sm border rounded-md transition-colors whitespace-nowrap ${
+                  isTestingAmbience
+                    ? 'bg-purple-500 text-white border-purple-500'
+                    : 'border-purple-300 text-purple-700 hover:bg-purple-100'
+                }`}
+                aria-label={isTestingAmbience ? 'Stop preview' : 'Preview ambience'}
+                disabled={selectedAmbience === 'none'}
+              >
+                {isTestingAmbience ? 'Stop' : 'Preview'}
+              </button>
             </div>
 
-            {/* Ambience Sound Section */}
-            <div className="mb-6 p-4 bg-purple-50 rounded-lg border border-purple-100">
-              <div className="flex items-center gap-2 mb-2">
-                <Music size={16} className="text-purple-600" />
-                <label className="text-xs font-semibold text-purple-700 uppercase tracking-wide">
-                  Ambience Sounds
-                </label>
-              </div>
-              <p className="text-sm font-medium text-gray-900 mb-3">Choose background ambience</p>
-              
-              <div className="flex flex-wrap gap-2 mb-3">
-                <label htmlFor="ambience-sound-select" className="sr-only">
-                  Select ambience sound
-                </label>
-                <select
-                  id="ambience-sound-select"
-                  name="ambienceSound"
-                  value={selectedAmbience}
-                  onChange={(e) => setSelectedAmbience(e.target.value as AmbienceType)}
-                  className="flex-1 px-3 py-1.5 text-sm border border-purple-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
-                  aria-label="Select ambience sound"
-                  title="Choose your preferred background sound"
-                >
-                  {AMBIENCE_OPTIONS.map(opt => (
-                    <option key={opt.id} value={opt.id}>{opt.label}</option>
-                  ))}
-                </select>
-                <button
-                  onClick={() => setIsTestingAmbience(!isTestingAmbience)}
-                  className={`px-3 py-1.5 text-sm border rounded-md transition-colors ${
-                    isTestingAmbience 
-                      ? 'bg-purple-500 text-white border-purple-500' 
-                      : 'border-purple-300 text-purple-700 hover:bg-purple-100'
-                  }`}
-                  aria-label={isTestingAmbience ? 'Stop preview' : 'Preview ambience'}
-                  disabled={selectedAmbience === 'none'}
-                >
-                  {isTestingAmbience ? 'Stop' : 'Preview'}
-                </button>
-              </div>
-
-              {/* Volume Slider */}
-              <div className="flex items-center gap-3">
-                <label htmlFor="ambience-volume-slider" className="text-xs text-gray-600 w-14">
-                  Volume
-                </label>
-                <input
-                  id="ambience-volume-slider"
-                  name="ambienceVolume"
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.05"
-                  value={ambienceVolume}
-                  onChange={(e) => setAmbienceVolume(parseFloat(e.target.value))}
-                  className="flex-1 h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer accent-purple-500"
-                  aria-label="Ambience volume"
-                />
-                <span className="text-xs text-gray-600 w-10 text-right">{Math.round(ambienceVolume * 100)}%</span>
-              </div>
-            </div>
-
-            {/* Footer Buttons */}
-            <div className="flex gap-3">
-              <button
-                onClick={onClose}
-                className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                aria-label="Cancel and close modal"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleStartBreathing}
-                className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
-                aria-label="Start breathing session"
-              >
-                Start breathing
-              </button>
+            {/* Volume Slider */}
+            <div className="flex items-center gap-3">
+              <label htmlFor="ambience-volume-slider" className="text-xs text-gray-600 w-14 flex-shrink-0">
+                Volume
+              </label>
+              <input
+                id="ambience-volume-slider"
+                name="ambienceVolume"
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={ambienceVolume}
+                onChange={(e) => setAmbienceVolume(parseFloat(e.target.value))}
+                className="flex-1 h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer accent-purple-500 min-w-0"
+                aria-label="Ambience volume"
+              />
+              <span className="text-xs text-gray-600 w-10 text-right flex-shrink-0">{Math.round(ambienceVolume * 100)}%</span>
             </div>
           </div>
-        ) : (
-          /* Session View */
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Breathing Session</h2>
-              <button
-                onClick={handleStop}
-                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-                aria-label="Stop session"
-              >
-                <X size={20} className="text-gray-600" />
-              </button>
-            </div>
-
-            {/* Timer Display */}
-            <div className="text-center mb-8">
-              <div className="text-5xl font-bold text-gray-900 mb-2">{formatTime(timeRemaining)}</div>
-              <div className="text-sm text-gray-600">Time remaining</div>
-            </div>
-
-            {/* Phase Display */}
-            <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-8 mb-6 text-center">
-              <div className="text-3xl font-bold text-gray-900 capitalize mb-2">{phase}</div>
-              <div className="w-32 h-32 mx-auto bg-gradient-to-br from-blue-200 to-purple-200 rounded-full animate-pulse" />
-            </div>
-
-            {/* Progress Bar */}
-            <div className="mb-6">
-              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  className={`h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-1000 ${
-                    progressPercentage <= 0 ? 'w-0' :
-                    progressPercentage <= 5 ? 'w-[5%]' :
-                    progressPercentage <= 10 ? 'w-[10%]' :
-                    progressPercentage <= 15 ? 'w-[15%]' :
-                    progressPercentage <= 20 ? 'w-[20%]' :
-                    progressPercentage <= 25 ? 'w-1/4' :
-                    progressPercentage <= 30 ? 'w-[30%]' :
-                    progressPercentage <= 35 ? 'w-[35%]' :
-                    progressPercentage <= 40 ? 'w-[40%]' :
-                    progressPercentage <= 45 ? 'w-[45%]' :
-                    progressPercentage <= 50 ? 'w-1/2' :
-                    progressPercentage <= 55 ? 'w-[55%]' :
-                    progressPercentage <= 60 ? 'w-[60%]' :
-                    progressPercentage <= 65 ? 'w-[65%]' :
-                    progressPercentage <= 70 ? 'w-[70%]' :
-                    progressPercentage <= 75 ? 'w-3/4' :
-                    progressPercentage <= 80 ? 'w-[80%]' :
-                    progressPercentage <= 85 ? 'w-[85%]' :
-                    progressPercentage <= 90 ? 'w-[90%]' :
-                    progressPercentage <= 95 ? 'w-[95%]' :
-                    'w-full'
-                  }`}
-                  aria-hidden="true"
-                />
-              </div>
-              <span className="sr-only">Session progress: {progressPercentage}%</span>
-            </div>
-
-            {/* Controls */}
-            <div className="flex gap-3 justify-center">
+        </FocusOverlayShell>
+      ) : (
+        /* Session View - ALSO USES SHELL */
+        <FocusOverlayShell
+          isOpen={isOpen}
+          onClose={handleStop}
+          title="Breathing Session"
+          maxWidth="xl"
+          footerActions={
+            <>
               {!isPlaying ? (
-                <button
+                <FocusButton
                   onClick={handleResume}
-                  className="px-6 py-3 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
-                  aria-label="Resume breathing session"
+                  variant="primary"
+                  fullWidth
                 >
-                  <Play size={18} />
-                  Resume
-                </button>
+                  ▶ Resume
+                </FocusButton>
               ) : (
-                <button
+                <FocusButton
                   onClick={handlePause}
-                  className="px-6 py-3 text-sm font-medium text-white bg-amber-500 rounded-lg hover:bg-amber-600 transition-colors flex items-center gap-2"
-                  aria-label="Pause breathing session"
+                  variant="secondary"
+                  fullWidth
                 >
-                  <Pause size={18} />
-                  Pause
-                </button>
+                  ⏸ Pause
+                </FocusButton>
               )}
-              <button
+              <FocusButton
                 onClick={handleStop}
-                className="px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
-                aria-label="Stop breathing session and return to picker"
+                variant="outline"
               >
-                <Square size={18} />
-                Stop
-              </button>
-            </div>
+                ■ Stop
+              </FocusButton>
+            </>
+          }
+        >
+          {/* Timer Display */}
+          <div className="text-center mb-8">
+            <div className="text-4xl sm:text-5xl font-bold text-gray-900 mb-2">{formatTime(timeRemaining)}</div>
+            <div className="text-sm text-gray-600">Time remaining</div>
           </div>
-        )}
-      </div>
+
+          {/* Phase Display */}
+          <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 sm:p-8 mb-6 text-center">
+            <div className="text-2xl sm:text-3xl font-bold text-gray-900 capitalize mb-4">{phase}</div>
+            <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto bg-gradient-to-br from-blue-200 to-purple-200 rounded-full animate-pulse" />
+          </div>
+
+          {/* Progress Bar */}
+          <div className="mb-6">
+            <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-1000"
+                style={{ width: `${progressPercentage}%` }}
+                aria-hidden="true"
+              />
+            </div>
+            <span className="sr-only">Session progress: {progressPercentage}%</span>
+          </div>
+        </FocusOverlayShell>
+      )}
     </>
   )
 }
