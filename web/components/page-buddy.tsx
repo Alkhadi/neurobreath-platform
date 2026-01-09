@@ -434,32 +434,134 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       }
     }
     
+    // === NAVIGATION HANDLERS - CHECK THESE FIRST ===
+    // These must come BEFORE informational handlers to take priority
+
+    // === NAVIGATION - ADHD HUB ===
+    if ((q.includes('take me to') || q.includes('go to') || q.includes('visit') || q.includes('show me')) && q.includes('adhd')) {
+      // Automatically navigate after a short delay
+      setTimeout(() => {
+        router.push('/adhd');
+      }, 2000);
+      return `**ADHD Hub** is ready for you! 🎯\n\n**What you'll find:**\n• ⏱️ Focus Pomodoro Timer (5-50 min sessions)\n• 🏆 Daily Quests with XP rewards\n• 📚 Skills Library with practical strategies\n• 🔬 Myths vs Facts section\n• 📈 Progress tracking with streaks\n\n✨ **Redirecting you to /adhd in 2 seconds...**\n\nPerfect for individuals, parents, teachers, and carers supporting ADHD!`;
+    }
+
+    // === NAVIGATION - AUTISM HUB ===
+    if ((q.includes('take me to') || q.includes('go to') || q.includes('visit') || q.includes('show me')) && q.includes('autism')) {
+      // Automatically navigate after a short delay
+      setTimeout(() => {
+        router.push('/autism');
+      }, 2000);
+      return `**Autism Hub** is ready for you! 🌟\n\n**What you'll find:**\n• 🧘 Calm Toolkit with breathing exercises\n• 📚 Skills Library with age adaptations\n• 🎓 Education Pathways (EHCP/IEP/504)\n• 💼 Workplace Adjustments Generator\n• 📄 Printable Templates & Resources\n• 🔬 PubMed Research Search\n\n✨ **Redirecting you to /autism in 2 seconds...**\n\nDesigned for autistic individuals, parents, teachers, carers, and employers!`;
+    }
+
+    // === NAVIGATION - SLEEP SUPPORT ===
+    if ((q.includes('take me to') || q.includes('go to') || q.includes('visit') || q.includes('show me')) && (q.includes('sleep') || q.includes('rest'))) {
+      setTimeout(() => {
+        router.push('/sleep');
+      }, 2000);
+      return `**Sleep Support** is ready for you! 💤\n\n**What you'll find:**\n• 📊 Sleep Tracker & Diary with quality ratings\n• ✅ Evidence-based Sleep Hygiene Checklist\n• 🏆 Badges & Achievements for consistency\n• 📈 Progress Visualization charts\n• 📚 Educational resources on sleep science\n\n✨ **Redirecting you to /sleep in 2 seconds...**\n\nPerfect for anyone wanting better sleep – all data stays private on your device!`;
+    }
+
+    // === NAVIGATION - COACH HUB ===
+    if ((q.includes('take me to') || q.includes('go to') || q.includes('visit') || q.includes('show me')) && (q.includes('coach') || q.includes('educator') || q.includes('teacher hub'))) {
+      setTimeout(() => {
+        router.push('/coach');
+      }, 2000);
+      return `**Coach Hub** is ready for you! 🎓\n\n**What you'll find:**\n• 🟩 Quick-start breathing sessions (Box, Coherent, SOS)\n• 📥 Printable classroom resources & PDFs\n• 🎯 Team check-in strategies\n• 🛡️ Safeguarding & safety guidelines\n• 📊 Progress tracking for groups\n\n✨ **Redirecting you to /coach in 2 seconds...**\n\nPerfect for educators, sports coaches, team leaders, and therapists!`;
+    }
+
+    // === NAVIGATION - BREATHING HUB ===
+    if ((q.includes('take me to') || q.includes('go to') || q.includes('visit') || q.includes('show me')) && (q.includes('breathing') || q.includes('breath exercises'))) {
+      setTimeout(() => {
+        router.push('/breathing');
+      }, 2000);
+      return `**Breathing Hub** is ready for you! 🌬️\n\n**What you'll find:**\n• **Box Breathing (4-4-4-4)** – Focus & calm\n• **Coherent Breathing (5-5)** – Nervous system balance\n• **60-Second SOS Reset** – Emergency calm\n• **Extended Exhale (4-6/4-8)** – Deep relaxation\n• **No-Hold Variants** – Safer alternatives\n\n✨ **Redirecting you to /breathing in 2 seconds...**\n\nAll techniques include guided timers, visual cues, and mood tracking!`;
+    }
+
+    // === NAVIGATION - GET STARTED ===
+    if ((q.includes('take me to') || q.includes('go to') || q.includes('visit') || q.includes('show me')) && (q.includes('get started') || q.includes('getting started') || q.includes('onboarding'))) {
+      setTimeout(() => {
+        router.push('/get-started');
+      }, 2000);
+      return `**Get Started** page is ready for you! 🚀\n\n**What you'll find:**\n• Welcome guide & platform overview\n• Quick links to all hubs\n• How to navigate NeuroBreath\n• Getting the most from our tools\n• Tips for parents, teachers & carers\n\n✨ **Redirecting you to /get-started in 2 seconds...**\n\nPerfect for first-time visitors and anyone wanting a guided introduction!`;
+    }
+
+    // === NAVIGATION - DYSLEXIA HUB ===
+    if ((q.includes('take me to') || q.includes('go to') || q.includes('visit') || q.includes('show me')) && q.includes('dyslexia')) {
+      setTimeout(() => {
+        router.push('/conditions/dyslexia');
+      }, 2000);
+      return `**Dyslexia Hub** is ready for you! 📖\n\n**What you'll find:**\n• Evidence-based Reading Training Program\n• Phonics & decoding strategies\n• Multi-sensory learning techniques\n• Text-to-speech tools integration\n• Dyslexia-friendly formatting options\n• Progress tracking & celebration\n\n✨ **Redirecting you to /conditions/dyslexia in 2 seconds...**\n\nPerfect for individuals with dyslexia, parents, teachers, and carers!`;
+    }
+
+    // === NAVIGATION - ANXIETY SUPPORT ===
+    if ((q.includes('take me to') || q.includes('go to') || q.includes('visit') || q.includes('show me')) && q.includes('anxiety')) {
+      setTimeout(() => {
+        router.push('/conditions/anxiety');
+      }, 2000);
+      return `**Anxiety Support** is ready for you! 😰\n\n**What you'll find:**\n• 5-4-3-2-1 Grounding technique\n• Breathing exercises for panic relief\n• Worry time scheduling tools\n• Cognitive reframing techniques\n• Progressive muscle relaxation\n• Crisis support resources (24/7 helplines)\n\n✨ **Redirecting you to /conditions/anxiety in 2 seconds...**\n\nCalm & coping strategies available now!`;
+    }
+
+    // === NAVIGATION - DEPRESSION SUPPORT ===
+    if ((q.includes('take me to') || q.includes('go to') || q.includes('visit') || q.includes('show me')) && q.includes('depression')) {
+      setTimeout(() => {
+        router.push('/conditions/depression');
+      }, 2000);
+      return `**Depression Support** is ready for you! 💙\n\n**What you'll find:**\n• Mood tracking & pattern analysis\n• Activity scheduling tools\n• Behavioral activation strategies\n• Sleep hygiene guidance\n• Professional support pathways\n• Self-compassion exercises\n\n✨ **Redirecting you to /conditions/depression in 2 seconds...**\n\nDaily support tools available now!`;
+    }
+
+    // === NAVIGATION - STRESS MANAGEMENT ===
+    if ((q.includes('take me to') || q.includes('go to') || q.includes('visit') || q.includes('show me')) && q.includes('stress')) {
+      setTimeout(() => {
+        router.push('/stress');
+      }, 2000);
+      return `**Stress Management** is ready for you! 😓\n\n**What you'll find:**\n• Quick stress relief techniques (60-second resets)\n• Time management strategies\n• Boundary setting guidance\n• Relaxation practice library\n• Work-life balance tips\n• Burnout prevention resources\n\n✨ **Redirecting you to /stress in 2 seconds...**\n\nDaily stress relief tools available now!`;
+    }
+
+    // === NAVIGATION - BIPOLAR SUPPORT ===
+    if ((q.includes('take me to') || q.includes('go to') || q.includes('visit') || q.includes('show me')) && q.includes('bipolar')) {
+      setTimeout(() => {
+        router.push('/conditions/bipolar');
+      }, 2000);
+      return `**Bipolar Support** is ready for you! ⚡\n\n**What you'll find:**\n• Daily mood tracking with trend analysis\n• Early warning signs identification\n• Sleep routine importance tools\n• Crisis planning resources\n• Medication adherence support\n• Family & carer guidance\n\n✨ **Redirecting you to /conditions/bipolar in 2 seconds...**\n\nMood management tools available now!`;
+    }
+
+    // === NAVIGATION - LOW MOOD & BURNOUT ===
+    if ((q.includes('take me to') || q.includes('go to') || q.includes('visit') || q.includes('show me')) && (q.includes('low mood') || q.includes('burnout'))) {
+      setTimeout(() => {
+        router.push('/conditions/low-mood-burnout');
+      }, 2000);
+      return `**Low Mood & Burnout Support** is ready for you! 🌧️\n\n**What you'll find:**\n• Energy management & pacing strategies\n• Gentle activity suggestions\n• Self-care planning tools\n• Setting realistic expectations\n• Recovery timeline guidance\n• Professional support pathways\n\n✨ **Redirecting you to /conditions/low-mood-burnout in 2 seconds...**\n\nRecovery support tools available now!`;
+    }
+
+    // === INFORMATIONAL HANDLERS (NON-NAVIGATION) ===
+    // These come after navigation handlers
+
     if (q.includes('anxiety')) {
       return `**😰 Anxiety Support** – Calm & coping strategies\n\n**Available Techniques:**\n• **5-4-3-2-1 Grounding** – Use senses to calm\n• **Breathing Exercises** – Box, coherent, extended exhale\n• **Progressive Muscle Relaxation** – Body tension release\n• **Worry Time** – Schedule anxiety (not suppress it)\n• **Cognitive Reframing** – Challenge anxious thoughts\n\n**Quick Calm Tools:**\n• 60-second SOS breathing\n• Cold water technique\n• Movement breaks\n• Distraction activities\n• Safe person contact\n\n**Daily Management:**\n• Regular routine\n• Sleep hygiene\n• Limit caffeine\n• Exercise (proven effective)\n• Mindfulness practice\n\n**When to Get Help:**\n• Panic attacks frequent\n• Avoiding daily activities\n• Physical symptoms persist\n• Impacting relationships\n• Self-harm thoughts\n\n**Crisis Support:**\n• UK: Samaritans 116 123\n• US: 988 Lifeline\n• EU: 112\n\n**Visit /conditions/anxiety for full toolkit!**`;
     }
-    
+
     if (q.includes('depression')) {
       return `**💙 Depression Support** – Daily support tools\n\n**Understanding Depression:**\n• It's a medical condition\n• Not just "feeling sad"\n• Chemical & neurological\n• Treatable & manageable\n• Recovery is possible\n\n**Daily Strategies:**\n• **Behavioral Activation** – Small activities\n• **Mood Tracking** – Identify patterns\n• **Sleep Routine** – Consistent times\n• **Gentle Exercise** – Even 10 min walks\n• **Social Connection** – Even brief contact\n\n**Self-Care:**\n• Basic needs first (eat, sleep, hygiene)\n• Set tiny, achievable goals\n• Celebrate micro-wins\n• Be self-compassionate\n• Accept help offered\n\n**Professional Support:**\n• GP/Doctor consultation\n• Therapy options (CBT, IPT)\n• Medication (if recommended)\n• Support groups\n• Crisis services\n\n**Crisis Support:**\n• UK: Samaritans 116 123, Text SHOUT to 85258\n• US: 988 Suicide & Crisis Lifeline\n• EU: 112\n\n**Visit /conditions/depression for resources!**`;
     }
-    
+
     if (q.includes('stress')) {
       return `**😓 Stress Management** – Daily relief tools\n\n**Quick Stress Relief:**\n• **Breathing** – 60-second reset, box breathing\n• **Movement** – Walk, stretch, shake it out\n• **Cold Water** – Face splash, cold drink\n• **Music** – Calming playlist\n• **Nature** – Even 5 minutes outside\n\n**Daily Prevention:**\n• Time management systems\n• Boundary setting (saying no)\n• Regular breaks (Pomodoro)\n• Physical activity routine\n• Sleep priority\n\n**Work/School Stress:**\n• Task prioritization\n• Break large tasks down\n• Realistic expectations\n• Ask for help early\n• Separate work/home time\n\n**Long-term:**\n• Identify stressors\n• Eliminate/reduce when possible\n• Build stress tolerance gradually\n• Support network\n• Professional help if chronic\n\n**Burnout Warning Signs:**\n• Exhaustion despite rest\n• Cynicism/detachment\n• Reduced performance\n• Physical symptoms\n• Need intervention\n\n**Visit /stress for complete toolkit!**`;
     }
-    
-    if (q.includes('sleep')) {
+
+    if (q.includes('sleep') && !q.includes('take me') && !q.includes('go to') && !q.includes('visit') && !q.includes('show me')) {
       return `**💤 Sleep Support** – Better sleep tools\n\n**Sleep Hygiene Essentials:**\n• **Consistent Times** – Bed & wake (even weekends)\n• **Dark & Cool** – Bedroom environment\n• **No Screens** – 1 hour before bed\n• **Limit Caffeine** – After 2pm\n• **Exercise** – But not near bedtime\n\n**Bedtime Routine:**\n• Wind-down hour\n• Relaxing activity\n• Breathing exercises\n• Progressive muscle relaxation\n• Worry journal (write & close)\n\n**Sleep-Onset Strategies:**\n• 4-7-8 breathing\n• Body scan meditation\n• Visualization\n• Audio stories/meditations\n• Get up if can't sleep (20-min rule)\n\n**Morning Routine:**\n• Natural light exposure\n• Consistent wake time\n• Light exercise/stretch\n• Healthy breakfast\n• Avoid snoozing\n\n**When to Get Help:**\n• Insomnia > 3 weeks\n• Snoring/breathing stops\n• Excessive daytime sleepiness\n• Leg movements/restlessness\n\n**Visit /sleep for full sleep toolkit!**`;
     }
-    
-    // === NAVIGATION - ADHD HUB ===
-    if ((q.includes('take me to') || q.includes('go to') || q.includes('visit') || q.includes('show me')) && q.includes('adhd')) {
-      return `**ADHD Hub** is ready for you! 🎯\n\n**What you'll find:**\n• ⏱️ Focus Pomodoro Timer (5-50 min sessions)\n• 🏆 Daily Quests with XP rewards\n• 📚 Skills Library with practical strategies\n• 🔬 Myths vs Facts section\n• 📈 Progress tracking with streaks\n\n👉 **[Click here to visit /adhd](/adhd)**\n\nPerfect for individuals, parents, teachers, and carers supporting ADHD!`;
+
+    if (q.includes('bipolar') && !q.includes('take me') && !q.includes('go to') && !q.includes('visit') && !q.includes('show me')) {
+      return `**⚡ Bipolar Support** – Mood management tools\n\n**Understanding Bipolar:**\n• Mood episodes (manic/hypomanic & depressive)\n• It's a manageable medical condition\n• Requires ongoing monitoring\n• Treatment is highly effective\n• Not just "mood swings"\n\n**Daily Management:**\n• **Mood Tracking** – Daily monitoring crucial\n• **Sleep Routine** – Most important factor\n• **Medication Adherence** – Follow prescription\n• **Recognize Early Signs** – Catch episodes early\n• **Stress Management** – Reduce triggers\n\n**Early Warning Signs:**\n• Manic: Decreased sleep need, racing thoughts, increased energy, impulsivity\n• Depressive: Withdrawal, fatigue, hopelessness, sleep changes\n\n**Crisis Planning:**\n• Create action plan when stable\n• List warning signs\n• Emergency contacts ready\n• Know when to get help\n\n**Support Network:**\n• Regular healthcare visits\n• Support groups (peer support)\n• Family education\n• Workplace accommodations\n\n**Crisis Support:**\n• UK: NHS 111, Crisis Team\n• US: 988 Lifeline\n• EU: 112\n\n**Visit /conditions/bipolar for comprehensive tools!**`;
     }
-    
-    // === NAVIGATION - AUTISM HUB ===
-    if ((q.includes('take me to') || q.includes('go to') || q.includes('visit') || q.includes('show me')) && q.includes('autism')) {
-      return `**Autism Hub** is ready for you! 🌟\n\n**What you'll find:**\n• 🧘 Calm Toolkit with breathing exercises\n• 📚 Skills Library with age adaptations\n• 🎓 Education Pathways (EHCP/IEP/504)\n• 💼 Workplace Adjustments Generator\n• 📄 Printable Templates & Resources\n• 🔬 PubMed Research Search\n\n👉 **[Click here to visit /autism](/autism)**\n\nDesigned for autistic individuals, parents, teachers, carers, and employers!`;
+
+    if ((q.includes('low mood') || q.includes('burnout')) && !q.includes('take me') && !q.includes('go to') && !q.includes('visit') && !q.includes('show me')) {
+      return `**🌧️ Low Mood & Burnout Support** – Recovery tools\n\n**Understanding Burnout:**\n• Physical/emotional exhaustion\n• Often work/life stress related\n• Different from depression (but can lead to it)\n• Recovery is possible with support\n• Prevention is key\n\n**Immediate Strategies:**\n• **Radical Rest** – Permission to pause\n• **Micro-activities** – Tiny achievable goals\n• **Energy Accounting** – Track what drains/restores\n• **Boundary Setting** – Learn to say no\n• **Self-compassion** – Be kind to yourself\n\n**Energy Management:**\n• Identify energy drains vs rechargers\n• Schedule restorative activities\n• Pace yourself (avoid boom-bust)\n• Protect recovery time\n• Accept help offered\n\n**Recovery Timeline:**\n• Acute phase: Weeks to months\n• Full recovery: 3-12 months typical\n• Everyone's different\n• Small progress counts\n• Setbacks are normal\n\n**When to Get Professional Help:**\n• Symptoms persist > 2 weeks\n• Affecting work/relationships significantly\n• Physical symptoms (chest pain, headaches)\n• Thoughts of self-harm\n• Can't manage daily tasks\n\n**Prevention:**\n• Regular breaks & holidays\n• Work-life boundaries\n• Support network\n• Hobbies & interests\n• Early intervention\n\n**Visit /conditions/low-mood-burnout for full recovery toolkit!**`;
     }
-    
+
     // === TOOLS & FEATURES ===
     if (q.includes('tools') || q.includes('features') || q.includes('what can i do') || q.includes('what\'s available')) {
       let response = `**Available Tools on NeuroBreath:** 🛠️\n\n`;
@@ -644,6 +746,34 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
   
   // Handle quick question click
   const handleQuickQuestion = (question: string) => {
+    // Check for navigation requests
+    const lowerQuestion = question.toLowerCase();
+    
+    if (lowerQuestion.includes('take me to the adhd hub') || lowerQuestion.includes('adhd hub')) {
+      router.push('/adhd');
+      const navMessage: Message = {
+        id: `nav-adhd-${Date.now()}`,
+        role: 'assistant',
+        content: `🎯 **Navigating to ADHD Hub...**\n\nTaking you to the ADHD Hub with focus tools, gamified quests, and evidence-based strategies!`,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, navMessage]);
+      return;
+    }
+    
+    if (lowerQuestion.includes('take me to the autism hub') || lowerQuestion.includes('autism hub')) {
+      router.push('/autism');
+      const navMessage: Message = {
+        id: `nav-autism-${Date.now()}`,
+        role: 'assistant',
+        content: `🌟 **Navigating to Autism Hub...**\n\nTaking you to the Autism Hub with calming tools, education pathways, and printable resources!`,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, navMessage]);
+      return;
+    }
+    
+    // Default behavior - send as regular message
     handleSend(question);
   };
   
@@ -845,10 +975,10 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
                   )}
                   <div
                     className={cn(
-                      "max-w-[80%] rounded-2xl px-4 py-2.5 text-sm group relative flex flex-col",
+                      "max-w-[80%] rounded-2xl px-4 text-sm group relative flex flex-col",
                       message.role === 'user'
-                        ? 'bg-primary text-primary-foreground rounded-br-md'
-                        : 'bg-muted rounded-bl-md'
+                        ? 'bg-primary text-primary-foreground rounded-br-md py-2.5'
+                        : 'bg-muted rounded-bl-md py-[2%]'
                     )}
                   >
                     <div className="max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent pr-2 flex-shrink min-h-0">
