@@ -388,6 +388,124 @@ export const pageBuddyConfigs: Record<string, PageBuddyConfig> = {
       }
     ],
     keywords: ['about', 'mission', 'team', 'story', 'values', 'evidence', 'who we are']
+  },
+  '/sleep': {
+    pageId: 'sleep',
+    pageName: 'Sleep Support',
+    audiences: ['everyone', 'neurodivergent individuals', 'parents', 'teachers', 'carers'],
+    welcomeMessage: `Welcome to **Sleep Support**! 💤✨\n\nI'm here to help you improve your sleep with evidence-based tools.\n\n**What you'll find here:**\n• 📊 Sleep Tracker & Diary – Log sleep patterns and quality\n• ✅ Sleep Hygiene Checklist – Evidence-based best practices\n• 🏆 Badges & Achievements – Celebrate consistency\n• 📈 Progress Visualisation – See your sleep patterns\n• 📚 Educational Resources – Understanding sleep science\n\n**Key Features:**\n• Track bedtime, wake time, and sleep quality\n• Build healthy sleep habits with daily checklist\n• Earn badges for streaks and achievements\n• All data stays private on your device\n\nReady to improve your sleep? Let's get started!`,
+    quickQuestions: [
+      'How do I track my sleep?',
+      'What is sleep hygiene?',
+      'Show me the sleep checklist',
+      'How do I earn badges?',
+      'Why is consistent sleep important?',
+      'What causes sleep problems?',
+      'Help me sleep better',
+      'Show me sleep strategies'
+    ],
+    sections: [
+      {
+        id: 'hero',
+        name: 'Measured breathing hero',
+        description: 'Your sleep dashboard showing streak, sleep score, badges unlocked, and quick stats',
+        tips: ['Check your current streak and sleep score', 'View your progress at a glance', 'Open the sleep tracker to log your sleep']
+      },
+      {
+        id: 'tracker',
+        name: 'Breathing challenges & quests',
+        description: 'Sleep tracker with daily logging, progress charts, and sleep diary functionality',
+        tips: ['Log your sleep daily for best results', 'Track bedtime, wake time, and sleep quality (1-5 stars)', 'Add notes about how you felt or any disturbances', 'View your last 7 days in the progress chart']
+      },
+      {
+        id: 'resources',
+        name: 'Rewards & Milestones',
+        description: 'Educational content, sleep hygiene checklist, and badge achievements',
+        tips: ['Complete the sleep hygiene checklist daily', 'Read educational sections to understand sleep science', 'Earn badges by maintaining streaks and good practices', 'Track your progress towards all 8 available badges']
+      }
+    ],
+    keywords: ['sleep', 'insomnia', 'bedtime', 'rest', 'hygiene', 'quality', 'tracker', 'habits', 'routine', 'dreams']
+  },
+  '/coach': {
+    pageId: 'coach',
+    pageName: 'Coach Hub',
+    audiences: ['educators', 'coaches', 'teachers', 'team leaders', 'trainers', 'sports coaches', 'therapists'],
+    welcomeMessage: `Welcome to the **Coach Hub**! 🎓⚡\n\nI'm your NeuroBreath Buddy – here to help educators, coaches, and team leaders integrate evidence-based breathwork into your practice.\n\n**What's Available:**\n• 🟩 Quick-start breathing sessions (Box, Coherent, SOS)\n• 📥 Printable resources & handouts (PDFs)\n• 🎯 Team check-in strategies\n• 🛡️ Safeguarding guidance\n• 📊 Progress tracking tools\n\n**Perfect for:** Classrooms, sports teams, workplace wellness, therapy groups, and training sessions.\n\nHow can I help you get started?`,
+    quickQuestions: [
+      'How do I start a breathing session?',
+      'Show me printable resources',
+      'What are the safeguarding guidelines?',
+      'How do I track team progress?',
+      'Explain Box Breathing',
+      'When should I use SOS Reset?',
+      'How do I build a routine?',
+      'Can parents access the tools?',
+      'What resources work for classrooms?',
+      'How do I share NeuroBreath with families?'
+    ],
+    sections: [
+      {
+        id: 'quick-start',
+        name: 'Quick-Start Breathing Sessions',
+        description: 'Launch guided breathing exercises instantly for group or individual use',
+        tips: [
+          'Box Breathing (3 min) is perfect for pre-task focus and exam prep',
+          'Coherent 5-5 (5 min) optimizes HRV for athletes and performance',
+          'SOS-60 (1 min) is your emergency de-escalation tool',
+          'All sessions have built-in timers with visual and audio cues',
+          'Works great on projectors for whole-class breathing'
+        ]
+      },
+      {
+        id: 'team-checkins',
+        name: 'Team Check-ins & Group Use',
+        description: 'Strategies to integrate breathwork into daily routines and transitions',
+        tips: [
+          'Use 1-minute SOS resets when energy or focus drops',
+          'Box Breathing works perfectly between activities or lessons',
+          'Build consistency by anchoring breath breaks at start/middle/end of sessions',
+          'Track attendance and streaks using the progress dashboard',
+          'Learners earn XP and badges for consistent practice'
+        ]
+      },
+      {
+        id: 'printables',
+        name: 'Printables & Resources',
+        description: 'Downloadable PDFs including breathing guides, classroom packs, and parent handovers',
+        tips: [
+          'One-Page Breathing Guide has QR codes to online timers',
+          'Classroom Calm Pack includes scripts and A4 posters',
+          'Parent Handover templates explain home practice',
+          'ADHD/Autism/Dyslexia support packs available',
+          'All PDFs open in new tab with live links – print or share digitally'
+        ]
+      },
+      {
+        id: 'safeguarding',
+        name: 'Safeguarding & Safety Guidelines',
+        description: 'Critical reminders for voluntary participation and respiratory safety',
+        tips: [
+          'Always make participation voluntary – offer opt-out gestures',
+          'Keep breath holds short for anyone with respiratory/cardiovascular histories',
+          'Partner with clinicians before adding breathwork to care plans',
+          'Stop immediately if someone feels unwell and follow your escalation process',
+          'These are educational wellness tools, not medical treatments'
+        ]
+      },
+      {
+        id: 'next-steps',
+        name: 'Building Routines & Next Steps',
+        description: 'How to create sustainable breathwork practices and share resources',
+        tips: [
+          'Start with 1 minute at consistent times (start/middle/end of day)',
+          'Schedule weekly 10-15 minute "calm blocks" for dedicated practice',
+          'Share neurobreath.co.uk with families so they can practice at home',
+          'Use the 6-digit code system for parent/teacher progress monitoring',
+          'Explore condition-specific hubs (ADHD, Autism) for specialized tools'
+        ]
+      }
+    ],
+    keywords: ['coach', 'educator', 'teacher', 'classroom', 'team', 'group', 'sports', 'training', 'breathwork', 'printable', 'pdf', 'handout', 'safeguarding', 'session', 'athlete', 'student', 'learner', 'routine']
   }
 };
 
