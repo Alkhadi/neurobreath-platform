@@ -184,45 +184,162 @@ export default function SleepPage() {
         
         {/* Hero Section */}
         <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 shadow-xl mb-8 text-white">
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center gap-3 mb-4">
             <span className="text-4xl">💤</span>
-            <h1 className="text-4xl font-bold">Sleep Issues</h1>
+            <div>
+              <h1 className="text-4xl font-bold">Sleep Hub</h1>
+              <p className="text-indigo-100 mt-1">Fast briefings, printable resources, and sleep tools</p>
+            </div>
           </div>
-          <p className="text-indigo-200 text-lg mb-4">Train the Mind</p>
-          <p className="text-white/90 text-lg">
-            Evidence-based tools and resources to understand and manage sleep issues. Track your progress, build resilience, and find rest.
+          <p className="text-white/90 text-lg max-w-3xl">
+            Evidence-based sleep interventions for learners, families, and colleagues. Track progress, access quick guides, and share printable resources. <span className="text-indigo-200 font-medium">Educational information only; not medical advice.</span>
           </p>
+          
+          {/* Quick Action Buttons */}
+          <div className="flex flex-wrap gap-3 mt-6">
+            <Button asChild className="bg-green-500 hover:bg-green-600 text-white">
+              <Link href="/techniques/4-7-8">🟩 4-7-8 Breathing (3 min)</Link>
+            </Button>
+            <Button asChild className="bg-purple-500 hover:bg-purple-600 text-white">
+              <Link href="/techniques/box-breathing">🟪 Box Breathing (5 min)</Link>
+            </Button>
+            <Button asChild className="bg-red-500 hover:bg-red-600 text-white">
+              <Link href="/techniques/sos">🆘 SOS-60 Reset</Link>
+            </Button>
+            <Button 
+              onClick={() => setShowTracker(!showTracker)} 
+              className="bg-white text-indigo-600 hover:bg-indigo-100"
+            >
+              <Moon className="w-4 h-4 mr-2" /> {showTracker ? 'Hide' : 'Open'} Sleep Tracker
+            </Button>
+          </div>
           
           {/* Quick Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-            <div className="bg-white/20 rounded-xl p-4 text-center">
+            <div className="bg-white/20 rounded-xl p-4 text-center backdrop-blur-sm">
               <Flame className="w-6 h-6 mx-auto mb-1" />
               <p className="text-2xl font-bold">{streak}</p>
               <p className="text-sm text-white/80">Day Streak</p>
             </div>
-            <div className="bg-white/20 rounded-xl p-4 text-center">
+            <div className="bg-white/20 rounded-xl p-4 text-center backdrop-blur-sm">
               <Target className="w-6 h-6 mx-auto mb-1" />
               <p className="text-2xl font-bold">{sleepScore}</p>
               <p className="text-sm text-white/80">Sleep Score</p>
             </div>
-            <div className="bg-white/20 rounded-xl p-4 text-center">
+            <div className="bg-white/20 rounded-xl p-4 text-center backdrop-blur-sm">
               <Trophy className="w-6 h-6 mx-auto mb-1" />
               <p className="text-2xl font-bold">{unlockedBadges}/{badges.length}</p>
               <p className="text-sm text-white/80">Badges</p>
             </div>
-            <div className="bg-white/20 rounded-xl p-4 text-center">
+            <div className="bg-white/20 rounded-xl p-4 text-center backdrop-blur-sm">
               <CheckCircle className="w-6 h-6 mx-auto mb-1" />
               <p className="text-2xl font-bold">{checklistProgress}%</p>
               <p className="text-sm text-white/80">Hygiene</p>
             </div>
           </div>
           
-          <Button 
-            onClick={() => setShowTracker(!showTracker)} 
-            className="mt-6 bg-white text-indigo-600 hover:bg-indigo-100"
-          >
-            <Moon className="w-4 h-4 mr-2" /> {showTracker ? 'Hide' : 'Open'} Sleep Tracker
-          </Button>
+        </div>
+
+        {/* Session Quick-Starts */}
+        <div className="bg-white rounded-2xl p-6 shadow-xl mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Session Quick-Starts</h2>
+          <div className="space-y-3">
+            <div className="bg-indigo-50 rounded-lg p-4 border-l-4 border-indigo-500">
+              <h3 className="font-semibold text-gray-900 mb-1">4-7-8 Breathing</h3>
+              <p className="text-sm text-gray-600">Longer exhale to settle the body before rest periods.</p>
+              <Link href="/techniques/4-7-8" className="text-indigo-600 text-sm font-medium hover:underline">Start session →</Link>
+            </div>
+            <div className="bg-purple-50 rounded-lg p-4 border-l-4 border-purple-500">
+              <h3 className="font-semibold text-gray-900 mb-1">Box Breathing</h3>
+              <p className="text-sm text-gray-600">Calm nerves before presentations, exams, or important sleep preparation.</p>
+              <Link href="/techniques/box-breathing" className="text-purple-600 text-sm font-medium hover:underline">Start session →</Link>
+            </div>
+            <div className="bg-green-50 rounded-lg p-4 border-l-4 border-green-500">
+              <h3 className="font-semibold text-gray-900 mb-1">Breath Tools</h3>
+              <p className="text-sm text-gray-600">Timers with audio and vibration prompts for group bedtime routines.</p>
+              <Link href="/techniques" className="text-green-600 text-sm font-medium hover:underline">View all tools →</Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Team Check-ins / Family Support */}
+        <div className="bg-white rounded-2xl p-6 shadow-xl mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <Users className="w-6 h-6 text-blue-600" /> Family & Group Support
+          </h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="bg-blue-50 rounded-lg p-4">
+              <h3 className="font-semibold text-gray-900 mb-2">Bedtime Routines</h3>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li>• Invite a one-minute SOS reset when energy needs winding down</li>
+                <li>• Use breathing timers for consistent pre-sleep rituals</li>
+                <li>• Track progress with the built-in sleep tracker</li>
+              </ul>
+            </div>
+            <div className="bg-purple-50 rounded-lg p-4">
+              <h3 className="font-semibold text-gray-900 mb-2">For Educators & Carers</h3>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li>• Share printable guides with families</li>
+                <li>• Anchor calm moments at transition times</li>
+                <li>• Build consistent sleep hygiene education</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Printables & Prep */}
+        <div className="bg-white rounded-2xl p-6 shadow-xl mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <BookOpen className="w-6 h-6 text-teal-600" /> Printables & Prep
+          </h2>
+          <p className="text-gray-600 mb-4 text-sm">Share ahead of sessions or keep copies in a binder. Each resource includes live links and evidence-based guidance.</p>
+          
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="border border-gray-200 rounded-lg p-4 hover:border-indigo-400 transition-all">
+              <div className="text-3xl mb-2">📄</div>
+              <h3 className="font-semibold text-gray-900 mb-1">One-Page Sleep Guide</h3>
+              <p className="text-sm text-gray-600 mb-3">Step-by-step overview with visuals for sleep hygiene techniques.</p>
+              <Button variant="outline" size="sm" className="w-full" disabled>
+                Open PDF <span className="text-xs ml-1">(Coming soon)</span>
+              </Button>
+            </div>
+            
+            <div className="border border-gray-200 rounded-lg p-4 hover:border-purple-400 transition-all">
+              <div className="text-3xl mb-2">🏫</div>
+              <h3 className="font-semibold text-gray-900 mb-1">Sleep Education Pack</h3>
+              <p className="text-sm text-gray-600 mb-3">Scripts, checklists, and resources for families and classrooms.</p>
+              <Button variant="outline" size="sm" className="w-full" disabled>
+                View Pack <span className="text-xs ml-1">(Coming soon)</span>
+              </Button>
+            </div>
+            
+            <div className="border border-gray-200 rounded-lg p-4 hover:border-green-400 transition-all">
+              <div className="text-3xl mb-2">👪</div>
+              <h3 className="font-semibold text-gray-900 mb-1">Parent Handover</h3>
+              <p className="text-sm text-gray-600 mb-3">Quick card to explain techniques and how to continue at home.</p>
+              <Button variant="outline" size="sm" className="w-full" disabled>
+                See Template <span className="text-xs ml-1">(Coming soon)</span>
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Safeguarding Reminders */}
+        <div className="bg-yellow-50 border border-yellow-300 rounded-2xl p-6 shadow-xl mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
+            <Shield className="w-6 h-6 text-yellow-600" /> Safeguarding Reminders
+          </h2>
+          <div className="grid md:grid-cols-2 gap-4 text-sm text-gray-700">
+            <div className="space-y-2">
+              <p>• <strong>Invite, never force</strong> participation in breathing exercises</p>
+              <p>• <strong>Offer opt-out gestures</strong> and quieter alternatives</p>
+              <p>• <strong>Keep breath holds short</strong> for anyone with respiratory, cardiovascular, or trauma histories</p>
+            </div>
+            <div className="space-y-2">
+              <p>• <strong>Partner with clinicians</strong> before adding breathing plans to care programmes</p>
+              <p>• If someone feels unwell, <strong>stop the exercise</strong>, offer normal breathing, and follow your organisation's escalation process</p>
+            </div>
+          </div>
         </div>
 
         {/* Sleep Tracker Panel */}
@@ -370,16 +487,17 @@ export default function SleepPage() {
 
         {/* Navigation Tabs */}
         <div className="bg-white rounded-xl p-2 shadow mb-6 overflow-x-auto">
+          <h2 className="px-3 py-2 text-lg font-semibold text-gray-900">Educational Resources</h2>
           <div className="flex gap-1 min-w-max">
             {[
               { id: 'understanding', label: 'Understanding', icon: Brain },
               { id: 'symptoms', label: 'Signs & Symptoms', icon: Heart },
-              { id: 'diagnosis', label: 'Diagnosis', icon: Target },
-              { id: 'treatment', label: 'Treatment', icon: Shield },
+              { id: 'diagnosis', label: 'Assessment', icon: Target },
+              { id: 'treatment', label: 'Interventions', icon: Shield },
               { id: 'management', label: 'Management', icon: TrendingUp },
               { id: 'support', label: 'Support', icon: Users },
-              { id: 'interventions', label: 'Interventions', icon: Lightbulb },
-              { id: 'resources', label: 'Resources', icon: BookOpen },
+              { id: 'interventions', label: 'Tactics', icon: Lightbulb },
+              { id: 'resources', label: 'Tools & Apps', icon: BookOpen },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -605,7 +723,7 @@ export default function SleepPage() {
           {activeSection === 'diagnosis' && (
             <div className="prose max-w-none">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Target className="w-6 h-6 text-green-600" /> Diagnosis Methods
+                <Target className="w-6 h-6 text-green-600" /> Assessment Methods
               </h2>
 
               <div className="bg-blue-50 rounded-lg p-6 mb-6">
@@ -687,7 +805,7 @@ export default function SleepPage() {
           {activeSection === 'treatment' && (
             <div className="prose max-w-none">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Shield className="w-6 h-6 text-blue-600" /> Treatment Options
+                <Shield className="w-6 h-6 text-blue-600" /> Intervention Options
               </h2>
 
               <div className="bg-green-50 border border-green-200 rounded-lg p-5 mb-6">
@@ -1025,7 +1143,7 @@ export default function SleepPage() {
           {activeSection === 'interventions' && (
             <div className="prose max-w-none">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Lightbulb className="w-6 h-6 text-yellow-500" /> Intervention Tactics & Skills
+                <Lightbulb className="w-6 h-6 text-yellow-500" /> Practical Tactics & Skills
               </h2>
 
               <h3 className="text-xl font-semibold text-gray-900 mt-4 mb-4">Clinical Interventions</h3>
@@ -1094,7 +1212,7 @@ export default function SleepPage() {
           {activeSection === 'resources' && (
             <div className="prose max-w-none">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <BookOpen className="w-6 h-6 text-teal-600" /> Evidence-Based Tools & Resources
+                <BookOpen className="w-6 h-6 text-teal-600" /> Apps, Tools & Clinical Resources
               </h2>
 
               <h3 className="text-xl font-semibold text-gray-900 mt-4 mb-4">Digital Therapeutics</h3>
@@ -1196,20 +1314,66 @@ export default function SleepPage() {
         </div>
 
         {/* Warning Note */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
-          <p className="text-sm text-gray-700">
-            <strong>⚠️ Important:</strong> If sleep problems persist for more than 3 weeks or significantly interfere with daily functioning, 
-            consult a healthcare professional. This information is educational and does not replace medical advice.
-          </p>
+        <div className="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-5 mb-6">
+          <div className="flex items-start gap-3">
+            <div className="text-2xl">⚠️</div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-1">Important Medical Disclaimer</h3>
+              <p className="text-sm text-gray-700">
+                If sleep problems persist for more than 3 weeks or significantly interfere with daily functioning, 
+                consult a healthcare professional. This information is educational and does not replace medical advice.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Next Steps Section */}
+        <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 shadow-xl mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Next Steps</h2>
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="bg-white rounded-lg p-5">
+              <div className="text-3xl mb-2">📅</div>
+              <h3 className="font-semibold text-gray-900 mb-2">Build a Routine</h3>
+              <p className="text-sm text-gray-600 mb-3">Anchor a daily minute of calm at bedtime. Consistency makes the skills stick.</p>
+              <Button 
+                onClick={() => setShowTracker(true)} 
+                size="sm" 
+                className="w-full bg-indigo-600 hover:bg-indigo-700"
+              >
+                Open Tracker
+              </Button>
+            </div>
+            
+            <div className="bg-white rounded-lg p-5">
+              <div className="text-3xl mb-2">😴</div>
+              <h3 className="font-semibold text-gray-900 mb-2">Try a Technique</h3>
+              <p className="text-sm text-gray-600 mb-3">Start with 4-7-8 breathing to settle the body before rest.</p>
+              <Button asChild size="sm" variant="outline" className="w-full">
+                <Link href="/techniques/4-7-8">Start 4-7-8</Link>
+              </Button>
+            </div>
+            
+            <div className="bg-white rounded-lg p-5">
+              <div className="text-3xl mb-2">📞</div>
+              <h3 className="font-semibold text-gray-900 mb-2">Share Resources</h3>
+              <p className="text-sm text-gray-600 mb-3">Keep printables handy so families can access tools quickly.</p>
+              <Button size="sm" variant="outline" className="w-full" disabled>
+                Download Pack
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* Footer CTA */}
-        <div className="flex justify-center gap-4">
+        <div className="flex flex-wrap justify-center gap-4">
           <Button onClick={() => setShowTracker(true)} size="lg" className="bg-indigo-600 hover:bg-indigo-700">
             <Moon className="w-4 h-4 mr-2" /> Track Your Sleep
           </Button>
           <Button asChild size="lg" variant="outline">
             <Link href="/techniques/4-7-8">Try Sleep Breathing</Link>
+          </Button>
+          <Button asChild size="lg" variant="outline">
+            <Link href="/">Back to Home</Link>
           </Button>
         </div>
       </div>
