@@ -45,7 +45,7 @@ export default function AutismHubPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950">
+    <main className="min-h-screen overflow-x-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950">
       {/* Skip to Content Link for Accessibility */}
       <a 
         href="#main-content" 
