@@ -49,6 +49,16 @@ jobs:
           NEXT_PUBLIC_SITE_URL: https://www.neurobreath.co.uk
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/neurobreath?schema=public
 
+      - name: Debug - Check build output
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Contents of current directory:"
+          ls -la
+          echo "Checking for .next:"
+          ls -la .next 2>/dev/null || echo ".next not found in $(pwd)"
+          echo "Checking workspace web/.next:"
+          ls -la ${{ github.workspace }}/web/.next 2>/dev/null || echo "Not found at workspace path"
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
