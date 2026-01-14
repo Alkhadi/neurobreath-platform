@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
  * Sync for authenticated users
  */
 async function syncAuthenticatedUser(request: SyncRequest): Promise<SyncResponse> {
-  const { deviceId, clientData, lastSyncTimestamp } = request
+  const { deviceId, clientData } = request
   const conflicts: SyncConflict[] = []
   let sessionsAdded = 0
   let sessionsUpdated = 0
@@ -65,7 +65,17 @@ async function syncAuthenticatedUser(request: SyncRequest): Promise<SyncResponse
   let assessmentsAdded = 0
   
   // Sync sessions
-  for (const session of clientData.sessions) {
+  for (const session of clientData.sessions as Array<{
+    id: string;
+    deviceId: string;
+    technique: string;
+    label: string;
+    minutes: number;
+    breaths: number;
+    rounds: number;
+    category?: string;
+    completedAt: string;
+  }>) {
     // Check if session exists
     const existing = await prisma.session.findUnique({
       where: { id: session.id }
@@ -94,7 +104,7 @@ async function syncAuthenticatedUser(request: SyncRequest): Promise<SyncResponse
       
       if (clientTime.getTime() !== serverTime.getTime()) {
         // Conflict detected - use last-write-wins
-        const { resolved, conflict } = resolveConflict(session, existing)
+        const { conflict } = resolveConflict(session, existing)
         conflicts.push({ ...conflict, type: 'session' })
         
         if (conflict.resolution === 'client-wins') {

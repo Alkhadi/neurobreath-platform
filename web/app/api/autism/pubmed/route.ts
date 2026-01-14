@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { searchPubMed, buildPubMedQuery } from '@/lib/ai-coach/pubmed'
+import { searchPubMed } from '@/lib/ai-coach/pubmed'
 
 export async function GET(request: NextRequest) {
   try {

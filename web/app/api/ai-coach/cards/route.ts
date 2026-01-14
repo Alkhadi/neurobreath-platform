@@ -35,7 +35,13 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function generateCardsSVG(title: string, cards: any[]): string {
+interface Card {
+  emoji?: string;
+  title?: string;
+  lines?: string[];
+}
+
+function generateCardsSVG(title: string, cards: Card[]): string {
   const cardWidth = 300
   const cardHeight = 200
   const padding = 20
@@ -77,7 +83,7 @@ function generateCardsSVG(title: string, cards: any[]): string {
   return svg
 }
 
-function generateCardSVG(card: any, x: number, y: number, width: number, height: number): string {
+function generateCardSVG(card: Card, x: number, y: number, width: number, height: number): string {
   const emoji = card.emoji || '📚'
   const title = card.title || 'Untitled'
   const lines = card.lines || []
