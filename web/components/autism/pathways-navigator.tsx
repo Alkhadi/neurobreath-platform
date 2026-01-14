@@ -109,7 +109,6 @@ Date: ${new Date().toLocaleDateString()}
         </CardHeader>
 
         <CardContent className="space-y-6">
-          <div className="w-[84%] mx-auto">
           {/* Pathway Selection Tabs */}
           <Tabs defaultValue="uk" className="space-y-4" onValueChange={() => setCompletedSteps([])}>
             <TabsList className="flex w-full justify-center items-center gap-2 flex-wrap">
@@ -285,13 +284,18 @@ Date: ${new Date().toLocaleDateString()}
                             <Circle className="w-5 h-5 text-muted-foreground" />
                           )}
                         </div>
-                        <div className="flex-1">
-                          <p className="font-medium">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium break-words">
                             Step {step.stepNumber}: {step.title}
                           </p>
-                          <p className="text-sm text-muted-foreground">{step.description}</p>
+                          <p className="text-sm text-muted-foreground break-words">{step.description}</p>
                         </div>
-                        <Badge variant="secondary" className="shrink-0">
+                        <Badge variant="secondary" className="shrink-0 hidden sm:block">
+                          {step.timeframe}
+                        </Badge>
+                      </div>
+                      <div className="sm:hidden ml-8 mt-1">
+                        <Badge variant="secondary" className="text-xs">
                           {step.timeframe}
                         </Badge>
                       </div>
@@ -306,8 +310,8 @@ Date: ${new Date().toLocaleDateString()}
                         <ul className="space-y-1 text-sm text-muted-foreground ml-4">
                           {step.keyActions.map((action, i) => (
                             <li key={i} className="flex gap-2">
-                              <span>•</span>
-                              <span>{action}</span>
+                              <span className="shrink-0">•</span>
+                              <span className="break-words">{action}</span>
                             </li>
                           ))}
                         </ul>
@@ -322,8 +326,8 @@ Date: ${new Date().toLocaleDateString()}
                         <ul className="space-y-1 text-sm text-muted-foreground ml-4">
                           {step.tips.map((tip, i) => (
                             <li key={i} className="flex gap-2">
-                              <span>✓</span>
-                              <span>{tip}</span>
+                              <span className="shrink-0">✓</span>
+                              <span className="break-words">{tip}</span>
                             </li>
                           ))}
                         </ul>
@@ -338,8 +342,8 @@ Date: ${new Date().toLocaleDateString()}
                         <ul className="space-y-1 text-sm text-muted-foreground ml-4">
                           {step.commonPitfalls.map((pitfall, i) => (
                             <li key={i} className="flex gap-2">
-                              <span>✗</span>
-                              <span>{pitfall}</span>
+                              <span className="shrink-0">✗</span>
+                              <span className="break-words">{pitfall}</span>
                             </li>
                           ))}
                         </ul>
@@ -382,7 +386,7 @@ Date: ${new Date().toLocaleDateString()}
                 {selectedPathway.keyRights.map((right, i) => (
                   <li key={i} className="flex gap-2">
                     <CheckCircle2 className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
-                    <span>{right}</span>
+                    <span className="break-words">{right}</span>
                   </li>
                 ))}
               </ul>
@@ -422,7 +426,6 @@ Date: ${new Date().toLocaleDateString()}
           </div>
         </CardContent>
       </Card>
-    </section>
     </div>
   );
 }
