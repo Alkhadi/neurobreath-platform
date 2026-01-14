@@ -53,7 +53,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: web-build
-          path: web/.next
+          path: .next
           retention-days: 7
           if-no-files-found: warn
 
@@ -86,7 +86,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: web-build
-          path: web/.next
+          path: .next
 
       - name: Install dependencies and start server
         run: |
