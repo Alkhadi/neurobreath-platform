@@ -290,12 +290,12 @@ Date: ${new Date().toLocaleDateString()}
                           </p>
                           <p className="text-sm text-muted-foreground break-words">{step.description}</p>
                         </div>
-                        <Badge variant="secondary" className="hidden sm:block max-w-[120px] break-words text-center leading-tight">
+                        <Badge variant="secondary" className="hidden sm:block max-w-[150px] break-words text-center leading-tight py-1 px-3 whitespace-normal">
                           {step.timeframe}
                         </Badge>
                       </div>
                       <div className="sm:hidden ml-8 mt-1">
-                        <Badge variant="secondary" className="text-xs max-w-full break-words text-center leading-tight">
+                        <Badge variant="secondary" className="text-xs max-w-full break-words text-center leading-tight py-1 px-3 whitespace-normal inline-block">
                           {step.timeframe}
                         </Badge>
                       </div>
