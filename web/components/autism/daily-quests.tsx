@@ -111,8 +111,8 @@ export function DailyQuests({ onUpdate }: DailyQuestsProps) {
                       +{quest.xpReward} XP
                     </Badge>
                   </div>
-                  <CardTitle className="text-lg">{quest.title}</CardTitle>
-                  <CardDescription>{quest.description}</CardDescription>
+                  <CardTitle className="text-lg break-words">{quest.title}</CardTitle>
+                  <CardDescription className="break-words">{quest.description}</CardDescription>
                 </CardHeader>
 
                 <CardContent>

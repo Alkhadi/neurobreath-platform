@@ -204,14 +204,14 @@ Date: ${new Date().toLocaleDateString()}
           {selectedPathway && (
             <Card className="border-2 border-emerald-300 dark:border-emerald-700">
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-lg">{selectedPathway.pathwayName}</CardTitle>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-lg break-words">{selectedPathway.pathwayName}</CardTitle>
                     <CardDescription className="mt-1">
                       {completedSteps.length} of {selectedPathway.steps.length} steps completed
                     </CardDescription>
                   </div>
-                  <Button onClick={exportPathway} variant="outline" size="sm">
+                  <Button onClick={exportPathway} variant="outline" size="sm" className="w-full sm:w-auto flex-shrink-0">
                     <Download className="w-4 h-4 mr-2" />
                     Export Guide
                   </Button>

@@ -232,15 +232,15 @@ function ResourceCard({ resource }: { resource: Resource }) {
     <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur hover:shadow-md transition-shadow">
       <CardContent className="pt-4">
         <div className="flex items-start justify-between gap-4">
-          <div className="flex-1 space-y-2">
+          <div className="flex-1 min-w-0 space-y-2">
             <div className="flex items-start gap-2">
               <Globe className="h-4 w-4 mt-1 text-muted-foreground flex-shrink-0" />
-              <div className="flex-1">
-                <h4 className="font-semibold text-sm">{resource.title}</h4>
-                <p className="text-xs text-muted-foreground">{resource.organization}</p>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-semibold text-sm break-words">{resource.title}</h4>
+                <p className="text-xs text-muted-foreground break-words">{resource.organization}</p>
               </div>
             </div>
-            <p className="text-sm text-muted-foreground">{resource.description}</p>
+            <p className="text-sm text-muted-foreground break-words">{resource.description}</p>
             {resource.topics && resource.topics.length > 0 && (
               <div className="flex flex-wrap gap-1">
                 {resource.topics.map(topic => (

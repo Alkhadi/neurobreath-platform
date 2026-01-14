@@ -87,21 +87,21 @@ export default function AutismHubPage() {
               </p>
               
               {/* Primary CTA Buttons */}
-              <div className="flex flex-wrap justify-center gap-3 md:gap-4 pt-4">
-                <a href="#evidence">
-                  <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 shadow-xl hover:shadow-2xl transition-all hover:scale-105 font-semibold text-base px-8">
+              <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 md:gap-4 pt-4">
+                <a href="#evidence" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto bg-white text-blue-600 hover:bg-blue-50 shadow-xl hover:shadow-2xl transition-all font-semibold text-base">
                     <Shield className="mr-2 h-5 w-5" />
                     Evidence Hub
                   </Button>
                 </a>
-                <a href="#skills">
-                  <Button size="lg" variant="outline" className="bg-white/10 text-white border-2 border-white hover:bg-white/20 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all hover:scale-105 font-semibold text-base px-8">
+                <a href="#skills" className="w-full sm:w-auto">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto bg-white/10 text-white border-2 border-white hover:bg-white/20 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all font-semibold text-base">
                     <Lightbulb className="mr-2 h-5 w-5" />
                     Skills Library
                   </Button>
                 </a>
-                <a href="#toolkit">
-                  <Button size="lg" variant="outline" className="bg-white/10 text-white border-2 border-white hover:bg-white/20 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all hover:scale-105 font-semibold text-base px-8">
+                <a href="#toolkit" className="w-full sm:w-auto">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto bg-white/10 text-white border-2 border-white hover:bg-white/20 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all font-semibold text-base">
                     <Heart className="mr-2 h-5 w-5" />
                     Calm Toolkit
                   </Button>

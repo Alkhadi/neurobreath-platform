@@ -215,9 +215,9 @@ export function ResourcesLibrary() {
                   >
                     <CardHeader>
                       <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1">
-                          <CardTitle className="text-lg">{template.title}</CardTitle>
-                          <CardDescription className="mt-2 text-sm">
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="text-lg break-words">{template.title}</CardTitle>
+                          <CardDescription className="mt-2 text-sm break-words">
                             {template.description}
                           </CardDescription>
                         </div>
@@ -249,9 +249,9 @@ export function ResourcesLibrary() {
                   >
                     <CardHeader>
                       <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1">
-                          <CardTitle className="text-lg">{template.title}</CardTitle>
-                          <CardDescription className="mt-2 text-sm">
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="text-lg break-words">{template.title}</CardTitle>
+                          <CardDescription className="mt-2 text-sm break-words">
                             {template.description}
                           </CardDescription>
                         </div>
@@ -289,9 +289,9 @@ export function ResourcesLibrary() {
                   >
                     <CardHeader>
                       <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1">
-                          <CardTitle className="text-lg">{template.title}</CardTitle>
-                          <CardDescription className="mt-2 text-sm">
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="text-lg break-words">{template.title}</CardTitle>
+                          <CardDescription className="mt-2 text-sm break-words">
                             {template.description}
                           </CardDescription>
                         </div>

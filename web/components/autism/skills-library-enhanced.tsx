@@ -173,31 +173,36 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
             ))}
           </div>
 
-          <div className="flex gap-2 items-center">
-            <span className="text-sm text-muted-foreground">Sort by:</span>
-            <Button
-              variant={sortBy === 'relevance' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSortBy('relevance')}
-            >
-              Relevance
-            </Button>
-            <Button
-              variant={sortBy === 'mastery' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSortBy('mastery')}
-            >
-              <TrendingUp className="h-4 w-4 mr-1" />
-              Mastery
-            </Button>
-            <Button
-              variant={sortBy === 'recent' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSortBy('recent')}
-            >
-              <Clock className="h-4 w-4 mr-1" />
-              Recent
-            </Button>
+          <div className="flex flex-wrap gap-2 items-center">
+            <span className="text-sm text-muted-foreground whitespace-nowrap">Sort by:</span>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant={sortBy === 'relevance' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSortBy('relevance')}
+                className="flex-shrink-0"
+              >
+                Relevance
+              </Button>
+              <Button
+                variant={sortBy === 'mastery' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSortBy('mastery')}
+                className="flex-shrink-0"
+              >
+                <TrendingUp className="h-4 w-4 mr-1" />
+                Mastery
+              </Button>
+              <Button
+                variant={sortBy === 'recent' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSortBy('recent')}
+                className="flex-shrink-0"
+              >
+                <Clock className="h-4 w-4 mr-1" />
+                Recent
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -229,10 +234,10 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
                 </button>
 
                 <CardHeader className="pr-14">
-                  <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                  <CardTitle className="text-xl group-hover:text-primary transition-colors break-words">
                     {skill.title}
                   </CardTitle>
-                  <CardDescription>{skill.description}</CardDescription>
+                  <CardDescription className="break-words">{skill.description}</CardDescription>
                   
                   {/* Tags */}
                   <div className="flex flex-wrap gap-1 mt-2">
