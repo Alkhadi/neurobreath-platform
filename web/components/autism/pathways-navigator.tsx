@@ -423,7 +423,6 @@ Date: ${new Date().toLocaleDateString()}
               </div>
             </CardContent>
           </Card>
-          </div>
         </CardContent>
       </Card>
     </div>
