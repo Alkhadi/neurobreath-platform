@@ -244,7 +244,8 @@ export function AIChatHub() {
                     size="sm"
                     onClick={() => handleSuggestedQuestion(question)}
                     disabled={isLoading}
-                    className="text-xs"
+                    className="text-xs text-left break-words hyphens-auto max-w-full"
+                    style={{ wordBreak: 'break-word' }}
                   >
                     {question}
                   </Button>

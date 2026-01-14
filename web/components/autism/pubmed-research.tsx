@@ -152,7 +152,7 @@ export function PubMedResearch() {
           {/* Year Filter */}
           <div>
             <h3 className="text-sm font-medium mb-3">Filter by Year</h3>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {['2024', '2023', '2022', '2020', '2015'].map((year) => (
                 <Button
                   key={year}
@@ -160,6 +160,7 @@ export function PubMedResearch() {
                   size="sm"
                   onClick={() => setYearFrom(year)}
                   disabled={loading}
+                  className="min-w-[60px]"
                 >
                   {year}+
                 </Button>
