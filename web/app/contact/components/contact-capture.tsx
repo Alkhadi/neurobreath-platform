@@ -59,7 +59,7 @@ export function ContactCapture({ contacts, onSave, onDelete }: ContactCapturePro
   };
 
   const exportVCard = (contact: Contact) => {
-    let vcard = [
+    const vcard = [
       "BEGIN:VCARD",
       "VERSION:3.0",
       `FN:${contact.name}`,
