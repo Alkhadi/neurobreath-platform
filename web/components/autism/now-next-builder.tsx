@@ -86,7 +86,7 @@ Visual supports help with transitions
         {/* Input Section */}
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="now">What\'s happening NOW?</Label>
+            <Label htmlFor="now">What's happening NOW?</Label>
             <Input
               id="now"
               value={nowActivity}
@@ -97,7 +97,7 @@ Visual supports help with transitions
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="next">What\'s happening NEXT?</Label>
+            <Label htmlFor="next">What's happening NEXT?</Label>
             <Input
               id="next"
               value={nextActivity}

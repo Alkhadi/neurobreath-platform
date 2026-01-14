@@ -338,34 +338,6 @@ export default function AutismHubPage() {
           <CrisisSupport />
         </div>
       </section>
-
-      {/* Professional Footer */}
-      <footer className="w-full bg-gray-900 text-white py-12 border-t border-gray-800">
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Brain className="w-6 h-6 text-blue-400" />
-              <h3 className="text-xl font-bold">NeuroBreath Autism Hub</h3>
-            </div>
-            <p className="text-sm text-gray-400 max-w-2xl mx-auto leading-relaxed">
-              This platform provides educational information and evidence-based self-help tools. 
-              It is not a substitute for professional medical advice, diagnosis, or treatment. 
-              Always seek the advice of your physician or qualified healthcare provider with any 
-              questions regarding a medical condition.
-            </p>
-            <p className="text-sm text-gray-500 pt-4">
-              Content based on evidence from NHS, NICE, CDC, AAP, and peer-reviewed research (2025).
-            </p>
-            <div className="flex justify-center gap-6 text-xs text-gray-500 pt-2">
-              <span>Evidence-Based</span>
-              <span>•</span>
-              <span>All Ages</span>
-              <span>•</span>
-              <span>Free Resources</span>
-            </div>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }

@@ -95,23 +95,23 @@ Date: ${new Date().toLocaleDateString()}
       <section className="space-y-6">
         <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur border-emerald-200 dark:border-emerald-800">
           <CardHeader>
-          <div className="flex items-start gap-3">
-            <div className="p-2 bg-emerald-100 dark:bg-emerald-900 rounded-lg">
-              <BookOpen className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-emerald-100 dark:bg-emerald-900 rounded-lg">
+                <BookOpen className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <div className="flex-1">
+                <CardTitle className="text-2xl">Education Pathways Navigator</CardTitle>
+                <CardDescription className="mt-1">
+                  Step-by-step guides for UK SEND/EHCP, US IEP/504, and EU inclusive education systems
+                </CardDescription>
+              </div>
             </div>
-            <div className="flex-1">
-              <CardTitle className="text-2xl">Education Pathways Navigator</CardTitle>
-              <CardDescription className="mt-1">
-                Step-by-step guides for UK SEND/EHCP, US IEP/504, and EU inclusive education systems
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
+          </CardHeader>
 
-        <CardContent className="space-y-6">
-          {/* Pathway Selection Tabs */}
-          <Tabs defaultValue="uk" className="space-y-4" onValueChange={() => setCompletedSteps([])}>
-            <TabsList className="flex w-full justify-center items-center gap-2 flex-wrap">
+          <CardContent className="space-y-6">
+            {/* Pathway Selection Tabs */}
+            <Tabs defaultValue="uk" className="space-y-4" onValueChange={() => setCompletedSteps([])}>
+              <TabsList className="flex w-full justify-center items-center gap-2 flex-wrap">
               <TabsTrigger value="uk" className="flex-1 min-w-[120px]">🇬🇧 UK</TabsTrigger>
               <TabsTrigger value="eu" className="flex-1 min-w-[120px]">🇪🇺 EU</TabsTrigger>
               <TabsTrigger value="us" className="flex-1 min-w-[120px]">🇺🇸 US</TabsTrigger>
@@ -425,6 +425,7 @@ Date: ${new Date().toLocaleDateString()}
           </Card>
         </CardContent>
       </Card>
+    </section>
     </div>
   );
 }
