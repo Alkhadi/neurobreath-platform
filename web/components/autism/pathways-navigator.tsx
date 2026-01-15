@@ -95,24 +95,23 @@ Date: ${new Date().toLocaleDateString()}
       <section className="space-y-6">
         <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur border-emerald-200 dark:border-emerald-800">
           <CardHeader>
-          <div className="flex items-start gap-3">
-            <div className="p-2 bg-emerald-100 dark:bg-emerald-900 rounded-lg">
-              <BookOpen className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-emerald-100 dark:bg-emerald-900 rounded-lg">
+                <BookOpen className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <div className="flex-1">
+                <CardTitle className="text-2xl">Education Pathways Navigator</CardTitle>
+                <CardDescription className="mt-1">
+                  Step-by-step guides for UK SEND/EHCP, US IEP/504, and EU inclusive education systems
+                </CardDescription>
+              </div>
             </div>
-            <div className="flex-1">
-              <CardTitle className="text-2xl">Education Pathways Navigator</CardTitle>
-              <CardDescription className="mt-1">
-                Step-by-step guides for UK SEND/EHCP, US IEP/504, and EU inclusive education systems
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
+          </CardHeader>
 
-        <CardContent className="space-y-6">
-          <div className="w-[84%] mx-auto">
-          {/* Pathway Selection Tabs */}
-          <Tabs defaultValue="uk" className="space-y-4" onValueChange={() => setCompletedSteps([])}>
-            <TabsList className="flex w-full justify-center items-center gap-2 flex-wrap">
+          <CardContent className="space-y-6">
+            {/* Pathway Selection Tabs */}
+            <Tabs defaultValue="uk" className="space-y-4" onValueChange={() => setCompletedSteps([])}>
+              <TabsList className="flex w-full justify-center items-center gap-2 flex-wrap">
               <TabsTrigger value="uk" className="flex-1 min-w-[120px]">🇬🇧 UK</TabsTrigger>
               <TabsTrigger value="eu" className="flex-1 min-w-[120px]">🇪🇺 EU</TabsTrigger>
               <TabsTrigger value="us" className="flex-1 min-w-[120px]">🇺🇸 US</TabsTrigger>
@@ -204,14 +203,14 @@ Date: ${new Date().toLocaleDateString()}
           {selectedPathway && (
             <Card className="border-2 border-emerald-300 dark:border-emerald-700">
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-lg">{selectedPathway.pathwayName}</CardTitle>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-lg break-words">{selectedPathway.pathwayName}</CardTitle>
                     <CardDescription className="mt-1">
                       {completedSteps.length} of {selectedPathway.steps.length} steps completed
                     </CardDescription>
                   </div>
-                  <Button onClick={exportPathway} variant="outline" size="sm">
+                  <Button onClick={exportPathway} variant="outline" size="sm" className="w-full sm:w-auto flex-shrink-0">
                     <Download className="w-4 h-4 mr-2" />
                     Export Guide
                   </Button>
@@ -285,13 +284,18 @@ Date: ${new Date().toLocaleDateString()}
                             <Circle className="w-5 h-5 text-muted-foreground" />
                           )}
                         </div>
-                        <div className="flex-1">
-                          <p className="font-medium">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium break-words">
                             Step {step.stepNumber}: {step.title}
                           </p>
-                          <p className="text-sm text-muted-foreground">{step.description}</p>
+                          <p className="text-sm text-muted-foreground break-words">{step.description}</p>
                         </div>
-                        <Badge variant="secondary" className="shrink-0">
+                        <Badge variant="secondary" className="hidden sm:block max-w-[150px] break-words text-center leading-tight py-1 px-3 whitespace-normal">
+                          {step.timeframe}
+                        </Badge>
+                      </div>
+                      <div className="sm:hidden ml-8 mt-1">
+                        <Badge variant="secondary" className="text-xs max-w-full break-words text-center leading-tight py-1 px-3 whitespace-normal inline-block">
                           {step.timeframe}
                         </Badge>
                       </div>
@@ -306,8 +310,8 @@ Date: ${new Date().toLocaleDateString()}
                         <ul className="space-y-1 text-sm text-muted-foreground ml-4">
                           {step.keyActions.map((action, i) => (
                             <li key={i} className="flex gap-2">
-                              <span>•</span>
-                              <span>{action}</span>
+                              <span className="shrink-0">•</span>
+                              <span className="break-words">{action}</span>
                             </li>
                           ))}
                         </ul>
@@ -322,8 +326,8 @@ Date: ${new Date().toLocaleDateString()}
                         <ul className="space-y-1 text-sm text-muted-foreground ml-4">
                           {step.tips.map((tip, i) => (
                             <li key={i} className="flex gap-2">
-                              <span>✓</span>
-                              <span>{tip}</span>
+                              <span className="shrink-0">✓</span>
+                              <span className="break-words">{tip}</span>
                             </li>
                           ))}
                         </ul>
@@ -338,8 +342,8 @@ Date: ${new Date().toLocaleDateString()}
                         <ul className="space-y-1 text-sm text-muted-foreground ml-4">
                           {step.commonPitfalls.map((pitfall, i) => (
                             <li key={i} className="flex gap-2">
-                              <span>✗</span>
-                              <span>{pitfall}</span>
+                              <span className="shrink-0">✗</span>
+                              <span className="break-words">{pitfall}</span>
                             </li>
                           ))}
                         </ul>
@@ -382,7 +386,7 @@ Date: ${new Date().toLocaleDateString()}
                 {selectedPathway.keyRights.map((right, i) => (
                   <li key={i} className="flex gap-2">
                     <CheckCircle2 className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
-                    <span>{right}</span>
+                    <span className="break-words">{right}</span>
                   </li>
                 ))}
               </ul>
@@ -419,7 +423,6 @@ Date: ${new Date().toLocaleDateString()}
               </div>
             </CardContent>
           </Card>
-          </div>
         </CardContent>
       </Card>
     </section>

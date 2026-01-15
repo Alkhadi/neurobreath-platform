@@ -25,21 +25,21 @@ export default function HomePage() {
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950">
       {/* Hero Section */}
       <section className="py-8 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <ADHDHero />
         </div>
       </section>
 
       {/* Treatment Decision Tree - NEW Phase 2 Component */}
       <section id="decision-tree" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <TreatmentDecisionTree />
         </div>
       </section>
 
       {/* Daily Quests Section */}
       <section id="quests" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
               Daily Quests & Challenges 🎮
@@ -54,7 +54,7 @@ export default function HomePage() {
 
       {/* Focus Timer Section */}
       <section id="focus" className="py-16 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950 dark:via-purple-950 dark:to-pink-950 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
               ADHD Focus Timer ⏱️
@@ -69,21 +69,21 @@ export default function HomePage() {
 
       {/* ADHD Skills Library */}
       <section id="skills" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <ADHDSkillsLibrary />
         </div>
       </section>
 
       {/* ADHD Myths & Facts - Phase 2 Component with Evidence Registry */}
       <section id="myths-facts" className="py-16 bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 dark:from-orange-950 dark:via-yellow-950 dark:to-pink-950 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <ADHDMythsFacts />
         </div>
       </section>
 
       {/* Resources & Templates */}
       <section id="resources" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
               ADHD Resources & Templates 📋
@@ -161,7 +161,7 @@ export default function HomePage() {
 
       {/* PubMed Research */}
       <section id="research" className="py-16 bg-gradient-to-br from-purple-50 via-white to-pink-50 dark:from-purple-950/20 dark:via-gray-900 dark:to-pink-950/20 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
               ADHD Research Database 📚
@@ -176,7 +176,7 @@ export default function HomePage() {
 
       {/* Crisis Support */}
       <section id="crisis" className="py-16 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 dark:from-red-950 dark:via-orange-950 dark:to-yellow-950 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <CrisisSupport />
         </div>
       </section>

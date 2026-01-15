@@ -45,7 +45,7 @@ export default function AutismHubPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950">
+    <main className="min-h-screen overflow-x-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950">
       {/* Skip to Content Link for Accessibility */}
       <a 
         href="#main-content" 
@@ -87,21 +87,21 @@ export default function AutismHubPage() {
               </p>
               
               {/* Primary CTA Buttons */}
-              <div className="flex flex-wrap justify-center gap-3 md:gap-4 pt-4">
-                <a href="#evidence">
-                  <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 shadow-xl hover:shadow-2xl transition-all hover:scale-105 font-semibold text-base px-8">
+              <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 md:gap-4 pt-4">
+                <a href="#evidence" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto bg-white text-blue-600 hover:bg-blue-50 shadow-xl hover:shadow-2xl transition-all font-semibold text-base">
                     <Shield className="mr-2 h-5 w-5" />
                     Evidence Hub
                   </Button>
                 </a>
-                <a href="#skills">
-                  <Button size="lg" variant="outline" className="bg-white/10 text-white border-2 border-white hover:bg-white/20 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all hover:scale-105 font-semibold text-base px-8">
+                <a href="#skills" className="w-full sm:w-auto">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto bg-white/10 text-white border-2 border-white hover:bg-white/20 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all font-semibold text-base">
                     <Lightbulb className="mr-2 h-5 w-5" />
                     Skills Library
                   </Button>
                 </a>
-                <a href="#toolkit">
-                  <Button size="lg" variant="outline" className="bg-white/10 text-white border-2 border-white hover:bg-white/20 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all hover:scale-105 font-semibold text-base px-8">
+                <a href="#toolkit" className="w-full sm:w-auto">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto bg-white/10 text-white border-2 border-white hover:bg-white/20 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all font-semibold text-base">
                     <Heart className="mr-2 h-5 w-5" />
                     Calm Toolkit
                   </Button>
@@ -338,34 +338,6 @@ export default function AutismHubPage() {
           <CrisisSupport />
         </div>
       </section>
-
-      {/* Professional Footer */}
-      <footer className="w-full bg-gray-900 text-white py-12 border-t border-gray-800">
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Brain className="w-6 h-6 text-blue-400" />
-              <h3 className="text-xl font-bold">NeuroBreath Autism Hub</h3>
-            </div>
-            <p className="text-sm text-gray-400 max-w-2xl mx-auto leading-relaxed">
-              This platform provides educational information and evidence-based self-help tools. 
-              It is not a substitute for professional medical advice, diagnosis, or treatment. 
-              Always seek the advice of your physician or qualified healthcare provider with any 
-              questions regarding a medical condition.
-            </p>
-            <p className="text-sm text-gray-500 pt-4">
-              Content based on evidence from NHS, NICE, CDC, AAP, and peer-reviewed research (2025).
-            </p>
-            <div className="flex justify-center gap-6 text-xs text-gray-500 pt-2">
-              <span>Evidence-Based</span>
-              <span>•</span>
-              <span>All Ages</span>
-              <span>•</span>
-              <span>Free Resources</span>
-            </div>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }
