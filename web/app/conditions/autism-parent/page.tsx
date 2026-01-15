@@ -92,7 +92,7 @@ export default function AutismParentSupportPage() {
           </div>
 
           {/* Quick Navigation Badges */}
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 sm:mb-12 px-2"
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 sm:mb-12 px-2">
             <a href="#sensory-support" className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-full text-sm font-medium transition-colors">
               Sensory-ready
             </a>
