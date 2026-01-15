@@ -733,11 +733,11 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
   return (
     <>
       {/* Floating trigger button */}
-      <div className={cn("fixed bottom-6 right-6 z-50", isOpen && "hidden")}>
+      <div className={cn("fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50", isOpen && "hidden")}>
         <Button
           onClick={() => setIsOpen(true)}
           className={cn(
-            "h-14 w-14 rounded-full shadow-lg",
+            "h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg",
             "bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90",
             "transition-all duration-300 hover:scale-110",
             "relative group"
@@ -745,8 +745,8 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
           size="icon"
           aria-label="Open NeuroBreath Buddy assistant (Cmd+K)"
         >
-          <MessageCircle className="h-6 w-6 text-white" />
-          <span className="absolute -top-8 right-0 bg-popover text-popover-foreground text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md">
+          <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+          <span className="absolute -top-8 right-0 bg-popover text-popover-foreground text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md hidden sm:block">
             Press ⌘K
           </span>
         </Button>
@@ -755,72 +755,74 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
       {/* Chat dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className={cn(
-          "sm:max-w-[500px] p-0 flex flex-col transition-all",
-          isMinimized ? "h-[120px]" : "max-h-[85vh]"
+          "w-[95vw] max-w-[500px] sm:max-w-[500px] p-0 flex flex-col transition-all",
+          "h-[90vh] sm:h-auto",
+          isMinimized ? "h-[120px]" : "max-h-[90vh] sm:max-h-[85vh]",
+          "overflow-hidden"
         )}>
           {/* Header */}
-          <DialogHeader className="p-4 pb-2 border-b border-border bg-gradient-to-r from-primary/10 to-purple-500/10">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                  <Bot className="h-5 w-5 text-primary" />
+          <DialogHeader className="p-3 sm:p-4 pb-2 border-b border-border bg-gradient-to-r from-primary/10 to-purple-500/10 flex-shrink-0">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                  <Bot className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                 </div>
-                <div>
-                  <DialogTitle className="text-lg font-semibold">NeuroBreath Buddy</DialogTitle>
-                  <p className="text-xs text-muted-foreground">{config.pageName} Guide</p>
+                <div className="min-w-0 flex-1">
+                  <DialogTitle className="text-base sm:text-lg font-semibold truncate">NeuroBreath Buddy</DialogTitle>
+                  <p className="text-xs text-muted-foreground truncate">{config.pageName} Guide</p>
                 </div>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-primary"
+                  className="h-7 w-7 sm:h-8 sm:w-8 text-primary"
                   onClick={() => setAutoSpeak(!autoSpeak)}
                   title={autoSpeak ? 'Auto-speak on' : 'Auto-speak off'}
                   aria-label={autoSpeak ? 'Turn off auto-speak' : 'Turn on auto-speak'}
                 >
-                  {autoSpeak ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                  {autoSpeak ? <Volume2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <VolumeX className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-primary"
+                  className="h-7 w-7 sm:h-8 sm:w-8 text-primary"
                   onClick={startTour}
                   title="Start page tour"
                   aria-label="Start guided page tour"
                 >
-                  <Map className="h-4 w-4" />
+                  <Map className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                  className="h-7 w-7 sm:h-8 sm:w-8 text-muted-foreground hover:text-foreground hidden sm:inline-flex"
                   onClick={exportChat}
                   title="Export chat history"
                   aria-label="Export chat history"
                   disabled={messages.length <= 1}
                 >
-                  <Download className="h-4 w-4" />
+                  <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                  className="h-7 w-7 sm:h-8 sm:w-8 text-muted-foreground hover:text-foreground"
                   onClick={clearChat}
                   title="Clear chat history"
                   aria-label="Clear chat history"
                 >
-                  <RotateCcw className="h-4 w-4" />
+                  <RotateCcw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                  className="h-7 w-7 sm:h-8 sm:w-8 text-muted-foreground hover:text-foreground"
                   onClick={() => setIsMinimized(!isMinimized)}
                   title={isMinimized ? 'Maximize' : 'Minimize'}
                   aria-label={isMinimized ? 'Maximize' : 'Minimize'}
                 >
-                  {isMinimized ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
+                  {isMinimized ? <Maximize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <Minimize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
                 </Button>
               </div>
             </div>
@@ -828,31 +830,31 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
           
           {/* Messages */}
           {!isMinimized && (
-          <ScrollArea className="flex-1 p-4" ref={scrollRef}>
-            <div className="space-y-4">
+          <ScrollArea className="flex-1 p-3 sm:p-4 overflow-y-auto min-h-0" ref={scrollRef}>
+            <div className="space-y-3 sm:space-y-4">
               {messages.map((message) => (
                 <div
                   key={message.id}
                   className={cn(
-                    "flex gap-3",
+                    "flex gap-2 sm:gap-3",
                     message.role === 'user' ? 'justify-end' : 'justify-start'
                   )}
                 >
                   {message.role === 'assistant' && (
-                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                      <Sparkles className="h-4 w-4 text-primary" />
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                     </div>
                   )}
                   <div
                     className={cn(
-                      "max-w-[80%] rounded-2xl px-4 py-2.5 text-sm group relative flex flex-col",
+                      "max-w-[85%] sm:max-w-[80%] rounded-2xl px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm group relative flex flex-col",
                       message.role === 'user'
                         ? 'bg-primary text-primary-foreground rounded-br-md'
                         : 'bg-muted rounded-bl-md'
                     )}
                   >
-                    <div className="max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent pr-2 flex-shrink min-h-0">
-                      <div className="whitespace-pre-wrap leading-relaxed">
+                    <div className="max-h-[300px] sm:max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent pr-1 sm:pr-2 flex-shrink min-h-0">
+                      <div className="whitespace-pre-wrap leading-relaxed break-words">
                         {message.content.split('\n').map((line, i) => (
                           <span key={i}>
                             {renderMessage(line)}
@@ -861,30 +863,30 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
                         ))}
                       </div>
                     </div>
-                    <div className="flex items-center gap-1 mt-2 pt-1 border-t border-border/30 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                    <div className="flex items-center gap-1 mt-1.5 sm:mt-2 pt-1 border-t border-border/30 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
                       {message.role === 'assistant' && (
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-6 px-2 text-xs"
+                          className="h-5 sm:h-6 px-1.5 sm:px-2 text-[10px] sm:text-xs"
                           onClick={() => speak(message.content)}
                           aria-label="Listen to this message"
                         >
-                          <Volume2 className="h-3 w-3 mr-1" />
+                          <Volume2 className="h-3 w-3 mr-0.5 sm:mr-1" />
                           Listen
                         </Button>
                       )}
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-6 px-2 text-xs"
+                        className="h-5 sm:h-6 px-1.5 sm:px-2 text-[10px] sm:text-xs"
                         onClick={() => copyMessage(message.id, message.content)}
                         aria-label="Copy message"
                       >
                         {copiedMessageId === message.id ? (
-                          <><Check className="h-3 w-3 mr-1" /> Copied</>
+                          <><Check className="h-3 w-3 mr-0.5 sm:mr-1" /> Copied</>
                         ) : (
-                          <><Copy className="h-3 w-3 mr-1" /> Copy</>
+                          <><Copy className="h-3 w-3 mr-0.5 sm:mr-1" /> Copy</>
                         )}
                       </Button>
                     </div>
@@ -893,11 +895,11 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
               ))}
               
               {isLoading && (
-                <div className="flex gap-3 justify-start">
-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                    <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+                <div className="flex gap-2 sm:gap-3 justify-start">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                    <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary animate-pulse" />
                   </div>
-                  <div className="bg-muted rounded-2xl rounded-bl-md px-4 py-3">
+                  <div className="bg-muted rounded-2xl rounded-bl-md px-3 py-2 sm:px-4 sm:py-3">
                     <div className="flex gap-1">
                       <span className="w-2 h-2 bg-primary/50 rounded-full animate-bounce [animation-delay:0ms]" />
                       <span className="w-2 h-2 bg-primary/50 rounded-full animate-bounce [animation-delay:150ms]" />
@@ -912,11 +914,11 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
                 <div className="flex justify-center">
                   <Button
                     onClick={nextTourStep}
-                    className="gap-2"
+                    className="gap-2 text-xs sm:text-sm"
                     size="sm"
                   >
                     {currentTourStep + 1 >= config.sections.length ? 'Finish Tour' : 'Next Section'}
-                    <ChevronRight className="h-4 w-4" />
+                    <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </Button>
                 </div>
               )}
@@ -926,15 +928,15 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
           
           {/* Quick questions */}
           {!isMinimized && (
-          <div className="px-4 py-2 border-t border-border">
-            <p className="text-xs text-muted-foreground mb-2">Quick questions:</p>
-            <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
+          <div className="px-3 sm:px-4 py-2 border-t border-border flex-shrink-0">
+            <p className="text-[10px] sm:text-xs text-muted-foreground mb-1.5 sm:mb-2">Quick questions:</p>
+            <div className="flex flex-wrap gap-1 sm:gap-1.5 max-h-24 sm:max-h-32 overflow-y-auto">
               {config.quickQuestions.map((question: string, idx: number) => (
                 <Button
                   key={idx}
                   variant="outline"
                   size="sm"
-                  className="h-7 text-xs px-3 flex-shrink-0"
+                  className="h-6 sm:h-7 text-[10px] sm:text-xs px-2 sm:px-3 flex-shrink-0 leading-tight"
                   onClick={() => handleQuickQuestion(question)}
                   disabled={isLoading}
                 >
@@ -947,9 +949,9 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
           
           {/* Input area */}
           {!isMinimized && (
-          <div className="p-4 pt-2 border-t border-border">
+          <div className="p-3 sm:p-4 pt-2 border-t border-border flex-shrink-0">
             <form
-              className="flex gap-2"
+              className="flex gap-1.5 sm:gap-2"
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSend();
@@ -960,37 +962,38 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask me about this page..."
-                className="flex-1"
+                className="flex-1 h-9 sm:h-10 text-xs sm:text-sm"
                 disabled={isLoading}
                 aria-label="Type your question"
               />
               <Button
                 type="submit"
                 size="icon"
+                className="h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0"
                 disabled={!input.trim() || isLoading}
                 aria-label="Send message"
               >
-                <Send className="h-4 w-4" />
+                <Send className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </Button>
             </form>
           </div>
           )}
           
           {/* Page indicator */}
-          <div className="px-4 py-2 border-t border-border bg-muted/50">
-            <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-              <Badge variant="secondary" className="text-xs">
-                {config.pageId === 'adhd' && <Brain className="h-3 w-3 mr-1" />}
-                {config.pageId === 'autism' && <Heart className="h-3 w-3 mr-1" />}
-                {config.pageId === 'home' && <Home className="h-3 w-3 mr-1" />}
-                {config.pageName}
+          <div className="px-3 sm:px-4 py-1.5 sm:py-2 border-t border-border bg-muted/50 flex-shrink-0">
+            <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-muted-foreground flex-wrap">
+              <Badge variant="secondary" className="text-[10px] sm:text-xs h-5 sm:h-auto">
+                {config.pageId === 'adhd' && <Brain className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />}
+                {config.pageId === 'autism' && <Heart className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />}
+                {config.pageId === 'home' && <Home className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />}
+                <span className="truncate max-w-[120px] sm:max-w-none">{config.pageName}</span>
               </Badge>
-              <span>•</span>
-              <span>{pageContent.sections.length > 0 ? `${pageContent.sections.length} detected sections` : `${config.sections.length} sections`}</span>
+              <span className="hidden sm:inline">•</span>
+              <span className="hidden sm:inline">{pageContent.sections.length > 0 ? `${pageContent.sections.length} detected sections` : `${config.sections.length} sections`}</span>
               {pageContent.features.length > 0 && (
                 <>
-                  <span>•</span>
-                  <span className="flex items-center gap-1">
+                  <span className="hidden sm:inline">•</span>
+                  <span className="hidden sm:flex items-center gap-1">
                     <Sparkles className="h-3 w-3" />
                     {pageContent.features.length} features
                   </span>
