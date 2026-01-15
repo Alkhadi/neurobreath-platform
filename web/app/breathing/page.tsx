@@ -4,6 +4,7 @@ import { Wind, Heart, Brain, Target, Zap, Moon, Play, BookOpen, Download, Chevro
 import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { EvidenceFooter, BREATHING_EVIDENCE_SOURCES } from '@/components/evidence-footer'
 
 export default function BreathingExercisesPage() {
   return (
@@ -475,6 +476,13 @@ export default function BreathingExercisesPage() {
           </p>
         </div>
       </footer>
+
+      {/* Evidence Sources */}
+      <section className="py-12 px-4 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <EvidenceFooter sources={BREATHING_EVIDENCE_SOURCES} />
+        </div>
+      </section>
     </main>
   )
 }

@@ -126,9 +126,10 @@ Visual supports help with transitions
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 border-4 border-blue-500 rounded-lg p-6 bg-blue-50 dark:bg-blue-950/20 text-center min-h-[200px] flex flex-col items-center justify-center">
             <div className="text-blue-700 dark:text-blue-300 font-bold text-xl mb-4">NOW</div>
+            {/* eslint-disable-next-line react/forbid-dom-props */}
             <div 
-              className="text-blue-900 dark:text-blue-100 font-semibold break-words" 
-              style={{ fontSize: `${fontSize}px` }}
+              className="font-semibold break-words" 
+              style={{ fontSize: `${fontSize}px`, color: 'rgb(30 58 138)' }}
             >
               {nowActivity || '???'}
             </div>
@@ -137,9 +138,10 @@ Visual supports help with transitions
           <div className="flex-1 border-4 border-green-500 rounded-lg p-6 bg-green-50 dark:bg-green-950/20 text-center min-h-[200px] flex flex-col items-center justify-center relative">
             <div className="absolute top-2 left-2 text-4xl">➡️</div>
             <div className="text-green-700 dark:text-green-300 font-bold text-xl mb-4">NEXT</div>
+            {/* eslint-disable-next-line react/forbid-dom-props */}
             <div 
-              className="text-green-900 dark:text-green-100 font-semibold break-words" 
-              style={{ fontSize: `${fontSize}px` }}
+              className="font-semibold break-words" 
+              style={{ fontSize: `${fontSize}px`, color: 'rgb(20 83 45)' }}
             >
               {nextActivity || '???'}
             </div>

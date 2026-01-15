@@ -19,6 +19,7 @@ import { ADHDMythsFacts } from '@/components/adhd/adhd-myths-facts';
 import { TreatmentDecisionTree } from '@/components/adhd/treatment-decision-tree';
 import { PubMedResearch } from '@/components/autism/pubmed-research';
 import { CrisisSupport } from '@/components/autism/crisis-support';
+import { EvidenceFooter, ADHD_EVIDENCE_SOURCES } from '@/components/evidence-footer';
 
 export default function ADHDToolsPage() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -28,7 +29,7 @@ export default function ADHDToolsPage() {
       
       {/* Hero Section */}
       <section className="relative py-16 md:py-24 overflow-hidden bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 text-white">
-        <div className="mx-auto px-4 text-center space-y-6" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 text-center space-y-6 w-[86vw] max-w-[86vw]">
           <Badge className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 text-white border-white/30">
             <Zap className="w-4 h-4" />
             <span>Focus · Regulation · Planning</span>
@@ -66,7 +67,7 @@ export default function ADHDToolsPage() {
 
       {/* Quick Access Navigation */}
       <section className="py-8 bg-white dark:bg-gray-900 border-b">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="flex flex-wrap gap-3 justify-center">
             <Button 
               variant={activeTab === 'overview' ? 'default' : 'outline'} 
@@ -114,7 +115,7 @@ export default function ADHDToolsPage() {
 
       {/* ADHD Quick Starter */}
       <section className="py-12 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <Card className="border-2 border-blue-200 dark:border-blue-800">
             <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/50 dark:to-purple-950/50">
               <div className="flex items-center gap-3">
@@ -224,7 +225,7 @@ export default function ADHDToolsPage() {
 
       {/* Daily Quests & Gamification */}
       <section id="quests" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 mb-4">
               <Trophy className="w-5 h-5" />
@@ -243,7 +244,7 @@ export default function ADHDToolsPage() {
 
       {/* Focus Pomodoro Timer */}
       <section id="focus-timer" className="py-16 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950/20 dark:via-purple-950/20 dark:to-pink-950/20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 mb-4">
               <Timer className="w-5 h-5" />
@@ -262,7 +263,7 @@ export default function ADHDToolsPage() {
 
       {/* ADHD Skills Library & Practice Games */}
       <section id="skills" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 mb-4">
               <Sparkles className="w-5 h-5" />
@@ -281,7 +282,7 @@ export default function ADHDToolsPage() {
 
       {/* Curated Breathing Bundles */}
       <section id="breathing-bundles" className="py-16 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 mb-4">
               <Brain className="w-5 h-5" />
@@ -360,7 +361,7 @@ export default function ADHDToolsPage() {
 
       {/* Treatment Decision Tree */}
       <section id="treatment" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 mb-4">
               <Target className="w-5 h-5" />
@@ -379,14 +380,14 @@ export default function ADHDToolsPage() {
 
       {/* ADHD Myths & Facts */}
       <section id="myths-facts" className="py-16 bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 dark:from-orange-950/20 dark:via-yellow-950/20 dark:to-pink-950/20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <ADHDMythsFacts />
         </div>
       </section>
 
       {/* Downloadable Resources & Templates */}
       <section id="resources" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 mb-4">
               <Download className="w-5 h-5" />
@@ -507,7 +508,7 @@ export default function ADHDToolsPage() {
 
       {/* Evidence & UK Resources */}
       <section className="py-16 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-indigo-950/20 dark:via-purple-950/20 dark:to-pink-950/20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <Card className="border-2">
             <CardHeader>
               <div className="flex items-center gap-3">
@@ -581,7 +582,7 @@ export default function ADHDToolsPage() {
 
       {/* PubMed Research Database */}
       <section id="research" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 mb-4">
               <BookOpen className="w-5 h-5" />
@@ -600,8 +601,15 @@ export default function ADHDToolsPage() {
 
       {/* Crisis Support */}
       <section id="crisis" className="py-16 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 dark:from-red-950/20 dark:via-orange-950/20 dark:to-yellow-950/20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <CrisisSupport />
+        </div>
+      </section>
+
+      {/* Evidence Sources */}
+      <section className="py-16 bg-white dark:bg-gray-900">
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
+          <EvidenceFooter sources={ADHD_EVIDENCE_SOURCES} />
         </div>
       </section>
 

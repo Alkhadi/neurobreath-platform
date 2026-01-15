@@ -12,6 +12,7 @@ import { ResourcesHub } from '@/components/dyslexia/ResourcesHub';
 import { ManagementGuides } from '@/components/dyslexia/ManagementGuides';
 import { EvidenceBasedStrategies } from '@/components/dyslexia/EvidenceBasedStrategies';
 import { SupportCommunity } from '@/components/dyslexia/SupportCommunity';
+import { EvidenceFooter, DYSLEXIA_EVIDENCE_SOURCES } from '@/components/evidence-footer';
 
 export default function DyslexiaHubPage() {
   // Refs for smooth scrolling
@@ -134,6 +135,11 @@ export default function DyslexiaHubPage() {
                 </svg>
                 Back to Top
               </button>
+            </div>
+
+            {/* Evidence Sources */}
+            <div className="pt-8">
+              <EvidenceFooter sources={DYSLEXIA_EVIDENCE_SOURCES} />
             </div>
           </main>
         </div>

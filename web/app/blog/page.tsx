@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import dynamic from 'next/dynamic'
+import { EvidenceFooter, ADHD_EVIDENCE_SOURCES, AUTISM_EVIDENCE_SOURCES, BREATHING_EVIDENCE_SOURCES, type EvidenceSource } from '@/components/evidence-footer'
 
 // Import components with dynamic loading for better error isolation
 const HeroSection = dynamic(() => import('@/components/blog/hero-section'), {
@@ -98,6 +99,9 @@ export default function BlogPage() {
           <SourcesSection />
         </div>
       </Suspense>
-          </div>
+
+      {/* Evidence Sources */}
+      <EvidenceFooter sources={[...ADHD_EVIDENCE_SOURCES, ...AUTISM_EVIDENCE_SOURCES, ...BREATHING_EVIDENCE_SOURCES]} />
+    </div>
   )
 }

@@ -14,6 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Heart, Rocket, Zap, Star, BookOpen, Users } from 'lucide-react';
+import { EvidenceFooter, ADHD_EVIDENCE_SOURCES } from '@/components/evidence-footer';
 
 export default function HomePage() {
   // Initialize milestones on first load
@@ -178,6 +179,13 @@ export default function HomePage() {
       <section id="crisis" className="py-12 sm:py-16 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 dark:from-red-950 dark:via-orange-950 dark:to-yellow-950 scroll-mt-20">
         <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <CrisisSupport />
+        </div>
+      </section>
+
+      {/* Evidence Sources */}
+      <section className="py-12 sm:py-16 bg-white dark:bg-gray-900">
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <EvidenceFooter sources={ADHD_EVIDENCE_SOURCES} />
         </div>
       </section>
     </main>

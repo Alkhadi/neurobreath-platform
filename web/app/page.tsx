@@ -7,6 +7,7 @@ import RewardsSection from '@/components/home/rewards-section'
 import ToolsSection from '@/components/home/tools-section'
 import SafetySupportSection from '@/components/home/safety-support-section'
 import OrganisationsSection from '@/components/home/organisations-section'
+import { EvidenceFooter, ADHD_EVIDENCE_SOURCES, AUTISM_EVIDENCE_SOURCES, BREATHING_EVIDENCE_SOURCES, ANXIETY_EVIDENCE_SOURCES, type EvidenceSource } from '@/components/evidence-footer'
 
 export default function HomePage() {
   return (
@@ -39,6 +40,9 @@ export default function HomePage() {
         
         {/* For Organisations */}
         <OrganisationsSection />
+        
+        {/* Evidence Sources */}
+        <EvidenceFooter sources={[...ADHD_EVIDENCE_SOURCES, ...AUTISM_EVIDENCE_SOURCES, ...BREATHING_EVIDENCE_SOURCES, ...ANXIETY_EVIDENCE_SOURCES]} className="mt-16" />
       </div>
     </div>
   )

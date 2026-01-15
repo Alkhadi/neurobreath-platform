@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { BehavioralActivation } from '@/app/conditions/depression/components/behavioral-activation'
 import { useState } from 'react'
+import { EvidenceFooter, DEPRESSION_EVIDENCE_SOURCES } from '@/components/evidence-footer'
 
 // Mood Tracker Component
 function MoodTracker() {
@@ -46,6 +47,7 @@ function MoodTracker() {
             value={currentMood}
             onChange={(e) => setCurrentMood(parseInt(e.target.value))}
             className="w-full"
+            aria-label="Mood rating from 1 to 10"
           />
           <div className="flex justify-between text-xs text-muted-foreground mt-1">
             <span>Very Low</span>
@@ -812,6 +814,13 @@ export default function DepressionToolsPage() {
           </p>
         </div>
       </footer>
+
+      {/* Evidence Sources */}
+      <section className="py-12 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <EvidenceFooter sources={DEPRESSION_EVIDENCE_SOURCES} />
+        </div>
+      </section>
     </main>
   )
 }

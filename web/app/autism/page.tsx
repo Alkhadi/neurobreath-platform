@@ -17,6 +17,7 @@ import { EvidenceHub } from '@/components/autism/evidence-hub';
 import { initializeMilestones } from '@/lib/progress-store-enhanced';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { EvidenceFooter, AUTISM_EVIDENCE_SOURCES } from '@/components/evidence-footer';
 
 export default function AutismHubPage() {
   const [updateTrigger, setUpdateTrigger] = useState(0);
@@ -336,6 +337,13 @@ export default function AutismHubPage() {
             </p>
           </div>
           <CrisisSupport />
+        </div>
+      </section>
+
+      {/* Evidence Sources */}
+      <section className="py-12 sm:py-16 bg-white dark:bg-gray-900">
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <EvidenceFooter sources={AUTISM_EVIDENCE_SOURCES} />
         </div>
       </section>
     </main>

@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { GraduationCap } from 'lucide-react';
+import { EvidenceFooter, DYSLEXIA_EVIDENCE_SOURCES } from '@/components/evidence-footer';
 // New Evidence-Based Components
 import { RhythmTraining } from '@/components/RhythmTraining';
 import { RapidNamingTest } from '@/components/RapidNamingTest';
@@ -63,7 +64,7 @@ export default function DyslexiaReadingTrainingPage() {
     <ReadingLevelProvider>
       <ProgressProvider>
         <div className="min-h-screen bg-background pt-4">
-          <main className="mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8 md:space-y-12" style={{ width: '86vw', maxWidth: '86vw' }}>
+          <main className="mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8 md:space-y-12 w-[86vw] max-w-[86vw]">
             
             {/* Hero Section */}
             <section data-tutorial="hero" className="space-y-6">
@@ -512,6 +513,11 @@ export default function DyslexiaReadingTrainingPage() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Evidence Sources */}
+        <div className="py-12">
+          <EvidenceFooter sources={DYSLEXIA_EVIDENCE_SOURCES} />
+        </div>
       </ProgressProvider>
     </ReadingLevelProvider>
   );

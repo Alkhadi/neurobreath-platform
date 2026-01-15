@@ -13,6 +13,7 @@ import { References } from './components/references';
 import { DownloadPDF } from './components/download-pdf';
 import { Navigation } from './components/navigation';
 import { ScrollToTop } from './components/scroll-to-top';
+import { EvidenceFooter, DEPRESSION_EVIDENCE_SOURCES } from '@/components/evidence-footer';
 
 export default function DepressionPage() {
   return (
@@ -32,6 +33,9 @@ export default function DepressionPage() {
         <SupportResources />
         <References />
         <DownloadPDF />
+        
+        {/* Evidence Sources */}
+        <EvidenceFooter sources={DEPRESSION_EVIDENCE_SOURCES} />
       </div>
       <ScrollToTop />
     </main>

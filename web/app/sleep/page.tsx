@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Moon, Trophy, Target, CheckCircle, Calendar, TrendingUp, Award, Flame, Sparkles, Heart, Brain, Users, BookOpen, Lightbulb, Shield } from 'lucide-react'
+import { EvidenceFooter, SLEEP_EVIDENCE_SOURCES } from '@/components/evidence-footer'
 
 // Types
 interface SleepEntry {
@@ -300,12 +301,14 @@ export default function SleepPage() {
                   const height = entry ? (entry.hoursSlept / 12) * 100 : 10
                   return (
                     <div key={i} className="flex-1 flex flex-col items-center">
+                      {/* webhint-disable-next-line no-inline-styles */}
+                      {/* eslint-disable-next-line react/forbid-dom-props */}
                       <div 
-                        className={`w-full rounded-t-lg transition-all ${entry ? 'bg-indigo-500' : 'bg-gray-200'}`}
-                        style={{ height: `${height}%` }}
+                        className="w-full rounded-t-lg transition-all"
+                        style={{ height: `${height}%`, backgroundColor: entry ? 'rgb(99 102 241)' : 'rgb(229 231 235)' }}
                         title={entry ? `${entry.hoursSlept}h - ${entry.quality}⭐` : 'No data'}
                         role="img"
-                        aria-label={entry ? `${entry.hoursSlept} hours of sleep` : 'No data'}
+                        aria-label={entry ? `${entry.hoursSlept} hours of sleep` : 'No data'}}
                       />
                       <span className="text-xs text-gray-500 mt-1">
                         {date.toLocaleDateString('en-GB', { weekday: 'short' })}
@@ -357,9 +360,11 @@ export default function SleepPage() {
                 ))}
               </div>
               <div className="mt-3 bg-gray-200 rounded-full h-3">
+                {/* webhint-disable-next-line no-inline-styles */}
+                {/* eslint-disable-next-line react/forbid-dom-props */}
                 <div 
-                  className="bg-green-500 h-3 rounded-full transition-all" 
-                  style={{ width: `${checklistProgress}%` }}
+                  className="h-3 rounded-full transition-all" 
+                  style={{ width: `${checklistProgress}%`, backgroundColor: 'rgb(34 197 94)' }}
                   role="progressbar"
                   aria-label={`Sleep hygiene checklist progress: ${Math.round(checklistProgress)}%`}
                 />
@@ -1212,6 +1217,11 @@ export default function SleepPage() {
             <Link href="/techniques/4-7-8">Try Sleep Breathing</Link>
           </Button>
         </div>
+      </div>
+
+      {/* Evidence Sources */}
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <EvidenceFooter sources={SLEEP_EVIDENCE_SOURCES} />
       </div>
     </div>
   )
