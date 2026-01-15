@@ -308,7 +308,7 @@ export default function SleepPage() {
                         style={{ height: `${height}%`, backgroundColor: entry ? 'rgb(99 102 241)' : 'rgb(229 231 235)' }}
                         title={entry ? `${entry.hoursSlept}h - ${entry.quality}⭐` : 'No data'}
                         role="img"
-                        aria-label={entry ? `${entry.hoursSlept} hours of sleep` : 'No data'}}
+                        aria-label={entry ? `${entry.hoursSlept} hours of sleep` : 'No data'}
                       />
                       <span className="text-xs text-gray-500 mt-1">
                         {date.toLocaleDateString('en-GB', { weekday: 'short' })}

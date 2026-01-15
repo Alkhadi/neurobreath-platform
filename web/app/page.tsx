@@ -1,3 +1,5 @@
+'use client'
+
 import HeroSection from '@/components/home/hero-section'
 import CredibilitySection from '@/components/home/credibility-section'
 import GoalsSection from '@/components/home/goals-section'
@@ -7,9 +9,18 @@ import RewardsSection from '@/components/home/rewards-section'
 import ToolsSection from '@/components/home/tools-section'
 import SafetySupportSection from '@/components/home/safety-support-section'
 import OrganisationsSection from '@/components/home/organisations-section'
-import { EvidenceFooter, ADHD_EVIDENCE_SOURCES, AUTISM_EVIDENCE_SOURCES, BREATHING_EVIDENCE_SOURCES, ANXIETY_EVIDENCE_SOURCES, type EvidenceSource } from '@/components/evidence-footer'
+import { EvidenceFooter } from '@/components/evidence-footer'
+import { ADHD_EVIDENCE_SOURCES, AUTISM_EVIDENCE_SOURCES, BREATHING_EVIDENCE_SOURCES, ANXIETY_EVIDENCE_SOURCES } from '@/components/evidence-footer'
 
 export default function HomePage() {
+  // Combine evidence sources
+  const allSources = [
+    ...ADHD_EVIDENCE_SOURCES,
+    ...AUTISM_EVIDENCE_SOURCES,
+    ...BREATHING_EVIDENCE_SOURCES,
+    ...ANXIETY_EVIDENCE_SOURCES
+  ];
+
   return (
     <div className="min-h-screen">
       {/* Hero - Full width */}
@@ -42,7 +53,7 @@ export default function HomePage() {
         <OrganisationsSection />
         
         {/* Evidence Sources */}
-        <EvidenceFooter sources={[...ADHD_EVIDENCE_SOURCES, ...AUTISM_EVIDENCE_SOURCES, ...BREATHING_EVIDENCE_SOURCES, ...ANXIETY_EVIDENCE_SOURCES]} className="mt-16" />
+        <EvidenceFooter sources={allSources} className="mt-16" />
       </div>
     </div>
   )
