@@ -277,26 +277,69 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     setCurrentTourStep(0);
   }, [generateDynamicWelcome, scanPageContent]);
   
-  // Render markdown-like formatting
+  // Render markdown-like formatting with clickable links
   const renderMessage = (content: string) => {
-    // Split by links first to handle them specially
-    const parts = content.split(/(\[.*?\]\(.*?\))/);
+    // Split by markdown links and plain URLs
+    const linkRegex = /(\[.*?\]\(.*?\)|(?:https?:\/\/|\/)(?:[\w\d\-._~:/?#[\]@!$&'()*+,;=])+)/g;
+    const parts = content.split(linkRegex);
     
     return parts.map((part, i) => {
-      // Handle markdown links
-      const linkMatch = part.match(/\[(.*?)\]\((.*?)\)/);
-      if (linkMatch) {
-        const [, text, url] = linkMatch;
+      // Handle markdown links [text](url)
+      const markdownLinkMatch = part.match(/\[(.*?)\]\((.*?)\)/);
+      if (markdownLinkMatch) {
+        const [, text, url] = markdownLinkMatch;
+        const isExternal = url.startsWith('http');
         return (
           <a 
             key={i} 
-            href={url} 
-            className="text-primary underline hover:text-primary/80 inline-flex items-center gap-1"
-            target={url.startsWith('http') ? '_blank' : '_self'}
-            rel={url.startsWith('http') ? 'noopener noreferrer' : undefined}
+            href={url}
+            onClick={(e) => {
+              if (!isExternal) {
+                e.preventDefault();
+                router.push(url);
+                setIsOpen(false);
+              }
+            }}
+            className="text-primary underline hover:text-primary/80 inline-flex items-center gap-1 font-medium"
+            target={isExternal ? '_blank' : '_self'}
+            rel={isExternal ? 'noopener noreferrer' : undefined}
           >
             {text}
-            {url.startsWith('http') && <ExternalLink className="h-3 w-3" />}
+            {isExternal && <ExternalLink className="h-3 w-3" />}
+          </a>
+        );
+      }
+      
+      // Handle plain URLs starting with http:// or https://
+      if (part.match(/^https?:\/\//)) {
+        return (
+          <a 
+            key={i} 
+            href={part}
+            className="text-primary underline hover:text-primary/80 inline-flex items-center gap-1 break-all"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {part}
+            <ExternalLink className="h-3 w-3" />
+          </a>
+        );
+      }
+      
+      // Handle relative URLs starting with /
+      if (part.match(/^\/[a-zA-Z0-9\-_]+/)) {
+        return (
+          <a 
+            key={i} 
+            href={part}
+            onClick={(e) => {
+              e.preventDefault();
+              router.push(part);
+              setIsOpen(false);
+            }}
+            className="text-primary underline hover:text-primary/80 font-medium cursor-pointer"
+          >
+            {part}
           </a>
         );
       }
@@ -644,6 +687,41 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
   
   // Handle quick question click
   const handleQuickQuestion = (question: string) => {
+    // Check if it's a navigation request
+    const q = question.toLowerCase();
+    
+    // Define route mappings
+    const navigationMap: { [key: string]: string } = {
+      'adhd hub': '/adhd',
+      'adhd': '/adhd',
+      'autism hub': '/autism',
+      'autism': '/autism',
+      'dyslexia': '/conditions/dyslexia',
+      'breathing': '/breathing',
+      'anxiety': '/conditions/anxiety',
+      'depression': '/conditions/depression',
+      'stress': '/conditions/stress',
+      'sleep': '/conditions/sleep',
+      'bipolar': '/conditions/bipolar',
+      'parent': '/parent',
+      'teacher': '/teacher',
+      'carer': '/carer',
+    };
+    
+    // Check for navigation keywords
+    if (q.includes('take me to') || q.includes('visit') || q.includes('go to') || q.includes('show me')) {
+      // Find matching route
+      for (const [keyword, route] of Object.entries(navigationMap)) {
+        if (q.includes(keyword)) {
+          // Navigate directly
+          router.push(route);
+          setIsOpen(false);
+          return;
+        }
+      }
+    }
+    
+    // Otherwise send as a regular question
     handleSend(question);
   };
   
@@ -863,7 +941,7 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
                         ))}
                       </div>
                     </div>
-                    <div className="flex items-center gap-1 mt-1.5 sm:mt-2 pt-1 border-t border-border/30 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                    <div className="flex items-center gap-1 mt-1.5 sm:mt-2 pt-1 border-t border-border/30 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex-shrink-0">
                       {message.role === 'assistant' && (
                         <Button
                           variant="ghost"
@@ -873,7 +951,7 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
                           aria-label="Listen to this message"
                         >
                           <Volume2 className="h-3 w-3 mr-0.5 sm:mr-1" />
-                          Listen
+                          <span className="hidden sm:inline">Listen</span>
                         </Button>
                       )}
                       <Button
@@ -884,9 +962,9 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
                         aria-label="Copy message"
                       >
                         {copiedMessageId === message.id ? (
-                          <><Check className="h-3 w-3 mr-0.5 sm:mr-1" /> Copied</>
+                          <><Check className="h-3 w-3 mr-0.5 sm:mr-1" /><span className="hidden sm:inline">Copied</span></>
                         ) : (
-                          <><Copy className="h-3 w-3 mr-0.5 sm:mr-1" /> Copy</>
+                          <><Copy className="h-3 w-3 mr-0.5 sm:mr-1" /><span className="hidden sm:inline">Copy</span></>
                         )}
                       </Button>
                     </div>
@@ -929,7 +1007,20 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
           {/* Quick questions */}
           {!isMinimized && (
           <div className="px-3 sm:px-4 py-2 border-t border-border flex-shrink-0">
-            <p className="text-[10px] sm:text-xs text-muted-foreground mb-1.5 sm:mb-2">Quick questions:</p>
+            <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Quick questions:</p>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-5 sm:h-6 px-1.5 sm:px-2 text-[10px] sm:text-xs sm:hidden"
+                onClick={exportChat}
+                disabled={messages.length <= 1}
+                aria-label="Export chat"
+              >
+                <Download className="h-3 w-3 mr-0.5" />
+                Export
+              </Button>
+            </div>
             <div className="flex flex-wrap gap-1 sm:gap-1.5 max-h-24 sm:max-h-32 overflow-y-auto">
               {config.quickQuestions.map((question: string, idx: number) => (
                 <Button
