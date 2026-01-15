@@ -78,21 +78,21 @@ export default function AutismParentSupportPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950">
       {/* Hero Section */}
-      <section className="relative py-20 md:py-32 overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 text-white">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <div className="text-center space-y-6 mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold">Autism Parent Support Hub</h1>
-            <p className="text-xl md:text-2xl max-w-3xl mx-auto opacity-90">
+      <section className="relative py-16 sm:py-20 md:py-32 overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 text-white">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">Autism Parent Support Hub</h1>
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto opacity-90 leading-relaxed">
               Everything in one place: Parent, Adult & Later-life guides, Clinic guide with checklists & references, 
               plus an in-app coach module you can import into NeuroBreath
             </p>
-            <p className="text-sm opacity-75 max-w-2xl mx-auto">
+            <p className="text-xs sm:text-sm opacity-75 max-w-2xl mx-auto">
               A4 PDFs are print-optimised with brand header/footer
             </p>
           </div>
 
           {/* Quick Navigation Badges */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 sm:mb-12 px-2"
             <a href="#sensory-support" className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-full text-sm font-medium transition-colors">
               Sensory-ready
             </a>
@@ -225,7 +225,7 @@ export default function AutismParentSupportPage() {
 
       {/* Download PDFs Section */}
       <section id="download-pdfs" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Download PDFs</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -319,7 +319,7 @@ export default function AutismParentSupportPage() {
 
       {/* Parent Overview Section */}
       <section id="parent-overview" className="py-16 bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50 dark:from-blue-950 dark:via-purple-950 dark:to-indigo-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="grid gap-6 lg:grid-cols-3 mb-8">
             <div className="lg:col-span-2">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Autism (Parent) — quick overview</h2>
@@ -470,7 +470,7 @@ export default function AutismParentSupportPage() {
 
       {/* Quick Starter Section */}
       <section id="co-regulation" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-2">Quick Starter: Autism</h2>
@@ -563,7 +563,7 @@ export default function AutismParentSupportPage() {
 
       {/* How to Use Section */}
       <section id="use" className="py-16 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950 dark:via-blue-950 dark:to-indigo-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">How to use each deliverable in NeuroBreath</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -621,7 +621,7 @@ export default function AutismParentSupportPage() {
 
       {/* Evidence Snapshot Section */}
       <section id="evidence-snapshot" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Evidence snapshot (UK)</h2>
           
           <div className="grid gap-6 md:grid-cols-2">
@@ -666,7 +666,7 @@ export default function AutismParentSupportPage() {
 
       {/* Children & Adolescents Section */}
       <section id="children-adolescents" className="py-16 bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 dark:from-green-950 dark:via-blue-950 dark:to-purple-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-2">Children & Adolescents</h2>
@@ -793,7 +793,7 @@ export default function AutismParentSupportPage() {
 
       {/* School Section */}
       <section id="school" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-2">School: Teachers & TAs (UK)</h2>
@@ -906,7 +906,7 @@ export default function AutismParentSupportPage() {
 
       {/* SEND & EHCP Section */}
       <section id="pathways" className="py-16 bg-gradient-to-br from-emerald-50 via-blue-50 to-purple-50 dark:from-emerald-950 dark:via-blue-950 dark:to-purple-950">
-        <div className="mx-auto px-4 mb-12" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 mb-12 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">SEND & EHCP (England) — quick path</h2>
           
           <Card className="border-2 border-emerald-200 dark:border-emerald-800">
@@ -980,7 +980,7 @@ export default function AutismParentSupportPage() {
 
       {/* Autistic Staff Section */}
       <section id="autistic-staff" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8">Autistic teachers & staff — reasonable adjustments</h2>
           
           <Card>
@@ -1045,7 +1045,7 @@ export default function AutismParentSupportPage() {
 
       {/* Adults Section */}
       <section id="adult-support" className="py-16 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950 dark:via-blue-950 dark:to-indigo-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Adults</h2>
           
           <div className="grid gap-6 md:grid-cols-2">
@@ -1112,7 +1112,7 @@ export default function AutismParentSupportPage() {
 
       {/* Later Life Section */}
       <section id="later-life" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-2">Later Life</h2>
@@ -1196,7 +1196,7 @@ export default function AutismParentSupportPage() {
 
       {/* Clinical Guidance Section */}
       <section id="clinical-guidance" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Clinical & Education Guidance</h2>
           
           <div className="grid gap-6 lg:grid-cols-2">
@@ -1378,7 +1378,7 @@ export default function AutismParentSupportPage() {
 
       {/* Mental Health Quick Reference */}
       <section id="mental-health" className="py-16 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950 dark:via-purple-950 dark:to-pink-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
             Mental Health: Anxiety • Depression • Stress • Sleep
           </h2>

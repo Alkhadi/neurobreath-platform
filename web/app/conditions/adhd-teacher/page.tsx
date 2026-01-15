@@ -43,8 +43,8 @@ export default function ADHDTeacherSupportPage() {
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-orange-50 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950">
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 overflow-hidden bg-gradient-to-br from-purple-600 via-orange-500 to-pink-600 text-white">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <div className="text-center space-y-6 mb-12">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
             <div className="flex justify-center mb-4">
               <div className="p-4 bg-white/20 rounded-full">
                 <GraduationCap className="w-16 h-16" />
@@ -170,8 +170,8 @@ export default function ADHDTeacherSupportPage() {
 
       {/* Teacher Overview - truncated for space */}
       <section id="teacher-overview" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <h2 className="text-3xl md:text-4xl font-bold mb-8">ADHD (Teachers) — quick overview</h2>
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8">ADHD (Teachers) — quick overview</h2>
           
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             <Card>
@@ -263,8 +263,8 @@ export default function ADHDTeacherSupportPage() {
 
       {/* Classroom Strategies - comprehensive section */}
       <section id="classroom-strategies" className="py-16 bg-gradient-to-br from-purple-50 via-orange-50 to-pink-50 dark:from-purple-950 dark:via-orange-950 dark:to-pink-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Classroom Strategies for ADHD</h2>
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">Classroom Strategies for ADHD</h2>
           
           <Tabs defaultValue="environment" className="space-y-6">
             <TabsList className="grid w-full grid-cols-4 max-w-3xl mx-auto">
@@ -465,8 +465,8 @@ export default function ADHDTeacherSupportPage() {
 
       {/* 504/IEP Section - condensed */}
       <section id="504-iep" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">504 Plans & IEPs for ADHD</h2>
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">504 Plans & IEPs for ADHD</h2>
           
           <div className="grid gap-6 md:grid-cols-2 mb-6">
             <Card className="border-2 border-purple-200 dark:border-purple-800">
@@ -549,8 +549,8 @@ export default function ADHDTeacherSupportPage() {
 
       {/* Parent Partnership */}
       <section id="parent-partnership" className="py-16 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950 dark:via-blue-950 dark:to-indigo-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Partnering with Parents</h2>
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">Partnering with Parents</h2>
           
           <Card>
             <CardHeader>
@@ -586,8 +586,8 @@ export default function ADHDTeacherSupportPage() {
 
       {/* Resources */}
       <section id="resources" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Professional Development Resources</h2>
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">Professional Development Resources</h2>
           
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <Card>
@@ -646,8 +646,8 @@ export default function ADHDTeacherSupportPage() {
 
       {/* Breathing for Classroom */}
       <section id="breathing" className="py-16 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950 dark:via-pink-950 dark:to-orange-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">
             Using Breathing Breaks in the Classroom
           </h2>
           
