@@ -1,7 +1,8 @@
-import type { Metadata } from 'next'
+'use client'
+
 import { Suspense } from 'react'
 import dynamic from 'next/dynamic'
-import { EvidenceFooter, ADHD_EVIDENCE_SOURCES, AUTISM_EVIDENCE_SOURCES, BREATHING_EVIDENCE_SOURCES, type EvidenceSource } from '@/components/evidence-footer'
+import { EvidenceFooter, ADHD_EVIDENCE_SOURCES, AUTISM_EVIDENCE_SOURCES, BREATHING_EVIDENCE_SOURCES } from '@/components/evidence-footer'
 
 // Import components with dynamic loading for better error isolation
 const HeroSection = dynamic(() => import('@/components/blog/hero-section'), {
@@ -36,18 +37,13 @@ const SourcesSection = dynamic(() => import('@/components/blog/sources-section')
   loading: () => <div className="p-8 bg-card rounded-lg">Loading Sources...</div>
 })
 
-export const metadata: Metadata = {
-  title: 'AI-Powered Blog & Q&A Hub | NeuroBreath',
-  description: 'Evidence-informed AI blog and Q&A hub covering autism, ADHD, dyslexia, breathing, mood, and wellbeing for UK & US audiences.',
-  openGraph: {
-    title: 'AI-Powered Blog & Q&A Hub | NeuroBreath',
-    description: 'Evidence-informed AI blog and Q&A hub covering autism, ADHD, dyslexia, breathing, mood, and wellbeing for UK & US audiences.',
-    type: 'website',
-    url: 'https://neurobreath.co.uk/blog',
-  },
-}
-
 export default function BlogPage() {
+  // Combine evidence sources
+  const allSources = [
+    ...ADHD_EVIDENCE_SOURCES,
+    ...AUTISM_EVIDENCE_SOURCES,
+    ...BREATHING_EVIDENCE_SOURCES
+  ];
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
       {/* Hero / Positioning */}
@@ -101,7 +97,7 @@ export default function BlogPage() {
       </Suspense>
 
       {/* Evidence Sources */}
-      <EvidenceFooter sources={[...ADHD_EVIDENCE_SOURCES, ...AUTISM_EVIDENCE_SOURCES, ...BREATHING_EVIDENCE_SOURCES]} />
+      <EvidenceFooter sources={allSources} />
     </div>
   )
 }
