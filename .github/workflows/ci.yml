@@ -95,16 +95,6 @@ jobs:
           yarn start &
           sleep 10
 
-      - name: Debug - List files
-        run: |
-          echo "Current directory: $(pwd)"
-          echo "Files in current directory:"
-          ls -la
-          echo "Checking for .lighthouserc.json:"
-          ls -la .lighthouserc.json || echo "File not found"
-          echo "Files in parent:"
-          ls -la ../.lighthouserc.json || echo "Not in parent either"
-
       - name: Run Lighthouse CI
         run: |
           npm install -g @lhci/cli
