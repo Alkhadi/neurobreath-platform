@@ -10,6 +10,7 @@ import type { Topic } from '@/types/user-context';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+export const maxDuration = 30; // Allow up to 30 seconds for AI chat
 
 interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
@@ -149,15 +150,30 @@ export async function POST(request: NextRequest) {
       return createStreamingResponse(formattedText);
     }
 
-    // Retrieve evidence sources in parallel
+    // Retrieve evidence sources in parallel with error handling
     const topic = (intent.topic || 'autism') as Topic;
-    const [nhsLinks, niceLinks, pubmedArticles, neurobreathTools] =
-      await Promise.all([
+    let nhsLinks: Awaited<ReturnType<typeof getNHSLinks>> = [];
+    let niceLinks: Awaited<ReturnType<typeof getNICELinks>> = [];
+    let pubmedArticles: Awaited<ReturnType<typeof searchPubMed>> = [];
+    let neurobreathTools: Awaited<ReturnType<typeof getNeuroBreathTools>> = [];
+
+    try {
+      const results = await Promise.allSettled([
         Promise.resolve(getNHSLinks(question, topic)),
         Promise.resolve(getNICELinks(question, topic)),
         searchPubMed(buildPubMedQuery(question, intent, topic), 6),
         Promise.resolve(getNeuroBreathTools(question, topic)),
       ]);
+
+      // Extract fulfilled results, use empty arrays for rejected
+      nhsLinks = results[0].status === 'fulfilled' ? results[0].value : [];
+      niceLinks = results[1].status === 'fulfilled' ? results[1].value : [];
+      pubmedArticles = results[2].status === 'fulfilled' ? results[2].value : [];
+      neurobreathTools = results[3].status === 'fulfilled' ? results[3].value : [];
+    } catch (e) {
+      console.warn('[AI Chat] Some evidence sources failed:', e);
+      // Continue with empty arrays - synthesis can still work
+    }
 
     // Synthesize comprehensive answer
     const answer = synthesizeAnswer({
@@ -175,13 +191,31 @@ export async function POST(request: NextRequest) {
     return createStreamingResponse(formattedText);
   } catch (error) {
     console.error('[AI Chat API] Error:', error);
-    return NextResponse.json(
-      {
-        error: 'Failed to process chat request',
-        message: error instanceof Error ? error.message : 'Unknown error',
-      },
-      { status: 500 }
-    );
+
+    // Return a helpful response instead of an error
+    const fallbackText = `# Support Available
+
+I encountered a technical issue, but I can still help you.
+
+## General Guidance
+
+For autism support, education rights, and wellbeing strategies:
+
+• **NHS Resources**: Visit nhs.uk/conditions/autism for official guidance
+• **National Autistic Society**: autism.org.uk for comprehensive support
+• **NICE Guidelines**: Access evidence-based clinical guidelines at nice.org.uk
+
+## Immediate Help
+
+• For education support, contact your school's SENCO
+• For workplace adjustments, speak with HR or Access to Work
+• For health concerns, consult your GP
+
+Please try your question again, or contact support if the issue persists.
+
+⚠️ This is general information only—not medical advice.`;
+
+    return createStreamingResponse(fallbackText);
   }
 }
 

@@ -3,6 +3,7 @@ import { searchPubMed } from '@/lib/ai-coach/pubmed';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+export const maxDuration = 30; // Allow up to 30 seconds for PubMed API
 
 interface PubMedArticle {
   pmid: string;
@@ -35,7 +36,7 @@ export async function GET(request: NextRequest) {
     // Build query with year filter
     const yearFilteredQuery = `${query} AND ${yearFrom}:3000[dp]`;
 
-    // Use existing PubMed utility
+    // Use existing PubMed utility (now includes fallback handling)
     const rawArticles = await searchPubMed(yearFilteredQuery, max);
 
     // Transform to expected format
@@ -46,26 +47,31 @@ export async function GET(request: NextRequest) {
       journal: article.journal || '',
       year: article.year || '',
       abstract: article.abstract || '',
-      doi: undefined, // DOI not currently in our PubMed data
+      doi: undefined,
       url: article.url || `https://pubmed.ncbi.nlm.nih.gov/${article.pmid}/`,
     }));
 
+    // Always return 200 with articles (may be from fallback)
     return NextResponse.json({
       articles,
       total: articles.length,
       query,
       yearFrom,
+      source: articles.length > 0 ? 'success' : 'fallback',
     });
   } catch (error) {
     console.error('[PubMed API] Error:', error);
-    
-    // Return 200 with empty array instead of 500 to prevent console errors
-    // PubMed API failures are expected (CORS, rate limits, network issues)
+
+    // Return 200 with fallback message instead of 500
+    // The searchPubMed function now returns fallback articles, so this catch
+    // is for truly unexpected errors
     return NextResponse.json({
       articles: [],
       total: 0,
-      error: 'PubMed service temporarily unavailable',
-      fallback: true,
+      query: request.nextUrl.searchParams.get('query') || '',
+      yearFrom: request.nextUrl.searchParams.get('yearFrom') || '2020',
+      source: 'error',
+      message: 'Research database temporarily unavailable. Please try again.',
     });
   }
 }

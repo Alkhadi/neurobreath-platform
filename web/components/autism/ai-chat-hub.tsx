@@ -66,7 +66,14 @@ export function AIChatHub() {
         }),
       });
 
-      if (!response.ok) {
+      // Check for JSON error response (non-streaming)
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || errorData.error || 'Failed to get response');
+      }
+
+      if (!response.ok && !response.body) {
         throw new Error('Failed to get response');
       }
 
@@ -123,9 +130,29 @@ export function AIChatHub() {
       }
     } catch (err) {
       console.error('Chat error:', err);
-      setError(err instanceof Error ? err.message : 'Failed to send message');
-      // Remove the placeholder assistant message if there was an error
-      setMessages((prev) => prev.slice(0, -1));
+
+      // Instead of showing error, show a helpful fallback message
+      setMessages((prev) => {
+        const updated = [...prev];
+        if (updated.length > 0 && updated[updated.length - 1].role === 'assistant') {
+          updated[updated.length - 1].content = `I apologize, but I encountered a temporary issue. Here are some helpful resources:
+
+**For Autism Support:**
+• NHS: nhs.uk/conditions/autism
+• National Autistic Society: autism.org.uk
+
+**For Education Rights:**
+• Contact your school's SENCO
+• IPSEA: ipsea.org.uk (education law advice)
+
+**For Workplace Support:**
+• Access to Work: gov.uk/access-to-work
+
+Please try your question again in a moment.`;
+        }
+        return updated;
+      });
+      setError(null); // Don't show error banner since we provided fallback content
     } finally {
       setIsLoading(false);
     }
