@@ -15,6 +15,7 @@ import {
   RotateCcw, Copy, Check, ExternalLink, History, Settings
 } from 'lucide-react';
 import { getPageConfig, platformInfo, type PageBuddyConfig } from '@/lib/page-buddy-configs';
+import { getEvidenceBasedAnswer, formatResponseWithCitations } from '@/lib/page-buddy-knowledge';
 import { cn } from '@/lib/utils';
 
 interface Message {
@@ -538,7 +539,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     
     // === FOCUS / POMODORO ===
     if (q.includes('focus') || q.includes('pomodoro') || q.includes('timer') || q.includes('concentrate')) {
-      return `**Focus Pomodoro Timer** ⏱️\n\nOur ADHD-friendly focus timer helps manage attention:\n\n**Features:**\n• Flexible durations (5-50 minutes)\n• ADHD-optimized intervals\n• Dopamine tips during breaks\n• Session streak tracking\n• Audio/visual notifications\n\n**Tips for success:**\n• Start with shorter sessions (15-25 min)\n• Take proper breaks\n• Use the dopamine tips!\n\n👉 Visit **/adhd** → **Focus Timer** section`;
+      return `**Focus Pomodoro Timer** ⏱️\n\nOur ADHD-friendly focus timer helps manage attention:\n\n**Features:**\n• Flexible durations (5-50 minutes)\n• ADHD-optimized intervals\n• Dopamine tips during breaks\n• Session streak tracking\n• Audio/visual notifications\n\n**Evidence Base:**\nTime-based work intervals (Pomodoro Technique) are effective for ADHD because they:\n• Create external structure for attention regulation\n• Provide frequent dopamine hits through completion\n• Reduce overwhelming sense of endless tasks\n• Allow for movement breaks essential for ADHD brains\n\n**Tips for success:**\n• Start with shorter sessions (15-25 min)\n• Take proper breaks (research shows 5-10 min optimal)\n• Use the dopamine tips!\n\n👉 **[Start a focus session now](https://neurobreath.co.uk/breathing/focus)**\n\n**Source**: NICE NG87 recommends environmental modifications and structured routines as first-line support for ADHD.`;
     }
     
     // === QUESTS / GAMIFICATION ===
@@ -588,7 +589,17 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   
   // Generate AI response
   const generateResponse = async (userMessage: string): Promise<string> => {
-    // First try local response for common questions
+    // PRIORITY 1: Check evidence-based knowledge system first
+    try {
+      const evidenceResponse = await getEvidenceBasedAnswer(userMessage, config.pageId);
+      if (evidenceResponse) {
+        return formatResponseWithCitations(evidenceResponse);
+      }
+    } catch (error) {
+      console.warn('Evidence knowledge system error:', error);
+    }
+    
+    // PRIORITY 2: Try local response for page-specific questions
     const localResponse = getLocalResponse(userMessage, config);
     const isGenericResponse = localResponse.includes('I\'m here to help you navigate');
     
@@ -597,7 +608,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       return localResponse;
     }
     
-    // Otherwise try AI
+    // PRIORITY 3: Use AI for conversational responses
     const systemPrompt = `You are NeuroBreath Buddy, a friendly and supportive AI assistant for the ${config.pageName} page of the NeuroBreath neurodiversity support platform.
 
 Platform Mission: ${platformInfo.mission}
@@ -613,6 +624,14 @@ Your role:
 5. Support parents, teachers, carers, and neurodivergent individuals equally
 6. Promote home-school collaboration
 
+CRITICAL: When answering medical/clinical questions about ADHD, autism, anxiety, depression, or other conditions:
+- ALWAYS cite credible sources (NICE, NHS, CDC, AAP, peer-reviewed research)
+- Include UK sources first (NICE guidelines, NHS), then US sources (CDC, AAP)
+- Reference specific clinical guidelines when discussing treatment
+- For medication questions, cite NICE NG87 (ADHD), NICE CG128/CG170 (Autism)
+- Provide PubMed PMIDs for research claims when possible
+- Never provide vague or unsourced medical information
+
 Guidelines:
 - Keep responses concise (3-5 sentences usually)
 - Use emoji sparingly for friendliness
@@ -621,6 +640,7 @@ Guidelines:
 - Be neurodiversity-affirming (not deficit-focused)
 - Mention printable resources when relevant
 - Support home-school collaboration
+- INCLUDE SOURCES for all clinical/medical information
 
 Page sections:
 ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
@@ -689,6 +709,13 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
   const handleQuickQuestion = (question: string) => {
     // Check if it's a navigation request
     const q = question.toLowerCase();
+    
+    // Special handling for focus session question
+    if (q.includes('focus session') || (q.includes('start') && q.includes('focus'))) {
+      router.push('/breathing/focus');
+      setIsOpen(false);
+      return;
+    }
     
     // Define route mappings
     const navigationMap: { [key: string]: string } = {
