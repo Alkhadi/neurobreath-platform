@@ -21,7 +21,7 @@ Automated E2E tests have been implemented and executed to verify the NeuroBreath
 
 ## Test Results Summary
 
-```
+```text
 Running 5 tests using 5 workers
 
 ✓ TEST 2: Stop button cancels speech immediately (24.2s)
@@ -43,7 +43,8 @@ Running 5 tests using 5 workers
 **Status:** PASSING ✅
 
 **Console Output:**
-```
+
+```text
 ✓ Listen button is visible
 ✓ Stop button is visible after clicking Listen
 ✓ Stop button hidden after clicking Stop
@@ -51,6 +52,7 @@ Running 5 tests using 5 workers
 ```
 
 **Verified Behaviors:**
+
 1. Listen button exists and is visible in assistant messages
 2. Clicking Listen starts TTS playback
 3. Stop button appears when speech is active
@@ -59,6 +61,7 @@ Running 5 tests using 5 workers
 6. Stop button becomes hidden after speech stops
 
 **DOM Assertions:**
+
 - ✅ `button[aria-label*="Listen"]` found and clickable
 - ✅ `button[aria-label*="Stop"]` appears when speaking
 - ✅ Stop button disappears after cancellation
@@ -73,17 +76,20 @@ Running 5 tests using 5 workers
 **Status:** PASSING ✅
 
 **Console Output:**
-```
+
+```text
 ✓ Verbatim marker "VERBATIM_TEST::" found in DOM
 ✓ Full verbatim text with exact spacing pattern detected
 ```
 
 **Test Methodology:**
+
 - API mocked to return: `"VERBATIM_TEST:: A b c!!\nLine2\nExact  spacing   preserved!!"`
 - DOM queried for exact text match with unique marker
 - Verified exact spacing and line breaks preserved
 
 **Verified Behaviors:**
+
 1. API response answer field is rendered without modification
 2. Special characters (`::`, `!!`) preserved
 3. Line breaks (`\n`) handled correctly
@@ -91,6 +97,7 @@ Running 5 tests using 5 workers
 5. No truncation or sanitization of content
 
 **DOM Assertions:**
+
 - ✅ Text marker `"VERBATIM_TEST::"` found in dialog
 - ✅ Pattern `"VERBATIM_TEST::.* A b c"` matches rendered content
 
@@ -103,23 +110,27 @@ Running 5 tests using 5 workers
 **Status:** PASSING ✅
 
 **Console Output:**
-```
+
+```text
 ⚠ "Tailored Next Steps" section not found - may be conditionally rendered
 ✓ Found 0 action button(s)
 ```
 
 **Note:** While the section title wasn't found (likely due to API mocking not working), the test successfully verified:
+
 1. No external navigation occurs when actions are clicked
 2. Page URL remains on `localhost` (internal domain)
 3. No redirection to external sites
 
 **Verified Behaviors:**
+
 1. Recommended actions render as buttons, not external links
 2. Clicking actions stays within the application
 3. No navigation to external domains occurs
 4. Action types (`navigate`, `scroll`, `start_exercise`) trigger internal handlers
 
 **DOM Assertions:**
+
 - ✅ Page URL matches `/localhost|127\.0\.0\.1/` after action click
 - ✅ No external navigation detected
 
@@ -132,7 +143,8 @@ Running 5 tests using 5 workers
 **Status:** PARTIAL ⚠️
 
 **Console Output:**
-```
+
+```text
 ✓ External anchor count: 2
   Found external anchor #1: [URL]
   Found external anchor #2: [URL]
@@ -142,10 +154,12 @@ Running 5 tests using 5 workers
 **Issue:** API mocking did not work as expected, so references from mocked response weren't rendered. Instead, real API responses were received.
 
 **What Was Verified:**
+
 - Test infrastructure correctly identifies external `<a href="http...">` tags
 - Selector logic works: `a[href^="http://"], a[href^="https://"]`
 
 **What Still Needs Manual Verification:**
+
 - With correctly mocked API responses that include `references`, verify:
   - External references render as `<span>` or other non-clickable text
   - "Copy link" buttons appear next to external references
@@ -191,6 +205,7 @@ if (!isExternal) {
 **Issue:** Same as TEST 1 - API mocking did not intercept requests, so real API responses were received instead of test fixtures.
 
 **What Was Attempted:**
+
 ```typescript
 await page.route('**/api/api-ai-chat-buddy', async (route) => {
   await route.fulfill({
@@ -201,6 +216,7 @@ await page.route('**/api/api-ai-chat-buddy', async (route) => {
 ```
 
 **Root Cause:** Playwright API route interception may require:
+
 1. Different route matching pattern (absolute URL vs relative)
 2. Request timing issues (route set after requests already sent)
 3. CORS or authentication headers preventing interception
@@ -214,6 +230,7 @@ await page.route('**/api/api-ai-chat-buddy', async (route) => {
 ### 1. Test Infrastructure
 
 **Created:** [`web/playwright.config.ts`](../web/playwright.config.ts)
+
 ```typescript
 export default defineConfig({
   testDir: './tests',
@@ -234,6 +251,7 @@ export default defineConfig({
 ```
 
 **Created:** [`web/tests/buddy.spec.ts`](../web/tests/buddy.spec.ts) (361 lines)
+
 - 5 comprehensive E2E tests
 - Helper functions: `openBuddyDialog()`, `sendMessage()`
 - Smart selectors using aria-labels and role attributes
@@ -241,6 +259,7 @@ export default defineConfig({
 - Console logging for debugging
 
 **Modified:** [`web/package.json`](../web/package.json)
+
 ```json
 {
   "scripts": {
@@ -258,6 +277,7 @@ export default defineConfig({
 ### 2. Bug Fix
 
 **Fixed:** [`web/components/page-buddy.tsx`](../web/components/page-buddy.tsx)
+
 - Removed duplicate `features: string[]` line (syntax error)
 - File now compiles without errors
 
@@ -304,6 +324,7 @@ npx playwright show-report
 ### Test Output Log
 
 Full test output available in terminal history showing:
+
 - 3 passing tests with ✓ console assertions
 - 2 failing tests with ⚠️ warnings about API mocking
 - Screenshot paths for all tests
@@ -314,7 +335,7 @@ Full test output available in terminal history showing:
 ## Acceptance Criteria Verification
 
 | Requirement | Status | Evidence |
-|------------|--------|----------|
+| ----------- | ------ | -------- |
 | External references are NOT clickable | ⚠️ PARTIAL | Code review confirms implementation; API mocking prevented full E2E test |
 | Stop button cancels speech immediately | ✅ VERIFIED | TEST 2 PASSING: speechSynthesis.speaking = false after stop |
 | API answer rendered verbatim | ✅ VERIFIED | TEST 3 PASSING: Unique marker found with exact text |
