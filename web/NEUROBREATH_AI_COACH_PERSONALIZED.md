@@ -47,7 +47,6 @@
 
 ### 4. Display Components (NEW FILES)
 
-
 #### `recommendations-display.tsx`
 
 - Shows Primary/Backup/Add-on recommendations
@@ -78,7 +77,6 @@
 - Gradient teal/cyan theme
 
 ### 5. Updated AI Coach Chat Component
-
 
 **Location:** `web/components/blog/ai-coach-chat.tsx`
 
