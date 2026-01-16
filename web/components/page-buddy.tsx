@@ -56,8 +56,6 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     sections: { name: string; id: string }[];
     features: string[];
   }>({ headings: [], buttons: [], sections: [], features: [] });
-    features: string[];
-  }>({ headings: [], buttons: [], sections: [], features: [] });
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   

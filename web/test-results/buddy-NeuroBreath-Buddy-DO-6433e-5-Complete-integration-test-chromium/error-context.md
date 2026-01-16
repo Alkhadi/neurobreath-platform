@@ -1,0 +1,1033 @@
+# Page snapshot
+
+```yaml
+- generic:
+  - generic:
+    - banner:
+      - generic:
+        - link:
+          - /url: /
+          - img
+          - generic: NeuroBreath
+        - navigation:
+          - link:
+            - /url: /
+            - text: Home
+          - generic:
+            - button:
+              - text: Conditions
+              - img
+          - generic:
+            - button:
+              - text: Breathing & Focus
+              - img
+          - generic:
+            - button:
+              - text: Tools
+              - img
+          - generic:
+            - button:
+              - text: Resources
+              - img
+          - link:
+            - /url: /progress
+            - text: 📊 Progress
+          - link:
+            - /url: /get-started
+            - text: Get Started
+    - main:
+      - generic:
+        - region:
+          - generic:
+            - heading [level=1]: Measured breathing. Measurable relief.
+            - generic:
+              - generic:
+                - button:
+                  - generic:
+                    - img
+                  - generic:
+                    - generic:
+                      - heading [level=2]: Create Your Profile
+                      - img
+                    - paragraph: Pick a quick activity and protect your streak today.
+                    - generic:
+                      - text: Click here to get started
+                      - img
+                - generic:
+                  - paragraph: Guided breathing, voice cues, and evidence-based resources built for neurodiversity.
+                  - paragraph: Free to use and share across classrooms, clinics, and home practice.
+                - paragraph: NeuroBreath helps neurodivergent people and their supporters build calm, focus and stability through practical tools, guided breathing, training, and low-pressure progress tracking. Start with a 2–5 minute Quick Win today and earn rewards you can actually use.
+                - button:
+                  - img
+                  - text: Click here for a quick start
+                - generic:
+                  - heading [level=3]: Key features
+                  - list:
+                    - listitem: • Voice-guided breathing cues with adjustable timings for neuro-inclusive learning
+                    - listitem: "• Private progress tracking: session minutes, breath counts, and daily streaks stored locally on your device"
+                    - listitem: "• Auto-updating resources: printable guides, QR code cards, and shareable materials sync with your progress"
+                    - listitem:
+                      - text: •
+                      - link:
+                        - /url: /tools/focus-training
+                        - text: 🌱 Focus Training — Interactive plant-based focus exercises for sustained attention
+                  - generic:
+                    - generic: Neuro-inclusive
+                    - generic: Evidence-based
+                    - generic: Share-ready
+                  - heading [level=4]: Common concerns
+                  - generic:
+                    - link:
+                      - /url: /conditions/anxiety
+                      - text: Stress & Anxiety
+                    - link:
+                      - /url: /conditions/anxiety
+                      - text: Panic Symptoms
+                    - link:
+                      - /url: /sleep
+                      - text: Sleep Issues
+                    - link:
+                      - /url: /conditions/anxiety
+                      - text: Focus & Tests
+                    - link:
+                      - /url: /conditions/anxiety
+                      - text: PTSD Support*
+                    - link:
+                      - /url: /conditions/low-mood-burnout
+                      - text: Low Mood
+              - generic:
+                - generic:
+                  - heading [level=3]: Inhale Hold Exhale
+                  - generic:
+                    - generic: TODAY'S FOCUSED MINUTES
+                    - generic: 0 min
+                  - generic:
+                    - img
+                    - generic: Ready
+                  - generic:
+                    - generic:
+                      - generic: INHALE (4s)
+                    - generic:
+                      - generic: EXHALE (6s)
+                  - generic:
+                    - button: 🎧 Start
+                  - generic: "🆘 60-second SOS breathing: Inhale for 4 seconds, exhale for 6 seconds. Six complete cycles provide immediate calm. Today's focused minutes display above."
+            - generic:
+              - region:
+                - generic:
+                  - generic:
+                    - generic: Quick Win • 2–5 minutes
+                    - generic: +30 points
+                  - heading [level=2]: Daily Support Planner (Instant)
+                  - paragraph: Answer three questions and generate a calm, realistic plan for today—home, school, work, or care.
+                  - generic:
+                    - button:
+                      - img
+                      - text: Generate Today's Plan
+                    - button:
+                      - img
+                      - text: Save to Toolkit
+                  - paragraph: Earn badges and unlock coupons by completing Quick Wins across NeuroBreath. Progress toward "Steady Navigator" badge.
+        - generic:
+          - region:
+            - generic:
+              - generic:
+                - heading [level=2]: Clinical Backing & Credibility
+                - paragraph:
+                  - text: Our tools are evidence-informed and designed with safety in mind.
+                  - strong: Educational information only — not medical advice.
+              - generic:
+                - generic:
+                  - img
+                  - generic:
+                    - paragraph: Important
+                    - paragraph: This is educational information only, not medical advice. If breathing feels uncomfortable, return to natural breathing. Always consult healthcare professionals for personalised guidance.
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img
+                        - generic:
+                          - generic: Expert-Informed
+                          - heading [level=3]: Dr Herbert Benson
+                      - paragraph: Relaxation Response research
+                      - button:
+                        - generic: Learn more
+                        - img
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img
+                        - generic:
+                          - generic: Expert-Informed
+                          - heading [level=3]: Dr Andrew Weil
+                      - paragraph: 4-7-8 breathing technique
+                      - button:
+                        - generic: Learn more
+                        - img
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img
+                        - generic:
+                          - generic: Guidance Sources
+                          - heading [level=3]: NHS (UK)
+                      - paragraph: First-line intervention for stress & anxiety
+                      - button:
+                        - generic: Learn more
+                        - img
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img
+                        - generic:
+                          - generic: Guidance Sources
+                          - heading [level=3]: Mayo Clinic
+                      - paragraph: Evidence-based recommendations
+                      - button:
+                        - generic: Learn more
+                        - img
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img
+                        - generic:
+                          - generic: Guidance Sources
+                          - heading [level=3]: Performance Applications
+                      - paragraph: Used in high-stress settings
+                      - button:
+                        - generic: Learn more
+                        - img
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img
+                        - generic:
+                          - generic: Evidence-Informed
+                          - heading [level=3]: Heart Rate Variability
+                      - paragraph: Slow breathing optimises autonomic function
+                      - button:
+                        - generic: Learn more
+                        - img
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img
+                        - generic:
+                          - generic: Evidence-Informed
+                          - heading [level=3]: Stress Reduction & Cognitive Regulation
+                      - paragraph: Reduces cortisol, anxiety and enhances focus and emotional control
+                      - button:
+                        - generic: Learn more
+                        - img
+              - generic:
+                - button:
+                  - img
+                  - text: View Full Sources & References
+                  - img
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                  - text: Personalized for you
+                - heading [level=2]: Choose Your Path
+                - paragraph: Select a goal for tailored cues, pacing, and guides suited to your needs.
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+                    - heading [level=3]: Pick your goal
+                  - generic:
+                    - link:
+                      - /url: /stress
+                      - generic:
+                        - generic:
+                          - generic: 😌
+                        - generic:
+                          - heading [level=4]: Calm
+                          - paragraph: Reduce stress and anxiety
+                        - generic:
+                          - generic: Explore
+                          - img
+                    - link:
+                      - /url: /sleep
+                      - generic:
+                        - generic:
+                          - generic: 🌙
+                        - generic:
+                          - heading [level=4]: Sleep
+                          - paragraph: Improve rest and relaxation
+                        - generic:
+                          - generic: Explore
+                          - img
+                    - link:
+                      - /url: /breathing/training/focus-garden
+                      - generic:
+                        - generic:
+                          - generic: 🎯
+                        - generic:
+                          - heading [level=4]: Focus
+                          - paragraph: Enhance concentration
+                        - generic:
+                          - generic: Explore
+                          - img
+                    - link:
+                      - /url: /teacher-quick-pack
+                      - generic:
+                        - generic:
+                          - generic: 📚
+                        - generic:
+                          - heading [level=4]: School
+                          - paragraph: Classroom-ready techniques
+                        - generic:
+                          - generic: Explore
+                          - img
+                - generic:
+                  - generic:
+                    - img
+                    - heading [level=3]: How long do you have?
+                  - generic:
+                    - link:
+                      - /url: /techniques/sos
+                      - generic:
+                        - generic:
+                          - generic: ⚡
+                        - generic:
+                          - generic:
+                            - generic: 1 min
+                          - heading [level=4]: SOS Breathing
+                          - paragraph: Quick emergency reset when you need it most
+                      - generic:
+                        - generic: Start now
+                        - img
+                    - link:
+                      - /url: /techniques/box-breathing
+                      - generic:
+                        - generic:
+                          - generic: 🔲
+                        - generic:
+                          - generic:
+                            - generic: 3 min
+                          - heading [level=4]: Box Breathing
+                          - paragraph: Steady focus and calm for everyday moments
+                      - generic:
+                        - generic: Start now
+                        - img
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                  - generic:
+                    - heading [level=3]: Built for Neurodiversity
+                    - paragraph: Designed with inclusive, accessible principles to support all learners
+                  - generic:
+                    - generic: Visual cues
+                    - generic: Sensory-friendly
+                    - generic: Keyboard accessible
+                    - generic: Evidence-based
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=2]: Why These Techniques Work
+                - paragraph: Everything here is educational guidance informed by clinical and occupational therapy sources. We translate the evidence so it feels friendly, neuro-affirming, and doable.
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: 🫧 Box & Coherent Breathing
+                    - heading [level=3]: Steady the Autonomic Swing
+                    - paragraph: Equal 4-4-4-4 or 5-5 patterns are used by Navy special operations teams, heart rate variability researchers, and the NHS to nudge the vagus nerve, lower heart rate variability peaks, and steady attention for ADHD minds.
+                  - generic:
+                    - generic:
+                      - generic: 🌙 4-7-8 & Slow Exhale Work
+                    - heading [level=3]: Lengthened Exhales Calm the Limbic System
+                    - paragraph: Dr Andrew Weil's 4-7-8 protocol and Harvard's relaxation response both show that extending the out-breath dampens the stress response, easing sleep onset and evening anxiety.
+                  - generic:
+                    - generic:
+                      - generic: 🎯 Short, Frequent Breaks
+                    - heading [level=3]: Regulation Is a Trainable Skill
+                    - paragraph: Occupational therapy guidance recommends 60–180 second breathing punctuations to reduce sensory overload, anchor autistic routines, and prep ADHD minds for learning. You're not broken — these are skills you can practise.
+              - generic:
+                - generic:
+                  - generic:
+                    - generic: INTERACTIVE DEMO
+                  - heading [level=3]: "Try it now: Guided breathing"
+                  - paragraph: Experience our visual breathing guide in action. Click "Start Preview" to see how the orb expands, holds, and contracts — giving you predictable, sensory-friendly timing cues that match your breath.
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: Inhale
+                        - generic: Hold
+                        - generic: Exhale
+                      - generic: READY TO BEGINTap Start
+                      - generic:
+                        - button: ▶️ Start Preview
+                      - paragraph:
+                        - strong: "4-2-6 Pattern:"
+                        - text: Inhale 4s · Hold 2s · Exhale 6s
+                  - generic:
+                    - paragraph: Want full sessions with audio guidance?
+                    - generic: 👇
+                    - link:
+                      - /url: /breathing/breath
+                      - generic: 🫁
+                      - generic:
+                        - generic: Explore All Techniques
+                        - generic: Full sessions with narration & progress tracking
+                      - img
+              - generic:
+                - generic:
+                  - heading [level=3]: Evidence Highlights
+                  - paragraph: Peer-reviewed research supporting breathing techniques
+                - generic:
+                  - generic:
+                    - paragraph: 8-week diaphragmatic breathing RCT
+                    - paragraph: −1.3 μg/dL cortisol
+                    - paragraph: Office workers who completed 20 guided sessions reduced salivary cortisol by approximately 1.3 μg/dL, whilst controls showed no change.
+                    - generic:
+                      - link:
+                        - /url: https://pmc.ncbi.nlm.nih.gov/articles/PMC5455070/
+                        - generic: 📄
+                        - generic: Ma et al., 2017
+                  - generic:
+                    - paragraph: Attention & accuracy
+                    - paragraph: +6.7 target hits
+                    - paragraph: The same study recorded a 6.7-point gain on the Number Cancellation Test after training, confirming measurable focus improvements for everyday staff.
+                    - generic:
+                      - link:
+                        - /url: https://pmc.ncbi.nlm.nih.gov/articles/PMC5455070/
+                        - generic: 📄
+                        - generic: Frontiers in Psychology
+              - generic:
+                - generic:
+                  - generic: ⚠️
+                  - generic:
+                    - paragraph: Pause or stop any time
+                    - paragraph: If breathing feels uncomfortable, return to natural breathing and speak to a clinician for personalised advice.
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - heading [level=2]: Breathing challenges & quests
+                  - paragraph: Measured, neuro-inclusive quests with proof you can show to families, teachers, or clinicians. Data is saved on your device only.
+                - generic:
+                  - button:
+                    - generic:
+                      - generic: 🎮
+                      - generic: How to use challenges & quests
+                    - img
+                - generic:
+                  - region:
+                    - heading [level=3]: Your Progress
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img
+                        - generic: "0"
+                        - generic: Total minutes
+                      - generic:
+                        - generic:
+                          - img
+                        - generic: "0"
+                        - generic: Sessions
+                      - generic:
+                        - generic:
+                          - img
+                        - generic: "0"
+                        - generic: Day streak
+                      - generic:
+                        - generic:
+                          - img
+                        - generic: "0"
+                        - generic: Last 7 days
+                  - note:
+                    - paragraph:
+                      - generic: "💡 Coach note:"
+                      - text: Log even a single minute when you try a cue. Micro wins keep streaks alive and unlock badges faster.
+                  - generic:
+                    - paragraph: Pick the quest that fits today. Each card logs locally so you can evidence care without pressure.
+                - paragraph: You can stop at any time. Challenges log locally so you can evidence effort without shame or pressure.
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - heading [level=2]: Rewards & Milestones
+                  - paragraph: Badges celebrate consistency, curiosity, and kindness to yourself. Nothing here is a competition.
+                - generic:
+                  - button:
+                    - generic:
+                      - generic: 🎖️
+                      - generic: How badges work
+                    - img
+                - paragraph: Badges unlock gently and stay visible even if you take a break. You can reset them any time in the progress section.
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=2]: Interactive Tools
+                - paragraph: Gamified tools keep things interesting without overwhelming your nervous system. Use them as gentle prompts, not prescriptions.
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - heading [level=3]: Breath Ladder
+                    - paragraph: Climb from 3-3-3-3 to 5-5-5-5 over a few rounds. Each rung nudges lung capacity and confidence.
+                    - link:
+                      - /url: /tools/breath-ladder
+                      - text: Try Breath Ladder
+                      - img
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - heading [level=3]: Colour-Path Breathing
+                    - paragraph: Follow the colour trail as it lights up each breathing phase. Visual cues help anchor attention.
+                    - link:
+                      - /url: /tools/colour-path
+                      - text: Try Colour-Path Breathing
+                      - img
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - heading [level=3]: Micro-Reset Roulette
+                    - paragraph: Spin the wheel for a random 1-minute breathing reset. Perfect for decision fatigue.
+                    - link:
+                      - /url: /tools/roulette
+                      - text: Try Micro-Reset Roulette
+                      - img
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - heading [level=3]: Focus Tiles
+                    - paragraph: Context-based breathing suggestions for school, work, home, or social situations.
+                    - link:
+                      - /url: /tools/focus-tiles
+                      - text: Try Focus Tiles
+                      - img
+              - generic:
+                - generic:
+                  - heading [level=3]: Gentle Gamification
+                  - paragraph: These tools add variety without pressure. No leaderboards, no competition — just different ways to explore your breathing practice at your own pace.
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=2]: Safety & Support
+                - paragraph: Your wellbeing is our priority. Here's important information about safe practice and how to support this project.
+              - generic:
+                - heading [level=3]:
+                  - generic: ⚠️
+                  - text: Safety Guidelines
+                - generic:
+                  - generic:
+                    - paragraph: Educational Information Only
+                    - paragraph: These techniques are educational resources, not medical advice. They cannot replace professional healthcare.
+                  - generic:
+                    - paragraph: Listen to Your Body
+                    - paragraph: If breathing exercises feel uncomfortable, cause dizziness, or increase anxiety, stop immediately and return to natural breathing.
+                  - generic:
+                    - paragraph: Supportive Tool
+                    - paragraph: For PTSD, panic disorders, or serious mental health conditions, use these tools alongside — never instead of — professional care.
+              - generic:
+                - heading [level=3]: When to Seek Professional Help
+                - generic:
+                  - paragraph: • Persistent breathing difficulties or chest pain
+                  - paragraph: • Panic attacks or severe anxiety that interferes with daily life
+                  - paragraph: • Symptoms of depression, PTSD, or other mental health conditions
+                  - paragraph: • Any concerns about your physical or mental wellbeing
+                - paragraph: "Emergency: Call 999 (UK) or your local emergency services"
+              - generic:
+                - generic:
+                  - heading [level=3]:
+                    - img
+                    - text: Share NeuroBreath
+                  - paragraph: Help others discover free, neuro-inclusive breathing tools. Share responsibly with those who might benefit.
+                  - generic:
+                    - button: Twitter
+                    - button: Facebook
+                    - button: LinkedIn
+                    - button: WhatsApp
+                    - button: Email
+                  - button:
+                    - img
+                    - text: Copy Link
+                  - generic:
+                    - button:
+                      - img
+                      - text: Download QR Code
+                - generic:
+                  - heading [level=3]:
+                    - img
+                    - text: Support This Project
+                  - paragraph: NeuroBreath is free and always will be. Your support helps us maintain and improve these resources.
+                  - generic:
+                    - link:
+                      - /url: https://buymeacoffee.com/neurobreath
+                      - text: ☕ Buy Me a Coffee
+                      - img
+                    - link:
+                      - /url: https://patreon.com/neurobreath
+                      - text: 🤝 Monthly Support
+                      - img
+                    - link:
+                      - /url: /contact
+                      - text: 📧 Get in Touch
+                  - paragraph: All funds go towards hosting, development, and keeping this free for everyone.
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=2]: For Organisations
+                - paragraph: Schools, therapy practices, and healthcare organisations can integrate these evidence-based tools into their existing programmes. All resources respect privacy and neurodiversity.
+              - generic:
+                - heading [level=3]: Why Organisations Choose NeuroBreath
+                - generic:
+                  - generic:
+                    - generic: ✓
+                    - generic: Evidence-based techniques with research citations
+                  - generic:
+                    - generic: ✓
+                    - generic: Neurodiversity-informed approach and language
+                  - generic:
+                    - generic: ✓
+                    - generic: Flexible timing options (1-5 minutes)
+                  - generic:
+                    - generic: ✓
+                    - generic: Clear visual and audio cues for diverse learning styles
+                  - generic:
+                    - generic: ✓
+                    - generic: Privacy-first design with local data storage
+                  - generic:
+                    - generic: ✓
+                    - generic: Free to use, no hidden costs or subscriptions
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - generic:
+                        - heading [level=3]: Teacher Quick Pack
+                        - paragraph: Classroom-ready breathing exercises with clear instructions and timing guides
+                    - generic:
+                      - generic: interactive
+                      - link:
+                        - /url: /teacher-quick-pack
+                        - img
+                        - text: Access
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - generic:
+                        - heading [level=3]: School Implementation Guide
+                        - paragraph: Step-by-step guidance for introducing breathing practices in educational settings
+                    - generic:
+                      - generic: guide
+                      - link:
+                        - /url: /schools
+                        - img
+                        - text: Access
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - generic:
+                        - heading [level=3]: Printable Worksheets
+                        - paragraph: Downloadable resources for offline use in classrooms and therapy sessions
+                    - generic:
+                      - generic: download
+                      - link:
+                        - /url: /downloads
+                        - img
+                        - text: Access
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - generic:
+                        - heading [level=3]: Professional Resources
+                        - paragraph: Evidence-based materials for therapists, counsellors, and healthcare providers
+                    - generic:
+                      - generic: professional
+                      - link:
+                        - /url: /resources
+                        - img
+                        - text: Access
+              - generic:
+                - generic:
+                  - heading [level=3]: Implementation Support
+                  - paragraph: Need help integrating breathing practices into your organisation? We're here to support you.
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                    - heading [level=4]: Training Materials
+                    - paragraph: Comprehensive guides for staff training and programme implementation
+                  - generic:
+                    - generic:
+                      - img
+                    - heading [level=4]: Consultation
+                    - paragraph: Guidance on adapting techniques for your specific population and setting
+                  - generic:
+                    - generic:
+                      - img
+                    - heading [level=4]: Custom Resources
+                    - paragraph: Branded materials and organisation-specific implementation plans
+                - generic:
+                  - link:
+                    - /url: /contact
+                    - text: Get in Touch
+                    - img
+              - generic:
+                - heading [level=3]: Research Partnership Opportunities
+                - paragraph: Interested in evaluating the effectiveness of breathing interventions in your setting? We welcome collaboration with researchers and institutions.
+                - link:
+                  - /url: /contact?subject=research
+                  - text: Explore Research Partnerships
+          - generic:
+            - generic:
+              - heading [level=3]:
+                - generic: 📚
+                - generic: Evidence Sources
+              - paragraph: All guidance on this page is informed by credible evidence-based sources. We cite sources by name in the content above, and provide full references here for transparency and verification.
+            - generic:
+              - generic:
+                - heading [level=4]: Clinical Guidelines
+                - list:
+                  - listitem:
+                    - generic:
+                      - generic:
+                        - strong: NICE NG87 (2018)
+                        - paragraph: "ADHD: diagnosis and management - Comprehensive UK clinical guideline covering assessment, treatment (medication and non-pharmacological), and monitoring across the lifespan."
+                      - link:
+                        - /url: https://www.nice.org.uk/guidance/ng87
+                        - generic: View source
+                        - img
+                  - listitem:
+                    - generic:
+                      - generic:
+                        - strong: NICE CG128
+                        - paragraph: "Autism spectrum disorder in under 19s: recognition, referral and diagnosis - UK guideline for identifying and diagnosing autism in children and young people."
+                      - link:
+                        - /url: https://www.nice.org.uk/guidance/cg128
+                        - generic: View source
+                        - img
+                  - listitem:
+                    - generic:
+                      - generic:
+                        - strong: NICE CG142
+                        - paragraph: "Autism spectrum disorder in adults: diagnosis and management - UK guideline covering autism identification, assessment, and support for adults."
+                      - link:
+                        - /url: https://www.nice.org.uk/guidance/cg142
+                        - generic: View source
+                        - img
+                  - listitem:
+                    - generic:
+                      - generic:
+                        - strong: NICE CG113
+                        - paragraph: "Generalised anxiety disorder and panic disorder in adults: management - UK clinical guideline on psychological and pharmacological treatments."
+                      - link:
+                        - /url: https://www.nice.org.uk/guidance/cg113
+                        - generic: View source
+                        - img
+              - generic:
+                - heading [level=4]: Government Health Resources
+                - list:
+                  - listitem:
+                    - generic:
+                      - generic:
+                        - strong: "NHS: ADHD"
+                        - paragraph: Official NHS guidance on ADHD symptoms, diagnosis, treatment, and living with ADHD for children and adults.
+                      - link:
+                        - /url: https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/
+                        - generic: View source
+                        - img
+                  - listitem:
+                    - generic:
+                      - generic:
+                        - strong: "NHS: Autism"
+                        - paragraph: Official NHS guidance on autism spectrum disorder, signs, getting assessed, and accessing support services.
+                      - link:
+                        - /url: https://www.nhs.uk/conditions/autism/
+                        - generic: View source
+                        - img
+                  - listitem:
+                    - generic:
+                      - generic:
+                        - strong: "NHS: Breathing exercises for stress"
+                        - paragraph: Official NHS guidance on breathing exercises to reduce stress and anxiety, including step-by-step instructions.
+                      - link:
+                        - /url: https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/breathing-exercises-for-stress/
+                        - generic: View source
+                        - img
+                  - listitem:
+                    - generic:
+                      - generic:
+                        - strong: "NHS: Generalised anxiety disorder"
+                        - paragraph: Official NHS guidance on GAD symptoms, self-help strategies, treatments, and accessing NHS talking therapies.
+                      - link:
+                        - /url: https://www.nhs.uk/mental-health/conditions/generalised-anxiety-disorder/
+                        - generic: View source
+                        - img
+              - generic:
+                - heading [level=4]: Peer-Reviewed Research
+                - list:
+                  - listitem:
+                    - generic:
+                      - generic:
+                        - strong: MTA Study PMID 10517495
+                        - paragraph: MTA Cooperative Group (1999) - Landmark multimodal treatment study showing combined medication and behavioral interventions are superior to either alone.
+                      - link:
+                        - /url: https://pubmed.ncbi.nlm.nih.gov/10517495/
+                        - generic: View source
+                        - img
+                  - listitem:
+                    - generic:
+                      - generic:
+                        - strong: Research PMID 28974862
+                        - paragraph: "Perciavalle et al. (2017) - The role of deep breathing on stress: Evidence showing breathing reduces cortisol and activates parasympathetic nervous system."
+                      - link:
+                        - /url: https://pubmed.ncbi.nlm.nih.gov/28974862/
+                        - generic: View source
+                        - img
+                  - listitem:
+                    - generic:
+                      - generic:
+                        - strong: Research PMID 11744522
+                        - paragraph: "Bernardi et al. (2001) - Effect of breathing rate on oxygen saturation and exercise performance: Slow breathing (6 breaths/min) optimizes heart rate variability."
+                      - link:
+                        - /url: https://pubmed.ncbi.nlm.nih.gov/11744522/
+                        - generic: View source
+                        - img
+              - generic:
+                - heading [level=4]: Systematic Reviews & Meta-Analyses
+                - list:
+                  - listitem:
+                    - generic:
+                      - generic:
+                        - strong: Research PMID 31411903
+                        - paragraph: "Cortese et al. (2018) - Comparative efficacy and tolerability of medications for ADHD in children, adolescents, and adults: Network meta-analysis of 133 randomised trials."
+                      - link:
+                        - /url: https://pubmed.ncbi.nlm.nih.gov/31411903/
+                        - generic: View source
+                        - img
+                  - listitem:
+                    - generic:
+                      - generic:
+                        - strong: Research PMID 28545751
+                        - paragraph: "Fletcher-Watson et al. (2014) - Evidence-based approaches to autism spectrum disorder: Parent-mediated interventions and structured teaching methods."
+                      - link:
+                        - /url: https://pubmed.ncbi.nlm.nih.gov/28545751/
+                        - generic: View source
+                        - img
+                  - listitem:
+                    - generic:
+                      - generic:
+                        - strong: Research PMID 29616846
+                        - paragraph: "Zaccaro et al. (2018) - How breath-control can change your life: A systematic review on psycho-physiological correlates of slow breathing."
+                      - link:
+                        - /url: https://pubmed.ncbi.nlm.nih.gov/29616846/
+                        - generic: View source
+                        - img
+                  - listitem:
+                    - generic:
+                      - generic:
+                        - strong: Research PMID 30301513
+                        - paragraph: "Stubbs et al. (2017) - Exercise for anxiety: Cochrane review showing exercise is comparable to medication for mild-moderate anxiety."
+                      - link:
+                        - /url: https://pubmed.ncbi.nlm.nih.gov/30301513/
+                        - generic: View source
+                        - img
+              - generic:
+                - paragraph:
+                  - strong: "Transparency Note:"
+                  - text: These external links are provided for transparency and independent verification. You can explore our tools and strategies without needing to visit these sources—we've synthesized the evidence into practical, actionable guidance. However, if you'd like to verify claims, review the original research, or explore guidelines in depth, these references are here for you.
+                - paragraph:
+                  - strong: "Medical Disclaimer:"
+                  - text: This platform provides educational information based on credible evidence sources. It is not a substitute for professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare professionals (GP, paediatrician, SENCO, licensed clinician) for personalized medical guidance. In emergencies, call 999 (UK) / 911 (US) or use NHS 111 / 988 Lifeline.
+    - contentinfo:
+      - generic:
+        - generic:
+          - generic:
+            - link:
+              - /url: /
+              - img
+            - link:
+              - /url: /support-us
+              - generic: ☕
+              - text: Support Us
+          - navigation:
+            - group:
+              - generic:
+                - generic: Conditions
+                - generic: ▾
+            - group:
+              - generic:
+                - generic: Breathing & Focus
+                - generic: ▾
+            - group:
+              - generic:
+                - text: Toolkits
+                - generic: ▾
+            - group:
+              - generic:
+                - generic: Symptom Guides
+                - generic: ▾
+            - group:
+              - generic:
+                - text: About
+                - generic: ▾
+      - generic:
+        - generic:
+          - generic:
+            - paragraph:
+              - strong: Educational information only.
+              - text: Not medical advice. NeuroBreath is a free resource. ©
+              - time: "2026"
+              - text: NeuroBreath. All rights reserved.
+          - button:
+            - generic: Back to top
+            - generic: ↑
+  - button "Open Next.js Dev Tools" [ref=e6] [cursor=pointer]:
+    - img [ref=e7]
+  - alert
+  - dialog "NeuroBreath Buddy" [active] [ref=e11]:
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - img [ref=e16]
+        - generic [ref=e19]:
+          - heading "NeuroBreath Buddy" [level=2] [ref=e20]
+          - paragraph [ref=e21]: NeuroBreath Home Guide
+      - generic [ref=e22]:
+        - button "Turn on auto-speak" [ref=e23] [cursor=pointer]:
+          - img
+        - button "Start guided page tour" [ref=e24] [cursor=pointer]:
+          - img
+        - button "Export chat history" [ref=e25] [cursor=pointer]:
+          - img
+        - button "Clear chat history" [ref=e26] [cursor=pointer]:
+          - img
+        - button "Minimize" [ref=e27] [cursor=pointer]:
+          - img
+    - generic [ref=e31]:
+      - generic [ref=e32]:
+        - img [ref=e34]
+        - generic [ref=e36]:
+          - generic [ref=e38]:
+            - generic [ref=e39]:
+              - text: Welcome to
+              - strong [ref=e40]: NeuroBreath
+              - text: "! 🧠✨"
+            - generic [ref=e41]: I'm your friendly guide to this neurodiversity support platform.
+            - generic [ref=e42]:
+              - strong [ref=e43]: "Our Mission:"
+              - text: Empower neurodivergent people, parents, teachers, and carers with one trusted hub.
+            - strong [ref=e45]: "We offer:"
+            - generic [ref=e46]:
+              - text: • 🎯
+              - strong [ref=e47]: ADHD Hub
+              - text: – Focus tools, gamified quests, evidence-based strategies
+            - generic [ref=e48]:
+              - text: • 🌟
+              - strong [ref=e49]: Autism Hub
+              - text: – Calming techniques, education pathways, printable resources
+            - generic [ref=e50]: • 📊 Safe progress tracking
+            - generic [ref=e51]: • 🏠 Home-school collaboration tools
+            - generic [ref=e52]: All content is evidence-informed, drawing from NICE, CDC, NHS, and peer-reviewed research.
+            - text: Which hub would you like to explore?
+          - generic [ref=e53]:
+            - button "Listen to this message" [ref=e54] [cursor=pointer]:
+              - img
+              - generic [ref=e55]: Listen
+            - button "Copy message" [ref=e56] [cursor=pointer]:
+              - img
+              - generic [ref=e57]: Copy
+      - generic [ref=e59]:
+        - generic [ref=e61]: Help me with anxiety
+        - button "Copy message" [ref=e63] [cursor=pointer]:
+          - img
+          - generic [ref=e64]: Copy
+      - generic [ref=e65]:
+        - img [ref=e67]
+        - generic [ref=e69]:
+          - generic [ref=e71]:
+            - generic [ref=e72]: "For evidence-based information about your question, please see these trusted NHS resources:"
+            - strong [ref=e74]: "Evidence Sources:"
+            - generic [ref=e75]:
+              - text: "1."
+              - 'link "NHS: Generalised anxiety disorder" [ref=e76] [cursor=pointer]':
+                - /url: https://www.nhs.uk/mental-health/conditions/generalised-anxiety-disorder/
+                - text: "NHS: Generalised anxiety disorder"
+                - img [ref=e77]
+              - text: – NHS
+            - generic [ref=e81]:
+              - text: "2."
+              - 'link "NHS: Self-help for anxiety" [ref=e82] [cursor=pointer]':
+                - /url: https://www.nhs.uk/mental-health/self-help/tips-and-support/how-to-cope-with-anxiety/
+                - text: "NHS: Self-help for anxiety"
+                - img [ref=e83]
+              - text: – NHS
+            - text: "_Last updated: 2026-01-16_"
+          - generic [ref=e87]:
+            - button "Listen to this message" [ref=e88] [cursor=pointer]:
+              - img
+              - generic [ref=e89]: Listen
+            - button "Copy message" [ref=e90] [cursor=pointer]:
+              - img
+              - generic [ref=e91]: Copy
+    - generic [ref=e92]:
+      - paragraph [ref=e94]: "Quick questions:"
+      - generic [ref=e95]:
+        - button "What is NeuroBreath?" [ref=e96] [cursor=pointer]
+        - button "What tools are available?" [ref=e97] [cursor=pointer]
+        - button "Take me to the ADHD Hub" [ref=e98] [cursor=pointer]
+        - button "Take me to the Autism Hub" [ref=e99] [cursor=pointer]
+        - button "Tell me about Dyslexia support" [ref=e100] [cursor=pointer]
+        - button "Show me breathing techniques" [ref=e101] [cursor=pointer]
+        - button "Help with Anxiety" [ref=e102] [cursor=pointer]
+        - button "Depression support" [ref=e103] [cursor=pointer]
+        - button "Stress management tools" [ref=e104] [cursor=pointer]
+        - button "Sleep support" [ref=e105] [cursor=pointer]
+        - button "What about Bipolar?" [ref=e106] [cursor=pointer]
+        - button "Low mood & burnout help" [ref=e107] [cursor=pointer]
+        - button "Parent support available?" [ref=e108] [cursor=pointer]
+        - button "Teacher resources" [ref=e109] [cursor=pointer]
+        - button "Carer support tools" [ref=e110] [cursor=pointer]
+        - button "How is this evidence-based?" [ref=e111] [cursor=pointer]
+    - generic [ref=e113]:
+      - textbox "Type your question" [ref=e114]:
+        - /placeholder: Ask me about this page...
+      - button "Send message" [disabled]:
+        - img
+    - generic [ref=e116]:
+      - generic [ref=e117]:
+        - img [ref=e118]
+        - generic [ref=e121]: NeuroBreath Home
+      - generic [ref=e122]: •
+      - generic [ref=e123]: 2 detected sections
+      - generic [ref=e124]: •
+      - generic [ref=e125]:
+        - img [ref=e126]
+        - text: 1 features
+    - button "Close" [ref=e128] [cursor=pointer]:
+      - img [ref=e129]
+      - generic [ref=e132]: Close
+```
