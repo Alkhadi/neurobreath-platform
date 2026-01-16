@@ -10,6 +10,7 @@
 ## 📋 WHAT HAS BEEN IMPLEMENTED
 
 ### 1. System Prompt (NEW FILE)
+
 **Location:** `web/lib/ai-coach/system-prompt.ts`
 
 - Complete AI Coach behavioral specification
@@ -19,6 +20,7 @@
 - Clear scope boundaries (educational only)
 
 ### 2. Resource Catalog (NEW FILE)
+
 **Location:** `web/lib/ai-coach/resource-catalog.ts`
 
 - 25+ NeuroBreath tools/pages catalogued
@@ -27,6 +29,7 @@
 - Covers: breathing, focus, reading, sleep, mood, workplace, autism, ADHD, dyslexia
 
 ### 3. Enhanced TypeScript Types
+
 **Location:** `web/types/ai-coach.ts`
 
 **New Interfaces:**
@@ -69,6 +72,7 @@
 - Gradient teal/cyan theme
 
 ### 5. Updated AI Coach Chat Component
+
 **Location:** `web/components/blog/ai-coach-chat.tsx`
 
 **New Imports:**
@@ -101,18 +105,21 @@
 ## 🎨 VISUAL DESIGN
 
 ### Color Theming
+
 - **Recommendations**: Blue (primary), Green (backup), Purple (add-on)
 - **7-Day Plan**: Indigo/Purple gradient
 - **30-Day Challenge**: Amber/Orange gradient
 - **Internal Links**: Teal/Cyan gradient
 
 ### Layout
+
 - All new components are `Card`-based with proper dark mode support
 - Gradient backgrounds for visual hierarchy
 - Icons for quick visual recognition
 - Responsive design (mobile-first)
 
 ### Accessibility
+
 - ✅ Keyboard navigable
 - ✅ Focus indicators
 - ✅ ARIA labels where needed
@@ -124,7 +131,9 @@
 ## 🔧 TECHNICAL ARCHITECTURE
 
 ### Data Flow
+
 ```
+
 User Question 
 → AI Coach API (/api/ai-coach)
 → Intent Parser
@@ -133,9 +142,11 @@ User Question
 → LLM Synthesis (with system prompt)
 → Structured AICoachAnswer
 → Frontend Display Components
+
 ```
 
 ### Resource Matching
+
 ```typescript
 // Example: User asks about ADHD focus
 Tags: ['adhd', 'focus', 'attention']
@@ -148,6 +159,7 @@ Returns:
 3. Box Breathing
 ↓
 Presented as "Open on NeuroBreath" links
+
 ```
 
 ---
@@ -199,6 +211,7 @@ const llmResponse = await callLLM(prompt)
 const answer: AICoachAnswer = parseStructuredResponse(llmResponse)
 
 return NextResponse.json({ answer, meta: {...} })
+
 ```
 
 ---
@@ -301,26 +314,31 @@ return NextResponse.json({ answer, meta: {...} })
 ## 🎯 KEY FEATURES
 
 ### 1. Specificity
+
 - Exact timer settings (e.g., "4-4-4-4 rhythm, 5 cycles")
 - When to use (e.g., "before homework", "first sign of overwhelm")
 - Duration (e.g., "3 minutes", "1 minute minimum")
 
 ### 2. Internal-First
+
 - NeuroBreath tools always recommended first
 - External signposting (NHS/NICE) as secondary evidence
 - Direct links to open tools immediately
 
 ### 3. Actionable Plans
+
 - 7-day plans with specific daily actions
 - Progressive difficulty (start small, build up)
 - Realistic time commitments
 
 ### 4. Motivation
+
 - 30-day challenges with badge milestones
 - Streak tracking integration
 - Gamification elements
 
 ### 5. Personalization
+
 - Audience-aware (parents, teachers, young people, adults, workplace)
 - Context-aware (setting, age, goals)
 - Follow-up questions to refine recommendations
@@ -371,21 +389,25 @@ return NextResponse.json({ answer, meta: {...} })
 ## 🔒 SAFETY & QUALITY ASSURANCE
 
 ### Crisis Detection
+
 - System prompt includes self-harm/suicide keywords
 - Immediate escalation to emergency services
 - Stops normal flow, provides crisis numbers
 
 ### Scope Boundaries
+
 - "Educational information only, not medical advice"
 - Never tells users to stop medication
 - Always includes UK-first safety line
 
 ### Evidence Integrity
+
 - Only cites provided NHS/NICE/PubMed sources
 - Says "evidence is mixed" when uncertain
 - Never fabricates research papers
 
 ### Privacy
+
 - Does not request names, addresses, medical records
 - Client-side context only (no server storage)
 - Privacy notice always visible
@@ -395,21 +417,25 @@ return NextResponse.json({ answer, meta: {...} })
 ## 🎉 NEXT STEPS
 
 ### 1. Backend Integration (Priority 1)
+
 - Update `/api/ai-coach/route.ts` with new prompt structure
 - Test with OpenAI GPT-4 or Claude Sonnet
 - Ensure structured response parsing works
 
 ### 2. User Context Collection (Optional)
+
 - Add expandable "Tell us more" form in AI Chat card
 - Collect: age group, setting, main challenge, time available
 - Pass to API as `context` parameter
 
 ### 3. Analytics (Future)
+
 - Track which resources are recommended most
 - Monitor 30-day challenge completion rates
 - Identify gaps in resource catalog
 
 ### 4. Content Expansion (Future)
+
 - Add more resources to catalog as site grows
 - Create specialized 7-day plans for common scenarios
 - Design additional 30-day challenges (sleep, reading, workplace)
@@ -419,6 +445,7 @@ return NextResponse.json({ answer, meta: {...} })
 ## 📄 FILES CREATED/MODIFIED
 
 ### New Files (9)
+
 1. `web/lib/ai-coach/system-prompt.ts` - AI behavior specification
 2. `web/lib/ai-coach/resource-catalog.ts` - Site map with metadata
 3. `web/components/blog/recommendations-display.tsx` - Primary/Backup/Add-on cards
@@ -428,10 +455,12 @@ return NextResponse.json({ answer, meta: {...} })
 7. `web/NEUROBREATH_AI_COACH_PERSONALIZED.md` - This documentation
 
 ### Modified Files (2)
+
 1. `web/types/ai-coach.ts` - Added new interfaces
 2. `web/components/blog/ai-coach-chat.tsx` - Integrated new components
 
 ### Pending Files (1)
+
 1. `web/app/api/ai-coach/route.ts` - Backend integration required
 
 ---
@@ -454,10 +483,3 @@ return NextResponse.json({ answer, meta: {...} })
 **Engineer:** Senior UK Healthcare Content Safety Engineer  
 **Status:** Frontend complete, backend integration pending  
 **Next:** Update AI Coach API route with new prompt structure
-
-
-
-
-
-
-
