@@ -72,6 +72,66 @@ const calculateSleepScore = (entries: SleepEntry[]): number => {
   return Math.round(hoursScore + qualityScore)
 }
 
+const PERCENT_BUCKETS = [
+  0, 5, 10, 15, 20, 25, 30, 35, 40, 45,
+  50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100,
+]
+
+const HEIGHT_CLASS_BY_PERCENT: Record<number, string> = {
+  0: 'h-0',
+  5: 'h-[5%]',
+  10: 'h-[10%]',
+  15: 'h-[15%]',
+  20: 'h-[20%]',
+  25: 'h-[25%]',
+  30: 'h-[30%]',
+  35: 'h-[35%]',
+  40: 'h-[40%]',
+  45: 'h-[45%]',
+  50: 'h-[50%]',
+  55: 'h-[55%]',
+  60: 'h-[60%]',
+  65: 'h-[65%]',
+  70: 'h-[70%]',
+  75: 'h-[75%]',
+  80: 'h-[80%]',
+  85: 'h-[85%]',
+  90: 'h-[90%]',
+  95: 'h-[95%]',
+  100: 'h-[100%]',
+}
+
+const WIDTH_CLASS_BY_PERCENT: Record<number, string> = {
+  0: 'w-0',
+  5: 'w-[5%]',
+  10: 'w-[10%]',
+  15: 'w-[15%]',
+  20: 'w-[20%]',
+  25: 'w-[25%]',
+  30: 'w-[30%]',
+  35: 'w-[35%]',
+  40: 'w-[40%]',
+  45: 'w-[45%]',
+  50: 'w-[50%]',
+  55: 'w-[55%]',
+  60: 'w-[60%]',
+  65: 'w-[65%]',
+  70: 'w-[70%]',
+  75: 'w-[75%]',
+  80: 'w-[80%]',
+  85: 'w-[85%]',
+  90: 'w-[90%]',
+  95: 'w-[95%]',
+  100: 'w-[100%]',
+}
+
+const toPercentBucket = (value: number): number => {
+  if (!Number.isFinite(value)) return 0
+  const rounded = Math.round(value / 5) * 5
+  const clamped = Math.min(100, Math.max(0, rounded))
+  return PERCENT_BUCKETS.includes(clamped) ? clamped : 0
+}
+
 // Initial badges
 const initialBadges: Badge[] = [
   { id: 'first_log', name: 'First Steps', icon: '🌙', description: 'Log your first sleep entry', requirement: '1 entry', unlocked: false },
@@ -226,6 +286,7 @@ export default function SleepPage() {
           </Button>
         </div>
 
+
         {/* Sleep Tracker Panel */}
         {showTracker && (
           <div className="bg-white rounded-2xl p-6 shadow-xl mb-8">
@@ -299,13 +360,11 @@ export default function SleepPage() {
                   const dateStr = date.toISOString().split('T')[0]
                   const entry = sleepEntries.find(e => e.date === dateStr)
                   const height = entry ? (entry.hoursSlept / 12) * 100 : 10
+                  const heightClass = HEIGHT_CLASS_BY_PERCENT[toPercentBucket(height)] || 'h-[10%]'
                   return (
                     <div key={i} className="flex-1 flex flex-col items-center">
-                      {/* webhint-disable-next-line no-inline-styles */}
-                      {/* eslint-disable-next-line react/forbid-dom-props */}
                       <div 
-                        className="w-full rounded-t-lg transition-all"
-                        style={{ height: `${height}%`, backgroundColor: entry ? 'rgb(99 102 241)' : 'rgb(229 231 235)' }}
+                        className={`w-full rounded-t-lg transition-all ${heightClass} ${entry ? 'bg-indigo-500' : 'bg-gray-200'}`}
                         title={entry ? `${entry.hoursSlept}h - ${entry.quality}⭐` : 'No data'}
                         role="img"
                         aria-label={entry ? `${entry.hoursSlept} hours of sleep` : 'No data'}
@@ -360,11 +419,8 @@ export default function SleepPage() {
                 ))}
               </div>
               <div className="mt-3 bg-gray-200 rounded-full h-3">
-                {/* webhint-disable-next-line no-inline-styles */}
-                {/* eslint-disable-next-line react/forbid-dom-props */}
                 <div 
-                  className="h-3 rounded-full transition-all" 
-                  style={{ width: `${checklistProgress}%`, backgroundColor: 'rgb(34 197 94)' }}
+                  className={`h-3 rounded-full transition-all bg-green-500 ${WIDTH_CLASS_BY_PERCENT[toPercentBucket(checklistProgress)] || 'w-0'}`}
                   role="progressbar"
                   aria-label={`Sleep hygiene checklist progress: ${Math.round(checklistProgress)}%`}
                 />

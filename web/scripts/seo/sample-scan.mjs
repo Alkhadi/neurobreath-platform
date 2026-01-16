@@ -163,6 +163,11 @@ function analyzeSEO(url, data) {
 }
 
 function generateMarkdownTable(results) {
+  const sanitizeCell = value => {
+    if (value === null || value === undefined) return '';
+    return String(value).replace(/\|/g, '\\|').replace(/\r?\n/g, ' ').trim();
+  };
+
   let md = '# SEO Route Audit Table (Sample - First 15 Routes)\n\n';
   md += `Generated: ${new Date().toISOString()}\n\n`;
   md += `Routes scanned: ${results.length}\n\n`;
@@ -171,21 +176,21 @@ function generateMarkdownTable(results) {
   md += '|-----|-------|------------------|-----------|-------|----------|----------|--------------|----------|-------|\n';
   
   results.forEach(result => {
-    const url = result.url;
+    const url = sanitizeCell(result.url);
     const data = result.data;
     
     if (!data.success) {
-      md += `| ${url} | ERROR | | | | | | | | ${data.error} |\n`;
+      md += `| ${url} | ERROR |  |  |  |  |  |  |  | ${sanitizeCell(data.error)} |\n`;
       return;
     }
     
-    const title = (data.title || '').substring(0, 50) || 'Missing';
-    const description = (data.description || '').substring(0, 50) || 'Missing';
+    const title = sanitizeCell((data.title || '').substring(0, 50) || 'Missing');
+    const description = sanitizeCell((data.description || '').substring(0, 50) || 'Missing');
     const canonical = data.canonical ? '✅' : '❌';
     const index = data.robots?.includes('noindex') ? 'noindex' : 'index';
     const h1Count = data.h1Count;
-    const firstH1 = (data.firstH1 || '').substring(0, 30);
-    const schemas = data.schemaTypes.join(', ') || 'None';
+    const firstH1 = sanitizeCell((data.firstH1 || '').substring(0, 30));
+    const schemas = sanitizeCell(data.schemaTypes.join(', ') || 'None');
     const ogImage = data.openGraph.image ? '✅' : '❌';
     
     const notes = [];
@@ -195,7 +200,7 @@ function generateMarkdownTable(results) {
     if (data.schemas.some(s => s.error)) notes.push('Schema error');
     if (data.imageIssues.missingAlt > 0) notes.push(`${data.imageIssues.missingAlt} imgs no alt`);
     
-    const notesStr = notes.join('; ') || 'OK';
+    const notesStr = sanitizeCell(notes.join('; ') || 'OK');
     
     md += `| ${url} | ${title} | ${description} | ${canonical} | ${index} | ${h1Count} | ${firstH1} | ${schemas} | ${ogImage} | ${notesStr} |\n`;
   });

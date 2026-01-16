@@ -78,6 +78,7 @@ export default function StressPage() {
         </div>
       </section>
 
+
       {/* What is Stress */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">

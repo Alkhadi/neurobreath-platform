@@ -50,6 +50,12 @@ const ROUTE_SEO_CONFIGS: Record<string, RouteSeoConfig> = {
       'Downloadable guides, worksheets and visual supports for ADHD, autism, dyslexia and anxiety. Practical resources for classrooms and home routines.',
     path: '/downloads',
   },
+  '/guides': {
+    title: 'Guides | NeuroBreath',
+    description:
+      'Practical guidance on breathing, focus, sleep and neurodiversity support with clear next steps. Educational information only.',
+    path: '/guides',
+  },
   '/get-started': {
     title: 'Get Started | NeuroBreath',
     description:

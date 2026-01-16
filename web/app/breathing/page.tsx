@@ -68,6 +68,7 @@ export default function BreathingExercisesPage() {
         </div>
       </section>
 
+
       {/* Interactive Breathing Exercises */}
       <section id="exercises" className="py-16 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
