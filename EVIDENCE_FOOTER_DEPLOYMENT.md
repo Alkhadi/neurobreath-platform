@@ -9,11 +9,13 @@
 ## Pages Updated (9 total)
 
 ### 1. **Home Page** (`/web/app/page.tsx`)
+
 - **Evidence Sources:** BREATHING_EVIDENCE_SOURCES (overview focused)
 - **Location:** Bottom of page, after Organisations section
 - **Reason:** Main landing page showcasing breathing as key feature
 
 ### 2. **ADHD Hub** (`/web/app/adhd/page.tsx`)
+
 - **Evidence Sources:** ADHD_EVIDENCE_SOURCES
 - **Location:** Bottom of page, after Crisis Support section
 - **Includes:**
@@ -23,6 +25,7 @@
   - MTA Study PMID 10517495: Multimodal treatment
 
 ### 3. **Autism Hub** (`/web/app/autism/page.tsx`)
+
 - **Evidence Sources:** AUTISM_EVIDENCE_SOURCES
 - **Location:** Bottom of page, after Crisis Support section
 - **Includes:**
@@ -32,11 +35,13 @@
   - Research PMID 25961562: Social communication interventions
 
 ### 4. **Blog / AI Coach Page** (`/web/app/blog/page.tsx`)
+
 - **Evidence Sources:** Combined (ADHD + Autism + Breathing)
 - **Location:** Bottom of page, after Sources section
 - **Reason:** Blog covers multiple health topics, comprehensive evidence needed
 
 ### 5. **Breathing Exercises** (`/web/app/breathing/page.tsx`)
+
 - **Evidence Sources:** BREATHING_EVIDENCE_SOURCES
 - **Location:** Bottom of page, after disclaimer footer
 - **Includes:**
@@ -46,6 +51,7 @@
   - Research PMID 11744522: HRV optimization (Lehrer et al., 2000)
 
 ### 6. **Anxiety Tools** (`/web/app/anxiety/page.tsx`)
+
 - **Evidence Sources:** ANXIETY_EVIDENCE_SOURCES
 - **Location:** Bottom of page, after disclaimer footer
 - **Includes:**
@@ -55,6 +61,7 @@
   - Research PMID 26321018: CBT efficacy meta-analysis
 
 ### 7. **Sleep Tracker** (`/web/app/sleep/page.tsx`)
+
 - **Evidence Sources:** SLEEP_EVIDENCE_SOURCES
 - **Location:** Bottom of page, after final CTA buttons
 - **Includes:**
@@ -64,6 +71,7 @@
   - Research PMID 28566536: CBT-I efficacy systematic review
 
 ### 8. **Dyslexia Reading Training** (`/web/app/dyslexia-reading-training/page.tsx`)
+
 - **Evidence Sources:** DYSLEXIA_EVIDENCE_SOURCES
 - **Location:** Bottom of page, after session dialog
 - **Includes:**
@@ -73,6 +81,7 @@
   - Research PMID 29616847: Multisensory structured literacy approaches
 
 ### 9. **Depression Conditions Page** (`/web/app/conditions/depression/page.tsx`)
+
 - **Evidence Sources:** DEPRESSION_EVIDENCE_SOURCES
 - **Location:** Bottom of page, after Download PDF section
 - **Includes:**
@@ -100,6 +109,7 @@ import { EvidenceFooter, CONDITION_EVIDENCE_SOURCES } from '@/components/evidenc
 ```
 
 ### Mixed Sources Example (Blog page)
+
 ```tsx
 <EvidenceFooter sources={[
   ...ADHD_EVIDENCE_SOURCES, 
@@ -113,11 +123,13 @@ import { EvidenceFooter, CONDITION_EVIDENCE_SOURCES } from '@/components/evidenc
 ## What Users See
 
 ### Before Implementation
+
 - AI Coach/Buddy mentions: "per NICE NG87" or "Research PMID 29616846"
 - User has NO WAY to verify → might leave site to search Google
 - **Result:** Lost engagement, external navigation
 
 ### After Implementation
+
 - AI Coach/Buddy mentions: "per NICE NG87" or "Research PMID 29616846"
 - User scrolls to bottom → sees "Evidence Sources" section
 - Finds grouped citations with external links
@@ -129,13 +141,16 @@ import { EvidenceFooter, CONDITION_EVIDENCE_SOURCES } from '@/components/evidenc
 ## Evidence Footer Features
 
 ### Automatic Grouping
+
 Sources are automatically grouped by type:
+
 - 📋 **Clinical Guidelines** (NICE, WHO, etc.)
 - 🏥 **Government Health Resources** (NHS, CDC)
 - 📊 **Systematic Reviews** (Cochrane, meta-analyses)
 - 🔬 **Peer-Reviewed Research** (Individual studies)
 
 ### Visual Design
+
 - Card-based layout with shadcn/ui components
 - External link icons (→) for clarity
 - Grouped categories with clear headings
@@ -143,6 +158,7 @@ Sources are automatically grouped by type:
 - Medical disclaimer about educational use
 
 ### Accessibility
+
 - Semantic HTML structure
 - Screen reader friendly
 - Keyboard navigation supported
@@ -167,12 +183,14 @@ Sources are automatically grouped by type:
 ## Benefits
 
 ### For Users
+
 ✅ **Transparency:** All evidence sources clearly listed
 ✅ **Credibility:** Proper clinical guidelines and research citations
 ✅ **Control:** Can verify sources on their own terms
 ✅ **Trust:** Platform shows nothing to hide
 
 ### For Platform
+
 ✅ **Retention:** Users stay engaged with internal tools
 ✅ **Professional:** Medical-grade citation standards
 ✅ **Legal:** Clear disclaimers and educational purpose
@@ -184,12 +202,14 @@ Sources are automatically grouped by type:
 ## Technical Validation
 
 ### TypeScript Compilation
+
 ✅ All pages compile successfully
 ✅ Zero TypeScript errors related to evidence footer
 ✅ Proper type safety with `EvidenceSource` interface
 
 ### File Structure
-```
+
+```text
 web/
   components/
     evidence-footer.tsx         ← Main component
@@ -213,6 +233,7 @@ web/
 ## Next Steps (Testing Phase)
 
 ### Manual Testing Checklist
+
 - [ ] Test home page: Evidence footer displays correctly
 - [ ] Test ADHD hub: 4 ADHD-specific sources appear
 - [ ] Test Autism hub: 4 autism-specific sources appear
@@ -228,12 +249,14 @@ web/
 - [ ] Test screen reader accessibility
 
 ### User Journey Testing
+
 - [ ] Navigate through ADHD hub → Verify AI mentions "NICE NG87"
 - [ ] Scroll to bottom → Verify evidence footer shows NICE NG87 full citation
 - [ ] Click NICE NG87 link → Verify opens in new tab to NICE website
 - [ ] Return to platform → Verify can continue exploring tools
 
 ### Integration Testing
+
 - [ ] Test AI Coach on Blog page → Verify cites evidence by name
 - [ ] Test NeuroBreath Buddy → Verify recommends internal pages
 - [ ] Verify internal navigation works: /adhd, /autism, /breathing links
@@ -245,18 +268,21 @@ web/
 ## Maintenance
 
 ### Quarterly Update (Every 3 Months)
+
 1. Verify all URLs still active (NICE, NHS, PubMed)
 2. Check for guideline updates (NICE often updates)
 3. Review recent research (PubMed) for new landmark studies
 4. Update evidence-citations.ts if needed
 
 ### When NICE Updates Guidelines
+
 1. Update title: `NICE NG87 (2018, updated 2024)`
 2. Update description if scope changed
 3. URL typically stays the same
 4. Document change in git commit
 
 ### Adding New Evidence Sources
+
 1. Add to `/web/lib/evidence-citations.ts`
 2. Create/update preset collection in `/web/components/evidence-footer.tsx`
 3. Update relevant page to use new preset
@@ -267,6 +293,7 @@ web/
 ## Documentation Files
 
 Related documentation:
+
 - [EVIDENCE_FOOTER_GUIDE.md](./EVIDENCE_FOOTER_GUIDE.md) - Quick start guide
 - [INTERNAL_NAVIGATION_UPDATE.md](./INTERNAL_NAVIGATION_UPDATE.md) - Internal navigation strategy
 - [EVIDENCE_UPGRADE_SUMMARY.md](./EVIDENCE_UPGRADE_SUMMARY.md) - Evidence enhancement details
@@ -277,17 +304,20 @@ Related documentation:
 ## Success Metrics to Monitor
 
 ### User Engagement
+
 - Time on page (expect increase)
 - Bounce rate (expect decrease)
 - Pages per session (expect increase)
 - Internal link clicks (expect increase)
 
 ### Evidence Verification
+
 - Evidence footer section views
 - External link clicks (expect low but present)
 - Return rate after external click (expect high)
 
 ### Trust Indicators
+
 - Contact form submissions (expect increase)
 - Tool usage (expect increase)
 - Sign-up conversions (expect increase)
