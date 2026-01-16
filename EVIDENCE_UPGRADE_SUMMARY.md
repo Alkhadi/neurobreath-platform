@@ -24,6 +24,7 @@
 ### ✅ Updated Blog Page Configuration
 
 All responses now include specific evidence sources:
+
 - "AI Coach uses NICE NG87 (ADHD), CG113 (anxiety), CG90 (depression)"
 - "Breathing backed by research PMID 28974862, PMID 29616846"
 - Comprehensive evidence tiers explained
@@ -39,24 +40,28 @@ New file: `/web/lib/evidence-citations.ts`
 
 ## Before vs After Examples
 
-### ❌ BEFORE:
+### ❌ BEFORE
+
 "ADHD is treated with medication and therapy."
 
-### ✅ AFTER:
+### ✅ AFTER
+
 "ADHD treatment follows NICE NG87 (2018) guidelines: first-line methylphenidate combined with behavioral interventions. Multimodal treatment is superior to either alone (MTA study PMID 10517495, Cochrane review PMID 31411903)."
 
 ---
 
-### ❌ BEFORE:
+### ❌ BEFORE (Example 2)
+
 "Breathing exercises help reduce stress."
 
-### ✅ AFTER:
+### ✅ AFTER (Example 2)
+
 "Controlled breathing activates the vagus nerve and reduces stress hormones like cortisol by 30-40% (Research PMID 28974862, NHS guidance). Slow breathing at 6 breaths/min optimizes heart rate variability (PMID 11744522)."
 
 ## How They Work Together
 
 | AI Coach (Blog Page) | NeuroBreath Buddy (All Pages) |
-|---------------------|------------------------------|
+| ------------------- | ----------------------------- |
 | Detailed 7-day plans | Quick navigation & guidance |
 | Full evidence synthesis | Quick citation references |
 | Context-driven answers | Page-specific help |
@@ -81,12 +86,14 @@ New file: `/web/lib/evidence-citations.ts`
 ## What Users Will See
 
 **On Blog AI Coach:**
+
 - Answers cite specific NICE guidelines (NG87, CG113, CG90)
 - Research claims include PMIDs
 - Evidence snapshot lists specific studies
 - All sources are clickable links
 
 **On All Pages (NeuroBreath Buddy):**
+
 - Quick answers include citations
 - Directs complex questions to AI Coach
 - Explains evidence sources when asked
