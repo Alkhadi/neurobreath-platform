@@ -4,7 +4,6 @@
 
 ### Required: Add New Models
 
-
 The following Prisma models have been added and require database migration:
 
 1. **SENDReport** - Training recommendation reports
@@ -14,14 +13,12 @@ The following Prisma models have been added and require database migration:
 
 #### 1. Review Schema Changes
 
-
 Open `web/prisma/schema.prisma` and review the new models:
 
 - Lines ~373-410: `SENDReport` model
 - Lines ~416-432: `ParentAccess` model
 
 #### 2. Create Migration
-
 
 ```bash
 cd web
@@ -35,7 +32,6 @@ This will:
 - Regenerate Prisma Client
 
 #### 3. Review Generated Migration
-
 
 Check the migration file in:
 
@@ -109,7 +105,6 @@ CREATE INDEX "ParentAccess_isActive_idx" ON "ParentAccess"("isActive");
 
 #### 4. Regenerate Prisma Client
 
-
 ```bash
 npx prisma generate
 ```
@@ -130,9 +125,7 @@ const access = await prisma.parentAccess.create({ /* ... */ })
 
 ### Production Deployment
 
-
 #### Option 1: Automatic Migration (Recommended for managed databases)
-
 
 ```bash
 cd web
@@ -178,7 +171,6 @@ Then remove the migration folder and regenerate client.
 
 ### No New Required Variables ✅
 
-
 All new features work without additional configuration.
 
 ### Optional Variables (For Enhanced Features)
@@ -196,7 +188,6 @@ ABACUS_API_KEY=...
 ## Code Changes Required
 
 ### None! ✅
-
 
 All changes are additive and backward-compatible:
 
@@ -272,7 +263,6 @@ export default function SettingsPage() {
 
 ### Post-Migration
 
-
 - [ ] Verify tables created successfully
 - [ ] Check indexes are in place
 - [ ] Test new API endpoints
@@ -280,7 +270,6 @@ export default function SettingsPage() {
 - [ ] Run existing tests (ensure no regressions)
 
 ### Feature Testing
-
 
 - [ ] Create a SEND report (rules engine)
 - [ ] Generate parent access code
@@ -319,7 +308,6 @@ npx prisma generate
 
 ### Type Errors After Migration
 
-
 **Error:** TypeScript doesn't recognize new models
 
 **Solution:**
@@ -333,7 +321,6 @@ npx prisma generate
 ```
 
 ### Database Connection Issues
-
 
 **Error:** `Can't reach database server`
 
@@ -355,20 +342,17 @@ npx prisma migrate status
 
 ### View Database Schema
 
-
 ```bash
 npx prisma db pull
 ```
 
 ### Validate Schema
 
-
 ```bash
 npx prisma validate
 ```
 
 ### Generate Client
-
 
 ```bash
 npx prisma generate
@@ -397,4 +381,3 @@ If you encounter issues:
 ---
 
 **Last Updated:** December 30, 2025
-

@@ -22,7 +22,6 @@ The orbit tracker card and other elements lacked proper containment properties (
 
 ### CSS Changes (`web/app/globals.css`)
 
-
 #### 1. Fixed Hero Right Column Positioning
 
 ```css

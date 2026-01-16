@@ -97,7 +97,6 @@ Internal Tools to Recommend:
 
 **Example Buddy Response:**
 
-
 **Before:**
 
 ```text
@@ -189,7 +188,6 @@ tool page. This keeps you on our platform while providing complete evidence tran
    ```
 
 ### Example 2: User Asks About Breathing
-
 
 **Old Flow**:
 
