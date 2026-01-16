@@ -828,18 +828,23 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
       {/* Floating trigger button */}
       <div className={cn("fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50", isOpen && "hidden")}>
         <Button
-          onClick={() => setIsOpen(true)}
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setIsOpen(true);
+          }}
           className={cn(
             "h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg",
             "bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90",
-            "transition-all duration-300 hover:scale-110",
-            "relative group"
+            "transition-all duration-200 hover:scale-105 active:scale-95",
+            "relative group touch-manipulation"
           )}
           size="icon"
           aria-label="Open NeuroBreath Buddy assistant (Cmd+K)"
         >
           <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-          <span className="absolute -top-8 right-0 bg-popover text-popover-foreground text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md hidden sm:block">
+          <span className="absolute -top-8 right-0 bg-popover text-popover-foreground text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md hidden sm:block pointer-events-none">
             Press ⌘K
           </span>
         </Button>
@@ -881,10 +886,15 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
               <div className="flex items-center gap-0.5 sm:gap-1 md:gap-1.5 flex-shrink-0">
                 {isSpeaking && (
                   <Button
+                    type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-destructive hover:text-destructive hover:bg-destructive/10"
-                    onClick={stop}
+                    className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-destructive hover:text-destructive hover:bg-destructive/10 touch-manipulation active:scale-95 transition-transform"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      stop();
+                    }}
                     title="Stop speaking"
                     aria-label="Stop speaking"
                   >
@@ -892,30 +902,45 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                   </Button>
                 )}
                 <Button
+                  type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-primary"
-                  onClick={() => setAutoSpeak(!autoSpeak)}
+                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-primary touch-manipulation active:scale-95 transition-transform"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setAutoSpeak(!autoSpeak);
+                  }}
                   title={autoSpeak ? 'Auto-speak on' : 'Auto-speak off'}
                   aria-label={autoSpeak ? 'Turn off auto-speak' : 'Turn on auto-speak'}
                 >
                   {autoSpeak ? <Volume2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" /> : <VolumeX className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />}
                 </Button>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-primary"
-                  onClick={startTour}
+                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-primary touch-manipulation active:scale-95 transition-transform"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    startTour();
+                  }}
                   title="Start page tour"
                   aria-label="Start guided page tour"
                 >
                   <Map className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />
                 </Button>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-muted-foreground hover:text-foreground hidden sm:inline-flex"
-                  onClick={exportChat}
+                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-muted-foreground hover:text-foreground hidden sm:inline-flex touch-manipulation active:scale-95 transition-transform"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    exportChat();
+                  }}
                   title="Export chat history"
                   aria-label="Export chat history"
                   disabled={messages.length <= 1}
@@ -923,20 +948,30 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                   <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />
                 </Button>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-muted-foreground hover:text-foreground"
-                  onClick={clearChat}
+                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-muted-foreground hover:text-foreground touch-manipulation active:scale-95 transition-transform"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    clearChat();
+                  }}
                   title="Clear chat history"
                   aria-label="Clear chat history"
                 >
                   <RotateCcw className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />
                 </Button>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-muted-foreground hover:text-foreground"
-                  onClick={() => setIsMinimized(!isMinimized)}
+                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-muted-foreground hover:text-foreground touch-manipulation active:scale-95 transition-transform"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsMinimized(!isMinimized);
+                  }}
                   title={isMinimized ? 'Maximize' : 'Minimize'}
                   aria-label={isMinimized ? 'Maximize' : 'Minimize'}
                 >
@@ -985,10 +1020,15 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                       {message.role === 'assistant' && (
                         <>
                           <Button
+                            type="button"
                             variant="outline"
                             size="sm"
-                            className="h-6 sm:h-7 md:h-8 px-2 sm:px-3 md:px-4 text-xs md:text-sm bg-background/50 hover:bg-background border-border/50"
-                            onClick={() => speak(message.id, message.content)}
+                            className="h-6 sm:h-7 md:h-8 px-2 sm:px-3 md:px-4 text-xs md:text-sm bg-background/50 hover:bg-background border-border/50 touch-manipulation active:scale-95 transition-transform"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              speak(message.id, message.content);
+                            }}
                             disabled={isSpeaking && speakingMessageId === message.id}
                             aria-label="Listen to this message"
                           >
@@ -997,10 +1037,15 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                           </Button>
                           {isSpeaking && speakingMessageId === message.id && (
                             <Button
+                              type="button"
                               variant="outline"
                               size="sm"
-                              className="h-6 sm:h-7 md:h-8 px-2 sm:px-3 md:px-4 text-xs md:text-sm bg-destructive/10 hover:bg-destructive/20 border-destructive/50 text-destructive"
-                              onClick={stop}
+                              className="h-6 sm:h-7 md:h-8 px-2 sm:px-3 md:px-4 text-xs md:text-sm bg-destructive/10 hover:bg-destructive/20 border-destructive/50 text-destructive touch-manipulation active:scale-95 transition-transform"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                stop();
+                              }}
                               aria-label="Stop speaking"
                             >
                               <StopCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 mr-1" />
@@ -1010,10 +1055,15 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                         </>
                       )}
                       <Button
+                        type="button"
                         variant="outline"
                         size="sm"
-                        className="h-6 sm:h-7 md:h-8 px-2 sm:px-3 md:px-4 text-xs md:text-sm bg-background/50 hover:bg-background border-border/50"
-                        onClick={() => copyMessage(message.id, message.content)}
+                        className="h-6 sm:h-7 md:h-8 px-2 sm:px-3 md:px-4 text-xs md:text-sm bg-background/50 hover:bg-background border-border/50 touch-manipulation active:scale-95 transition-transform"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          copyMessage(message.id, message.content);
+                        }}
                         aria-label="Copy message"
                       >
                         {copiedMessageId === message.id ? (
@@ -1059,8 +1109,13 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
               {showTour && (
                 <div className="flex justify-center">
                   <Button
-                    onClick={nextTourStep}
-                    className="gap-2 text-xs sm:text-sm"
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      nextTourStep();
+                    }}
+                    className="gap-2 text-xs sm:text-sm touch-manipulation active:scale-95 transition-transform"
                     size="sm"
                   >
                     {currentTourStep + 1 >= config.sections.length ? 'Finish Tour' : 'Next Section'}
@@ -1078,10 +1133,15 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
             <div className="flex items-center justify-between mb-1.5 sm:mb-2 md:mb-2.5">
               <p className="text-[10px] sm:text-xs md:text-sm text-muted-foreground">Quick questions:</p>
               <Button
+                type="button"
                 variant="ghost"
                 size="sm"
-                className="h-5 sm:h-6 px-1.5 sm:px-2 text-[10px] sm:text-xs sm:hidden"
-                onClick={exportChat}
+                className="h-5 sm:h-6 px-1.5 sm:px-2 text-[10px] sm:text-xs sm:hidden touch-manipulation active:scale-95 transition-transform"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  exportChat();
+                }}
                 disabled={messages.length <= 1}
                 aria-label="Export chat"
               >
@@ -1093,10 +1153,15 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
               {config.quickQuestions.map((question: string, idx: number) => (
                 <Button
                   key={idx}
+                  type="button"
                   variant="outline"
                   size="sm"
-                  className="h-6 sm:h-7 md:h-8 text-[10px] sm:text-xs md:text-sm px-2 sm:px-3 md:px-4 flex-shrink-0 leading-tight"
-                  onClick={() => handleQuickQuestion(question)}
+                  className="h-6 sm:h-7 md:h-8 text-[10px] sm:text-xs md:text-sm px-2 sm:px-3 md:px-4 flex-shrink-0 leading-tight touch-manipulation active:scale-95 transition-transform"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleQuickQuestion(question);
+                  }}
                   disabled={isLoading}
                 >
                   {question}
@@ -1121,14 +1186,14 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask me about this page..."
-                className="flex-1 h-9 sm:h-10 md:h-11 text-xs sm:text-sm md:text-base"
+                className="flex-1 h-9 sm:h-10 md:h-11 text-xs sm:text-sm md:text-base touch-manipulation"
                 disabled={isLoading}
                 aria-label="Type your question"
               />
               <Button
                 type="submit"
                 size="icon"
-                className="h-9 w-9 sm:h-10 sm:w-10 md:h-11 md:w-11 flex-shrink-0"
+                className="h-9 w-9 sm:h-10 sm:w-10 md:h-11 md:w-11 flex-shrink-0 touch-manipulation active:scale-95 transition-transform"
                 disabled={!input.trim() || isLoading}
                 aria-label="Send message"
               >
