@@ -9,6 +9,7 @@
 ## 🎯 Migration Objective
 
 Restructure the NeuroBreath project from a single Next.js app into a production-grade monorepo that supports:
+
 1. Multi-platform development (web, mobile, serverless)
 2. Shared code and design tokens
 3. Independent deployments
@@ -20,7 +21,9 @@ Restructure the NeuroBreath project from a single Next.js app into a production-
 ## 📦 What Changed
 
 ### **Before Migration**
-```
+
+
+```text
 neurobreath/
 ├── nextjs_space/       # Next.js app (all code here)
 ├── PROJECT.md
@@ -29,7 +32,9 @@ neurobreath/
 ```
 
 ### **After Migration**
-```
+
+
+```text
 neurobreath/
 ├── README.md                    # ✨ NEW: Comprehensive monorepo README
 ├── .gitignore                   # ✨ NEW: Production-grade ignore rules
@@ -64,6 +69,8 @@ neurobreath/
 ## ✅ Migration Steps Completed
 
 ### **1. Documentation Layer**
+
+
 - ✅ Created `/README.md` (1,200+ lines)
   - Project overview, quick start, deployment guides
   - Monorepo structure explanation
@@ -96,6 +103,8 @@ neurobreath/
   - Security best practices
 
 ### **2. Git Configuration**
+
+
 - ✅ Created `.gitignore` (production-grade)
   - OS/Editor files ignored
   - Secrets protection (.env, .dev.vars)
@@ -106,6 +115,8 @@ neurobreath/
   - Follows Cloudflare's recommendations
 
 ### **3. Directory Restructure**
+
+
 - ✅ Renamed `nextjs_space/` → `web/`
   - All Next.js files intact
   - No code changes required
@@ -124,6 +135,8 @@ neurobreath/
   - `.github/workflows/ci.yml` (3.5 kB) — CI/CD pipeline configuration
 
 ### **4. Path Updates**
+
+
 - ✅ Updated `web/prisma/schema.prisma`:
   - Changed output path: `/home/ubuntu/neurobreath/nextjs_space/node_modules/.prisma/client`
   - To: `/home/ubuntu/neurobreath/web/node_modules/.prisma/client`
@@ -133,6 +146,8 @@ neurobreath/
   - To: `├── web/ # Next.js web application (formerly nextjs_space/)`
 
 ### **5. Build Verification**
+
+
 - ✅ TypeScript compilation: Passed (no errors)
 - ✅ Production build: Passed (exit code 0)
 - ✅ All 66 routes generated successfully
@@ -146,8 +161,10 @@ neurobreath/
 ## 📊 File Changes Summary
 
 ### **Files Created**
+
+
 | File | Size | Purpose |
-|------|------|----------|
+| ------ | ------ | ---------- |
 | `README.md` | 4.9 kB | Monorepo overview and quick start |
 | `.env.example` | 1.8 kB | Environment variables template |
 | `.gitignore` | 2.8 kB | Git ignore rules |
@@ -160,17 +177,23 @@ neurobreath/
 | **Total** | **150 kB** | **9 new documentation files** |
 
 ### **Files Modified**
+
+
 | File | Change | Reason |
-|------|--------|--------|
+| ------ | -------- | -------- |
 | `web/prisma/schema.prisma` | Output path updated | Reflects new `web/` directory |
 | `PROJECT.md` | Directory reference updated | Documents new structure |
 
 ### **Directories Renamed**
+
+
 | Old Path | New Path | Files Affected |
-|----------|----------|----------------|
+| ---------- | ---------- | ---------------- |
 | `nextjs_space/` | `web/` | 0 code changes (just rename) |
 
 ### **Directories Created**
+
+
 - `docs/` (1 directory)
 - `shared/data/`, `shared/design/`, `shared/assets/` (3 directories)
 - `serverless/worker/` (1 directory)
@@ -183,6 +206,8 @@ neurobreath/
 ## 🔍 Build Output Analysis
 
 ### **Static Pages Generated**: 66 routes
+
+
 - Homepage: `/` (27.3 kB + 140 kB First Load JS)
 - Conditions: 7 pages (anxiety, autism, depression, etc.)
 - Tools: 29 pages (breathing tools, ADHD deep dive, etc.)
@@ -191,6 +216,8 @@ neurobreath/
 - Dynamic API routes: 6 endpoints
 
 ### **Bundle Sizes**
+
+
 - **Shared Chunks**: 87.4 kB (loaded on all pages)
   - `chunks/7156-...`: 31.8 kB (React, Next.js core)
   - `chunks/ceb5afef-...`: 53.6 kB (UI components, libraries)
@@ -202,6 +229,8 @@ neurobreath/
   - Average: ~3 kB per page
 
 ### **Performance**
+
+
 - Build time: ~45 seconds (with optimization)
 - No TypeScript errors
 - No build warnings (except metadataBase OG image warnings — non-critical)
@@ -213,26 +242,34 @@ neurobreath/
 
 ### **Cloudflare Pages Configuration**
 
+
 #### **Option 1: Direct Git Integration** (Recommended)
+
+
 1. Push to GitHub: `git push origin main`
-2. Connect repo in Cloudflare Dashboard
-3. Build settings:
+1. Connect repo in Cloudflare Dashboard
+1. Build settings:
+
    ```yaml
    Build command: cd web && yarn install && yarn build
    Build output directory: web/.next
    Root directory: /
    Node version: 18
    ```
-4. Set custom domain: `www.neurobreath.co.uk`
-5. Add redirect rule: `neurobreath.co.uk` → `www.neurobreath.co.uk`
+
+1. Set custom domain: `www.neurobreath.co.uk`
+1. Add redirect rule: `neurobreath.co.uk` → `www.neurobreath.co.uk`
 
 #### **Option 2: Wrangler CLI**
+
 ```bash
 cd web
 npx wrangler pages deploy .next --project-name=neurobreath
 ```
 
 ### **Important Notes**
+
+
 - Next.js SSR features require Cloudflare Workers deployment
 - Use `@cloudflare/next-on-pages` adapter for full SSR support
 - Monorepo structure fully supported (just specify `/web` as build directory)
@@ -242,6 +279,8 @@ npx wrangler pages deploy .next --project-name=neurobreath
 ## ✅ Git Readiness Checklist
 
 ### **Repository Setup**
+
+
 - ✅ `.gitignore` configured (secrets protected)
 - ✅ `.env.example` created (no secrets committed)
 - ✅ `README.md` comprehensive (onboarding ready)
@@ -249,13 +288,15 @@ npx wrangler pages deploy .next --project-name=neurobreath
 - ✅ CI/CD pipeline defined (`.github/workflows/ci.yml`)
 
 ### **Pre-Commit Actions** (User must do)
+
 1. ⚠️ **Review `.env` files**: Ensure no secrets in code
-2. ⚠️ **Remove backup files**: Delete `*.backup`, `*.SAFETY_*` if present
-3. ⚠️ **Verify build**: Run `cd web && yarn build` locally
-4. ⚠️ **Check file sizes**: Ensure no large files (>10 MB) committed
-5. ⚠️ **Test .gitignore**: Run `git status` to verify ignored files
+1. ⚠️ **Remove backup files**: Delete `*.backup`, `*.SAFETY_*` if present
+1. ⚠️ **Verify build**: Run `cd web && yarn build` locally
+1. ⚠️ **Check file sizes**: Ensure no large files (>10 MB) committed
+1. ⚠️ **Test .gitignore**: Run `git status` to verify ignored files
 
 ### **First Commit Commands**
+
 ```bash
 cd /home/ubuntu/neurobreath
 git init
@@ -272,6 +313,7 @@ git commit -m "feat: initial monorepo structure with Next.js web app
 git remote add origin git@github.com:YOUR_USERNAME/neurobreath-platform.git
 git branch -M main
 git push -u origin main
+# Replace YOUR_USERNAME with your GitHub username in the remote add command above
 ```
 
 ---
@@ -279,55 +321,62 @@ git push -u origin main
 ## 🔮 Next Steps (User Actions)
 
 ### **Immediate (Today)**
+
+
 1. ✅ **Review this migration summary** (you're reading it!)
-2. ⚠️ **Test the web app locally**:
+1. ⚠️ **Test the web app locally**:
+
    ```bash
    cd /home/ubuntu/neurobreath/web
    yarn dev
    # Open http://localhost:3000
    ```
-3. ⚠️ **Verify all features work** (breathing, dyslexia tools, navigation)
+
+1. ⚠️ **Verify all features work** (breathing, dyslexia tools, navigation)
 
 ### **Short-Term (This Week)**
+
 1. ⚠️ **Set up GitHub repository**:
    - Create private repo: `neurobreath-platform`
    - Push code using commands above
    - Enable branch protection (require PR reviews)
 
-2. ⚠️ **Configure Cloudflare Pages**:
+1. ⚠️ **Configure Cloudflare Pages**:
    - Connect GitHub repo
    - Set build settings (see Deployment Strategy above)
    - Test deployment to staging URL
    - Configure custom domain: `www.neurobreath.co.uk`
 
-3. ⚠️ **Set up secrets**:
+1. ⚠️ **Set up secrets**:
    - Add secrets to Cloudflare dashboard (not in code!)
    - Update `.env.example` if new secrets added
    - Document any new environment variables
 
 ### **Medium-Term (Next Month)**
+
 1. ⚠️ **Extract shared data to `/shared/data/`**:
    - Move hardcoded JSON from components
    - Create `plants.json`, `badges.json`, `challenges.json`
    - Update imports in web app
 
-2. ⚠️ **Create design tokens in `/shared/design/`**:
+1. ⚠️ **Create design tokens in `/shared/design/`**:
    - Extract Tailwind config to `tokens.css`
    - Document color palette, spacing scale
    - Prepare for Flutter theme generation
 
-3. ⚠️ **Set up CI/CD**:
+1. ⚠️ **Set up CI/CD**:
    - Enable GitHub Actions (workflow already created)
    - Add Cloudflare API token to GitHub secrets
    - Test automated deployments
 
 ### **Long-Term (Q1-Q2 2025)**
+
 1. ⚠️ **Phase 2 features** (per roadmap):
    - Shop integration
    - Research deck
    - Enhanced progress dashboard
 
-2. ⚠️ **Phase 3 features** (per roadmap):
+1. ⚠️ **Phase 3 features** (per roadmap):
    - Initialize Flutter app in `/flutter_app/`
    - Build Cloudflare Workers API in `/serverless/`
    - Implement user accounts + authentication
@@ -337,10 +386,14 @@ git push -u origin main
 ## 📚 Documentation Index
 
 ### **For Users**
+
+
 - `README.md` — Project overview, quick start, deployment
 - `docs/neurobreath-product-spec.md` — Features, roadmap, design system
 
 ### **For Developers**
+
+
 - `docs/decisions.md` — Technical decisions with rationale
 - `shared/README.md` — Shared resources guide
 - `serverless/README.md` — Backend API guide
@@ -348,6 +401,8 @@ git push -u origin main
 - `.github/workflows/ci.yml` — CI/CD pipeline
 
 ### **For Contributors**
+
+
 - `.env.example` — Environment variables
 - `.gitignore` — What's excluded from Git
 - `PROJECT.md` — Original project vision (legacy)
@@ -358,6 +413,8 @@ git push -u origin main
 ## 🎯 Migration Success Criteria
 
 ### **All Criteria Met** ✅
+
+
 - ✅ Monorepo structure implemented
 - ✅ Documentation complete (150+ KB)
 - ✅ Build verified (exit code 0)
@@ -371,6 +428,7 @@ git push -u origin main
 ## 🙏 Acknowledgments
 
 This migration was designed to support:
+
 1. **Multi-platform expansion** (web → mobile → backend)
 2. **Team collaboration** (clear documentation, CI/CD)
 3. **Open-source readiness** (if you choose to open-source later)
