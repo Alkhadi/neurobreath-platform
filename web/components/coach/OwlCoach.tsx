@@ -220,10 +220,11 @@ export function OwlCoach() {
           {/* Collapsed View - Owl Bubble */}
           {!isExpanded && (
             <button
+              type="button"
               onClick={() => setIsExpanded(true)}
               className="w-full p-4 flex items-center gap-3 hover:bg-muted/20 transition-colors text-left"
               aria-label="Expand Owl Coach"
-              aria-expanded={false}
+              aria-expanded="false"
             >
               <div className="text-4xl flex-shrink-0">
                 {moodConfig.icon}
@@ -261,6 +262,7 @@ export function OwlCoach() {
                 </div>
                 <div className="flex gap-1">
                   <button
+                    type="button"
                     onClick={() => setIsExpanded(false)}
                     className="p-1 hover:bg-muted/50 rounded transition-colors"
                     aria-label="Collapse Owl Coach"
@@ -268,6 +270,7 @@ export function OwlCoach() {
                     <ChevronDown className="w-4 h-4 text-muted-foreground" />
                   </button>
                   <button
+                    type="button"
                     onClick={() => setIsDismissed(true)}
                     className="p-1 hover:bg-muted/50 rounded transition-colors"
                     aria-label="Dismiss Owl Coach"
