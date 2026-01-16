@@ -32,6 +32,7 @@ export function JsonLd({ data }: JsonLdProps) {
     <Script
       id={`json-ld-${Array.isArray(data) ? 'combined' : data['@type']}`}
       type="application/ld+json"
+      strategy="afterInteractive"
       dangerouslySetInnerHTML={{ __html: jsonString }}
     />
   );

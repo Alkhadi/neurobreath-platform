@@ -5,13 +5,26 @@
  * Mobile-optimized layout
  */
 
+import type { Metadata } from 'next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Eye, Lock, TrendingUp, Award, Calendar, Clock } from 'lucide-react'
+import { generatePageMetadata } from '@/lib/seo/metadata'
 
-export const metadata = {
-  title: 'Parent View | NeuroBreath',
-  description: 'View learner progress',
+interface ParentMetadataProps {
+  params: {
+    parentCode: string
+  }
+}
+
+export async function generateMetadata({ params }: ParentMetadataProps): Promise<Metadata> {
+  return generatePageMetadata({
+    title: 'Parent View | NeuroBreath',
+    description:
+      'Read-only progress view for parents and carers, with secure access to session summaries, achievements and routines for the learner code provided.',
+    path: `/parent/${params.parentCode}`,
+    noindex: true,
+  })
 }
 
 interface ParentViewPageProps {

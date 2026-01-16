@@ -20,7 +20,11 @@
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
     "db:reset": "docker compose down -v && docker compose up -d",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "seo:routes": "node scripts/seo/route-inventory.mjs",
+    "seo:scan": "node scripts/seo/route-scan.mjs",
+    "seo:audit": "npm run seo:routes && npm run seo:scan",
+    "seo:guard": "npm run seo:scan"
   },
   "devDependencies": {
     "@next/swc-wasm-nodejs": "13.5.1",

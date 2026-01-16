@@ -1,8 +1,9 @@
 "use client";
 
-import { Profile } from "@/lib/utils";
+import { Profile, cn } from "@/lib/utils";
 import { FaInstagram, FaFacebook, FaTiktok, FaLinkedin, FaTwitter, FaGlobe, FaPhone, FaEnvelope } from "react-icons/fa";
 import Image from "next/image";
+import styles from "./profile-card.module.css";
 
 interface ProfileCardProps {
   profile: Profile;
@@ -11,6 +12,21 @@ interface ProfileCardProps {
 }
 
 export function ProfileCard({ profile, onPhotoClick, showEditButton = false }: ProfileCardProps) {
+  const gradientClassMap: Record<string, string> = {
+    "linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)": "bg-gradient-to-br from-purple-600 to-blue-500",
+    "linear-gradient(135deg, #667eea 0%, #764ba2 100%)": "bg-gradient-to-br from-indigo-500 to-purple-600",
+    "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)": "bg-gradient-to-br from-fuchsia-400 to-rose-500",
+    "linear-gradient(135deg, #0ba360 0%, #3cba92 100%)": "bg-gradient-to-br from-emerald-500 to-green-400",
+    "linear-gradient(135deg, #a78bfa 0%, #c084fc 100%)": "bg-gradient-to-br from-violet-400 to-fuchsia-500",
+    "linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%)": "bg-gradient-to-br from-orange-400 to-rose-400",
+    "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)": "bg-gradient-to-br from-sky-400 to-cyan-400",
+    "linear-gradient(135deg, #fa709a 0%, #fee140 100%)": "bg-gradient-to-br from-pink-400 to-yellow-300",
+  };
+  const defaultGradient = "linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)";
+  const gradientClass =
+    gradientClassMap[profile?.gradient ?? ""] ??
+    gradientClassMap[defaultGradient];
+
   const socialMediaLinks = [
     { icon: FaInstagram, url: profile?.socialMedia?.instagram, color: "#E1306C" },
     { icon: FaFacebook, url: profile?.socialMedia?.facebook, color: "#1877F2" },
@@ -22,8 +38,10 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false }: P
 
   return (
     <div
-      className="w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden"
-      style={{ background: profile?.gradient ?? "linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)" }}
+      className={cn(
+        "w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden",
+        gradientClass
+      )}
     >
       <div className="p-8 text-white">
         {/* Profile Photo */}
@@ -79,9 +97,9 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false }: P
         </div>
 
         {/* Name & Title */}
-        <h1 className="text-3xl font-bold text-center mb-2" style={{ fontFamily: "'Brush Script MT', cursive" }}>
+        <h2 className={cn("text-3xl font-bold text-center mb-2", styles.signatureFont)}>
           {profile?.fullName ?? "Name"}
-        </h1>
+        </h2>
         <p className="text-lg text-center mb-6 opacity-90">{profile?.jobTitle ?? "Job Title"}</p>
 
         {/* Contact Info */}
@@ -107,8 +125,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false }: P
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-white/20 backdrop-blur-md p-3 rounded-full hover:bg-white/30 transition-all hover:scale-110"
-                style={{ color: "white" }}
+                className="bg-white/20 text-white backdrop-blur-md p-3 rounded-full hover:bg-white/30 transition-all hover:scale-110"
                 aria-label={`Visit ${social.url}`}
               >
                 <Icon className="text-2xl" />

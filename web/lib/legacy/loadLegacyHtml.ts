@@ -169,10 +169,10 @@ export async function loadLegacyHtml(filename: string): Promise<string> {
       throw err;
     }
 
-    // Remove legacy header and footer elements to avoid duplicates with Next.js layout
+    // Remove legacy site header and footer elements to avoid duplicates with Next.js layout
     let processedHtml = rawHtml
-      // Remove header elements (various patterns)
-      .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, '')
+      // Remove only the top-level site header
+      .replace(/<header[^>]*class=["'][^"']*site-header[^"']*["'][^>]*>[\s\S]*?<\/header>/gi, '')
       .replace(/<nav[^>]*class=["'][^"']*header[^"']*["'][^>]*>[\s\S]*?<\/nav>/gi, '')
       .replace(/<!-- Header Start -->[\s\S]*?<!-- Header End -->/gi, '')
       // Remove footer elements

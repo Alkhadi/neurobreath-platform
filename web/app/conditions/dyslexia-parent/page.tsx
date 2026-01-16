@@ -1,5 +1,6 @@
 import React from 'react';
 import { Metadata } from 'next';
+import { generatePageMetadata } from '@/lib/seo/metadata';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,10 +12,12 @@ import {
   Lightbulb, Target, TrendingUp, Award
 } from 'lucide-react';
 
-export const metadata: Metadata = {
-  title: 'Dyslexia Parent Support Hub | NeuroBreath',
-  description: 'Comprehensive support and resources for parents of children with dyslexia. Evidence-based strategies, tools, and guidance.',
-};
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Dyslexia Parent Support | NeuroBreath',
+  description:
+    'Dyslexia support for parents with home reading routines, school collaboration tips and practical resources for confidence.',
+  path: '/conditions/dyslexia-parent',
+});
 
 export default function DyslexiaParentPage() {
   return (

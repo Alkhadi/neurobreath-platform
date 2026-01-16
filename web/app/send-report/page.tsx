@@ -5,15 +5,20 @@
  */
 
 import { Suspense } from 'react'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { FileText, Plus, AlertTriangle } from 'lucide-react'
+import { generatePageMetadata } from '@/lib/seo/metadata'
 
-export const metadata = {
+export const metadata: Metadata = generatePageMetadata({
   title: 'SEND Reports | NeuroBreath',
-  description: 'Training recommendation reports',
-}
+  description:
+    'Create and manage SEND training recommendation reports for learners, with summaries and evidence links. Not a diagnostic tool.',
+  path: '/send-report',
+  noindex: true,
+})
 
 export default function SENDReportsPage() {
   return (

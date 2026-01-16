@@ -7,8 +7,9 @@ import { Metadata } from 'next';
 import { generatePageMetadata } from '@/lib/seo/metadata';
 
 export const metadata: Metadata = generatePageMetadata({
-  title: 'ADHD Support Hub | Tools, Resources & Evidence-Based Strategies',
-  description: 'Comprehensive ADHD support for children, teens, parents, teachers, and carers. Interactive tools including focus timers, daily quests, skills library, and evidence-based strategies backed by research. Free UK resources for ADHD management.',
+  title: 'ADHD Support Hub | NeuroBreath',
+  description:
+    'Comprehensive ADHD support hub with focus tools, routines and evidence-based strategies for children, parents, teachers and carers in the UK.',
   path: '/adhd',
   keywords: [
     'ADHD support',

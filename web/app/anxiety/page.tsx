@@ -23,8 +23,9 @@ import { generateCanonicalUrl } from '@/lib/seo/site-seo'
 export const dynamic = 'force-static'
 
 export const metadata: Metadata = generatePageMetadata({
-  title: 'Anxiety Support Hub | Evidence-Based Tools & Resources',
-  description: 'Professional anxiety management tools including breathing exercises, CBT thought records, grounding techniques, mood tracking, and progressive muscle relaxation. Evidence-based strategies backed by NHS, NICE, and clinical research.',
+  title: 'Anxiety Support Hub | NeuroBreath',
+  description:
+    'Evidence-based anxiety tools including breathing, grounding, CBT prompts and progress tracking to help build calm and resilience.',
   path: '/anxiety',
   keywords: [
     'anxiety management',
@@ -45,8 +46,9 @@ export default function AnxietyPage() {
   const pageUrl = generateCanonicalUrl('/anxiety');
   const webPageSchema = generateWebPageSchema({
     url: pageUrl,
-    name: 'Anxiety Support Hub | Evidence-Based Tools & Resources',
-    description: 'Professional anxiety management tools including breathing exercises, CBT thought records, grounding techniques, mood tracking, and progressive muscle relaxation.',
+    name: 'Anxiety Support Hub | NeuroBreath',
+    description:
+      'Evidence-based anxiety tools including breathing, grounding, CBT prompts and progress tracking to help build calm and resilience.',
   });
   const breadcrumbs = generateBreadcrumbsFromPath('/anxiety');
   const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);

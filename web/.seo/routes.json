@@ -1,0 +1,550 @@
+{
+  "generatedAt": "2026-01-16T22:24:45.154Z",
+  "appDirectory": "app",
+  "totalRoutes": 76,
+  "staticRoutes": 75,
+  "dynamicRoutes": 1,
+  "routes": [
+    {
+      "path": "page.tsx",
+      "url": "/",
+      "pattern": "/",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "about/page.tsx",
+      "url": "/about",
+      "pattern": "/about",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "about-us/page.tsx",
+      "url": "/about-us",
+      "pattern": "/about-us",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "adhd/page.tsx",
+      "url": "/adhd",
+      "pattern": "/adhd",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "anxiety/page.tsx",
+      "url": "/anxiety",
+      "pattern": "/anxiety",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "autism/page.tsx",
+      "url": "/autism",
+      "pattern": "/autism",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "autism/focus-garden/page.tsx",
+      "url": "/autism/focus-garden",
+      "pattern": "/autism/focus-garden",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "blog/page.tsx",
+      "url": "/blog",
+      "pattern": "/blog",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "breathing/page.tsx",
+      "url": "/breathing",
+      "pattern": "/breathing",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "breathing/breath/page.tsx",
+      "url": "/breathing/breath",
+      "pattern": "/breathing/breath",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "breathing/focus/page.tsx",
+      "url": "/breathing/focus",
+      "pattern": "/breathing/focus",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "breathing/mindfulness/page.tsx",
+      "url": "/breathing/mindfulness",
+      "pattern": "/breathing/mindfulness",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "breathing/techniques/sos-60/page.tsx",
+      "url": "/breathing/techniques/sos-60",
+      "pattern": "/breathing/techniques/sos-60",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "breathing/training/focus-garden/page.tsx",
+      "url": "/breathing/training/focus-garden",
+      "pattern": "/breathing/training/focus-garden",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "coach/page.tsx",
+      "url": "/coach",
+      "pattern": "/coach",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/adhd-carer/page.tsx",
+      "url": "/conditions/adhd-carer",
+      "pattern": "/conditions/adhd-carer",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/adhd-parent/page.tsx",
+      "url": "/conditions/adhd-parent",
+      "pattern": "/conditions/adhd-parent",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/adhd-teacher/page.tsx",
+      "url": "/conditions/adhd-teacher",
+      "pattern": "/conditions/adhd-teacher",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/anxiety/page.tsx",
+      "url": "/conditions/anxiety",
+      "pattern": "/conditions/anxiety",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/anxiety-carer/page.tsx",
+      "url": "/conditions/anxiety-carer",
+      "pattern": "/conditions/anxiety-carer",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/anxiety-parent/page.tsx",
+      "url": "/conditions/anxiety-parent",
+      "pattern": "/conditions/anxiety-parent",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/autism/page.tsx",
+      "url": "/conditions/autism",
+      "pattern": "/conditions/autism",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/autism-carer/page.tsx",
+      "url": "/conditions/autism-carer",
+      "pattern": "/conditions/autism-carer",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/autism-parent/page.tsx",
+      "url": "/conditions/autism-parent",
+      "pattern": "/conditions/autism-parent",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/autism-teacher/page.tsx",
+      "url": "/conditions/autism-teacher",
+      "pattern": "/conditions/autism-teacher",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/bipolar/page.tsx",
+      "url": "/conditions/bipolar",
+      "pattern": "/conditions/bipolar",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/depression/page.tsx",
+      "url": "/conditions/depression",
+      "pattern": "/conditions/depression",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/dyslexia/page.tsx",
+      "url": "/conditions/dyslexia",
+      "pattern": "/conditions/dyslexia",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/dyslexia-carer/page.tsx",
+      "url": "/conditions/dyslexia-carer",
+      "pattern": "/conditions/dyslexia-carer",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/dyslexia-parent/page.tsx",
+      "url": "/conditions/dyslexia-parent",
+      "pattern": "/conditions/dyslexia-parent",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/dyslexia-teacher/page.tsx",
+      "url": "/conditions/dyslexia-teacher",
+      "pattern": "/conditions/dyslexia-teacher",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/low-mood-burnout/page.tsx",
+      "url": "/conditions/low-mood-burnout",
+      "pattern": "/conditions/low-mood-burnout",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/mood/page.tsx",
+      "url": "/conditions/mood",
+      "pattern": "/conditions/mood",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "contact/page.tsx",
+      "url": "/contact",
+      "pattern": "/contact",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "downloads/page.tsx",
+      "url": "/downloads",
+      "pattern": "/downloads",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "dyslexia-reading-training/page.tsx",
+      "url": "/dyslexia-reading-training",
+      "pattern": "/dyslexia-reading-training",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "get-started/page.tsx",
+      "url": "/get-started",
+      "pattern": "/get-started",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "parent/[parentCode]/page.tsx",
+      "url": "/parent/:parentCode",
+      "pattern": "/parent/:parentCode",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "parentCode",
+          "pattern": "[parentCode]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 1
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "progress/page.tsx",
+      "url": "/progress",
+      "pattern": "/progress",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "resources/page.tsx",
+      "url": "/resources",
+      "pattern": "/resources",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "rewards/page.tsx",
+      "url": "/rewards",
+      "pattern": "/rewards",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "schools/page.tsx",
+      "url": "/schools",
+      "pattern": "/schools",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "send-report/page.tsx",
+      "url": "/send-report",
+      "pattern": "/send-report",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "sleep/page.tsx",
+      "url": "/sleep",
+      "pattern": "/sleep",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "stress/page.tsx",
+      "url": "/stress",
+      "pattern": "/stress",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "support-us/page.tsx",
+      "url": "/support-us",
+      "pattern": "/support-us",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "teacher-quick-pack/page.tsx",
+      "url": "/teacher-quick-pack",
+      "pattern": "/teacher-quick-pack",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "teacher/dashboard/page.tsx",
+      "url": "/teacher/dashboard",
+      "pattern": "/teacher/dashboard",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "techniques/4-7-8/page.tsx",
+      "url": "/techniques/4-7-8",
+      "pattern": "/techniques/4-7-8",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "techniques/box-breathing/page.tsx",
+      "url": "/techniques/box-breathing",
+      "pattern": "/techniques/box-breathing",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "techniques/coherent/page.tsx",
+      "url": "/techniques/coherent",
+      "pattern": "/techniques/coherent",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "techniques/sos/page.tsx",
+      "url": "/techniques/sos",
+      "pattern": "/techniques/sos",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/page.tsx",
+      "url": "/tools",
+      "pattern": "/tools",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/adhd-deep-dive/assessment/page.tsx",
+      "url": "/tools/adhd-deep-dive/assessment",
+      "pattern": "/tools/adhd-deep-dive/assessment",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/adhd-deep-dive/diagnosis/page.tsx",
+      "url": "/tools/adhd-deep-dive/diagnosis",
+      "pattern": "/tools/adhd-deep-dive/diagnosis",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/adhd-deep-dive/helplines/page.tsx",
+      "url": "/tools/adhd-deep-dive/helplines",
+      "pattern": "/tools/adhd-deep-dive/helplines",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/adhd-deep-dive/self-care/page.tsx",
+      "url": "/tools/adhd-deep-dive/self-care",
+      "pattern": "/tools/adhd-deep-dive/self-care",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/adhd-deep-dive/support-at-home/page.tsx",
+      "url": "/tools/adhd-deep-dive/support-at-home",
+      "pattern": "/tools/adhd-deep-dive/support-at-home",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/adhd-deep-dive/teens/page.tsx",
+      "url": "/tools/adhd-deep-dive/teens",
+      "pattern": "/tools/adhd-deep-dive/teens",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/adhd-deep-dive/what-is-adhd/page.tsx",
+      "url": "/tools/adhd-deep-dive/what-is-adhd",
+      "pattern": "/tools/adhd-deep-dive/what-is-adhd",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/adhd-deep-dive/working-with-school/page.tsx",
+      "url": "/tools/adhd-deep-dive/working-with-school",
+      "pattern": "/tools/adhd-deep-dive/working-with-school",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/adhd-deep-dive/young-people/page.tsx",
+      "url": "/tools/adhd-deep-dive/young-people",
+      "pattern": "/tools/adhd-deep-dive/young-people",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/adhd-focus-lab/page.tsx",
+      "url": "/tools/adhd-focus-lab",
+      "pattern": "/tools/adhd-focus-lab",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/adhd-tools/page.tsx",
+      "url": "/tools/adhd-tools",
+      "pattern": "/tools/adhd-tools",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/anxiety-tools/page.tsx",
+      "url": "/tools/anxiety-tools",
+      "pattern": "/tools/anxiety-tools",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/autism-tools/page.tsx",
+      "url": "/tools/autism-tools",
+      "pattern": "/tools/autism-tools",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/breath-ladder/page.tsx",
+      "url": "/tools/breath-ladder",
+      "pattern": "/tools/breath-ladder",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/breath-tools/page.tsx",
+      "url": "/tools/breath-tools",
+      "pattern": "/tools/breath-tools",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/colour-path/page.tsx",
+      "url": "/tools/colour-path",
+      "pattern": "/tools/colour-path",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/depression-tools/page.tsx",
+      "url": "/tools/depression-tools",
+      "pattern": "/tools/depression-tools",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/focus-tiles/page.tsx",
+      "url": "/tools/focus-tiles",
+      "pattern": "/tools/focus-tiles",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/focus-training/page.tsx",
+      "url": "/tools/focus-training",
+      "pattern": "/tools/focus-training",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/mood-tools/page.tsx",
+      "url": "/tools/mood-tools",
+      "pattern": "/tools/mood-tools",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/roulette/page.tsx",
+      "url": "/tools/roulette",
+      "pattern": "/tools/roulette",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/sleep-tools/page.tsx",
+      "url": "/tools/sleep-tools",
+      "pattern": "/tools/sleep-tools",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "tools/stress-tools/page.tsx",
+      "url": "/tools/stress-tools",
+      "pattern": "/tools/stress-tools",
+      "isDynamic": false,
+      "file": "page.tsx"
+    }
+  ]
+}

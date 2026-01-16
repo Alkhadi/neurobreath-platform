@@ -1,5 +1,6 @@
 import React from 'react';
 import { Metadata } from 'next';
+import { generatePageMetadata } from '@/lib/seo/metadata';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,10 +12,12 @@ import {
   Lightbulb, ClipboardCheck, Award, BookMarked
 } from 'lucide-react';
 
-export const metadata: Metadata = {
-  title: 'Dyslexia Teacher Support Hub | NeuroBreath',
-  description: 'Professional resources and evidence-based strategies for teachers supporting students with dyslexia.',
-};
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Dyslexia Teacher Support | NeuroBreath',
+  description:
+    'Dyslexia classroom support with evidence-based strategies, assessment tools and inclusive teaching resources to improve literacy and access.',
+  path: '/conditions/dyslexia-teacher',
+});
 
 export default function DyslexiaTeacherPage() {
   return (

@@ -6,14 +6,19 @@
  */
 
 import { Suspense } from 'react'
+import type { Metadata } from 'next'
 import { AnalyticsCharts } from '@/components/teacher/AnalyticsCharts'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Users, TrendingUp, Clock, Award } from 'lucide-react'
+import { generatePageMetadata } from '@/lib/seo/metadata'
 
-export const metadata = {
+export const metadata: Metadata = generatePageMetadata({
   title: 'Teacher Dashboard | NeuroBreath',
-  description: 'View learner analytics and progress',
-}
+  description:
+    'Private teacher dashboard to review learner activity, trends and classroom progress summaries, with read‑only analytics for secure access.',
+  path: '/teacher/dashboard',
+  noindex: true,
+})
 
 export default function TeacherDashboardPage() {
   return (

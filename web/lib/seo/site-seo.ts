@@ -47,7 +47,7 @@ export const SITE_CONFIG = {
   
   // Default metadata
   defaultTitle: 'NeuroBreath | Evidence-Based Neurodiversity Support',
-  defaultDescription: 'Evidence-based tools and resources for ADHD, autism, dyslexia, anxiety, and neurodiversity support. Breathing exercises, focus tools, educational resources for children, parents, teachers, and carers.',
+  defaultDescription: 'Evidence-based tools and resources for ADHD, autism, dyslexia and anxiety, plus breathing and focus support for families, teachers and carers across the UK.',
   titleTemplate: '%s | NeuroBreath',
   
   // Keywords (UK English spelling)
