@@ -44,6 +44,7 @@ Comprehensive mapping of external evidence to internal NeuroBreath pages:
 **File**: `/web/lib/ai-coach/synthesis.ts`
 
 **Changes:**
+
 - ✅ Imports internal pages mapping
 - ✅ Gets relevant internal pages for user's topic/question
 - ✅ Adds internal tools to recommendations
@@ -54,7 +55,8 @@ Comprehensive mapping of external evidence to internal NeuroBreath pages:
 **Example Output:**
 
 **Before:**
-```
+
+```text
 Practical Actions:
 - Use visible timers and reminders
 - Break tasks into small steps
@@ -62,7 +64,8 @@ Practical Actions:
 ```
 
 **After:**
-```
+
+```text
 Practical Actions:
 - Use visible timers and reminders
 - Break tasks into small steps
@@ -94,14 +97,17 @@ Internal Tools to Recommend:
 
 **Example Buddy Response:**
 
+
 **Before:**
-```
+
+```text
 ADHD is a neurodevelopmental condition (NICE NG87). 
 Learn more at NHS.uk/adhd [external link]
 ```
 
 **After:**
-```
+
+```text
 ADHD is a neurodevelopmental condition per NICE NG87 (2018).
 Explore our [ADHD Hub](/adhd) for Focus Timer, Daily Quests, and Skills Library.
 Evidence citations are listed at the bottom of the ADHD Hub page.
@@ -114,18 +120,24 @@ Evidence citations are listed at the bottom of the ADHD Hub page.
 All quick question responses now link to internal pages:
 
 #### "How do I use the AI Coach?"
+
 **Before**: Mentioned NHS, NICE, PubMed with external links
-**After**: 
-```
+
+**After**:
+
+```text
 "The AI Coach will recommend our internal tools like the [ADHD Hub](/adhd), 
 [Autism Hub](/autism), or [Breathing Exercises](/tools/breathing) based on your needs. 
 Evidence citations are listed at the bottom of each recommended page."
 ```
 
 #### "Which breathing technique should I start with?"
+
 **Before**: Generic description
+
 **After**:
-```
+
+```text
 "Both are available on our [Breathing Exercises page](/tools/breathing). 
 Both activate the vagus nerve to reduce stress (backed by Research PMID 29616846, 
 cited on the tool page). Try them on our [Breathing page](/tools/breathing) or 
@@ -133,9 +145,12 @@ join the [30-Day Calm Challenge](/blog#calm-challenge)!"
 ```
 
 #### "What evidence sources do you use?"
+
 **Before**: Listed sources with external links
+
 **After**:
-```
+
+```text
 "For example, our [ADHD Hub](/adhd) cites NICE NG87 (2018) and MTA study (PMID 10517495); 
 our [Breathing Exercises](/tools/breathing) cite HRV research (PMID 11744522). 
 We mention sources by name in responses, then list full citations at the bottom of each 
@@ -149,11 +164,13 @@ tool page. This keeps you on our platform while providing complete evidence tran
 ### Example 1: User Asks About ADHD
 
 **Old Flow** (User leaves site):
+
 1. User asks: "How can I help my child with ADHD?"
 2. AI Coach responds with NHS/NICE links
 3. User clicks NHS link → Leaves your site → May not return
 
 **New Flow** (User stays on site):
+
 1. User asks: "How can I help my child with ADHD?"
 2. AI Coach responds:
    - "ADHD is a neurodevelopmental condition per NICE NG87 (2018)"
@@ -162,7 +179,8 @@ tool page. This keeps you on our platform while providing complete evidence tran
 3. User clicks [ADHD Hub](/adhd) → Stays on your site
 4. User explores Focus Timer, Daily Quests, Skills Library
 5. User scrolls to bottom of page → Sees evidence citations:
-   ```
+
+   ```text
    Evidence Sources:
    • NICE NG87 (2018): ADHD Diagnosis and Management
    • NHS ADHD guidance: https://www.nhs.uk/conditions/adhd/
@@ -172,12 +190,15 @@ tool page. This keeps you on our platform while providing complete evidence tran
 
 ### Example 2: User Asks About Breathing
 
+
 **Old Flow**:
+
 1. User asks: "How can breathing help with anxiety?"
 2. AI Coach links to external NHS breathing page
 3. User leaves site
 
 **New Flow**:
+
 1. User asks: "How can breathing help with anxiety?"
 2. AI Coach responds:
    - "Breathing activates vagus nerve, reduces cortisol per Research PMID 28974862"
@@ -192,26 +213,31 @@ tool page. This keeps you on our platform while providing complete evidence tran
 ## Benefits
 
 ### ✅ User Retention
+
 - Users stay on your platform
 - Explore multiple tools in one session
 - Higher engagement and return visits
 
 ### ✅ Evidence Transparency
+
 - All evidence sources mentioned by name in responses
 - Full citations with links at bottom of each page
 - Users can verify if they want, but don't have to leave
 
 ### ✅ Monetization Friendly
+
 - Users engage with your tools, not external sites
 - Potential for premium features, ads, or partnerships
 - Better analytics (track user journey on your platform)
 
 ### ✅ Professional & Trustworthy
+
 - "Backed by NICE NG87" and "Research PMID X" shows credibility
 - Evidence available for verification at page bottom
 - Users trust you're transparent about sources
 
 ### ✅ Better User Experience
+
 - One platform for everything: guidance + tools + evidence
 - No context switching between sites
 - Seamless flow from question → answer → tool → practice
@@ -220,8 +246,9 @@ tool page. This keeps you on our platform while providing complete evidence tran
 
 ## Evidence Display Strategy
 
-### In Responses (AI Coach & Buddy):
-```
+### In Responses (AI Coach & Buddy)
+
+```text
 ✅ DO: "ADHD treatment follows NICE NG87 (2018) guidelines"
 ✅ DO: "Breathing reduces cortisol per Research PMID 28974862"
 ✅ DO: "Try our [ADHD Hub](/adhd) for practical tools"
@@ -231,7 +258,8 @@ tool page. This keeps you on our platform while providing complete evidence tran
 ❌ DON'T: "See PubMed article [external link to pubmed.ncbi.nlm.nih.gov]"
 ```
 
-### At Bottom of Tool Pages:
+### At Bottom of Tool Pages
+
 ```html
 <footer>
   <h3>Evidence Sources</h3>
@@ -253,7 +281,7 @@ tool page. This keeps you on our platform while providing complete evidence tran
 ## Internal Pages Map
 
 | Topic | Primary Page | Secondary Pages |
-|-------|-------------|-----------------|
+| ------- | ----------- | --------------- |
 | **ADHD** | [/adhd](/adhd) | Focus Timer, Daily Quests, Skills Library |
 | **Autism** | [/autism](/autism) | Calm Toolkit, Skills Library, Education Pathways, Workplace Tools |
 | **Breathing** | [/tools/breathing](/tools/breathing) | Box Breathing, 4-7-8, Coherent Breathing |
@@ -334,7 +362,8 @@ onClick={() => trackEvent('evidence_verification', { source: 'NICE NG87' })}
 **Before**: Users left your site to view NHS/NICE/PubMed pages
 **After**: Users stay on your platform, explore your tools, and can verify evidence if needed
 
-**Result**: 
+**Result**:
+
 - ✅ Higher engagement & retention
 - ✅ Professional & credible (evidence transparent but non-intrusive)
 - ✅ Better user experience (one platform for guidance + tools + practice)
@@ -343,6 +372,7 @@ onClick={() => trackEvent('evidence_verification', { source: 'NICE NG87' })}
 ---
 
 **Files Changed:**
+
 1. `/web/lib/internal-pages-map.ts` - **NEW** Internal pages mapping
 2. `/web/lib/ai-coach/synthesis.ts` - Recommend internal pages
 3. `/web/components/page-buddy.tsx` - Internal navigation prompt
