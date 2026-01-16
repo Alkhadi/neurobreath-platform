@@ -12,17 +12,23 @@ import {
   MessageCircle, Map, ChevronRight, Lightbulb, HelpCircle,
   Brain, Heart, BookOpen, Target, Users, School, Home,
   FileText, Search, Printer, Download, Minimize2, Maximize2,
-  RotateCcw, Copy, Check, ExternalLink, History, Settings
+  RotateCcw, Copy, Check, ExternalLink, History, Settings, StopCircle
 } from 'lucide-react';
 import { getPageConfig, platformInfo, type PageBuddyConfig } from '@/lib/page-buddy-configs';
 import { getEvidenceBasedAnswer, formatResponseWithCitations } from '@/lib/page-buddy-knowledge';
 import { cn } from '@/lib/utils';
+import { useSpeechController } from '@/hooks/use-speech-controller';
+import { ReferencesSection, type ReferenceItemProps } from '@/components/buddy/reference-item';
+import { TailoredNextSteps, type RecommendedAction } from '@/components/buddy/tailored-next-steps';
 
 interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  recommendedActions?: RecommendedAction[];
+  references?: ReferenceItemProps[];
+  availableTools?: string[];
 }
 
 interface PageBuddyProps {
@@ -37,7 +43,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [autoSpeak, setAutoSpeak] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  const { speak, stop, isSpeaking, speakingMessageId } = useSpeechController();
   const [showTour, setShowTour] = useState(false);
   const [currentTourStep, setCurrentTourStep] = useState(0);
   const [mounted, setMounted] = useState(false);
@@ -48,6 +54,8 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     headings: { text: string; id: string; level: number }[];
     buttons: { text: string; id: string }[];
     sections: { name: string; id: string }[];
+    features: string[];
+  }>({ headings: [], buttons: [], sections: [], features: [] });
     features: string[];
   }>({ headings: [], buttons: [], sections: [], features: [] });
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -186,58 +194,6 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
-  
-  // Text-to-speech - only reads plain text
-  const speak = useCallback((text: string) => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
-    
-    // Clean text: remove all non-text elements
-    const cleanText = text
-      // Remove markdown formatting
-      .replace(/\*\*/g, '')
-      .replace(/\*/g, '')
-      .replace(/__/g, '')
-      .replace(/\x7e\x7e/g, '')
-      .replace(/`/g, '')
-      // Remove markdown links [text](url) - keep text
-      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-      // Remove URLs
-      .replace(/https?:\/\/[^\s]+/g, '')
-      .replace(/\/[a-z]+/g, ' ')
-      // Remove emojis and symbols
-      .replace(/[\u{1F300}-\u{1F9FF}]/gu, '')
-      .replace(/[\u{2600}-\u{26FF}]/gu, '')
-      .replace(/[\u{2700}-\u{27BF}]/gu, '')
-      .replace(/[\u{1F600}-\u{1F64F}]/gu, '')
-      .replace(/[\u{1F680}-\u{1F6FF}]/gu, '')
-      .replace(/[\u{1F1E0}-\u{1F1FF}]/gu, '')
-      // Remove common symbols and bullets
-      .replace(/[•◦▪▸►→←↑↓✓✔✗✘★☆⭐🎯🏆📚🔬📈💡🎉👉🛠️📄🏠🌟🧠✨🧘🎓💼🆘📊🤝🚀ℹ️⚠️]/g, '')
-      // Remove special characters
-      .replace(/[#@&%^$!?;:{}[\]<>|\\]/g, '')
-      // Clean up whitespace
-      .replace(/\n+/g, '. ')
-      .replace(/\s+/g, ' ')
-      .trim();
-    
-    if (!cleanText) return;
-    
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-    window.speechSynthesis.speak(utterance);
-  }, []);
-  
-  const stopSpeaking = useCallback(() => {
-    if (typeof window !== 'undefined' && window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-      setIsSpeaking(false);
-    }
-  }, []);
   
   // Copy message to clipboard
   const copyMessage = useCallback((messageId: string, content: string) => {
@@ -588,12 +544,19 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   };
   
   // Generate AI response
-  const generateResponse = async (userMessage: string): Promise<string> => {
+  const generateResponse = async (userMessage: string): Promise<Message> => {
     // PRIORITY 1: Check evidence-based knowledge system first
     try {
       const evidenceResponse = await getEvidenceBasedAnswer(userMessage, config.pageId);
       if (evidenceResponse) {
-        return formatResponseWithCitations(evidenceResponse);
+        const formattedContent = formatResponseWithCitations(evidenceResponse);
+        return {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: formattedContent,
+          timestamp: new Date(),
+          references: [],
+        };
       }
     } catch (error) {
       console.warn('Evidence knowledge system error:', error);
@@ -605,10 +568,15 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     
     // If we have a specific local response, use it
     if (!isGenericResponse) {
-      return localResponse;
+      return {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: localResponse,
+        timestamp: new Date(),
+      };
     }
     
-    // PRIORITY 3: Use AI for conversational responses
+    // PRIORITY 3: Use AI for conversational responses with structured output
     const systemPrompt = `You are NeuroBreath Buddy, a friendly and supportive AI assistant for the ${config.pageName} page of the NeuroBreath neurodiversity support platform.
 
 Platform Mission: ${platformInfo.mission}
@@ -625,49 +593,30 @@ Your role:
 6. Promote home-school collaboration
 
 CRITICAL - Internal Navigation:
-- ALWAYS link to internal NeuroBreath pages and tools (e.g., /adhd, /autism, /tools/breathing, /blog)
-- NEVER link to external websites (NHS, NICE, PubMed) in your responses
-- Instead, mention evidence sources by name only (e.g., "per NICE NG87", "Research PMID 12345678")
+- ALWAYS recommend internal NeuroBreath pages and tools (e.g., /adhd, /autism, /breathing)
 - Direct users to our internal tools: ADHD Hub, Autism Hub, Breathing Exercises, Focus Timer, etc.
-- Evidence citations are provided at the bottom of each page for reference
+- Evidence citations should be provided as external references
 
 CRITICAL - Evidence-Based Responses: When answering medical/clinical questions:
-- Cite sources by name and identifier ONLY (no external links)
-- Include UK sources first (NICE guidelines, NHS), then US sources (CDC, AAP, NIH)
-- Reference specific clinical guidelines: NICE NG87 (ADHD), NICE CG128/CG170 (Autism), NICE CG113 (Anxiety), NICE CG90 (Depression)
-- For research claims, mention PubMed PMIDs (e.g., "Research PMID 12345678") but don't link
-- For breathing/physiological claims: cite mechanisms (e.g., "activates vagus nerve per Research PMID 28974862")
-- If discussing treatment, cite evidence strength (e.g., "CBT is first-line treatment per NICE CG113 with strong RCT evidence")
+- Cite UK sources first (NICE guidelines, NHS), then US sources (CDC, AAP, NIH)
+- Reference specific clinical guidelines: NICE NG87 (ADHD), NICE CG128/CG170 (Autism)
+- For research claims, cite PubMed sources
+- Evidence references should be provided in the "references" array
 
 Internal Tools to Recommend:
 - ADHD: [ADHD Hub](/adhd) - Focus Timer, Daily Quests, Skills Library
 - Autism: [Autism Hub](/autism) - Calm Toolkit, Skills Library, Education Pathways, Workplace Tools
-- Breathing: [Breathing Exercises](/tools/breathing) - Box Breathing, 4-7-8, Coherent Breathing
+- Breathing: [Breathing Exercises](/breathing) - Box Breathing, Coherent Breathing, SOS 60-Second Calm
 - Reading: [Phonics Garden](/tools/phonics-garden), [Reading Fluency](/tools/reading-fluency)
 - Blog: [AI-Powered Wellbeing Hub](/blog) - AI Coach for tailored plans
 
-Integration with AI Coach:
-- The Blog page has an "AI Coach" section that provides detailed, tailored 7-day action plans
-- When users ask complex questions needing detailed guidance, direct them to [AI Coach on Blog page](/blog#ai-coach)
-- You complement the AI Coach by helping users navigate and understand page features
-- AI Coach = detailed plans; NeuroBreath Buddy = navigation and quick guidance
-
-Guidelines:
-- Keep responses concise (3-5 sentences usually)
-- Use emoji sparingly for friendliness
-- Reference specific page sections when relevant
-- Always remind users to consult healthcare providers for medical advice
-- Be neurodiversity-affirming (not deficit-focused)
-- Mention downloadable resources when relevant
-- Support home-school collaboration
-- INCLUDE source names for clinical/medical information (but no external links)
-- Evidence references appear at page bottom for users who want to verify
-
 Page sections:
-${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
+${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}
+
+Available page features: ${pageContent.features.join(', ') || 'General navigation'}`;
 
     try {
-      const response = await fetch('/api/ai-chat/buddy', {
+      const response = await fetch('/api/api-ai-chat-buddy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -675,17 +624,37 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
           messages: [
             ...messages.slice(-6).map(m => ({ role: m.role, content: m.content })),
             { role: 'user', content: userMessage }
-          ]
+          ],
+          pageContext: {
+            features: pageContent.features,
+            sections: pageContent.sections.map(s => s.name),
+            pageName: config.pageName,
+          }
         })
       });
       
       if (!response.ok) throw new Error('API error');
       
       const data = await response.json();
-      return data.content || localResponse;
+      
+      // Return structured message
+      return {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: data.answer || data.content || localResponse,
+        timestamp: new Date(),
+        recommendedActions: data.recommendedActions || [],
+        references: data.references || [],
+        availableTools: data.availableTools || pageContent.features,
+      };
     } catch (error) {
       console.error('AI response error:', error);
-      return localResponse;
+      return {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: localResponse,
+        timestamp: new Date(),
+      };
     }
   };
   
@@ -706,21 +675,21 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
     setIsLoading(true);
     
     try {
-      const response = await generateResponse(text);
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: response,
-        timestamp: new Date()
-      };
-      
+      const assistantMessage = await generateResponse(text);
       setMessages(prev => [...prev, assistantMessage]);
       
-      if (autoSpeak) {
-        speak(response);
+      if (autoSpeak && assistantMessage.content) {
+        speak(assistantMessage.id, assistantMessage.content);
       }
     } catch (error) {
       console.error('Error:', error);
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: 'I apologize, but I encountered an error. Please try asking your question again.',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -881,10 +850,19 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
       {/* Chat dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className={cn(
-          "w-[95vw] max-w-[500px] sm:max-w-[500px] p-0 flex flex-col transition-all",
-          "h-[90vh] sm:h-auto",
-          isMinimized ? "h-[120px]" : "max-h-[90vh] sm:max-h-[85vh]",
-          "overflow-hidden"
+          "p-0 flex flex-col transition-all overflow-hidden",
+          // Base mobile sizing - works for folded screens (cover display)
+          "w-[95vw] max-w-[280px]",
+          // Small devices (unfolded inner screen, regular phones)
+          "sm:w-[90vw] sm:max-w-[420px]",
+          // Medium devices and tablets
+          "md:max-w-[500px]",
+          // Heights - adaptive for fold devices
+          "h-[90vh] max-h-[90vh]",
+          "sm:h-auto sm:max-h-[85vh]",
+          // Fold-specific: when unfolded, use larger width
+          "[&:has(~*)]:md:max-w-[500px]",
+          isMinimized ? "h-[120px]" : ""
         )}>
           {/* Header */}
           <DialogHeader className="p-3 sm:p-4 pb-2 border-b border-border bg-gradient-to-r from-primary/10 to-purple-500/10 flex-shrink-0">
@@ -991,16 +969,31 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
                     </div>
                     <div className="flex items-center gap-1 mt-2 pt-2 border-t border-border/50 flex-shrink-0">
                       {message.role === 'assistant' && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-6 sm:h-7 px-2 sm:px-3 text-xs bg-background/50 hover:bg-background border-border/50"
-                          onClick={() => speak(message.content)}
-                          aria-label="Listen to this message"
-                        >
-                          <Volume2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
-                          <span className="text-[10px] sm:text-xs">Listen</span>
-                        </Button>
+                        <>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-6 sm:h-7 px-2 sm:px-3 text-xs bg-background/50 hover:bg-background border-border/50"
+                            onClick={() => speak(message.id, message.content)}
+                            disabled={isSpeaking && speakingMessageId === message.id}
+                            aria-label="Listen to this message"
+                          >
+                            <Volume2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
+                            <span className="text-[10px] sm:text-xs">Listen</span>
+                          </Button>
+                          {isSpeaking && speakingMessageId === message.id && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-6 sm:h-7 px-2 sm:px-3 text-xs bg-destructive/10 hover:bg-destructive/20 border-destructive/50 text-destructive"
+                              onClick={stop}
+                              aria-label="Stop speaking"
+                            >
+                              <StopCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
+                              <span className="text-[10px] sm:text-xs">Stop</span>
+                            </Button>
+                          )}
+                        </>
                       )}
                       <Button
                         variant="outline"
@@ -1016,6 +1009,19 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
                         )}
                       </Button>
                     </div>
+                    
+                    {/* Tailored Next Steps */}
+                    {message.role === 'assistant' && message.recommendedActions && message.recommendedActions.length > 0 && (
+                      <TailoredNextSteps 
+                        actions={message.recommendedActions}
+                        availableTools={message.availableTools}
+                      />
+                    )}
+                    
+                    {/* References Section */}
+                    {message.role === 'assistant' && message.references && message.references.length > 0 && (
+                      <ReferencesSection references={message.references} />
+                    )}
                   </div>
                 </div>
               ))}
