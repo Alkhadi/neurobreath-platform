@@ -73,6 +73,7 @@ export default function ADHDHubPage() {
 ```
 
 **Displays:**
+
 - NICE NG87 (2018) guideline
 - NHS ADHD guidance
 - Research PMID 31411903 (medication efficacy)
@@ -103,6 +104,7 @@ export default function BreathingPage() {
 ```
 
 **Displays:**
+
 - NHS breathing exercises guidance
 - Research PMID 29616846 (systematic review)
 - Research PMID 28974862 (stress reduction)
@@ -187,27 +189,30 @@ Four categories automatically grouped in the footer:
 
 **Medium Priority**:
 
-4. ✅ `/blog` - Blog page (use mixed sources)
-5. ✅ `/tools/phonics-garden` - Phonics (use `DYSLEXIA_EVIDENCE_SOURCES`)
-6. ✅ `/tools/reading-fluency` - Reading (use `DYSLEXIA_EVIDENCE_SOURCES`)
+1. ✅ `/blog` - Blog page (use mixed sources)
+2. ✅ `/tools/phonics-garden` - Phonics (use `DYSLEXIA_EVIDENCE_SOURCES`)
+3. ✅ `/tools/reading-fluency` - Reading (use `DYSLEXIA_EVIDENCE_SOURCES`)
 
 **Optional**:
 
-7. Topic-specific blog posts (create custom sources as needed)
+1. Topic-specific blog posts (create custom sources as needed)
 
 ---
 
 ## What Users See
 
-### In Page Content:
-```
+### In Page Content
+
+```text
 "ADHD treatment follows NICE NG87 (2018) guidelines..."
 "Breathing activates vagus nerve per Research PMID 28974862..."
 ```
+
 ↓
 
-### At Page Bottom:
-```
+### At Page Bottom
+
+```text
 📚 Evidence Sources
 
 Clinical Guidelines:
@@ -240,11 +245,13 @@ Medical Disclaimer: Educational information, not medical advice...
 ## Maintenance
 
 **Quarterly Check** (every 3 months):
+
 - Verify all URLs still work
 - Check for NICE guideline updates
 - Add new landmark studies if published
 
 **When NICE Updates Guidelines**:
+
 - Update title (e.g., "NICE NG87 (2018, updated 2024)")
 - Update description if scope changed
 - URL usually stays the same
