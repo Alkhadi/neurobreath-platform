@@ -3,15 +3,18 @@
 ## What Was Fixed
 
 ### 1. Created Missing API Routes ✅
+
 - **`/api/pubmed`** - Fetches PubMed research articles
 - **`/api/ai-chat`** - Provides streaming AI chat responses
 
 ### 2. Build Issues Resolved ✅
+
 - Fixed evidence sources array spreading in `page.tsx` and `blog/page.tsx`
 - Made pages client components where needed
 - Build now completes successfully
 
 ### 3. Comprehensive Error Handling ✅
+
 - **maxDuration=30** added to both APIs to prevent Vercel timeouts
 - **10s fetch timeout** for PubMed requests to prevent hanging
 - **Promise.allSettled** replaces Promise.all for graceful degradation
@@ -19,7 +22,9 @@
 - **Fallback streaming responses** with helpful resources when AI chat encounters errors
 
 ### 4. Fallback Database ✅
+
 Added curated research articles for all topics:
+
 - **Autism**: Evidence-based interventions, systematic reviews
 - **ADHD**: Management strategies, exercise interventions
 - **Anxiety**: Breathing exercises, CBT evidence
@@ -65,7 +70,8 @@ Added curated research articles for all topics:
 ## API Endpoints
 
 ### GET /api/pubmed
-```
+
+```json
 Parameters:
 - query: string (required) - Search terms
 - max: number (default: 10) - Maximum results
@@ -81,7 +87,8 @@ Response:
 ```
 
 ### POST /api/ai-chat
-```
+
+```json
 Body:
 {
   "messages": [
@@ -96,14 +103,14 @@ data: [DONE]
 
 ## Troubleshooting
 
-### If errors persist after deployment:
+### If errors persist after deployment
 
 1. **Clear browser cache**: Ctrl+Shift+R (Chrome/Edge) or Cmd+Shift+R (Mac)
 2. **Check browser console**: Look for actual error messages
 3. **Verify deployment**: Check that build completed successfully on GitHub Actions
 4. **Test API directly**: Open `/api/pubmed?query=autism&max=5` in browser
 
-### Common Issues:
+### Common Issues
 
 - **"Failed to fetch research"**: Check network tab - API should return 200 OK
 - **"Failed to get response"**: Ensure streaming is working (check Content-Type: text/event-stream)
