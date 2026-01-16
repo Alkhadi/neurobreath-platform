@@ -33,6 +33,7 @@
 **Location:** `web/types/ai-coach.ts`
 
 **New Interfaces:**
+
 - `UserContext` - Captures user's situation (age, setting, goals, symptoms, etc.)
 - `RecommendedResource` - Primary/Backup/Add-on structure
 - `DayPlanItem` - 7-day micro plan
@@ -46,25 +47,30 @@
 
 ### 4. Display Components (NEW FILES)
 
+
 #### `recommendations-display.tsx`
+
 - Shows Primary/Backup/Add-on recommendations
 - Color-coded cards (blue/green/purple)
 - "Who it's for", "How to do it", "Exact settings", "When to use"
 - Direct CTA buttons with internal links
 
 #### `seven-day-plan.tsx`
+
 - Day-by-day micro plan with timeline
 - Numbered day circles with activity descriptions
 - Duration and notes for each day
 - Gradient indigo/purple theme
 
 #### `thirty-day-challenge.tsx`
+
 - Challenge rule display
 - Badge milestones (Flame, Star, Trophy icons)
 - Tracking link to progress dashboard
 - Gradient amber/orange theme
 
 #### `internal-links-display.tsx`
+
 - NeuroBreath tool recommendations
 - Step-by-step numbering
 - Reason for each recommendation
@@ -73,15 +79,18 @@
 
 ### 5. Updated AI Coach Chat Component
 
+
 **Location:** `web/components/blog/ai-coach-chat.tsx`
 
 **New Imports:**
+
 - `RecommendationsDisplay`
 - `SevenDayPlan`
 - `ThirtyDayChallenge`
 - `InternalLinksDisplay`
 
 **Updated AnswerDisplay Function:**
+
 - Integrated all new display components
 - Reordered output to match system prompt structure:
   1. Summary
@@ -132,8 +141,7 @@
 
 ### Data Flow
 
-```
-
+```text
 User Question 
 → AI Coach API (/api/ai-coach)
 → Intent Parser
@@ -142,7 +150,6 @@ User Question
 → LLM Synthesis (with system prompt)
 → Structured AICoachAnswer
 → Frontend Display Components
-
 ```
 
 ### Resource Matching
@@ -171,6 +178,7 @@ Presented as "Open on NeuroBreath" links
 **File to Update:** `web/app/api/ai-coach/route.ts`
 
 **Changes Required:**
+
 1. Import system prompt and resource catalog
 2. Add resource catalog to API request context
 3. Update LLM prompt construction
@@ -178,6 +186,7 @@ Presented as "Open on NeuroBreath" links
 5. Populate recommendations, internal links, 7-day plan, 30-day challenge
 
 **Pseudocode:**
+
 ```typescript
 import { SYSTEM_PROMPT } from '@/lib/ai-coach/system-prompt'
 import { NEUROBREATH_RESOURCE_CATALOG, findResourcesByTags } from '@/lib/ai-coach/resource-catalog'
@@ -225,12 +234,14 @@ return NextResponse.json({ answer, meta: {...} })
 
 **Expected Output:**
 
-**1. Plain-English Answer**
+#### 1. Plain-English Answer
+
 - ADHD makes focusing hard, but you can train your brain with practice
 - Short bursts work better than long sessions
 - Movement breaks help reset attention
 
-**2. Best-Fit Recommendations**
+#### 2. Best-Fit Recommendations
+
 - **Primary**: Focus Garden (5 min/day, gamified attention training)
   - Settings: Start with 3-minute sessions, 2x per day
   - When: Before homework and after school
@@ -239,12 +250,14 @@ return NextResponse.json({ answer, meta: {...} })
   - When: When feeling distracted or overwhelmed
 - **Add-on**: 30-Day Focus Challenge (1 min/day minimum)
 
-**3. Open on NeuroBreath**
+#### 3. Open on NeuroBreath
+
 - Focus Garden → "Gamified attention training with rewards"
 - ADHD Tools → "Timers and organization helpers"
 - Progress Dashboard → "Track your focus streak"
 
-**4. 7-Day Micro Plan**
+#### 4. 7-Day Micro Plan
+
 - Day 1: Try Focus Garden for 3 minutes, any time
 - Day 2: Focus Garden before homework (3 min)
 - Day 3: Add Box Breathing when distracted (1 min)
@@ -253,17 +266,20 @@ return NextResponse.json({ answer, meta: {...} })
 - Day 6: Practice at the same time each day
 - Day 7: Celebrate your streak! Reward yourself
 
-**5. 30-Day Challenge**
+#### 5. 30-Day Challenge
+
 - Rule: "Practice focus training for at least 1 minute every day"
 - Badges: Day 3 (🔥 Streak Starter), Day 7 (⭐ Week Warrior), Day 30 (🏆 Focus Master)
 - Track: Progress Dashboard
 
-**6. Evidence Snapshot**
+#### 6. Evidence Snapshot
+
 - NHS: ADHD management strategies for children
 - NICE NG87: ADHD diagnosis and management
 - PubMed: Attention training games show improvement in ADHD children
 
-**7. Follow-Up Questions**
+#### 7. Follow-Up Questions
+
 - "What time of day do you usually do homework?"
 - "Do you have a quiet space without distractions?"
 
@@ -276,12 +292,14 @@ return NextResponse.json({ answer, meta: {...} })
 
 **Expected Output:**
 
-**1. Plain-English Answer**
+#### 1. Plain-English Answer (Autism Example)
+
 - Sensory overload happens when your nervous system gets too much input
 - Quick regulation helps prevent shutdown/meltdown
 - Predictable recovery routine is key
 
-**2. Best-Fit Recommendations**
+#### 2. Best-Fit Recommendations (Autism Example)
+
 - **Primary**: SOS 60-Second Reset (1 min, immediate relief)
   - Settings: 5 deep breaths, eyes closed, focus on exhale
   - When: First sign of overwhelm
@@ -290,12 +308,14 @@ return NextResponse.json({ answer, meta: {...} })
   - When: Break time or quiet space available
 - **Add-on**: Workplace Adjustments Guide
 
-**3. Open on NeuroBreath**
+#### 3. Open on NeuroBreath (Autism Example)
+
 - SOS 60-Second Reset → "Fast downshift for acute overwhelm"
 - Autism Support Hub → "Sensory strategies and workplace adjustments"
 - Workplace Wellbeing → "Reasonable adjustments templates"
 
-**4. 7-Day Micro Plan**
+#### 4. 7-Day Micro Plan (Autism Example)
+
 - Day 1: Identify your sensory triggers at work
 - Day 2: Practice SOS Reset twice (even if not overwhelmed)
 - Day 3: Use SOS at first sign of sensory buildup
@@ -304,7 +324,8 @@ return NextResponse.json({ answer, meta: {...} })
 - Day 6: Combine SOS + remove from trigger environment
 - Day 7: Review what worked, adjust for next week
 
-**5. Evidence Snapshot**
+#### 5. Evidence Snapshot
+
 - NHS: Autism and managing sensory issues
 - NICE CG142: Autism in adults
 - PubMed: Controlled breathing reduces autonomic arousal
@@ -349,35 +370,40 @@ return NextResponse.json({ answer, meta: {...} })
 
 ### Manual Testing (When Backend Complete)
 
-**Test 1: ADHD Focus**
+#### Test 1: ADHD Focus
+
 - [ ] Ask: "ADHD child, can't focus on reading"
 - [ ] Verify: Focus Garden recommended as primary
 - [ ] Verify: 7-day plan includes progressive practice
 - [ ] Verify: Internal links to ADHD tools appear
 - [ ] Verify: 30-day challenge offered with badge milestones
 
-**Test 2: Autism Sensory**
+#### Test 2: Autism Sensory
+
 - [ ] Ask: "Autistic adult, sensory overload at supermarket"
 - [ ] Verify: SOS 60-Second Reset recommended as primary
 - [ ] Verify: Exact breathing settings provided
 - [ ] Verify: Workplace adjustments NOT recommended (wrong context)
 - [ ] Verify: Follow-up questions about triggers
 
-**Test 3: Sleep Issues**
+#### Test 3: Sleep Issues
+
 - [ ] Ask: "Teen with insomnia, can't fall asleep"
 - [ ] Verify: 4-7-8 Breathing recommended
 - [ ] Verify: Sleep tools and hygiene guidance
 - [ ] Verify: 7-day plan includes bedtime routine
 - [ ] Verify: Evidence from NHS sleep guidance
 
-**Test 4: Dyslexia Reading**
+#### Test 4: Dyslexia Reading
+
 - [ ] Ask: "Dyslexic child, reading homework is stressful"
 - [ ] Verify: Dyslexia Reading Training + calming breathing
 - [ ] Verify: Both learning and regulation addressed
 - [ ] Verify: Teacher resources suggested for parents
 - [ ] Verify: 7-day plan combines practice + breaks
 
-**Test 5: Workplace Stress**
+#### Test 5: Workplace Stress
+
 - [ ] Ask: "Workplace burnout, need quick stress relief"
 - [ ] Verify: Stress management tools recommended
 - [ ] Verify: Workplace-specific adjustments mentioned
@@ -475,7 +501,7 @@ return NextResponse.json({ answer, meta: {...} })
 - ⏳ Backend API route (pending LLM integration)
 - ⏳ End-to-end testing (pending backend)
 
-**Overall Progress: 85% Complete**
+### Overall Progress: 85% Complete
 
 ---
 
