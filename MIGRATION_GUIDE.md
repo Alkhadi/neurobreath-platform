@@ -4,6 +4,7 @@
 
 ### Required: Add New Models
 
+
 The following Prisma models have been added and require database migration:
 
 1. **SENDReport** - Training recommendation reports
@@ -13,11 +14,14 @@ The following Prisma models have been added and require database migration:
 
 #### 1. Review Schema Changes
 
+
 Open `web/prisma/schema.prisma` and review the new models:
+
 - Lines ~373-410: `SENDReport` model
 - Lines ~416-432: `ParentAccess` model
 
 #### 2. Create Migration
+
 
 ```bash
 cd web
@@ -25,14 +29,17 @@ npx prisma migrate dev --name add_send_reports_and_parent_access
 ```
 
 This will:
+
 - Generate SQL migration file
 - Apply migration to development database
 - Regenerate Prisma Client
 
 #### 3. Review Generated Migration
 
+
 Check the migration file in:
-```
+
+```texttext
 web/prisma/migrations/YYYYMMDDHHMMSS_add_send_reports_and_parent_access/migration.sql
 ```
 
@@ -102,6 +109,7 @@ CREATE INDEX "ParentAccess_isActive_idx" ON "ParentAccess"("isActive");
 
 #### 4. Regenerate Prisma Client
 
+
 ```bash
 npx prisma generate
 ```
@@ -122,7 +130,9 @@ const access = await prisma.parentAccess.create({ /* ... */ })
 
 ### Production Deployment
 
+
 #### Option 1: Automatic Migration (Recommended for managed databases)
+
 
 ```bash
 cd web
@@ -134,6 +144,7 @@ This applies pending migrations to production database.
 #### Option 2: Manual SQL (For strict production control)
 
 1. Export migration SQL:
+
 ```bash
 npx prisma migrate diff \
   --from-schema-datamodel prisma/schema.prisma \
@@ -141,9 +152,10 @@ npx prisma migrate diff \
   --script > migration.sql
 ```
 
-2. Review SQL carefully
-3. Apply manually to production database
-4. Mark migration as applied:
+1. Review SQL carefully
+1. Apply manually to production database
+1. Mark migration as applied:
+
 ```bash
 npx prisma migrate resolve --applied MIGRATION_NAME
 ```
@@ -166,6 +178,7 @@ Then remove the migration folder and regenerate client.
 
 ### No New Required Variables ✅
 
+
 All new features work without additional configuration.
 
 ### Optional Variables (For Enhanced Features)
@@ -184,7 +197,9 @@ ABACUS_API_KEY=...
 
 ### None! ✅
 
+
 All changes are additive and backward-compatible:
+
 - New API routes don't affect existing routes
 - New components are opt-in
 - Guest mode unchanged
@@ -249,12 +264,15 @@ export default function SettingsPage() {
 ## Testing Checklist
 
 ### Pre-Migration
+
 - [ ] Backup production database
 - [ ] Test migration on staging environment
 - [ ] Verify Prisma schema syntax
 - [ ] Check for conflicts with existing models
 
 ### Post-Migration
+
+
 - [ ] Verify tables created successfully
 - [ ] Check indexes are in place
 - [ ] Test new API endpoints
@@ -262,6 +280,8 @@ export default function SettingsPage() {
 - [ ] Run existing tests (ensure no regressions)
 
 ### Feature Testing
+
+
 - [ ] Create a SEND report (rules engine)
 - [ ] Generate parent access code
 - [ ] Test parent view page
@@ -277,7 +297,8 @@ export default function SettingsPage() {
 
 **Error:** `Table already exists`
 
-**Solution:** 
+**Solution:**
+
 ```bash
 # Check existing tables
 npx prisma db pull
@@ -291,15 +312,18 @@ npx prisma migrate resolve --applied MIGRATION_NAME
 **Error:** `Unknown field 'sENDReport'`
 
 **Solution:**
+
 ```bash
 npx prisma generate
 ```
 
 ### Type Errors After Migration
 
+
 **Error:** TypeScript doesn't recognize new models
 
 **Solution:**
+
 ```bash
 # Regenerate client
 npx prisma generate
@@ -310,9 +334,11 @@ npx prisma generate
 
 ### Database Connection Issues
 
+
 **Error:** `Can't reach database server`
 
 **Solution:**
+
 - Check `DATABASE_URL` in `.env`
 - Verify database is running
 - Check network/firewall settings
@@ -322,21 +348,28 @@ npx prisma generate
 ## Verification Commands
 
 ### Check Migration Status
+
 ```bash
 npx prisma migrate status
 ```
 
 ### View Database Schema
+
+
 ```bash
 npx prisma db pull
 ```
 
 ### Validate Schema
+
+
 ```bash
 npx prisma validate
 ```
 
 ### Generate Client
+
+
 ```bash
 npx prisma generate
 ```
@@ -359,7 +392,7 @@ If you encounter issues:
 2. Review migration SQL file
 3. Verify DATABASE_URL is correct
 4. Check database permissions
-5. Consult Prisma docs: https://www.prisma.io/docs/concepts/components/prisma-migrate
+5. Consult Prisma docs: <https://www.prisma.io/docs/concepts/components/prisma-migrate>
 
 ---
 
