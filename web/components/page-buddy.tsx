@@ -849,82 +849,86 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className={cn(
           "p-0 flex flex-col transition-all overflow-hidden",
-          // Base mobile sizing - works for folded screens (cover display)
-          "w-[95vw] max-w-[280px]",
-          // Small devices (unfolded inner screen, regular phones)
-          "sm:w-[90vw] sm:max-w-[420px]",
+          // 2% gap from top (navigation bar) - applies to all viewports
+          "top-[calc(50%+1vh)]",
+          // Base mobile sizing - responsive for all devices
+          "w-[95vw] max-w-[340px]",
+          // Small devices (phones, unfolded screens)
+          "sm:w-[90vw] sm:max-w-[440px]",
           // Medium devices and tablets
-          "md:max-w-[500px]",
-          // Heights - adaptive for fold devices
-          "h-[90vh] max-h-[90vh]",
-          "sm:h-auto sm:max-h-[85vh]",
-          // Fold-specific: when unfolded, use larger width
-          "[&:has(~*)]:md:max-w-[500px]",
-          isMinimized ? "h-[120px]" : ""
+          "md:w-[85vw] md:max-w-[520px]",
+          // Large devices
+          "lg:w-[80vw] lg:max-w-[580px]",
+          // Heights - adaptive for all devices with 2% top margin
+          "h-[86vh] max-h-[86vh]",
+          "sm:h-[84vh] sm:max-h-[84vh]",
+          "md:h-[82vh] md:max-h-[82vh]",
+          // Minimized state
+          isMinimized ? "h-[120px] sm:h-[130px]" : ""
         )}>
           {/* Header */}
-          <DialogHeader className="p-3 sm:p-4 pb-2 border-b border-border bg-gradient-to-r from-primary/10 to-purple-500/10 flex-shrink-0">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                  <Bot className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+          <DialogHeader className="p-3 sm:p-4 md:p-5 pb-2 sm:pb-3 border-b border-border bg-gradient-to-r from-primary/10 to-purple-500/10 flex-shrink-0">
+            <div className="flex items-center justify-between gap-2 sm:gap-3">
+              <div className="flex items-center gap-2 sm:gap-3 md:gap-4 min-w-0 flex-1">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                  <Bot className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-primary" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <DialogTitle className="text-base sm:text-lg font-semibold truncate">NeuroBreath Buddy</DialogTitle>
-                  <p className="text-xs text-muted-foreground truncate">{config.pageName} Guide</p>
+                  <DialogTitle className="text-sm sm:text-base md:text-lg font-semibold truncate">NeuroBreath Buddy</DialogTitle>
+                  <p className="text-[10px] sm:text-xs md:text-sm text-muted-foreground truncate">{config.pageName} Guide</p>
                 </div>
               </div>
-              <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
+              <div className="flex items-center gap-0.5 sm:gap-1 md:gap-1.5 flex-shrink-0">
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 sm:h-8 sm:w-8 text-primary"
+                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-primary"
                   onClick={() => setAutoSpeak(!autoSpeak)}
                   title={autoSpeak ? 'Auto-speak on' : 'Auto-speak off'}
                   aria-label={autoSpeak ? 'Turn off auto-speak' : 'Turn on auto-speak'}
                 >
-                  {autoSpeak ? <Volume2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <VolumeX className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
+                  {autoSpeak ? <Volume2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" /> : <VolumeX className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />}
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 sm:h-8 sm:w-8 text-primary"
+                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-primary"
                   onClick={startTour}
                   title="Start page tour"
                   aria-label="Start guided page tour"
                 >
-                  <Map className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <Map className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 sm:h-8 sm:w-8 text-muted-foreground hover:text-foreground hidden sm:inline-flex"
+                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-muted-foreground hover:text-foreground hidden sm:inline-flex"
                   onClick={exportChat}
                   title="Export chat history"
                   aria-label="Export chat history"
                   disabled={messages.length <= 1}
                 >
-                  <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 sm:h-8 sm:w-8 text-muted-foreground hover:text-foreground"
+                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-muted-foreground hover:text-foreground"
                   onClick={clearChat}
                   title="Clear chat history"
                   aria-label="Clear chat history"
                 >
-                  <RotateCcw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <RotateCcw className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 sm:h-8 sm:w-8 text-muted-foreground hover:text-foreground"
+                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-muted-foreground hover:text-foreground"
                   onClick={() => setIsMinimized(!isMinimized)}
                   title={isMinimized ? 'Maximize' : 'Minimize'}
                   aria-label={isMinimized ? 'Maximize' : 'Minimize'}
                 >
-                  {isMinimized ? <Maximize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <Minimize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
+                  {isMinimized ? <Maximize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" /> : <Minimize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />}
                 </Button>
               </div>
             </div>
@@ -932,7 +936,7 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
           
           {/* Messages */}
           {!isMinimized && (
-          <ScrollArea className="flex-1 p-3 sm:p-4 overflow-y-auto min-h-0" ref={scrollRef}>
+          <ScrollArea className="flex-1 p-3 sm:p-4 md:p-5 overflow-y-auto min-h-0" ref={scrollRef}>
             <div className="space-y-3 sm:space-y-4">
               {messages.map((message) => (
                 <div
@@ -943,19 +947,19 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                   )}
                 >
                   {message.role === 'assistant' && (
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                      <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 text-primary" />
                     </div>
                   )}
                   <div
                     className={cn(
-                      "max-w-[85%] sm:max-w-[80%] rounded-2xl px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm group relative flex flex-col",
+                      "max-w-[85%] sm:max-w-[80%] md:max-w-[75%] rounded-2xl px-3 py-2 sm:px-4 sm:py-2.5 md:px-5 md:py-3 text-xs sm:text-sm md:text-base group relative flex flex-col",
                       message.role === 'user'
                         ? 'bg-primary text-primary-foreground rounded-br-md'
                         : 'bg-muted rounded-bl-md'
                     )}
                   >
-                    <div className="max-h-[300px] sm:max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent pr-1 sm:pr-2 flex-shrink min-h-0">
+                    <div className="max-h-[300px] sm:max-h-[350px] md:max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent pr-1 sm:pr-2 md:pr-3 flex-shrink min-h-0">
                       <div className="whitespace-pre-wrap leading-relaxed break-words">
                         {message.content.split('\n').map((line, i) => (
                           <span key={i}>
@@ -965,30 +969,30 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                         ))}
                       </div>
                     </div>
-                    <div className="flex items-center gap-1 mt-2 pt-2 border-t border-border/50 flex-shrink-0">
+                    <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 mt-2 pt-2 border-t border-border/50 flex-shrink-0">
                       {message.role === 'assistant' && (
                         <>
                           <Button
                             variant="outline"
                             size="sm"
-                            className="h-6 sm:h-7 px-2 sm:px-3 text-xs bg-background/50 hover:bg-background border-border/50"
+                            className="h-6 sm:h-7 md:h-8 px-2 sm:px-3 md:px-4 text-xs md:text-sm bg-background/50 hover:bg-background border-border/50"
                             onClick={() => speak(message.id, message.content)}
                             disabled={isSpeaking && speakingMessageId === message.id}
                             aria-label="Listen to this message"
                           >
-                            <Volume2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
-                            <span className="text-[10px] sm:text-xs">Listen</span>
+                            <Volume2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 mr-1" />
+                            <span className="text-[10px] sm:text-xs md:text-sm">Listen</span>
                           </Button>
                           {isSpeaking && speakingMessageId === message.id && (
                             <Button
                               variant="outline"
                               size="sm"
-                              className="h-6 sm:h-7 px-2 sm:px-3 text-xs bg-destructive/10 hover:bg-destructive/20 border-destructive/50 text-destructive"
+                              className="h-6 sm:h-7 md:h-8 px-2 sm:px-3 md:px-4 text-xs md:text-sm bg-destructive/10 hover:bg-destructive/20 border-destructive/50 text-destructive"
                               onClick={stop}
                               aria-label="Stop speaking"
                             >
-                              <StopCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
-                              <span className="text-[10px] sm:text-xs">Stop</span>
+                              <StopCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 mr-1" />
+                              <span className="text-[10px] sm:text-xs md:text-sm">Stop</span>
                             </Button>
                           )}
                         </>
@@ -996,14 +1000,14 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                       <Button
                         variant="outline"
                         size="sm"
-                        className="h-6 sm:h-7 px-2 sm:px-3 text-xs bg-background/50 hover:bg-background border-border/50"
+                        className="h-6 sm:h-7 md:h-8 px-2 sm:px-3 md:px-4 text-xs md:text-sm bg-background/50 hover:bg-background border-border/50"
                         onClick={() => copyMessage(message.id, message.content)}
                         aria-label="Copy message"
                       >
                         {copiedMessageId === message.id ? (
-                          <><Check className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="text-[10px] sm:text-xs">Copied</span></>
+                          <><Check className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 mr-1" /><span className="text-[10px] sm:text-xs md:text-sm">Copied</span></>
                         ) : (
-                          <><Copy className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" /><span className="text-[10px] sm:text-xs">Copy</span></>
+                          <><Copy className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 mr-1" /><span className="text-[10px] sm:text-xs md:text-sm">Copy</span></>
                         )}
                       </Button>
                     </div>
@@ -1025,11 +1029,11 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
               ))}
               
               {isLoading && (
-                <div className="flex gap-2 sm:gap-3 justify-start">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                    <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary animate-pulse" />
+                <div className="flex gap-2 sm:gap-3 md:gap-4 justify-start">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full bg-primary/20 flex items-center justify-center">
+                    <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 text-primary animate-pulse" />
                   </div>
-                  <div className="bg-muted rounded-2xl rounded-bl-md px-3 py-2 sm:px-4 sm:py-3">
+                  <div className="bg-muted rounded-2xl rounded-bl-md px-3 py-2 sm:px-4 sm:py-3 md:px-5 md:py-4">
                     <div className="flex gap-1">
                       <span className="w-2 h-2 bg-primary/50 rounded-full animate-bounce [animation-delay:0ms]" />
                       <span className="w-2 h-2 bg-primary/50 rounded-full animate-bounce [animation-delay:150ms]" />
@@ -1058,9 +1062,9 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
           
           {/* Quick questions */}
           {!isMinimized && (
-          <div className="px-3 sm:px-4 py-2 border-t border-border flex-shrink-0">
-            <div className="flex items-center justify-between mb-1.5 sm:mb-2">
-              <p className="text-[10px] sm:text-xs text-muted-foreground">Quick questions:</p>
+          <div className="px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 border-t border-border flex-shrink-0">
+            <div className="flex items-center justify-between mb-1.5 sm:mb-2 md:mb-2.5">
+              <p className="text-[10px] sm:text-xs md:text-sm text-muted-foreground">Quick questions:</p>
               <Button
                 variant="ghost"
                 size="sm"
@@ -1073,13 +1077,13 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                 Export
               </Button>
             </div>
-            <div className="flex flex-wrap gap-1 sm:gap-1.5 max-h-24 sm:max-h-32 overflow-y-auto">
+            <div className="flex flex-wrap gap-1 sm:gap-1.5 md:gap-2 max-h-24 sm:max-h-32 md:max-h-36 overflow-y-auto">
               {config.quickQuestions.map((question: string, idx: number) => (
                 <Button
                   key={idx}
                   variant="outline"
                   size="sm"
-                  className="h-6 sm:h-7 text-[10px] sm:text-xs px-2 sm:px-3 flex-shrink-0 leading-tight"
+                  className="h-6 sm:h-7 md:h-8 text-[10px] sm:text-xs md:text-sm px-2 sm:px-3 md:px-4 flex-shrink-0 leading-tight"
                   onClick={() => handleQuickQuestion(question)}
                   disabled={isLoading}
                 >
@@ -1092,9 +1096,9 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
           
           {/* Input area */}
           {!isMinimized && (
-          <div className="p-3 sm:p-4 pt-2 border-t border-border flex-shrink-0">
+          <div className="p-3 sm:p-4 md:p-5 pt-2 sm:pt-2.5 md:pt-3 border-t border-border flex-shrink-0">
             <form
-              className="flex gap-1.5 sm:gap-2"
+              className="flex gap-1.5 sm:gap-2 md:gap-2.5"
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSend();
@@ -1105,30 +1109,30 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask me about this page..."
-                className="flex-1 h-9 sm:h-10 text-xs sm:text-sm"
+                className="flex-1 h-9 sm:h-10 md:h-11 text-xs sm:text-sm md:text-base"
                 disabled={isLoading}
                 aria-label="Type your question"
               />
               <Button
                 type="submit"
                 size="icon"
-                className="h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0"
+                className="h-9 w-9 sm:h-10 sm:w-10 md:h-11 md:w-11 flex-shrink-0"
                 disabled={!input.trim() || isLoading}
                 aria-label="Send message"
               >
-                <Send className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <Send className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />
               </Button>
             </form>
           </div>
           )}
           
           {/* Page indicator */}
-          <div className="px-3 sm:px-4 py-1.5 sm:py-2 border-t border-border bg-muted/50 flex-shrink-0">
-            <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-muted-foreground flex-wrap">
-              <Badge variant="secondary" className="text-[10px] sm:text-xs h-5 sm:h-auto">
-                {config.pageId === 'adhd' && <Brain className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />}
-                {config.pageId === 'autism' && <Heart className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />}
-                {config.pageId === 'home' && <Home className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />}
+          <div className="px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 border-t border-border bg-muted/50 flex-shrink-0">
+            <div className="flex items-center justify-center gap-1.5 sm:gap-2 md:gap-2.5 text-[10px] sm:text-xs md:text-sm text-muted-foreground flex-wrap">
+              <Badge variant="secondary" className="text-[10px] sm:text-xs md:text-sm h-5 sm:h-6 md:h-auto">
+                {config.pageId === 'adhd' && <Brain className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-3.5 md:w-3.5 mr-0.5 sm:mr-1" />}
+                {config.pageId === 'autism' && <Heart className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-3.5 md:w-3.5 mr-0.5 sm:mr-1" />}
+                {config.pageId === 'home' && <Home className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-3.5 md:w-3.5 mr-0.5 sm:mr-1" />}
                 <span className="truncate max-w-[120px] sm:max-w-none">{config.pageName}</span>
               </Badge>
               <span className="hidden sm:inline">•</span>
@@ -1137,11 +1141,10 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                 <>
                   <span className="hidden sm:inline">•</span>
                   <span className="hidden sm:flex items-center gap-1">
-                    <Sparkles className="h-3 w-3" />
+                    <Sparkles className="h-3 w-3 md:h-3.5 md:w-3.5" />
                     {pageContent.features.length} features
                   </span>
-                </>
-              )}
+                </>\n              )}
             </div>
           </div>
         </DialogContent>
