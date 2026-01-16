@@ -23,9 +23,10 @@ All condition definitions and management strategies now include:
 - **UK/US Guidelines**: DSM-5, ICD-11, CDC, AAP, WHO
 - **Year of Publication**: e.g., "(2018)", "(2023)"
 
-#### Example Citations Added:
+#### Example Citations Added
 
 **ADHD:**
+
 ```typescript
 'Attention deficit hyperactivity disorder (ADHD) is a neurodevelopmental condition affecting executive function (NICE NG87, DSM-5).'
 'Research shows... (Research: PMID 31411903)'
@@ -33,12 +34,14 @@ All condition definitions and management strategies now include:
 ```
 
 **Autism:**
+
 ```typescript
 'Autism spectrum disorder (ASD) is a lifelong neurodevelopmental condition (NICE CG128/CG170, WHO ICD-11).'
 'Assessment follows NICE CG128 guidelines using standardized tools like ADOS-2 and ADI-R'
 ```
 
 **Breathing:**
+
 ```typescript
 'Controlled breathing activates the vagus nerve and parasympathetic nervous system (Research: PMID 29616846)'
 'Slow, deep breathing (4-6 breaths/min) reduces cortisol (PMID 28974862)'
@@ -46,6 +49,7 @@ All condition definitions and management strategies now include:
 ```
 
 **Anxiety:**
+
 ```typescript
 'CBT is first-line psychological treatment with strong evidence base (NICE CG113, multiple RCTs)'
 'Breathing exercises activate parasympathetic nervous system (Research: PMID 28974862)'
@@ -53,6 +57,7 @@ All condition definitions and management strategies now include:
 ```
 
 **Depression:**
+
 ```typescript
 'Clinical depression involves persistent low mood (DSM-5, ICD-11, NICE CG90)'
 'Combination therapy most effective for moderate-severe depression (STAR*D trial, PMID 16551270)'
@@ -60,12 +65,14 @@ All condition definitions and management strategies now include:
 ```
 
 **Sleep:**
+
 ```typescript
 'CBT-I is gold-standard treatment with 70-80% success rate (NICE, multiple RCTs PMID 26447429)'
 'Chronic sleep deprivation increases disease risk (Research: PMID 28364458)'
 ```
 
 **Dyslexia:**
+
 ```typescript
 'Dyslexia affects phonological processing and working memory (Rose Review 2009, DSM-5, Research: PMID 28213071)'
 'Strengths include creativity and spatial reasoning (Research: PMID 27539432)'
@@ -81,6 +88,7 @@ Updated `generateEvidenceSnapshot()` to include:
 - Topic-specific evidence highlights
 
 **Examples:**
+
 ```typescript
 'NICE NG87 (2018): ADHD diagnosis and management across lifespan'
 'Multimodal treatment superior to either alone (MTA study PMID 10517495; Cochrane review PMID 31411903)'
@@ -103,7 +111,7 @@ Enhanced AI system prompt with:
 - **Evidence strength indicators** (e.g., "strong RCT evidence")
 - **Integration guidance** explaining how NeuroBreath Buddy complements AI Coach
 
-#### New Citation Examples in Prompt:
+#### New Citation Examples in Prompt
 
 ```typescript
 "ADHD is a neurodevelopmental condition with 70-80% genetic heritability (NICE NG87, Research PMID 31411903)"
@@ -136,11 +144,13 @@ Integration with AI Coach:
 Updated all Blog page responses to include specific citations:
 
 #### "How do I use the AI Coach?"
+
 ```typescript
 "The AI Coach synthesizes guidance from NHS, NICE guidelines (like NG87 for ADHD, CG113 for anxiety), and PubMed research to give you evidence-based, practical advice."
 ```
 
 #### "What evidence sources do you use?"
+
 ```typescript
 "The AI Hub uses three tiers of evidence:
 (1) UK Clinical Guidelines: NICE (e.g., NG87 for ADHD, CG113 for anxiety, CG90 for depression), NHS guidance
@@ -151,11 +161,13 @@ For example, ADHD guidance cites NICE NG87 (2018) and the MTA study (PMID 105174
 ```
 
 #### "Which breathing technique should I start with?"
+
 ```typescript
 "Both activate the vagus nerve and engage the parasympathetic nervous system to reduce stress (Research PMID 29616846)."
 ```
 
 #### "Where do I find the Calm Challenge?"
+
 ```typescript
 "The techniques are backed by research showing slow breathing (6 breaths/min) optimizes heart rate variability and reduces cortisol (Research PMID 28974862)."
 ```
@@ -168,9 +180,10 @@ For example, ADHD guidance cites NICE NG87 (2018) and the MTA study (PMID 105174
 
 Created a comprehensive, shared utility library that both AI Coach and NeuroBreath Buddy can use for consistent evidence citation.
 
-#### Features:
+#### Features
 
-**NICE Guidelines Registry**
+##### NICE Guidelines Registry
+
 ```typescript
 {
   'adhd': { source: 'NICE NG87', fullName: 'NICE Guideline NG87: ADHD Diagnosis and Management', url: '...', year: '2018' },
@@ -179,7 +192,8 @@ Created a comprehensive, shared utility library that both AI Coach and NeuroBrea
 }
 ```
 
-**Research PMIDs Registry**
+##### Research PMIDs Registry
+
 ```typescript
 {
   adhd: [
@@ -193,7 +207,8 @@ Created a comprehensive, shared utility library that both AI Coach and NeuroBrea
 }
 ```
 
-**NHS Pages Registry**
+##### NHS Pages Registry
+
 ```typescript
 {
   'adhd': { source: 'NHS', fullName: 'NHS: ADHD', url: 'https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/' },
@@ -201,7 +216,7 @@ Created a comprehensive, shared utility library that both AI Coach and NeuroBrea
 }
 ```
 
-#### Utility Functions:
+#### Utility Functions
 
 ```typescript
 // Format single citation
@@ -229,14 +244,14 @@ extractCitations(text) => ["NICE NG87", "PMID 12345678"]
 ### Division of Responsibilities
 
 | Feature | AI Coach (Blog Page) | NeuroBreath Buddy (All Pages) |
-|---------|---------------------|------------------------------|
+| ------- | -------------------- | ----------------------------- |
 | **Purpose** | Detailed, tailored 7-day action plans | Navigation, quick guidance, page features |
 | **Evidence** | Full synthesis from NHS/NICE/PubMed | Quick citation references |
 | **Depth** | Comprehensive (multi-section answers) | Concise (3-5 sentences) |
 | **Context** | User situation (age, setting, goal, topic) | Page-specific features |
 | **Output** | Structured plans, evidence snapshot, visual cards | Chat responses, quick tips |
 
-### User Journey Example:
+### User Journey Example
 
 1. **User lands on Blog page** → NeuroBreath Buddy welcomes them
 2. **User asks: "How can I help my child with ADHD?"**
@@ -266,30 +281,34 @@ extractCitations(text) => ["NICE NG87", "PMID 12345678"]
 
 ## Evidence Quality Standards
 
-### All Clinical/Medical Information Must Include:
+### All Clinical/Medical Information Must Include
 
 ✅ **UK Sources First** (for UK audiences):
+
 - NICE guideline numbers (NG87, CG113, CG90, etc.)
 - NHS page URLs
 - UK-specific resources
 
 ✅ **International Guidelines** (as applicable):
+
 - DSM-5 (American Psychiatric Association)
 - ICD-11 (WHO)
 - CDC (US Centers for Disease Control)
 - AAP (American Academy of Pediatrics)
 
 ✅ **Research Evidence**:
+
 - PubMed PMIDs for peer-reviewed studies
 - Systematic reviews and meta-analyses preferred
 - RCTs when discussing treatment efficacy
 - Cochrane reviews where available
 
 ✅ **Year of Publication**:
+
 - Guidelines: "(2018)", "(updated 2023)"
 - Research: "(2015)", "(2017)"
 
-### Examples of Proper Citation:
+### Examples of Proper Citation
 
 ❌ **BEFORE (Vague):**
 "Breathing exercises help reduce stress."
@@ -317,7 +336,7 @@ extractCitations(text) => ["NICE NG87", "PMID 12345678"]
 
 ## Testing & Verification
 
-### Test Scenarios:
+### Test Scenarios
 
 1. ✅ **Test AI Coach on Blog Page**
    - Select context: "Parent", "Children (5-11)", "Home", "ADHD"
@@ -378,14 +397,14 @@ extractCitations(text) => ["NICE NG87", "PMID 12345678"]
 
 ## Maintenance
 
-### When to Update Citations:
+### When to Update Citations
 
 - **NICE guideline updates**: Check annually (subscribe to NICE updates)
 - **New research**: Add landmark studies as published
 - **NHS page changes**: Verify URLs still work (quarterly check)
 - **Treatment changes**: Update when first-line treatments change
 
-### Citation Quality Checklist:
+### Citation Quality Checklist
 
 - [ ] UK sources listed first (NICE, NHS)
 - [ ] NICE guidelines include number (NG87, CG113)
