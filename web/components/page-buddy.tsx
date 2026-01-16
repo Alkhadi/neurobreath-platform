@@ -879,6 +879,18 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                 </div>
               </div>
               <div className="flex items-center gap-0.5 sm:gap-1 md:gap-1.5 flex-shrink-0">
+                {isSpeaking && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-destructive hover:text-destructive hover:bg-destructive/10"
+                    onClick={stop}
+                    title="Stop speaking"
+                    aria-label="Stop speaking"
+                  >
+                    <StopCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />
+                  </Button>
+                )}
                 <Button
                   variant="ghost"
                   size="icon"
