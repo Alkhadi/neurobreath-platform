@@ -22,7 +22,6 @@ Restructure the NeuroBreath project from a single Next.js app into a production-
 
 ### **Before Migration**
 
-
 ```text
 neurobreath/
 ├── nextjs_space/       # Next.js app (all code here)
@@ -32,7 +31,6 @@ neurobreath/
 ```
 
 ### **After Migration**
-
 
 ```text
 neurobreath/
@@ -70,7 +68,6 @@ neurobreath/
 
 ### **1. Documentation Layer**
 
-
 - ✅ Created `/README.md` (1,200+ lines)
   - Project overview, quick start, deployment guides
   - Monorepo structure explanation
@@ -104,7 +101,6 @@ neurobreath/
 
 ### **2. Git Configuration**
 
-
 - ✅ Created `.gitignore` (production-grade)
   - OS/Editor files ignored
   - Secrets protection (.env, .dev.vars)
@@ -115,7 +111,6 @@ neurobreath/
   - Follows Cloudflare's recommendations
 
 ### **3. Directory Restructure**
-
 
 - ✅ Renamed `nextjs_space/` → `web/`
   - All Next.js files intact
@@ -136,7 +131,6 @@ neurobreath/
 
 ### **4. Path Updates**
 
-
 - ✅ Updated `web/prisma/schema.prisma`:
   - Changed output path: `/home/ubuntu/neurobreath/nextjs_space/node_modules/.prisma/client`
   - To: `/home/ubuntu/neurobreath/web/node_modules/.prisma/client`
@@ -146,7 +140,6 @@ neurobreath/
   - To: `├── web/ # Next.js web application (formerly nextjs_space/)`
 
 ### **5. Build Verification**
-
 
 - ✅ TypeScript compilation: Passed (no errors)
 - ✅ Production build: Passed (exit code 0)
@@ -161,7 +154,6 @@ neurobreath/
 ## 📊 File Changes Summary
 
 ### **Files Created**
-
 
 | File | Size | Purpose |
 | ------ | ------ | ---------- |
@@ -178,7 +170,6 @@ neurobreath/
 
 ### **Files Modified**
 
-
 | File | Change | Reason |
 | ------ | -------- | -------- |
 | `web/prisma/schema.prisma` | Output path updated | Reflects new `web/` directory |
@@ -186,13 +177,11 @@ neurobreath/
 
 ### **Directories Renamed**
 
-
 | Old Path | New Path | Files Affected |
 | ---------- | ---------- | ---------------- |
 | `nextjs_space/` | `web/` | 0 code changes (just rename) |
 
 ### **Directories Created**
-
 
 - `docs/` (1 directory)
 - `shared/data/`, `shared/design/`, `shared/assets/` (3 directories)
@@ -207,7 +196,6 @@ neurobreath/
 
 ### **Static Pages Generated**: 66 routes
 
-
 - Homepage: `/` (27.3 kB + 140 kB First Load JS)
 - Conditions: 7 pages (anxiety, autism, depression, etc.)
 - Tools: 29 pages (breathing tools, ADHD deep dive, etc.)
@@ -216,7 +204,6 @@ neurobreath/
 - Dynamic API routes: 6 endpoints
 
 ### **Bundle Sizes**
-
 
 - **Shared Chunks**: 87.4 kB (loaded on all pages)
   - `chunks/7156-...`: 31.8 kB (React, Next.js core)
@@ -230,7 +217,6 @@ neurobreath/
 
 ### **Performance**
 
-
 - Build time: ~45 seconds (with optimization)
 - No TypeScript errors
 - No build warnings (except metadataBase OG image warnings — non-critical)
@@ -242,9 +228,7 @@ neurobreath/
 
 ### **Cloudflare Pages Configuration**
 
-
 #### **Option 1: Direct Git Integration** (Recommended)
-
 
 1. Push to GitHub: `git push origin main`
 1. Connect repo in Cloudflare Dashboard
@@ -269,7 +253,6 @@ npx wrangler pages deploy .next --project-name=neurobreath
 
 ### **Important Notes**
 
-
 - Next.js SSR features require Cloudflare Workers deployment
 - Use `@cloudflare/next-on-pages` adapter for full SSR support
 - Monorepo structure fully supported (just specify `/web` as build directory)
@@ -279,7 +262,6 @@ npx wrangler pages deploy .next --project-name=neurobreath
 ## ✅ Git Readiness Checklist
 
 ### **Repository Setup**
-
 
 - ✅ `.gitignore` configured (secrets protected)
 - ✅ `.env.example` created (no secrets committed)
@@ -321,7 +303,6 @@ git push -u origin main
 ## 🔮 Next Steps (User Actions)
 
 ### **Immediate (Today)**
-
 
 1. ✅ **Review this migration summary** (you're reading it!)
 1. ⚠️ **Test the web app locally**:
@@ -387,12 +368,10 @@ git push -u origin main
 
 ### **For Users**
 
-
 - `README.md` — Project overview, quick start, deployment
 - `docs/neurobreath-product-spec.md` — Features, roadmap, design system
 
 ### **For Developers**
-
 
 - `docs/decisions.md` — Technical decisions with rationale
 - `shared/README.md` — Shared resources guide
@@ -401,7 +380,6 @@ git push -u origin main
 - `.github/workflows/ci.yml` — CI/CD pipeline
 
 ### **For Contributors**
-
 
 - `.env.example` — Environment variables
 - `.gitignore` — What's excluded from Git
@@ -413,7 +391,6 @@ git push -u origin main
 ## 🎯 Migration Success Criteria
 
 ### **All Criteria Met** ✅
-
 
 - ✅ Monorepo structure implemented
 - ✅ Documentation complete (150+ KB)

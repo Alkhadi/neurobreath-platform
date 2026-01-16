@@ -1,6 +1,6 @@
 # NeuroBreath Platform
 
-**A neurodiversity-affirming breathing & mindfulness platform for neurodivergent individuals**
+## A neurodiversity-affirming breathing & mindfulness platform for neurodivergent individuals
 
 🌐 **Live Site**: [www.neurobreath.co.uk](https://www.neurobreath.co.uk)  
 📦 **Repository**: `neurobreath-platform` (monorepo)  
@@ -13,6 +13,7 @@
 NeuroBreath provides **evidence-based breathing techniques, dyslexia reading training, and ADHD/autism support tools** through an accessible, sensory-safe web platform. Built with neurodivergent users at the center—featuring low-stimulation design, voice guidance, progress tracking, and gamification.
 
 ### **Core Features**
+
 - ✅ **Breathing Techniques**: Box, 4-7-8, Coherent (5-5), SOS 60s Reset
 - ✅ **Dyslexia Reading Training**: 28+ interactive tools (Phonics Lab, Vowel Universe, Fluency Pacer, etc.)
 - ✅ **ADHD Deep Dive**: Assessment guides, school support, teen strategies
@@ -24,7 +25,7 @@ NeuroBreath provides **evidence-based breathing techniques, dyslexia reading tra
 
 ## 🗂️ Monorepo Structure
 
-```
+```text
 neurobreath-platform/
 ├── README.md                    # This file
 ├── .gitignore                   # Production-grade ignore rules
@@ -57,10 +58,12 @@ neurobreath-platform/
 ## 🚀 Quick Start (Development)
 
 ### **Prerequisites**
+
 - Node.js 18+ (LTS recommended)
 - Yarn 1.22+ (project uses Yarn as package manager)
 
 ### **Local Development**
+
 ```bash
 # Clone the repository
 git clone https://github.com/YOUR_USERNAME/neurobreath-platform.git
@@ -86,6 +89,7 @@ yarn dev
 ## 📦 Build & Deploy
 
 ### **Production Build**
+
 ```bash
 cd web
 yarn build          # Creates .next/ production bundle
@@ -95,6 +99,7 @@ yarn start          # Serves production build locally
 ### **Cloudflare Pages Deployment**
 
 #### **Option 1: Direct Git Integration**
+
 1. Push to GitHub: `git push origin main`
 2. Connect repository in [Cloudflare Dashboard](https://dash.cloudflare.com)
 3. Configure build settings:
@@ -105,6 +110,7 @@ yarn start          # Serves production build locally
 5. Add redirect: `neurobreath.co.uk` → `www.neurobreath.co.uk`
 
 #### **Option 2: Wrangler CLI**
+
 ```bash
 cd web
 npx wrangler pages deploy .next --project-name=neurobreath
@@ -151,6 +157,7 @@ See `.env.example` for full list of required variables.
 ## 🛠️ Technology Stack
 
 ### **Frontend**
+
 - **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript 5.2
 - **Styling**: Tailwind CSS 3.3 + CSS Modules
@@ -159,16 +166,19 @@ See `.env.example` for full list of required variables.
 - **Animations**: Framer Motion
 
 ### **Audio & Voice**
+
 - **Voice Guidance**: Web Speech API (TTS) + Pre-recorded MP3s
 - **Ambient Sounds**: Web Audio API (7 procedural generators)
 - **Speech Recognition**: Web Speech API (STT)
 
 ### **Deployment**
+
 - **Hosting**: Cloudflare Pages + Workers
 - **CDN**: Cloudflare global network
-- **Domain**: www.neurobreath.co.uk (canonical)
+- **Domain**: <www.neurobreath.co.uk> (canonical)
 
 ### **Future Stack**
+
 - **Mobile**: Flutter (iOS/Android)
 - **Backend**: Cloudflare Workers + D1 Database
 - **Auth**: NextAuth.js (email/password)
@@ -197,6 +207,7 @@ This project follows a neurodiversity-affirming development philosophy:
 5. **Privacy-Focused**: No tracking, LocalStorage only for user benefit
 
 ### **Development Guidelines**
+
 - Use **descriptive commit messages** (Conventional Commits format)
 - Test on **real devices** (not just dev tools responsive mode)
 - Verify **screen reader compatibility** (NVDA/VoiceOver)
@@ -214,7 +225,7 @@ This project follows a neurodiversity-affirming development philosophy:
 ## 📞 Contact
 
 - **Website**: [www.neurobreath.co.uk](https://www.neurobreath.co.uk)
-- **Support**: support@neurobreath.co.uk
+- **Support**: <support@neurobreath.co.uk>
 - **Social**: Twitter [@NeuroBreath](https://twitter.com/NeuroBreath)
 
 ---
@@ -222,6 +233,7 @@ This project follows a neurodiversity-affirming development philosophy:
 ## 🗺️ Roadmap
 
 ### **Phase 1: MVP** ✅ Complete (Dec 2024)
+
 - [x] Core breathing techniques (Box, 4-7-8, Coherent, SOS)
 - [x] Dyslexia reading training (28+ tools)
 - [x] ADHD Deep Dive resources
@@ -229,6 +241,7 @@ This project follows a neurodiversity-affirming development philosophy:
 - [x] Progress tracking + gamification
 
 ### **Phase 2: Polish** 🚧 In Progress (Q1 2025)
+
 - [ ] Shop integration (Neurogum-style layout)
 - [ ] "Inside the Neurodivergent Brain" research deck
 - [ ] Enhanced progress dashboard
@@ -236,6 +249,7 @@ This project follows a neurodiversity-affirming development philosophy:
 - [ ] Performance optimizations
 
 ### **Phase 3: Scale** 🔮 Planned (Q2 2025)
+
 - [ ] Flutter mobile app (iOS/Android)
 - [ ] Cloudflare Workers backend
 - [ ] User accounts + authentication
@@ -243,6 +257,7 @@ This project follows a neurodiversity-affirming development philosophy:
 - [ ] Offline mode support
 
 ### **Phase 4: Community** 🔮 Planned (Q3 2025)
+
 - [ ] Teacher dashboard
 - [ ] Parent/carer resources
 - [ ] School integration tools
@@ -261,4 +276,4 @@ This project follows a neurodiversity-affirming development philosophy:
 
 ---
 
-**Built with ❤️ for the neurodivergent community**
+## Built with ❤️ for the neurodivergent community
