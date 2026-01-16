@@ -271,7 +271,6 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
     if (actionButtonCount > 0) {
       // ASSERTION 3: Clicking action stays on same domain (internal navigation)
       const firstActionButton = actionButtons.first();
-      const currentUrl = page.url();
       
       await firstActionButton.click();
       await page.waitForTimeout(1000);
