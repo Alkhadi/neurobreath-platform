@@ -5,6 +5,7 @@
 Your repository is **SECURE** and **READY TO PUSH** to GitHub!
 
 ### ✅ Security Verification Complete
+
 - **No credentials in Git history** (after history cleanup)
 - **No .env files tracked** by Git
 - **Comprehensive .gitignore** protecting all secrets
@@ -18,10 +19,11 @@ Your repository is **SECURE** and **READY TO PUSH** to GitHub!
 
 ### 1. Create GitHub Personal Access Token (PAT)
 
-**Visit:** https://github.com/settings/tokens
+**Visit:** <https://github.com/settings/tokens>
 
 **Settings:**
-```
+
+```text
 Token name: NeuroBreath Platform Deploy
 Expiration: 90 days
 Description: Deploy access for neurobreath-platform repository
@@ -53,7 +55,8 @@ git push -u origin main --force
 ```
 
 **When prompted:**
-```
+
+```text
 Username for 'https://github.com': Alkhadi
 Password for 'https://Alkhadi@github.com': <paste your PAT>
 ```
@@ -62,7 +65,7 @@ Password for 'https://Alkhadi@github.com': <paste your PAT>
 
 ### 3. Expected Success Output
 
-```
+```text
 Enumerating objects: XXX, done.
 Counting objects: 100% (XXX/XXX), done.
 Delta compression using up to X threads
@@ -103,9 +106,10 @@ git log origin/main..main
 
 ### Verify on GitHub.com
 
-Visit: **https://github.com/Alkhadi/neurobreath-platform**
+Visit: **<https://github.com/Alkhadi/neurobreath-platform>**
 
 **Check:**
+
 - ✅ README.md renders correctly
 - ✅ "45 commits" shown
 - ✅ No `.env` files visible anywhere
@@ -113,6 +117,7 @@ Visit: **https://github.com/Alkhadi/neurobreath-platform**
 - ✅ Directory structure: web/, docs/, shared/, serverless/, flutter_app/
 
 **Test history is clean:**
+
 1. Go to: Commits → Pick an old commit → Browse files
 2. Check that `.env` files don't exist in old commits
 3. Search repo for "DATABASE_URL" → Should only find `.env.example`
@@ -123,7 +128,7 @@ Visit: **https://github.com/Alkhadi/neurobreath-platform**
 
 ### 1. Verify Repository is Private
 
-```
+```text
 Go to: https://github.com/Alkhadi/neurobreath-platform/settings
 
 Under "Danger Zone" → "Change visibility"
@@ -134,7 +139,7 @@ Under "Danger Zone" → "Change visibility"
 
 ### 2. Enable Secret Scanning (If Available)
 
-```
+```text
 Go to: https://github.com/Alkhadi/neurobreath-platform/settings/security_analysis
 
 Enable:
@@ -143,6 +148,7 @@ Enable:
 ```
 
 **Benefits:**
+
 - Automatically detects credentials in commits
 - Blocks pushes containing secrets
 - Alerts you immediately if secrets detected
@@ -150,24 +156,28 @@ Enable:
 ### 3. Set Up Credential Helper
 
 **Automated setup:**
+
 ```bash
 cd /home/ubuntu/neurobreath
 ./setup-git-credentials.sh
 ```
 
 **Manual setup (Linux):**
+
 ```bash
 # Cache credentials in memory for 8 hours
 git config --global credential.helper 'cache --timeout=28800'
 ```
 
 **Manual setup (macOS):**
+
 ```bash
 # Store credentials in macOS Keychain
 git config --global credential.helper osxkeychain
 ```
 
 **Alternative (store PAT in remote URL):**
+
 ```bash
 git remote set-url origin https://Alkhadi:YOUR_PAT@github.com/Alkhadi/neurobreath-platform.git
 ```
@@ -179,12 +189,15 @@ git remote set-url origin https://Alkhadi:YOUR_PAT@github.com/Alkhadi/neurobreat
 Even though credentials are removed from history, best practice is to rotate:
 
 **Steps:**
+
 1. Access Abacus AI database dashboard
 2. Generate new password for `role_94a5ec0a7`
 3. Update `web/.env` locally:
-   ```
+
+   ```bash
    DATABASE_URL="postgresql://role_94a5ec0a7:NEW_PASSWORD@db-94a5ec0a7.db003.hosteddb.reai.io:5432/94a5ec0a7?connect_timeout=15"
    ```
+
 4. Test: `cd web && yarn dev`
 5. Keep old password active 24 hours (safety buffer)
 6. Delete old password after migration
@@ -215,6 +228,7 @@ git push -u origin feat/new-breathing-technique
 ```
 
 **Why feature branches?**
+
 - Keep main branch stable
 - Easy to review changes
 - Safe to experiment
@@ -255,11 +269,13 @@ cd /home/ubuntu/neurobreath
 ### 1. Never Commit Real Secrets
 
 **Always commit:**
+
 - ✅ `.env.example` (safe template)
 - ✅ Documentation with placeholder values
 - ✅ Code that reads from environment variables
 
 **Never commit:**
+
 - ❌ `.env` (real credentials)
 - ❌ `.env.local` (real credentials)
 - ❌ `.dev.vars` (Cloudflare secrets)
@@ -271,10 +287,12 @@ cd /home/ubuntu/neurobreath
 ### 2. Never Use --force After First Push
 
 **Only use --force:**
+
 - ✅ First push after history rewrite (what you're doing now)
 - ✅ After intentional history rewrite (rare, coordinated)
 
 **Never use --force:**
+
 - ❌ To fix merge conflicts (use proper merge/rebase)
 - ❌ To overwrite someone else's work
 - ❌ When collaborating with others (breaks their repos)
@@ -304,7 +322,7 @@ git push
 ### Helper Scripts Created
 
 | Script | Purpose | Usage |
-|--------|---------|-------|
+| ------ | ------- | ----- |
 | `verify-push.sh` | Verify push success | `./verify-push.sh` |
 | `setup-git-credentials.sh` | Set up credential storage | `./setup-git-credentials.sh` |
 | `dev-workflow.sh` | Development workflow helper | `./dev-workflow.sh [command]` |
@@ -359,6 +377,7 @@ git push
 **Cause:** Wrong PAT or insufficient permissions
 
 **Solution:**
+
 1. Verify PAT format: `github_pat_11AAAA...`
 2. Check PAT hasn't expired
 3. Verify permissions: Contents = Read and write
@@ -369,6 +388,7 @@ git push
 **Cause:** Wrong repository URL or no access
 
 **Solution:**
+
 ```bash
 git remote -v
 # Should show: https://github.com/Alkhadi/neurobreath-platform.git
@@ -380,6 +400,7 @@ git remote set-url origin https://github.com/Alkhadi/neurobreath-platform.git
 ### Accidentally committed .env file
 
 **Solution:**
+
 ```bash
 # Remove from staging (before commit)
 git reset HEAD .env
@@ -426,10 +447,10 @@ After completing all steps:
 
 ## 📞 Resources
 
-- **Your Repository:** https://github.com/Alkhadi/neurobreath-platform
-- **GitHub PAT Docs:** https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
-- **Git Credential Helper:** https://docs.github.com/en/get-started/getting-started-with-git/caching-your-github-credentials-in-git
-- **Secret Removal:** https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository
+- **Your Repository:** <https://github.com/Alkhadi/neurobreath-platform>
+- **GitHub PAT Docs:** <https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token>
+- **Git Credential Helper:** <https://docs.github.com/en/get-started/getting-started-with-git/caching-your-github-credentials-in-git>
+- **Secret Removal:** <https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository>
 
 ---
 
@@ -441,7 +462,7 @@ After GitHub setup is complete:
    - Link GitHub repository
    - Set build command: `cd web && yarn install && yarn build`
    - Add environment variables (DATABASE_URL, etc.)
-   - Set custom domain: www.neurobreath.co.uk
+   - Set custom domain: <www.neurobreath.co.uk>
 
 2. **Set up CI/CD:**
    - Add Cloudflare API token to GitHub Secrets
@@ -460,4 +481,4 @@ After GitHub setup is complete:
 
 ---
 
-**You're all set! Happy coding! 🎉**
+You're all set! Happy coding! 🎉
