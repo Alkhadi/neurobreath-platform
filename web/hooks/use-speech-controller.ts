@@ -18,13 +18,6 @@ export function useSpeechController(): UseSpeechControllerReturn {
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      stop();
-    };
-  }, []);
-
   // Stop any ongoing speech
   const stop = useCallback(() => {
     // Stop Web Speech API
@@ -45,6 +38,13 @@ export function useSpeechController(): UseSpeechControllerReturn {
     setIsSpeaking(false);
     setSpeakingMessageId(null);
   }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stop();
+    };
+  }, [stop]);
 
   // Speak text for a specific message
   const speak = useCallback((messageId: string, text: string) => {
