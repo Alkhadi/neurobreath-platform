@@ -14,12 +14,48 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { EvidenceFooter, ANXIETY_EVIDENCE_SOURCES } from '@/components/evidence-footer'
+import { Metadata } from 'next'
+import { generatePageMetadata } from '@/lib/seo/metadata'
+import { JsonLd } from '@/components/seo/json-ld'
+import { generateWebPageSchema, generateBreadcrumbsFromPath, generateBreadcrumbSchema } from '@/lib/seo/schema'
+import { generateCanonicalUrl } from '@/lib/seo/site-seo'
 
 export const dynamic = 'force-static'
 
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Anxiety Support Hub | Evidence-Based Tools & Resources',
+  description: 'Professional anxiety management tools including breathing exercises, CBT thought records, grounding techniques, mood tracking, and progressive muscle relaxation. Evidence-based strategies backed by NHS, NICE, and clinical research.',
+  path: '/anxiety',
+  keywords: [
+    'anxiety management',
+    'anxiety tools',
+    'anxiety resources',
+    'breathing exercises for anxiety',
+    'CBT anxiety',
+    'anxiety UK',
+    'grounding techniques',
+    'anxiety support',
+    'mental health tools',
+    'anxiety relief',
+  ],
+})
+
 export default function AnxietyPage() {
+  // Generate structured data
+  const pageUrl = generateCanonicalUrl('/anxiety');
+  const webPageSchema = generateWebPageSchema({
+    url: pageUrl,
+    name: 'Anxiety Support Hub | Evidence-Based Tools & Resources',
+    description: 'Professional anxiety management tools including breathing exercises, CBT thought records, grounding techniques, mood tracking, and progressive muscle relaxation.',
+  });
+  const breadcrumbs = generateBreadcrumbsFromPath('/anxiety');
+  const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+
   return (
     <main className="min-h-screen">
+      {/* Structured Data */}
+      <JsonLd data={[webPageSchema, breadcrumbSchema]} />
+
       {/* Skip Link for Accessibility */}
       <a href="#main-content" className="skip-link">
         Skip to main content

@@ -7,39 +7,28 @@ import { PageBuddy } from '@/components/page-buddy';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { Toaster } from '@/components/ui/sonner';
+import { JsonLd } from '@/components/seo/json-ld';
+import { generateOrganizationSchema, generateWebSiteSchema } from '@/lib/seo/schema';
+import { DEFAULT_METADATA } from '@/lib/seo/site-seo';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
-export const metadata: Metadata = {
-  title: 'NeuroBreath | Neurodiversity Support Platform',
-  description:
-    'Evidence-based tools for ADHD and autism support. Gamified quests, focus timers, calming techniques, and educational resources.',
-  keywords: [
-    'ADHD support',
-    'autism resources',
-    'neurodiversity',
-    'mental health',
-    'focus tools',
-    'calming techniques',
-  ],
-  authors: [{ name: 'NeuroBreath Team' }],
-  openGraph: {
-    title: 'NeuroBreath | Neurodiversity Support Platform',
-    description: 'Evidence-based tools for ADHD and autism support',
-    type: 'website',
-  },
-};
+// Use centralized metadata configuration
+export const metadata: Metadata = DEFAULT_METADATA;
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Generate global structured data
+  const organizationSchema = generateOrganizationSchema();
+  const websiteSchema = generateWebSiteSchema();
+
   return (
-    <html lang="en" suppressHydrationWarning className="overflow-x-hidden">
+    <html lang="en-GB" suppressHydrationWarning className="overflow-x-hidden">
       <head>
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <JsonLd data={[organizationSchema, websiteSchema]} />
       </head>
       <body className={`${inter.className} antialiased overflow-x-hidden`} suppressHydrationWarning>
         <ThemeProvider

@@ -1221,7 +1221,8 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                     <Sparkles className="h-3 w-3 md:h-3.5 md:w-3.5" />
                     {pageContent.features.length} features
                   </span>
-                </>\n              )}
+                </>
+              )}
             </div>
           </div>
         </DialogContent>
