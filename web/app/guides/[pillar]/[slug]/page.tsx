@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { generatePageMetadata } from '@/lib/seo/metadata';
 import { RelatedContent } from '@/components/seo/RelatedContent';
 import { FaqSection } from '@/components/seo/FAQSection';
+import { GuidePageActions } from '@/components/guides/GuidePageActions';
 import { getCluster, getPillar, listClusterParams } from '@/lib/content/content-seo-map';
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
 import { getRelatedContentForUrl } from '@/lib/content/link-intel-runtime';
@@ -72,7 +73,18 @@ export default async function ClusterPage({
         <span aria-hidden="true">›</span> <span className="text-neutral-800">{cluster.title}</span>
       </nav>
 
-      <h1 className="mt-4 text-3xl font-bold text-neutral-900">{cluster.h1}</h1>
+      <div className="flex items-start justify-between gap-4 mt-4">
+        <div className="flex-1">
+          <h1 className="text-3xl font-bold text-neutral-900">{cluster.h1}</h1>
+        </div>
+        <GuidePageActions
+          pillar={pillar.key}
+          slug={cluster.slug}
+          title={cluster.title}
+          region="uk"
+        />
+      </div>
+
       <div className="mt-4 space-y-3 text-neutral-700">
         {cluster.intro.map(text => (
           <p key={text}>{text}</p>

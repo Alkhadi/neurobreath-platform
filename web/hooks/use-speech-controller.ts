@@ -1,10 +1,11 @@
 /**
  * Speech Controller Hook for NeuroBreath Buddy
- * Centralized TTS/audio playback management with stop functionality
+ * Integrated with unified TTS engine from Phase 1
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS';
+import { useTTSPreferences } from '@/lib/user-preferences/useTTSPreferences';
+import { speak as engineSpeak, stop as engineStop, getIsSpeaking } from '@/lib/tts/engine';
 
 export interface UseSpeechControllerReturn {
   speak: (messageId: string, text: string) => void;
@@ -16,26 +17,29 @@ export interface UseSpeechControllerReturn {
 export function useSpeechController(): UseSpeechControllerReturn {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [speakingMessageId, setSpeakingMessageId] = useState<string | null>(null);
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { ttsSettings } = useTTSPreferences();
+  const checkIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Check speaking state periodically
+  useEffect(() => {
+    checkIntervalRef.current = setInterval(() => {
+      const speaking = getIsSpeaking();
+      if (!speaking && isSpeaking) {
+        setIsSpeaking(false);
+        setSpeakingMessageId(null);
+      }
+    }, 200);
+
+    return () => {
+      if (checkIntervalRef.current) {
+        clearInterval(checkIntervalRef.current);
+      }
+    };
+  }, [isSpeaking]);
 
   // Stop any ongoing speech
   const stop = useCallback(() => {
-    // Stop Web Speech API
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
-
-    // Stop HTML Audio Element
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-      audioRef.current = null;
-    }
-
-    // Clear utterance reference
-    utteranceRef.current = null;
-
+    engineStop();
     setIsSpeaking(false);
     setSpeakingMessageId(null);
   }, []);
@@ -49,48 +53,31 @@ export function useSpeechController(): UseSpeechControllerReturn {
 
   // Speak text for a specific message
   const speak = useCallback((messageId: string, text: string) => {
+    // Only speak if TTS is enabled
+    if (!ttsSettings.enabled) {
+      return;
+    }
+
     // Stop any ongoing speech first
     stop();
 
-    const cleanText = sanitizeForTTS(text, { locale: 'en-GB' });
-
-    if (!cleanText) return;
-
-    // Check if Web Speech API is available
-    if ('speechSynthesis' in window) {
-      try {
-        const utterance = new SpeechSynthesisUtterance(cleanText);
-        utterance.rate = 0.9; // Slightly slower for clarity
-        utterance.pitch = 1.0;
-        utterance.volume = 1.0;
-
-        utterance.onstart = () => {
-          setIsSpeaking(true);
-          setSpeakingMessageId(messageId);
-        };
-
-        utterance.onend = () => {
-          setIsSpeaking(false);
-          setSpeakingMessageId(null);
-          utteranceRef.current = null;
-        };
-
-        utterance.onerror = (event) => {
-          console.error('Speech synthesis error:', event);
-          setIsSpeaking(false);
-          setSpeakingMessageId(null);
-          utteranceRef.current = null;
-        };
-
-        utteranceRef.current = utterance;
-        window.speechSynthesis.speak(utterance);
-      } catch (error) {
-        console.error('Failed to initialize speech:', error);
-      }
-    } else {
-      console.warn('Speech synthesis not supported in this browser');
-    }
-  }, [stop]);
+    engineSpeak(text, {
+      settings: ttsSettings,
+      onStart: () => {
+        setIsSpeaking(true);
+        setSpeakingMessageId(messageId);
+      },
+      onEnd: () => {
+        setIsSpeaking(false);
+        setSpeakingMessageId(null);
+      },
+      onError: (error) => {
+        console.error('Speech synthesis error:', error);
+        setIsSpeaking(false);
+        setSpeakingMessageId(null);
+      },
+    });
+  }, [ttsSettings, stop]);
 
   return {
     speak,

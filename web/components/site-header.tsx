@@ -225,6 +225,16 @@ export function SiteHeader() {
             📊 Progress
           </Link>
 
+          {/* My Plan */}
+          <Link href="/my-plan" className="nb-nav-link" onClick={closeMegaMenu}>
+            📋 My Plan
+          </Link>
+
+          {/* Settings */}
+          <Link href="/settings" className="nb-nav-link" onClick={closeMegaMenu}>
+            ⚙️ Settings
+          </Link>
+
           {/* Get Started Button */}
           <Link href="/get-started" className="nb-nav-cta" onClick={closeMegaMenu}>
             Get Started
