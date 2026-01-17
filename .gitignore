@@ -39,3 +39,9 @@ web/package.json.bak
 
 # generated reports
 web/reports
+web/test-results
+web/playwright-report
+
+# Keep baselines committed
+!web/perf/baseline/
+!web/tests/visual/__screenshots__/

@@ -1,0 +1,102 @@
+name: Visual Regression Testing
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'web/**'
+      - '.github/workflows/visual-regression.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  visual-regression:
+    name: Visual Regression Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    defaults:
+      run:
+        working-directory: ./web
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      
+      - name: Build Next.js
+        run: npm run build
+        env:
+          NODE_ENV: production
+      
+      - name: Run visual regression tests
+        run: npm run test:visual
+        env:
+          CI: true
+      
+      - name: Check console errors
+        if: always()
+        run: |
+          if [ -f reports/visual/console-errors.json ]; then
+            echo "Console errors found:"
+            cat reports/visual/console-errors.json
+            exit 1
+          fi
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-results
+          path: |
+            web/reports/visual/
+            web/test-results/
+          retention-days: 30
+      
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: web/reports/visual/playwright-report/
+          retention-days: 30
+      
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request' && failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const errorsPath = 'web/reports/visual/console-errors.json';
+            let body = '## ❌ Visual Regression Tests Failed\n\n';
+            
+            if (fs.existsSync(errorsPath)) {
+              const errors = JSON.parse(fs.readFileSync(errorsPath, 'utf8'));
+              body += `Found ${errors.length} console errors.\n\n`;
+              body += 'See artifacts for full details.';
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            });
