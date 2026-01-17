@@ -1,0 +1,643 @@
+{
+  "generatedAt": "2026-01-17",
+  "minClusterCount": 5,
+  "conditions": [
+    {
+      "conditionId": "autism",
+      "canonicalName": "Autism / ASC",
+      "aliases": ["autism", "autistic", "ASC", "autism spectrum condition"],
+      "category": "neurodevelopmental",
+      "scope": "condition",
+      "audience": ["child", "teen", "adult", "parent-carer", "teacher", "workplace"],
+      "supportNeeds": ["sensory", "communication", "routines", "emotional-regulation", "sleep"],
+      "summary": "Educational support for sensory needs, routines, and communication strategies.",
+      "resources": [
+        "NHS autism overview (UK)",
+        "NICE autism guidance (UK)",
+        "CDC autism overview (US)"
+      ],
+      "pillarPath": "/autism",
+      "starterGuides": [
+        "/guides/body-scan-for-stress",
+        "/guides/quick-calm-in-5-minutes",
+        "/guides/wind-down-routine"
+      ],
+      "tools": [
+        "/tools/autism-tools",
+        "/tools/breath-tools",
+        "/tools/sleep-tools"
+      ],
+      "recommendedClusters": [
+        "sensory-friendly-routines",
+        "supporting-transitions",
+        "communication-starters",
+        "calm-down-plans",
+        "sleep-wind-downs"
+      ],
+      "recommendedFaqs": [
+        "What is a sensory-friendly routine?",
+        "How can I support transitions?",
+        "What simple calm strategies can we try at home?"
+      ],
+      "requiredPillar": true
+    },
+    {
+      "conditionId": "adhd",
+      "canonicalName": "ADHD",
+      "aliases": ["attention deficit hyperactivity disorder", "ADD", "inattention"],
+      "category": "neurodevelopmental",
+      "scope": "condition",
+      "audience": ["child", "teen", "adult", "parent-carer", "teacher", "workplace"],
+      "supportNeeds": ["focus", "executive-function", "routines", "emotional-regulation", "sleep"],
+      "summary": "Focus, routine, and organisation support for learning and daily life.",
+      "resources": [
+        "NHS ADHD overview (UK)",
+        "NICE NG87 guidance (UK)",
+        "CDC ADHD overview (US)"
+      ],
+      "pillarPath": "/adhd",
+      "starterGuides": [
+        "/guides/quick-calm-in-5-minutes",
+        "/guides/body-scan-for-stress",
+        "/guides/wind-down-routine"
+      ],
+      "tools": [
+        "/tools/adhd-tools",
+        "/tools/focus-training",
+        "/tools/breath-tools"
+      ],
+      "recommendedClusters": [
+        "focus-sprints",
+        "homework-setup",
+        "planning-with-prompts",
+        "emotional-reset",
+        "sleep-consistency"
+      ],
+      "recommendedFaqs": [
+        "How do I reduce distraction?",
+        "What routine helps before homework?",
+        "How can we reset after overwhelm?"
+      ],
+      "requiredPillar": true
+    },
+    {
+      "conditionId": "dyslexia",
+      "canonicalName": "Dyslexia",
+      "aliases": ["reading difficulty", "phonics support"],
+      "category": "learning",
+      "scope": "condition",
+      "audience": ["child", "teen", "adult", "parent-carer", "teacher"],
+      "supportNeeds": ["reading", "routines", "confidence"],
+      "summary": "Reading and literacy support with practical routines and strategies.",
+      "resources": [
+        "NHS dyslexia overview (UK)",
+        "Rose Review (UK)",
+        "International Dyslexia Association overview (US)"
+      ],
+      "pillarPath": "/dyslexia-reading-training",
+      "starterGuides": [
+        "/guides/focus-start",
+        "/guides/quick-calm-in-5-minutes",
+        "/guides/wind-down-routine"
+      ],
+      "tools": [
+        "/dyslexia-reading-training",
+        "/tools/focus-training",
+        "/tools/breath-tools"
+      ],
+      "recommendedClusters": [
+        "phonics-routines",
+        "reading-confidence",
+        "multi-sensory-learning",
+        "home-reading-support",
+        "study-planning"
+      ],
+      "recommendedFaqs": [
+        "How can I support reading at home?",
+        "What makes reading less stressful?",
+        "How can we build confidence?"
+      ],
+      "requiredPillar": true
+    },
+    {
+      "conditionId": "dyspraxia-dcd",
+      "canonicalName": "Dyspraxia / DCD",
+      "aliases": ["developmental coordination disorder", "dyspraxia"],
+      "category": "neurodevelopmental",
+      "scope": "condition",
+      "audience": ["child", "teen", "adult", "parent-carer", "teacher"],
+      "supportNeeds": ["routines", "motor", "confidence"],
+      "summary": "Educational support for coordination, routines, and confidence building.",
+      "resources": [
+        "NHS dyspraxia overview (UK)",
+        "Dyspraxia Foundation guidance (UK)",
+        "Understood.org coordination support (US)"
+      ],
+      "pillarPath": "/conditions/dyspraxia",
+      "starterGuides": [
+        "/guides/quick-calm-in-5-minutes",
+        "/guides/body-scan-for-stress",
+        "/guides/wind-down-routine"
+      ],
+      "tools": [
+        "/tools/breath-tools",
+        "/tools/focus-training"
+      ],
+      "recommendedClusters": [
+        "morning-routines",
+        "movement-breaks",
+        "planning-checklists",
+        "classroom-accommodations",
+        "confidence-builders"
+      ],
+      "recommendedFaqs": [
+        "What routines support coordination?",
+        "How can we reduce frustration?",
+        "What should teachers know?"
+      ],
+      "requiredPillar": true
+    },
+    {
+      "conditionId": "dyscalculia",
+      "canonicalName": "Dyscalculia",
+      "aliases": ["maths difficulty", "number sense"],
+      "category": "learning",
+      "scope": "condition",
+      "audience": ["child", "teen", "adult", "parent-carer", "teacher"],
+      "supportNeeds": ["math", "routines", "confidence"],
+      "summary": "Educational support for number sense and maths routines.",
+      "resources": [
+        "British Dyslexia Association dyscalculia (UK)",
+        "Understood.org dyscalculia support (US)"
+      ],
+      "pillarPath": "/conditions/dyscalculia",
+      "starterGuides": [
+        "/guides/focus-start",
+        "/guides/quick-calm-in-5-minutes",
+        "/guides/body-scan-for-stress"
+      ],
+      "tools": [
+        "/tools/focus-training",
+        "/tools/breath-tools"
+      ],
+      "recommendedClusters": [
+        "number-routines",
+        "maths-confidence",
+        "visual-aids",
+        "homework-steps",
+        "exam-prep"
+      ],
+      "recommendedFaqs": [
+        "How can we build number sense?",
+        "What helps reduce maths anxiety?",
+        "What classroom supports help most?"
+      ],
+      "requiredPillar": true
+    },
+    {
+      "conditionId": "dysgraphia",
+      "canonicalName": "Dysgraphia",
+      "aliases": ["writing difficulty", "handwriting support"],
+      "category": "learning",
+      "scope": "condition",
+      "audience": ["child", "teen", "adult", "parent-carer", "teacher"],
+      "supportNeeds": ["writing", "routines", "confidence"],
+      "summary": "Educational support for writing routines and reduced fatigue.",
+      "resources": [
+        "British Dyslexia Association dysgraphia (UK)",
+        "Understood.org dysgraphia support (US)"
+      ],
+      "pillarPath": "/conditions/dysgraphia",
+      "starterGuides": [
+        "/guides/focus-start",
+        "/guides/quick-calm-in-5-minutes",
+        "/guides/body-scan-for-stress"
+      ],
+      "tools": [
+        "/tools/focus-training",
+        "/tools/breath-tools"
+      ],
+      "recommendedClusters": [
+        "writing-routines",
+        "fine-motor-breaks",
+        "assistive-tools",
+        "planning-sentences",
+        "classroom-accommodations"
+      ],
+      "recommendedFaqs": [
+        "How can we reduce writing fatigue?",
+        "What tools support handwriting?",
+        "How can teachers help?"
+      ],
+      "requiredPillar": true
+    },
+    {
+      "conditionId": "tourette",
+      "canonicalName": "Tourette syndrome / tic disorders",
+      "aliases": ["tics", "tic disorder", "tourette"],
+      "category": "neurodevelopmental",
+      "scope": "condition",
+      "audience": ["child", "teen", "adult", "parent-carer", "teacher"],
+      "supportNeeds": ["emotional-regulation", "routines", "stress"],
+      "summary": "Educational guidance on routines and stress reduction for tic support.",
+      "resources": [
+        "NHS Tourette overview (UK)",
+        "Tourette Association of America overview (US)"
+      ],
+      "pillarPath": "/conditions/tourette",
+      "starterGuides": [
+        "/guides/quick-calm-in-5-minutes",
+        "/guides/body-scan-for-stress",
+        "/guides/wind-down-routine"
+      ],
+      "tools": [
+        "/tools/breath-tools",
+        "/tools/stress-tools"
+      ],
+      "recommendedClusters": [
+        "calm-environments",
+        "school-planning",
+        "stress-reduction",
+        "sleep-routines",
+        "communication-support"
+      ],
+      "recommendedFaqs": [
+        "How can stress affect tics?",
+        "What classroom adjustments help?",
+        "How do we talk about tics?"
+      ],
+      "requiredPillar": true
+    },
+    {
+      "conditionId": "slcn",
+      "canonicalName": "Speech, language and communication needs",
+      "aliases": ["SLCN", "speech and language", "communication support"],
+      "category": "neurodevelopmental",
+      "scope": "condition",
+      "audience": ["child", "teen", "parent-carer", "teacher"],
+      "supportNeeds": ["communication", "routines", "confidence"],
+      "summary": "Educational communication support and practical routines.",
+      "resources": [
+        "NHS speech and language overview (UK)",
+        "ASHA communication guidance (US)"
+      ],
+      "pillarPath": "/conditions/slcn",
+      "starterGuides": [
+        "/guides/quick-calm-in-5-minutes",
+        "/guides/body-scan-for-stress",
+        "/guides/wind-down-routine"
+      ],
+      "tools": [
+        "/tools/breath-tools",
+        "/tools/focus-training"
+      ],
+      "recommendedClusters": [
+        "daily-communication-routines",
+        "visual-supports",
+        "classroom-language-support",
+        "home-conversation-starters",
+        "confidence-building"
+      ],
+      "recommendedFaqs": [
+        "What helps communication feel easier?",
+        "How can we use visual supports?",
+        "What can teachers do?"
+      ],
+      "requiredPillar": true
+    },
+    {
+      "conditionId": "sensory-processing",
+      "canonicalName": "Sensory processing differences",
+      "aliases": ["sensory sensitivity", "sensory needs"],
+      "category": "sensory",
+      "scope": "support-area",
+      "audience": ["child", "teen", "adult", "parent-carer", "teacher"],
+      "supportNeeds": ["sensory", "routines", "emotional-regulation"],
+      "summary": "Educational support for sensory-friendly routines and environments.",
+      "resources": [
+        "NHS sensory processing overview (UK)",
+        "STAR Institute resources (US)"
+      ],
+      "pillarPath": "/conditions/sensory-processing",
+      "starterGuides": [
+        "/guides/body-scan-for-stress",
+        "/guides/quick-calm-in-5-minutes",
+        "/guides/wind-down-routine"
+      ],
+      "tools": [
+        "/tools/breath-tools",
+        "/tools/stress-tools"
+      ],
+      "recommendedClusters": [
+        "sensory-checklists",
+        "classroom-adjustments",
+        "home-setup",
+        "transition-plans",
+        "calm-corners"
+      ],
+      "recommendedFaqs": [
+        "How do I spot sensory overload?",
+        "What routines help after overwhelm?",
+        "What classroom supports are helpful?"
+      ],
+      "requiredPillar": false
+    },
+    {
+      "conditionId": "executive-function",
+      "canonicalName": "Executive function challenges",
+      "aliases": ["planning", "organisation", "working memory"],
+      "category": "executive function",
+      "scope": "support-area",
+      "audience": ["child", "teen", "adult", "parent-carer", "teacher", "workplace"],
+      "supportNeeds": ["executive-function", "routines", "focus"],
+      "summary": "Educational support for planning, organisation, and task initiation.",
+      "resources": [
+        "NHS executive function tips (UK)",
+        "Understood.org executive function support (US)"
+      ],
+      "pillarPath": "/conditions/executive-function",
+      "starterGuides": [
+        "/guides/focus-start",
+        "/guides/quick-calm-in-5-minutes",
+        "/guides/body-scan-for-stress"
+      ],
+      "tools": [
+        "/tools/focus-training",
+        "/tools/breath-tools"
+      ],
+      "recommendedClusters": [
+        "planning-sprints",
+        "task-breakdown",
+        "weekly-routines",
+        "checklist-habits",
+        "workplace-focus"
+      ],
+      "recommendedFaqs": [
+        "How can I get started on tasks?",
+        "What routines help planning?",
+        "How can workplaces help?"
+      ],
+      "requiredPillar": false
+    },
+    {
+      "conditionId": "auditory-processing",
+      "canonicalName": "Auditory processing difficulties",
+      "aliases": ["APD", "listening difficulties"],
+      "category": "sensory",
+      "scope": "support-area",
+      "audience": ["child", "teen", "parent-carer", "teacher"],
+      "supportNeeds": ["communication", "routines", "focus"],
+      "summary": "Educational support for listening-friendly environments and routines.",
+      "resources": [
+        "NHS auditory processing overview (UK)",
+        "ASHA auditory processing guidance (US)"
+      ],
+      "pillarPath": "/conditions/auditory-processing",
+      "starterGuides": [
+        "/guides/focus-start",
+        "/guides/quick-calm-in-5-minutes",
+        "/guides/body-scan-for-stress"
+      ],
+      "tools": [
+        "/tools/focus-training",
+        "/tools/breath-tools"
+      ],
+      "recommendedClusters": [
+        "listening-routines",
+        "classroom-supports",
+        "visual-backup-strategies",
+        "home-communication",
+        "fatigue-management"
+      ],
+      "recommendedFaqs": [
+        "How can we reduce listening fatigue?",
+        "What classroom supports help?",
+        "How can we communicate more clearly?"
+      ],
+      "requiredPillar": false
+    },
+    {
+      "conditionId": "visual-processing",
+      "canonicalName": "Visual processing difficulties",
+      "aliases": ["visual perception", "visual processing"],
+      "category": "sensory",
+      "scope": "support-area",
+      "audience": ["child", "teen", "parent-carer", "teacher"],
+      "supportNeeds": ["reading", "routines", "focus"],
+      "summary": "Educational support for visual processing and reading-friendly routines.",
+      "resources": [
+        "NHS visual processing overview (UK)",
+        "Understood.org visual processing support (US)"
+      ],
+      "pillarPath": "/conditions/visual-processing",
+      "starterGuides": [
+        "/guides/focus-start",
+        "/guides/quick-calm-in-5-minutes",
+        "/guides/body-scan-for-stress"
+      ],
+      "tools": [
+        "/tools/focus-training",
+        "/tools/breath-tools"
+      ],
+      "recommendedClusters": [
+        "visual-layout-tips",
+        "reading-supports",
+        "colour-contrast",
+        "homework-routines",
+        "classroom-adjustments"
+      ],
+      "recommendedFaqs": [
+        "How can we reduce visual fatigue?",
+        "What reading supports help most?",
+        "How can we set up the workspace?"
+      ],
+      "requiredPillar": false
+    },
+    {
+      "conditionId": "hyperlexia",
+      "canonicalName": "Hyperlexia",
+      "aliases": ["advanced reading", "hyperlexic reading"],
+      "category": "learning",
+      "scope": "support-area",
+      "audience": ["child", "teen", "parent-carer", "teacher"],
+      "supportNeeds": ["communication", "reading", "routines"],
+      "summary": "Educational support for reading strengths and comprehension routines.",
+      "resources": [
+        "NHS hyperlexia overview (UK)",
+        "ASHA hyperlexia resources (US)"
+      ],
+      "pillarPath": "/conditions/hyperlexia",
+      "starterGuides": [
+        "/guides/focus-start",
+        "/guides/quick-calm-in-5-minutes",
+        "/guides/body-scan-for-stress"
+      ],
+      "tools": [
+        "/tools/focus-training",
+        "/tools/breath-tools"
+      ],
+      "recommendedClusters": [
+        "comprehension-routines",
+        "conversation-support",
+        "visual-schedules",
+        "school-communication",
+        "reading-balance"
+      ],
+      "recommendedFaqs": [
+        "How can we support comprehension?",
+        "How do we balance reading with communication?",
+        "What school supports help?"
+      ],
+      "requiredPillar": false
+    },
+    {
+      "conditionId": "visual-stress",
+      "canonicalName": "Irlen-like visual stress",
+      "aliases": ["visual stress", "Irlen", "pattern glare"],
+      "category": "sensory",
+      "scope": "support-area",
+      "audience": ["child", "teen", "adult", "parent-carer", "teacher"],
+      "supportNeeds": ["reading", "visual", "routines"],
+      "summary": "Educational support for visual comfort and reading-friendly environments.",
+      "resources": [
+        "NHS visual stress overview (UK)",
+        "College of Optometrists guidance (UK)"
+      ],
+      "pillarPath": "/conditions/visual-stress",
+      "starterGuides": [
+        "/guides/focus-start",
+        "/guides/body-scan-for-stress",
+        "/guides/quick-calm-in-5-minutes"
+      ],
+      "tools": [
+        "/tools/focus-training",
+        "/tools/breath-tools"
+      ],
+      "recommendedClusters": [
+        "reading-layout",
+        "visual-breaks",
+        "lighting-tips",
+        "classroom-adjustments",
+        "homework-support"
+      ],
+      "recommendedFaqs": [
+        "How can we reduce visual strain?",
+        "What layout changes help reading?",
+        "What can teachers do?"
+      ],
+      "requiredPillar": false
+    },
+    {
+      "conditionId": "anxiety-stress",
+      "canonicalName": "Anxiety and stress (support area)",
+      "aliases": ["anxiety", "stress", "overwhelm"],
+      "category": "mental wellbeing overlap",
+      "scope": "support-area",
+      "audience": ["child", "teen", "adult", "parent-carer", "teacher", "workplace"],
+      "supportNeeds": ["anxiety", "stress", "sleep", "emotional-regulation"],
+      "summary": "Educational support for calming routines and stress regulation.",
+      "resources": [
+        "NHS anxiety overview (UK)",
+        "CDC stress resources (US)"
+      ],
+      "pillarPath": "/anxiety",
+      "starterGuides": [
+        "/guides/quick-calm-in-5-minutes",
+        "/guides/body-scan-for-stress",
+        "/guides/wind-down-routine"
+      ],
+      "tools": [
+        "/tools/breath-tools",
+        "/tools/stress-tools",
+        "/tools/sleep-tools"
+      ],
+      "recommendedClusters": [
+        "quick-resets",
+        "grounding-routines",
+        "sleep-wind-downs",
+        "school-calm-plans",
+        "workplace-resets"
+      ],
+      "recommendedFaqs": [
+        "What quick reset helps during stress?",
+        "How do I build a calm routine?",
+        "What support is safe to try at home?"
+      ],
+      "requiredPillar": false
+    },
+    {
+      "conditionId": "sleep-difficulties",
+      "canonicalName": "Sleep difficulties (support area)",
+      "aliases": ["insomnia", "sleep problems", "wind-down"],
+      "category": "mental wellbeing overlap",
+      "scope": "support-area",
+      "audience": ["child", "teen", "adult", "parent-carer"],
+      "supportNeeds": ["sleep", "routines", "anxiety"],
+      "summary": "Educational support for wind-down routines and sleep hygiene.",
+      "resources": [
+        "NHS sleep guidance (UK)",
+        "CDC sleep hygiene (US)"
+      ],
+      "pillarPath": "/sleep",
+      "starterGuides": [
+        "/guides/wind-down-routine",
+        "/guides/body-scan-for-stress",
+        "/guides/quick-calm-in-5-minutes"
+      ],
+      "tools": [
+        "/tools/sleep-tools",
+        "/tools/breath-tools"
+      ],
+      "recommendedClusters": [
+        "bedtime-routines",
+        "screen-wind-down",
+        "night-worries",
+        "sleep-consistency",
+        "relaxation-prompts"
+      ],
+      "recommendedFaqs": [
+        "How can we reset bedtime routines?",
+        "What helps when worries keep us awake?",
+        "How do we build consistent sleep habits?"
+      ],
+      "requiredPillar": false
+    },
+    {
+      "conditionId": "emotional-regulation",
+      "canonicalName": "Emotional regulation difficulties",
+      "aliases": ["big emotions", "meltdowns", "overwhelm"],
+      "category": "mental wellbeing overlap",
+      "scope": "support-area",
+      "audience": ["child", "teen", "adult", "parent-carer", "teacher"],
+      "supportNeeds": ["emotional-regulation", "stress", "routines"],
+      "summary": "Educational support for calm-down routines and coping plans.",
+      "resources": [
+        "NHS stress self-help (UK)",
+        "CDC coping guidance (US)"
+      ],
+      "pillarPath": "/stress",
+      "starterGuides": [
+        "/guides/quick-calm-in-5-minutes",
+        "/guides/body-scan-for-stress",
+        "/guides/wind-down-routine"
+      ],
+      "tools": [
+        "/tools/breath-tools",
+        "/tools/stress-tools"
+      ],
+      "recommendedClusters": [
+        "calm-down-plans",
+        "emotion-labeling",
+        "family-routines",
+        "school-supports",
+        "recovery-time"
+      ],
+      "recommendedFaqs": [
+        "How do we support big emotions?",
+        "What routines help after overwhelm?",
+        "What should teachers know?"
+      ],
+      "requiredPillar": false
+    }
+  ]
+}

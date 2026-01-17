@@ -1,38 +1,5 @@
 import Link from 'next/link';
 
-const conditions = [
-  {
-    title: 'ADHD support',
-    description: 'Focus tools, routines, and school-friendly guidance.',
-    href: '/adhd',
-  },
-  {
-    title: 'Autism support',
-    description: 'Sensory-friendly strategies, schedules, and practical routines.',
-    href: '/autism',
-  },
-  {
-    title: 'Anxiety support',
-    description: 'Grounding techniques, calm plans, and breathing guidance.',
-    href: '/anxiety',
-  },
-  {
-    title: 'Dyslexia support',
-    description: 'Reading support and accessible learning routines.',
-    href: '/dyslexia-reading-training',
-  },
-  {
-    title: 'Sleep support',
-    description: 'Wind-down routines and gentle sleep guidance.',
-    href: '/sleep',
-  },
-  {
-    title: 'Stress & burnout',
-    description: 'Practical steps to reset and reduce overwhelm.',
-    href: '/stress',
-  },
-];
-
 export default function ConditionsHubPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
@@ -41,22 +8,25 @@ export default function ConditionsHubPage() {
           <p className="text-sm uppercase tracking-wide text-slate-500">Conditions we cover</p>
           <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900">One place for neurodivergent support</h1>
           <p className="text-base text-slate-600 max-w-3xl">
-            NeuroBreath brings together guides, tools, and trust-first resources. Everything is educational and evidence-informed,
-            so families, carers, and educators can find practical next steps without medical claims.
+            This hub has moved to locale-specific pages for clearer guidance in UK and US English. Choose your region to continue.
           </p>
         </header>
 
         <section className="grid gap-4 md:grid-cols-2">
-          {conditions.map(condition => (
-            <Link
-              key={condition.title}
-              href={condition.href}
-              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300"
-            >
-              <h2 className="text-lg font-semibold text-slate-900">{condition.title}</h2>
-              <p className="mt-2 text-sm text-slate-600">{condition.description}</p>
-            </Link>
-          ))}
+          <Link
+            href="/uk/conditions"
+            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300"
+          >
+            <h2 className="text-lg font-semibold text-slate-900">Continue in UK English</h2>
+            <p className="mt-2 text-sm text-slate-600">UK-specific trust pages and safeguarding guidance.</p>
+          </Link>
+          <Link
+            href="/us/conditions"
+            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300"
+          >
+            <h2 className="text-lg font-semibold text-slate-900">Continue in US English</h2>
+            <p className="mt-2 text-sm text-slate-600">US-specific trust pages and safeguarding guidance.</p>
+          </Link>
         </section>
 
         <section className="rounded-2xl border border-slate-200 bg-slate-50/70 p-6">
@@ -67,8 +37,8 @@ export default function ConditionsHubPage() {
             <li>Safeguarding, privacy-first design, and accessible UX as defaults.</li>
           </ul>
           <div className="mt-4">
-            <Link href="/trust" className="text-sm font-semibold text-indigo-600 hover:underline">
-              Visit the Trust Centre
+            <Link href="/uk/trust" className="text-sm font-semibold text-indigo-600 hover:underline">
+              Visit the Trust Centre (UK)
             </Link>
           </div>
         </section>
