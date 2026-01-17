@@ -47,7 +47,7 @@ export interface SyncAssessment {
   assessmentType: string
   placementLevel?: string
   placementConfidence?: string
-  readingProfile?: any // JSON
+  readingProfile?: unknown // JSON
   startedAt: string // ISO 8601
   endedAt?: string // ISO 8601
 }
@@ -105,8 +105,8 @@ export interface SyncResponse {
 export interface SyncConflict {
   type: 'session' | 'progress' | 'badge' | 'assessment'
   itemId: string
-  clientVersion: any
-  serverVersion: any
+  clientVersion: unknown
+  serverVersion: unknown
   resolution: 'client-wins' | 'server-wins' | 'merged'
   reason: string
 }
@@ -114,14 +114,28 @@ export interface SyncConflict {
 // ============================================================================
 // VALIDATION
 // ============================================================================
-
-export function validateSyncRequest(request: any): request is SyncRequest {
+export function validateSyncRequest(request: unknown): request is SyncRequest {
   if (!request || typeof request !== 'object') return false
-  if (!request.deviceId || typeof request.deviceId !== 'string') return false
-  if (typeof request.isGuest !== 'boolean') return false
-  if (!request.clientData || typeof request.clientData !== 'object') return false
+  const record = request as Record<string, unknown>
+  if (!record.deviceId || typeof record.deviceId !== 'string') return false
+  if (typeof record.isGuest !== 'boolean') return false
+  if (!record.clientData || typeof record.clientData !== 'object') return false
   
   return true
+}
+
+type SyncResolvableItem = {
+  id?: string
+  deviceId?: string
+  updatedAt?: string | Date
+  completedAt?: string | Date
+  [key: string]: unknown
+}
+
+function toDate(value: string | Date | undefined): Date {
+  if (value instanceof Date) return value
+  if (typeof value === 'string') return new Date(value)
+  return new Date(0)
 }
 
 // ============================================================================
@@ -135,14 +149,14 @@ export type ConflictStrategy = 'last-write-wins' | 'client-wins' | 'server-wins'
  * Default: last-write-wins based on timestamps
  */
 export function resolveConflict(
-  clientItem: any,
-  serverItem: any,
+  clientItem: SyncResolvableItem,
+  serverItem: SyncResolvableItem,
   strategy: ConflictStrategy = 'last-write-wins'
-): { resolved: any; conflict: SyncConflict } {
-  const clientTime = new Date(clientItem.updatedAt || clientItem.completedAt || 0)
-  const serverTime = new Date(serverItem.updatedAt || serverItem.completedAt || 0)
+): { resolved: SyncResolvableItem; conflict: SyncConflict } {
+  const clientTime = toDate(clientItem.updatedAt ?? clientItem.completedAt)
+  const serverTime = toDate(serverItem.updatedAt ?? serverItem.completedAt)
   
-  let resolved: any
+  let resolved: SyncResolvableItem
   let resolution: SyncConflict['resolution']
   let reason: string
   
@@ -176,9 +190,9 @@ export function resolveConflict(
       resolved = {
         ...serverItem,
         ...clientItem,
-        totalSessions: Math.max(clientItem.totalSessions || 0, serverItem.totalSessions || 0),
-        totalMinutes: Math.max(clientItem.totalMinutes || 0, serverItem.totalMinutes || 0),
-        longestStreak: Math.max(clientItem.longestStreak || 0, serverItem.longestStreak || 0),
+        totalSessions: Math.max(Number(clientItem.totalSessions ?? 0), Number(serverItem.totalSessions ?? 0)),
+        totalMinutes: Math.max(Number(clientItem.totalMinutes ?? 0), Number(serverItem.totalMinutes ?? 0)),
+        longestStreak: Math.max(Number(clientItem.longestStreak ?? 0), Number(serverItem.longestStreak ?? 0)),
       }
       resolution = 'merged'
       reason = 'Merged both versions'
@@ -187,7 +201,7 @@ export function resolveConflict(
   
   const conflict: SyncConflict = {
     type: 'progress', // Will be set by caller
-    itemId: clientItem.id || clientItem.deviceId,
+    itemId: String(clientItem.id ?? clientItem.deviceId ?? ''),
     clientVersion: clientItem,
     serverVersion: serverItem,
     resolution,

@@ -9,6 +9,7 @@
 Phase 4 completes the NeuroBreath platform with intelligent features that enhance user engagement and provide personalized experiences. This phase adds:
 
 - **Privacy-focused Analytics**: Client-side behavior tracking stored locally
+- **A/B Testing Framework**: Client-side experiments with local-only exposure + conversion tracking
 - **Intelligent Recommendations**: Personalized content suggestions based on user patterns
 - **Achievement System**: Gamification with badges, streaks, and milestones
 - **Progress Visualizations**: Charts, stats, and activity trends
@@ -41,6 +42,13 @@ All Phase 4 features are privacy-first, storing data locally in localStorage wit
 - `useAnalyticsEvents()` - Query events by type
 - `useJourneyCompletionRate()` - Completion metrics
 - `useActivityTrend()` - Daily activity data
+
+### Experiments / A-B Testing (4 files)
+
+- `lib/experiments/schema.ts` - Experiment definitions + assignment types
+- `lib/experiments/engine.ts` - Local assignment store + reset helpers
+- `lib/experiments/hooks.ts` - `useExperiment()` with exposure + conversion tracking
+- `lib/experiments/definitions.ts` - Central experiment IDs/variants
 
 ### Recommendation Engine (2 files)
 
@@ -151,6 +159,8 @@ All Phase 4 features are privacy-first, storing data locally in localStorage wit
 - `tts_used` - Text-to-speech usage
 - `page_viewed` - Page navigation
 - `achievement_earned` - Badge unlocked
+- `experiment_exposure` - User was bucketed and saw a variant
+- `experiment_conversion` - User performed a tracked outcome/metric
 
 **Summary Statistics:**
 - Total saves, journeys started/completed

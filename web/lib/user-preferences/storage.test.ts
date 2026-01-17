@@ -1,10 +1,10 @@
 /**
  * Storage Tests
- * 
- * Tests for unified storage layer including migrations.
+ *
+ * Run with: npx tsx lib/user-preferences/storage.test.ts
  */
 
-import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
+import { strict as assert } from 'assert';
 import {
   loadUserPreferences,
   saveUserPreferences,
@@ -42,20 +42,39 @@ Object.defineProperty(global, 'localStorage', {
   writable: true,
 });
 
-describe('Storage', () => {
-  beforeEach(() => {
+let passed = 0;
+let failed = 0;
+
+function it(name: string, fn: () => void) {
+  try {
     localStorageMock.clear();
-  });
-
-  afterEach(() => {
+    fn();
+    passed++;
+    // eslint-disable-next-line no-console
+    console.log(`✓ ${name}`);
+  } catch (err) {
+    failed++;
+    // eslint-disable-next-line no-console
+    console.error(`✗ ${name}`);
+    // eslint-disable-next-line no-console
+    console.error(`  ${err instanceof Error ? err.message : String(err)}`);
+  } finally {
     clearStorage();
-  });
+  }
+}
 
+function describe(name: string, fn: () => void) {
+  // eslint-disable-next-line no-console
+  console.log(`\n${name}`);
+  fn();
+}
+
+describe('Storage', () => {
   it('should load default state when no stored data', () => {
     const state = loadUserPreferences();
-    expect(state.schemaVersion).toBe(DEFAULT_USER_PREFERENCES_STATE.schemaVersion);
-    expect(state.preferences).toEqual(DEFAULT_USER_PREFERENCES_STATE.preferences);
-    expect(state.myPlan).toEqual(DEFAULT_USER_PREFERENCES_STATE.myPlan);
+    assert.equal(state.schemaVersion, DEFAULT_USER_PREFERENCES_STATE.schemaVersion);
+    assert.deepEqual(state.preferences, DEFAULT_USER_PREFERENCES_STATE.preferences);
+    assert.deepEqual(state.myPlan, DEFAULT_USER_PREFERENCES_STATE.myPlan);
   });
 
   it('should save and load state correctly', () => {
@@ -71,8 +90,8 @@ describe('Storage', () => {
     saveUserPreferences(customState);
     const loaded = loadUserPreferences();
 
-    expect(loaded.preferences.dyslexiaMode).toBe(true);
-    expect(loaded.preferences.readingLevel).toBe('simple');
+    assert.equal(loaded.preferences.dyslexiaMode, true);
+    assert.equal(loaded.preferences.readingLevel, 'simple');
   });
 
   it('should migrate legacy guestProfile key', () => {
@@ -86,13 +105,13 @@ describe('Storage', () => {
 
     const loaded = loadUserPreferences();
 
-    expect(loaded.preferences.regionPreference).toBe('uk');
-    expect(loaded.preferences.readingLevel).toBe('detailed');
-    expect(loaded.preferences.dyslexiaMode).toBe(true);
+    assert.equal(loaded.preferences.regionPreference, 'uk');
+    assert.equal(loaded.preferences.readingLevel, 'detailed');
+    assert.equal(loaded.preferences.dyslexiaMode, true);
 
     // Legacy key should be archived and removed
-    expect(localStorageMock.getItem(LEGACY_KEYS.guestProfile)).toBeNull();
-    expect(localStorageMock.getItem(LEGACY_KEYS.guestProfile + '.archived')).toBeTruthy();
+    assert.equal(localStorageMock.getItem(LEGACY_KEYS.guestProfile), null);
+    assert.ok(Boolean(localStorageMock.getItem(LEGACY_KEYS.guestProfile + '.archived')));
   });
 
   it('should migrate legacy myPlan key', () => {
@@ -116,8 +135,8 @@ describe('Storage', () => {
 
     const loaded = loadUserPreferences();
 
-    expect(loaded.myPlan.savedItems).toHaveLength(1);
-    expect(loaded.myPlan.savedItems[0].id).toBe('tool-1');
+    assert.equal(loaded.myPlan.savedItems.length, 1);
+    assert.equal(loaded.myPlan.savedItems[0].id, 'tool-1');
   });
 
   it('should export and import correctly', () => {
@@ -147,20 +166,20 @@ describe('Storage', () => {
     const exported = exportUserPreferences(original);
     const imported = importUserPreferences(exported);
 
-    expect(imported.preferences.textSize).toBe('large');
-    expect(imported.preferences.contrast).toBe('high');
-    expect(imported.myPlan.savedItems).toHaveLength(1);
-    expect(imported.myPlan.savedItems[0].title).toBe('Test Guide');
+    assert.equal(imported.preferences.textSize, 'large');
+    assert.equal(imported.preferences.contrast, 'high');
+    assert.equal(imported.myPlan.savedItems.length, 1);
+    assert.equal(imported.myPlan.savedItems[0].title, 'Test Guide');
   });
 
   it('should handle invalid import gracefully', () => {
-    expect(() => {
+    assert.throws(() => {
       importUserPreferences('invalid json');
-    }).toThrow();
+    });
 
-    expect(() => {
+    assert.throws(() => {
       importUserPreferences('{"invalid": "structure"}');
-    }).toThrow();
+    });
   });
 
   it('should reset to defaults', () => {
@@ -177,12 +196,16 @@ describe('Storage', () => {
     // Reset
     const reset = resetUserPreferences();
 
-    expect(reset.preferences.dyslexiaMode).toBe(false);
-    expect(reset.myPlan.savedItems).toHaveLength(0);
+    assert.equal(reset.preferences.dyslexiaMode, false);
+    assert.equal(reset.myPlan.savedItems.length, 0);
   });
 
   it('should preserve schemaVersion on load', () => {
     const state = loadUserPreferences();
-    expect(state.schemaVersion).toBe(1);
+    assert.equal(state.schemaVersion, 1);
   });
 });
+
+// eslint-disable-next-line no-console
+console.log(`\nDone. Passed: ${passed}, Failed: ${failed}`);
+if (failed > 0) process.exitCode = 1;

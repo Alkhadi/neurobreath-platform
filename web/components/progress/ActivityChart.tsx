@@ -31,6 +31,7 @@ export function ActivityChart({ days = 7 }: { days?: number }) {
             const dayName = date.toLocaleDateString('en-GB', { weekday: 'short' });
             const dateStr = date.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' });
             const percentage = maxCount > 0 ? (day.count / maxCount) * 100 : 0;
+            const barPercent = day.count > 0 ? Math.max(percentage, 5) : 0;
             const isToday = day.date === new Date().toISOString().split('T')[0];
 
             return (
@@ -40,17 +41,18 @@ export function ActivityChart({ days = 7 }: { days?: number }) {
                   <div className="text-[10px]">{dateStr}</div>
                 </div>
                 <div className="flex-1">
-                  <div className="relative h-8 bg-muted rounded overflow-hidden">
-                    <div
-                      className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-primary/70 transition-all duration-300 flex items-center px-2"
-                      style={{ width: `${Math.max(percentage, 5)}%` }}
-                    >
-                      {day.count > 0 && (
-                        <span className="text-xs font-semibold text-primary-foreground">
-                          {day.count}
-                        </span>
-                      )}
-                    </div>
+                  <div className="relative">
+                    <progress
+                      className="nb-progress nb-progress--lg nb-progress--gradient"
+                      value={barPercent}
+                      max={100}
+                      aria-label={`${dayName} ${dateStr}: ${day.count} activities`}
+                    />
+                    {day.count > 0 && (
+                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-primary-foreground pointer-events-none">
+                        {day.count}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

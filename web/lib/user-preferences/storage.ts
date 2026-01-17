@@ -25,16 +25,24 @@ let memoryStorage: UserPreferencesState | null = null;
 let persistenceTimer: NodeJS.Timeout | null = null;
 const DEBOUNCE_MS = 500;
 
+function getLocalStorage(): Storage | null {
+  if (typeof window !== 'undefined' && window.localStorage) return window.localStorage;
+  const maybeGlobal = globalThis as unknown as { localStorage?: Storage };
+  if (maybeGlobal?.localStorage) return maybeGlobal.localStorage;
+  return null;
+}
+
 /**
  * Check if localStorage is available
  */
 function isLocalStorageAvailable(): boolean {
-  if (typeof window === 'undefined') return false;
+  const storage = getLocalStorage();
+  if (!storage) return false;
   
   try {
     const test = '__neurobreath_storage_test__';
-    window.localStorage.setItem(test, test);
-    window.localStorage.removeItem(test);
+    storage.setItem(test, test);
+    storage.removeItem(test);
     return true;
   } catch {
     return false;
@@ -50,9 +58,15 @@ export function loadUserPreferences(): UserPreferencesState {
     return memoryStorage || DEFAULT_USER_PREFERENCES_STATE;
   }
 
+  const storage = getLocalStorage();
+  if (!storage) {
+    console.warn('[UserPreferences] localStorage unavailable, using memory fallback');
+    return memoryStorage || DEFAULT_USER_PREFERENCES_STATE;
+  }
+
   try {
     // Try loading unified state first
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = storage.getItem(STORAGE_KEY);
     
     if (raw) {
       const parsed = JSON.parse(raw) as UserPreferencesState;
@@ -86,9 +100,12 @@ function migrateLegacyKeys(): UserPreferencesState {
     updatedAt: new Date().toISOString(),
   };
 
+  const storage = getLocalStorage();
+  if (!storage) return newState;
+
   try {
     // Migrate guest profile
-    const guestProfileRaw = window.localStorage.getItem(LEGACY_KEYS.guestProfile);
+    const guestProfileRaw = storage.getItem(LEGACY_KEYS.guestProfile);
     if (guestProfileRaw) {
       const legacy = JSON.parse(guestProfileRaw) as Partial<GuestPreferences>;
       newState.preferences = {
@@ -99,7 +116,7 @@ function migrateLegacyKeys(): UserPreferencesState {
     }
 
     // Migrate my plan
-    const myPlanRaw = window.localStorage.getItem(LEGACY_KEYS.myPlan);
+    const myPlanRaw = storage.getItem(LEGACY_KEYS.myPlan);
     if (myPlanRaw) {
       const legacy = JSON.parse(myPlanRaw) as Partial<MyPlanState>;
       newState.myPlan = {
@@ -114,18 +131,18 @@ function migrateLegacyKeys(): UserPreferencesState {
       saveUserPreferences(newState);
       
       // Archive legacy keys (keep for safety, can be removed later)
-      window.localStorage.setItem(
+      storage.setItem(
         LEGACY_KEYS.guestProfile + '.archived',
         guestProfileRaw || ''
       );
-      window.localStorage.setItem(
+      storage.setItem(
         LEGACY_KEYS.myPlan + '.archived',
         myPlanRaw || ''
       );
       
       // Remove legacy keys
-      window.localStorage.removeItem(LEGACY_KEYS.guestProfile);
-      window.localStorage.removeItem(LEGACY_KEYS.myPlan);
+      storage.removeItem(LEGACY_KEYS.guestProfile);
+      storage.removeItem(LEGACY_KEYS.myPlan);
     }
   } catch (error) {
     console.error('[UserPreferences] Legacy migration failed:', error);
@@ -173,8 +190,14 @@ export function saveUserPreferences(state: UserPreferencesState): void {
     return;
   }
 
+  const storage = getLocalStorage();
+  if (!storage) {
+    memoryStorage = stateToSave;
+    return;
+  }
+
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+    storage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
   } catch (error) {
     console.error('[UserPreferences] Failed to save:', error);
     memoryStorage = stateToSave;
@@ -264,9 +287,15 @@ export function clearStorage(): void {
     return;
   }
 
-  window.localStorage.removeItem(STORAGE_KEY);
-  window.localStorage.removeItem(LEGACY_KEYS.guestProfile);
-  window.localStorage.removeItem(LEGACY_KEYS.myPlan);
-  window.localStorage.removeItem(LEGACY_KEYS.guestProfile + '.archived');
-  window.localStorage.removeItem(LEGACY_KEYS.myPlan + '.archived');
+  const storage = getLocalStorage();
+  if (!storage) {
+    memoryStorage = null;
+    return;
+  }
+
+  storage.removeItem(STORAGE_KEY);
+  storage.removeItem(LEGACY_KEYS.guestProfile);
+  storage.removeItem(LEGACY_KEYS.myPlan);
+  storage.removeItem(LEGACY_KEYS.guestProfile + '.archived');
+  storage.removeItem(LEGACY_KEYS.myPlan + '.archived');
 }

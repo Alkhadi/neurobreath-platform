@@ -7,7 +7,7 @@
 'use client';
 
 import { useAnalyticsSummary, useJourneyCompletionRate } from '@/lib/analytics/hooks';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Flame, Target, TrendingUp, Award } from 'lucide-react';
 
 export function ProgressStats() {

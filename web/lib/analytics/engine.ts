@@ -186,6 +186,8 @@ function updateStreak(store: AnalyticsStore): void {
   // Get unique activity dates
   const activityDates = new Set<string>();
   events.forEach(event => {
+    // Avoid counting passive events as engagement
+    if (event.type === 'page_viewed' || event.type === 'experiment_exposure') return;
     const date = new Date(event.timestamp).toISOString().split('T')[0];
     activityDates.add(date);
   });

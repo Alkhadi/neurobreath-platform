@@ -47,6 +47,8 @@ function normalizePunctuationAndWhitespace(text: string): string {
     text
       // Replace multiple dots with ellipsis
       .replace(/\.{3,}/g, '...')
+      // Collapse mixed exclamation/question runs
+      .replace(/[!?]{2,}/g, '?')
       // Remove excessive exclamation/question marks
       .replace(/[!]{2,}/g, '!')
       .replace(/[?]{2,}/g, '?')

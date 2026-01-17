@@ -32,20 +32,20 @@ All features respect user privacy (local-only storage) and work seamlessly with 
 2. **components/journeys/JourneyProgressTracker.tsx** (155 lines)
    - Complete journey progress management
    - Features:
-     * Auto-save journey to My Plan on mount
-     * Progress bar with percentage
-     * Continue/Mark Complete/Reset actions
-     * Completed state with restart option
+     - Auto-save journey to My Plan on mount
+     - Progress bar with percentage
+     - Continue/Mark Complete/Reset actions
+     - Completed state with restart option
    - Props: journeyId, title, totalSteps, currentStepNumber, nextStep info
 
 3. **app/demo/phase-3/page.tsx** (320 lines)
    - Comprehensive demonstration page
    - Shows all Phase 3 features in action:
-     * Reading level adaptive content (simple/standard/detailed)
-     * AddToMyPlanButton integration
-     * Journey progress links
-     * TTS integration explanation
-     * Accessibility features overview
+     - Reading level adaptive content (simple/standard/detailed)
+     - AddToMyPlanButton integration
+     - Journey progress links
+     - TTS integration explanation
+     - Accessibility features overview
    - Includes privacy notice and navigation
 
 ### Modified Files (4)
@@ -54,9 +54,9 @@ All features respect user privacy (local-only storage) and work seamlessly with 
    - **Before:** Custom TTS implementation with sanitizeForTTS
    - **After:** Integrated with Phase 1 unified TTS engine
    - Now uses:
-     * `useTTSPreferences()` hook for settings
-     * `speak()` and `stop()` from `/lib/tts/engine.ts`
-     * `getIsSpeaking()` for state checking
+     - `useTTSPreferences()` hook for settings
+     - `speak()` and `stop()` from `/lib/tts/engine.ts`
+     - `getIsSpeaking()` for state checking
    - Respects user TTS enabled/disabled preference
    - Automatically applies rate, voice, filtering settings
 
@@ -159,9 +159,10 @@ engineSpeak(text, ttsSettings, { onStart, onEnd, onError });
 - **Progress tracking:** Updates as user completes steps
 - **Visual feedback:** Progress bar with percentage
 - **Actions:**
-  * Continue → Next step button (if nextStepHref provided)
-  * Mark Complete → Sets completed=true, shows restart option
-  * Reset Progress → Clears journey from My Plan
+- **Actions:**
+  - Continue → Next step button (if nextStepHref provided)
+  - Mark Complete → Sets completed=true, shows restart option
+  - Reset Progress → Clears journey from My Plan
 - **Completed state:** Green checkmark, congratulations message, link to My Plan
 
 **Storage:**

@@ -323,17 +323,27 @@ export function clearPin(): void {
 /**
  * Migrate old PIN store to new version
  */
-function migratePinStore(old: any): DevicePinStore {
-  console.warn('[DevicePin] Migrating old version:', old.version)
+function migratePinStore(old: unknown): DevicePinStore {
+  const version = (old && typeof old === 'object') ? (old as Record<string, unknown>).version : undefined
+  console.warn('[DevicePin] Migrating old version:', version)
   
   const migrated = createDefaultPinStore()
   
   // Preserve what we can (but reset if hashing algorithm changed)
-  if (old.pinHash) migrated.pinHash = old.pinHash
-  if (old.pinSalt) migrated.pinSalt = old.pinSalt
-  if (old.recoveryHash) migrated.recoveryHash = old.recoveryHash
-  if (old.recoverySalt) migrated.recoverySalt = old.recoverySalt
-  if (old.recoveryHint) migrated.recoveryHint = old.recoveryHint
+  const record = (old && typeof old === 'object') ? (old as Record<string, unknown>) : null
+  if (!record) return migrated
+
+  const pinHash = record.pinHash
+  const pinSalt = record.pinSalt
+  const recoveryHash = record.recoveryHash
+  const recoverySalt = record.recoverySalt
+  const recoveryHint = record.recoveryHint
+
+  if (typeof pinHash === 'string' && pinHash) migrated.pinHash = pinHash
+  if (typeof pinSalt === 'string' && pinSalt) migrated.pinSalt = pinSalt
+  if (typeof recoveryHash === 'string' && recoveryHash) migrated.recoveryHash = recoveryHash
+  if (typeof recoverySalt === 'string' && recoverySalt) migrated.recoverySalt = recoverySalt
+  if (typeof recoveryHint === 'string' && recoveryHint) migrated.recoveryHint = recoveryHint
   
   return migrated
 }

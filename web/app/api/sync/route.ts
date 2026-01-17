@@ -198,7 +198,7 @@ async function syncAuthenticatedUser(request: SyncRequest): Promise<SyncResponse
           assessmentType: assessment.assessmentType,
           placementLevel: assessment.placementLevel || null,
           placementConfidence: assessment.placementConfidence || null,
-          readingProfile: assessment.readingProfile || null,
+          readingProfile: assessment.readingProfile ?? undefined,
           startedAt: new Date(assessment.startedAt),
           endedAt: assessment.endedAt ? new Date(assessment.endedAt) : null
         }
@@ -269,7 +269,7 @@ async function syncAuthenticatedUser(request: SyncRequest): Promise<SyncResponse
         assessmentType: a.assessmentType,
         placementLevel: a.placementLevel || undefined,
         placementConfidence: a.placementConfidence || undefined,
-        readingProfile: a.readingProfile || undefined,
+        readingProfile: a.readingProfile ?? undefined,
         startedAt: a.startedAt.toISOString(),
         endedAt: a.endedAt?.toISOString() || undefined
       }))

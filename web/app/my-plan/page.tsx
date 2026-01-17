@@ -16,12 +16,18 @@ import { ActivityChart } from '@/components/progress/ActivityChart';
 import { Recommendations } from '@/components/recommendations/Recommendations';
 import { NextActionCard } from '@/components/recommendations/NextActionCard';
 import { AchievementsDisplay } from '@/components/achievements/AchievementsDisplay';
+import { useExperiment } from '@/lib/experiments/hooks';
+import { MY_PLAN_EMPTY_STATE_CTA_COPY } from '@/lib/experiments/definitions';
+import { ExportShareMyPlan } from '@/components/my-plan/ExportShareMyPlan';
 
 export default function MyPlanPage() {
   const { myPlan, isLoaded } = useUserPreferencesState();
   const { removeSavedItem, updateSavedItemNote, setJourneyProgress, clearJourneyProgress } = useMyPlanActions();
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [noteText, setNoteText] = useState('');
+
+  const emptyCtaExperiment = useExperiment(MY_PLAN_EMPTY_STATE_CTA_COPY);
+  const emptyCtaLabel = emptyCtaExperiment.variant === 'explore_tools' ? 'Explore tools' : 'Browse Tools';
 
   if (!isLoaded) {
     return (
@@ -90,13 +96,21 @@ export default function MyPlanPage() {
   return (
     <div className="container mx-auto py-12 px-4 max-w-6xl">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2 flex items-center gap-3">
-          <BookmarkIcon className="w-8 h-8" />
-          My Plan
-        </h1>
-        <p className="text-muted-foreground">
-          Your personalized collection of tools, guides, and progress tracking
-        </p>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-4xl font-bold mb-2 flex items-center gap-3">
+              <BookmarkIcon className="w-8 h-8" />
+              My Plan
+            </h1>
+            <p className="text-muted-foreground">
+              Your personalized collection of tools, guides, and progress tracking
+            </p>
+          </div>
+
+          <div className="shrink-0">
+            <ExportShareMyPlan />
+          </div>
+        </div>
       </div>
 
       {/* Progress Stats */}
@@ -143,8 +157,15 @@ export default function MyPlanPage() {
                 <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                   Save tools, guides, and resources from around the site to build your personalized plan
                 </p>
-                <Button asChild>
-                  <Link href="/tools">Browse Tools</Link>
+                <Button
+                  asChild
+                  onClick={() =>
+                    emptyCtaExperiment.trackConversion('my_plan_empty_state_primary_cta_click', {
+                      destination: '/tools',
+                    })
+                  }
+                >
+                  <Link href="/tools">{emptyCtaLabel}</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -290,12 +311,12 @@ export default function MyPlanPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-2">
-                        <div className="w-full bg-secondary rounded-full h-2">
-                          <div
-                            className="bg-primary h-2 rounded-full transition-all"
-                            style={{ width: `${percentComplete}%` }}
-                          />
-                        </div>
+                        <progress
+                          className="nb-progress"
+                          value={percentComplete}
+                          max={100}
+                          aria-label={`${journeyId.replace(/-/g, ' ')} progress`}
+                        />
                         <div className="flex justify-between text-xs text-muted-foreground">
                           <span>Started {new Date(progress.startedAt).toLocaleDateString()}</span>
                           <span>Updated {new Date(progress.updatedAt).toLocaleDateString()}</span>

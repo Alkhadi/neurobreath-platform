@@ -23,6 +23,7 @@ export interface Achievement {
  */
 export function checkAchievements(savedItems: SavedItem[]): Achievement[] {
   const summary = getAnalyticsSummary();
+  const savedCount = savedItems?.length ?? 0;
 
   const achievements: Achievement[] = [
     // Getting Started
@@ -33,7 +34,7 @@ export function checkAchievements(savedItems: SavedItem[]): Achievement[] {
       icon: '📌',
       category: 'getting-started',
       requirement: 'Save 1 item',
-      earned: summary.totalSaves >= 1,
+      earned: savedCount >= 1,
     },
     {
       id: 'started-journey',
@@ -120,7 +121,7 @@ export function checkAchievements(savedItems: SavedItem[]): Achievement[] {
       icon: '🎯',
       category: 'exploration',
       requirement: 'Save 5 items',
-      earned: summary.totalSaves >= 5,
+      earned: savedCount >= 5,
     },
     {
       id: 'ten-saves',
@@ -129,7 +130,7 @@ export function checkAchievements(savedItems: SavedItem[]): Achievement[] {
       icon: '📚',
       category: 'exploration',
       requirement: 'Save 10 items',
-      earned: summary.totalSaves >= 10,
+      earned: savedCount >= 10,
     },
     {
       id: 'tts-user',

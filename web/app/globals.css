@@ -2,6 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+/* =========================================================================
+   PROGRESS (NO INLINE STYLES)
+   ========================================================================= */
+
+.nb-progress {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: var(--nb-progress-height, 0.5rem);
+  border-radius: 9999px;
+  overflow: hidden;
+  background: hsl(var(--secondary));
+}
+
+.nb-progress::-webkit-progress-bar {
+  background: hsl(var(--secondary));
+  border-radius: 9999px;
+}
+
+.nb-progress::-webkit-progress-value {
+  background: hsl(var(--primary));
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+.nb-progress::-moz-progress-bar {
+  background: hsl(var(--primary));
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+.nb-progress--lg {
+  --nb-progress-height: 2rem;
+}
+
+.nb-progress--gradient::-webkit-progress-value {
+  background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--primary) / 0.7));
+}
+
+.nb-progress--gradient::-moz-progress-bar {
+  background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--primary) / 0.7));
+}
+
 /* ============================================================================
    SITE FOOTER STYLES
    ============================================================================ */

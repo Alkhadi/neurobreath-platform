@@ -17,7 +17,9 @@ export type AnalyticsEventType =
   | 'reading_level_changed'
   | 'tts_used'
   | 'page_viewed'
-  | 'achievement_earned';
+  | 'achievement_earned'
+  | 'experiment_exposure'
+  | 'experiment_conversion';
 
 export interface AnalyticsEvent {
   id: string;
@@ -81,6 +83,26 @@ export interface AchievementEarnedEvent extends AnalyticsEvent {
     achievementId: string;
     achievementTitle: string;
     category: string;
+  };
+}
+
+export interface ExperimentExposureEvent extends AnalyticsEvent {
+  type: 'experiment_exposure';
+  data: {
+    experimentId: string;
+    variant: string;
+    inExperiment: boolean;
+  };
+}
+
+export interface ExperimentConversionEvent extends AnalyticsEvent {
+  type: 'experiment_conversion';
+  data: {
+    experimentId: string;
+    variant: string;
+    metric: string;
+    inExperiment: boolean;
+    [key: string]: unknown;
   };
 }
 

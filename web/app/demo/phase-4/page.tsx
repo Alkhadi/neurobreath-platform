@@ -15,8 +15,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Sparkles, TrendingUp, Award, Compass, BarChart, Target } from 'lucide-react';
 import Link from 'next/link';
+import { useExperiment } from '@/lib/experiments/hooks';
+import { MY_PLAN_EMPTY_STATE_CTA_COPY } from '@/lib/experiments/definitions';
 
 export default function Phase4DemoPage() {
+  const emptyCtaExperiment = useExperiment(MY_PLAN_EMPTY_STATE_CTA_COPY);
+
   return (
     <div className="container mx-auto py-12 px-4 max-w-6xl">
       {/* Hero Section */}
@@ -72,6 +76,62 @@ export default function Phase4DemoPage() {
           </CardHeader>
         </Card>
       </div>
+
+      {/* Experiments / A-B Testing */}
+      <section className="mb-12">
+        <div className="mb-6">
+          <h2 className="text-3xl font-bold mb-2 flex items-center gap-3">
+            <Target className="w-7 h-7" />
+            Experiments (A/B Testing)
+          </h2>
+          <p className="text-muted-foreground">
+            Simple client-side bucketing with local-only exposure + conversion tracking.
+          </p>
+        </div>
+
+        <Card className="border-2 border-primary/20">
+          <CardHeader>
+            <CardTitle className="text-lg">Live Experiment Example</CardTitle>
+            <CardDescription>
+              Experiment: <span className="font-mono">{emptyCtaExperiment.experimentId}</span>
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+              <div className="rounded-lg bg-muted/40 p-3">
+                <div className="text-muted-foreground">Variant</div>
+                <div className="font-semibold">{emptyCtaExperiment.variant}</div>
+              </div>
+              <div className="rounded-lg bg-muted/40 p-3">
+                <div className="text-muted-foreground">In rollout</div>
+                <div className="font-semibold">{emptyCtaExperiment.inExperiment ? 'Yes' : 'No (fallback)'}</div>
+              </div>
+              <div className="rounded-lg bg-muted/40 p-3">
+                <div className="text-muted-foreground">Where used</div>
+                <div className="font-semibold">My Plan empty state CTA</div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <Button
+                onClick={() =>
+                  emptyCtaExperiment.trackConversion('demo_conversion_click', {
+                    surface: '/demo/phase-4',
+                  })
+                }
+              >
+                Simulate conversion
+              </Button>
+              <Button variant="outline" onClick={emptyCtaExperiment.reset}>
+                Reset assignment
+              </Button>
+              <Button asChild variant="secondary">
+                <Link href="/my-plan">Open My Plan</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
 
       <div className="space-y-12">
         {/* Analytics Section */}
