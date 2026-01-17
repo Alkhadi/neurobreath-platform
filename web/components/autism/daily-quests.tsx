@@ -12,14 +12,12 @@ interface DailyQuestsProps {
   onUpdate?: () => void;
 }
 
-export function DailyQuests({ onUpdate }: DailyQuestsProps) {
-  const [progress, setProgress] = useState<any>(null);
+export function DailyQuests({ onUpdate: _onUpdate }: DailyQuestsProps) {
   const [quests, setQuests] = useState<DailyQuest[]>([]);
 
   useEffect(() => {
     // Load progress only on client side to avoid hydration mismatch
     const currentProgress = loadProgress();
-    setProgress(currentProgress);
     
     // Ensure we have quests for today
     const today = new Date().toISOString().split('T')[0];
@@ -35,7 +33,6 @@ export function DailyQuests({ onUpdate }: DailyQuestsProps) {
   useEffect(() => {
     const interval = setInterval(() => {
       const currentProgress = loadProgress();
-      setProgress(currentProgress);
       setQuests(currentProgress.dailyQuests);
     }, 2000);
 

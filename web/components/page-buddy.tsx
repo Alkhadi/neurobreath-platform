@@ -8,11 +8,10 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { 
-  Bot, X, Send, Mic, Volume2, VolumeX, Sparkles, 
-  MessageCircle, Map, ChevronRight, Lightbulb, HelpCircle,
-  Brain, Heart, BookOpen, Target, Users, School, Home,
-  FileText, Search, Printer, Download, Minimize2, Maximize2,
-  RotateCcw, Copy, Check, ExternalLink, History, Settings, StopCircle
+  Bot, Send, Volume2, VolumeX, Sparkles, 
+  MessageCircle, Map, ChevronRight,
+  Brain, Heart, Home, Download, Minimize2, Maximize2,
+  RotateCcw, Copy, Check, ExternalLink, StopCircle
 } from 'lucide-react';
 import { getPageConfig, platformInfo, type PageBuddyConfig } from '@/lib/page-buddy-configs';
 import { getEvidenceBasedAnswer, formatResponseWithCitations } from '@/lib/page-buddy-knowledge';
@@ -49,7 +48,6 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   const [mounted, setMounted] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
-  const [showSettings, setShowSettings] = useState(false);
   const [pageContent, setPageContent] = useState<{
     headings: { text: string; id: string; level: number }[];
     buttons: { text: string; id: string }[];
@@ -65,24 +63,6 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   useEffect(() => {
     setMounted(true);
   }, []);
-  
-  // Reset messages when page changes
-  useEffect(() => {
-    if (mounted) {
-      // Scan page content
-      scanPageContent();
-      
-      const welcomeMessage: Message = {
-        id: 'welcome',
-        role: 'assistant',
-        content: generateDynamicWelcome(),
-        timestamp: new Date()
-      };
-      setMessages([welcomeMessage]);
-      setCurrentTourStep(0);
-      setShowTour(false);
-    }
-  }, [pathname, mounted]);
   
   // Scan page content dynamically
   const scanPageContent = useCallback(() => {
@@ -154,6 +134,24 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     
     return baseWelcome;
   }, [config.welcomeMessage, pageContent]);
+
+  // Reset messages when page changes
+  useEffect(() => {
+    if (mounted) {
+      // Scan page content
+      scanPageContent();
+      
+      const welcomeMessage: Message = {
+        id: 'welcome',
+        role: 'assistant',
+        content: generateDynamicWelcome(),
+        timestamp: new Date()
+      };
+      setMessages([welcomeMessage]);
+      setCurrentTourStep(0);
+      setShowTour(false);
+    }
+  }, [generateDynamicWelcome, mounted, pathname, scanPageContent]);
   
   // Scroll to section helper
   const scrollToSection = useCallback((sectionId: string) => {

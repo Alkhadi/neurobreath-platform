@@ -5,7 +5,7 @@
  * to user context, topic, and question
  */
 
-import type { UserContext, Topic, MainChallenge, Goal } from '@/types/user-context'
+import type { UserContext, Topic } from '@/types/user-context'
 import { NEUROBREATH_RESOURCES, type NeuroBreathResource } from './neurobreath-resources'
 
 export interface RecommendedResourceWithReason {
@@ -154,7 +154,7 @@ function generateHowToUseThisWeek(
  * Returns top 3-6 resources with explanations
  */
 export function recommendResources(input: RecommendationInput): RecommendedResourceWithReason[] {
-  const { context, topic, normalizedQuestion } = input
+  const { context, topic } = input
   
   // Calculate scores for all resources
   const scoredResources = NEUROBREATH_RESOURCES.map(resource => ({

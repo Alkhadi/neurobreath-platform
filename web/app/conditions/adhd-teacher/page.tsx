@@ -10,12 +10,9 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   GraduationCap, 
   BookOpen, 
-  Users, 
   CheckCircle2, 
   ExternalLink, 
   Lightbulb,
-  Clock,
-  Calendar,
   Target,
   AlertCircle,
   Award,

@@ -3,7 +3,7 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, Phone, MessageSquare, Globe, Clock, Heart, Shield } from 'lucide-react';
+import { AlertTriangle, Phone, MessageSquare, Globe, Clock, Heart, Shield, type LucideIcon } from 'lucide-react';
 
 interface CrisisResource {
   id: string;
@@ -12,7 +12,7 @@ interface CrisisResource {
   contact: string;
   description: string;
   availability: string;
-  icon: any;
+  icon: LucideIcon;
   urgent?: boolean;
 }
 

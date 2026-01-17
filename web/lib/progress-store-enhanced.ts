@@ -1,4 +1,4 @@
-import { ProgressData, DailyQuest, Achievement, SkillMastery, CalmSession, SkillPracticeSession, MoodRating, UserLevel, PersonalBest, Milestone, ComboTracker } from './types';
+import { ProgressData, DailyQuest, Achievement, CalmSession, SkillPracticeSession, MoodRating, UserLevel, PersonalBest, Milestone } from './types';
 
 const STORAGE_KEY = 'nb:autism:v2:progress';
 const PREFERENCES_KEY = 'nb:autism:v2:preferences';
@@ -119,7 +119,7 @@ export const saveProgress = (progress: ProgressData): void => {
 };
 
 // Award XP and check for level up
-export const awardXP = (amount: number, reason: string): { progress: ProgressData; leveledUp: boolean; newAchievements: Achievement[] } => {
+export const awardXP = (amount: number, _reason: string): { progress: ProgressData; leveledUp: boolean; newAchievements: Achievement[] } => {
   const progress = loadProgress();
   progress.totalXP += amount;
   
@@ -127,14 +127,11 @@ export const awardXP = (amount: number, reason: string): { progress: ProgressDat
   const newAchievements: Achievement[] = [];
   
   // Check for level up
-  const xpNeeded = getXPForLevel(progress.currentLevel + 1);
   const currentXP = progress.totalXP;
   
   // Calculate current level based on total XP
   let calculatedLevel = 1;
-  let xpForThisLevel = 0;
   while (currentXP >= getXPForLevel(calculatedLevel + 1)) {
-    xpForThisLevel += getXPForLevel(calculatedLevel + 1);
     calculatedLevel++;
   }
   

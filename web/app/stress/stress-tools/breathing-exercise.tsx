@@ -13,16 +13,18 @@ const techniques = [
   { name: 'Calm Breath', inhale: 4, hold1: 2, exhale: 6, hold2: 0, description: 'Gentle stress relief' },
 ]
 
+type Phase = 'inhale' | 'hold1' | 'exhale' | 'hold2'
+
 export function BreathingExercise() {
   const [selectedTechnique, setSelectedTechnique] = useState(0)
   const [isActive, setIsActive] = useState(false)
-  const [phase, setPhase] = useState<'inhale' | 'hold1' | 'exhale' | 'hold2'>('inhale')
+  const [phase, setPhase] = useState<Phase>('inhale')
   const [countdown, setCountdown] = useState(0)
   const [cycles, setCycles] = useState(0)
 
   const technique = techniques[selectedTechnique] ?? techniques[0]
 
-  const getPhaseSeconds = useCallback((p: string) => {
+  const getPhaseSeconds = useCallback((p: Phase) => {
     switch (p) {
       case 'inhale': return technique?.inhale ?? 4
       case 'hold1': return technique?.hold1 ?? 0
@@ -32,9 +34,9 @@ export function BreathingExercise() {
     }
   }, [technique])
 
-  const getNextPhase = useCallback((current: string): 'inhale' | 'hold1' | 'exhale' | 'hold2' => {
-    const phases: Array<'inhale' | 'hold1' | 'exhale' | 'hold2'> = ['inhale', 'hold1', 'exhale', 'hold2']
-    const idx = phases.indexOf(current as any)
+  const getNextPhase = useCallback((current: Phase): Phase => {
+    const phases: Phase[] = ['inhale', 'hold1', 'exhale', 'hold2']
+    const idx = phases.indexOf(current)
     let next = (idx + 1) % 4
     while (getPhaseSeconds(phases[next] ?? 'inhale') === 0 && next !== idx) {
       if (phases[next] === 'hold2') {

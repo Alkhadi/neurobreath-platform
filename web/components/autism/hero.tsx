@@ -13,11 +13,7 @@ import {
   FileText,
   Target,
   Wrench,
-  Info,
-  GraduationCap,
-  Heart,
-  User,
-  Briefcase
+  Info
 } from 'lucide-react';
 import { AudienceType } from '@/lib/types';
 
@@ -60,7 +56,7 @@ const navigationButtons = [
 ];
 
 export const Hero = ({ onStartCalm, onBrowseSkills, AudienceSwitcher, CountrySwitcher }: HeroProps) => {
-  const { preferences, isLoading } = usePreferences();
+  const { preferences } = usePreferences();
   const title = titles?.[preferences?.audience ?? 'teacher'] ?? titles.teacher;
 
   const scrollToSection = (sectionId: string) => {

@@ -2,7 +2,7 @@ import type { AICoachAnswer, AudienceType, EvidenceSource, PubMedArticle } from 
 import type { UserContext, Topic } from '@/types/user-context'
 import type { ParsedIntent } from './intent'
 import { generateVisualLearningCards } from './cards-generator'
-import { getRelevantPages, buildToolsSection, type InternalPage } from '@/lib/internal-pages-map'
+import { getRelevantPages, type InternalPage } from '@/lib/internal-pages-map'
 
 interface SynthesisInput {
   question: string
@@ -427,7 +427,7 @@ function buildContextUsedLine(context?: UserContext, topic?: string): string {
   return `**Context used:** ${parts.join(' · ')}${topicLabel}`
 }
 
-function generateSummary(question: string, intent: ParsedIntent, kb: any, context?: UserContext, topic?: Topic): string[] {
+function generateSummary(question: string, intent: ParsedIntent, kb: any, context?: UserContext, _topic?: Topic): string[] {
   const summary: string[] = []
   
   if (kb.definition) {
@@ -565,7 +565,7 @@ function generateTailoredGuidance(
   return guidance
 }
 
-function generatePracticalActionsWithInternalLinks(kb: any, intent: ParsedIntent, topic: string, internalPages: InternalPage[]): string[] {
+function generatePracticalActionsWithInternalLinks(kb: any, intent: ParsedIntent, _topic: string, internalPages: InternalPage[]): string[] {
   const actions: string[] = []
   
   if (kb.management?.immediate) {
@@ -603,7 +603,7 @@ function generatePracticalActionsWithInternalLinks(kb: any, intent: ParsedIntent
   return actions.slice(0, 7)
 }
 
-function generateMythsSection(topic: string, intent: ParsedIntent): string[] | undefined {
+function generateMythsSection(topic: string, _intent: ParsedIntent): string[] | undefined {
   const myths: Record<string, string[]> = {
     autism: [
       'Myth: Autism is caused by vaccines. Reality: No scientific evidence supports this; it has been thoroughly debunked.',
@@ -624,7 +624,7 @@ function generateMythsSection(topic: string, intent: ParsedIntent): string[] | u
   return myths[topic]
 }
 
-function generateClinicianNotes(topic: string, intent: ParsedIntent): string[] | undefined {
+function generateClinicianNotes(topic: string, _intent: ParsedIntent): string[] | undefined {
   const notes: Record<string, string[]> = {
     adhd: [
       'Consider comorbidities: anxiety, ASD, dyslexia, mood disorders are common',
@@ -646,7 +646,7 @@ function generateClinicianNotes(topic: string, intent: ParsedIntent): string[] |
   return notes[topic]
 }
 
-function generateSafetyNotice(topic: string, intent: ParsedIntent): string {
+function generateSafetyNotice(_topic: string, _intent: ParsedIntent): string {
   return '⚠️ Educational information only—not medical advice. For personalized support, speak to your GP, paediatrician, SENCO, or licensed clinician. Crisis: NHS 111 / 999 (UK) or 988 / 911 (US).'
 }
 

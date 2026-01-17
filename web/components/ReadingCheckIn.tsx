@@ -216,11 +216,6 @@ export function ReadingCheckIn() {
     })
   }
   
-  const handleStartAssessment = useCallback(() => {
-    console.log('Start Check-In clicked!')
-    setIsAssessmentActive(true)
-  }, [])
-  
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleCompleteAssessment = useCallback((_profile: ReadingProfile) => {
     setIsAssessmentActive(false)

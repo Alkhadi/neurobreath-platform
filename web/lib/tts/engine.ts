@@ -5,12 +5,11 @@
  * Respects user preferences from unified state.
  */
 
-import { TTSSettings } from '../user-preferences/schema';
+import { DEFAULT_TTS_SETTINGS, TTSSettings } from '../user-preferences/schema';
 import { sanitizeForTTS } from './sanitize';
 
 // Speech state
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-let currentUtterance: SpeechSynthesisUtterance | null = null;
+let _currentUtterance: SpeechSynthesisUtterance | null = null;
 let isSpeaking = false;
 
 /**
@@ -78,19 +77,19 @@ export function speak(text: string, options: SpeakOptions = {}): void {
     return;
   }
 
-  // Stop any current speech
-  stop();
-
-  // Default settings
   const settings: TTSSettings = {
+    ...DEFAULT_TTS_SETTINGS,
     enabled: true,
-    autoSpeak: false,
-    rate: 1.0,
-    voice: 'system',
-    filterNonAlphanumeric: true,
-    preferUKVoice: false,
     ...options.settings,
   };
+
+  if (!settings.enabled) {
+    options.onEnd?.();
+    return;
+  }
+
+  // Stop any current speech
+  stop();
 
   // Sanitize text if filtering enabled
   let textToSpeak = text;
@@ -124,19 +123,19 @@ export function speak(text: string, options: SpeakOptions = {}): void {
   // Event handlers
   utterance.onstart = () => {
     isSpeaking = true;
-    currentUtterance = utterance;
+    _currentUtterance = utterance;
     options.onStart?.();
   };
 
   utterance.onend = () => {
     isSpeaking = false;
-    currentUtterance = null;
+    _currentUtterance = null;
     options.onEnd?.();
   };
 
   utterance.onerror = (event) => {
     isSpeaking = false;
-    currentUtterance = null;
+    _currentUtterance = null;
     console.error('[TTS] Speech error:', event);
     options.onError?.(new Error(`Speech synthesis error: ${event.error}`));
   };
@@ -159,7 +158,7 @@ export function stop(): void {
   try {
     window.speechSynthesis.cancel();
     isSpeaking = false;
-    currentUtterance = null;
+    _currentUtterance = null;
   } catch (error) {
     console.error('[TTS] Failed to stop speech:', error);
   }

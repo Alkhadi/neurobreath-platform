@@ -226,7 +226,7 @@ export const MoodTracker: React.FC<MoodTrackerProps> = ({ language }) => {
               onChange={(e) =>
                 setCurrentEntry({
                   ...currentEntry,
-                  moodState: e.target.value as any,
+                  moodState: e.target.value as MoodEntry['moodState'],
                 })
               }
               required

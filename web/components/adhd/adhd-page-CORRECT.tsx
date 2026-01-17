@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { ADHDHero } from '@/components/adhd/adhd-hero';
 import { DailyQuestsADHD } from '@/components/adhd/daily-quests-adhd';
 import { FocusPomodoro } from '@/components/adhd/focus-pomodoro';
@@ -13,19 +13,13 @@ import { initializeMilestones } from '@/lib/progress-store-enhanced';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Brain, Heart, Lightbulb, Rocket, Zap, Star, BookOpen, Users } from 'lucide-react';
+import { Heart, Rocket, Zap, Star, BookOpen, Users } from 'lucide-react';
 
 export default function HomePage() {
-  const [updateTrigger, setUpdateTrigger] = useState(0);
-
   // Initialize milestones on first load
   useEffect(() => {
     initializeMilestones();
   }, []);
-
-  const handleProgressUpdate = () => {
-    setUpdateTrigger(prev => prev + 1);
-  };
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950">

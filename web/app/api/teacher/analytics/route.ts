@@ -7,16 +7,9 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma, isDbDown, getDbDownReason } from '@/lib/db'
+import type { Session } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
-
-interface AnalyticsQuery {
-  classroom?: string
-  deviceIds?: string[] // Multiple learners
-  dateRange?: 'week' | 'month' | 'all'
-  startDate?: string // ISO date
-  endDate?: string // ISO date
-}
 
 export async function GET(request: NextRequest) {
   if (isDbDown()) {
@@ -132,7 +125,7 @@ export async function GET(request: NextRequest) {
 /**
  * Calculate daily activity for chart
  */
-function calculateDailyActivity(sessions: any[], startDate: Date) {
+function calculateDailyActivity(sessions: Array<Pick<Session, 'completedAt'>>, startDate: Date) {
   const dailyMap = new Map<string, number>()
   
   sessions.forEach(session => {

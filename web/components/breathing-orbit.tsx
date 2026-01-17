@@ -1,6 +1,7 @@
+
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from './ui/button'
 import { Play, Pause, Square } from 'lucide-react'
 import { BreathingTechnique } from '@/lib/breathing-data'
@@ -20,7 +21,7 @@ export default function BreathingOrbit({ technique, onSessionComplete }: Breathi
   const startTimeRef = useRef<number>(0)
   const pausedTimeRef = useRef<number>(0)
 
-  const phases = technique?.phases ?? []
+  const phases = useMemo(() => technique?.phases ?? [], [technique])
   const currentPhase = phases?.[currentPhaseIndex]
 
   useEffect(() => {

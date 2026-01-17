@@ -15,7 +15,7 @@ interface MoodEntry {
   notes?: string;
 }
 
-export const ProgressDashboard = ({ onReset }: { onReset?: () => void }) => {
+export const ProgressDashboard = ({ onReset: _onReset }: { onReset?: () => void }) => {
   const [moodEntries, setMoodEntries] = useState<MoodEntry[]>([]);
   const [currentMood, setCurrentMood] = useState<number>(5);
   const [currentEnergy, setCurrentEnergy] = useState<number>(5);
@@ -144,7 +144,7 @@ export const ProgressDashboard = ({ onReset }: { onReset?: () => void }) => {
   const avgEnergy = getAverageEnergy();
 
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="mx-auto w-[86vw] max-w-[86vw] px-4">
       <div className="text-center mb-8">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">Progress Dashboard</h2>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
@@ -233,10 +233,11 @@ export const ProgressDashboard = ({ onReset }: { onReset?: () => void }) => {
           {/* Mood Slider */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium">How is your mood today?</label>
+              <label htmlFor="low-mood-mood" className="text-sm font-medium">How is your mood today?</label>
               <Badge variant="outline">{currentMood} / 10 - {getMoodLabel(currentMood)}</Badge>
             </div>
             <input
+              id="low-mood-mood"
               type="range"
               min="1"
               max="10"
@@ -254,10 +255,11 @@ export const ProgressDashboard = ({ onReset }: { onReset?: () => void }) => {
           {/* Energy Slider */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium">How is your energy level?</label>
+              <label htmlFor="low-mood-energy" className="text-sm font-medium">How is your energy level?</label>
               <Badge variant="outline">{currentEnergy} / 10</Badge>
             </div>
             <input
+              id="low-mood-energy"
               type="range"
               min="1"
               max="10"

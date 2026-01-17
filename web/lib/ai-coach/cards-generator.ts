@@ -15,27 +15,6 @@ interface CardGeneratorInput {
   audience?: AudienceType
 }
 
-const ICON_MAP: Record<string, string> = {
-  brain: 'Brain',
-  heart: 'Heart',
-  users: 'Users',
-  home: 'Home',
-  school: 'GraduationCap',
-  briefcase: 'Briefcase',
-  clipboard: 'ClipboardCheck',
-  stethoscope: 'Stethoscope',
-  lightbulb: 'Lightbulb',
-  target: 'Target',
-  calendar: 'Calendar',
-  checkCircle: 'CheckCircle',
-  alertCircle: 'AlertCircle',
-  wind: 'Wind',
-  moon: 'Moon',
-  sun: 'Sun',
-  book: 'BookOpen',
-  shield: 'Shield'
-}
-
 export function generateVisualLearningCards(input: CardGeneratorInput): VisualLearningCard[] {
   const { topic, intent, summary, actions, evidenceSnapshot, audience } = input
   const cards: VisualLearningCard[] = []

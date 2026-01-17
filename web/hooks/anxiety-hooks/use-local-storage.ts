@@ -8,7 +8,6 @@ export function useLocalStorage<T>(
 ): [T, (value: T | ((val: T) => T)) => void] {
   // State to store our value
   const [storedValue, setStoredValue] = useState<T>(initialValue)
-  const [isInitialized, setIsInitialized] = useState(false)
 
   // Initialize from localStorage on mount
   useEffect(() => {
@@ -21,8 +20,6 @@ export function useLocalStorage<T>(
       }
     } catch (error) {
       console.error(`Error loading ${key} from localStorage:`, error)
-    } finally {
-      setIsInitialized(true)
     }
   }, [key])
 

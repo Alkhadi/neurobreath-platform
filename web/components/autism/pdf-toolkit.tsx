@@ -34,7 +34,7 @@ export function PDFToolkit() {
     }
   ]
 
-  const handleDownload = async (toolkitId: string) => {
+  const handleDownload = async (_toolkitId: string) => {
     toast.message('PDF export coming soon', {
       description: 'For now, use the existing templates in Resources. We can wire up full exports next.'
     })

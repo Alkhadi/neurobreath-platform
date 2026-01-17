@@ -4,27 +4,21 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   Download, 
   Heart, 
-  BookOpen, 
   Users, 
-  GraduationCap, 
   Briefcase,
   CheckCircle2, 
-  ExternalLink, 
-  Lightbulb,
+  ExternalLink,
   Clock,
   Calendar,
   Baby,
   UserCheck,
   Shield,
   FileText,
-  Sparkles,
-  AlertCircle
+  Sparkles
 } from 'lucide-react';
 import { PathwaysNavigator } from '@/components/autism/pathways-navigator';
 import { ResourcesLibrary } from '@/components/autism/resources-library';

@@ -1,6 +1,7 @@
+
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { cn } from '@/lib/utils'
 
 interface BreathingStats {
@@ -40,12 +41,12 @@ export function HeroBreathingOrbit() {
   const orbStyleRef = useRef<HTMLStyleElement | null>(null)
   const lastPhaseRef = useRef<Phase>('Ready')
 
-  const setOrbPositionCss = (position: { x: number; y: number }) => {
+  const setOrbPositionCss = useCallback((position: { x: number; y: number }) => {
     if (!orbStyleRef.current || !orbitId) return
     const x = Number.isFinite(position.x) ? position.x : 0
     const y = Number.isFinite(position.y) ? position.y : 50
     orbStyleRef.current.textContent = `[data-orbit-id="${orbitId}"] .orbit-orb { left: ${x.toFixed(3)}%; top: ${y.toFixed(3)}%; }`
-  }
+  }, [orbitId])
 
   useEffect(() => {
     // Generate unique ID client-side only (prevents hydration mismatch)
@@ -104,7 +105,7 @@ export function HeroBreathingOrbit() {
     return () => {
       styleEl.remove()
     }
-  }, [orbitId])
+  }, [orbitId, setOrbPositionCss])
 
   const calculateStreakInfo = (streak: number, sessions: number) => {
     let message = ''
@@ -229,13 +230,11 @@ export function HeroBreathingOrbit() {
 
     let currentPhase = phases[0]
     let phaseStart = 0
-    let progress = 0
 
     for (let i = 0; i < phases.length; i++) {
       const p = phases[i]
       if (cyclePosition >= phaseStart && cyclePosition < phaseStart + p.duration) {
         currentPhase = p
-        progress = (cyclePosition - phaseStart) / p.duration
         break
       }
       phaseStart += p.duration
@@ -288,22 +287,6 @@ export function HeroBreathingOrbit() {
         x: 80 - lineProgress * 60,
         y: 80
       }
-    }
-  }
-
-  const resetStats = () => {
-    if (confirm('Are you sure you want to reset these stats? This cannot be undone.')) {
-      const resetStats: BreathingStats = {
-        todayMinutes: 0,
-        sessions: 0,
-        lifetimeMinutes: 0,
-        lifetimeHours: 0,
-        averageSession: 0,
-        streak: 'No streak yet',
-        message: 'Complete any 1-minute challenge to start your streak.',
-        awards: 'Log a quick session to unlock your first badge.'
-      }
-      saveStats(resetStats)
     }
   }
 

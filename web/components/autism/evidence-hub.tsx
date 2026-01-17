@@ -153,12 +153,6 @@ const euResources: Resource[] = [
 export function EvidenceHub() {
   const [selectedCountry, setSelectedCountry] = useState<'uk' | 'us' | 'eu'>('uk');
 
-  const resources = {
-    uk: ukResources,
-    us: usResources,
-    eu: euResources
-  }[selectedCountry];
-
   return (
     <div className="w-full">
       <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur border-2 border-indigo-200 dark:border-indigo-900">

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Brain, TrendingUp, Users, Zap, Heart, Sun, Book, CheckCircle2 } from 'lucide-react';
+import { Brain, TrendingUp, Users, Zap, Heart, Sun, Book, CheckCircle2, type LucideIcon } from 'lucide-react';
 
 interface Evidence {
   id: string;
@@ -13,7 +13,7 @@ interface Evidence {
   source: string;
   year: string;
   category: 'behavioral' | 'physical' | 'social' | 'psychological' | 'lifestyle';
-  icon: any;
+  icon: LucideIcon;
   strength: 'strong' | 'moderate' | 'emerging';
   keyPoints: string[];
 }

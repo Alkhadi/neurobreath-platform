@@ -8,8 +8,7 @@
 import type { PlacementResult } from './placement-rubric'
 import { 
   NBLevel, 
-  NB_LEVELS, 
-  NB_LEVEL_ORDER,
+  NB_LEVELS,
   LearnerGroup,
   LEARNER_GROUPS,
   getNextLevel,

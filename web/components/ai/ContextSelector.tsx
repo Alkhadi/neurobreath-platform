@@ -2,8 +2,7 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { X } from 'lucide-react'
-import type { UserContext, AgeGroup, Setting, MainChallenge, Goal, Country, Topic } from '@/types/user-context'
+import type { UserContext, AgeGroup, Setting, MainChallenge, Goal, Country } from '@/types/user-context'
 
 interface ContextSelectorProps {
   context: UserContext

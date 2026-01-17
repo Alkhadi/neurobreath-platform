@@ -1,11 +1,33 @@
 'use client'
 
-import { Download, FileText, Brain, Sparkles, BookOpen, Wind, Package, FolderArchive, ChevronRight, Search } from 'lucide-react'
+import { Download, FileText, Brain, Sparkles, BookOpen, Wind, Package, FolderArchive, Search } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+
+type DownloadItem = {
+  name: string
+  file: string
+  path: string
+  isZip?: boolean
+  isTxt?: boolean
+  isVcf?: boolean
+}
+
+type Downloads = {
+  adhd: Record<string, DownloadItem[]>
+  autism: DownloadItem[]
+  dyslexia: DownloadItem[]
+  breathing: DownloadItem[]
+  general: DownloadItem[]
+  packs: DownloadItem[]
+}
+
+type FilteredDownloads = Omit<Partial<Downloads>, 'adhd'> & {
+  adhd: Partial<Record<string, DownloadItem[]>>
+}
 
 export default function DownloadsPage() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -20,7 +42,7 @@ export default function DownloadsPage() {
   }
 
   // All downloads organized by category
-  const downloads = {
+  const downloads: Downloads = {
     adhd: {
       assessment: [
         { name: 'Parent Checklist', file: 'adhd_assess_parent_checklist.pdf', path: '/legacy-assets/assets/downloads/adhd_assess_parent_checklist.pdf' },
@@ -95,14 +117,13 @@ export default function DownloadsPage() {
   }
 
   // Filter downloads based on search query
-  const filterDownloads = () => {
+  const filterDownloads = (): FilteredDownloads => {
     if (!searchQuery) return downloads
 
     const query = searchQuery.toLowerCase()
-    const filtered: any = {}
+    const filtered: FilteredDownloads = { adhd: {} }
 
     // Filter ADHD
-    filtered.adhd = {}
     Object.keys(downloads.adhd).forEach(category => {
       const items = downloads.adhd[category as keyof typeof downloads.adhd].filter(item =>
         item.name.toLowerCase().includes(query)
@@ -183,7 +204,7 @@ export default function DownloadsPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredDownloads.packs?.map((item: any) => (
+            {filteredDownloads.packs?.map((item) => (
               <Card key={item.name} className="p-6 hover:shadow-lg transition-shadow">
                 <div className={`p-3 rounded-lg inline-block mb-4 ${
                   item.isZip ? 'bg-purple-100' : item.isVcf ? 'bg-blue-100' : 'bg-green-100'
@@ -230,7 +251,7 @@ export default function DownloadsPage() {
                     Assessment & Diagnosis
                   </h3>
                   <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {filteredDownloads.adhd.assessment.map((item: any) => (
+                    {filteredDownloads.adhd.assessment.map((item) => (
                       <Button
                         key={item.name}
                         variant="outline"
@@ -253,7 +274,7 @@ export default function DownloadsPage() {
                     Home & Family
                   </h3>
                   <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {filteredDownloads.adhd.home.map((item: any) => (
+                    {filteredDownloads.adhd.home.map((item) => (
                       <Button
                         key={item.name}
                         variant="outline"
@@ -276,7 +297,7 @@ export default function DownloadsPage() {
                     School Support
                   </h3>
                   <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {filteredDownloads.adhd.school.map((item: any) => (
+                    {filteredDownloads.adhd.school.map((item) => (
                       <Button
                         key={item.name}
                         variant="outline"
@@ -299,7 +320,7 @@ export default function DownloadsPage() {
                     Teens & Young Adults
                   </h3>
                   <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {filteredDownloads.adhd.teens.map((item: any) => (
+                    {filteredDownloads.adhd.teens.map((item) => (
                       <Button
                         key={item.name}
                         variant="outline"
@@ -322,7 +343,7 @@ export default function DownloadsPage() {
                     Self-Care & Focus
                   </h3>
                   <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {filteredDownloads.adhd.selfcare.map((item: any) => (
+                    {filteredDownloads.adhd.selfcare.map((item) => (
                       <Button
                         key={item.name}
                         variant="outline"
@@ -345,7 +366,7 @@ export default function DownloadsPage() {
                     ADHD Toolkits
                   </h3>
                   <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {filteredDownloads.adhd.toolkits.map((item: any) => (
+                    {filteredDownloads.adhd.toolkits.map((item) => (
                       <Button
                         key={item.name}
                         variant="outline"
@@ -380,7 +401,7 @@ export default function DownloadsPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  {filteredDownloads.autism.map((item: any) => (
+                  {filteredDownloads.autism.map((item) => (
                     <Button
                       key={item.name}
                       variant="outline"
@@ -406,7 +427,7 @@ export default function DownloadsPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  {filteredDownloads.dyslexia.map((item: any) => (
+                  {filteredDownloads.dyslexia.map((item) => (
                     <Button
                       key={item.name}
                       variant="outline"
@@ -432,7 +453,7 @@ export default function DownloadsPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  {filteredDownloads.breathing.map((item: any) => (
+                  {filteredDownloads.breathing.map((item) => (
                     <Button
                       key={item.name}
                       variant="outline"
@@ -458,7 +479,7 @@ export default function DownloadsPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  {filteredDownloads.general.map((item: any) => (
+                  {filteredDownloads.general.map((item) => (
                     <Button
                       key={item.name}
                       variant="outline"

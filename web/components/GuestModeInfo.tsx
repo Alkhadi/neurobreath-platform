@@ -6,7 +6,7 @@
 
 'use client'
 
-import { Check, Download, Lock, Smartphone, X } from 'lucide-react'
+import { Check, Download, Lock, Smartphone } from 'lucide-react'
 import {
   Dialog,
   DialogContent,

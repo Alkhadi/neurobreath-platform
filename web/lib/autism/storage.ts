@@ -250,7 +250,7 @@ export function updatePlan(planId: string, updates: Partial<Plan>): void {
   }
 }
 
-export function completePlan(planId: string): void {
+export function completePlan(_planId: string): void {
   if (typeof window === 'undefined') return
 
   const progress = getProgress()

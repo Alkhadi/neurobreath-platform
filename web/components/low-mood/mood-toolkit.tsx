@@ -4,14 +4,14 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Wind, Heart, Sun, Sparkles, Music, BookOpen, Smile, Star } from 'lucide-react';
+import { Wind, Heart, Sun, Sparkles, Music, Smile, Star, type LucideIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface Tool {
   id: string;
   title: string;
   description: string;
-  icon: any;
+  icon: LucideIcon;
   duration: string;
   type: 'breathing' | 'grounding' | 'activation' | 'mindfulness';
   instructions: string[];

@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { Button } from '@/components/ui/button'
 import { getDeviceId } from '@/lib/device-id'
 import { challengeDefinitions } from '@/lib/challenge-definitions'
 import { toast } from 'sonner'

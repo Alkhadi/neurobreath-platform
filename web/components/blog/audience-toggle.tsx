@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Users, Heart, GraduationCap, User, Briefcase } from 'lucide-react'
 import type { AudienceType } from '@/types/ai-coach'

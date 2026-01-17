@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, Square, Volume2, Settings } from 'lucide-react';
@@ -18,6 +18,11 @@ export function TextToSpeechReader() {
   const [selectedVoice, setSelectedVoice] = useState<number>(0);
   const [showSettings, setShowSettings] = useState(false);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const isPlayingRef = useRef(false);
+
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
 
   useEffect(() => {
     const loadVoices = () => {
@@ -37,7 +42,7 @@ export function TextToSpeechReader() {
     setCurrentPosition(index);
   };
 
-  const speak = () => {
+  const speak = useCallback(() => {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
 
@@ -50,7 +55,7 @@ export function TextToSpeechReader() {
       let wordIndex = 0;
 
       const speakNextWord = () => {
-        if (wordIndex < words.length && isPlaying) {
+        if (wordIndex < words.length && isPlayingRef.current) {
           const utterance = new SpeechSynthesisUtterance(words[wordIndex]);
           utterance.rate = rate;
           utterance.pitch = pitch;
@@ -73,7 +78,7 @@ export function TextToSpeechReader() {
 
       speakNextWord();
     }
-  };
+  }, [pitch, rate, selectedVoice, text, voices]);
 
   const handlePlay = () => {
     setIsPlaying(true);
@@ -85,7 +90,7 @@ export function TextToSpeechReader() {
     } else {
       window.speechSynthesis.cancel();
     }
-  }, [isPlaying, rate, pitch, selectedVoice]);
+  }, [isPlaying, speak]);
 
   const handlePause = () => {
     setIsPlaying(false);

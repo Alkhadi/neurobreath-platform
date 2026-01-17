@@ -527,8 +527,7 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
   })
 
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([])
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isSpeaking, setIsSpeaking] = useState(false)
+  const [, setIsSpeaking] = useState(false)
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
   const countIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const ambientSoundRef = useRef<AmbientSoundGenerator | null>(null)

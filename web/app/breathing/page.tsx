@@ -1,6 +1,6 @@
 'use client'
 
-import { Wind, Heart, Brain, Target, Zap, Moon, Play, BookOpen, Download, ChevronRight, Timer, Activity } from 'lucide-react'
+import { Wind, Heart, Brain, Target, Zap, Moon, Play, BookOpen, Download, ChevronRight, Activity } from 'lucide-react'
 import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'

@@ -9,7 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   BookOpen, Brain, GraduationCap, Users, Target,
   FileText, Download, CheckCircle2, AlertCircle, 
-  Lightbulb, ClipboardCheck, Award, BookMarked
+  Lightbulb, ClipboardCheck, Award
 } from 'lucide-react';
 
 export const metadata: Metadata = generatePageMetadata({

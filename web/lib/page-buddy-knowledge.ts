@@ -8,7 +8,6 @@
  * - World Health Organization (WHO)
  */
 
-import { searchPubMed } from './ai-coach/pubmed'
 import { getNHSLinks } from './ai-coach/nhs'
 
 export interface KnowledgeSource {

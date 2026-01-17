@@ -3,7 +3,6 @@ import {
   MoodEntry,
   Streak,
   Achievement,
-  InteractiveToolData,
   LocalStorageData,
 } from '../types';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -110,7 +110,6 @@ export function ReadingAssessment() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [sectionScores, setSectionScores] = useState<Record<string, number>>({});
   const [startTime, setStartTime] = useState<number | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
   const resultsPrintRef = useRef<HTMLDivElement>(null);
 
   const totalQuestions = Object.values(ASSESSMENT_QUESTIONS).reduce((sum, arr) => sum + arr.length, 0);
@@ -125,7 +124,6 @@ export function ReadingAssessment() {
   const accuracy = Math.round((score / totalQuestions) * 100);
 
   const saveAttempt = async () => {
-    setIsSaving(true);
     try {
       const deviceId = getDeviceId();
       const endTime = Date.now();
@@ -153,8 +151,6 @@ export function ReadingAssessment() {
       }
     } catch (error) {
       console.error('Error saving assessment:', error);
-    } finally {
-      setIsSaving(false);
     }
   };
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Timer, Play, Pause, RefreshCw, Coffee, BookOpen } from 'lucide-react';
@@ -13,6 +13,24 @@ export function StudyTimer() {
   const [isBreak, setIsBreak] = useState(false);
   const [sessionsCompleted, setSessionsCompleted] = useState(0);
 
+  const handleTimerComplete = useCallback(() => {
+    setIsRunning(false);
+    if (isBreak) {
+      setIsBreak(false);
+      setTimeLeft(workMinutes * 60);
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('Break Over!', { body: 'Time to get back to studying!' });
+      }
+    } else {
+      setSessionsCompleted((prev) => prev + 1);
+      setIsBreak(true);
+      setTimeLeft(breakMinutes * 60);
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('Study Session Complete!', { body: 'Great job! Time for a break.' });
+      }
+    }
+  }, [breakMinutes, isBreak, workMinutes]);
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isRunning && timeLeft > 0) {
@@ -23,25 +41,7 @@ export function StudyTimer() {
       handleTimerComplete();
     }
     return () => clearInterval(interval);
-  }, [isRunning, timeLeft]);
-
-  const handleTimerComplete = () => {
-    setIsRunning(false);
-    if (isBreak) {
-      setIsBreak(false);
-      setTimeLeft(workMinutes * 60);
-      if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification('Break Over!', { body: 'Time to get back to studying!' });
-      }
-    } else {
-      setSessionsCompleted(sessionsCompleted + 1);
-      setIsBreak(true);
-      setTimeLeft(breakMinutes * 60);
-      if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification('Study Session Complete!', { body: 'Great job! Time for a break.' });
-      }
-    }
-  };
+  }, [handleTimerComplete, isRunning, timeLeft]);
 
   const toggleTimer = () => {
     setIsRunning(!isRunning);

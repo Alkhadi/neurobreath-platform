@@ -77,18 +77,21 @@ export function EnergyAccountingTracker() {
 
   useEffect(() => {
     // Initialize today's data if it doesn't exist
-    if (!dailyEnergyData.find(d => d.date === selectedDate)) {
-      setDailyEnergyData([
-        ...dailyEnergyData,
+    setDailyEnergyData((prev) => {
+      if (prev.find(d => d.date === selectedDate)) {
+        return prev;
+      }
+      return [
+        ...prev,
         {
           date: selectedDate,
           startingEnergy: 100,
           activities: [],
           currentEnergy: 100,
         },
-      ]);
-    }
-  }, [selectedDate]);
+      ];
+    });
+  }, [selectedDate, setDailyEnergyData]);
 
   const addActivity = () => {
     if (!activityName.trim()) return;
@@ -125,7 +128,6 @@ export function EnergyAccountingTracker() {
   const deleteActivity = (activityId: string) => {
     const updatedData = dailyEnergyData.map(d => {
       if (d.date === selectedDate) {
-        const activityToDelete = d.activities.find(a => a.id === activityId);
         const filteredActivities = d.activities.filter(a => a.id !== activityId);
         
         // Recalculate energy
@@ -193,6 +195,18 @@ export function EnergyAccountingTracker() {
           </TabsList>
 
           <TabsContent value="today" className="space-y-4">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div className="space-y-1">
+                <Label htmlFor="energy-date">Date</Label>
+                <Input
+                  id="energy-date"
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                />
+              </div>
+            </div>
+
             {/* Current Energy Level */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">

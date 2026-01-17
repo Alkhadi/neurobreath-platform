@@ -67,7 +67,9 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
   // Initialize Web Audio Context
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioContextClass =
+        window.AudioContext ||
+        (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (AudioContextClass) {
         audioContextRef.current = new AudioContextClass();
       }

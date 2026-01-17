@@ -24,7 +24,7 @@ export function recordUserActivity(
     accuracy?: number
     wpm?: number
     score?: number
-    [key: string]: any
+    [key: string]: unknown
   }
 ): boolean {
   try {
@@ -36,7 +36,7 @@ export function recordUserActivity(
     }
     
     // Record the activity
-    const progress = recordActivityInStore(profileId, activityKey, durationSec, metrics)
+    recordActivityInStore(profileId, activityKey, durationSec, metrics)
     
     // Show XP toast
     const xpEarned = Math.floor(durationSec / 60) * 10 // XP_PER_MINUTE = 10

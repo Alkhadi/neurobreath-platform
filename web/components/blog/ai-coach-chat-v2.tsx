@@ -19,7 +19,6 @@ import UrgentHelpPanel from './urgent-help-panel'
 import AnswerCoverageBar from './answer-coverage-bar'
 import EvidenceSnapshot from './evidence-snapshot'
 import VisualLearningCards from './visual-learning-cards'
-import Link from 'next/link'
 import { ExternalLink, BookOpen } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 

@@ -148,8 +148,9 @@ export async function loadLegacyHtml(filename: string): Promise<string> {
     let rawHtml: string;
     try {
       rawHtml = await fs.readFile(filePath, 'utf-8');
-    } catch (err: any) {
-      if (err?.code === 'ENOENT') {
+    } catch (err: unknown) {
+      const nodeErr = err as NodeJS.ErrnoException;
+      if (nodeErr?.code === 'ENOENT') {
         // File doesn't exist - return a graceful placeholder
         console.warn(`Legacy HTML file not found: ${filename} - returning placeholder`);
         return `

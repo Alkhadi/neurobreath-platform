@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Phone, Globe, FileText, Book, Heart, Users, AlertCircle, ExternalLink } from 'lucide-react';
+import { Phone, Globe, FileText, Book, Heart, Users, AlertCircle, ExternalLink, type LucideIcon } from 'lucide-react';
 
 interface Resource {
   id: string;
@@ -12,7 +12,7 @@ interface Resource {
   organization: string;
   description: string;
   type: 'helpline' | 'website' | 'guide' | 'app' | 'support-group';
-  icon: any;
+  icon: LucideIcon;
   contact?: string;
   url?: string;
   availability?: string;

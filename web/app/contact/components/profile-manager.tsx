@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Profile, gradientOptions } from "@/lib/utils";
+import { Profile } from "@/lib/utils";
 import { GradientSelector } from "./gradient-selector";
-import { FaSave, FaTimes, FaTrash, FaPlus } from "react-icons/fa";
+import { FaSave, FaTimes, FaTrash } from "react-icons/fa";
 
 interface ProfileManagerProps {
   profile: Profile;

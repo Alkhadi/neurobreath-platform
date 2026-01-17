@@ -7,9 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
-  BookOpen, Brain, Heart, Users, Home,
+  BookOpen, Heart, Users, Home,
   FileText, Download, CheckCircle2, AlertCircle, 
-  Lightbulb, Phone, Shield, Clock
+  Lightbulb, Phone, Shield
 } from 'lucide-react';
 
 export const metadata: Metadata = generatePageMetadata({

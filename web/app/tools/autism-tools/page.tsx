@@ -4,12 +4,10 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
-  Brain, Heart, Users, Target, BookOpen, Download,
-  Play, CheckCircle2, AlertCircle, Shield, Eye,
-  Volume2, Clock, Sparkles, MessageSquare, Home,
+  Brain, Heart, Target, BookOpen, Download,
+  Play, CheckCircle2, AlertCircle, Shield, Eye, Clock, Sparkles, MessageSquare, Home,
   School, FileText, Headphones, Sun, Box
 } from 'lucide-react';
 import { HowToUse } from '@/components/autism/how-to-use';
@@ -37,8 +35,6 @@ export default function AutismToolsPage() {
   const region: Region = 'UK';
   const [updateTrigger, setUpdateTrigger] = useState(0);
   const [activeTab, setActiveTab] = useState('overview');
-  const [showQuickStart, setShowQuickStart] = useState(false);
-  const [showSensoryProfile, setShowSensoryProfile] = useState(false);
 
   // Initialize milestones on first load
   useEffect(() => {

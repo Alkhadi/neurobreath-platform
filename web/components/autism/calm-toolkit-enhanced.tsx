@@ -16,25 +16,29 @@ import { logCalmSession, toggleFavoriteExercise, loadProgress } from '@/lib/prog
 import type { MoodRating } from '@/lib/types';
 import { toast } from 'sonner';
 
+type BreathingExercise = (typeof breathingExercises)[number];
+type CalmingTechnique = (typeof calmingTechniques)[number];
+type ProgressState = ReturnType<typeof loadProgress>;
+
 interface CalmToolkitEnhancedProps {
   onProgressUpdate?: () => void;
 }
 
 // Helper Components - Defined Before Main Component
 interface TechniqueCardProps {
-  technique: any;
-  progress: any;
+  technique: CalmingTechnique;
+  progress: ProgressState | null;
   onUpdate: () => void;
 }
 
-const CalmingTechniqueCard = ({ technique, progress, onUpdate }: TechniqueCardProps) => {
+const CalmingTechniqueCard = ({ technique, progress: _progress, onUpdate }: TechniqueCardProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [timeSpent, setTimeSpent] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
-  const timerRef = useRef<any>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const startTechnique = () => {
     setIsActive(true);
@@ -278,7 +282,7 @@ const CalmingTechniqueCard = ({ technique, progress, onUpdate }: TechniqueCardPr
 };
 
 export function CalmToolkitEnhanced({ onProgressUpdate }: CalmToolkitEnhancedProps) {
-  const [progress, setProgress] = useState<any>(null);
+  const [progress, setProgress] = useState<ProgressState | null>(null);
 
   useEffect(() => {
     // Load progress only on client side to avoid hydration mismatch
@@ -340,8 +344,8 @@ export function CalmToolkitEnhanced({ onProgressUpdate }: CalmToolkitEnhancedPro
 }
 
 interface ExerciseCardProps {
-  exercise: any;
-  progress: any;
+  exercise: BreathingExercise;
+  progress: ProgressState | null;
   onUpdate: () => void;
 }
 
@@ -356,8 +360,8 @@ const BreathingExerciseCard = ({ exercise, progress, onUpdate }: ExerciseCardPro
   const [moodAfter, setMoodAfter] = useState<MoodRating | undefined>();
   const [sessionNotes, setSessionNotes] = useState('');
   const [soundEnabled, setSoundEnabled] = useState(false);
-  const intervalRef = useRef<any>(null);
-  const phaseIntervalRef = useRef<any>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const phaseIntervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isFavorite = progress?.favoriteExercises?.includes(exercise?.id);
 
   const startExercise = () => {
@@ -411,7 +415,12 @@ const BreathingExerciseCard = ({ exercise, progress, onUpdate }: ExerciseCardPro
 
   const playSound = (phaseName: string) => {
     // Simple beep for phase changes (browser API)
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const AudioContextClass =
+      window.AudioContext ||
+      (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!AudioContextClass) return;
+
+    const audioContext = new AudioContextClass();
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
     

@@ -3,9 +3,22 @@
     "next/core-web-vitals",
     "next/typescript"
   ],
+  "plugins": [
+    "unused-imports"
+  ],
   "rules": {
     "react/no-unescaped-entities": "off",
-    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "warn",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ],
     "@typescript-eslint/no-explicit-any": "warn",
     "@next/next/no-css-tags": "off",
     "react-hooks/exhaustive-deps": "warn",

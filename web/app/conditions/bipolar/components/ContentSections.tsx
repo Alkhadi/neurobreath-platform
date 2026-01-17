@@ -4,7 +4,6 @@ import React from 'react';
 import { ContentCard } from './ContentCard';
 import { Section } from './Section';
 import { Language } from '../types';
-import researchData from '../data/research.json';
 
 interface ContentSectionsProps {
   language: Language;

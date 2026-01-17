@@ -69,7 +69,6 @@ export function calculateORFMetrics(
   const uncorrectedErrors = errors.filter(e => !e.corrected)
   
   // Count insertions separately - they add errors but don't affect total word count
-  const insertions = uncorrectedErrors.filter(e => e.errorType === 'insertion').length
   const otherErrors = uncorrectedErrors.filter(e => e.errorType !== 'insertion').length
   
   // Self-corrections count

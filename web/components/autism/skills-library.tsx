@@ -11,11 +11,14 @@ import { Badge } from '@/components/ui/badge';
 import { Search, ExternalLink, Check, BookOpen } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+type Skill = (typeof skills)[number];
+type EvidenceLink = { url: string; text: string };
+
 export const SkillsLibrary = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const { logSkill } = useProgress();
-  const { preferences, isLoading: preferencesLoading } = usePreferences();
+  const { preferences } = usePreferences();
   const { toast } = useToast();
   const skillsRef = useRef<HTMLDivElement>(null);
 
@@ -62,10 +65,6 @@ export const SkillsLibrary = () => {
       title: 'Practice logged!',
       description: `You practiced: ${skillTitle}`,
     });
-  };
-
-  const scrollToSkills = () => {
-    skillsRef?.current?.scrollIntoView?.({ behavior: 'smooth' });
   };
 
   return (
@@ -138,7 +137,7 @@ export const SkillsLibrary = () => {
 };
 
 interface SkillCardProps {
-  skill: any;
+  skill: Skill;
   onLogPractice: (id: string, title: string) => void;
 }
 
@@ -179,7 +178,7 @@ const SkillCard = ({ skill, onLogPractice }: SkillCardProps) => {
             <div>
               <p className="text-sm font-semibold mb-2">Evidence:</p>
               <div className="space-y-1">
-                {skill?.evidenceLinks?.map?.((link: any, idx: number) => (
+                {skill?.evidenceLinks?.map?.((link: EvidenceLink, idx: number) => (
                   <Button
                     key={idx}
                     variant="link"

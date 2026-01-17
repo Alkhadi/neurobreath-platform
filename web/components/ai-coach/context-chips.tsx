@@ -91,7 +91,7 @@ export default function ContextChips({ context, onUpdate, onReset, summary }: Co
                 key={value}
                 variant={context.ageGroup === value ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => onUpdate({ ageGroup: value as any })}
+                onClick={() => onUpdate({ ageGroup: value as UserContext['ageGroup'] })}
                 className="text-xs h-8"
                 aria-pressed={context.ageGroup === value}
               >
@@ -110,7 +110,7 @@ export default function ContextChips({ context, onUpdate, onReset, summary }: Co
                 key={value}
                 variant={context.setting === value ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => onUpdate({ setting: value as any })}
+                onClick={() => onUpdate({ setting: value as UserContext['setting'] })}
                 className="text-xs h-8"
                 aria-pressed={context.setting === value}
               >
@@ -129,7 +129,7 @@ export default function ContextChips({ context, onUpdate, onReset, summary }: Co
                 key={value}
                 variant={context.mainChallenge === value ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => onUpdate({ mainChallenge: value as any })}
+                onClick={() => onUpdate({ mainChallenge: value as UserContext['mainChallenge'] })}
                 className="text-xs h-8"
                 aria-pressed={context.mainChallenge === value}
               >
@@ -148,7 +148,7 @@ export default function ContextChips({ context, onUpdate, onReset, summary }: Co
                 key={value}
                 variant={context.goal === value ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => onUpdate({ goal: value as any })}
+                onClick={() => onUpdate({ goal: value as UserContext['goal'] })}
                 className="text-xs h-8"
                 aria-pressed={context.goal === value}
               >
@@ -167,7 +167,7 @@ export default function ContextChips({ context, onUpdate, onReset, summary }: Co
                 key={value}
                 variant={context.country === value ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => onUpdate({ country: value as any })}
+                onClick={() => onUpdate({ country: value as UserContext['country'] })}
                 className="text-xs h-8"
                 aria-pressed={context.country === value}
               >

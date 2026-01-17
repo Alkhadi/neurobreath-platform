@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Language } from '../types';
 import { trackToolUsage } from '../utils/localStorage';
+import { cn } from '@/lib/utils';
 
 interface InteractiveToolsProps {
   language: Language;
@@ -14,66 +15,71 @@ export const InteractiveTools: React.FC<InteractiveToolsProps> = ({ language }) 
   const [activeTool, setActiveTool] = useState<Tool | null>(null);
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <h3 style={styles.title}>
-          <span style={{ fontSize: '1.5rem', marginRight: '0.5rem' }}>🎯</span>
+    <div className="mb-8 rounded-2xl bg-white p-8 shadow-sm">
+      <div className="mb-6">
+        <h3 className="mb-2 text-[1.75rem] font-bold text-[var(--color-primary)]">
+          <span className="mr-2 text-2xl" aria-hidden="true">
+            🎯
+          </span>
           Interactive Management Tools
         </h3>
-        <p style={styles.description}>
+        <p className="text-[0.9375rem] leading-relaxed text-[var(--color-text-secondary)]">
           Evidence-based exercises to help manage symptoms, reduce stress, and improve emotional
           regulation. These tools are recommended by mental health professionals worldwide.
         </p>
       </div>
 
-      <div style={styles.toolsGrid}>
-        <div
-          style={styles.toolCard}
+      <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
+        <button
+          type="button"
+          className="rounded-xl border-2 border-transparent bg-[var(--color-surface)] p-6 text-left transition hover:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
           onClick={() => setActiveTool('breathing')}
-          role="button"
-          tabIndex={0}
         >
-          <div style={styles.toolIcon}>🫁</div>
-          <h4 style={styles.toolName}>Breathing Exercise</h4>
-          <p style={styles.toolDescription}>
+          <div className="mb-4 text-5xl" aria-hidden="true">
+            🫁
+          </div>
+          <h4 className="mb-2 text-xl font-bold text-[var(--color-text)]">Breathing Exercise</h4>
+          <p className="mb-4 text-[0.9375rem] leading-relaxed text-[var(--color-text-secondary)]">
             4-7-8 breathing technique to calm anxiety and promote relaxation
           </p>
-          <div style={styles.toolEvidence}>
+          <div className="rounded-lg bg-[rgba(37,99,235,0.1)] p-3 text-sm text-[var(--color-primary)]">
             <strong>Evidence:</strong> Reduces cortisol, activates parasympathetic nervous system
           </div>
-        </div>
+        </button>
 
-        <div
-          style={styles.toolCard}
+        <button
+          type="button"
+          className="rounded-xl border-2 border-transparent bg-[var(--color-surface)] p-6 text-left transition hover:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
           onClick={() => setActiveTool('grounding')}
-          role="button"
-          tabIndex={0}
         >
-          <div style={styles.toolIcon}>🌿</div>
-          <h4 style={styles.toolName}>Grounding Exercise</h4>
-          <p style={styles.toolDescription}>
+          <div className="mb-4 text-5xl" aria-hidden="true">
+            🌿
+          </div>
+          <h4 className="mb-2 text-xl font-bold text-[var(--color-text)]">Grounding Exercise</h4>
+          <p className="mb-4 text-[0.9375rem] leading-relaxed text-[var(--color-text-secondary)]">
             5-4-3-2-1 technique to anchor yourself in the present moment
           </p>
-          <div style={styles.toolEvidence}>
+          <div className="rounded-lg bg-[rgba(37,99,235,0.1)] p-3 text-sm text-[var(--color-primary)]">
             <strong>Evidence:</strong> Interrupts panic cycles, reduces dissociation
           </div>
-        </div>
+        </button>
 
-        <div
-          style={styles.toolCard}
+        <button
+          type="button"
+          className="rounded-xl border-2 border-transparent bg-[var(--color-surface)] p-6 text-left transition hover:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
           onClick={() => setActiveTool('thought-challenge')}
-          role="button"
-          tabIndex={0}
         >
-          <div style={styles.toolIcon}>🧠</div>
-          <h4 style={styles.toolName}>Thought Challenge</h4>
-          <p style={styles.toolDescription}>
+          <div className="mb-4 text-5xl" aria-hidden="true">
+            🧠
+          </div>
+          <h4 className="mb-2 text-xl font-bold text-[var(--color-text)]">Thought Challenge</h4>
+          <p className="mb-4 text-[0.9375rem] leading-relaxed text-[var(--color-text-secondary)]">
             Cognitive restructuring to identify and reframe negative thoughts
           </p>
-          <div style={styles.toolEvidence}>
+          <div className="rounded-lg bg-[rgba(37,99,235,0.1)] p-3 text-sm text-[var(--color-primary)]">
             <strong>Evidence:</strong> Core CBT technique, proven effective for mood disorders
           </div>
-        </div>
+        </button>
       </div>
 
       {activeTool === 'breathing' && (
@@ -102,7 +108,7 @@ export const InteractiveTools: React.FC<InteractiveToolsProps> = ({ language }) 
 
 // Breathing Exercise Component
 const BreathingExercise: React.FC<{ language: Language; onClose: () => void }> = ({
-  language,
+  language: _language,
   onClose,
 }) => {
   const [phase, setPhase] = useState<'inhale' | 'hold' | 'exhale' | 'pause'>('inhale');
@@ -162,66 +168,72 @@ const BreathingExercise: React.FC<{ language: Language; onClose: () => void }> =
     }
   };
 
-  const circleSize = 200;
-  const scale = {
-    inhale: 1.2,
-    hold: 1.2,
-    exhale: 0.8,
-    pause: 0.8,
-  }[phase];
+  const phaseCircleClass: Record<typeof phase, string> = {
+    inhale: 'scale-[1.2] bg-[var(--color-primary)]',
+    hold: 'scale-[1.2] bg-[var(--color-accent)]',
+    exhale: 'scale-[0.8] bg-[var(--color-secondary)]',
+    pause: 'scale-[0.8] bg-[var(--color-surface-dark)]',
+  };
 
   return (
-    <div style={styles.overlay}>
-      <div style={styles.modal}>
-        <button style={styles.closeButton} onClick={handleComplete}>
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/70 p-4">
+      <div className="relative max-h-[90vh] w-full max-w-[600px] overflow-y-auto rounded-2xl bg-white p-8">
+        <button
+          type="button"
+          className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-xl text-[var(--color-text-secondary)] transition hover:bg-black/5"
+          onClick={handleComplete}
+          aria-label="Close"
+        >
           ✕
         </button>
 
-        <h3 style={styles.modalTitle}>4-7-8 Breathing Exercise</h3>
+        <h3 className="mb-6 text-2xl font-bold text-[var(--color-primary)]">
+          4-7-8 Breathing Exercise
+        </h3>
 
-        <div style={styles.breathingContainer}>
+        <div className="flex flex-col items-center gap-6 py-8">
           <div
-            style={{
-              ...styles.breathingCircle,
-              width: `${circleSize}px`,
-              height: `${circleSize}px`,
-              transform: `scale(${scale})`,
-              backgroundColor: {
-                inhale: 'var(--color-primary)',
-                hold: 'var(--color-accent)',
-                exhale: 'var(--color-secondary)',
-                pause: 'var(--color-surface-dark)',
-              }[phase],
-            }}
+            className={cn(
+              'flex h-[200px] w-[200px] items-center justify-center rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.2)] transition-all duration-1000 ease-in-out',
+              phaseCircleClass[phase]
+            )}
+            aria-label="Breathing timer"
           >
-            <div style={styles.breathingCount}>{count}</div>
+            <div className="text-6xl font-bold text-white">{count}</div>
           </div>
 
-          <div style={styles.breathingInstruction}>{getPhaseInstruction()}</div>
+          <div className="text-center text-xl font-semibold text-[var(--color-text)]">
+            {getPhaseInstruction()}
+          </div>
 
           {!isActive && (
-            <button style={styles.startButton} onClick={handleStart}>
+            <button
+              type="button"
+              className="rounded-lg bg-[var(--color-primary)] px-8 py-4 text-base font-semibold text-white"
+              onClick={handleStart}
+            >
               Start Exercise
             </button>
           )}
 
           {isActive && (
             <button
-              style={styles.stopButton}
+              type="button"
+              className="rounded-lg bg-[var(--color-error)] px-6 py-3 text-[0.9375rem] font-semibold text-white"
               onClick={() => setIsActive(false)}
             >
               Pause
             </button>
           )}
 
-          <div style={styles.cycleCounter}>
+          <div className="text-[0.9375rem] text-[var(--color-text-secondary)]">
             Completed cycles: {completedCycles}
           </div>
         </div>
 
-        <div style={styles.instructions}>
+        <div className="mt-8 rounded-lg bg-[var(--color-surface)] p-4 text-sm leading-relaxed">
           <h4>How it works:</h4>
-          <ol style={{ marginLeft: '1.5rem' }}>
+          <ol className="ml-6 list-decimal space-y-1">
             <li>Inhale through your nose for 4 seconds</li>
             <li>Hold your breath for 7 seconds</li>
             <li>Exhale slowly through your mouth for 8 seconds</li>
@@ -239,7 +251,7 @@ const BreathingExercise: React.FC<{ language: Language; onClose: () => void }> =
 
 // Grounding Exercise Component
 const GroundingExercise: React.FC<{ language: Language; onClose: () => void }> = ({
-  language,
+  language: _language,
   onClose,
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -273,35 +285,54 @@ const GroundingExercise: React.FC<{ language: Language; onClose: () => void }> =
   const currentStepData = steps[currentStep];
 
   return (
-    <div style={styles.overlay}>
-      <div style={styles.modal}>
-        <button style={styles.closeButton} onClick={handleComplete}>
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/70 p-4">
+      <div className="relative max-h-[90vh] w-full max-w-[600px] overflow-y-auto rounded-2xl bg-white p-8">
+        <button
+          type="button"
+          className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-xl text-[var(--color-text-secondary)] transition hover:bg-black/5"
+          onClick={handleComplete}
+          aria-label="Close"
+        >
           ✕
         </button>
 
-        <h3 style={styles.modalTitle}>5-4-3-2-1 Grounding Technique</h3>
+        <h3 className="mb-6 text-2xl font-bold text-[var(--color-primary)]">
+          5-4-3-2-1 Grounding Technique
+        </h3>
 
-        <div style={styles.groundingProgress}>
-          {steps.map((step, index) => (
-            <div
-              key={index}
-              style={{
-                ...styles.progressDot,
-                ...(index === currentStep ? styles.progressDotActive : {}),
-                ...(index < currentStep ? styles.progressDotComplete : {}),
-              }}
-            >
-              {step.icon}
-            </div>
-          ))}
+        <div className="mb-8 flex justify-center gap-2">
+          {steps.map((step, index) => {
+            const isActive = index === currentStep;
+            const isComplete = index < currentStep;
+            return (
+              <div
+                key={step.sense}
+                className={cn(
+                  'flex h-12 w-12 items-center justify-center rounded-full border-2 bg-[var(--color-surface)] text-2xl transition',
+                  'border-[var(--color-border)]',
+                  isActive &&
+                    'scale-[1.2] border-[var(--color-primary)] bg-[var(--color-primary)] text-white',
+                  isComplete &&
+                    'border-[var(--color-success)] bg-[var(--color-success)] text-white'
+                )}
+              >
+                {step.icon}
+              </div>
+            );
+          })}
         </div>
 
-        <div style={styles.groundingStep}>
-          <div style={styles.groundingIcon}>{currentStepData.icon}</div>
-          <h4 style={styles.groundingPrompt}>{currentStepData.prompt}</h4>
+        <div className="mb-8 text-center">
+          <div className="mb-4 text-6xl" aria-hidden="true">
+            {currentStepData.icon}
+          </div>
+          <h4 className="mb-4 text-xl font-semibold text-[var(--color-text)]">
+            {currentStepData.prompt}
+          </h4>
 
           <textarea
-            style={styles.groundingTextarea}
+            className="w-full resize-y rounded-lg border border-[var(--color-border)] p-3 text-base"
+            aria-label={currentStepData.prompt}
             value={answers[currentStep]}
             onChange={(e) => {
               const newAnswers = [...answers];
@@ -313,26 +344,35 @@ const GroundingExercise: React.FC<{ language: Language; onClose: () => void }> =
           />
         </div>
 
-        <div style={styles.navigationButtons}>
+        <div className="flex justify-between gap-4">
           <button
-            style={styles.navButton}
+            type="button"
+            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-6 py-3 text-[0.9375rem] font-semibold text-[var(--color-text)]"
             onClick={handlePrev}
             disabled={currentStep === 0}
           >
             ← Previous
           </button>
           {currentStep < steps.length - 1 ? (
-            <button style={styles.navButton} onClick={handleNext}>
+            <button
+              type="button"
+              className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-6 py-3 text-[0.9375rem] font-semibold text-[var(--color-text)]"
+              onClick={handleNext}
+            >
               Next →
             </button>
           ) : (
-            <button style={styles.completeButton} onClick={handleComplete}>
+            <button
+              type="button"
+              className="rounded-lg bg-[var(--color-success)] px-6 py-3 text-[0.9375rem] font-semibold text-white"
+              onClick={handleComplete}
+            >
               Complete ✓
             </button>
           )}
         </div>
 
-        <div style={styles.instructions}>
+        <div className="mt-8 rounded-lg bg-[var(--color-surface)] p-4 text-sm leading-relaxed">
           <h4>About this technique:</h4>
           <p>
             The 5-4-3-2-1 grounding technique helps interrupt anxious thoughts and panic by
@@ -347,7 +387,7 @@ const GroundingExercise: React.FC<{ language: Language; onClose: () => void }> =
 
 // Thought Challenge Component
 const ThoughtChallenge: React.FC<{ language: Language; onClose: () => void }> = ({
-  language,
+  language: _language,
   onClose,
 }) => {
   const [thought, setThought] = useState('');
@@ -381,21 +421,29 @@ const ThoughtChallenge: React.FC<{ language: Language; onClose: () => void }> = 
   };
 
   return (
-    <div style={styles.overlay}>
-      <div style={{ ...styles.modal, maxWidth: '700px' }}>
-        <button style={styles.closeButton} onClick={handleComplete}>
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/70 p-4">
+      <div className="relative max-h-[90vh] w-full max-w-[700px] overflow-y-auto rounded-2xl bg-white p-8">
+        <button
+          type="button"
+          className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-xl text-[var(--color-text-secondary)] transition hover:bg-black/5"
+          onClick={handleComplete}
+          aria-label="Close"
+        >
           ✕
         </button>
 
-        <h3 style={styles.modalTitle}>Cognitive Restructuring</h3>
+        <h3 className="mb-6 text-2xl font-bold text-[var(--color-primary)]">
+          Cognitive Restructuring
+        </h3>
 
-        <div style={styles.thoughtChallengeForm}>
-          <div style={styles.formSection}>
-            <label style={styles.formLabel}>
+        <div className="mb-6 flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="tc-thought" className="text-[0.9375rem] text-[var(--color-text)]">
               <strong>1. What's the thought or belief?</strong>
             </label>
             <textarea
-              style={styles.groundingTextarea}
+              id="tc-thought"
+              className="w-full resize-y rounded-lg border border-[var(--color-border)] p-3 text-base"
               value={thought}
               onChange={(e) => setThought(e.target.value)}
               placeholder="Example: I'm a failure and everything I do goes wrong."
@@ -403,20 +451,21 @@ const ThoughtChallenge: React.FC<{ language: Language; onClose: () => void }> = 
             />
           </div>
 
-          <div style={styles.formSection}>
-            <label style={styles.formLabel}>
+          <div className="flex flex-col gap-2">
+            <div className="text-[0.9375rem] text-[var(--color-text)]">
               <strong>2. Identify cognitive distortions:</strong>
-            </label>
-            <div style={styles.distortionsGrid}>
+            </div>
+            <div className="grid gap-2 [grid-template-columns:repeat(auto-fill,minmax(180px,1fr))]">
               {cognitiveDistortions.map((distortion) => (
                 <button
                   key={distortion}
-                  style={{
-                    ...styles.distortionButton,
-                    ...(distortions.includes(distortion)
-                      ? styles.distortionButtonSelected
-                      : {}),
-                  }}
+                  type="button"
+                  className={cn(
+                    'rounded-lg border px-3 py-2 text-left text-sm transition',
+                    'border-[var(--color-border)] bg-[var(--color-surface)]',
+                    distortions.includes(distortion) &&
+                      'border-[var(--color-primary)] bg-[var(--color-primary)] text-white'
+                  )}
                   onClick={() => toggleDistortion(distortion)}
                 >
                   {distortion}
@@ -425,12 +474,13 @@ const ThoughtChallenge: React.FC<{ language: Language; onClose: () => void }> = 
             </div>
           </div>
 
-          <div style={styles.formSection}>
-            <label style={styles.formLabel}>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="tc-evidence" className="text-[0.9375rem] text-[var(--color-text)]">
               <strong>3. What's the evidence against this thought?</strong>
             </label>
             <textarea
-              style={styles.groundingTextarea}
+              id="tc-evidence"
+              className="w-full resize-y rounded-lg border border-[var(--color-border)] p-3 text-base"
               value={evidence}
               onChange={(e) => setEvidence(e.target.value)}
               placeholder="Example: I completed my project last week. My colleague complimented my work. I've succeeded at many things before."
@@ -438,12 +488,16 @@ const ThoughtChallenge: React.FC<{ language: Language; onClose: () => void }> = 
             />
           </div>
 
-          <div style={styles.formSection}>
-            <label style={styles.formLabel}>
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="tc-alternative"
+              className="text-[0.9375rem] text-[var(--color-text)]"
+            >
               <strong>4. What's a more balanced thought?</strong>
             </label>
             <textarea
-              style={styles.groundingTextarea}
+              id="tc-alternative"
+              className="w-full resize-y rounded-lg border border-[var(--color-border)] p-3 text-base"
               value={alternativeThought}
               onChange={(e) => setAlternativeThought(e.target.value)}
               placeholder="Example: Sometimes I make mistakes, but I've also had many successes. One setback doesn't define my worth."
@@ -452,11 +506,15 @@ const ThoughtChallenge: React.FC<{ language: Language; onClose: () => void }> = 
           </div>
         </div>
 
-        <button style={styles.completeButton} onClick={handleComplete}>
+        <button
+          type="button"
+          className="rounded-lg bg-[var(--color-success)] px-6 py-3 text-[0.9375rem] font-semibold text-white"
+          onClick={handleComplete}
+        >
           Save Challenge
         </button>
 
-        <div style={styles.instructions}>
+        <div className="mt-8 rounded-lg bg-[var(--color-surface)] p-4 text-sm leading-relaxed">
           <h4>How Cognitive Restructuring Works:</h4>
           <p>
             This evidence-based CBT technique helps you identify and challenge negative thought
@@ -467,275 +525,4 @@ const ThoughtChallenge: React.FC<{ language: Language; onClose: () => void }> = 
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    backgroundColor: 'white',
-    borderRadius: '1rem',
-    padding: '2rem',
-    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-    marginBottom: '2rem',
-  } as React.CSSProperties,
-  header: {
-    marginBottom: '1.5rem',
-  } as React.CSSProperties,
-  title: {
-    fontSize: '1.75rem',
-    fontWeight: 700,
-    color: 'var(--color-primary)',
-    marginBottom: '0.5rem',
-  } as React.CSSProperties,
-  description: {
-    color: 'var(--color-text-secondary)',
-    lineHeight: 1.6,
-    fontSize: '0.9375rem',
-  } as React.CSSProperties,
-  toolsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-    gap: '1.5rem',
-  } as React.CSSProperties,
-  toolCard: {
-    backgroundColor: 'var(--color-surface)',
-    padding: '1.5rem',
-    borderRadius: '0.75rem',
-    cursor: 'pointer',
-    transition: 'all 0.3s',
-    border: '2px solid transparent',
-  } as React.CSSProperties,
-  toolIcon: {
-    fontSize: '3rem',
-    marginBottom: '1rem',
-  } as React.CSSProperties,
-  toolName: {
-    fontSize: '1.25rem',
-    fontWeight: 700,
-    marginBottom: '0.5rem',
-    color: 'var(--color-text)',
-  } as React.CSSProperties,
-  toolDescription: {
-    fontSize: '0.9375rem',
-    color: 'var(--color-text-secondary)',
-    lineHeight: 1.6,
-    marginBottom: '1rem',
-  } as React.CSSProperties,
-  toolEvidence: {
-    fontSize: '0.8125rem',
-    color: 'var(--color-primary)',
-    padding: '0.75rem',
-    backgroundColor: 'rgba(37, 99, 235, 0.1)',
-    borderRadius: '0.5rem',
-  } as React.CSSProperties,
-  overlay: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 1000,
-    padding: '1rem',
-  } as React.CSSProperties,
-  modal: {
-    backgroundColor: 'white',
-    borderRadius: '1rem',
-    padding: '2rem',
-    maxWidth: '600px',
-    width: '100%',
-    maxHeight: '90vh',
-    overflowY: 'auto',
-    position: 'relative',
-  } as React.CSSProperties,
-  closeButton: {
-    position: 'absolute',
-    top: '1rem',
-    right: '1rem',
-    background: 'none',
-    border: 'none',
-    fontSize: '1.5rem',
-    cursor: 'pointer',
-    color: 'var(--color-text-secondary)',
-    width: '2rem',
-    height: '2rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: '50%',
-  } as React.CSSProperties,
-  modalTitle: {
-    fontSize: '1.5rem',
-    fontWeight: 700,
-    marginBottom: '1.5rem',
-    color: 'var(--color-primary)',
-  } as React.CSSProperties,
-  breathingContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '1.5rem',
-    padding: '2rem 0',
-  } as React.CSSProperties,
-  breathingCircle: {
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transition: 'all 1s ease-in-out',
-    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
-  } as React.CSSProperties,
-  breathingCount: {
-    fontSize: '4rem',
-    fontWeight: 700,
-    color: 'white',
-  } as React.CSSProperties,
-  breathingInstruction: {
-    fontSize: '1.25rem',
-    fontWeight: 600,
-    color: 'var(--color-text)',
-    textAlign: 'center',
-  } as React.CSSProperties,
-  startButton: {
-    padding: '1rem 2rem',
-    backgroundColor: 'var(--color-primary)',
-    color: 'white',
-    border: 'none',
-    borderRadius: '0.5rem',
-    fontSize: '1rem',
-    fontWeight: 600,
-    cursor: 'pointer',
-  } as React.CSSProperties,
-  stopButton: {
-    padding: '0.75rem 1.5rem',
-    backgroundColor: 'var(--color-error)',
-    color: 'white',
-    border: 'none',
-    borderRadius: '0.5rem',
-    fontSize: '0.9375rem',
-    fontWeight: 600,
-    cursor: 'pointer',
-  } as React.CSSProperties,
-  cycleCounter: {
-    fontSize: '0.9375rem',
-    color: 'var(--color-text-secondary)',
-  } as React.CSSProperties,
-  instructions: {
-    marginTop: '2rem',
-    padding: '1rem',
-    backgroundColor: 'var(--color-surface)',
-    borderRadius: '0.5rem',
-    fontSize: '0.875rem',
-    lineHeight: 1.6,
-  } as React.CSSProperties,
-  groundingProgress: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '0.5rem',
-    marginBottom: '2rem',
-  } as React.CSSProperties,
-  progressDot: {
-    width: '3rem',
-    height: '3rem',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '1.5rem',
-    backgroundColor: 'var(--color-surface)',
-    border: '2px solid var(--color-border)',
-  } as React.CSSProperties,
-  progressDotActive: {
-    backgroundColor: 'var(--color-primary)',
-    borderColor: 'var(--color-primary)',
-    transform: 'scale(1.2)',
-  } as React.CSSProperties,
-  progressDotComplete: {
-    backgroundColor: 'var(--color-success)',
-    borderColor: 'var(--color-success)',
-  } as React.CSSProperties,
-  groundingStep: {
-    textAlign: 'center',
-    marginBottom: '2rem',
-  } as React.CSSProperties,
-  groundingIcon: {
-    fontSize: '4rem',
-    marginBottom: '1rem',
-  } as React.CSSProperties,
-  groundingPrompt: {
-    fontSize: '1.25rem',
-    fontWeight: 600,
-    marginBottom: '1rem',
-    color: 'var(--color-text)',
-  } as React.CSSProperties,
-  groundingTextarea: {
-    width: '100%',
-    padding: '0.75rem',
-    border: '1px solid var(--color-border)',
-    borderRadius: '0.5rem',
-    fontSize: '1rem',
-    fontFamily: 'inherit',
-    resize: 'vertical',
-  } as React.CSSProperties,
-  navigationButtons: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    gap: '1rem',
-  } as React.CSSProperties,
-  navButton: {
-    padding: '0.75rem 1.5rem',
-    backgroundColor: 'var(--color-surface)',
-    color: 'var(--color-text)',
-    border: '1px solid var(--color-border)',
-    borderRadius: '0.5rem',
-    fontSize: '0.9375rem',
-    fontWeight: 600,
-    cursor: 'pointer',
-  } as React.CSSProperties,
-  completeButton: {
-    padding: '0.75rem 1.5rem',
-    backgroundColor: 'var(--color-success)',
-    color: 'white',
-    border: 'none',
-    borderRadius: '0.5rem',
-    fontSize: '0.9375rem',
-    fontWeight: 600,
-    cursor: 'pointer',
-  } as React.CSSProperties,
-  thoughtChallengeForm: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1.5rem',
-    marginBottom: '1.5rem',
-  } as React.CSSProperties,
-  formSection: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem',
-  } as React.CSSProperties,
-  formLabel: {
-    fontSize: '0.9375rem',
-    color: 'var(--color-text)',
-  } as React.CSSProperties,
-  distortionsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-    gap: '0.5rem',
-  } as React.CSSProperties,
-  distortionButton: {
-    padding: '0.5rem',
-    backgroundColor: 'var(--color-surface)',
-    border: '1px solid var(--color-border)',
-    borderRadius: '0.5rem',
-    fontSize: '0.8125rem',
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-  } as React.CSSProperties,
-  distortionButtonSelected: {
-    backgroundColor: 'var(--color-primary)',
-    color: 'white',
-    borderColor: 'var(--color-primary)',
-  } as React.CSSProperties,
 };

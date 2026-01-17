@@ -259,7 +259,7 @@ Date: ${new Date().toLocaleDateString()}
             </CardHeader>
             <CardContent>
               <Accordion type="single" collapsible className="w-full">
-                {selectedPathway.steps.map((step, index) => (
+                {selectedPathway.steps.map((step) => (
                   <AccordionItem key={step.stepNumber} value={`step-${step.stepNumber}`}>
                     <AccordionTrigger className="hover:no-underline">
                       <div className="flex items-center gap-3 text-left">

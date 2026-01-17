@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { Language } from '../types';
 import {
-  detectLanguage,
   getLanguagePreference,
   saveLanguagePreference,
 } from '../utils/language';
@@ -24,7 +23,7 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
     const savedLanguage = getLanguagePreference();
     setLanguage(savedLanguage);
     onLanguageChange(savedLanguage);
-  }, []);
+  }, [onLanguageChange]);
 
   const handleLanguageChange = (newLanguage: Language) => {
     setLanguage(newLanguage);

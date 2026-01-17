@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import { useLocalStorage } from './use-local-storage'
 import { Achievement, UserProgress } from '@/lib/types'
 import { toast } from 'sonner'
@@ -140,7 +140,7 @@ export function useAchievements() {
     }
   })
 
-  const checkAchievements = () => {
+  const checkAchievements = useCallback(() => {
     const newAchievements = [...(progress?.achievements ?? ACHIEVEMENTS)]
     let hasNewAchievement = false
 
@@ -213,19 +213,11 @@ export function useAchievements() {
         achievements: newAchievements
       }))
     }
-  }
+  }, [progress, setProgress])
 
   useEffect(() => {
     checkAchievements()
-  }, [
-    progress?.stats?.breathingSessions,
-    progress?.stats?.thoughtRecords,
-    progress?.stats?.groundingSessions,
-    progress?.stats?.exposureAttempts,
-    progress?.stats?.gratitudeEntries,
-    progress?.currentStreak,
-    progress?.totalSessions
-  ])
+  }, [checkAchievements])
 
   return { progress, setProgress, checkAchievements, allAchievements: ACHIEVEMENTS }
 }

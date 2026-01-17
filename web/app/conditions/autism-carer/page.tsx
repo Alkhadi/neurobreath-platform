@@ -9,24 +9,20 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   Heart, 
-  BookOpen, 
   Users, 
   CheckCircle2, 
   ExternalLink, 
   Lightbulb,
   Clock,
   Calendar,
-  Home,
   Brain,
   Shield,
   Phone,
   Sparkles,
   HeartHandshake,
   AlertCircle,
-  UserCheck,
   FileText,
-  Activity,
-  Moon
+  Activity
 } from 'lucide-react';
 import Link from 'next/link';
 

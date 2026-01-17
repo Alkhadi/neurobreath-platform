@@ -8,8 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   Heart, 
-  BookOpen, 
-  CheckCircle2, 
   ExternalLink, 
   Lightbulb,
   Clock,

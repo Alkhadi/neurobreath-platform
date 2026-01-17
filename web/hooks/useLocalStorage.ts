@@ -68,7 +68,7 @@ export function useProfileStorage<T>(
       console.warn(`Error reading localStorage key "${key}":`, error);
       setStoredValue(initialValue);
     }
-  }, [key, profileId]);
+  }, [initialValue, key, profileId]);
 
   const setValue = useCallback((value: T | ((val: T) => T)) => {
     if (!profileId) return;

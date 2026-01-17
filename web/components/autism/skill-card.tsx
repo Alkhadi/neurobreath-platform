@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import type { Skill } from '@/types/autism'
 import { useAutismProgress } from '@/hooks/useAutismProgress'
 import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'

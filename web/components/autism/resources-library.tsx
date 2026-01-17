@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FileText, Download, Eye, Users, GraduationCap, Briefcase, CheckCircle, ExternalLink, Lightbulb } from 'lucide-react';
-import { TEMPLATES, type Template, type TemplateField } from '@/lib/data/templates';
+import { TEMPLATES, type Template } from '@/lib/data/templates';
 import { toast } from 'sonner';
 
 export function ResourcesLibrary() {

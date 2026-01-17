@@ -3,7 +3,6 @@
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useAutismProgress } from '@/hooks/useAutismProgress'
-import Link from 'next/link'
 
 const QUESTS = [
   {

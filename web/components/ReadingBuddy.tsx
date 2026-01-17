@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { usePathname } from 'next/navigation';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -38,7 +38,7 @@ export default function ReadingBuddy({ onStartTutorial }: ReadingBuddyProps) {
   
   // Extract dynamic content from config
   const quickQuestions = readingBuddy.quickQuestions;
-  const responses = readingBuddy.responses || {};
+  const responses = useMemo(() => readingBuddy.responses || {}, [readingBuddy.responses]);
   const welcomeMessage = readingBuddy.intro;
   const inputPlaceholder = readingBuddy.inputPlaceholder;
   const [isOpen, setIsOpen] = useState(false);
@@ -129,7 +129,7 @@ export default function ReadingBuddy({ onStartTutorial }: ReadingBuddyProps) {
         speak(response);
       }
     }, 1000);
-  }, [cancel, stopListening, autoSpeak, ttsSupported, speak]);
+  }, [cancel, stopListening, autoSpeak, ttsSupported, speak, responses]);
 
   const handleGuidedTour = () => {
     cancel();
@@ -185,7 +185,7 @@ export default function ReadingBuddy({ onStartTutorial }: ReadingBuddyProps) {
         speak(response);
       }
     }, 1000);
-  }, [inputValue, cancel, stopListening, resetTranscript, autoSpeak, ttsSupported, speak]);
+  }, [inputValue, cancel, stopListening, resetTranscript, autoSpeak, ttsSupported, speak, responses]);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {

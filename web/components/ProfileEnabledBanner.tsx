@@ -10,7 +10,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { CheckCircle2, UserPlus, X } from 'lucide-react'
@@ -18,14 +17,12 @@ import { hasAnyLearnerProfile, getActiveProfile } from '@/lib/onboarding/deviceP
 import { PinEntryDialog } from '@/components/security/PinEntryDialog'
 import { PinResetDialog } from '@/components/security/PinResetDialog'
 import { isPinSet } from '@/lib/security/devicePinStore'
-import { toast } from 'sonner'
 
 export function ProfileEnabledBanner() {
   const [mounted, setMounted] = useState(false)
   const [isDismissed, setIsDismissed] = useState(false)
   const [showPinDialog, setShowPinDialog] = useState(false)
   const [showPinResetDialog, setShowPinResetDialog] = useState(false)
-  const [isUnlocked, setIsUnlocked] = useState(false)
   const [activeProfileName, setActiveProfileName] = useState<string | null>(null)
   
   useEffect(() => {
@@ -60,7 +57,6 @@ export function ProfileEnabledBanner() {
   }
   
   const handlePinUnlocked = () => {
-    setIsUnlocked(true)
     navigateToProfileCreation()
   }
   

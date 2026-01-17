@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Calendar as CalendarIcon, TrendingDown, TrendingUp } from 'lucide-react'
+import { Calendar as CalendarIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
@@ -11,7 +11,7 @@ import { useLocalStorage } from '@/hooks/use-local-storage'
 import { useAchievements } from '@/hooks/use-achievements'
 import { MoodEntry } from '@/lib/types'
 import { toast } from 'sonner'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 
 const MOODS = [
   { emoji: '😊', label: 'Happy', color: 'bg-yellow-200' },

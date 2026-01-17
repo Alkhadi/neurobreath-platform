@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { Shield, Clock, Mail, Phone, Home, Briefcase, Plus, Check, AlertCircle } from "lucide-react";
+import { Shield, Clock, Mail, Home, Briefcase, Plus, AlertCircle } from "lucide-react";
 
 interface Boundary {
   id: string;

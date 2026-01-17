@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, Target, Plus, Trash2, CheckCircle } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { Calendar, Clock, Plus, Trash2, CheckCircle } from 'lucide-react';
 
 interface PracticeSession {
   id: string;
@@ -25,8 +26,7 @@ export function PracticeScheduler() {
     duration: 15,
     activity: activities[0],
   });
-  const [dailyGoal, setDailyGoal] = useState(30); // minutes
-  const [weeklyStreak, setWeeklyStreak] = useState(0);
+  const [dailyGoal] = useState(30); // minutes
 
   useEffect(() => {
     loadSchedule();
@@ -72,6 +72,8 @@ export function PracticeScheduler() {
     .filter(s => s.completed)
     .reduce((total, s) => total + s.duration, 0);
 
+  const todaysProgress = Math.min((todaysMinutes / dailyGoal) * 100, 100);
+
   return (
     <Card>
       <CardContent className="p-6 space-y-6">
@@ -88,12 +90,7 @@ export function PracticeScheduler() {
             <span className="text-sm font-semibold">Today's Progress</span>
             <span className="text-2xl font-bold">{todaysMinutes} / {dailyGoal} min</span>
           </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4">
-            <div
-              className="bg-gradient-to-r from-purple-500 to-pink-500 h-4 rounded-full transition-all"
-              style={{ width: `${Math.min((todaysMinutes / dailyGoal) * 100, 100)}%` }}
-            />
-          </div>
+          <Progress value={todaysProgress} className="h-4" />
         </div>
 
         {/* Today's Sessions */}
@@ -139,8 +136,9 @@ export function PracticeScheduler() {
           
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-xs font-semibold">Day</label>
+              <label htmlFor="practice-day" className="text-xs font-semibold">Day</label>
               <select
+                id="practice-day"
                 value={newSession.day}
                 onChange={(e) => setNewSession({ ...newSession, day: e.target.value })}
                 className="w-full px-3 py-2 border rounded-lg text-sm"
@@ -152,8 +150,9 @@ export function PracticeScheduler() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold">Time</label>
+              <label htmlFor="practice-time" className="text-xs font-semibold">Time</label>
               <input
+                id="practice-time"
                 type="time"
                 value={newSession.time}
                 onChange={(e) => setNewSession({ ...newSession, time: e.target.value })}
@@ -162,8 +161,9 @@ export function PracticeScheduler() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold">Duration (min)</label>
+              <label htmlFor="practice-duration" className="text-xs font-semibold">Duration (min)</label>
               <input
+                id="practice-duration"
                 type="number"
                 min="5"
                 max="60"
@@ -175,8 +175,9 @@ export function PracticeScheduler() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold">Activity</label>
+              <label htmlFor="practice-activity" className="text-xs font-semibold">Activity</label>
               <select
+                id="practice-activity"
                 value={newSession.activity}
                 onChange={(e) => setNewSession({ ...newSession, activity: e.target.value })}
                 className="w-full px-3 py-2 border rounded-lg text-sm"

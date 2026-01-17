@@ -8,6 +8,11 @@ import { ContactCapture } from "./components/contact-capture";
 import { ShareButtons } from "./components/share-buttons";
 import { FaEdit, FaPlus, FaUsers, FaChevronDown, FaEnvelope, FaPhone, FaMapMarkerAlt, FaDownload } from "react-icons/fa";
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
+}
+
 export default function ContactPage() {
   const [mounted, setMounted] = useState(false);
   const [profiles, setProfiles] = useState<Profile[]>([defaultProfile]);
@@ -17,7 +22,7 @@ export default function ContactPage() {
   const [editingProfile, setEditingProfile] = useState<Profile | null>(null);
   const [isNewProfile, setIsNewProfile] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallButton, setShowInstallButton] = useState(false);
 
   // Load data from localStorage
@@ -46,7 +51,7 @@ export default function ContactPage() {
     // PWA Install Prompt
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
-      setDeferredPrompt(e);
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
       setShowInstallButton(true);
     };
 

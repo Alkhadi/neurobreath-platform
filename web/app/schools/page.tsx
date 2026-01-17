@@ -1,6 +1,6 @@
 'use client'
 
-import { GraduationCap, BookOpen, Download, Users, Brain, Heart, Wind, Sparkles, ChevronDown, AlertCircle, FileText, Video, Lightbulb, Target, ClipboardList } from 'lucide-react'
+import { GraduationCap, BookOpen, Download, Users, Brain, Heart, Wind, Sparkles, ChevronDown, AlertCircle, FileText, Video, Lightbulb, Target } from 'lucide-react'
 import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'

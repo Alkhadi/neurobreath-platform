@@ -218,7 +218,7 @@ export function LearningGames() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | 'all'>('all');
   const [selectedType, setSelectedType] = useState<GameType | 'all'>('all');
   const [activeGame, setActiveGame] = useState<string | null>(null);
-  const { incrementGameCompleted, addBadgeEarned } = useProgress();
+  const { incrementGameCompleted } = useProgress();
 
   const filteredGames = games.filter(game => {
     const difficultyMatch = selectedDifficulty === 'all' || game.difficulty === selectedDifficulty;

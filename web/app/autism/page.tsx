@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Brain, Heart, BookOpen, Lightbulb, TrendingUp, Shield, MessageCircle, AlertCircle } from 'lucide-react';
 import { HowToUse } from '@/components/autism/how-to-use';
 import { SkillsLibraryEnhanced } from '@/components/autism/skills-library-enhanced';
@@ -16,7 +16,6 @@ import { MythsFacts } from '@/components/autism/myths-facts';
 import { EvidenceHub } from '@/components/autism/evidence-hub';
 import { initializeMilestones } from '@/lib/progress-store-enhanced';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { EvidenceFooter } from '@/components/evidence-footer';
 import { evidenceByRoute } from '@/lib/evidence/page-evidence';
 import { EducationalDisclaimerInline } from '@/components/trust/EducationalDisclaimerInline';
@@ -51,8 +50,6 @@ export default function AutismHubPage() {
     
     // Clear any hash from URL to prevent auto-scrolling
     if (window.location.hash) {
-      // Store the hash for potential later use
-      const hash = window.location.hash;
       // Remove hash from URL without triggering navigation
       window.history.replaceState(null, '', window.location.pathname + window.location.search);
     }

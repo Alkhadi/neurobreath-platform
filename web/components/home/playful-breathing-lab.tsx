@@ -41,7 +41,7 @@ export default function PlayfulBreathingLab() {
   const [currentRung, setCurrentRung] = useState(0);
   const [isClimbing, setIsClimbing] = useState(false);
   const [breathPhase, setBreathPhase] = useState<"inhale" | "hold" | "exhale" | "rest">("inhale");
-  const [phaseTimer, setPhaseTimer] = useState(0);
+  const [, setPhaseTimer] = useState(0);
   const [cyclesCompleted, setCyclesCompleted] = useState(0);
   const [voiceCoachEnabled, setVoiceCoachEnabled] = useState(true);
   

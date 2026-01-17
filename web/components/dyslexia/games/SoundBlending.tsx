@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Volume2, CheckCircle, XCircle, RefreshCw, Trophy, Play } from 'lucide-react';
+import { CheckCircle, XCircle, RefreshCw, Trophy, Play } from 'lucide-react';
 import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS';
 import { useProgress } from '@/contexts/ProgressContext';
 

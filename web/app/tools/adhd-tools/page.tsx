@@ -1,14 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   Zap, Timer, Brain, Target, BookOpen, Heart,
-  Rocket, Star, Users, Download, Play, Pause,
+  Rocket, Star, Users, Download, Play,
   CheckCircle2, AlertCircle, Trophy, Sparkles,
   Clock, Focus, ListChecks, FlameIcon
 } from 'lucide-react';

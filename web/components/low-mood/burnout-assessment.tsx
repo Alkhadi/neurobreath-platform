@@ -171,7 +171,6 @@ export function BurnoutAssessment() {
 
   if (showResults) {
     const scores = calculateScores();
-    const latestResult = assessmentHistory[assessmentHistory.length - 1];
 
     return (
       <Card className="w-full">

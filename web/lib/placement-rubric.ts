@@ -7,7 +7,7 @@
  * NOT a diagnostic tool - training placement only.
  */
 
-import type { ReadingProfile, SkillScore, ConfidenceLevel } from './reading-profile'
+import type { ReadingProfile, ConfidenceLevel } from './reading-profile'
 import { 
   NBLevel, 
   NB_LEVELS, 
@@ -317,7 +317,6 @@ function generateRecommendedFocus(
   }
   
   // Age-specific recommendations
-  const groupConfig = LEARNER_GROUPS[learnerGroup]
   if (learnerGroup === 'adult' && focus.length === 0) {
     focus.push('Practical reading applications')
   }
@@ -344,7 +343,7 @@ interface ExplanationParams {
 }
 
 function generatePlacementExplanation(params: ExplanationParams): string {
-  const { level, skillLevels, limitingSkills, wasAnchored, learnerGroup } = params
+  const { level, limitingSkills, wasAnchored, learnerGroup } = params
   const levelConfig = NB_LEVELS[level]
   const groupConfig = LEARNER_GROUPS[learnerGroup]
   
