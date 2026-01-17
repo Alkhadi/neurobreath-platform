@@ -1,0 +1,22 @@
+{
+  "markdownlint.config": {
+    "default": true,
+    "MD013": false,
+    "MD022": false,
+    "MD024": false,
+    "MD026": false,
+    "MD031": false,
+    "MD032": false,
+    "MD033": false,
+    "MD036": false,
+    "MD040": false,
+    "MD041": false,
+    "MD050": false
+  },
+  "markdownlint.ignore": [
+    "web/QA_VISUAL_REGRESSION.md",
+    "web/PERFORMANCE_BUDGETS.md",
+    "web/PERF_AUTOPLAN.md",
+    "web/QA_PERF_IMPLEMENTATION_SUMMARY.md"
+  ]
+}
