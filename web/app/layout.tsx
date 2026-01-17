@@ -12,6 +12,7 @@ import { JsonLd } from '@/components/seo/json-ld';
 import { generateOrganizationSchema, generateWebSiteSchema, generateWebPageSchema, generateBreadcrumbsFromPath, generateBreadcrumbSchema } from '@/lib/seo/schema';
 import { SITE_CONFIG, generateCanonicalUrl } from '@/lib/seo/site-seo';
 import { getRouteMetadata, getRouteSeoConfig } from '@/lib/seo/route-metadata';
+import { getLocaleForRegion, getRegionFromPath } from '@/lib/region/region';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
@@ -26,11 +27,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const pathname = headers().get('x-pathname') || '/';
+  const region = getRegionFromPath(pathname);
+  const { language } = getLocaleForRegion(region);
   const seoConfig = getRouteSeoConfig(pathname);
 
   // Generate global structured data
   const organizationSchema = generateOrganizationSchema();
-  const websiteSchema = generateWebSiteSchema();
+  const websiteSchema = generateWebSiteSchema(language);
   const pageUrl = generateCanonicalUrl(pathname);
   const pageImage = (seoConfig?.image || SITE_CONFIG.defaultOGImage);
   const pageImageUrl = pageImage.startsWith('http') ? pageImage : `${SITE_CONFIG.canonicalBase}${pageImage}`;
@@ -40,6 +43,7 @@ export default function RootLayout({
         name: seoConfig.title,
         description: seoConfig.description,
         image: pageImageUrl,
+        languageOverride: language,
       })
     : null;
   const breadcrumbSchema = generateBreadcrumbSchema(generateBreadcrumbsFromPath(pathname));
@@ -48,7 +52,7 @@ export default function RootLayout({
     : [organizationSchema, websiteSchema, breadcrumbSchema];
 
   return (
-    <html lang="en-GB" suppressHydrationWarning className="overflow-x-hidden">
+    <html lang={language} suppressHydrationWarning className="overflow-x-hidden">
       <head>
         <JsonLd data={schemaGraph} />
       </head>

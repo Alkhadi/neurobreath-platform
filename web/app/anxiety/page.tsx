@@ -13,7 +13,8 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { EvidenceFooter, ANXIETY_EVIDENCE_SOURCES } from '@/components/evidence-footer'
+import { EvidenceFooter } from '@/components/evidence-footer'
+import { evidenceByRoute } from '@/lib/evidence/page-evidence'
 import { Metadata } from 'next'
 import { generatePageMetadata } from '@/lib/seo/metadata'
 import { JsonLd } from '@/components/seo/json-ld'
@@ -40,6 +41,8 @@ export const metadata: Metadata = generatePageMetadata({
     'anxiety relief',
   ],
 })
+
+export const evidence = evidenceByRoute['/anxiety']
 
 export default function AnxietyPage() {
   // Generate structured data
@@ -551,7 +554,7 @@ export default function AnxietyPage() {
       {/* Evidence Sources */}
       <section className="py-12 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <EvidenceFooter sources={ANXIETY_EVIDENCE_SOURCES} />
+          <EvidenceFooter evidence={evidence} />
         </div>
       </section>
     </main>

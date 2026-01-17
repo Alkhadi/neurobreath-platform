@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { RegionSwitcher } from '@/components/trust/RegionSwitcher'
 
 export function SiteFooter() {
   const [currentYear, setCurrentYear] = useState(2025)
@@ -130,6 +131,22 @@ export function SiteFooter() {
                 </p>
               </div>
             </details>
+            <details className="ft-group">
+              <summary>Trust &amp; Safety <span aria-hidden="true">▾</span></summary>
+              <div className="links">
+                <p>
+                  <Link href="/trust">Trust Centre</Link> ·{' '}
+                  <Link href="/trust/disclaimer">Disclaimer</Link> ·{' '}
+                  <Link href="/trust/evidence-policy">Evidence Policy</Link>
+                </p>
+                <p>
+                  <Link href="/trust/accessibility">Accessibility</Link> ·{' '}
+                  <Link href="/trust/privacy">Privacy</Link> ·{' '}
+                  <Link href="/trust/terms">Terms</Link> ·{' '}
+                  <Link href="/trust/contact">Report a concern</Link>
+                </p>
+              </div>
+            </details>
           </nav>
         </div>
       </div>
@@ -141,6 +158,9 @@ export function SiteFooter() {
               <strong>Educational information only.</strong> Not medical advice. NeuroBreath is a free resource. ©{' '}
               <time dateTime={currentYear.toString()} id="yearFooter">{currentYear}</time> NeuroBreath. All rights reserved.
             </p>
+            <div className="mt-3">
+              <RegionSwitcher />
+            </div>
           </div>
           <button 
             type="button" 

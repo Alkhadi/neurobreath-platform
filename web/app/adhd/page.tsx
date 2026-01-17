@@ -14,7 +14,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Heart, Rocket, Zap, Star, BookOpen, Users } from 'lucide-react';
-import { EvidenceFooter, ADHD_EVIDENCE_SOURCES } from '@/components/evidence-footer';
+import { EvidenceFooter } from '@/components/evidence-footer';
+import { evidenceByRoute } from '@/lib/evidence/page-evidence';
+import { EducationalDisclaimerInline } from '@/components/trust/EducationalDisclaimerInline';
+
+export const evidence = evidenceByRoute['/adhd'];
 
 export default function HomePage() {
   // Initialize milestones on first load
@@ -28,6 +32,9 @@ export default function HomePage() {
       <section className="py-6 sm:py-8 scroll-mt-20">
         <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <ADHDHero />
+          <div className="mt-4">
+            <EducationalDisclaimerInline contextLabel="ADHD hub" />
+          </div>
         </div>
       </section>
 
@@ -185,7 +192,7 @@ export default function HomePage() {
       {/* Evidence Sources */}
       <section className="py-12 sm:py-16 bg-white dark:bg-gray-900">
         <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
-          <EvidenceFooter sources={ADHD_EVIDENCE_SOURCES} />
+          <EvidenceFooter evidence={evidence} />
         </div>
       </section>
     </main>

@@ -13,9 +13,12 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { EvidenceFooter, ANXIETY_EVIDENCE_SOURCES } from '@/components/evidence-footer'
+import { EvidenceFooter } from '@/components/evidence-footer'
+import { evidenceByRoute } from '@/lib/evidence/page-evidence'
 
 export const dynamic = 'force-static'
+
+export const evidence = evidenceByRoute['/conditions/anxiety']
 
 export default function ConditionsAnxietyPage() {
   return (
@@ -512,7 +515,7 @@ export default function ConditionsAnxietyPage() {
       {/* Evidence Sources */}
       <section className="py-12 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <EvidenceFooter sources={ANXIETY_EVIDENCE_SOURCES} />
+          <EvidenceFooter evidence={evidence} />
         </div>
       </section>    </main>
   )

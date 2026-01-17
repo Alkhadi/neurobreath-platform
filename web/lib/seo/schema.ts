@@ -29,7 +29,7 @@ export function generateOrganizationSchema(): WithContext<Organization> {
 /**
  * Generate WebSite schema with search action (use globally in layout)
  */
-export function generateWebSiteSchema(): WithContext<WebSite> {
+export function generateWebSiteSchema(languageOverride?: string): WithContext<WebSite> {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -42,7 +42,7 @@ export function generateWebSiteSchema(): WithContext<WebSite> {
       'query-input': 'required name=search_term_string',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any,
-    inLanguage: SITE_CONFIG.language,
+    inLanguage: languageOverride || SITE_CONFIG.language,
   };
 }
 
@@ -56,6 +56,7 @@ export function generateWebPageSchema(config: {
   datePublished?: string;
   dateModified?: string;
   image?: string;
+  languageOverride?: string;
 }): WithContext<WebPage> {
   return {
     '@context': 'https://schema.org',
@@ -67,7 +68,7 @@ export function generateWebPageSchema(config: {
       '@type': 'WebSite',
       '@id': `${SITE_CONFIG.canonicalBase}/#website`,
     },
-    inLanguage: SITE_CONFIG.language,
+    inLanguage: config.languageOverride || SITE_CONFIG.language,
     ...(config.datePublished && { datePublished: config.datePublished }),
     ...(config.dateModified && { dateModified: config.dateModified }),
     ...(config.image && { 

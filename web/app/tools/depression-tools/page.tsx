@@ -7,7 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { BehavioralActivation } from '@/app/conditions/depression/components/behavioral-activation'
 import { useState } from 'react'
-import { EvidenceFooter, DEPRESSION_EVIDENCE_SOURCES } from '@/components/evidence-footer'
+import { EvidenceFooter } from '@/components/evidence-footer'
+import { evidenceByRoute } from '@/lib/evidence/page-evidence'
 
 // Mood Tracker Component
 function MoodTracker() {
@@ -302,6 +303,8 @@ function CrisisResources() {
     </div>
   )
 }
+
+export const evidence = evidenceByRoute['/tools/depression-tools']
 
 export default function DepressionToolsPage() {
   return (
@@ -818,7 +821,7 @@ export default function DepressionToolsPage() {
       {/* Evidence Sources */}
       <section className="py-12 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <EvidenceFooter sources={DEPRESSION_EVIDENCE_SOURCES} />
+          <EvidenceFooter evidence={evidence} />
         </div>
       </section>
     </main>

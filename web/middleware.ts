@@ -1,6 +1,27 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
+const REGION_COOKIE = 'nb_region'
+const EXCLUDED_PREFIXES = ['/api', '/_next', '/favicon', '/robots', '/sitemap', '/assets', '/images']
+
+const isExcluded = (pathname: string) =>
+  EXCLUDED_PREFIXES.some(prefix => pathname.startsWith(prefix))
+
+const detectRegion = (request: NextRequest): 'uk' | 'us' => {
+  const cookieRegion = request.cookies.get(REGION_COOKIE)?.value?.toLowerCase()
+  if (cookieRegion === 'us' || cookieRegion === 'uk') return cookieRegion
+
+  const vercelCountry = request.headers.get('x-vercel-ip-country')?.toUpperCase()
+  const cfCountry = request.headers.get('cf-ipcountry')?.toUpperCase()
+  const country = vercelCountry || cfCountry
+  if (country === 'US') return 'us'
+
+  const acceptLanguage = request.headers.get('accept-language') || ''
+  if (acceptLanguage.toLowerCase().includes('en-us')) return 'us'
+
+  return 'uk'
+}
+
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
@@ -11,6 +32,18 @@ export function middleware(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = '/layout.css'
     return NextResponse.rewrite(url)
+  }
+
+  if (!isExcluded(pathname) && !pathname.startsWith('/uk') && !pathname.startsWith('/us')) {
+    const isLocalizedSection = pathname === '/' || pathname.startsWith('/trust') || pathname.startsWith('/guides')
+    if (isLocalizedSection) {
+      const region = detectRegion(request)
+      const redirectUrl = request.nextUrl.clone()
+      redirectUrl.pathname = `/${region}${pathname === '/' ? '' : pathname}`
+      const response = NextResponse.redirect(redirectUrl)
+      response.headers.set('Vary', 'Accept-Language, Cookie')
+      return response
+    }
   }
 
   // Add pathname to headers for server components (OnboardingCardWrapper)

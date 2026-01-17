@@ -24,7 +24,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { GraduationCap } from 'lucide-react';
-import { EvidenceFooter, DYSLEXIA_EVIDENCE_SOURCES } from '@/components/evidence-footer';
+import { EvidenceFooter } from '@/components/evidence-footer';
+import { evidenceByRoute } from '@/lib/evidence/page-evidence';
 // New Evidence-Based Components
 import { RhythmTraining } from '@/components/RhythmTraining';
 import { RapidNamingTest } from '@/components/RapidNamingTest';
@@ -35,6 +36,8 @@ import { DownloadableResources } from '@/components/DownloadableResources';
 import { AssessmentHistory } from '@/components/AssessmentHistory';
 
 type TrainingApproach = 'focused' | 'direct' | 'fluency';
+
+export const evidence = evidenceByRoute['/dyslexia-reading-training'];
 
 export default function DyslexiaReadingTrainingPage() {
   const [sessionModalOpen, setSessionModalOpen] = useState(false);
@@ -516,7 +519,7 @@ export default function DyslexiaReadingTrainingPage() {
 
         {/* Evidence Sources */}
         <div className="py-12">
-          <EvidenceFooter sources={DYSLEXIA_EVIDENCE_SOURCES} />
+          <EvidenceFooter evidence={evidence} />
         </div>
       </ProgressProvider>
     </ReadingLevelProvider>

@@ -1,11 +1,14 @@
 import { loadLegacyHtml } from '@/lib/legacy/loadLegacyHtml';
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { EducationalDisclaimerInline } from '@/components/trust/EducationalDisclaimerInline';
 
 interface LegacyHtmlPageProps {
   source: string;
   title: string;
   description?: string;
+  showEducationalDisclaimer?: boolean;
+  disclaimerLabel?: string;
 }
 
 /**
@@ -14,6 +17,8 @@ interface LegacyHtmlPageProps {
  */
 export default async function LegacyHtmlPage({
   source,
+  showEducationalDisclaimer = false,
+  disclaimerLabel,
 }: LegacyHtmlPageProps) {
   try {
     const html = await loadLegacyHtml(source);
@@ -22,6 +27,12 @@ export default async function LegacyHtmlPage({
       <main className="legacy-html-page">
         {/* Render the sanitized legacy HTML */}
         <div dangerouslySetInnerHTML={{ __html: html }} />
+
+        {showEducationalDisclaimer ? (
+          <div className="mx-auto w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1100px] py-6">
+            <EducationalDisclaimerInline contextLabel={disclaimerLabel} />
+          </div>
+        ) : null}
         
         {/* Add a subtle watermark for debugging */}
         {process.env.NODE_ENV === 'development' && (

@@ -4,7 +4,10 @@ import { Wind, Heart, Brain, Target, Zap, Moon, Play, BookOpen, Download, Chevro
 import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { EvidenceFooter, BREATHING_EVIDENCE_SOURCES } from '@/components/evidence-footer'
+import { EvidenceFooter } from '@/components/evidence-footer'
+import { evidenceByRoute } from '@/lib/evidence/page-evidence'
+
+export const evidence = evidenceByRoute['/breathing']
 
 export default function BreathingExercisesPage() {
   return (
@@ -481,7 +484,7 @@ export default function BreathingExercisesPage() {
       {/* Evidence Sources */}
       <section className="py-12 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <EvidenceFooter sources={BREATHING_EVIDENCE_SOURCES} />
+          <EvidenceFooter evidence={evidence} />
         </div>
       </section>
     </main>

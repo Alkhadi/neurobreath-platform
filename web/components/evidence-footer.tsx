@@ -1,36 +1,24 @@
 'use client'
 
-import { ExternalLink } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-
-export interface EvidenceSource {
-  title: string
-  url: string
-  description: string
-  type: 'clinical_guideline' | 'government_health' | 'research' | 'systematic_review'
-}
+import { Citations } from '@/components/evidence/Citations'
+import { LastReviewed } from '@/components/evidence/LastReviewed'
+import { getCitationsForRegion } from '@/lib/evidence/getCitationsForRegion'
+import type { EvidenceManifest } from '@/lib/evidence/types'
+import { getRegionFromPath } from '@/lib/region/region'
 
 interface EvidenceFooterProps {
-  sources: EvidenceSource[]
+  evidence: EvidenceManifest
   className?: string
 }
 
-export function EvidenceFooter({ sources, className = '' }: EvidenceFooterProps) {
-  if (sources.length === 0) return null
+export function EvidenceFooter({ evidence, className = '' }: EvidenceFooterProps) {
+  const pathname = usePathname() || '/'
+  const region = getRegionFromPath(pathname)
+  const sources = getCitationsForRegion(evidence, region)
 
-  const groupedSources = {
-    clinical_guideline: sources.filter(s => s.type === 'clinical_guideline'),
-    government_health: sources.filter(s => s.type === 'government_health'),
-    research: sources.filter(s => s.type === 'research'),
-    systematic_review: sources.filter(s => s.type === 'systematic_review')
-  }
-
-  const typeLabels = {
-    clinical_guideline: 'Clinical Guidelines',
-    government_health: 'Government Health Resources',
-    research: 'Peer-Reviewed Research',
-    systematic_review: 'Systematic Reviews & Meta-Analyses'
-  }
+  if (!sources.length) return null
 
   return (
     <Card className={`mt-12 border-muted bg-muted/20 ${className}`}>
@@ -40,66 +28,24 @@ export function EvidenceFooter({ sources, className = '' }: EvidenceFooterProps)
           <span>Evidence Sources</span>
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          All guidance on this page is informed by credible evidence-based sources. 
-          We cite sources by name in the content above, and provide full references here for transparency and verification.
+          Evidence sources are listed for transparency. You can copy references without leaving the page.
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
-        {Object.entries(groupedSources).map(([type, typeSources]) => {
-          if (typeSources.length === 0) return null
-          
-          return (
-            <div key={type}>
-              <h4 className="font-semibold text-sm text-foreground/80 mb-3">
-                {typeLabels[type as keyof typeof typeLabels]}
-              </h4>
-              <ul className="space-y-3">
-                {typeSources.map((source, i) => (
-                  <li key={i} className="text-sm pl-4 border-l-2 border-primary/20">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1">
-                        <strong className="text-foreground">{source.title}</strong>
-                        <p className="text-muted-foreground mt-1">{source.description}</p>
-                      </div>
-                      <a
-                        href={source.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-xs text-primary hover:underline whitespace-nowrap mt-1 transition-colors"
-                        aria-label={`View ${source.title} (opens in new tab)`}
-                      >
-                        <span>View source</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )
-        })}
-
-        <div className="pt-4 border-t border-muted">
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            <strong>Transparency Note:</strong> These external links are provided for transparency and independent verification. 
-            You can explore our tools and strategies without needing to visit these sources—we've synthesized the evidence 
-            into practical, actionable guidance. However, if you'd like to verify claims, review the original research, 
-            or explore guidelines in depth, these references are here for you.
+        <LastReviewed reviewedAt={evidence.reviewedAt} reviewIntervalDays={evidence.reviewIntervalDays} />
+        <Citations sources={sources} />
+        {evidence.notes ? (
+          <p className="text-xs text-muted-foreground">
+            {evidence.notes}
           </p>
-          <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-            <strong>Medical Disclaimer:</strong> This platform provides educational information based on credible evidence sources. 
-            It is not a substitute for professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare 
-            professionals (GP, paediatrician, SENCO, licensed clinician) for personalized medical guidance. 
-            In emergencies, call 999 (UK) / 911 (US) or use NHS 111 / 988 Lifeline.
-          </p>
-        </div>
+        ) : null}
       </CardContent>
     </Card>
   )
 }
 
 // Preset source collections for common pages
-export const ADHD_EVIDENCE_SOURCES: EvidenceSource[] = [
+export const ADHD_EVIDENCE_SOURCES = [
   {
     title: 'NICE NG87 (2018)',
     url: 'https://www.nice.org.uk/guidance/ng87',
@@ -126,7 +72,7 @@ export const ADHD_EVIDENCE_SOURCES: EvidenceSource[] = [
   }
 ]
 
-export const AUTISM_EVIDENCE_SOURCES: EvidenceSource[] = [
+export const AUTISM_EVIDENCE_SOURCES = [
   {
     title: 'NICE CG128',
     url: 'https://www.nice.org.uk/guidance/cg128',
@@ -153,7 +99,7 @@ export const AUTISM_EVIDENCE_SOURCES: EvidenceSource[] = [
   }
 ]
 
-export const BREATHING_EVIDENCE_SOURCES: EvidenceSource[] = [
+export const BREATHING_EVIDENCE_SOURCES = [
   {
     title: 'NHS: Breathing exercises for stress',
     url: 'https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/breathing-exercises-for-stress/',
@@ -180,7 +126,7 @@ export const BREATHING_EVIDENCE_SOURCES: EvidenceSource[] = [
   }
 ]
 
-export const ANXIETY_EVIDENCE_SOURCES: EvidenceSource[] = [
+export const ANXIETY_EVIDENCE_SOURCES = [
   {
     title: 'NICE CG113',
     url: 'https://www.nice.org.uk/guidance/cg113',
@@ -201,7 +147,7 @@ export const ANXIETY_EVIDENCE_SOURCES: EvidenceSource[] = [
   }
 ]
 
-export const DEPRESSION_EVIDENCE_SOURCES: EvidenceSource[] = [
+export const DEPRESSION_EVIDENCE_SOURCES = [
   {
     title: 'NICE NG222 (2022)',
     url: 'https://www.nice.org.uk/guidance/ng222',
@@ -228,7 +174,7 @@ export const DEPRESSION_EVIDENCE_SOURCES: EvidenceSource[] = [
   }
 ]
 
-export const SLEEP_EVIDENCE_SOURCES: EvidenceSource[] = [
+export const SLEEP_EVIDENCE_SOURCES = [
   {
     title: 'NHS: Insomnia',
     url: 'https://www.nhs.uk/conditions/insomnia/',
@@ -243,7 +189,7 @@ export const SLEEP_EVIDENCE_SOURCES: EvidenceSource[] = [
   }
 ]
 
-export const DYSLEXIA_EVIDENCE_SOURCES: EvidenceSource[] = [
+export const DYSLEXIA_EVIDENCE_SOURCES = [
   {
     title: 'NHS: Dyslexia',
     url: 'https://www.nhs.uk/conditions/dyslexia/',

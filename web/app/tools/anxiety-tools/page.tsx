@@ -16,7 +16,10 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { EvidenceFooter, ANXIETY_EVIDENCE_SOURCES } from '@/components/evidence-footer';
+import { EvidenceFooter } from '@/components/evidence-footer';
+import { evidenceByRoute } from '@/lib/evidence/page-evidence';
+
+export const evidence = evidenceByRoute['/tools/anxiety-tools'];
 
 export default function AnxietyToolsPage() {
   const [activeTab, setActiveTab] = useState('breathing');
@@ -735,7 +738,7 @@ export default function AnxietyToolsPage() {
       {/* Evidence Sources */}
       <section className="py-12 px-4 bg-white">
         <div className="mx-auto w-[86vw] max-w-[86vw]">
-          <EvidenceFooter sources={ANXIETY_EVIDENCE_SOURCES} />
+          <EvidenceFooter evidence={evidence} />
         </div>
       </section>
     </main>

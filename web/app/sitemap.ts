@@ -11,6 +11,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = SITE_CONFIG.canonicalBase;
   const currentDate = new Date().toISOString();
 
+  const trustRoutes = [
+    '/trust',
+    '/trust/disclaimer',
+    '/trust/evidence-policy',
+    '/trust/safeguarding',
+    '/trust/accessibility',
+    '/trust/privacy',
+    '/trust/terms',
+    '/trust/contact',
+  ];
+
+  const localizedRoutes = [
+    '/uk',
+    '/us',
+    '/uk/guides',
+    '/us/guides',
+    ...trustRoutes.flatMap(route => [`/uk${route}`, `/us${route}`]),
+  ];
+
   // Define all static routes with their priorities and update frequencies
   const routes: MetadataRoute.Sitemap = [
     // Homepage - highest priority
@@ -88,6 +107,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/resources`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/guides`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 0.7,
@@ -324,5 +349,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  return routes;
+  const trustEntries: MetadataRoute.Sitemap = trustRoutes.map(route => ({
+    url: `${baseUrl}${route}`,
+    lastModified: currentDate,
+    changeFrequency: 'monthly',
+    priority: 0.6,
+  }));
+
+  const localizedEntries: MetadataRoute.Sitemap = localizedRoutes.map(route => ({
+    url: `${baseUrl}${route}`,
+    lastModified: currentDate,
+    changeFrequency: 'monthly',
+    priority: 0.6,
+  }));
+
+  return [...routes, ...trustEntries, ...localizedEntries];
 }

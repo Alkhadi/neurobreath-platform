@@ -17,7 +17,11 @@ import { EvidenceHub } from '@/components/autism/evidence-hub';
 import { initializeMilestones } from '@/lib/progress-store-enhanced';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { EvidenceFooter, AUTISM_EVIDENCE_SOURCES } from '@/components/evidence-footer';
+import { EvidenceFooter } from '@/components/evidence-footer';
+import { evidenceByRoute } from '@/lib/evidence/page-evidence';
+import { EducationalDisclaimerInline } from '@/components/trust/EducationalDisclaimerInline';
+
+export const evidence = evidenceByRoute['/autism'];
 
 export default function AutismHubPage() {
   const [updateTrigger, setUpdateTrigger] = useState(0);
@@ -81,6 +85,10 @@ export default function AutismHubPage() {
               <p className="text-lg sm:text-xl md:text-2xl max-w-3xl mx-auto opacity-95 leading-relaxed">
                 Evidence-based autism support with tools, strategies, and resources for all ages
               </p>
+
+              <div className="max-w-3xl mx-auto">
+                <EducationalDisclaimerInline contextLabel="Autism hub" variant="compact" className="bg-white/10 text-white border-white/30" />
+              </div>
               
               {/* Research Badge */}
               <p className="text-sm md:text-base opacity-80 max-w-2xl mx-auto">
@@ -343,7 +351,7 @@ export default function AutismHubPage() {
       {/* Evidence Sources */}
       <section className="py-12 sm:py-16 bg-white dark:bg-gray-900">
         <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
-          <EvidenceFooter sources={AUTISM_EVIDENCE_SOURCES} />
+          <EvidenceFooter evidence={evidence} />
         </div>
       </section>
     </main>

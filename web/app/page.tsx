@@ -10,17 +10,11 @@ import ToolsSection from '@/components/home/tools-section'
 import SafetySupportSection from '@/components/home/safety-support-section'
 import OrganisationsSection from '@/components/home/organisations-section'
 import { EvidenceFooter } from '@/components/evidence-footer'
-import { ADHD_EVIDENCE_SOURCES, AUTISM_EVIDENCE_SOURCES, BREATHING_EVIDENCE_SOURCES, ANXIETY_EVIDENCE_SOURCES } from '@/components/evidence-footer'
+import { evidenceByRoute } from '@/lib/evidence/page-evidence'
+
+export const evidence = evidenceByRoute['/']
 
 export default function HomePage() {
-  // Combine evidence sources
-  const allSources = [
-    ...ADHD_EVIDENCE_SOURCES,
-    ...AUTISM_EVIDENCE_SOURCES,
-    ...BREATHING_EVIDENCE_SOURCES,
-    ...ANXIETY_EVIDENCE_SOURCES
-  ];
-
   return (
     <div className="min-h-screen">
       {/* Hero - Full width */}
@@ -53,7 +47,7 @@ export default function HomePage() {
         <OrganisationsSection />
         
         {/* Evidence Sources */}
-        <EvidenceFooter sources={allSources} className="mt-16" />
+        <EvidenceFooter evidence={evidence} className="mt-16" />
       </div>
     </div>
   )

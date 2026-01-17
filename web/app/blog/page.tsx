@@ -2,7 +2,8 @@
 
 import { Suspense } from 'react'
 import dynamic from 'next/dynamic'
-import { EvidenceFooter, ADHD_EVIDENCE_SOURCES, AUTISM_EVIDENCE_SOURCES, BREATHING_EVIDENCE_SOURCES } from '@/components/evidence-footer'
+import { EvidenceFooter } from '@/components/evidence-footer'
+import { evidenceByRoute } from '@/lib/evidence/page-evidence'
 
 // Import components with dynamic loading for better error isolation
 const HeroSection = dynamic(() => import('@/components/blog/hero-section'), {
@@ -37,13 +38,9 @@ const SourcesSection = dynamic(() => import('@/components/blog/sources-section')
   loading: () => <div className="p-8 bg-card rounded-lg">Loading Sources...</div>
 })
 
+export const evidence = evidenceByRoute['/blog']
+
 export default function BlogPage() {
-  // Combine evidence sources
-  const allSources = [
-    ...ADHD_EVIDENCE_SOURCES,
-    ...AUTISM_EVIDENCE_SOURCES,
-    ...BREATHING_EVIDENCE_SOURCES
-  ];
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
       {/* Hero / Positioning */}
@@ -97,7 +94,7 @@ export default function BlogPage() {
       </Suspense>
 
       {/* Evidence Sources */}
-      <EvidenceFooter sources={allSources} />
+      <EvidenceFooter evidence={evidence} />
     </div>
   )
 }

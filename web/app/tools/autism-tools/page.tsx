@@ -25,7 +25,11 @@ import { CrisisSupport } from '@/components/autism/crisis-support';
 import { MythsFacts } from '@/components/autism/myths-facts';
 import { EvidenceHub } from '@/components/autism/evidence-hub';
 import { initializeMilestones } from '@/lib/progress-store-enhanced';
-import { EvidenceFooter, AUTISM_EVIDENCE_SOURCES } from '@/components/evidence-footer';
+import { EvidenceFooter } from '@/components/evidence-footer';
+import { evidenceByRoute } from '@/lib/evidence/page-evidence';
+import { EducationalDisclaimerInline } from '@/components/trust/EducationalDisclaimerInline';
+
+export const evidence = evidenceByRoute['/tools/autism-tools'];
 
 export default function AutismToolsPage() {
   const [updateTrigger, setUpdateTrigger] = useState(0);
@@ -78,6 +82,9 @@ export default function AutismToolsPage() {
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
             Autism Tools & Support Hub
           </h1>
+          <div className="max-w-2xl mx-auto">
+            <EducationalDisclaimerInline contextLabel="Autism tools" variant="compact" className="bg-white/10 text-white border-white/30" />
+          </div>
           
           <p className="text-xl md:text-2xl max-w-3xl mx-auto opacity-90 leading-relaxed">
             Neuro-inclusive breathing, regulation, communication supports, and daily living tools. Everything designed with sensory processing and predictability in mind.
@@ -729,7 +736,7 @@ export default function AutismToolsPage() {
       {/* Evidence Sources */}
       <section className="py-16 bg-white dark:bg-gray-900">
         <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
-          <EvidenceFooter sources={AUTISM_EVIDENCE_SOURCES} />
+          <EvidenceFooter evidence={evidence} />
         </div>
       </section>
 

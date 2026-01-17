@@ -24,7 +24,10 @@
     "seo:routes": "node scripts/seo/route-inventory.mjs",
     "seo:scan": "node scripts/seo/route-scan.mjs",
     "seo:audit": "npm run seo:routes && npm run seo:scan",
-    "seo:guard": "npm run seo:scan"
+    "seo:guard": "npm run seo:scan",
+    "evidence:audit": "tsx scripts/evidence/evidence-audit.ts",
+    "content:localisation-audit": "tsx scripts/content/localisation-audit.ts",
+    "trust:check": "node scripts/trust/trust-check.mjs"
   },
   "devDependencies": {
     "@next/swc-wasm-nodejs": "13.5.1",

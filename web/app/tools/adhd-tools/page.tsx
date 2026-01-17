@@ -19,7 +19,11 @@ import { ADHDMythsFacts } from '@/components/adhd/adhd-myths-facts';
 import { TreatmentDecisionTree } from '@/components/adhd/treatment-decision-tree';
 import { PubMedResearch } from '@/components/autism/pubmed-research';
 import { CrisisSupport } from '@/components/autism/crisis-support';
-import { EvidenceFooter, ADHD_EVIDENCE_SOURCES } from '@/components/evidence-footer';
+import { EvidenceFooter } from '@/components/evidence-footer';
+import { evidenceByRoute } from '@/lib/evidence/page-evidence';
+import { EducationalDisclaimerInline } from '@/components/trust/EducationalDisclaimerInline';
+
+export const evidence = evidenceByRoute['/tools/adhd-tools'];
 
 export default function ADHDToolsPage() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -38,6 +42,9 @@ export default function ADHDToolsPage() {
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
             ADHD Tools & Focus Hub
           </h1>
+          <div className="max-w-2xl mx-auto">
+            <EducationalDisclaimerInline contextLabel="ADHD tools" variant="compact" className="bg-white/10 text-white border-white/30" />
+          </div>
           
           <p className="text-xl md:text-2xl max-w-3xl mx-auto opacity-90 leading-relaxed">
             Curated bundles, breathing resets, focus routines, and interactive games to help you plan work, protect energy, and build supportive habits.
@@ -609,7 +616,7 @@ export default function ADHDToolsPage() {
       {/* Evidence Sources */}
       <section className="py-16 bg-white dark:bg-gray-900">
         <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
-          <EvidenceFooter sources={ADHD_EVIDENCE_SOURCES} />
+          <EvidenceFooter evidence={evidence} />
         </div>
       </section>
 

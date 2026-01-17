@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { generatePageMetadata } from './metadata';
 import type { PageMetadataConfig } from './metadata';
-import { DEFAULT_METADATA, SITE_CONFIG } from './site-seo';
+import { DEFAULT_METADATA, SITE_CONFIG, generateCanonicalUrl } from './site-seo';
+import { getRegionAlternates, getRegionFromPath, getRegionKey } from '@/lib/region/region';
 
 export interface RouteSeoConfig extends PageMetadataConfig {
   noindex?: boolean;
@@ -74,6 +75,54 @@ const ROUTE_SEO_CONFIGS: Record<string, RouteSeoConfig> = {
     description:
       'Library of evidence-based guides, templates and printable supports for ADHD, autism, dyslexia, anxiety and wellbeing in schools and at home.',
     path: '/resources',
+  },
+  '/trust': {
+    title: 'Trust Centre | NeuroBreath',
+    description:
+      'Trust, safety, and evidence standards for NeuroBreath, including safeguarding, privacy, accessibility, and contact routes.',
+    path: '/trust',
+  },
+  '/trust/disclaimer': {
+    title: 'Educational Disclaimer | NeuroBreath',
+    description:
+      'Educational disclaimer explaining what NeuroBreath can and cannot do, and how to use the platform safely.',
+    path: '/trust/disclaimer',
+  },
+  '/trust/evidence-policy': {
+    title: 'Evidence Policy | NeuroBreath',
+    description:
+      'How NeuroBreath selects, reviews, and updates evidence sources for wellbeing and neurodiversity guidance.',
+    path: '/trust/evidence-policy',
+  },
+  '/trust/safeguarding': {
+    title: 'Safeguarding Guidance | NeuroBreath',
+    description:
+      'Safeguarding guidance with reporting routes and urgent support information for UK and US users.',
+    path: '/trust/safeguarding',
+  },
+  '/trust/accessibility': {
+    title: 'Accessibility Statement | NeuroBreath',
+    description:
+      'Accessibility statement outlining our WCAG-aligned commitments, known limitations, and how to report issues.',
+    path: '/trust/accessibility',
+  },
+  '/trust/privacy': {
+    title: 'Privacy Notice (Plain Language) | NeuroBreath',
+    description:
+      'Plain-language privacy notice explaining how NeuroBreath handles data and user choices.',
+    path: '/trust/privacy',
+  },
+  '/trust/terms': {
+    title: 'Terms of Use | NeuroBreath',
+    description:
+      'Basic terms of use and acceptable use guidelines for the NeuroBreath platform.',
+    path: '/trust/terms',
+  },
+  '/trust/contact': {
+    title: 'Contact & Report Concerns | NeuroBreath',
+    description:
+      'Contact NeuroBreath for support, feedback, or to report safeguarding and content concerns.',
+    path: '/trust/contact',
   },
   '/rewards': {
     title: 'Rewards & Badges | NeuroBreath',
@@ -470,17 +519,18 @@ const ROUTE_SEO_CONFIGS: Record<string, RouteSeoConfig> = {
 };
 
 export function getRouteSeoConfig(pathname: string): RouteSeoConfig | null {
-  const exactMatch = ROUTE_SEO_CONFIGS[pathname];
+  const cleanedPath = pathname.replace(/^\/(uk|us)/, '') || '/';
+  const exactMatch = ROUTE_SEO_CONFIGS[cleanedPath];
   if (exactMatch) {
     return exactMatch;
   }
 
-  if (pathname.startsWith('/parent/')) {
+  if (cleanedPath.startsWith('/parent/')) {
     return {
       title: 'Parent View | NeuroBreath',
       description:
         'Read-only progress view for parents and carers, with secure access to session summaries, achievements and routines for the learner code provided.',
-      path: pathname,
+      path: cleanedPath,
       noindex: true,
     };
   }
@@ -489,22 +539,53 @@ export function getRouteSeoConfig(pathname: string): RouteSeoConfig | null {
 }
 
 export function getRouteMetadata(pathname: string): Metadata {
+  const region = getRegionFromPath(pathname);
+  const regionKey = getRegionKey(region);
+  const cleanedPath = pathname.replace(/^\/(uk|us)/, '') || '/';
   const config = getRouteSeoConfig(pathname);
+  const isLocalized = cleanedPath === '/' || cleanedPath.startsWith('/trust') || cleanedPath.startsWith('/guides');
+
   if (!config) {
+    const canonicalPath = `/${regionKey}${cleanedPath === '/' ? '' : cleanedPath}`;
+    const alternates = getRegionAlternates(cleanedPath);
     return {
       ...DEFAULT_METADATA,
       alternates: {
-        canonical: pathname,
+        canonical: generateCanonicalUrl(canonicalPath),
+        ...(isLocalized
+          ? {
+              languages: {
+                'en-GB': generateCanonicalUrl(alternates['en-GB']),
+                'en-US': generateCanonicalUrl(alternates['en-US']),
+              },
+            }
+          : {}),
       },
     };
   }
 
-  return generatePageMetadata({
+  const metadata = generatePageMetadata({
     title: config.title,
     description: config.description,
-    path: config.path,
+    path: `/${regionKey}${config.path === '/' ? '' : config.path}`,
     keywords: config.keywords,
     image: config.image || SITE_CONFIG.defaultOGImage,
     noindex: config.noindex,
   });
+
+  const alternates = getRegionAlternates(config.path);
+  return {
+    ...metadata,
+    alternates: {
+      canonical: metadata.alternates?.canonical || generateCanonicalUrl(`/${regionKey}${config.path}`),
+      ...(isLocalized
+        ? {
+            languages: {
+              'en-GB': generateCanonicalUrl(alternates['en-GB']),
+              'en-US': generateCanonicalUrl(alternates['en-US']),
+            },
+          }
+        : {}),
+    },
+  };
 }

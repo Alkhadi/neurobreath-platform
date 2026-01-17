@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Moon, Trophy, Target, CheckCircle, Calendar, TrendingUp, Award, Flame, Sparkles, Heart, Brain, Users, BookOpen, Lightbulb, Shield } from 'lucide-react'
-import { EvidenceFooter, SLEEP_EVIDENCE_SOURCES } from '@/components/evidence-footer'
+import { EvidenceFooter } from '@/components/evidence-footer'
+import { evidenceByRoute } from '@/lib/evidence/page-evidence'
 
 // Types
 interface SleepEntry {
@@ -157,6 +158,8 @@ const initialChecklist: ChecklistItem[] = [
   { id: 'c9', text: 'Use bed only for sleep', completed: false, category: 'environment' },
   { id: 'c10', text: 'Write down worries before bed', completed: false, category: 'routine' },
 ]
+
+export const evidence = evidenceByRoute['/sleep']
 
 export default function SleepPage() {
   // State
@@ -1277,7 +1280,7 @@ export default function SleepPage() {
 
       {/* Evidence Sources */}
       <div className="max-w-7xl mx-auto px-4 py-12">
-        <EvidenceFooter sources={SLEEP_EVIDENCE_SOURCES} />
+        <EvidenceFooter evidence={evidence} />
       </div>
     </div>
   )

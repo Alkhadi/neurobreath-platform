@@ -1,0 +1,213 @@
+{
+  "generatedAt": "2026-01-17T00:21:38.307Z",
+  "results": [
+    {
+      "route": "/adhd",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 90,
+      "citations": [
+        "nice_ng87",
+        "nhs_adhd",
+        "pubmed_31411903",
+        "pubmed_10517495"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/autism",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 120,
+      "citations": [
+        "nice_cg128",
+        "nice_cg142",
+        "nhs_autism",
+        "pubmed_28545751"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/breathing",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 90,
+      "citations": [
+        "nhs_breathing_stress",
+        "pubmed_29616846",
+        "pubmed_28974862",
+        "pubmed_11744522"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/anxiety",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 90,
+      "citations": [
+        "nice_cg113",
+        "nhs_gad",
+        "pubmed_30301513"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/sleep",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 120,
+      "citations": [
+        "nhs_insomnia",
+        "pubmed_26447429"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/tools/adhd-tools",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 120,
+      "citations": [
+        "nice_ng87",
+        "nhs_adhd",
+        "pubmed_31411903"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/tools/autism-tools",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 120,
+      "citations": [
+        "nice_cg128",
+        "nice_cg142",
+        "nhs_autism"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/tools/anxiety-tools",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 90,
+      "citations": [
+        "nice_cg113",
+        "nhs_gad",
+        "pubmed_30301513"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/tools/depression-tools",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 120,
+      "citations": [
+        "nice_ng222",
+        "nhs_depression",
+        "pubmed_16551270",
+        "pubmed_27470975"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/dyslexia-reading-training",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 120,
+      "citations": [
+        "nhs_dyslexia",
+        "rose_review_2009",
+        "pubmed_25638728"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/conditions/anxiety",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 120,
+      "citations": [
+        "nice_cg113",
+        "nhs_gad",
+        "pubmed_30301513"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/conditions/depression",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 120,
+      "citations": [
+        "nice_ng222",
+        "nhs_depression",
+        "pubmed_16551270"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/conditions/dyslexia",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 180,
+      "citations": [
+        "nhs_dyslexia",
+        "rose_review_2009",
+        "pubmed_25638728"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 120,
+      "citations": [
+        "nhs_breathing_stress",
+        "nhs_adhd",
+        "nhs_autism",
+        "nhs_gad"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/blog",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 120,
+      "citations": [
+        "nhs_breathing_stress",
+        "nhs_adhd",
+        "nhs_autism"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/trust/evidence-policy",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 180,
+      "citations": [
+        "nhs_breathing_stress",
+        "nice_ng87",
+        "nice_cg113",
+        "cdc_stress",
+        "nimh_adhd",
+        "medlineplus_anxiety",
+        "pubmed_29616846"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/guides/breathing-exercises-for-stress",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 90,
+      "citations": [
+        "nhs_breathing_stress",
+        "cdc_stress",
+        "pubmed_29616846"
+      ],
+      "issues": []
+    },
+    {
+      "route": "/guides/focus-start",
+      "reviewedAt": "2026-01-16",
+      "reviewIntervalDays": 120,
+      "citations": [
+        "nice_ng87",
+        "nhs_adhd",
+        "nimh_adhd",
+        "pubmed_31411903"
+      ],
+      "issues": []
+    }
+  ],
+  "issues": []
+}
