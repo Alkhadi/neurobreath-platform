@@ -5,6 +5,7 @@ import { badges } from '@/lib/data/badges';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { TrendingUp, Flame, Clock, Target, RotateCcw, Award } from 'lucide-react';
+import type { ComponentType, CSSProperties } from 'react';
 import dynamic from 'next/dynamic';
 import * as LucideIcons from 'lucide-react';
 
@@ -109,7 +110,7 @@ export const ProgressDashboard = () => {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {badges?.map?.((badge) => {
               const isEarned = earnedBadges?.some?.(b => b?.id === badge?.id);
-              const IconComponent = (LucideIcons as any)?.[badge?.icon];
+              const IconComponent = (LucideIcons as unknown as Record<string, ComponentType<{ className?: string; style?: CSSProperties }>>)?.[badge?.icon];
 
               return (
                 <div

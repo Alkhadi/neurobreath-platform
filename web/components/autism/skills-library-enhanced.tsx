@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { skills } from '@/lib/data/skills';
-import { Search, Star, StarOff, Play, Pause, Check, BookOpen, TrendingUp, Clock, Award, Sparkles } from 'lucide-react';
+import { Search, Star, StarOff, Play, Pause, Check, BookOpen, TrendingUp, Clock, Award } from 'lucide-react';
 import { logSkillPractice, toggleFavoriteSkill, loadProgress, getMasteryLevelName } from '@/lib/progress-store-enhanced';
 import { toast } from 'sonner';
 
@@ -25,8 +25,10 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
   const [isPracticing, setIsPracticing] = useState(false);
   const [practiceTime, setPracticeTime] = useState(0);
   const [practiceNotes, setPracticeNotes] = useState('');
-  const [progress, setProgress] = useState<any>(null);
+  type ProgressState = ReturnType<typeof loadProgress>;
+  const [progress, setProgress] = useState<ProgressState | null>(null);
   const [sortBy, setSortBy] = useState<'relevance' | 'mastery' | 'recent'>('relevance');
+  const practiceIntervalRef = useRef<number | null>(null);
 
   // Load progress on mount and when updated - client side only to avoid hydration mismatch
   useEffect(() => {
@@ -69,7 +71,7 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
     }
 
     return filtered;
-  }, [skills, searchQuery, selectedTags, sortBy, progress]);
+  }, [searchQuery, selectedTags, sortBy, progress]);
 
   const toggleTag = (tag: string) => {
     setSelectedTags(prev => 
@@ -91,16 +93,17 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
     setPracticeNotes('');
     
     // Start timer
-    const interval = setInterval(() => {
+    const interval = window.setInterval(() => {
       setPracticeTime(prev => prev + 1);
     }, 1000);
-    
-    (window as any).__practiceInterval = interval;
+
+    practiceIntervalRef.current = interval;
   };
 
   const stopPractice = (completed: boolean = true) => {
-    if ((window as any).__practiceInterval) {
-      clearInterval((window as any).__practiceInterval);
+    if (practiceIntervalRef.current) {
+      clearInterval(practiceIntervalRef.current);
+      practiceIntervalRef.current = null;
     }
     
     if (selectedSkill && practiceTime > 0) {
