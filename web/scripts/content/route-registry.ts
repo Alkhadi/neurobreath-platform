@@ -99,7 +99,7 @@ export const buildRouteRegistry = (): RouteRegistryEntry[] => {
   SEO_GUIDES.forEach(guide => {
     const pillarKey = guide.pillar.href.replace('/', '') || 'general';
     entries.push({
-      url: `/guides/${guide.slug}`,
+      url: `/guides/seo/${guide.slug}`,
       type: 'cluster',
       locale: 'GLOBAL',
       title: guide.title,

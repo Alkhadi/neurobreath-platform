@@ -23,7 +23,7 @@ export const routeFixtures: Record<string, string[]> = {
     "/parent/demo-parent-123",
     "/parent/test-parent",
   ],
-  "/guides/:slug": guideSlugs.map(slug => `/guides/${slug}`),
+  "/guides/seo/:slug": guideSlugs.map(slug => `/guides/seo/${slug}`),
   "/guides/:pillar": pillarKeys.map(pillar => `/guides/${pillar}`),
   "/guides/:pillar/:slug": clusterParams.map(param => `/guides/${param.pillar}/${param.slug}`),
   "/:region/guides": regionKeys.map(region => `/${region}/guides`),

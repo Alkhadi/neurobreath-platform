@@ -23,17 +23,23 @@ export default async function GuidePage({ params }: GuidePageProps) {
     notFound();
   }
 
-  const pageUrl = generateCanonicalUrl(`/guides/${guide.slug}`);
+  const pagePath = `/guides/seo/${guide.slug}`;
+  const pageUrl = generateCanonicalUrl(pagePath);
 
   const relatedItems = getRelatedContentForUrl({
-    url: `/guides/${guide.slug}`,
+    url: pagePath,
     existing: guide.related,
   });
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background">
       <div className="mx-auto w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1100px] py-10 space-y-10">
-        <Breadcrumb items={[{ label: guide.pillar.label, href: guide.pillar.href }, { label: guide.title, href: `/guides/${guide.slug}` }]} />
+        <Breadcrumb
+          items={[
+            { label: guide.pillar.label, href: guide.pillar.href },
+            { label: guide.title, href: pagePath },
+          ]}
+        />
 
         <header className="space-y-4">
           <p className="text-sm uppercase tracking-wide text-muted-foreground">{guide.pillar.label}</p>

@@ -121,7 +121,8 @@ const buildReport = async () => {
   for (const entry of registry) {
     const url = `${BASE_URL}${entry.url}`;
     const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'networkidle' });
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await page.waitForSelector('main', { timeout: 60000 }).catch(() => undefined);
 
     const title = await page.title();
     const metaDescription = await page.locator('meta[name="description"]').getAttribute('content');
@@ -131,7 +132,10 @@ const buildReport = async () => {
     const twitterCard = await page.locator('meta[name="twitter:card"]').getAttribute('content');
     const twitterTitle = await page.locator('meta[name="twitter:title"]').getAttribute('content');
     const twitterDescription = await page.locator('meta[name="twitter:description"]').getAttribute('content');
-    const robots = await page.locator('meta[name="robots"]').getAttribute('content');
+    const robotsMetas = await page.$$eval('meta[name="robots"]', els =>
+      els.map(el => el.getAttribute('content') || '').filter(Boolean),
+    );
+    const robots = robotsMetas[0] || null;
 
     const h1s = await page.$$eval('h1', els => els.map(el => el.textContent?.trim() || '').filter(Boolean));
     const headings = await page.$$eval('h1, h2, h3, h4', els =>
@@ -172,6 +176,14 @@ const buildReport = async () => {
     }
 
     const issues: Array<{ severity: 'CRITICAL' | 'WARN'; code: string; message: string }> = [];
+
+    if (robotsMetas.length !== 1) {
+      issues.push({
+        severity: 'CRITICAL',
+        code: 'ROBOTS_META_COUNT',
+        message: `Expected exactly 1 meta[name="robots"], found ${robotsMetas.length} (${robotsMetas.join(' | ')}) on ${entry.url}`,
+      });
+    }
 
     if (!title) issues.push({ severity: 'CRITICAL', code: 'SEO_TITLE_MISSING', message: 'Title is missing.' });
     if (title && (title.length < 30 || title.length > 60)) {
