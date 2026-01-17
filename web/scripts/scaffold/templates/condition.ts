@@ -3,9 +3,30 @@
  * Generates routes for condition-specific content with starter journeys
  */
 
-export default {
-  generatePage(context) {
-    const { slug, title, summary, region } = context;
+type Region = 'uk' | 'us';
+
+type ConditionTemplateContext = {
+  slug: string;
+  title: string;
+  summary: string;
+  region: Region;
+};
+
+type SharedTemplateContext = {
+  slug: string;
+  title: string;
+  summary: string;
+};
+
+type RouteTemplate = {
+  generatePage: (context: ConditionTemplateContext) => string;
+  generateSharedPage: (context: Pick<SharedTemplateContext, 'slug'>) => string;
+  generateContent: (context: SharedTemplateContext) => string;
+};
+
+const conditionTemplate = {
+  generatePage(context: ConditionTemplateContext) {
+    const { slug, region } = context;
     const contentImport = slug.replace(/\//g, '-');
 
     return `import type { Metadata } from 'next';
@@ -165,8 +186,8 @@ export default function ConditionPage() {
 `;
   },
 
-  generateSharedPage(context) {
-    const { slug, title } = context;
+  generateSharedPage(context: Pick<SharedTemplateContext, 'slug'>) {
+    const { slug } = context;
     const contentImport = slug.replace(/\//g, '-');
 
     return `import type { Metadata } from 'next';
@@ -206,8 +227,8 @@ export default function ConditionPage({ params }: Props) {
 `;
   },
 
-  generateContent(context) {
-    const { slug, title, summary } = context;
+  generateContent(context: SharedTemplateContext) {
+    const { title, summary } = context;
 
     return `/**
  * Content for ${title}
@@ -322,4 +343,6 @@ export const contentUS = {
 };
 `;
   },
-};
+} satisfies RouteTemplate;
+
+export default conditionTemplate;
