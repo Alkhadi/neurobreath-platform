@@ -2,9 +2,10 @@ import { TrustAccessibilityPage } from '@/components/trust/pages/trust-pages';
 import { getRegionFromKey } from '@/lib/region/region';
 
 interface RegionPageProps {
-  params: { region: string };
+  params: Promise<{ region: string }>;
 }
 
-export default function RegionTrustAccessibility({ params }: RegionPageProps) {
-  return <TrustAccessibilityPage region={getRegionFromKey(params.region)} />;
+export default async function RegionTrustAccessibility({ params }: RegionPageProps) {
+  const resolvedParams = await params;
+  return <TrustAccessibilityPage region={getRegionFromKey(resolvedParams.region)} />;
 }

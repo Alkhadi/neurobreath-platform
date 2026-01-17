@@ -2,9 +2,10 @@ import { TrustHubPage } from '@/components/trust/pages/trust-pages';
 import { getRegionFromKey } from '@/lib/region/region';
 
 interface RegionPageProps {
-  params: { region: string };
+  params: Promise<{ region: string }>;
 }
 
-export default function RegionTrustPage({ params }: RegionPageProps) {
-  return <TrustHubPage region={getRegionFromKey(params.region)} />;
+export default async function RegionTrustPage({ params }: RegionPageProps) {
+  const resolvedParams = await params;
+  return <TrustHubPage region={getRegionFromKey(resolvedParams.region)} />;
 }

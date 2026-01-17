@@ -6,6 +6,7 @@ import { RelatedContent } from '@/components/seo/RelatedContent';
 import { FaqSection } from '@/components/seo/FAQSection';
 import { getCluster, getPillar, listClusterParams } from '@/lib/content/content-seo-map';
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
+import { getRelatedContentForUrl } from '@/lib/content/link-intel-runtime';
 
 export async function generateStaticParams() {
   return listClusterParams();
@@ -46,6 +47,11 @@ export default function ClusterPage({ params }: { params: { pillar: string; slug
     description: 'Return to the pillar hub and choose the next guide.',
     typeBadge: 'Guide' as const,
   };
+
+  const relatedItems = getRelatedContentForUrl({
+    url: `/guides/${pillar.key}/${cluster.slug}`,
+    existing: [pillarItem, ...siblingItems],
+  });
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-10">
@@ -92,7 +98,7 @@ export default function ClusterPage({ params }: { params: { pillar: string; slug
         </div>
       </section>
 
-      <RelatedContent title="Next steps" items={[pillarItem, ...siblingItems]} />
+      <RelatedContent title="Next steps" items={relatedItems} />
 
       {cluster.miniFaqs?.length ? (
         <FaqSection pageUrl={pageUrl} faqs={cluster.miniFaqs} title="Quick FAQs" />

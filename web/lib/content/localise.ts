@@ -1,4 +1,6 @@
-import type { ContentBlock, ContentPage, FaqItem, LocalisedString } from './canonical-schema';
+import type { ContentBlock, ContentPage, LocalisedString, RelatedContentItem } from './canonical-schema';
+import type { Region } from '@/lib/region/region';
+import { withRegionPrefix } from '@/lib/region/region';
 
 const termMap = {
   UK: {
@@ -55,3 +57,17 @@ export const resolveSEO = (seo: ContentPage['seo'], region: 'UK' | 'US') => ({
 });
 
 export const resolveH1 = (h1: LocalisedString, region: 'UK' | 'US') => resolveString(h1, region);
+
+const shouldPrefixRegion = (href: string) => {
+  return href.startsWith('/guides') || href.startsWith('/trust');
+};
+
+export const resolveRelatedItems = (items: RelatedContentItem[] | undefined, region: Region) => {
+  if (!items?.length) return [];
+  return items.map(item => {
+    const label = resolveString(item.label, region);
+    const description = item.description ? resolveString(item.description, region) : undefined;
+    const href = shouldPrefixRegion(item.href) ? withRegionPrefix(item.href, region) : item.href;
+    return { ...item, label, description, href };
+  });
+};

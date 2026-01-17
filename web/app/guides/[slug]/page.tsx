@@ -5,6 +5,7 @@ import { RelatedContent } from '@/components/seo/RelatedContent';
 import { FaqSection } from '@/components/seo/FAQSection';
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
 import { SEO_GUIDES, SEO_GUIDES_MAP } from '@/content/seo-guides';
+import { getRelatedContentForUrl } from '@/lib/content/link-intel-runtime';
 
 interface GuidePageProps {
   params: { slug: string };
@@ -22,6 +23,11 @@ export default function GuidePage({ params }: GuidePageProps) {
   }
 
   const pageUrl = generateCanonicalUrl(`/guides/${guide.slug}`);
+
+  const relatedItems = getRelatedContentForUrl({
+    url: `/guides/${guide.slug}`,
+    existing: guide.related,
+  });
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background">
@@ -70,7 +76,7 @@ export default function GuidePage({ params }: GuidePageProps) {
           </Link>
         </section>
 
-        <RelatedContent title="Related guides" items={guide.related} />
+        <RelatedContent title="Related guides" items={relatedItems} />
         <FaqSection title="Quick FAQs" faqs={guide.faqs} pageUrl={pageUrl} />
 
         <section className="text-xs text-muted-foreground">

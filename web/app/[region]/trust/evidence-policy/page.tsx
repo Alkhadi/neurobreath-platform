@@ -2,9 +2,10 @@ import { TrustEvidencePolicyPage } from '@/components/trust/pages/trust-pages';
 import { getRegionFromKey } from '@/lib/region/region';
 
 interface RegionPageProps {
-  params: { region: string };
+  params: Promise<{ region: string }>;
 }
 
-export default function RegionTrustEvidencePolicy({ params }: RegionPageProps) {
-  return <TrustEvidencePolicyPage region={getRegionFromKey(params.region)} />;
+export default async function RegionTrustEvidencePolicy({ params }: RegionPageProps) {
+  const resolvedParams = await params;
+  return <TrustEvidencePolicyPage region={getRegionFromKey(resolvedParams.region)} />;
 }

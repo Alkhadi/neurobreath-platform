@@ -8,11 +8,13 @@ export const breathingStressPage: ContentPage = {
       base: 'Breathing exercises for stress',
       UK: 'Breathing exercises for stress',
       US: 'Breathing exercises for stress',
+      requireOverride: true,
     },
     description: {
       base: 'A calm, practical breathing routine to support stress regulation. Educational guidance only.',
       UK: 'A calm, practical breathing routine to support stress regulation. Educational guidance only.',
       US: 'A calm, practical breathing routine to support stress regulation. Educational guidance only.',
+      requireOverride: true,
     },
   },
   h1: {
@@ -40,19 +42,49 @@ export const breathingStressPage: ContentPage = {
       id: 'steps',
       type: 'steps',
       items: [
-        { base: 'Sit comfortably and place one hand on your chest and one on your abdomen.' },
-        { base: 'Inhale for a slow count of 4, feeling the lower hand rise.' },
-        { base: 'Exhale for a slow count of 6, keeping shoulders relaxed.' },
-        { base: 'Repeat for 8–12 breaths.' },
+        {
+          base: 'Sit comfortably and place one hand on your chest and one on your abdomen.',
+          UK: 'Sit comfortably and place one hand on your chest and one on your abdomen.',
+          US: 'Sit comfortably and place one hand on your chest and one on your abdomen.',
+          requireOverride: true,
+        },
+        {
+          base: 'Inhale for a slow count of 4, feeling the lower hand rise.',
+          UK: 'Inhale for a slow count of 4, feeling the lower hand rise.',
+          US: 'Inhale for a slow count of 4, feeling the lower hand rise.',
+        },
+        {
+          base: 'Exhale for a slow count of 6, keeping shoulders relaxed.',
+          UK: 'Exhale for a slow count of 6, keeping shoulders relaxed.',
+          US: 'Exhale for a slow count of 6, keeping shoulders relaxed.',
+        },
+        {
+          base: 'Repeat for 8–12 breaths.',
+          UK: 'Repeat for 8–12 breaths.',
+          US: 'Repeat for 8–12 breaths.',
+        },
       ],
     },
     {
       id: 'tips',
       type: 'bullets',
       items: [
-        { base: 'If you feel light‑headed, shorten the count and slow the pace.' },
-        { base: 'Try this before a meeting, commute, or study block.' },
-        { base: 'Pair the routine with a quiet space and dimmer light if possible.' },
+        {
+          base: 'If you feel light‑headed, shorten the count and slow the pace.',
+          UK: 'If you feel light‑headed, shorten the count and slow the pace.',
+          US: 'If you feel light‑headed, shorten the count and slow the pace.',
+        },
+        {
+          base: 'Try this before a meeting, commute, or study block.',
+          UK: 'Try this before a meeting, the school run, or a study block.',
+          US: 'Try this before a meeting, the school drop‑off, or a study block.',
+          requireOverride: true,
+        },
+        {
+          base: 'Pair the routine with a quiet space and dimmer light if possible.',
+          UK: 'Pair the routine with a quiet space and lower lighting if possible.',
+          US: 'Pair the routine with a quiet space and lower lighting if possible.',
+        },
       ],
     },
     {
@@ -60,6 +92,8 @@ export const breathingStressPage: ContentPage = {
       type: 'callout',
       text: {
         base: 'Educational information only. This routine is not a replacement for professional support.',
+        UK: 'Educational information only. This routine is not a replacement for professional support.',
+        US: 'Educational information only. This routine is not a replacement for professional support.',
       },
     },
     {
@@ -82,6 +116,26 @@ export const breathingStressPage: ContentPage = {
         answer: { base: 'This routine is for everyday stress regulation. If you are in crisis, seek urgent support in your area.' },
       },
     ],
+    UK: [
+      {
+        question: { base: 'How often should I practise?' },
+        answer: { base: 'Daily or a few times per week is a good starting point. Short, consistent practice is more helpful than long, irregular sessions.' },
+      },
+      {
+        question: { base: 'Can I use this for panic?' },
+        answer: { base: 'This routine is for everyday stress regulation. If you are in crisis, seek urgent support in your area.' },
+      },
+    ],
+    US: [
+      {
+        question: { base: 'How often should I practice?' },
+        answer: { base: 'Daily or a few times per week is a good starting point. Short, consistent practice is more helpful than long, irregular sessions.' },
+      },
+      {
+        question: { base: 'Can I use this for panic?' },
+        answer: { base: 'This routine is for everyday stress regulation. If you are in crisis, seek urgent support in your area.' },
+      },
+    ],
   },
   citationsByRegion: {
     UK: ['nhs_breathing_stress'],
@@ -90,4 +144,8 @@ export const breathingStressPage: ContentPage = {
   },
   reviewedAt: '2026-01-16',
   reviewIntervalDays: 90,
+  primaryPillar: 'stress',
+  tags: ['breathing', 'stress', 'calm', 'routine'],
+  summary: 'A short daily breathing routine for steadying stress and focus.',
+  pageType: 'cluster',
 };

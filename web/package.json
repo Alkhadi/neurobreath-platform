@@ -27,6 +27,10 @@
     "seo:guard": "npm run seo:scan",
     "evidence:audit": "tsx scripts/evidence/evidence-audit.ts",
     "content:localisation-audit": "tsx scripts/content/localisation-audit.ts",
+    "content:quality-gate": "tsx scripts/content/quality-gate.ts --start",
+    "content:link-intel": "tsx scripts/content/link-intel.ts",
+    "content:link-intel:apply": "tsx scripts/content/link-intel.ts --apply",
+    "content:link-intel:test": "tsx scripts/content/link-intel-tests.ts",
     "trust:check": "node scripts/trust/trust-check.mjs"
   },
   "devDependencies": {

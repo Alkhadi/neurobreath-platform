@@ -6,6 +6,7 @@ import { FaqSection } from '@/components/seo/FAQSection';
 import { RelatedContent } from '@/components/seo/RelatedContent';
 import { getPillar, listPillarKeys } from '@/lib/content/content-seo-map';
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
+import { getRelatedContentForUrl } from '@/lib/content/link-intel-runtime';
 
 export async function generateStaticParams() {
   return listPillarKeys().map(pillar => ({ pillar }));
@@ -26,6 +27,18 @@ export default function PillarPage({ params }: { params: { pillar: string } }) {
   if (!pillar) return notFound();
 
   const pageUrl = generateCanonicalUrl(`/guides/${pillar.key}`);
+
+  const guideItems = pillar.clusters.map(cluster => ({
+    href: `/guides/${pillar.key}/${cluster.slug}`,
+    label: cluster.title,
+    description: cluster.description,
+    typeBadge: 'Guide' as const,
+  }));
+
+  const relatedItems = getRelatedContentForUrl({
+    url: `/guides/${pillar.key}`,
+    existing: guideItems,
+  });
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-10">
@@ -55,15 +68,7 @@ export default function PillarPage({ params }: { params: { pillar: string } }) {
         </Link>
       </div>
 
-      <RelatedContent
-        title="Explore supporting guides"
-        items={pillar.clusters.map(cluster => ({
-          href: `/guides/${pillar.key}/${cluster.slug}`,
-          label: cluster.title,
-          description: cluster.description,
-          typeBadge: 'Guide',
-        }))}
-      />
+      <RelatedContent title="Explore supporting guides" items={relatedItems} />
 
       <RelatedContent title="Related across the site" items={pillar.relatedAcrossSite} />
 

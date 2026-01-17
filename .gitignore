@@ -36,3 +36,6 @@ out
 
 # local backups
 web/package.json.bak
+
+# generated reports
+web/reports

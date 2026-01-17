@@ -4,11 +4,19 @@ export type LocalisedString = {
   base: string;
   UK?: string;
   US?: string;
+  requireOverride?: boolean;
 };
 
 export interface ContentCTA {
   label: LocalisedString;
   href: string;
+}
+
+export interface RelatedContentItem {
+  href: string;
+  label: LocalisedString;
+  description?: LocalisedString;
+  typeBadge?: string;
 }
 
 export interface ContentBlockBase {
@@ -75,7 +83,13 @@ export interface ContentPage {
   h1: LocalisedString;
   blocks: ContentBlock[];
   faqs?: { base: FaqItem[]; UK?: FaqItem[]; US?: FaqItem[] };
+  related?: RelatedContentItem[];
+  relatedTitle?: LocalisedString;
   citationsByRegion: { UK: string[]; US: string[]; GLOBAL?: string[] };
   reviewedAt: string;
   reviewIntervalDays: number;
+  primaryPillar?: string;
+  tags?: string[];
+  summary?: string;
+  pageType?: 'pillar' | 'cluster' | 'tool' | 'trust' | 'other';
 }

@@ -16,6 +16,7 @@ Example (minimal skeleton):
 - `h1`
 - `blocks` (paragraphs, bullets, steps, etc.)
 - `faqs` (optional)
+- `related` (optional auto-suggestions or pinned links)
 - `citationsByRegion` with UK and US arrays
 - `reviewedAt` and `reviewIntervalDays`
 
@@ -24,7 +25,7 @@ Example (minimal skeleton):
 Use the `LocalisedString` shape:
 
 ```ts
-{ base: 'Example', UK: 'Example (UK)', US: 'Example (US)' }
+{ base: 'Example', UK: 'Example (UK)', US: 'Example (US)', requireOverride: true }
 ```
 
 Only override when the wording should change. Keep structure aligned between UK and US.
@@ -54,7 +55,12 @@ Citations are rendered as text with “Copy link” buttons (no forced navigatio
 - Add FAQs if helpful.
 - Schema is only rendered when FAQs are visible.
 
-## 6) Review cadence
+## 6) Related links (optional)
+
+- Use `related` when you want pinned links shown before auto-suggestions.
+- Leave it empty to allow the Link Intelligence system to supply related links.
+
+## 7) Review cadence
 
 Always include:
 

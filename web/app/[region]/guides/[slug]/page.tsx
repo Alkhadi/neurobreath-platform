@@ -3,16 +3,19 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ContentRenderer } from '@/components/content/ContentRenderer';
 import { FaqSection } from '@/components/seo/FAQSection';
+import { RelatedContent } from '@/components/seo/RelatedContent';
 import { Citations } from '@/components/evidence/Citations';
 import { LastReviewed } from '@/components/evidence/LastReviewed';
 import { canonicalPagesBySlug } from '@/lib/content/pages';
-import { resolveBlocks, resolveFaqs, resolveH1, resolveSEO } from '@/lib/content/localise';
+import { resolveBlocks, resolveFaqs, resolveH1, resolveRelatedItems, resolveSEO } from '@/lib/content/localise';
+import { getRelatedContentForUrl } from '@/lib/content/link-intel-runtime';
 import { getCitationsForRegion } from '@/lib/evidence/getCitationsForRegion';
 import { getRegionAlternates, getRegionFromKey, getRegionKey } from '@/lib/region/region';
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
+import { generatePageMetadata } from '@/lib/seo/metadata';
 
 interface RegionGuidePageProps {
-  params: { region: string; slug: string };
+  params: Promise<{ region: string; slug: string }>;
 }
 
 export function generateStaticParams() {
@@ -25,19 +28,25 @@ export function generateStaticParams() {
   })));
 }
 
-export function generateMetadata({ params }: RegionGuidePageProps): Metadata {
-  const region = getRegionFromKey(params.region);
-  const page = canonicalPagesBySlug[params.slug];
+export async function generateMetadata({ params }: RegionGuidePageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const region = getRegionFromKey(resolvedParams.region);
+  const page = canonicalPagesBySlug[resolvedParams.slug];
 
   if (!page) return {};
 
   const seo = resolveSEO(page.seo, region);
-  const canonicalPath = `/${getRegionKey(region)}/guides/${params.slug}`;
-  const alternates = getRegionAlternates(`/guides/${params.slug}`);
+  const canonicalPath = `/${getRegionKey(region)}/guides/${resolvedParams.slug}`;
+  const alternates = getRegionAlternates(`/guides/${resolvedParams.slug}`);
 
-  return {
+  const baseMetadata = generatePageMetadata({
     title: seo.title,
     description: seo.description,
+    path: canonicalPath,
+  });
+
+  return {
+    ...baseMetadata,
     alternates: {
       canonical: generateCanonicalUrl(canonicalPath),
       languages: {
@@ -48,9 +57,10 @@ export function generateMetadata({ params }: RegionGuidePageProps): Metadata {
   };
 }
 
-export default function RegionGuidePage({ params }: RegionGuidePageProps) {
-  const region = getRegionFromKey(params.region);
-  const page = canonicalPagesBySlug[params.slug];
+export default async function RegionGuidePage({ params }: RegionGuidePageProps) {
+  const resolvedParams = await params;
+  const region = getRegionFromKey(resolvedParams.region);
+  const page = canonicalPagesBySlug[resolvedParams.slug];
 
   if (!page) {
     notFound();
@@ -60,7 +70,11 @@ export default function RegionGuidePage({ params }: RegionGuidePageProps) {
   const resolvedFaqs = resolveFaqs(page.faqs, region) || [];
   const h1 = resolveH1(page.h1, region);
   const citations = getCitationsForRegion(page, region);
-  const pageUrl = generateCanonicalUrl(`/${getRegionKey(region)}/guides/${params.slug}`);
+  const pageUrl = generateCanonicalUrl(`/${getRegionKey(region)}/guides/${resolvedParams.slug}`);
+  const relatedItems = getRelatedContentForUrl({
+    url: `/${getRegionKey(region)}/guides/${resolvedParams.slug}`,
+    existing: resolveRelatedItems(page.related, region),
+  });
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
@@ -76,6 +90,8 @@ export default function RegionGuidePage({ params }: RegionGuidePageProps) {
 
         <LastReviewed reviewedAt={page.reviewedAt} reviewIntervalDays={page.reviewIntervalDays} />
         <ContentRenderer blocks={resolvedBlocks} />
+
+        <RelatedContent title={page.relatedTitle ? resolveH1(page.relatedTitle, region) : 'Related content'} items={relatedItems} />
 
         <FaqSection title="Quick FAQs" faqs={resolvedFaqs} pageUrl={pageUrl} />
 

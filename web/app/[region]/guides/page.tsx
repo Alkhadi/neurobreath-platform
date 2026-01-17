@@ -6,11 +6,12 @@ import { getRegionAlternates, getRegionFromKey, getRegionKey } from '@/lib/regio
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
 
 interface RegionGuidesPageProps {
-  params: { region: string };
+  params: Promise<{ region: string }>;
 }
 
-export function generateMetadata({ params }: RegionGuidesPageProps): Metadata {
-  const region = getRegionFromKey(params.region);
+export async function generateMetadata({ params }: RegionGuidesPageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const region = getRegionFromKey(resolvedParams.region);
   const alternates = getRegionAlternates('/guides');
 
   return {
@@ -26,8 +27,9 @@ export function generateMetadata({ params }: RegionGuidesPageProps): Metadata {
   };
 }
 
-export default function RegionGuidesPage({ params }: RegionGuidesPageProps) {
-  const region = getRegionFromKey(params.region);
+export default async function RegionGuidesPage({ params }: RegionGuidesPageProps) {
+  const resolvedParams = await params;
+  const region = getRegionFromKey(resolvedParams.region);
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
