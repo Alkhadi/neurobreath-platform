@@ -139,6 +139,9 @@ export default async function RegionConditionsPage({ params }: RegionConditionsP
             <Link href="/tools" className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 hover:border-slate-300">
               Browse tools
             </Link>
+            <Link href={`/${regionKey}/trust/evidence-policy`} className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 hover:border-slate-300">
+              How we source evidence
+            </Link>
             <Link href={`/${regionKey}/trust`} className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 hover:border-slate-300">
               Trust centre
             </Link>

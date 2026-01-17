@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { HelpMeChooseWizard } from '@/components/help/HelpMeChooseWizard';
+import { TrustPanel } from '@/components/trust/TrustPanel';
 import { getRegionAlternates, getRegionFromKey, getRegionKey } from '@/lib/region/region';
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
 import { generatePageMetadata } from '@/lib/seo/metadata';
@@ -102,6 +103,8 @@ export default async function HelpMeChoosePage({ params }: HelpMeChoosePageProps
             We do not collect personal data in this wizard. Your answers and plan are stored only on your device.
           </p>
         </section>
+
+        <TrustPanel region={region} title="Trust panel" />
       </div>
     </main>
   );

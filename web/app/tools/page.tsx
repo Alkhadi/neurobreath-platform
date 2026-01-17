@@ -4,6 +4,7 @@ import { Layers, Sparkles, Shuffle, Grid } from 'lucide-react'
 import type { Region } from '@/lib/region/region'
 import { splitTextWithGlossary } from '@/lib/glossary/recogniseTerms'
 import { GlossaryTooltip } from '@/components/glossary/GlossaryTooltip'
+import { TrustPanel } from '@/components/trust/TrustPanel'
 
 export default function ToolsPage() {
   const region: Region = 'UK';
@@ -122,6 +123,8 @@ export default function ToolsPage() {
             </Button>
           </div>
         </div>
+
+        <TrustPanel region={region} title="Evidence & trust" />
 
         <div className="text-center">
           <Button asChild size="lg" className="bg-purple-600 hover:bg-purple-700">

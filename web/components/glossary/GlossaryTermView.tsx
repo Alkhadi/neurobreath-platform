@@ -5,6 +5,8 @@ import Link from 'next/link';
 import type { GlossaryTerm } from '@/lib/glossary/glossary';
 import type { Region } from '@/lib/region/region';
 import { getRegionKey } from '@/lib/region/region';
+import { CitationList } from '@/components/trust/CitationList';
+import { LastReviewedBadge } from '@/components/trust/LastReviewedBadge';
 
 interface GlossaryTermLink {
   id: string;
@@ -25,18 +27,11 @@ interface GlossaryTermViewProps {
   nextLinks: GlossaryNextLinks;
 }
 
-const copyText = async (value: string) => {
-  try {
-    await navigator.clipboard.writeText(value);
-  } catch {
-    // ignore
-  }
-};
-
 export function GlossaryTermView({ term, region, relatedTerms, nextLinks }: GlossaryTermViewProps) {
   const [simpleOpen, setSimpleOpen] = useState(false);
   const locale = region === 'US' ? term.localeVariants.us : term.localeVariants.uk;
   const regionKey = getRegionKey(region);
+  const citations = [...term.citationsByRegion.global, ...(region === 'US' ? term.citationsByRegion.us : term.citationsByRegion.uk)];
 
   const simpleBullets = useMemo(() => {
     return [term.whyItMattersHere, ...locale.examples].filter(Boolean).slice(0, 4);
@@ -140,34 +135,12 @@ export function GlossaryTermView({ term, region, relatedTerms, nextLinks }: Glos
         </section>
       )}
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5">
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 space-y-4">
         <h2 className="text-lg font-semibold text-slate-900">Citations & review</h2>
         <p className="text-xs text-slate-500">Educational only. External links are provided as copy‑only references.</p>
-        <div className="mt-4 space-y-3 text-xs text-slate-600">
-          {[...term.citationsByRegion.global, ...(region === 'US' ? term.citationsByRegion.us : term.citationsByRegion.uk)].map(
-            citation => (
-              <div key={`${citation.label}-${citation.url}`} className="flex flex-wrap items-center gap-2">
-                <span className="font-semibold text-slate-700">{citation.label}</span>
-                <span className="break-all text-slate-500">{citation.url}</span>
-                <button
-                  type="button"
-                  onClick={() => copyText(citation.url)}
-                  className="rounded-full border border-slate-200 px-2 py-1 text-[11px] font-semibold text-slate-600 hover:border-slate-300"
-                >
-                  Copy link
-                </button>
-              </div>
-            ),
-          )}
-          {term.citationsByRegion.global.length === 0 &&
-            (region === 'US' ? term.citationsByRegion.us.length === 0 : term.citationsByRegion.uk.length === 0) && (
-              <p>No citations listed for this term.</p>
-            )}
-        </div>
-        <div className="mt-4 text-xs text-slate-500">
-          Last reviewed: {term.reviewedAt} · Review every {term.reviewIntervalDays} days
-        </div>
-        <div className="mt-3 text-xs text-slate-500">
+        <CitationList sources={citations} title="Citations" />
+        <LastReviewedBadge reviewedAt={term.reviewedAt} reviewIntervalDays={term.reviewIntervalDays} region={region} />
+        <div className="text-xs text-slate-500">
           <Link href={`/${regionKey}/trust/evidence-policy`} className="text-indigo-600 hover:underline">
             Evidence policy
           </Link>

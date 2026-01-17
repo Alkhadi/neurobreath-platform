@@ -10,7 +10,7 @@ export interface SitemapUrlEntry {
 
 const SORTER = new Intl.Collator('en', { sensitivity: 'base' });
 
-const LOCALIZED_PREFIXES = ['/', '/trust', '/guides', '/help-me-choose', '/glossary'];
+const LOCALIZED_PREFIXES = ['/', '/trust', '/guides', '/help-me-choose', '/glossary', '/printables', '/journeys'];
 
 function stripLocale(pathname: string): string {
   return pathname.replace(/^\/(uk|us)(?=\/|$)/, '') || '/';

@@ -1,4 +1,5 @@
 import './globals.css';
+import '../styles/print.css';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { Inter } from 'next/font/google';

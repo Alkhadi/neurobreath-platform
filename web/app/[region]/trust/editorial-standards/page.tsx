@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { TrustTermsPage } from '@/components/trust/pages/trust-pages';
+import { TrustEditorialStandardsPage } from '@/components/trust/pages/trust-pages';
 import { getRegionAlternates, getRegionFromKey, getRegionKey } from '@/lib/region/region';
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
 import { generatePageMetadata } from '@/lib/seo/metadata';
@@ -12,12 +12,12 @@ export async function generateMetadata({ params }: RegionPageProps): Promise<Met
   const resolved = await params;
   const region = getRegionFromKey(resolved.region);
   const regionKey = getRegionKey(region);
-  const path = `/${regionKey}/trust/terms`;
-  const alternates = getRegionAlternates('/trust/terms');
+  const path = `/${regionKey}/trust/editorial-standards`;
+  const alternates = getRegionAlternates('/trust/editorial-standards');
 
   const baseMetadata = generatePageMetadata({
-    title: 'Terms of use',
-    description: 'Basic terms of use and acceptable use guidelines for the NeuroBreath platform.',
+    title: 'Editorial standards',
+    description: 'Editorial standards for tone, claims, localisation, and content quality on NeuroBreath.',
     path,
   });
 
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: RegionPageProps): Promise<Met
   };
 }
 
-export default async function RegionTrustTerms({ params }: RegionPageProps) {
+export default async function RegionTrustEditorialStandards({ params }: RegionPageProps) {
   const resolvedParams = await params;
-  return <TrustTermsPage region={getRegionFromKey(resolvedParams.region)} />;
+  return <TrustEditorialStandardsPage region={getRegionFromKey(resolvedParams.region)} />;
 }

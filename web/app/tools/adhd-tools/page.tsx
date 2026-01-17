@@ -22,10 +22,13 @@ import { CrisisSupport } from '@/components/autism/crisis-support';
 import { EvidenceFooter } from '@/components/evidence-footer';
 import { evidenceByRoute } from '@/lib/evidence/page-evidence';
 import { EducationalDisclaimerInline } from '@/components/trust/EducationalDisclaimerInline';
+import { TrustPanel } from '@/components/trust/TrustPanel';
+import type { Region } from '@/lib/region/region';
 
 export const evidence = evidenceByRoute['/tools/adhd-tools'];
 
 export default function ADHDToolsPage() {
+  const region: Region = 'UK';
   const [activeTab, setActiveTab] = useState('overview');
 
   return (
@@ -610,6 +613,12 @@ export default function ADHDToolsPage() {
       <section id="crisis" className="py-16 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 dark:from-red-950/20 dark:via-orange-950/20 dark:to-yellow-950/20">
         <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <CrisisSupport />
+        </div>
+      </section>
+
+      <section className="py-12 bg-slate-50 dark:bg-slate-900">
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
+          <TrustPanel region={region} title="Evidence policy & citations" />
         </div>
       </section>
 

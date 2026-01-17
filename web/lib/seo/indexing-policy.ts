@@ -44,6 +44,10 @@ const INDEXABLE_GUIDE_PREFIXES = ['/guides'];
 
 const INDEXABLE_HELP_PREFIXES = ['/help-me-choose'];
 
+const INDEXABLE_PRINTABLES_PREFIXES = ['/printables'];
+
+const INDEXABLE_JOURNEYS_PREFIXES = ['/journeys'];
+
 const INDEXABLE_GLOSSARY_PREFIXES = ['/glossary'];
 
 const INDEXABLE_TOOL_ALLOWLIST = new Set([
@@ -117,6 +121,35 @@ export function getIndexingDecision(pathname: string): IndexingDecision {
       index: true,
       includeInSitemap: true,
       reason: 'Trust centre content',
+    };
+  }
+
+  if (INDEXABLE_PRINTABLES_PREFIXES.some(prefix => cleaned === prefix || cleaned.startsWith(`${prefix}/`))) {
+    if (cleaned.endsWith('/pdf')) {
+      return {
+        path: cleaned,
+        pageType: 'utility',
+        index: false,
+        includeInSitemap: false,
+        reason: 'Printable PDF downloads should not be indexed',
+      };
+    }
+    return {
+      path: cleaned,
+      pageType: 'other',
+      index: true,
+      includeInSitemap: true,
+      reason: 'Printable resources with explanatory content',
+    };
+  }
+
+  if (INDEXABLE_JOURNEYS_PREFIXES.some(prefix => cleaned === prefix || cleaned.startsWith(`${prefix}/`))) {
+    return {
+      path: cleaned,
+      pageType: 'other',
+      index: true,
+      includeInSitemap: true,
+      reason: 'Starter journeys hub',
     };
   }
 

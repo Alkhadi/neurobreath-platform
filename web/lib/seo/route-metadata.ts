@@ -64,6 +64,12 @@ const ROUTE_SEO_CONFIGS: Record<string, RouteSeoConfig> = {
       'Practical guidance on breathing, focus, sleep and neurodiversity support with clear next steps. Educational information only.',
     path: '/guides',
   },
+  '/journeys': {
+    title: 'Starter Journeys | NeuroBreath',
+    description:
+      'Starter journeys that combine guides and tools for calm, focus, sleep and daily support. Educational information only.',
+    path: '/journeys',
+  },
   '/get-started': {
     title: 'Get Started | NeuroBreath',
     description:
@@ -83,6 +89,12 @@ const ROUTE_SEO_CONFIGS: Record<string, RouteSeoConfig> = {
       'Library of evidence-based guides, templates and printable supports for ADHD, autism, dyslexia, anxiety and wellbeing in schools and at home.',
     path: '/resources',
   },
+  '/printables': {
+    title: 'Printables & Templates | NeuroBreath',
+    description:
+      'Print-friendly templates and checklists for parents, teachers and workplaces. Educational resources only.',
+    path: '/printables',
+  },
   '/trust': {
     title: 'Trust Centre | NeuroBreath',
     description:
@@ -101,6 +113,18 @@ const ROUTE_SEO_CONFIGS: Record<string, RouteSeoConfig> = {
       'How NeuroBreath selects, reviews, and updates evidence sources for wellbeing and neurodiversity guidance.',
     path: '/trust/evidence-policy',
   },
+  '/trust/citations': {
+    title: 'Citations & Source Attribution | NeuroBreath',
+    description:
+      'How NeuroBreath displays citations, verifies sources, and keeps references consistent.',
+    path: '/trust/citations',
+  },
+  '/trust/editorial-standards': {
+    title: 'Editorial Standards | NeuroBreath',
+    description:
+      'Editorial standards for tone, evidence claims, localisation, and content quality on NeuroBreath.',
+    path: '/trust/editorial-standards',
+  },
   '/trust/safeguarding': {
     title: 'Safeguarding Guidance | NeuroBreath',
     description:
@@ -118,6 +142,12 @@ const ROUTE_SEO_CONFIGS: Record<string, RouteSeoConfig> = {
     description:
       'Plain-language privacy notice explaining how NeuroBreath handles data and user choices.',
     path: '/trust/privacy',
+  },
+  '/trust/last-reviewed': {
+    title: 'Last Reviewed & Content Freshness | NeuroBreath',
+    description:
+      'How NeuroBreath reviews content, update cadences, and content freshness summaries.',
+    path: '/trust/last-reviewed',
   },
   '/trust/terms': {
     title: 'Terms of Use | NeuroBreath',

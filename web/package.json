@@ -39,6 +39,8 @@
     "content:link-intel:apply": "tsx scripts/content/link-intel.ts --apply",
     "content:link-intel:test": "tsx scripts/content/link-intel-tests.ts",
     "trust:check": "node scripts/trust/trust-check.mjs",
+    "trust:validate": "tsx scripts/trust/validate.mjs",
+    "printables:validate": "tsx scripts/printables/validate.mjs",
     "glossary:validate": "tsx scripts/glossary/validate.mjs"
   },
   "devDependencies": {

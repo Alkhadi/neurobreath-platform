@@ -28,10 +28,13 @@ import { initializeMilestones } from '@/lib/progress-store-enhanced';
 import { EvidenceFooter } from '@/components/evidence-footer';
 import { evidenceByRoute } from '@/lib/evidence/page-evidence';
 import { EducationalDisclaimerInline } from '@/components/trust/EducationalDisclaimerInline';
+import { TrustPanel } from '@/components/trust/TrustPanel';
+import type { Region } from '@/lib/region/region';
 
 export const evidence = evidenceByRoute['/tools/autism-tools'];
 
 export default function AutismToolsPage() {
+  const region: Region = 'UK';
   const [updateTrigger, setUpdateTrigger] = useState(0);
   const [activeTab, setActiveTab] = useState('overview');
   const [showQuickStart, setShowQuickStart] = useState(false);
@@ -671,6 +674,12 @@ export default function AutismToolsPage() {
             </p>
           </div>
           <ResourcesLibrary />
+        </div>
+      </section>
+
+      <section className="py-12 bg-slate-50 dark:bg-slate-900">
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
+          <TrustPanel region={region} title="Evidence policy & citations" />
         </div>
       </section>
 
