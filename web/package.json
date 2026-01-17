@@ -48,6 +48,8 @@
     "content:link-intel:test": "tsx scripts/content/link-intel-tests.ts",
     "trust:check": "node scripts/trust/trust-check.mjs",
     "trust:validate": "tsx scripts/trust/validate.mjs",
+    "scaffold:route": "node scripts/scaffold/scaffold-route.mjs",
+    "scaffold:journey": "node scripts/scaffold/scaffold-journey.mjs",
     "audit:conversion-trust": "tsx scripts/audits/conversion-trust-audit.ts",
     "audit:growth-hubs": "tsx scripts/growth/hub-audit.ts",
     "audit:quality-gates": "tsx scripts/audits/quality-gates.ts",
