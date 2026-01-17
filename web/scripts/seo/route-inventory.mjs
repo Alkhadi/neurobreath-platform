@@ -23,6 +23,10 @@ const APP_DIR = join(WEB_ROOT, 'app');
 const OUTPUT_DIR = join(WEB_ROOT, '.seo');
 const OUTPUT_FILE = join(OUTPUT_DIR, 'routes.json');
 
+const REPORTS_DIR = join(WEB_ROOT, 'reports', 'audits');
+const REPORT_JSON = join(REPORTS_DIR, 'route-inventory.json');
+const REPORT_MD = join(REPORTS_DIR, 'route-inventory.md');
+
 const PAGE_FILES = ['page.tsx', 'page.jsx', 'page.ts', 'page.js', 'page.mdx'];
 const EXCLUDED_FILES = ['layout', 'template', 'loading', 'error', 'not-found', 'route', 'default', 'middleware'];
 
@@ -199,6 +203,12 @@ async function main() {
   } catch (error) {
     // Directory might already exist, ignore
   }
+
+  try {
+    await mkdir(REPORTS_DIR, { recursive: true });
+  } catch (error) {
+    // Directory might already exist, ignore
+  }
   
   // Write output
   const output = {
@@ -211,6 +221,28 @@ async function main() {
   };
   
   await writeFile(OUTPUT_FILE, JSON.stringify(output, null, 2));
+
+  const mdLines = [];
+  mdLines.push('# Route Inventory');
+  mdLines.push('');
+  mdLines.push(`Generated: ${output.generatedAt}`);
+  mdLines.push('');
+  mdLines.push(`- Total routes: ${output.totalRoutes}`);
+  mdLines.push(`- Static routes: ${output.staticRoutes}`);
+  mdLines.push(`- Dynamic routes: ${output.dynamicRoutes}`);
+  mdLines.push('');
+  mdLines.push('## Routes');
+  mdLines.push('');
+  mdLines.push('| URL pattern | Dynamic | Source |');
+  mdLines.push('|---|---:|---|');
+  for (const r of routes) {
+    const dynamicLabel = r.isDynamic ? 'yes' : 'no';
+    mdLines.push(`| ${r.pattern} | ${dynamicLabel} | app/${r.path} |`);
+  }
+  mdLines.push('');
+
+  await writeFile(REPORT_JSON, JSON.stringify(output, null, 2));
+  await writeFile(REPORT_MD, mdLines.join('\n'));
   
   console.log(`✅ Route inventory saved to: ${relative(WEB_ROOT, OUTPUT_FILE)}`);
   console.log(`\n💡 Next steps:`);
@@ -221,6 +253,7 @@ async function main() {
     console.log(`   3. Run: yarn seo:scan`);
   } else {
     console.log(`   2. Run: yarn seo:scan`);
+    console.log(`✅ Route inventory report saved to: ${relative(WEB_ROOT, REPORT_JSON)}`);
   }
   
   process.exit(0);

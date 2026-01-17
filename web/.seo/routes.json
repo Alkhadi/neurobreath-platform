@@ -1,15 +1,571 @@
 {
-  "generatedAt": "2026-01-16T22:24:45.154Z",
+  "generatedAt": "2026-01-17T15:56:26.516Z",
   "appDirectory": "app",
-  "totalRoutes": 76,
-  "staticRoutes": 75,
-  "dynamicRoutes": 1,
+  "totalRoutes": 122,
+  "staticRoutes": 85,
+  "dynamicRoutes": 37,
   "routes": [
     {
       "path": "page.tsx",
       "url": "/",
       "pattern": "/",
       "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/page.tsx",
+      "url": "/:region",
+      "pattern": "/:region",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/about/page.tsx",
+      "url": "/:region/about",
+      "pattern": "/:region/about",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/about/faq/page.tsx",
+      "url": "/:region/about/faq",
+      "pattern": "/:region/about/faq",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/about/how-we-update/page.tsx",
+      "url": "/:region/about/how-we-update",
+      "pattern": "/:region/about/how-we-update",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/about/language/page.tsx",
+      "url": "/:region/about/language",
+      "pattern": "/:region/about/language",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/about/methodology/page.tsx",
+      "url": "/:region/about/methodology",
+      "pattern": "/:region/about/methodology",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/about/mission/page.tsx",
+      "url": "/:region/about/mission",
+      "pattern": "/:region/about/mission",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/about/use-responsibly/page.tsx",
+      "url": "/:region/about/use-responsibly",
+      "pattern": "/:region/about/use-responsibly",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/about/who-its-for/page.tsx",
+      "url": "/:region/about/who-its-for",
+      "pattern": "/:region/about/who-its-for",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/conditions/page.tsx",
+      "url": "/:region/conditions",
+      "pattern": "/:region/conditions",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/editorial/page.tsx",
+      "url": "/:region/editorial",
+      "pattern": "/:region/editorial",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/editorial/[id]/page.tsx",
+      "url": "/:region/editorial/:id",
+      "pattern": "/:region/editorial/:id",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        },
+        {
+          "name": "id",
+          "pattern": "[id]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 2
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/glossary/page.tsx",
+      "url": "/:region/glossary",
+      "pattern": "/:region/glossary",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/glossary/[term]/page.tsx",
+      "url": "/:region/glossary/:term",
+      "pattern": "/:region/glossary/:term",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        },
+        {
+          "name": "term",
+          "pattern": "[term]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 2
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/guides/page.tsx",
+      "url": "/:region/guides",
+      "pattern": "/:region/guides",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/guides/[slug]/page.tsx",
+      "url": "/:region/guides/:slug",
+      "pattern": "/:region/guides/:slug",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        },
+        {
+          "name": "slug",
+          "pattern": "[slug]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 2
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/help-me-choose/page.tsx",
+      "url": "/:region/help-me-choose",
+      "pattern": "/:region/help-me-choose",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/help-me-choose/results/page.tsx",
+      "url": "/:region/help-me-choose/results",
+      "pattern": "/:region/help-me-choose/results",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/journeys/page.tsx",
+      "url": "/:region/journeys",
+      "pattern": "/:region/journeys",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/printables/page.tsx",
+      "url": "/:region/printables",
+      "pattern": "/:region/printables",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/printables/[slug]/page.tsx",
+      "url": "/:region/printables/:slug",
+      "pattern": "/:region/printables/:slug",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        },
+        {
+          "name": "slug",
+          "pattern": "[slug]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 2
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/tools/page.tsx",
+      "url": "/:region/tools",
+      "pattern": "/:region/tools",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/trust/page.tsx",
+      "url": "/:region/trust",
+      "pattern": "/:region/trust",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/trust/accessibility/page.tsx",
+      "url": "/:region/trust/accessibility",
+      "pattern": "/:region/trust/accessibility",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/trust/citations/page.tsx",
+      "url": "/:region/trust/citations",
+      "pattern": "/:region/trust/citations",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/trust/contact/page.tsx",
+      "url": "/:region/trust/contact",
+      "pattern": "/:region/trust/contact",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/trust/disclaimer/page.tsx",
+      "url": "/:region/trust/disclaimer",
+      "pattern": "/:region/trust/disclaimer",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/trust/editorial-standards/page.tsx",
+      "url": "/:region/trust/editorial-standards",
+      "pattern": "/:region/trust/editorial-standards",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/trust/evidence-policy/page.tsx",
+      "url": "/:region/trust/evidence-policy",
+      "pattern": "/:region/trust/evidence-policy",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/trust/last-reviewed/page.tsx",
+      "url": "/:region/trust/last-reviewed",
+      "pattern": "/:region/trust/last-reviewed",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/trust/privacy/page.tsx",
+      "url": "/:region/trust/privacy",
+      "pattern": "/:region/trust/privacy",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/trust/safeguarding/page.tsx",
+      "url": "/:region/trust/safeguarding",
+      "pattern": "/:region/trust/safeguarding",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "[region]/trust/terms/page.tsx",
+      "url": "/:region/trust/terms",
+      "pattern": "/:region/trust/terms",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "region",
+          "pattern": "[region]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 0
+        }
+      ],
       "file": "page.tsx"
     },
     {
@@ -107,6 +663,13 @@
       "path": "coach/page.tsx",
       "url": "/coach",
       "pattern": "/coach",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "conditions/page.tsx",
+      "url": "/conditions",
+      "pattern": "/conditions",
       "isDynamic": false,
       "file": "page.tsx"
     },
@@ -262,6 +825,68 @@
       "url": "/get-started",
       "pattern": "/get-started",
       "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "guides/page.tsx",
+      "url": "/guides",
+      "pattern": "/guides",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "guides/[pillar]/page.tsx",
+      "url": "/guides/:pillar",
+      "pattern": "/guides/:pillar",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "pillar",
+          "pattern": "[pillar]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 1
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "guides/[pillar]/[slug]/page.tsx",
+      "url": "/guides/:pillar/:slug",
+      "pattern": "/guides/:pillar/:slug",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "pillar",
+          "pattern": "[pillar]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 1
+        },
+        {
+          "name": "slug",
+          "pattern": "[slug]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 2
+        }
+      ],
+      "file": "page.tsx"
+    },
+    {
+      "path": "guides/[slug]/page.tsx",
+      "url": "/guides/:slug",
+      "pattern": "/guides/:slug",
+      "isDynamic": true,
+      "dynamicSegments": [
+        {
+          "name": "slug",
+          "pattern": "[slug]",
+          "isOptional": false,
+          "isCatchAll": false,
+          "index": 1
+        }
+      ],
       "file": "page.tsx"
     },
     {
@@ -543,6 +1168,62 @@
       "path": "tools/stress-tools/page.tsx",
       "url": "/tools/stress-tools",
       "pattern": "/tools/stress-tools",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "trust/page.tsx",
+      "url": "/trust",
+      "pattern": "/trust",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "trust/accessibility/page.tsx",
+      "url": "/trust/accessibility",
+      "pattern": "/trust/accessibility",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "trust/contact/page.tsx",
+      "url": "/trust/contact",
+      "pattern": "/trust/contact",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "trust/disclaimer/page.tsx",
+      "url": "/trust/disclaimer",
+      "pattern": "/trust/disclaimer",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "trust/evidence-policy/page.tsx",
+      "url": "/trust/evidence-policy",
+      "pattern": "/trust/evidence-policy",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "trust/privacy/page.tsx",
+      "url": "/trust/privacy",
+      "pattern": "/trust/privacy",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "trust/safeguarding/page.tsx",
+      "url": "/trust/safeguarding",
+      "pattern": "/trust/safeguarding",
+      "isDynamic": false,
+      "file": "page.tsx"
+    },
+    {
+      "path": "trust/terms/page.tsx",
+      "url": "/trust/terms",
+      "pattern": "/trust/terms",
       "isDynamic": false,
       "file": "page.tsx"
     }

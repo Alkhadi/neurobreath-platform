@@ -26,7 +26,7 @@ export function SiteFooter() {
         <div className="ft-nav-inner">
           {/* Brand + Support in Navigation Area */}
           <div className="ft-nav-brand">
-            <Link className="ft-logo" href="/" aria-label="Return to NeuroBreath homepage">
+            <Link className="ft-logo" href={regionPrefix} aria-label="Return to NeuroBreath homepage">
               <Image 
                 src="/icons/neurobreath-logo-square-64.png" 
                 alt="NeuroBreath logo" 

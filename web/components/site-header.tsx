@@ -24,7 +24,7 @@ export function SiteHeader() {
   return (
     <header className="nb-header">
       <div className="nb-header-container">
-        <Link href="/" className="nb-brand" id="brandLink" onClick={closeMegaMenu}>
+        <Link href={regionPrefix} className="nb-brand" id="brandLink" onClick={closeMegaMenu}>
           <Image 
             src="/icons/neurobreath-logo-square-64.png" 
             alt="NeuroBreath Logo" 
@@ -54,7 +54,7 @@ export function SiteHeader() {
           aria-label="Primary"
         >
           {/* Home Link */}
-          <Link href="/" className="nb-nav-link" onClick={closeMegaMenu}>
+          <Link href={regionPrefix} className="nb-nav-link" onClick={closeMegaMenu}>
             Home
           </Link>
 

@@ -1,5 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { PrimaryCtaBlock } from '@/components/growth/PrimaryCtaBlock';
+import { RelatedResources } from '@/components/growth/RelatedResources';
+import { TrustMiniPanel } from '@/components/trust/TrustMiniPanel';
 import { CredibilityFooter } from '@/components/trust/CredibilityFooter';
 import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog';
 import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial';
@@ -64,6 +67,30 @@ export default async function RegionConditionsPage({ params }: RegionConditionsP
   const resolved = await params;
   const region = getRegionFromKey(resolved.region);
   const regionKey = getRegionKey(region);
+
+  const path = `/${regionKey}/conditions`;
+  const url = generateCanonicalUrl(path);
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Conditions',
+        item: url,
+      },
+    ],
+  };
+
+  const webPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'Conditions we cover',
+    description: 'Filter conditions and support areas by audience and support need, then jump into tools and guides.',
+    url,
+  };
 
   const editorial = createEditorialMeta({
     authorId: 'nb-editorial-team',
@@ -149,11 +176,18 @@ export default async function RegionConditionsPage({ params }: RegionConditionsP
           <p className="text-base text-slate-600 max-w-3xl">
             Educational support, practical tools, and evidence-informed guidance. We do not provide medical advice or diagnoses.
           </p>
+          <PrimaryCtaBlock
+            region={region}
+            title="Start with a safe next step"
+            description="Use Help Me Choose for a quick plan, or pick a starter journey that combines tools and guides."
+            primary={{ label: 'Help me choose', href: `/${regionKey}/help-me-choose` }}
+            secondary={{ label: 'Starter journeys', href: `/${regionKey}/journeys` }}
+          />
           <div className="flex flex-wrap gap-3">
             <Link href={`/${regionKey}/guides`} className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500">
               Explore guides
             </Link>
-            <Link href="/tools" className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 hover:border-slate-300">
+            <Link href={`/${regionKey}/tools`} className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 hover:border-slate-300">
               Browse tools
             </Link>
             <Link href={`/${regionKey}/trust/evidence-policy`} className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 hover:border-slate-300">
@@ -164,6 +198,32 @@ export default async function RegionConditionsPage({ params }: RegionConditionsP
             </Link>
           </div>
         </header>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="text-xl font-semibold text-slate-900">Key tools (try now)</h2>
+            <p className="mt-1 text-sm text-slate-600">
+              Start with a low-friction tool, then return to conditions to refine your plan.
+            </p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {[
+                { label: 'SOS 60-second calm', href: '/techniques/sos' },
+                { label: 'Breath tools', href: '/tools/breath-tools' },
+                { label: 'Focus tiles', href: '/tools/focus-tiles' },
+                { label: 'Sleep tools', href: '/tools/sleep-tools' },
+              ].map(item => (
+                <Link
+                  key={item.href + item.label}
+                  href={item.href}
+                  className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:border-slate-300"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </section>
+          <TrustMiniPanel region={region} />
+        </div>
 
         <section className="space-y-4">
           <div>
@@ -213,8 +273,13 @@ export default async function RegionConditionsPage({ params }: RegionConditionsP
           audienceLabels={audienceLabels}
         />
 
+        <RelatedResources region={region} tags={['focus', 'calm', 'sleep', 'sensory']} title="More support" maxPerGroup={5} />
+
         <CredibilityFooter editorial={editorial} region={region} />
       </div>
+
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
     </main>
   );
 }
