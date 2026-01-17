@@ -1,11 +1,13 @@
 import React from 'react';
 import { Metadata } from 'next';
+import Link from 'next/link';
 import { generatePageMetadata } from '@/lib/seo/metadata';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { SupportCommunity } from '@/components/dyslexia/SupportCommunity';
 import { 
   BookOpen, Brain, Heart, Home, School, Users, 
   FileText, Download, CheckCircle2, AlertCircle, 
@@ -22,9 +24,12 @@ export const metadata: Metadata = generatePageMetadata({
 export default function DyslexiaParentPage() {
   return (
     <main className="mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
       
       {/* Hero Section */}
-      <section className="space-y-6">
+      <section id="main-content" className="space-y-6">
         <Card className="overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30">
           <CardContent className="p-6 sm:p-8 lg:p-10 space-y-6">
             <div className="space-y-4">
@@ -43,26 +48,38 @@ export default function DyslexiaParentPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              <Button className="w-full gap-2 bg-blue-600 hover:bg-blue-700">
-                <BookOpen className="w-5 h-5" />
-                Quick Start Guide
+              <Button asChild className="w-full gap-2 bg-blue-600 hover:bg-blue-700">
+                <a href="#quick-start">
+                  <BookOpen className="w-5 h-5" />
+                  Quick Start Guide
+                </a>
               </Button>
-              <Button variant="outline" className="w-full gap-2">
-                <School className="w-5 h-5" />
-                School Support
+              <Button asChild variant="outline" className="w-full gap-2">
+                <a href="#school-support">
+                  <School className="w-5 h-5" />
+                  School Support
+                </a>
               </Button>
-              <Button variant="outline" className="w-full gap-2">
-                <Heart className="w-5 h-5" />
-                Emotional Support
+              <Button asChild variant="outline" className="w-full gap-2">
+                <a href="#emotional-support">
+                  <Heart className="w-5 h-5" />
+                  Emotional Support
+                </a>
               </Button>
-              <Button variant="outline" className="w-full gap-2">
-                <Download className="w-5 h-5" />
-                Resources
+              <Button asChild variant="outline" className="w-full gap-2">
+                <a href="#downloads">
+                  <Download className="w-5 h-5" />
+                  Resources
+                </a>
               </Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-              <div className="flex items-start gap-3 p-4 rounded-lg bg-white/50 dark:bg-gray-900/50 border border-blue-200 dark:border-blue-800">
+              <a
+                href="#evidence"
+                className="flex items-start gap-3 p-4 rounded-lg bg-white/50 dark:bg-gray-900/50 border border-blue-200 dark:border-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                aria-label="Jump to evidence-based resources"
+              >
                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center">
                   <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" />
                 </div>
@@ -70,9 +87,13 @@ export default function DyslexiaParentPage() {
                   <h3 className="font-semibold text-foreground text-sm">Evidence-Based</h3>
                   <p className="text-xs text-muted-foreground">Backed by NHS & research institutions</p>
                 </div>
-              </div>
+              </a>
 
-              <div className="flex items-start gap-3 p-4 rounded-lg bg-white/50 dark:bg-gray-900/50 border border-blue-200 dark:border-blue-800">
+              <a
+                href="#support"
+                className="flex items-start gap-3 p-4 rounded-lg bg-white/50 dark:bg-gray-900/50 border border-blue-200 dark:border-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                aria-label="Jump to parent community and support"
+              >
                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center">
                   <Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                 </div>
@@ -80,9 +101,13 @@ export default function DyslexiaParentPage() {
                   <h3 className="font-semibold text-foreground text-sm">Parent Community</h3>
                   <p className="text-xs text-muted-foreground">Connect with other parents</p>
                 </div>
-              </div>
+              </a>
 
-              <div className="flex items-start gap-3 p-4 rounded-lg bg-white/50 dark:bg-gray-900/50 border border-blue-200 dark:border-blue-800">
+              <a
+                href="#downloads"
+                className="flex items-start gap-3 p-4 rounded-lg bg-white/50 dark:bg-gray-900/50 border border-blue-200 dark:border-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                aria-label="Jump to practical tools and downloads"
+              >
                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center">
                   <Lightbulb className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                 </div>
@@ -90,7 +115,61 @@ export default function DyslexiaParentPage() {
                   <h3 className="font-semibold text-foreground text-sm">Practical Tools</h3>
                   <p className="text-xs text-muted-foreground">Ready-to-use activities & templates</p>
                 </div>
+              </a>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* Quick Start */}
+      <section id="quick-start" className="space-y-4">
+        <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/50">
+                <BookOpen className="w-6 h-6 text-blue-600 dark:text-blue-400" />
               </div>
+              <div>
+                <CardTitle className="text-2xl">Quick Start Guide</CardTitle>
+                <CardDescription>3 practical steps for this week</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="p-4 rounded-lg bg-white dark:bg-gray-900/50 border">
+                <h3 className="font-semibold text-foreground mb-2">1) Protect confidence</h3>
+                <p className="text-sm text-muted-foreground">Separate reading effort from intelligence. Praise strategies, persistence, and small wins.</p>
+              </div>
+              <div className="p-4 rounded-lg bg-white dark:bg-gray-900/50 border">
+                <h3 className="font-semibold text-foreground mb-2">2) Make practice short</h3>
+                <p className="text-sm text-muted-foreground">Aim for 10–15 minutes daily of structured practice, with breaks and a clear finish line.</p>
+              </div>
+              <div className="p-4 rounded-lg bg-white dark:bg-gray-900/50 border">
+                <h3 className="font-semibold text-foreground mb-2">3) Align with school</h3>
+                <p className="text-sm text-muted-foreground">Ask what intervention is used, what to reinforce at home, and which accommodations apply now.</p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <Button asChild className="gap-2">
+                <a href="/legacy-assets/assets/downloads/dyslexia-parent-support-guide.pdf" download aria-label="Download dyslexia parent support guide (PDF)">
+                  <Download className="w-4 h-4" />
+                  Download Parent Guide (PDF)
+                </a>
+              </Button>
+              <Button asChild variant="outline" className="gap-2">
+                <a href="#school-support">
+                  <School className="w-4 h-4" />
+                  Jump to School Support
+                </a>
+              </Button>
+              <Button asChild variant="outline" className="gap-2">
+                <a href="#downloads">
+                  <FileText className="w-4 h-4" />
+                  Browse Downloads
+                </a>
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -319,8 +398,67 @@ export default function DyslexiaParentPage() {
         </Card>
       </section>
 
+      {/* Emotional Support */}
+      <section id="emotional-support" className="space-y-4">
+        <Card className="bg-gradient-to-r from-rose-50 to-amber-50 dark:from-rose-950/20 dark:to-amber-950/20">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-rose-100 dark:bg-rose-900/50">
+                <Heart className="w-6 h-6 text-rose-600 dark:text-rose-400" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl">Emotional Support</CardTitle>
+                <CardDescription>Reducing shame, frustration, and school stress</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert className="bg-white/70 dark:bg-gray-900/50">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                If reading triggers tears, avoidance, or anger, treat it like a stress response: pause, regulate, then restart with a smaller task.
+              </AlertDescription>
+            </Alert>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="p-4 rounded-lg bg-white dark:bg-gray-900/50 border">
+                <h3 className="font-semibold text-foreground mb-2">Language that helps</h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li>• “Your brain is learning a new pathway.”</li>
+                  <li>• “Let’s do one small step, then stop.”</li>
+                  <li>• “Mistakes are data, not failure.”</li>
+                </ul>
+              </div>
+              <div className="p-4 rounded-lg bg-white dark:bg-gray-900/50 border">
+                <h3 className="font-semibold text-foreground mb-2">When to scale down</h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li>• Headaches/tummy aches before reading</li>
+                  <li>• Meltdowns at the start of homework</li>
+                  <li>• “I’m stupid” or “I can’t” self-talk</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <Button asChild className="gap-2">
+                <Link href="/techniques/box-breathing">
+                  <TrendingUp className="w-4 h-4" />
+                  Try Box Breathing
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="gap-2">
+                <a href="#support">
+                  <Users className="w-4 h-4" />
+                  Parent Support & FAQs
+                </a>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
       {/* School Collaboration */}
-      <section className="space-y-4">
+      <section id="school-support" className="space-y-4">
         <Card>
           <CardHeader>
             <div className="flex items-center gap-3">
@@ -471,7 +609,7 @@ export default function DyslexiaParentPage() {
       </section>
 
       {/* Resources & Downloads */}
-      <section className="space-y-4">
+      <section id="downloads" className="space-y-4">
         <Card>
           <CardHeader>
             <div className="flex items-center gap-3">
@@ -486,40 +624,64 @@ export default function DyslexiaParentPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-3 md:grid-cols-2">
-              <Button variant="outline" className="justify-start gap-3 h-auto p-4">
-                <FileText className="w-5 h-5" />
-                <div className="text-left">
-                  <div className="font-semibold">Parent Quick Guide (PDF)</div>
-                  <div className="text-xs text-muted-foreground">Essential tips for supporting at home</div>
-                </div>
+              <Button asChild variant="outline" className="justify-start gap-3 h-auto p-4">
+                <a
+                  href="/legacy-assets/assets/downloads/dyslexia-parent-support-guide.pdf"
+                  download
+                  aria-label="Download dyslexia parent support guide (PDF)"
+                >
+                  <FileText className="w-5 h-5" />
+                  <div className="text-left">
+                    <div className="font-semibold">Parent Support Guide (PDF)</div>
+                    <div className="text-xs text-muted-foreground">Essential home + school support overview</div>
+                  </div>
+                </a>
               </Button>
 
-              <Button variant="outline" className="justify-start gap-3 h-auto p-4">
-                <FileText className="w-5 h-5" />
-                <div className="text-left">
-                  <div className="font-semibold">School Meeting Template (PDF)</div>
-                  <div className="text-xs text-muted-foreground">Prepare for parent-teacher meetings</div>
-                </div>
+              <Button asChild variant="outline" className="justify-start gap-3 h-auto p-4">
+                <a
+                  href="/legacy-assets/assets/downloads/dyslexia-reading-checklist.pdf"
+                  download
+                  aria-label="Download dyslexia reading checklist (PDF)"
+                >
+                  <FileText className="w-5 h-5" />
+                  <div className="text-left">
+                    <div className="font-semibold">Reading Checklist (PDF)</div>
+                    <div className="text-xs text-muted-foreground">Signs, supports, and what to ask for</div>
+                  </div>
+                </a>
               </Button>
 
-              <Button variant="outline" className="justify-start gap-3 h-auto p-4">
-                <FileText className="w-5 h-5" />
-                <div className="text-left">
-                  <div className="font-semibold">Accommodation Request Letter</div>
-                  <div className="text-xs text-muted-foreground">Template for requesting support</div>
-                </div>
+              <Button asChild variant="outline" className="justify-start gap-3 h-auto p-4">
+                <a
+                  href="/legacy-assets/assets/downloads/dyslexia-routine-planner.pdf"
+                  download
+                  aria-label="Download dyslexia routine planner (PDF)"
+                >
+                  <FileText className="w-5 h-5" />
+                  <div className="text-left">
+                    <div className="font-semibold">Routine Planner (PDF)</div>
+                    <div className="text-xs text-muted-foreground">Homework flow, breaks, and rewards</div>
+                  </div>
+                </a>
               </Button>
 
-              <Button variant="outline" className="justify-start gap-3 h-auto p-4">
-                <FileText className="w-5 h-5" />
-                <div className="text-left">
-                  <div className="font-semibold">Homework Help Strategies</div>
-                  <div className="text-xs text-muted-foreground">Practical tips for homework time</div>
-                </div>
+              <Button asChild variant="outline" className="justify-start gap-3 h-auto p-4">
+                <a
+                  href="/legacy-assets/assets/downloads/dyslexia-practice-pack-templates.pdf"
+                  download
+                  aria-label="Download dyslexia practice pack templates (PDF)"
+                >
+                  <FileText className="w-5 h-5" />
+                  <div className="text-left">
+                    <div className="font-semibold">Practice Pack & Templates (PDF)</div>
+                    <div className="text-xs text-muted-foreground">Printable activities and structured practice</div>
+                  </div>
+                </a>
               </Button>
             </div>
 
-            <div className="pt-4 border-t">
+            <div id="evidence" className="pt-4 border-t">
               <h4 className="font-semibold mb-3">Recommended UK Organizations</h4>
               <div className="grid gap-2 md:grid-cols-2 text-sm">
                 <a href="https://www.bdadyslexia.org.uk/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
@@ -565,7 +727,9 @@ export default function DyslexiaParentPage() {
                 <p className="text-sm text-muted-foreground mb-2">
                   Breathe in for 4, hold for 4, out for 4, hold for 4. Great for calming before homework or tests.
                 </p>
-                <Button size="sm" className="w-full">Try Now</Button>
+                <Button asChild size="sm" className="w-full">
+                  <Link href="/techniques/box-breathing">Try Now</Link>
+                </Button>
               </div>
 
               <div className="p-4 border rounded-lg bg-white dark:bg-gray-900/50">
@@ -573,7 +737,9 @@ export default function DyslexiaParentPage() {
                 <p className="text-sm text-muted-foreground mb-2">
                   Breathe in for 4, hold for 7, out for 8. Perfect for bedtime relaxation.
                 </p>
-                <Button size="sm" className="w-full">Try Now</Button>
+                <Button asChild size="sm" className="w-full">
+                  <Link href="/techniques/4-7-8">Try Now</Link>
+                </Button>
               </div>
 
               <div className="p-4 border rounded-lg bg-white dark:bg-gray-900/50">
@@ -581,12 +747,16 @@ export default function DyslexiaParentPage() {
                 <p className="text-sm text-muted-foreground mb-2">
                   60-second emergency calm technique for meltdowns or overwhelm.
                 </p>
-                <Button size="sm" className="w-full">Try Now</Button>
+                <Button asChild size="sm" className="w-full">
+                  <Link href="/techniques/sos">Try Now</Link>
+                </Button>
               </div>
             </div>
           </CardContent>
         </Card>
       </section>
+
+      <SupportCommunity />
 
     </main>
   );
