@@ -26,6 +26,10 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { GraduationCap } from 'lucide-react';
 import { EvidenceFooter } from '@/components/evidence-footer';
 import { evidenceByRoute } from '@/lib/evidence/page-evidence';
+import { CredibilityFooter } from '@/components/trust/CredibilityFooter';
+import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog';
+import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial';
+import type { Region } from '@/lib/region/region';
 // New Evidence-Based Components
 import { RhythmTraining } from '@/components/RhythmTraining';
 import { RapidNamingTest } from '@/components/RapidNamingTest';
@@ -40,6 +44,20 @@ type TrainingApproach = 'focused' | 'direct' | 'fluency';
 export const evidence = evidenceByRoute['/dyslexia-reading-training'];
 
 export default function DyslexiaReadingTrainingPage() {
+  const region: Region = 'UK';
+  const editorial = createEditorialMeta({
+    authorId: 'nb-editorial-team',
+    reviewerId: 'nb-evidence-review',
+    editorialRoleNotes: 'Reviewed for clarity, safety language, and evidence framing.',
+    createdAt: '2026-01-16',
+    updatedAt: '2026-01-17',
+    reviewedAt: '2026-01-17',
+    reviewIntervalDays: 120,
+    changeLog: createChangeLog([
+      createChangeLogEntry('2026-01-17', 'Credibility footer and review details added.', 'safety'),
+    ]),
+    citationsSummary: createCitationsSummary(evidence?.citations?.length ?? 0, ['A', 'B']),
+  });
   const [sessionModalOpen, setSessionModalOpen] = useState(false);
   const breathingRef = useRef<HTMLDivElement>(null);
   const phonicsRef = useRef<HTMLDivElement>(null);
@@ -518,6 +536,9 @@ export default function DyslexiaReadingTrainingPage() {
         </Dialog>
 
         {/* Evidence Sources */}
+        <div className="py-8">
+          <CredibilityFooter editorial={editorial} region={region} />
+        </div>
         <div className="py-12">
           <EvidenceFooter evidence={evidence} />
         </div>

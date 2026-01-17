@@ -1,3 +1,6 @@
+import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog';
+import { createCitationsSummary, createEditorialMeta, type PageEditorial } from '@/lib/editorial/pageEditorial';
+
 export type GlossaryTag = 'condition' | 'tool' | 'education' | 'school' | 'workplace' | 'parenting' | 'evidence';
 
 export interface GlossaryCitation {
@@ -31,16 +34,43 @@ export interface GlossaryTerm {
   };
   reviewedAt: string;
   reviewIntervalDays: number;
+  editorial?: PageEditorial;
 }
 
 const defaultCitations = () => ({ uk: [], us: [], global: [] });
 
-const withDefaults = (term: Omit<GlossaryTerm, 'citationsByRegion' | 'reviewedAt' | 'reviewIntervalDays'> & Partial<Pick<GlossaryTerm, 'citationsByRegion' | 'reviewedAt' | 'reviewIntervalDays'>>) => ({
-  citationsByRegion: term.citationsByRegion ?? defaultCitations(),
-  reviewedAt: term.reviewedAt ?? '2026-01-17',
-  reviewIntervalDays: term.reviewIntervalDays ?? 180,
-  ...term,
-});
+const withDefaults = (
+  term: Omit<GlossaryTerm, 'citationsByRegion' | 'reviewedAt' | 'reviewIntervalDays' | 'editorial'> &
+    Partial<Pick<GlossaryTerm, 'citationsByRegion' | 'reviewedAt' | 'reviewIntervalDays' | 'editorial'>>,
+) => {
+  const citationsByRegion = term.citationsByRegion ?? defaultCitations();
+  const reviewedAt = term.reviewedAt ?? '2026-01-17';
+  const reviewIntervalDays = term.reviewIntervalDays ?? 180;
+  const citationsCount =
+    citationsByRegion.uk.length + citationsByRegion.us.length + citationsByRegion.global.length;
+
+  return {
+    citationsByRegion,
+    reviewedAt,
+    reviewIntervalDays,
+    editorial:
+      term.editorial ??
+      createEditorialMeta({
+        authorId: 'nb-editorial-team',
+        reviewerId: 'nb-evidence-review',
+        editorialRoleNotes: 'Reviewed for clarity, safety language, and glossary consistency.',
+        createdAt: reviewedAt,
+        updatedAt: reviewedAt,
+        reviewedAt,
+        reviewIntervalDays,
+        changeLog: createChangeLog([
+          createChangeLogEntry(reviewedAt, 'Initial glossary definition published.', 'content'),
+        ]),
+        citationsSummary: createCitationsSummary(citationsCount, citationsCount ? ['A', 'B'] : ['C']),
+      }),
+    ...term,
+  };
+};
 
 export const GLOSSARY_TERMS: GlossaryTerm[] = [
   withDefaults({

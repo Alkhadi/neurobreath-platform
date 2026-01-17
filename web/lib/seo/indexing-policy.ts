@@ -48,6 +48,10 @@ const INDEXABLE_PRINTABLES_PREFIXES = ['/printables'];
 
 const INDEXABLE_JOURNEYS_PREFIXES = ['/journeys'];
 
+const INDEXABLE_ABOUT_PREFIXES = ['/about'];
+
+const INDEXABLE_EDITORIAL_PREFIXES = ['/editorial'];
+
 const INDEXABLE_GLOSSARY_PREFIXES = ['/glossary'];
 
 const INDEXABLE_TOOL_ALLOWLIST = new Set([
@@ -121,6 +125,26 @@ export function getIndexingDecision(pathname: string): IndexingDecision {
       index: true,
       includeInSitemap: true,
       reason: 'Trust centre content',
+    };
+  }
+
+  if (INDEXABLE_ABOUT_PREFIXES.some(prefix => cleaned === prefix || cleaned.startsWith(`${prefix}/`))) {
+    return {
+      path: cleaned,
+      pageType: 'other',
+      index: true,
+      includeInSitemap: true,
+      reason: 'About authority pages',
+    };
+  }
+
+  if (INDEXABLE_EDITORIAL_PREFIXES.some(prefix => cleaned === prefix || cleaned.startsWith(`${prefix}/`))) {
+    return {
+      path: cleaned,
+      pageType: 'other',
+      index: true,
+      includeInSitemap: true,
+      reason: 'Editorial team pages',
     };
   }
 

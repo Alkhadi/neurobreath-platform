@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-label="NeuroBreath logo mono white">
+  <title>NeuroBreath Logo Mono White</title>
+  <g id="icon" transform="translate(40 40) scale(0.46875)">
+    <circle
+      id="halo"
+      cx="256"
+      cy="256"
+      r="176"
+      fill="none"
+      stroke="hsl(0 0% 100%)"
+      stroke-width="64"
+      stroke-linecap="round"
+      stroke-dasharray="966 140"
+      stroke-dashoffset="138"
+    />
+    <g id="neuro-core" fill="hsl(0 0% 100%)">
+      <circle cx="236" cy="256" r="28" />
+      <circle cx="276" cy="256" r="28" />
+    </g>
+  </g>
+  <text
+    id="wordmark"
+    x="320"
+    y="196"
+    fill="hsl(0 0% 100%)"
+    font-family="Inter, sans-serif"
+    font-weight="600"
+    font-size="96"
+    letter-spacing="-0.5"
+  >NeuroBreath</text>
+</svg>

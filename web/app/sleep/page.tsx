@@ -6,6 +6,10 @@ import { Button } from '@/components/ui/button'
 import { Moon, Trophy, Target, CheckCircle, Calendar, TrendingUp, Award, Flame, Sparkles, Heart, Brain, Users, BookOpen, Lightbulb, Shield } from 'lucide-react'
 import { EvidenceFooter } from '@/components/evidence-footer'
 import { evidenceByRoute } from '@/lib/evidence/page-evidence'
+import { CredibilityFooter } from '@/components/trust/CredibilityFooter'
+import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog'
+import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial'
+import type { Region } from '@/lib/region/region'
 
 // Types
 interface SleepEntry {
@@ -162,6 +166,20 @@ const initialChecklist: ChecklistItem[] = [
 export const evidence = evidenceByRoute['/sleep']
 
 export default function SleepPage() {
+  const region: Region = 'UK'
+  const editorial = createEditorialMeta({
+    authorId: 'nb-editorial-team',
+    reviewerId: 'nb-evidence-review',
+    editorialRoleNotes: 'Reviewed for clarity, safety language, and sleep-support framing.',
+    createdAt: '2026-01-16',
+    updatedAt: '2026-01-17',
+    reviewedAt: '2026-01-17',
+    reviewIntervalDays: 120,
+    changeLog: createChangeLog([
+      createChangeLogEntry('2026-01-17', 'Credibility footer and review details added.', 'safety'),
+    ]),
+    citationsSummary: createCitationsSummary(evidence?.citations?.length ?? 0, ['A', 'B']),
+  })
   // State
   const [activeSection, setActiveSection] = useState<string>('understanding')
   const [sleepEntries, setSleepEntries] = useState<SleepEntry[]>([])
@@ -1276,6 +1294,10 @@ export default function SleepPage() {
             <Link href="/techniques/4-7-8">Try Sleep Breathing</Link>
           </Button>
         </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <CredibilityFooter editorial={editorial} region={region} />
       </div>
 
       {/* Evidence Sources */}

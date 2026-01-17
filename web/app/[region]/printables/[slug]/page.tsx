@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PrintActions } from '@/components/printables/PrintActions';
 import { CitationList } from '@/components/trust/CitationList';
-import { LastReviewedBadge } from '@/components/trust/LastReviewedBadge';
+import { CredibilityFooter } from '@/components/trust/CredibilityFooter';
 import { PRINTABLES, getPrintableById, getPrintableCitationsForRegion, getPrintableSummary, getPrintableTitle } from '@/lib/printables/printables';
 import { getRegionAlternates, getRegionFromKey, getRegionKey } from '@/lib/region/region';
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
@@ -104,6 +104,7 @@ export default async function PrintableDetailPage({ params }: PrintableDetailPag
     label: source.label,
     url: source.url,
   }));
+  const editorial = printable.editorial;
 
   const journeys = printable.internalLinks.relatedJourneys
     .map(id => getJourneyById(id))
@@ -325,7 +326,6 @@ export default async function PrintableDetailPage({ params }: PrintableDetailPag
           <h2 className="text-lg font-semibold text-slate-900">Trust & evidence</h2>
           <p className="text-xs text-slate-500">Educational resource — not medical advice.</p>
           <CitationList sources={citations} title="Citations" />
-          <LastReviewedBadge reviewedAt={printable.reviewedAt} reviewIntervalDays={printable.reviewIntervalDays} region={region} />
           <div className="text-xs text-slate-500">
             <Link href={`/${regionKey}/trust/evidence-policy`} className="text-indigo-600 hover:underline">
               Evidence policy
@@ -344,6 +344,8 @@ export default async function PrintableDetailPage({ params }: PrintableDetailPag
             )}
           </div>
         </section>
+
+        <CredibilityFooter editorial={editorial} region={region} />
       </div>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />

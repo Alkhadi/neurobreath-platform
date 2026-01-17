@@ -1,4 +1,6 @@
 import type { ContentPage } from '@/lib/content/canonical-schema';
+import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog';
+import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial';
 
 export const breathingStressPage: ContentPage = {
   id: 'breathing-stress',
@@ -158,6 +160,19 @@ export const breathingStressPage: ContentPage = {
   },
   reviewedAt: '2026-01-16',
   reviewIntervalDays: 90,
+  editorial: createEditorialMeta({
+    authorId: 'nb-editorial-team',
+    reviewerId: 'nb-evidence-review',
+    editorialRoleNotes: 'Reviewed for clarity, safety language, and evidence sourcing.',
+    createdAt: '2026-01-10',
+    updatedAt: '2026-01-16',
+    reviewedAt: '2026-01-16',
+    reviewIntervalDays: 90,
+    changeLog: createChangeLog([
+      createChangeLogEntry('2026-01-16', 'Initial breathing guide published and reviewed.', 'content'),
+    ]),
+    citationsSummary: createCitationsSummary(3, ['A', 'B']),
+  }),
   primaryPillar: 'stress',
   tags: ['breathing', 'stress', 'calm', 'routine'],
   summary: 'A short daily breathing routine for steadying stress and focus.',

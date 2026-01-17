@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { GlossaryTermView } from '@/components/glossary/GlossaryTermView';
+import { CredibilityFooter } from '@/components/trust/CredibilityFooter';
 import { GLOSSARY_TERM_MAP, GLOSSARY_TERMS } from '@/lib/glossary/glossary';
 import { getRegionAlternates, getRegionFromKey, getRegionKey } from '@/lib/region/region';
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
@@ -57,6 +58,7 @@ export default async function GlossaryTermPage({ params }: GlossaryTermPageProps
   if (!term) return notFound();
 
   const localeSpelling = region === 'US' ? term.localeVariants.us.spelling : term.localeVariants.uk.spelling;
+  const editorial = term.editorial;
 
   const relatedTerms = term.relatedTerms
     .map(id => GLOSSARY_TERM_MAP.get(id))
@@ -138,6 +140,7 @@ export default async function GlossaryTermPage({ params }: GlossaryTermPageProps
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
       <div className="mx-auto w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1100px] py-12 space-y-8">
         <GlossaryTermView term={term} region={region} relatedTerms={relatedTerms} nextLinks={nextLinks} />
+        <CredibilityFooter editorial={editorial} region={region} />
       </div>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />

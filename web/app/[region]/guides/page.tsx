@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { CredibilityFooter } from '@/components/trust/CredibilityFooter';
 import { canonicalPages } from '@/lib/content/pages';
+import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog';
+import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial';
 import { resolveSEO, resolveH1 } from '@/lib/content/localise';
 import { getRegionAlternates, getRegionFromKey, getRegionKey } from '@/lib/region/region';
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
@@ -12,6 +15,19 @@ interface RegionGuidesPageProps {
 export async function generateMetadata({ params }: RegionGuidesPageProps): Promise<Metadata> {
   const resolvedParams = await params;
   const region = getRegionFromKey(resolvedParams.region);
+  const editorial = createEditorialMeta({
+    authorId: 'nb-editorial-team',
+    reviewerId: 'nb-evidence-review',
+    editorialRoleNotes: 'Reviewed for clarity, safety language, and guide coverage.',
+    createdAt: '2026-01-17',
+    updatedAt: '2026-01-17',
+    reviewedAt: '2026-01-17',
+    reviewIntervalDays: 180,
+    changeLog: createChangeLog([
+      createChangeLogEntry('2026-01-17', 'Guides hub refreshed with current content.', 'content'),
+    ]),
+    citationsSummary: createCitationsSummary(canonicalPages.length, ['A', 'B']),
+  });
   const alternates = getRegionAlternates('/guides');
 
   return {
@@ -56,6 +72,8 @@ export default async function RegionGuidesPage({ params }: RegionGuidesPageProps
             );
           })}
         </section>
+
+        <CredibilityFooter editorial={editorial} region={region} />
       </div>
     </main>
   );

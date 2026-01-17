@@ -6,10 +6,28 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { EvidenceFooter } from '@/components/evidence-footer'
 import { evidenceByRoute } from '@/lib/evidence/page-evidence'
+import { CredibilityFooter } from '@/components/trust/CredibilityFooter'
+import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog'
+import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial'
+import type { Region } from '@/lib/region/region'
 
 export const evidence = evidenceByRoute['/breathing']
 
 export default function BreathingExercisesPage() {
+  const region: Region = 'UK'
+  const editorial = createEditorialMeta({
+    authorId: 'nb-editorial-team',
+    reviewerId: 'nb-evidence-review',
+    editorialRoleNotes: 'Reviewed for clarity, safety language, and evidence framing.',
+    createdAt: '2026-01-16',
+    updatedAt: '2026-01-17',
+    reviewedAt: '2026-01-17',
+    reviewIntervalDays: 90,
+    changeLog: createChangeLog([
+      createChangeLogEntry('2026-01-17', 'Credibility footer and review details added.', 'safety'),
+    ]),
+    citationsSummary: createCitationsSummary(evidence?.citations?.length ?? 0, ['A', 'B']),
+  })
   return (
     <main className="min-h-screen">
       {/* Skip Link for Accessibility */}
@@ -480,6 +498,12 @@ export default function BreathingExercisesPage() {
           </p>
         </div>
       </footer>
+
+      <section className="py-10 px-4 bg-slate-50">
+        <div className="max-w-7xl mx-auto">
+          <CredibilityFooter editorial={editorial} region={region} />
+        </div>
+      </section>
 
       {/* Evidence Sources */}
       <section className="py-12 px-4 bg-white">

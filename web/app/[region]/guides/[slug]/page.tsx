@@ -6,7 +6,7 @@ import { PlainEnglishToggle } from '@/components/content/PlainEnglishToggle';
 import { FaqSection } from '@/components/seo/FAQSection';
 import { RelatedContent } from '@/components/seo/RelatedContent';
 import { Citations } from '@/components/evidence/Citations';
-import { LastReviewed } from '@/components/evidence/LastReviewed';
+import { CredibilityFooter } from '@/components/trust/CredibilityFooter';
 import { GLOSSARY_TERM_MAP } from '@/lib/glossary/glossary';
 import { canonicalPagesBySlug } from '@/lib/content/pages';
 import { resolvePlainEnglish } from '@/lib/content/plainEnglish';
@@ -79,6 +79,7 @@ export default async function RegionGuidePage({ params }: RegionGuidePageProps) 
     url: `/${getRegionKey(region)}/guides/${resolvedParams.slug}`,
     existing: resolveRelatedItems(page.related, region),
   });
+  const editorial = page.editorial;
 
   const keyTerms = (page.keyTerms || [])
     .map(termId => GLOSSARY_TERM_MAP.get(termId))
@@ -101,7 +102,6 @@ export default async function RegionGuidePage({ params }: RegionGuidePageProps) 
           <p className="text-base text-slate-600 max-w-3xl">{resolveSEO(page.seo, region).description}</p>
         </header>
 
-        <LastReviewed reviewedAt={page.reviewedAt} reviewIntervalDays={page.reviewIntervalDays} />
         {plainEnglish && <PlainEnglishToggle summary={plainEnglish.summary} bullets={plainEnglish.bullets} />}
         <ContentRenderer
           blocks={resolvedBlocks}
@@ -132,6 +132,8 @@ export default async function RegionGuidePage({ params }: RegionGuidePageProps) 
         <FaqSection title="Quick FAQs" faqs={resolvedFaqs} pageUrl={pageUrl} />
 
         <Citations sources={citations} />
+
+        <CredibilityFooter editorial={editorial} region={region} />
       </div>
     </main>
   );

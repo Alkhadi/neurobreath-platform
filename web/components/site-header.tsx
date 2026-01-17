@@ -2,6 +2,7 @@
 
 /* eslint-disable jsx-a11y/aria-proptypes */
 import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ChevronDown, Menu, X } from 'lucide-react'
@@ -9,6 +10,8 @@ import { ChevronDown, Menu, X } from 'lucide-react'
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null)
+  const pathname = usePathname() || '/'
+  const regionPrefix = pathname.startsWith('/us') ? '/us' : '/uk'
 
   const toggleMegaMenu = (menuName: string) => {
     setActiveMegaMenu(activeMegaMenu === menuName ? null : menuName)
@@ -207,7 +210,8 @@ export function SiteHeader() {
                   </div>
                   <div className="nb-mega-menu-section">
                     <h4 className="nb-mega-menu-heading">About</h4>
-                    <Link href="/about-us" onClick={closeMegaMenu}>ℹ️ About Us</Link>
+                    <Link href={`${regionPrefix}/about`} onClick={closeMegaMenu}>ℹ️ About</Link>
+                    <Link href={`${regionPrefix}/trust`} onClick={closeMegaMenu}>🛡️ Trust Centre</Link>
                     <Link href="/blog" onClick={closeMegaMenu}>📝 Blog</Link>
                     <Link href="/contact" onClick={closeMegaMenu}>✉️ Contact</Link>
                   </div>

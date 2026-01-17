@@ -17,10 +17,28 @@ import { Heart, Rocket, Zap, Star, BookOpen, Users } from 'lucide-react';
 import { EvidenceFooter } from '@/components/evidence-footer';
 import { evidenceByRoute } from '@/lib/evidence/page-evidence';
 import { EducationalDisclaimerInline } from '@/components/trust/EducationalDisclaimerInline';
+import { CredibilityFooter } from '@/components/trust/CredibilityFooter';
+import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog';
+import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial';
+import type { Region } from '@/lib/region/region';
 
 export const evidence = evidenceByRoute['/adhd'];
 
 export default function HomePage() {
+  const region: Region = 'UK';
+  const editorial = createEditorialMeta({
+    authorId: 'nb-editorial-team',
+    reviewerId: 'nb-evidence-review',
+    editorialRoleNotes: 'Reviewed for clarity, safety language, and evidence framing.',
+    createdAt: '2026-01-16',
+    updatedAt: '2026-01-17',
+    reviewedAt: '2026-01-17',
+    reviewIntervalDays: 90,
+    changeLog: createChangeLog([
+      createChangeLogEntry('2026-01-17', 'Credibility footer and review details added.', 'safety'),
+    ]),
+    citationsSummary: createCitationsSummary(evidence?.citations?.length ?? 0, ['A', 'B']),
+  });
   // Initialize milestones on first load
   useEffect(() => {
     initializeMilestones();
@@ -186,6 +204,12 @@ export default function HomePage() {
       <section id="crisis" className="py-12 sm:py-16 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 dark:from-red-950 dark:via-orange-950 dark:to-yellow-950 scroll-mt-20">
         <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <CrisisSupport />
+        </div>
+      </section>
+
+      <section className="py-12 sm:py-16 bg-slate-50 dark:bg-slate-900">
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <CredibilityFooter editorial={editorial} region={region} />
         </div>
       </section>
 

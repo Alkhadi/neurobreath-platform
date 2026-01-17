@@ -95,6 +95,60 @@ const ROUTE_SEO_CONFIGS: Record<string, RouteSeoConfig> = {
       'Print-friendly templates and checklists for parents, teachers and workplaces. Educational resources only.',
     path: '/printables',
   },
+  '/about': {
+    title: 'About NeuroBreath | NeuroBreath',
+    description:
+      'What NeuroBreath is, how it works, and how we keep guidance safe and evidence-informed.',
+    path: '/about',
+  },
+  '/about/mission': {
+    title: 'Mission & Values | NeuroBreath',
+    description:
+      'Why NeuroBreath exists, what we value, and what we do not do.',
+    path: '/about/mission',
+  },
+  '/about/methodology': {
+    title: 'Methodology | NeuroBreath',
+    description:
+      'How NeuroBreath content is written, reviewed, and kept evidence-informed.',
+    path: '/about/methodology',
+  },
+  '/about/who-its-for': {
+    title: 'Who It’s For | NeuroBreath',
+    description:
+      'Who NeuroBreath is designed to help, with recommended journeys, tools, and printables.',
+    path: '/about/who-its-for',
+  },
+  '/about/use-responsibly': {
+    title: 'Use Tools Responsibly | NeuroBreath',
+    description:
+      'How to use NeuroBreath tools safely and within educational boundaries.',
+    path: '/about/use-responsibly',
+  },
+  '/about/how-we-update': {
+    title: 'How We Update Content | NeuroBreath',
+    description:
+      'How NeuroBreath reviews content, what review due means, and how to report updates.',
+    path: '/about/how-we-update',
+  },
+  '/about/faq': {
+    title: 'About FAQ | NeuroBreath',
+    description:
+      'Plain-English answers to common questions about NeuroBreath.',
+    path: '/about/faq',
+  },
+  '/about/language': {
+    title: 'Our Language Approach | NeuroBreath',
+    description:
+      'How NeuroBreath uses neurodiversity-affirming language and respectful framing.',
+    path: '/about/language',
+  },
+  '/editorial': {
+    title: 'Editorial Team | NeuroBreath',
+    description:
+      'Meet the NeuroBreath editorial team and review standards.',
+    path: '/editorial',
+  },
   '/trust': {
     title: 'Trust Centre | NeuroBreath',
     description:

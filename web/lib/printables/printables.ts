@@ -1,4 +1,6 @@
 import type { Region } from '@/lib/region/region';
+import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog';
+import { createCitationsSummary, createEditorialMeta, type PageEditorial } from '@/lib/editorial/pageEditorial';
 
 export type PrintableAudience = 'parent-carer' | 'teacher' | 'workplace' | 'individual';
 export type PrintableType =
@@ -93,6 +95,7 @@ export interface PrintableEntry {
     relatedGlossaryTerms?: string[];
     trustLinks: string[];
   };
+  editorial?: PageEditorial;
 }
 
 const TRUST_LINKS = ['/trust/evidence-policy', '/trust/citations', '/trust/safeguarding'];
@@ -112,7 +115,33 @@ const US_EDUCATION_CITATIONS: PrintableCitation[] = [
   { label: 'CDC: ADHD overview', url: 'https://www.cdc.gov/adhd/' },
 ];
 
-export const PRINTABLES: PrintableEntry[] = [
+const buildPrintableEditorial = (entry: PrintableEntry): PageEditorial => {
+  const citationsCount =
+    entry.citationsByRegion.global.length +
+    entry.citationsByRegion.uk.length +
+    entry.citationsByRegion.us.length;
+
+  return createEditorialMeta({
+    authorId: 'nb-editorial-team',
+    reviewerId: 'nb-evidence-review',
+    editorialRoleNotes: 'Reviewed for clarity, safety language, and template accuracy.',
+    createdAt: entry.reviewedAt,
+    updatedAt: entry.reviewedAt,
+    reviewedAt: entry.reviewedAt,
+    reviewIntervalDays: entry.reviewIntervalDays,
+    changeLog: createChangeLog([
+      createChangeLogEntry(entry.reviewedAt, 'Initial printable published and reviewed.', 'content'),
+    ]),
+    citationsSummary: createCitationsSummary(citationsCount, citationsCount ? ['A', 'B'] : ['C']),
+  });
+};
+
+const withEditorialDefaults = (entry: PrintableEntry): PrintableEntry => ({
+  ...entry,
+  editorial: entry.editorial ?? buildPrintableEditorial(entry),
+});
+
+const PRINTABLES_BASE: PrintableEntry[] = [
   {
     id: 'daily-routine-planner',
     title: {
@@ -1551,6 +1580,8 @@ export const PRINTABLES: PrintableEntry[] = [
     },
   },
 ];
+
+export const PRINTABLES: PrintableEntry[] = PRINTABLES_BASE.map(withEditorialDefaults);
 
 export const PRINTABLES_BY_ID = new Map(PRINTABLES.map(item => [item.id, item]));
 

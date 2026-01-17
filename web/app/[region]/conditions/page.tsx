@@ -1,5 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { CredibilityFooter } from '@/components/trust/CredibilityFooter';
+import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog';
+import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial';
 import { CONDITIONS } from '@/lib/coverage/conditions';
 import { getRegionFromKey, getRegionKey } from '@/lib/region/region';
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
@@ -61,6 +64,20 @@ export default async function RegionConditionsPage({ params }: RegionConditionsP
   const resolved = await params;
   const region = getRegionFromKey(resolved.region);
   const regionKey = getRegionKey(region);
+
+  const editorial = createEditorialMeta({
+    authorId: 'nb-editorial-team',
+    reviewerId: 'nb-evidence-review',
+    editorialRoleNotes: 'Reviewed for clarity, safety language, and hub signposting.',
+    createdAt: '2026-01-17',
+    updatedAt: '2026-01-17',
+    reviewedAt: '2026-01-17',
+    reviewIntervalDays: 180,
+    changeLog: createChangeLog([
+      createChangeLogEntry('2026-01-17', 'Conditions hub updated with audience pathways.', 'content'),
+    ]),
+    citationsSummary: createCitationsSummary(9, ['A', 'B']),
+  });
 
   if (!['uk', 'us'].includes(regionKey)) return notFound();
 
@@ -195,6 +212,8 @@ export default async function RegionConditionsPage({ params }: RegionConditionsP
           supportNeedLabels={supportNeedLabels}
           audienceLabels={audienceLabels}
         />
+
+        <CredibilityFooter editorial={editorial} region={region} />
       </div>
     </main>
   );

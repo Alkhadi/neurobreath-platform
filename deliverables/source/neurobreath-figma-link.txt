@@ -1,0 +1,3 @@
+Figma source not created in this automated export.
+Primary source of truth: deliverables/brand/neurobreath-icon.svg and deliverables/brand/neurobreath-logo.svg.
+If you need a Figma file, I can convert the SVGs to a .fig on request.

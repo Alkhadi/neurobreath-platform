@@ -1,3 +1,5 @@
+import type { PageEditorial } from '@/lib/editorial/pageEditorial';
+
 export type RegionKey = 'UK' | 'US';
 
 export type LocalisedString = {
@@ -94,6 +96,7 @@ export interface ContentPage {
   citationsByRegion: { UK: string[]; US: string[]; GLOBAL?: string[] };
   reviewedAt: string;
   reviewIntervalDays: number;
+  editorial?: PageEditorial;
   primaryPillar?: string;
   tags?: string[];
   summary?: string;

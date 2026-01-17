@@ -6,7 +6,6 @@ import type { GlossaryTerm } from '@/lib/glossary/glossary';
 import type { Region } from '@/lib/region/region';
 import { getRegionKey } from '@/lib/region/region';
 import { CitationList } from '@/components/trust/CitationList';
-import { LastReviewedBadge } from '@/components/trust/LastReviewedBadge';
 
 interface GlossaryTermLink {
   id: string;
@@ -139,7 +138,6 @@ export function GlossaryTermView({ term, region, relatedTerms, nextLinks }: Glos
         <h2 className="text-lg font-semibold text-slate-900">Citations & review</h2>
         <p className="text-xs text-slate-500">Educational only. External links are provided as copy‑only references.</p>
         <CitationList sources={citations} title="Citations" />
-        <LastReviewedBadge reviewedAt={term.reviewedAt} reviewIntervalDays={term.reviewIntervalDays} region={region} />
         <div className="text-xs text-slate-500">
           <Link href={`/${regionKey}/trust/evidence-policy`} className="text-indigo-600 hover:underline">
             Evidence policy

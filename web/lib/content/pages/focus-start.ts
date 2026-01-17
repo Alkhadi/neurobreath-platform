@@ -1,4 +1,6 @@
 import type { ContentPage } from '@/lib/content/canonical-schema';
+import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog';
+import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial';
 
 export const focusStartPage: ContentPage = {
   id: 'focus-start',
@@ -136,6 +138,19 @@ export const focusStartPage: ContentPage = {
   },
   reviewedAt: '2026-01-16',
   reviewIntervalDays: 120,
+  editorial: createEditorialMeta({
+    authorId: 'nb-editorial-team',
+    reviewerId: 'nb-evidence-review',
+    editorialRoleNotes: 'Reviewed for clarity, safety language, and focus-support framing.',
+    createdAt: '2026-01-10',
+    updatedAt: '2026-01-16',
+    reviewedAt: '2026-01-16',
+    reviewIntervalDays: 120,
+    changeLog: createChangeLog([
+      createChangeLogEntry('2026-01-16', 'Initial focus starter routine published and reviewed.', 'content'),
+    ]),
+    citationsSummary: createCitationsSummary(4, ['A', 'B']),
+  }),
   primaryPillar: 'focus-adhd',
   tags: ['focus', 'adhd', 'task-start', 'routine'],
   summary: 'A short routine that helps you start tasks with a clear first step.',

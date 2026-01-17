@@ -4,9 +4,12 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { RegionSwitcher } from '@/components/trust/RegionSwitcher'
+import { usePathname } from 'next/navigation'
 
 export function SiteFooter() {
   const [currentYear, setCurrentYear] = useState(2025)
+  const pathname = usePathname() || '/'
+  const regionPrefix = pathname.startsWith('/us') ? '/us' : '/uk'
 
   useEffect(() => {
     setCurrentYear(new Date().getFullYear())
@@ -125,7 +128,7 @@ export function SiteFooter() {
               <summary>About <span aria-hidden="true">▾</span></summary>
               <div className="links">
                 <p>
-                  <Link href="/about-us">About</Link> ·{' '}
+                  <Link href={`${regionPrefix}/about`}>About</Link> ·{' '}
                   <Link href="/support-us">Support Us</Link> ·{' '}
                   <Link href="/contact">Contact</Link>
                 </p>
@@ -135,15 +138,16 @@ export function SiteFooter() {
               <summary>Trust &amp; Safety <span aria-hidden="true">▾</span></summary>
               <div className="links">
                 <p>
-                  <Link href="/trust">Trust Centre</Link> ·{' '}
-                  <Link href="/trust/disclaimer">Disclaimer</Link> ·{' '}
-                  <Link href="/trust/evidence-policy">Evidence Policy</Link>
+                  <Link href={`${regionPrefix}/trust`}>Trust Centre</Link> ·{' '}
+                  <Link href={`${regionPrefix}/trust/disclaimer`}>Disclaimer</Link> ·{' '}
+                  <Link href={`${regionPrefix}/trust/evidence-policy`}>Evidence Policy</Link>
                 </p>
                 <p>
-                  <Link href="/trust/accessibility">Accessibility</Link> ·{' '}
-                  <Link href="/trust/privacy">Privacy</Link> ·{' '}
-                  <Link href="/trust/terms">Terms</Link> ·{' '}
-                  <Link href="/trust/contact">Report a concern</Link>
+                  <Link href={`${regionPrefix}/trust/accessibility`}>Accessibility</Link> ·{' '}
+                  <Link href={`${regionPrefix}/trust/editorial-standards`}>Editorial standards</Link> ·{' '}
+                  <Link href={`${regionPrefix}/trust/privacy`}>Privacy</Link> ·{' '}
+                  <Link href={`${regionPrefix}/trust/terms`}>Terms</Link> ·{' '}
+                  <Link href={`${regionPrefix}/trust/contact`}>Report a concern</Link>
                 </p>
               </div>
             </details>
