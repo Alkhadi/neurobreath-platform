@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Download, Printer } from 'lucide-react'
+import { Download, Printer, type LucideIcon } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 import type { VisualLearningCard } from '@/types/ai-coach'
 
@@ -126,14 +126,18 @@ function LearningCard({ card, isFlipped, onFlip }: LearningCardProps) {
     <div
       className={`relative h-48 cursor-pointer perspective-1000 ${hasBack ? '' : 'cursor-default'}`}
       onClick={onFlip}
-      role={hasBack ? 'button' : 'article'}
+      role={hasBack ? 'button' : undefined}
       tabIndex={hasBack ? 0 : undefined}
-      onKeyDown={(e) => {
-        if (hasBack && (e.key === 'Enter' || e.key === ' ')) {
-          e.preventDefault()
-          onFlip()
-        }
-      }}
+      onKeyDown={
+        hasBack
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                onFlip()
+              }
+            }
+          : undefined
+      }
       aria-label={hasBack ? `Flip card: ${card.title}` : card.title}
     >
       <div
@@ -196,7 +200,7 @@ function LearningCard({ card, isFlipped, onFlip }: LearningCardProps) {
   )
 }
 
-function getIcon(iconKey: string): React.ComponentType<{ className?: string }> | null {
+function getIcon(iconKey: string): LucideIcon | null {
   const iconMap: Record<string, keyof typeof LucideIcons> = {
     brain: 'Brain',
     heart: 'Heart',
@@ -219,7 +223,8 @@ function getIcon(iconKey: string): React.ComponentType<{ className?: string }> |
   }
   
   const iconName = iconMap[iconKey] || 'BookOpen'
-  return (LucideIcons as any)[iconName] || null
+  const icons = LucideIcons as unknown as Record<string, LucideIcon>
+  return icons[iconName] || null
 }
 
 

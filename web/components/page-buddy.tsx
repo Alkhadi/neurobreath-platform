@@ -468,7 +468,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       } else if (cfg.pageId === 'autism') {
         response += `**Autism Hub Tools:** 🌟\n\n${platformInfo.features.autism.map((f: string) => `• ${f}`).join('\n')}\n\n**Available Now:**\n• Calm Toolkit (breathing, grounding, sensory)\n• Skills Library (50+ strategies, age-adapted)\n• Education Pathways (EHCP/IEP/504 complete guides)\n• Workplace Adjustments (15+ professional templates)\n• PubMed Search (35M+ research articles)\n• Printable Resources (50+ templates)\n• Crisis Support (UK/US/EU contacts)\n\n**For Parents:** EHCP/IEP guidance, home strategies, school collaboration\n**For Teachers:** Classroom adaptations, visual schedules, behavior support\n**For Carers:** Daily support, communication techniques, self-care\n\n**Tip:** Try the Calm Toolkit for regulation or browse printable resources!`;
       } else {
-        response += `**Page-Specific Tools:**\n${cfg.sections.map((s: any) => `• **${s.name}** – ${s.description}`).join('\n')}\n\n**Platform-Wide Features:**\n• Breathing exercises (5 techniques)\n• Progress tracking (XP, levels, streaks)\n• Printable resources (100+ templates)\n• Evidence-based guidance (NICE, CDC, NHS)\n\n**Main Hubs:**\n• **ADHD Hub (/adhd)** – Focus tools, quests, strategies\n• **Autism Hub (/autism)** – Calm toolkit, education pathways\n• **Breathing (/breathing)** – Guided breathing exercises\n\n**Ask me about:**\n• Specific tools on this page\n• Navigation to other hubs\n• How to use any feature`;
+        response += `**Page-Specific Tools:**\n${cfg.sections.map((s) => `• **${s.name}** – ${s.description}`).join('\n')}\n\n**Platform-Wide Features:**\n• Breathing exercises (5 techniques)\n• Progress tracking (XP, levels, streaks)\n• Printable resources (100+ templates)\n• Evidence-based guidance (NICE, CDC, NHS)\n\n**Main Hubs:**\n• **ADHD Hub (/adhd)** – Focus tools, quests, strategies\n• **Autism Hub (/autism)** – Calm toolkit, education pathways\n• **Breathing (/breathing)** – Guided breathing exercises\n\n**Ask me about:**\n• Specific tools on this page\n• Navigation to other hubs\n• How to use any feature`;
       }
       
       return response;
@@ -536,7 +536,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     }
     
     // === DEFAULT HELPFUL RESPONSE ===
-    return `I'm here to help you navigate **${cfg.pageName}**! 🤝\n\n**Popular questions:**\n• "What tools are available?"\n• "How do I get started?"\n• "What is NeuroBreath?"\n• "Show me printable resources"\n\n**This page includes:**\n${cfg.sections.slice(0, 3).map((s: any) => `• **${s.name}**: ${s.description}`).join('\n')}\n\n💡 **Tip:** Click the 🗺️ map icon for a guided tour!`;
+    return `I'm here to help you navigate **${cfg.pageName}**! 🤝\n\n**Popular questions:**\n• "What tools are available?"\n• "How do I get started?"\n• "What is NeuroBreath?"\n• "Show me printable resources"\n\n**This page includes:**\n${cfg.sections.slice(0, 3).map((s) => `• **${s.name}**: ${s.description}`).join('\n')}\n\n💡 **Tip:** Click the 🗺️ map icon for a guided tour!`;
   };
   
   // Generate AI response
@@ -607,7 +607,7 @@ Internal Tools to Recommend:
 - Blog: [AI-Powered Wellbeing Hub](/blog) - AI Coach for tailored plans
 
 Page sections:
-${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}
+${config.sections.map((s) => `- ${s.name}: ${s.description}`).join('\n')}
 
 Available page features: ${pageContent.features.join(', ') || 'General navigation'}`;
 

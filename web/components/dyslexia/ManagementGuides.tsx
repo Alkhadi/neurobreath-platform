@@ -3,11 +3,11 @@
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Users, GraduationCap, Heart, CheckCircle } from 'lucide-react';
+import { Users, GraduationCap, Heart, CheckCircle, type LucideIcon } from 'lucide-react';
 
 type Role = 'parent' | 'teacher' | 'carer';
 
-const guides: Record<Role, { title: string; icon: any; color: string; sections: Array<{ title: string; tips: string[] }> }> = {
+const guides: Record<Role, { title: string; icon: LucideIcon; color: string; sections: Array<{ title: string; tips: string[] }> }> = {
   parent: {
     title: 'Guide for Parents',
     icon: Users,

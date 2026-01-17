@@ -262,6 +262,7 @@ export function EnergyAccountingTracker() {
                           size="sm"
                           onClick={() => deleteActivity(activity.id)}
                           className="h-8 w-8 p-0"
+                          aria-label={`Delete activity: ${activity.name}`}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

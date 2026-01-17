@@ -33,6 +33,8 @@ export interface ClassroomJoinDetails {
   joinedAt: string;
 }
 
+type ClassroomRole = NonNullable<ClassroomJoinDetails['role']>
+
 interface ClassroomJoinDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -43,7 +45,7 @@ export function ClassroomJoinDialog({ open, onOpenChange, onJoined }: ClassroomJ
   const [groupCode, setGroupCode] = useState('');
   const [learnerLabel, setLearnerLabel] = useState('');
   const [contactEmail, setContactEmail] = useState('');
-  const [role, setRole] = useState<string>('');
+  const [role, setRole] = useState<ClassroomRole | ''>('');
   const [className, setClassName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailError, setEmailError] = useState('');
@@ -95,7 +97,7 @@ export function ClassroomJoinDialog({ open, onOpenChange, onJoined }: ClassroomJ
         groupCode: cleanedCode,
         learnerLabel: learnerLabel.trim() || undefined,
         contactEmail: contactEmail.trim() || undefined,
-        role: role as any || undefined,
+        role: role || undefined,
         className: (role === 'teacher' && className.trim()) ? className.trim() : undefined,
         joinedAt: new Date().toISOString(),
       };

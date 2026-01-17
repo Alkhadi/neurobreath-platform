@@ -91,7 +91,7 @@ export function RhythmTraining() {
   useEffect(() => {
     // Initialize Web Audio API
     if (typeof window !== 'undefined' && !audioContextRef.current) {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioContextClass = window.AudioContext || (window as unknown as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (AudioContextClass) {
         audioContextRef.current = new AudioContextClass();
       }

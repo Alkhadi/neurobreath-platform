@@ -60,6 +60,38 @@ export function EmotionThermometer() {
   const [currentLevel, setCurrentLevel] = useState(1);
   const [isEditing, setIsEditing] = useState(false);
 
+  const levelBorderClass: Record<number, string> = {
+    1: 'border-emerald-300 dark:border-emerald-800',
+    2: 'border-lime-300 dark:border-lime-800',
+    3: 'border-yellow-300 dark:border-yellow-800',
+    4: 'border-orange-300 dark:border-orange-800',
+    5: 'border-red-300 dark:border-red-800',
+  };
+
+  const levelPillBgClass: Record<number, string> = {
+    1: 'bg-emerald-600',
+    2: 'bg-lime-600',
+    3: 'bg-yellow-600',
+    4: 'bg-orange-600',
+    5: 'bg-red-600',
+  };
+
+  const levelHeadingTextClass: Record<number, string> = {
+    1: 'text-emerald-700 dark:text-emerald-300',
+    2: 'text-lime-700 dark:text-lime-300',
+    3: 'text-yellow-700 dark:text-yellow-300',
+    4: 'text-orange-700 dark:text-orange-300',
+    5: 'text-red-700 dark:text-red-300',
+  };
+
+  const levelDotBgClass: Record<number, string> = {
+    1: 'bg-emerald-500',
+    2: 'bg-lime-500',
+    3: 'bg-yellow-500',
+    4: 'bg-orange-500',
+    5: 'bg-red-500',
+  };
+
   const updateLevel = (levelNum: number, field: keyof EmotionLevel, value: string) => {
     setLevels(levels.map(l => 
       l.level === levelNum ? { ...l, [field]: value } : l
@@ -144,16 +176,15 @@ Citations:
         </div>
 
         {/* Interactive Thermometer */}
-        <Card className="border-2" style={{ borderColor: currentLevelData?.color }}>
+        <Card className={`border-2 ${levelBorderClass[currentLevel] ?? 'border-muted'}`}>
           <CardContent className="pt-6 space-y-6">
             <div className="text-center space-y-2">
               <div 
-                className="inline-block px-6 py-3 rounded-full text-white font-bold text-3xl"
-                style={{ backgroundColor: currentLevelData?.color }}
+                className={`inline-block px-6 py-3 rounded-full text-white font-bold text-3xl ${levelPillBgClass[currentLevel] ?? 'bg-primary'}`}
               >
                 Level {currentLevel}
               </div>
-              <h3 className="text-2xl font-bold" style={{ color: currentLevelData?.color }}>
+              <h3 className={`text-2xl font-bold ${levelHeadingTextClass[currentLevel] ?? ''}`}>
                 {currentLevelData?.label}
               </h3>
             </div>
@@ -204,8 +235,7 @@ Citations:
                 <div key={level.level} className="space-y-3 pb-4 border-b last:border-0">
                   <div className="flex items-center gap-2">
                     <div 
-                      className="w-8 h-8 rounded-full"
-                      style={{ backgroundColor: level.color }}
+                      className={`w-8 h-8 rounded-full ${levelDotBgClass[level.level] ?? 'bg-muted'}`}
                     />
                     <Label className="font-bold">Level {level.level}</Label>
                   </div>

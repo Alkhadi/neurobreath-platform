@@ -16,8 +16,21 @@ interface SynthesisInput {
   topic?: Topic
 }
 
+type KnowledgeDomain = {
+  definition?: string[]
+  strengths?: string[]
+  management?: Partial<Record<'general' | 'home' | 'school' | 'workplace' | 'immediate', string[]>> & Record<string, unknown>
+  assessment?: string[]
+  whenToSeek?: string[]
+  techniques?: string[]
+  evidence?: string[]
+  [key: string]: unknown
+}
+
+type KnowledgeBase = Record<string, KnowledgeDomain>
+
 // Comprehensive knowledge base for synthesis
-const KNOWLEDGE_BASE: Record<string, any> = {
+const KNOWLEDGE_BASE: KnowledgeBase = {
   autism: {
     definition: [
       'Autism spectrum disorder (ASD) is a lifelong neurodevelopmental condition affecting how people perceive the world and interact with others (NICE CG128/CG170, WHO ICD-11).',
@@ -269,7 +282,7 @@ export function synthesizeAnswer(input: SynthesisInput): AICoachAnswer {
   }
   
   const topicKey = topic || intent.topic || 'general'
-  const kb = KNOWLEDGE_BASE[topicKey] || {}
+  const kb: KnowledgeDomain = KNOWLEDGE_BASE[topicKey] ?? {}
   
   // Get internal pages for this topic
   const internalPages = getRelevantPages(question, topicKey)
@@ -427,7 +440,7 @@ function buildContextUsedLine(context?: UserContext, topic?: string): string {
   return `**Context used:** ${parts.join(' · ')}${topicLabel}`
 }
 
-function generateSummary(question: string, intent: ParsedIntent, kb: any, context?: UserContext, _topic?: Topic): string[] {
+function generateSummary(question: string, intent: ParsedIntent, kb: KnowledgeDomain, context?: UserContext, _topic?: Topic): string[] {
   const summary: string[] = []
   
   if (kb.definition) {
@@ -451,7 +464,7 @@ function generateSummary(question: string, intent: ParsedIntent, kb: any, contex
 }
 
 function generateEvidenceSnapshot(
-  kb: any,
+  kb: KnowledgeDomain,
   nhsLinks: EvidenceSource[],
   niceLinks: EvidenceSource[],
   pubmedArticles: PubMedArticle[],
@@ -520,7 +533,7 @@ function generateEvidenceSnapshot(
 }
 
 function generateTailoredGuidance(
-  kb: any,
+  kb: KnowledgeDomain,
   intent: ParsedIntent,
   audience?: AudienceType
 ): AICoachAnswer['tailoredGuidance'] {
@@ -565,7 +578,7 @@ function generateTailoredGuidance(
   return guidance
 }
 
-function generatePracticalActionsWithInternalLinks(kb: any, intent: ParsedIntent, _topic: string, internalPages: InternalPage[]): string[] {
+function generatePracticalActionsWithInternalLinks(kb: KnowledgeDomain, intent: ParsedIntent, _topic: string, internalPages: InternalPage[]): string[] {
   const actions: string[] = []
   
   if (kb.management?.immediate) {

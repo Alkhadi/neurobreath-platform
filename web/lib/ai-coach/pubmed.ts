@@ -109,7 +109,18 @@ export async function searchPubMed(query: string, maxResults: number = 6): Promi
         journal: journal.substring(0, 50),
         year,
         url: `https://pubmed.ncbi.nlm.nih.gov/${id}/`,
-        authors: article.authors?.slice(0, 3).map((a: any) => a.name) || [],
+        authors: Array.isArray(article.authors)
+          ? article.authors
+              .slice(0, 3)
+              .map((a: unknown) => {
+                const name =
+                  typeof a === 'object' && a !== null
+                    ? (a as Record<string, unknown>).name
+                    : undefined
+                return typeof name === 'string' ? name : ''
+              })
+              .filter((name): name is string => Boolean(name))
+          : [],
         abstract: abstract.substring(0, 500) // Truncate long abstracts
       })
     }

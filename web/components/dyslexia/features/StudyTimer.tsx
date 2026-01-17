@@ -116,8 +116,11 @@ export function StudyTimer() {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-sm font-semibold">Work Duration (min)</label>
+            <label htmlFor="study-timer-work-minutes" className="text-sm font-semibold">
+              Work Duration (min)
+            </label>
             <input
+              id="study-timer-work-minutes"
               type="number"
               min="1"
               max="60"
@@ -133,8 +136,11 @@ export function StudyTimer() {
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-semibold">Break Duration (min)</label>
+            <label htmlFor="study-timer-break-minutes" className="text-sm font-semibold">
+              Break Duration (min)
+            </label>
             <input
+              id="study-timer-break-minutes"
               type="number"
               min="1"
               max="30"

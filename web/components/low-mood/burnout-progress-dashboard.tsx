@@ -11,11 +11,15 @@ interface AssessmentResult {
   severity: "low" | "moderate" | "high" | "severe";
 }
 
+type EnergyEntry = { currentEnergy?: number };
+type ValueEntry = unknown;
+type BoundaryEntry = { implemented?: boolean };
+
 export function BurnoutProgressDashboard() {
   const [assessments, setAssessments] = useState<AssessmentResult[]>([]);
-  const [energyData, setEnergyData] = useState<any[]>([]);
-  const [values, setValues] = useState<any[]>([]);
-  const [boundaries, setBoundaries] = useState<any[]>([]);
+  const [energyData, setEnergyData] = useState<EnergyEntry[]>([]);
+  const [values, setValues] = useState<ValueEntry[]>([]);
+  const [boundaries, setBoundaries] = useState<BoundaryEntry[]>([]);
 
   useEffect(() => {
     try {
@@ -24,10 +28,10 @@ export function BurnoutProgressDashboard() {
       const storedValues = JSON.parse(localStorage.getItem("values_compass") || "[]");
       const storedBoundaries = JSON.parse(localStorage.getItem("workplace_boundaries") || "[]");
 
-      setAssessments(storedAssessments);
-      setEnergyData(storedEnergy);
-      setValues(storedValues);
-      setBoundaries(storedBoundaries);
+      setAssessments(Array.isArray(storedAssessments) ? (storedAssessments as AssessmentResult[]) : []);
+      setEnergyData(Array.isArray(storedEnergy) ? (storedEnergy as EnergyEntry[]) : []);
+      setValues(Array.isArray(storedValues) ? (storedValues as ValueEntry[]) : []);
+      setBoundaries(Array.isArray(storedBoundaries) ? (storedBoundaries as BoundaryEntry[]) : []);
     } catch (error) {
       console.error("Error loading progress data:", error);
     }

@@ -1,6 +1,7 @@
 import type { AICoachResponse, PubMedArticle } from '@/types/ai-coach'
 import { findBestMatch } from './knowledge-base'
 import { searchPubMed, buildPubMedQuery } from './pubmed'
+import { parseIntent } from './intent'
 import { getNHSLinks, getNICELinks, getCDCLinks } from './nhs-mapper'
 import { getCached, setCached, generateQueryKey } from './cache'
 
@@ -92,7 +93,7 @@ export async function buildResponse(
   // Fetch PubMed articles (in parallel with other operations)
   let pubmedArticles: PubMedArticle[] = []
   try {
-    const intent = { topic: topic || 'general', keywords: [question] } as any
+    const intent = parseIntent(question)
     const pubmedQuery = buildPubMedQuery(question, intent, topic)
     pubmedArticles = await searchPubMed(pubmedQuery, 3)
   } catch (error) {

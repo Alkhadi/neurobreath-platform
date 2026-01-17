@@ -39,8 +39,9 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
     <div className={styles.languageToggle} role="group" aria-label="Language selection">
       <button
         className={`${styles.languageButton} ${language === 'en-GB' ? styles.active : ''}`}
+        type="button"
         onClick={() => handleLanguageChange('en-GB')}
-        aria-pressed={language === 'en-GB'}
+        aria-pressed={language === 'en-GB' ? 'true' : 'false'}
         aria-label="Switch to UK English"
       >
         <span role="img" aria-label="UK flag">
@@ -50,8 +51,9 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
       </button>
       <button
         className={`${styles.languageButton} ${language === 'en-US' ? styles.active : ''}`}
+        type="button"
         onClick={() => handleLanguageChange('en-US')}
-        aria-pressed={language === 'en-US'}
+        aria-pressed={language === 'en-US' ? 'true' : 'false'}
         aria-label="Switch to US English"
       >
         <span role="img" aria-label="US flag">

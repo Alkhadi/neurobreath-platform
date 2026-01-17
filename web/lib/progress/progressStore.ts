@@ -20,7 +20,7 @@ export interface ActivityRecord {
     accuracy?: number
     wpm?: number
     score?: number
-    [key: string]: any
+    [key: string]: unknown
   }
 }
 
@@ -441,14 +441,16 @@ function getYesterday(): string {
 /**
  * Migrate old progress store to new version
  */
-function migrateProgressStore(old: any): ProgressStore {
-  console.warn('[ProgressStore] Migrating old version:', old.version)
+function migrateProgressStore(old: unknown): ProgressStore {
+  const oldRecord: Record<string, unknown> =
+    typeof old === 'object' && old !== null ? (old as Record<string, unknown>) : {}
+  console.warn('[ProgressStore] Migrating old version:', oldRecord.version)
   
   const migrated = createDefaultProgressStore()
   
   // Preserve what we can
-  if (old.profiles) {
-    migrated.profiles = old.profiles
+  if (typeof oldRecord.profiles === 'object' && oldRecord.profiles !== null) {
+    migrated.profiles = oldRecord.profiles as ProgressStore['profiles']
   }
   
   return migrated

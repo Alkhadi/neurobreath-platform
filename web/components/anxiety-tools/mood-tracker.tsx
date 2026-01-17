@@ -124,6 +124,7 @@ export function MoodTracker() {
           <Label htmlFor="date" className="mb-2 block">Date</Label>
           <input
             id="date"
+            name="date"
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}

@@ -110,9 +110,12 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
 
           {/* Photo Upload */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Profile Photo</label>
+            <label htmlFor="profile-photo" className="block text-sm font-semibold text-gray-700 mb-2">
+              Profile Photo
+            </label>
             <input
               ref={fileInputRef}
+              id="profile-photo"
               type="file"
               accept="image/*"
               onChange={handlePhotoUpload}
@@ -131,8 +134,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
           {/* Basic Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name *</label>
+              <label htmlFor="profile-full-name" className="block text-sm font-semibold text-gray-700 mb-2">
+                Full Name *
+              </label>
               <input
+                id="profile-full-name"
                 type="text"
                 required
                 value={editedProfile.fullName}
@@ -141,8 +147,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Job Title *</label>
+              <label htmlFor="profile-job-title" className="block text-sm font-semibold text-gray-700 mb-2">
+                Job Title *
+              </label>
               <input
+                id="profile-job-title"
                 type="text"
                 required
                 value={editedProfile.jobTitle}
@@ -151,8 +160,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Phone *</label>
+              <label htmlFor="profile-phone" className="block text-sm font-semibold text-gray-700 mb-2">
+                Phone *
+              </label>
               <input
+                id="profile-phone"
                 type="tel"
                 required
                 value={editedProfile.phone}
@@ -161,8 +173,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Email *</label>
+              <label htmlFor="profile-email" className="block text-sm font-semibold text-gray-700 mb-2">
+                Email *
+              </label>
               <input
+                id="profile-email"
                 type="email"
                 required
                 value={editedProfile.email}
@@ -174,10 +189,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
 
           {/* Descriptions */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="profile-description" className="block text-sm font-semibold text-gray-700 mb-2">
               Profile Description ({editedProfile.profileDescription.length}/50)
             </label>
             <input
+              id="profile-description"
               type="text"
               maxLength={50}
               value={editedProfile.profileDescription}
@@ -186,10 +202,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="business-description" className="block text-sm font-semibold text-gray-700 mb-2">
               Business Description ({editedProfile.businessDescription.length}/50)
             </label>
             <input
+              id="business-description"
               type="text"
               maxLength={50}
               value={editedProfile.businessDescription}
@@ -204,9 +221,16 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {["instagram", "facebook", "tiktok", "linkedin", "twitter", "website"].map((platform) => (
                 <div key={platform}>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 capitalize">{platform}</label>
+                  <label
+                    htmlFor={`social-${platform}`}
+                    className="block text-sm font-semibold text-gray-700 mb-2 capitalize"
+                  >
+                    {platform}
+                  </label>
                   <input
                     type="url"
+                    id={`social-${platform}`}
+                    name={platform}
                     value={editedProfile.socialMedia?.[platform as keyof typeof editedProfile.socialMedia] ?? ""}
                     onChange={(e) =>
                       setEditedProfile({
