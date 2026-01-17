@@ -1,11 +1,38 @@
 import { cn } from '@/lib/utils';
 import type { ContentBlock } from '@/lib/content/canonical-schema';
+import type { Region } from '@/lib/region/region';
+import { splitTextWithGlossary } from '@/lib/glossary/recogniseTerms';
+import { GlossaryTooltip } from '@/components/glossary/GlossaryTooltip';
 
 interface ContentRendererProps {
   blocks: ContentBlock[];
+  region?: Region;
+  enableGlossaryTooltips?: boolean;
+  glossaryMaxLinks?: number;
 }
 
-export function ContentRenderer({ blocks }: ContentRendererProps) {
+export function ContentRenderer({ blocks, region, enableGlossaryTooltips, glossaryMaxLinks = 5 }: ContentRendererProps) {
+  let glossaryRemaining = glossaryMaxLinks;
+
+  const renderGlossaryText = (text: string) => {
+    if (!enableGlossaryTooltips || !region || glossaryRemaining <= 0) return text;
+    const segments = splitTextWithGlossary(text, region, glossaryRemaining);
+    const termCount = segments.filter(segment => segment.type === 'term').length;
+    glossaryRemaining = Math.max(0, glossaryRemaining - termCount);
+
+    return segments.map((segment, index) => {
+      if (segment.type === 'text') return <span key={`${segment.value}-${index}`}>{segment.value}</span>;
+      return (
+        <GlossaryTooltip
+          key={`${segment.termId}-${index}`}
+          termId={segment.termId || ''}
+          display={segment.value}
+          region={region}
+        />
+      );
+    });
+  };
+
   return (
     <div className="space-y-6">
       {blocks.map(block => {
@@ -21,14 +48,14 @@ export function ContentRenderer({ blocks }: ContentRendererProps) {
           case 'paragraph':
             return (
               <p key={block.id} className="text-sm text-slate-600 leading-relaxed">
-                {block.text}
+                {renderGlossaryText(block.text)}
               </p>
             );
           case 'bullets':
             return (
               <ul key={block.id} className="list-disc pl-5 text-sm text-slate-600 space-y-2">
                 {block.items.map((item, index) => (
-                  <li key={`${block.id}-${index}`}>{item}</li>
+                  <li key={`${block.id}-${index}`}>{renderGlossaryText(item)}</li>
                 ))}
               </ul>
             );
@@ -36,14 +63,14 @@ export function ContentRenderer({ blocks }: ContentRendererProps) {
             return (
               <ol key={block.id} className="list-decimal pl-5 text-sm text-slate-600 space-y-2">
                 {block.items.map((item, index) => (
-                  <li key={`${block.id}-${index}`}>{item}</li>
+                  <li key={`${block.id}-${index}`}>{renderGlossaryText(item)}</li>
                 ))}
               </ol>
             );
           case 'callout':
             return (
               <div key={block.id} className="rounded-xl border border-amber-200 bg-amber-50/70 p-4 text-sm text-amber-900">
-                {block.text}
+                {renderGlossaryText(block.text)}
               </div>
             );
           case 'cta':

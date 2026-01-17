@@ -22,6 +22,20 @@ export const breathingStressPage: ContentPage = {
     UK: 'Breathing exercises for stress',
     US: 'Breathing exercises for stress',
   },
+  plainEnglish: {
+    summary: {
+      base: 'A short breathing routine that helps you slow down and feel steadier. It is for everyday stress support, not emergency care.',
+      UK: 'A short breathing routine that helps you slow down and feel steadier. It is for everyday stress support, not emergency care.',
+      US: 'A short breathing routine that helps you slow down and feel steadier. It is for everyday stress support, not emergency care.',
+    },
+    bullets: [
+      { base: 'Breathe in for 4 counts and out for 6 counts.' },
+      { base: 'Repeat for 8–12 breaths.' },
+      { base: 'Use it before meetings, study, or transitions.' },
+    ],
+  },
+  enableGlossaryTooltips: true,
+  keyTerms: ['stress', 'grounding', 'coherent-breathing', 'box-breathing'],
   blocks: [
     {
       id: 'intro',

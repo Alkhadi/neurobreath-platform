@@ -1,15 +1,35 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Layers, Sparkles, Shuffle, Grid } from 'lucide-react'
+import type { Region } from '@/lib/region/region'
+import { splitTextWithGlossary } from '@/lib/glossary/recogniseTerms'
+import { GlossaryTooltip } from '@/components/glossary/GlossaryTooltip'
 
 export default function ToolsPage() {
+  const region: Region = 'UK';
+  let glossaryRemaining = 5;
+
+  const renderGlossaryText = (text: string) => {
+    if (glossaryRemaining <= 0) return text;
+    const segments = splitTextWithGlossary(text, region, glossaryRemaining);
+    const termCount = segments.filter(segment => segment.type === 'term').length;
+    glossaryRemaining = Math.max(0, glossaryRemaining - termCount);
+    return segments.map((segment, index) =>
+      segment.type === 'term' ? (
+        <GlossaryTooltip key={`${segment.termId}-${index}`} termId={segment.termId || ''} display={segment.value} region={region} />
+      ) : (
+        <span key={`${segment.value}-${index}`}>{segment.value}</span>
+      ),
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-12">
       <div className="container max-w-6xl mx-auto px-4">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Breathing Tools</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Interactive breathing exercises and gamified tools to keep your practice engaging and effective.
+            {renderGlossaryText('Interactive breathing exercises and gamified tools to keep your practice engaging and effective.')}
           </p>
         </div>
 
@@ -23,8 +43,7 @@ export default function ToolsPage() {
               <h2 className="text-2xl font-bold text-gray-900">Breath Ladder</h2>
             </div>
             <p className="text-gray-600 mb-6">
-              Progressively increase your breathing capacity by climbing from 3-3-3-3 to 5-5-5-5. 
-              Each rung builds lung capacity and confidence with structured progression.
+              {renderGlossaryText('Progressively increase your breathing capacity by climbing from 3-3-3-3 to 5-5-5-5. Each rung builds steady focus and confidence with structured progression.')}
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
               <li>Start at your comfortable level</li>
@@ -46,8 +65,7 @@ export default function ToolsPage() {
               <h2 className="text-2xl font-bold text-gray-900">Colour-Path Breathing</h2>
             </div>
             <p className="text-gray-600 mb-6">
-              Follow the illuminated color path through each breathing phase. Visual cues anchor attention 
-              and make timing intuitive for visual learners.
+              {renderGlossaryText('Follow the illuminated colour path through each breathing phase. Visual cues anchor attention and make timing intuitive for visual learners.')}
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
               <li>Color-coded breathing phases</li>
@@ -69,8 +87,7 @@ export default function ToolsPage() {
               <h2 className="text-2xl font-bold text-gray-900">Micro-Reset Roulette</h2>
             </div>
             <p className="text-gray-600 mb-6">
-              Can't decide which technique to use? Spin the wheel for a random 1-minute breathing reset. 
-              Perfect for decision fatigue and spontaneous practice.
+              {renderGlossaryText("Can't decide which technique to use? Spin the wheel for a random 1-minute breathing reset. Perfect for decision fatigue and spontaneous practice.")}
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
               <li>Random technique selection</li>
@@ -92,8 +109,7 @@ export default function ToolsPage() {
               <h2 className="text-2xl font-bold text-gray-900">Focus Tiles</h2>
             </div>
             <p className="text-gray-600 mb-6">
-              Context-based breathing suggestions for different situations: school, work, home, or social. 
-              Get the right technique for the right moment.
+              {renderGlossaryText('Context-based breathing suggestions for different situations: school, work, home, or social. Get the right technique for the right moment.')}
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
               <li>Situation-specific techniques</li>

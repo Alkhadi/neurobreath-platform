@@ -22,6 +22,20 @@ export const focusStartPage: ContentPage = {
     UK: 'Focus starter routine',
     US: 'Focus starter routine',
   },
+  plainEnglish: {
+    summary: {
+      base: 'A 10‑minute focus routine that helps you start one task with less overwhelm. It is a gentle, practical step, not a clinical tool.',
+      UK: 'A 10‑minute focus routine that helps you start one task with less overwhelm. It is a gentle, practical step, not a clinical tool.',
+      US: 'A 10‑minute focus routine that helps you start one task with less overwhelm. It is a gentle, practical step, not a clinical tool.',
+    },
+    bullets: [
+      { base: 'Pick one small task and define the first step.' },
+      { base: 'Set a 10‑minute timer and remove one distraction.' },
+      { base: 'Stop, review progress, and decide on the next step.' },
+    ],
+  },
+  enableGlossaryTooltips: true,
+  keyTerms: ['executive-function', 'working-memory', 'time-blindness', 'reasonable-adjustments'],
   blocks: [
     {
       id: 'intro',

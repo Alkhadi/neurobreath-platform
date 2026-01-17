@@ -4,6 +4,7 @@ import { canonicalPages } from '../../lib/content/pages';
 import { resolveH1, resolveSEO } from '../../lib/content/localise';
 import { PILLARS } from '../../lib/content/content-seo-map';
 import { SEO_GUIDES } from '../../content/seo-guides';
+import { GLOSSARY_TERMS } from '../../lib/glossary/glossary';
 
 export type RegistryLocale = 'UK' | 'US' | 'GLOBAL';
 export type RegistryType = 'pillar' | 'cluster' | 'tool' | 'trust' | 'other';
@@ -195,6 +196,69 @@ export const buildRouteRegistry = (): RouteRegistryEntry[] => {
       summary: `${toTitle(slug)} policy details.`,
     });
   });
+
+  if (fs.existsSync(path.join(appDir, '[region]', 'help-me-choose', 'page.tsx'))) {
+    entries.push({
+      url: '/uk/help-me-choose',
+      type: 'other',
+      locale: 'UK',
+      title: 'Help me choose a support plan',
+      description: 'Personalised starter plan for neurodivergent support needs.',
+      h1: 'Find a starter plan in a few minutes',
+      tags: ['help', 'wizard'],
+    });
+    entries.push({
+      url: '/us/help-me-choose',
+      type: 'other',
+      locale: 'US',
+      title: 'Help me choose a support plan',
+      description: 'Personalised starter plan for neurodivergent support needs.',
+      h1: 'Find a starter plan in a few minutes',
+      tags: ['help', 'wizard'],
+    });
+  }
+
+  if (fs.existsSync(path.join(appDir, '[region]', 'glossary', 'page.tsx'))) {
+    entries.push({
+      url: '/uk/glossary',
+      type: 'other',
+      locale: 'UK',
+      title: 'Glossary & plain-English definitions',
+      description: 'Plain-English glossary for neurodivergent support terms.',
+      h1: 'Glossary & plain-English definitions',
+      tags: ['glossary'],
+    });
+    entries.push({
+      url: '/us/glossary',
+      type: 'other',
+      locale: 'US',
+      title: 'Glossary & plain-English definitions',
+      description: 'Plain-English glossary for neurodivergent support terms.',
+      h1: 'Glossary & plain-English definitions',
+      tags: ['glossary'],
+    });
+
+    GLOSSARY_TERMS.forEach(term => {
+      entries.push({
+        url: `/uk/glossary/${term.id}`,
+        type: 'other',
+        locale: 'UK',
+        title: `${term.term} — Glossary`,
+        description: term.plainEnglishDefinition,
+        h1: term.localeVariants.uk.spelling,
+        tags: ['glossary', ...term.tags],
+      });
+      entries.push({
+        url: `/us/glossary/${term.id}`,
+        type: 'other',
+        locale: 'US',
+        title: `${term.term} — Glossary`,
+        description: term.plainEnglishDefinition,
+        h1: term.localeVariants.us.spelling,
+        tags: ['glossary', ...term.tags],
+      });
+    });
+  }
 
   return entries;
 };

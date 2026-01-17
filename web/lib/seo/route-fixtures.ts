@@ -8,6 +8,7 @@
 import { SEO_GUIDES } from '@/content/seo-guides';
 import { listClusterParams, listPillarKeys } from '@/lib/content/content-seo-map';
 import { canonicalPages } from '@/lib/content/pages';
+import { GLOSSARY_TERMS } from '@/lib/glossary/glossary';
 
 const regionKeys = ['uk', 'us'] as const;
 
@@ -15,6 +16,7 @@ const guideSlugs = SEO_GUIDES.map(guide => guide.slug);
 const pillarKeys = listPillarKeys();
 const clusterParams = listClusterParams();
 const canonicalGuideSlugs = canonicalPages.flatMap(page => [page.slugs.UK, page.slugs.US]);
+const glossaryTermIds = GLOSSARY_TERMS.map(term => term.id);
 
 export const routeFixtures: Record<string, string[]> = {
   "/parent/:parentCode": [
@@ -26,6 +28,10 @@ export const routeFixtures: Record<string, string[]> = {
   "/guides/:pillar/:slug": clusterParams.map(param => `/guides/${param.pillar}/${param.slug}`),
   "/:region/guides": regionKeys.map(region => `/${region}/guides`),
   "/:region/guides/:slug": regionKeys.flatMap(region => canonicalGuideSlugs.map(slug => `/${region}/guides/${slug}`)),
+  "/:region/help-me-choose": regionKeys.map(region => `/${region}/help-me-choose`),
+  "/:region/help-me-choose/results": regionKeys.map(region => `/${region}/help-me-choose/results`),
+  "/:region/glossary": regionKeys.map(region => `/${region}/glossary`),
+  "/:region/glossary/:term": regionKeys.flatMap(region => glossaryTermIds.map(term => `/${region}/glossary/${term}`)),
   "/:region/trust": regionKeys.map(region => `/${region}/trust`),
   "/:region/trust/:slug": regionKeys.flatMap(region => [
     `/${region}/trust/disclaimer`,

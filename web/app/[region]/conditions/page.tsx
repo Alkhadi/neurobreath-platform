@@ -4,6 +4,7 @@ import { CONDITIONS } from '@/lib/coverage/conditions';
 import { getRegionFromKey, getRegionKey } from '@/lib/region/region';
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
 import ConditionsHub from '@/components/conditions/conditions-hub';
+import { GLOSSARY_TERM_MAP } from '@/lib/glossary/glossary';
 import type { Metadata } from 'next';
 
 interface RegionConditionsProps {
@@ -165,6 +166,26 @@ export default async function RegionConditionsPage({ params }: RegionConditionsP
             ))}
           </div>
         </section>
+
+        <section className="rounded-2xl border border-slate-200 bg-white p-6">
+          <h2 className="text-xl font-semibold text-slate-900">Key terms</h2>
+          <p className="text-sm text-slate-600">Plain‑English explanations for common terms.</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {['adhd', 'autism', 'dyslexia', 'executive-function', 'sensory-overload', 'reasonable-adjustments', 'send']
+              .map(termId => GLOSSARY_TERM_MAP.get(termId))
+              .filter(Boolean)
+              .map(term => (
+                <Link
+                  key={term!.id}
+                  href={`/${regionKey}/glossary/${term!.id}`}
+                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-indigo-300"
+                >
+                  {region === 'US' ? term!.localeVariants.us.spelling : term!.localeVariants.uk.spelling}
+                </Link>
+              ))}
+          </div>
+        </section>
+
         <ConditionsHub
           conditions={CONDITIONS}
           regionKey={regionKey}

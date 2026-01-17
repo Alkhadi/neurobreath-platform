@@ -18,6 +18,10 @@ export const CRITICAL_ALLOWLIST = new Set([
   '/us/trust',
   '/uk/guides',
   '/us/guides',
+  '/uk/help-me-choose',
+  '/us/help-me-choose',
+  '/uk/glossary',
+  '/us/glossary',
 ]);
 
 export function isExcludedByPrefix(pathname: string): boolean {

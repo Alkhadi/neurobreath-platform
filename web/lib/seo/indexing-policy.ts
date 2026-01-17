@@ -42,6 +42,10 @@ const INDEXABLE_TRUST_PREFIXES = ['/trust'];
 
 const INDEXABLE_GUIDE_PREFIXES = ['/guides'];
 
+const INDEXABLE_HELP_PREFIXES = ['/help-me-choose'];
+
+const INDEXABLE_GLOSSARY_PREFIXES = ['/glossary'];
+
 const INDEXABLE_TOOL_ALLOWLIST = new Set([
   '/tools',
   '/tools/adhd-tools',
@@ -86,6 +90,16 @@ function stripLocale(pathname: string) {
 export function getIndexingDecision(pathname: string): IndexingDecision {
   const cleaned = stripLocale(pathname);
 
+  if (cleaned.startsWith('/help-me-choose/results')) {
+    return {
+      path: cleaned,
+      pageType: 'utility',
+      index: false,
+      includeInSitemap: false,
+      reason: 'Results page is privacy-sensitive and thin content',
+    };
+  }
+
   if (UTILITY_PREFIXES.some(prefix => cleaned === prefix || cleaned.startsWith(`${prefix}/`))) {
     return {
       path: cleaned,
@@ -103,6 +117,26 @@ export function getIndexingDecision(pathname: string): IndexingDecision {
       index: true,
       includeInSitemap: true,
       reason: 'Trust centre content',
+    };
+  }
+
+  if (INDEXABLE_HELP_PREFIXES.some(prefix => cleaned === prefix || cleaned.startsWith(`${prefix}/`))) {
+    return {
+      path: cleaned,
+      pageType: 'other',
+      index: true,
+      includeInSitemap: true,
+      reason: 'Help-me-choose wizard with explanatory content',
+    };
+  }
+
+  if (INDEXABLE_GLOSSARY_PREFIXES.some(prefix => cleaned === prefix || cleaned.startsWith(`${prefix}/`))) {
+    return {
+      path: cleaned,
+      pageType: 'other',
+      index: true,
+      includeInSitemap: true,
+      reason: 'Glossary hub and term pages',
     };
   }
 

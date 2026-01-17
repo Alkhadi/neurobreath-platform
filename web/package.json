@@ -38,7 +38,8 @@
     "content:link-intel": "tsx scripts/content/link-intel.ts",
     "content:link-intel:apply": "tsx scripts/content/link-intel.ts --apply",
     "content:link-intel:test": "tsx scripts/content/link-intel-tests.ts",
-    "trust:check": "node scripts/trust/trust-check.mjs"
+    "trust:check": "node scripts/trust/trust-check.mjs",
+    "glossary:validate": "tsx scripts/glossary/validate.mjs"
   },
   "devDependencies": {
     "@next/swc-wasm-nodejs": "13.5.1",

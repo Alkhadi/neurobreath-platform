@@ -81,6 +81,12 @@ export interface ContentPage {
     description: LocalisedString;
   };
   h1: LocalisedString;
+  plainEnglish?: {
+    summary: LocalisedString;
+    bullets: LocalisedString[];
+  };
+  enableGlossaryTooltips?: boolean;
+  keyTerms?: string[];
   blocks: ContentBlock[];
   faqs?: { base: FaqItem[]; UK?: FaqItem[]; US?: FaqItem[] };
   related?: RelatedContentItem[];
