@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { X } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS'
 
 interface BreathingSessionProps {
   technique: 'box' | '478' | 'coherent' | 'sos'
@@ -743,9 +744,12 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
   // Force speak function for manual voice buttons (always plays)
   const speakNow = (text: string) => {
     if (typeof window === 'undefined' || !window.speechSynthesis) return
-    
+
+    const cleanText = sanitizeForTTS(text)
+    if (!cleanText) return
+
     // Don't cancel immediately - let current speech finish or wait briefly
-    const utterance = new SpeechSynthesisUtterance(text)
+    const utterance = new SpeechSynthesisUtterance(cleanText)
     if (settings.ttsVoice) {
       const voice = voices.find(v => v.name === settings.ttsVoice)
       if (voice) utterance.voice = voice

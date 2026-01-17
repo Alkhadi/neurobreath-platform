@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS';
 
 export interface UseSpeechControllerReturn {
   speak: (messageId: string, text: string) => void;
@@ -51,21 +52,9 @@ export function useSpeechController(): UseSpeechControllerReturn {
     // Stop any ongoing speech first
     stop();
 
-    // Clean text for speech (remove markdown, links, etc.)
-    const cleanText = text
-      .replace(/\*\*/g, '') // Remove bold
-      .replace(/\*/g, '') // Remove italic
-      .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Extract link text
-      .replace(/#{1,6}\s/g, '') // Remove heading markers
-      .replace(/```[\s\S]*?```/g, '') // Remove code blocks
-      .replace(/`([^`]+)`/g, '$1') // Remove inline code
-      .replace(/\n{3,}/g, '\n\n') // Reduce excessive newlines
-      .replace(/•/g, '. ') // Replace bullets with periods
-      .trim();
+    const cleanText = sanitizeForTTS(text, { locale: 'en-GB' });
 
-    if (!cleanText) {
-      return;
-    }
+    if (!cleanText) return;
 
     // Check if Web Speech API is available
     if ('speechSynthesis' in window) {

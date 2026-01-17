@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Volume2, VolumeX, Play, Pause, RotateCcw, Square, Settings, Music, Headphones, X } from 'lucide-react'
 import { calculateRoundsForMinutes, getTechniqueById } from '@/lib/breathing-data'
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS'
 import { getDeviceId } from '@/lib/device-id'
 import { toast } from 'sonner'
 import Link from 'next/link'
@@ -291,7 +292,9 @@ export default function DailyPracticePlayer() {
       
       // Speak phase if voice enabled
       if (voiceEnabled && 'speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(currentPhaseData?.name ?? '')
+        const cleanText = sanitizeForTTS(currentPhaseData?.name ?? '')
+        if (!cleanText) return
+        const utterance = new SpeechSynthesisUtterance(cleanText)
         utterance.rate = voiceSpeed
         if (selectedVoice) {
           const voice = availableVoices.find(v => v.name === selectedVoice)

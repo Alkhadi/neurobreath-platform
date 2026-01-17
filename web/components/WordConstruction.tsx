@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Volume2, Shuffle, RotateCcw } from 'lucide-react';
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS';
 import { toast } from 'sonner';
 
 interface WordSet {
@@ -132,7 +133,9 @@ export default function WordConstruction() {
     if (word.length === 0) return;
 
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(word);
+      const cleanText = sanitizeForTTS(word);
+      if (!cleanText) return;
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.rate = 0.8;
       utterance.pitch = 1.0;
       window.speechSynthesis.speak(utterance);

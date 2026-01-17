@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Volume2, CheckCircle, XCircle, RefreshCw, Trophy } from 'lucide-react';
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS';
 import { useProgress } from '@/contexts/ProgressContext';
 
 const rhymePairs = [
@@ -26,7 +27,9 @@ export function RhymingPairs() {
 
   const speakWord = (word: string) => {
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(word);
+      const cleanText = sanitizeForTTS(word);
+      if (!cleanText) return;
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.rate = 0.8;
       window.speechSynthesis.speak(utterance);
     }

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, XCircle, RefreshCw, Trophy, Volume2 } from 'lucide-react';
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS';
 import { useProgress } from '@/contexts/ProgressContext';
 
 const homophones = [
@@ -58,7 +59,9 @@ export function HomophoneChallenge() {
   const speakSentence = () => {
     if ('speechSynthesis' in window) {
       const sentenceWithWord = question.sentence.replace('___', question.correctWord);
-      const utterance = new SpeechSynthesisUtterance(sentenceWithWord);
+      const cleanText = sanitizeForTTS(sentenceWithWord);
+      if (!cleanText) return;
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.rate = 0.8;
       window.speechSynthesis.speak(utterance);
     }

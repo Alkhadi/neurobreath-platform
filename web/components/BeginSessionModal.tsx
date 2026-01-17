@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { X, Play, Pause, Square, Volume2, Music } from 'lucide-react'
 import { getTechniqueById } from '@/lib/breathing-data'
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS'
 
 interface BeginSessionModalProps {
   isOpen: boolean
@@ -351,9 +352,12 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
 
   const speak = (text: string) => {
     if (!voiceEnabled || typeof window === 'undefined' || !window.speechSynthesis) return
-    
+
+    const cleanText = sanitizeForTTS(text)
+    if (!cleanText) return
+
     window.speechSynthesis.cancel()
-    const utterance = new SpeechSynthesisUtterance(text)
+    const utterance = new SpeechSynthesisUtterance(cleanText)
     utterance.rate = 0.9
     utterance.pitch = 1.0
     window.speechSynthesis.speak(utterance)

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, Square, Volume2, Settings } from 'lucide-react';
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS';
 
 const sampleText = `Reading with dyslexia can be challenging, but with the right tools and support, it becomes much easier. Text-to-speech technology helps by reading text aloud, allowing you to focus on comprehension rather than decoding. You can adjust the speed and voice to match your preferences.`;
 
@@ -40,7 +41,12 @@ export function TextToSpeechReader() {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
 
-      const words = text.split(' ');
+      const cleanText = sanitizeForTTS(text);
+      if (!cleanText) {
+        setIsPlaying(false);
+        return;
+      }
+      const words = cleanText.split(' ');
       let wordIndex = 0;
 
       const speakNextWord = () => {
@@ -115,8 +121,9 @@ export function TextToSpeechReader() {
           {showSettings && (
             <div className="p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-semibold">Speed: {rate.toFixed(1)}x</label>
+                <label className="text-sm font-semibold" htmlFor="tts-speed">Speed: {rate.toFixed(1)}x</label>
                 <input
+                  id="tts-speed"
                   type="range"
                   min="0.5"
                   max="2.0"
@@ -128,8 +135,9 @@ export function TextToSpeechReader() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold">Pitch: {pitch.toFixed(1)}</label>
+                <label className="text-sm font-semibold" htmlFor="tts-pitch">Pitch: {pitch.toFixed(1)}</label>
                 <input
+                  id="tts-pitch"
                   type="range"
                   min="0.5"
                   max="2.0"
@@ -142,8 +150,9 @@ export function TextToSpeechReader() {
 
               {voices.length > 0 && (
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold">Voice:</label>
+                  <label className="text-sm font-semibold" htmlFor="tts-voice">Voice:</label>
                   <select
+                    id="tts-voice"
                     value={selectedVoice}
                     onChange={(e) => setSelectedVoice(parseInt(e.target.value))}
                     className="w-full px-3 py-2 border rounded-lg"
@@ -164,6 +173,7 @@ export function TextToSpeechReader() {
             onChange={(e) => setText(e.target.value)}
             className="w-full h-32 px-4 py-3 border-2 rounded-lg resize-none focus:outline-none focus:border-blue-500"
             placeholder="Paste or type text here..."
+            aria-label="Text to read aloud"
           />
 
           <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg">

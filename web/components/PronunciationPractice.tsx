@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Volume2, Mic, ChevronLeft, ChevronRight } from 'lucide-react';
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS';
 import { toast } from 'sonner';
 
 interface Word {
@@ -37,6 +38,42 @@ const wordsList: Word[] = [
 ];
 
 export default function PronunciationPractice() {
+  const PERCENT_BUCKETS = [
+    0, 5, 10, 15, 20, 25, 30, 35, 40, 45,
+    50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100,
+  ];
+
+  const WIDTH_CLASS_BY_PERCENT: Record<number, string> = {
+    0: 'w-0',
+    5: 'w-[5%]',
+    10: 'w-[10%]',
+    15: 'w-[15%]',
+    20: 'w-[20%]',
+    25: 'w-[25%]',
+    30: 'w-[30%]',
+    35: 'w-[35%]',
+    40: 'w-[40%]',
+    45: 'w-[45%]',
+    50: 'w-[50%]',
+    55: 'w-[55%]',
+    60: 'w-[60%]',
+    65: 'w-[65%]',
+    70: 'w-[70%]',
+    75: 'w-[75%]',
+    80: 'w-[80%]',
+    85: 'w-[85%]',
+    90: 'w-[90%]',
+    95: 'w-[95%]',
+    100: 'w-[100%]',
+  };
+
+  const toPercentBucket = (value: number): number => {
+    const clamped = Math.max(0, Math.min(100, value));
+    return PERCENT_BUCKETS.reduce((closest, current) =>
+      Math.abs(current - clamped) < Math.abs(closest - clamped) ? current : closest
+    , 0);
+  };
+
   const [selectedDifficulty, setSelectedDifficulty] = useState<'easy' | 'medium' | 'hard'>('easy');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [practiced, setPracticed] = useState<{ [key: string]: boolean }>({});
@@ -49,6 +86,10 @@ export default function PronunciationPractice() {
   const practicedCount = Object.keys(practiced).filter(key => 
     practiced[key] && key.startsWith(selectedDifficulty)
   ).length;
+  const progressPercent = filteredWords.length
+    ? Math.round((practicedCount / filteredWords.length) * 100)
+    : 0;
+  const progressWidthClass = WIDTH_CLASS_BY_PERCENT[toPercentBucket(progressPercent)];
 
   useEffect(() => {
     // Load progress
@@ -65,7 +106,9 @@ export default function PronunciationPractice() {
 
   const playCorrectPronunciation = () => {
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(currentWord.word);
+      const cleanText = sanitizeForTTS(currentWord.word);
+      if (!cleanText) return;
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.rate = 0.7;
       utterance.pitch = 1.0;
       window.speechSynthesis.speak(utterance);
@@ -247,10 +290,7 @@ export default function PronunciationPractice() {
           </div>
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-2">
             <div
-              className="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full transition-all duration-300"
-              style={{
-                width: `${(practicedCount / filteredWords.length) * 100}%`
-              }}
+              className={`bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full transition-all duration-300 ${progressWidthClass}`}
             />
           </div>
         </div>

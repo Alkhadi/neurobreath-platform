@@ -751,6 +751,9 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
         timestamp: new Date()
       };
       setMessages(prev => [...prev, alreadyActiveMessage]);
+      if (autoSpeak) {
+        speak(alreadyActiveMessage.id, alreadyActiveMessage.content);
+      }
       return;
     }
     
@@ -779,6 +782,9 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
       timestamp: new Date()
     };
     setMessages(prev => [...prev, tourIntro]);
+    if (autoSpeak) {
+      speak(tourIntro.id, tourIntro.content);
+    }
   };
   
   const nextTourStep = () => {
@@ -801,6 +807,9 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
         timestamp: new Date()
       };
       setMessages(prev => [...prev, tourEnd]);
+      if (autoSpeak) {
+        speak(tourEnd.id, tourEnd.content);
+      }
       return;
     }
     
@@ -819,6 +828,9 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
       timestamp: new Date()
     };
     setMessages(prev => [...prev, tourStep]);
+    if (autoSpeak) {
+      speak(tourStep.id, tourStep.content);
+    }
   };
   
   if (!mounted) return null;

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Volume2, CheckCircle, XCircle, RefreshCw, Trophy, Play } from 'lucide-react';
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS';
 import { useProgress } from '@/contexts/ProgressContext';
 
 const words = [
@@ -29,7 +30,9 @@ export function SoundBlending() {
   const speakSound = (sound: string, delay: number = 0) => {
     if ('speechSynthesis' in window) {
       setTimeout(() => {
-        const utterance = new SpeechSynthesisUtterance(sound);
+        const cleanText = sanitizeForTTS(sound);
+        if (!cleanText) return;
+        const utterance = new SpeechSynthesisUtterance(cleanText);
         utterance.rate = 0.5;
         utterance.pitch = 1.2;
         window.speechSynthesis.speak(utterance);
