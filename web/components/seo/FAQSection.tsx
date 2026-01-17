@@ -19,7 +19,7 @@ export function FaqSection({
   const schema = includeSchema ? buildFaqPageSchema({ url: pageUrl, faqs }) : null;
 
   return (
-    <section className="mt-10" aria-labelledby="faq-heading">
+    <section className="mt-10" aria-labelledby="faq-heading" data-faq-section="true">
       <div className="rounded-2xl border border-neutral-200 bg-white/70 p-5 shadow-sm">
         <h2 id="faq-heading" className="text-lg font-semibold text-neutral-900">
           {title}

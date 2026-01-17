@@ -6,6 +6,7 @@
 
 import { Metadata } from 'next';
 import { SITE_CONFIG, generateCanonicalUrl, generatePageTitle } from './site-seo';
+import { getIndexingDecision } from './indexing-policy';
 
 export interface PageMetadataConfig {
   title: string;
@@ -30,7 +31,7 @@ export function generatePageMetadata(config: PageMetadataConfig): Metadata {
     path,
     keywords = [],
     image = SITE_CONFIG.defaultOGImage,
-    noindex = false,
+    noindex,
     type = 'website',
     publishedTime,
     modifiedTime,
@@ -42,6 +43,8 @@ export function generatePageMetadata(config: PageMetadataConfig): Metadata {
   const fullImageUrl = image.startsWith('http') ? image : `${SITE_CONFIG.canonicalBase}${image}`;
   
   const allKeywords = [...SITE_CONFIG.defaultKeywords, ...keywords];
+
+  const resolvedNoindex = noindex ?? !getIndexingDecision(path).index;
 
   return {
     title: fullTitle,
@@ -77,7 +80,7 @@ export function generatePageMetadata(config: PageMetadataConfig): Metadata {
       description,
       images: [fullImageUrl],
     },
-    robots: noindex
+    robots: resolvedNoindex
       ? {
           index: false,
           follow: false,

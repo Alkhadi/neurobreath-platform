@@ -52,6 +52,15 @@ export function TrustHubPage({ region }: { region: Region }) {
         </p>
         <p className="mt-2 text-xs text-slate-500">{getRegionalSupportLine(region)}</p>
       </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5">
+        <h2 className="text-lg font-semibold text-slate-900">How we work</h2>
+        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-600">
+          <li>Evidence-informed guidance reviewed on a published cadence.</li>
+          <li>Educational resources designed for families, carers, and educators.</li>
+          <li>Safeguarding, accessibility, and privacy-first standards throughout.</li>
+        </ul>
+      </section>
     </TrustPageShell>
   );
 }

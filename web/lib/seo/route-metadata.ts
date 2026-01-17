@@ -3,6 +3,7 @@ import { generatePageMetadata } from './metadata';
 import type { PageMetadataConfig } from './metadata';
 import { DEFAULT_METADATA, SITE_CONFIG, generateCanonicalUrl } from './site-seo';
 import { getRegionAlternates, getRegionFromPath, getRegionKey } from '@/lib/region/region';
+import { getIndexingDecision } from '@/lib/seo/indexing-policy';
 
 export interface RouteSeoConfig extends PageMetadataConfig {
   noindex?: boolean;
@@ -44,6 +45,12 @@ const ROUTE_SEO_CONFIGS: Record<string, RouteSeoConfig> = {
     description:
       'Contact the NeuroBreath team for support, partnerships or feedback. We respond promptly to families, educators and carers across the UK.',
     path: '/contact',
+  },
+  '/conditions': {
+    title: 'Conditions We Cover | NeuroBreath',
+    description:
+      'A one-stop hub for neurodivergent support resources across ADHD, autism, anxiety, dyslexia, sleep and stress.',
+    path: '/conditions',
   },
   '/downloads': {
     title: 'Downloads & Resources | NeuroBreath',
@@ -544,12 +551,22 @@ export function getRouteMetadata(pathname: string): Metadata {
   const cleanedPath = pathname.replace(/^\/(uk|us)/, '') || '/';
   const config = getRouteSeoConfig(pathname);
   const isLocalized = cleanedPath === '/' || cleanedPath.startsWith('/trust') || cleanedPath.startsWith('/guides');
+  const indexingDecision = getIndexingDecision(cleanedPath);
+  const shouldIndex = indexingDecision.index;
 
   if (!config) {
-    const canonicalPath = `/${regionKey}${cleanedPath === '/' ? '' : cleanedPath}`;
+    const canonicalPath = isLocalized
+      ? `/${regionKey}${cleanedPath === '/' ? '' : cleanedPath}`
+      : cleanedPath;
     const alternates = getRegionAlternates(cleanedPath);
     return {
       ...DEFAULT_METADATA,
+      robots: shouldIndex
+        ? DEFAULT_METADATA.robots
+        : {
+            index: false,
+            follow: false,
+          },
       alternates: {
         canonical: generateCanonicalUrl(canonicalPath),
         ...(isLocalized
@@ -567,17 +584,17 @@ export function getRouteMetadata(pathname: string): Metadata {
   const metadata = generatePageMetadata({
     title: config.title,
     description: config.description,
-    path: `/${regionKey}${config.path === '/' ? '' : config.path}`,
+    path: isLocalized ? `/${regionKey}${config.path === '/' ? '' : config.path}` : config.path,
     keywords: config.keywords,
     image: config.image || SITE_CONFIG.defaultOGImage,
-    noindex: config.noindex,
+    noindex: config.noindex || !shouldIndex,
   });
 
   const alternates = getRegionAlternates(config.path);
   return {
     ...metadata,
     alternates: {
-      canonical: metadata.alternates?.canonical || generateCanonicalUrl(`/${regionKey}${config.path}`),
+      canonical: metadata.alternates?.canonical || generateCanonicalUrl(isLocalized ? `/${regionKey}${config.path}` : config.path),
       ...(isLocalized
         ? {
             languages: {

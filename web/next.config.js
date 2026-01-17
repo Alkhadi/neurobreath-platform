@@ -11,7 +11,12 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
-  images: { unoptimized: true },
+  compress: true,
+  images: {
+    unoptimized: false,
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60 * 60 * 24 * 30,
+  },
   // Suppress React DevTools suggestion in development
   reactStrictMode: true,
   compiler: {

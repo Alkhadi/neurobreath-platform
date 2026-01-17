@@ -5,10 +5,10 @@
  */
 
 import { MetadataRoute } from 'next';
-import { SITE_CONFIG } from '@/lib/seo/site-seo';
+import { SITE_URL } from '@/lib/seo/site-config';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = SITE_CONFIG.canonicalBase;
+  const baseUrl = SITE_URL;
 
   return {
     rules: [

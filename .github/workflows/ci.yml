@@ -151,6 +151,73 @@ jobs:
           if-no-files-found: error
 
   # ====================================
+  # Web App - SEO & Search Console Checks
+  # ====================================
+  web-seo-validation:
+    name: Web App - SEO Validation
+    runs-on: ubuntu-latest
+    needs: web-build
+    defaults:
+      run:
+        working-directory: ./web
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: web/yarn.lock
+
+      - name: Install Yarn 1 (Classic)
+        run: npm install -g yarn@1.22.22
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: web-build
+          path: web/.next
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Install Chromium
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+
+      - name: Start server
+        run: |
+          PORT=3000 yarn start &
+          sleep 10
+        env:
+          NEXT_PUBLIC_SITE_URL: https://neurobreath.co.uk
+
+      - name: Run sitemap validation
+        run: yarn seo:sitemap:ci
+        env:
+          SEO_BASE_URL: http://localhost:3000
+          NEXT_PUBLIC_SITE_URL: https://neurobreath.co.uk
+
+      - name: Run search console readiness
+        run: yarn seo:search-console-ready
+        env:
+          SEO_BASE_URL: http://localhost:3000
+          NEXT_PUBLIC_SITE_URL: https://neurobreath.co.uk
+          CHROME_PATH: /usr/bin/chromium-browser
+
+      - name: Upload SEO reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: seo-reports
+          path: web/reports
+          retention-days: 7
+          if-no-files-found: error
+
+  # ====================================
   # Web App - Deploy to Cloudflare Pages (Production only)
   # ====================================
   # DISABLED: Using Vercel for deployments instead

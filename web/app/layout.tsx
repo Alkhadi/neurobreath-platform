@@ -37,19 +37,15 @@ export default function RootLayout({
   const pageUrl = generateCanonicalUrl(pathname);
   const pageImage = (seoConfig?.image || SITE_CONFIG.defaultOGImage);
   const pageImageUrl = pageImage.startsWith('http') ? pageImage : `${SITE_CONFIG.canonicalBase}${pageImage}`;
-  const webPageSchema = seoConfig
-    ? generateWebPageSchema({
-        url: pageUrl,
-        name: seoConfig.title,
-        description: seoConfig.description,
-        image: pageImageUrl,
-        languageOverride: language,
-      })
-    : null;
+  const webPageSchema = generateWebPageSchema({
+    url: pageUrl,
+    name: seoConfig?.title || SITE_CONFIG.defaultTitle,
+    description: seoConfig?.description || SITE_CONFIG.defaultDescription,
+    image: pageImageUrl,
+    languageOverride: language,
+  });
   const breadcrumbSchema = generateBreadcrumbSchema(generateBreadcrumbsFromPath(pathname));
-  const schemaGraph = webPageSchema
-    ? [organizationSchema, websiteSchema, webPageSchema, breadcrumbSchema]
-    : [organizationSchema, websiteSchema, breadcrumbSchema];
+  const schemaGraph = [organizationSchema, websiteSchema, webPageSchema, breadcrumbSchema];
 
   return (
     <html lang={language} suppressHydrationWarning className="overflow-x-hidden">

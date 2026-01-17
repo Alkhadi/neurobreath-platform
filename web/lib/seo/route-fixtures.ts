@@ -1,19 +1,42 @@
 /**
  * Route Fixtures
- * 
+ *
  * Provides concrete example URLs for dynamic routes.
- * Each key must match the pattern from route-inventory.mjs output.
+ * Each key must match the pattern from route-registry output.
  */
 
+import { SEO_GUIDES } from '@/content/seo-guides';
+import { listClusterParams, listPillarKeys } from '@/lib/content/content-seo-map';
+import { canonicalPages } from '@/lib/content/pages';
+
+const regionKeys = ['uk', 'us'] as const;
+
+const guideSlugs = SEO_GUIDES.map(guide => guide.slug);
+const pillarKeys = listPillarKeys();
+const clusterParams = listClusterParams();
+const canonicalGuideSlugs = canonicalPages.flatMap(page => [page.slugs.UK, page.slugs.US]);
+
 export const routeFixtures: Record<string, string[]> = {
-  // Parent dashboard routes
   "/parent/:parentCode": [
     "/parent/demo-parent-123",
-    "/parent/test-parent"
+    "/parent/test-parent",
   ],
-  
-  // Add more dynamic route fixtures here as they are discovered
-  // Format: "/path/:param": ["/path/example1", "/path/example2"]
+  "/guides/:slug": guideSlugs.map(slug => `/guides/${slug}`),
+  "/guides/:pillar": pillarKeys.map(pillar => `/guides/${pillar}`),
+  "/guides/:pillar/:slug": clusterParams.map(param => `/guides/${param.pillar}/${param.slug}`),
+  "/:region/guides": regionKeys.map(region => `/${region}/guides`),
+  "/:region/guides/:slug": regionKeys.flatMap(region => canonicalGuideSlugs.map(slug => `/${region}/guides/${slug}`)),
+  "/:region/trust": regionKeys.map(region => `/${region}/trust`),
+  "/:region/trust/:slug": regionKeys.flatMap(region => [
+    `/${region}/trust/disclaimer`,
+    `/${region}/trust/evidence-policy`,
+    `/${region}/trust/safeguarding`,
+    `/${region}/trust/accessibility`,
+    `/${region}/trust/privacy`,
+    `/${region}/trust/terms`,
+    `/${region}/trust/contact`,
+  ]),
+  "/:region": regionKeys.map(region => `/${region}`),
 };
 
 /**
