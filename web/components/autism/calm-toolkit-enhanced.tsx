@@ -121,6 +121,36 @@ const CalmingTechniqueCard = ({ technique, progress: _progress, onUpdate }: Tech
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const WIDTH_CLASS_BY_PERCENT: Record<number, string> = {
+    0: 'w-0',
+    5: 'w-[5%]',
+    10: 'w-[10%]',
+    15: 'w-[15%]',
+    20: 'w-[20%]',
+    25: 'w-1/4',
+    30: 'w-[30%]',
+    35: 'w-[35%]',
+    40: 'w-2/5',
+    45: 'w-[45%]',
+    50: 'w-1/2',
+    55: 'w-[55%]',
+    60: 'w-3/5',
+    65: 'w-[65%]',
+    70: 'w-[70%]',
+    75: 'w-3/4',
+    80: 'w-4/5',
+    85: 'w-[85%]',
+    90: 'w-[90%]',
+    95: 'w-[95%]',
+    100: 'w-full'
+  };
+
+  const percentToWidthClass = (percent: number): string => {
+    const clamped = Math.max(0, Math.min(100, percent));
+    const rounded = Math.round(clamped / 5) * 5;
+    return WIDTH_CLASS_BY_PERCENT[rounded] ?? 'w-0';
+  };
+
   const progressPercentage = ((currentStep + 1) / (technique?.steps?.length || 1)) * 100;
 
   return (
@@ -181,8 +211,7 @@ const CalmingTechniqueCard = ({ technique, progress: _progress, onUpdate }: Tech
                   </div>
                   <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300"
-                      style={{ width: `${progressPercentage}%` }}
+                      className={`h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300 ${percentToWidthClass(progressPercentage)}`}
                     />
                   </div>
                 </div>

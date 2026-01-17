@@ -13,6 +13,36 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Compass, Heart, Users, Briefcase, BookOpen, Flower2, Star, Plus, Calendar, CheckCircle2 } from "lucide-react";
 
+const WIDTH_CLASS_BY_PERCENT: Record<number, string> = {
+  0: "w-0",
+  5: "w-[5%]",
+  10: "w-[10%]",
+  15: "w-[15%]",
+  20: "w-[20%]",
+  25: "w-1/4",
+  30: "w-[30%]",
+  35: "w-[35%]",
+  40: "w-2/5",
+  45: "w-[45%]",
+  50: "w-1/2",
+  55: "w-[55%]",
+  60: "w-3/5",
+  65: "w-[65%]",
+  70: "w-[70%]",
+  75: "w-3/4",
+  80: "w-4/5",
+  85: "w-[85%]",
+  90: "w-[90%]",
+  95: "w-[95%]",
+  100: "w-full",
+};
+
+function percentToWidthClass(percent: number): string {
+  const clamped = Math.max(0, Math.min(100, percent));
+  const rounded = Math.round(clamped / 5) * 5;
+  return WIDTH_CLASS_BY_PERCENT[rounded] ?? "w-0";
+}
+
 interface Value {
   id: string;
   name: string;
@@ -461,8 +491,7 @@ export function ValuesCompass() {
                       <div className="space-y-1">
                         <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-green-500 transition-all"
-                            style={{ width: `${(completedActivities / totalActivities) * 100}%` }}
+                            className={`h-full bg-green-500 transition-all ${percentToWidthClass((completedActivities / totalActivities) * 100)}`}
                           />
                         </div>
                       </div>

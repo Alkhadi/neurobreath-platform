@@ -333,18 +333,37 @@ export function EnergyAccountingTracker() {
 
               {/* Energy Cost */}
               <div className="space-y-2">
-                <Label htmlFor="energyCost">
-                  {energyLevel === "green" ? "Energy Gain" : "Energy Cost"}: {energyCost}
-                </Label>
-                <input
-                  type="range"
-                  id="energyCost"
-                  min="1"
-                  max="10"
-                  value={energyCost}
-                  onChange={(e) => setEnergyCost(e.target.value)}
-                  className="w-full"
-                />
+                {energyLevel === "green" ? (
+                  <>
+                    <Label htmlFor="energyGain">Energy Gain: {energyCost}</Label>
+                    <input
+                      type="range"
+                      id="energyGain"
+                      min="1"
+                      max="10"
+                      value={energyCost}
+                      onChange={(e) => setEnergyCost(e.target.value)}
+                      className="w-full"
+                      aria-label="Energy gain (1 to 10)"
+                      title="Energy gain (1 to 10)"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Label htmlFor="energyCost">Energy Cost: {energyCost}</Label>
+                    <input
+                      type="range"
+                      id="energyCost"
+                      min="1"
+                      max="10"
+                      value={energyCost}
+                      onChange={(e) => setEnergyCost(e.target.value)}
+                      className="w-full"
+                      aria-label="Energy cost (1 to 10)"
+                      title="Energy cost (1 to 10)"
+                    />
+                  </>
+                )}
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>Low</span>
                   <span>Medium</span>

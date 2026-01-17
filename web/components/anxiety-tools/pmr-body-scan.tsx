@@ -42,6 +42,38 @@ export function PMRBodyScan({ mode }: Props) {
   const areas = mode === 'pmr' ? PMR_MUSCLE_GROUPS : BODY_SCAN_AREAS
   const currentArea = areas?.[currentIndex]
 
+  const WIDTH_CLASS_BY_PERCENT: Record<number, string> = {
+    0: 'w-0',
+    5: 'w-[5%]',
+    10: 'w-[10%]',
+    15: 'w-[15%]',
+    20: 'w-[20%]',
+    25: 'w-1/4',
+    30: 'w-[30%]',
+    35: 'w-[35%]',
+    40: 'w-2/5',
+    45: 'w-[45%]',
+    50: 'w-1/2',
+    55: 'w-[55%]',
+    60: 'w-3/5',
+    65: 'w-[65%]',
+    70: 'w-[70%]',
+    75: 'w-3/4',
+    80: 'w-4/5',
+    85: 'w-[85%]',
+    90: 'w-[90%]',
+    95: 'w-[95%]',
+    100: 'w-full'
+  }
+
+  const percentToWidthClass = (percent: number): string => {
+    const clamped = Math.max(0, Math.min(100, percent))
+    const rounded = Math.round(clamped / 5) * 5
+    return WIDTH_CLASS_BY_PERCENT[rounded] ?? 'w-0'
+  }
+
+  const progressPercent = ((currentIndex + 1) / (areas.length || 1)) * 100
+
   const handleComplete = useCallback(() => {
     const today = new Date().toISOString().split('T')[0]
     const wasToday = progress?.lastActivityDate === today
@@ -214,8 +246,7 @@ export function PMRBodyScan({ mode }: Props) {
             </div>
             <div className="w-full bg-secondary h-2 rounded-full overflow-hidden">
               <div 
-                className="h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all"
-                style={{ width: `${((currentIndex + 1) / areas.length) * 100}%` }}
+                className={`h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all ${percentToWidthClass(progressPercent)}`}
               />
             </div>
           </div>
@@ -281,5 +312,7 @@ export function PMRBodyScan({ mode }: Props) {
         </div>
       </Card>
     </div>
+
   )
+
 }

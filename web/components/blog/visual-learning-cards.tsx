@@ -121,24 +121,28 @@ interface LearningCardProps {
 function LearningCard({ card, isFlipped, onFlip }: LearningCardProps) {
   const hasBack = !!card.back
   const Icon = getIcon(card.iconKey)
-  
-  return (
-    <div
-      className={`relative h-48 cursor-pointer perspective-1000 ${hasBack ? '' : 'cursor-default'}`}
-      onClick={onFlip}
-      role={hasBack ? 'button' : undefined}
-      tabIndex={hasBack ? 0 : undefined}
-      onKeyDown={
-        hasBack
-          ? (e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault()
-                onFlip()
-              }
-            }
-          : undefined
+
+  const containerClassName = `relative h-48 w-full perspective-1000 ${hasBack ? 'cursor-pointer' : 'cursor-default'}`
+
+  const CardContainer = hasBack ? 'button' : 'div'
+  const containerProps = hasBack
+    ? {
+        type: 'button' as const,
+        onClick: onFlip,
+        'aria-label': `Flip card: ${card.title}`,
       }
-      aria-label={hasBack ? `Flip card: ${card.title}` : card.title}
+    : {
+        'aria-label': card.title,
+      }
+
+  return (
+    <CardContainer
+      className={
+        hasBack
+          ? `${containerClassName} text-left bg-transparent border-0 p-0`
+          : containerClassName
+      }
+      {...containerProps}
     >
       <div
         className={`relative w-full h-full transition-transform duration-500 transform-style-3d ${
@@ -196,7 +200,7 @@ function LearningCard({ card, isFlipped, onFlip }: LearningCardProps) {
           </Card>
         )}
       </div>
-    </div>
+    </CardContainer>
   )
 }
 

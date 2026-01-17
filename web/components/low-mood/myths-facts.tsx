@@ -157,7 +157,7 @@ export const MythsFacts = () => {
   };
 
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
       <div className="text-center mb-8">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">Myths vs Facts</h2>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">

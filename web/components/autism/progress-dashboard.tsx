@@ -5,9 +5,10 @@ import { badges } from '@/lib/data/badges';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { TrendingUp, Flame, Clock, Target, RotateCcw, Award } from 'lucide-react';
-import type { ComponentType, CSSProperties } from 'react';
+import type { ComponentType } from 'react';
 import dynamic from 'next/dynamic';
 import * as LucideIcons from 'lucide-react';
+import styles from './progress-dashboard.module.css';
 
 const WeeklyChart = dynamic(
   () => import('./weekly-chart'),
@@ -16,6 +17,25 @@ const WeeklyChart = dynamic(
 
 export const ProgressDashboard = () => {
   const { progress, resetAll } = useProgress();
+
+  const badgeClassById: Record<string, { borderClass: string; iconClass: string }> = {
+    'first-calm': { borderClass: styles.borderFirstCalm, iconClass: styles.iconFirstCalm },
+    'three-day-streak': { borderClass: styles.borderThreeDayStreak, iconClass: styles.iconThreeDayStreak },
+    'visual-supports-starter': { borderClass: styles.borderVisualSupportsStarter, iconClass: styles.iconVisualSupportsStarter },
+    'transition-pro': { borderClass: styles.borderTransitionPro, iconClass: styles.iconTransitionPro },
+    'sensory-planner': { borderClass: styles.borderSensoryPlanner, iconClass: styles.iconSensoryPlanner },
+    'communication-supporter': { borderClass: styles.borderCommunicationSupporter, iconClass: styles.iconCommunicationSupporter },
+    'inclusive-classroom': { borderClass: styles.borderInclusiveClassroom, iconClass: styles.iconInclusiveClassroom },
+    'workplace-ally': { borderClass: styles.borderWorkplaceAlly, iconClass: styles.iconWorkplaceAlly },
+    'plan-creator': { borderClass: styles.borderPlanCreator, iconClass: styles.iconPlanCreator },
+    'toolkit-builder': { borderClass: styles.borderToolkitBuilder, iconClass: styles.iconToolkitBuilder },
+    'seven-day-warrior': { borderClass: styles.borderSevenDayWarrior, iconClass: styles.iconSevenDayWarrior },
+    'self-advocate': { borderClass: styles.borderSelfAdvocate, iconClass: styles.iconSelfAdvocate },
+    'research-explorer': { borderClass: styles.borderResearchExplorer, iconClass: styles.iconResearchExplorer },
+    'pathway-navigator': { borderClass: styles.borderPathwayNavigator, iconClass: styles.iconPathwayNavigator },
+    'interactive-expert': { borderClass: styles.borderInteractiveExpert, iconClass: styles.iconInteractiveExpert },
+    'ai-assistant-user': { borderClass: styles.borderAiAssistantUser, iconClass: styles.iconAiAssistantUser }
+  };
 
   // Get last 7 days for chart
   const getLast7Days = () => {
@@ -110,23 +130,22 @@ export const ProgressDashboard = () => {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {badges?.map?.((badge) => {
               const isEarned = earnedBadges?.some?.(b => b?.id === badge?.id);
-              const IconComponent = (LucideIcons as unknown as Record<string, ComponentType<{ className?: string; style?: CSSProperties }>>)?.[badge?.icon];
+              const IconComponent = (LucideIcons as unknown as Record<string, ComponentType<{ className?: string }>>)?.[badge?.icon];
+              const badgeClasses = badge?.id ? badgeClassById[badge.id] : undefined;
 
               return (
                 <div
                   key={badge?.id}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     isEarned
-                      ? 'border-current bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900'
+                      ? `${badgeClasses?.borderClass ?? ''} bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900`
                       : 'border-dashed border-gray-300 opacity-50'
                   }`}
-                  style={{ borderColor: isEarned ? badge?.color : undefined }}
                 >
                   <div className="flex items-center gap-3 mb-2">
                     {IconComponent && (
                       <IconComponent
-                        className="h-6 w-6"
-                        style={{ color: isEarned ? badge?.color : undefined }}
+                        className={`h-6 w-6 ${isEarned ? (badgeClasses?.iconClass ?? '') : 'text-gray-400'}`}
                       />
                     )}
                     <h4 className="font-semibold text-sm">{badge?.name}</h4>

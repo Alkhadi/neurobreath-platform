@@ -67,7 +67,7 @@ export const PageNavigation = () => {
     <>
       {/* Sticky Navigation Bar */}
       <nav className="sticky top-16 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b shadow-sm">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="flex items-center gap-2 py-3 overflow-x-auto scrollbar-hide">
             {sections.map(section => {
               const Icon = section.icon;
