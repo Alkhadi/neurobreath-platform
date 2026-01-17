@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { CheckCircle2, BookmarkIcon, ArrowRight } from 'lucide-react';
 import { useMyPlanActions } from '@/lib/user-preferences/useMyPlanActions';
+import { useAnalytics } from '@/lib/analytics/hooks';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -38,6 +39,8 @@ export function JourneyProgressTracker({
   region = 'uk',
 }: JourneyProgressTrackerProps) {
   const { setJourneyProgress, getJourneyProgress, clearJourneyProgress, addSavedItem, isSaved } = useMyPlanActions();
+  const { trackJourneyStarted, trackJourneyProgress, trackJourneyCompleted } = useAnalytics();
+  const journeyStartTimeRef = useRef<number>(Date.now());
   
   const savedToMyPlan = isSaved(journeyId);
   const progress = getJourneyProgress(journeyId);
@@ -49,6 +52,7 @@ export function JourneyProgressTracker({
   useEffect(() => {
     if (!savedToMyPlan) {
       addSavedItem('journey', journeyId, journeyTitle, `/journeys/${journeyId}`, ['journey'], region);
+      trackJourneyStarted(journeyId, journeyTitle);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -57,11 +61,13 @@ export function JourneyProgressTracker({
   useEffect(() => {
     if (currentStepNumber > 0 && currentStepNumber !== currentStep) {
       setJourneyProgress(journeyId, currentStepNumber, totalSteps);
+      trackJourneyProgress(journeyId, journeyTitle, percentComplete, currentStepNumber, totalSteps);
     }
-  }, [currentStepNumber, currentStep, journeyId, totalSteps, setJourneyProgress]);
+  }, [currentStepNumber, currentStep, journeyId, totalSteps, percentComplete, journeyTitle, setJourneyProgress, trackJourneyProgress]);
 
   const handleMarkComplete = () => {
     setJourneyProgress(journeyId, totalSteps, totalSteps);
+    trackJourneyCompleted(journeyId, journeyTitle, journeyStartTimeRef.current);
   };
 
   const handleContinue = () => {

@@ -11,6 +11,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
 import type { SavedItem } from '@/lib/user-preferences/schema';
+import { ProgressStats } from '@/components/progress/ProgressStats';
+import { ActivityChart } from '@/components/progress/ActivityChart';
+import { Recommendations } from '@/components/recommendations/Recommendations';
+import { NextActionCard } from '@/components/recommendations/NextActionCard';
+import { AchievementsDisplay } from '@/components/achievements/AchievementsDisplay';
 
 export default function MyPlanPage() {
   const { myPlan, isLoaded } = useUserPreferencesState();
@@ -94,11 +99,21 @@ export default function MyPlanPage() {
         </p>
       </div>
 
+      {/* Progress Stats */}
+      <div className="mb-8">
+        <ProgressStats />
+      </div>
+
+      {/* Next Action Card */}
+      <div className="mb-8">
+        <NextActionCard />
+      </div>
+
       <Tabs defaultValue="saved" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="saved" className="flex items-center gap-2">
             <BookmarkIcon className="w-4 h-4" />
-            Saved Items ({savedItems.length})
+            Saved ({savedItems.length})
           </TabsTrigger>
           <TabsTrigger value="journeys" className="flex items-center gap-2">
             <Clock className="w-4 h-4" />
@@ -107,6 +122,14 @@ export default function MyPlanPage() {
           <TabsTrigger value="routine" className="flex items-center gap-2">
             <Calendar className="w-4 h-4" />
             Routine ({routine.length})
+          </TabsTrigger>
+          <TabsTrigger value="recommendations" className="flex items-center gap-2">
+            <Plus className="w-4 h-4" />
+            Recommended
+          </TabsTrigger>
+          <TabsTrigger value="achievements" className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4" />
+            Achievements
           </TabsTrigger>
         </TabsList>
 
@@ -333,6 +356,17 @@ export default function MyPlanPage() {
               </CardContent>
             </Card>
           )}
+        </TabsContent>
+
+        {/* Recommendations Tab */}
+        <TabsContent value="recommendations" className="space-y-4">
+          <Recommendations maxPerSection={5} showAllSections={true} />
+        </TabsContent>
+
+        {/* Achievements Tab */}
+        <TabsContent value="achievements" className="space-y-6">
+          <AchievementsDisplay />
+          <ActivityChart days={14} />
         </TabsContent>
       </Tabs>
     </div>

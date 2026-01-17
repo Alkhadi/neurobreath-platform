@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { BookmarkIcon, Check } from 'lucide-react';
 import { useMyPlanActions } from '@/lib/user-preferences/useMyPlanActions';
+import { useAnalytics } from '@/lib/analytics/hooks';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { SavedItemType, Region } from '@/lib/user-preferences/schema';
@@ -33,6 +34,7 @@ export function AddToMyPlanButton({
   showText = true,
 }: AddToMyPlanButtonProps) {
   const { addSavedItem, removeSavedItem, isSaved } = useMyPlanActions();
+  const { trackItemSaved, trackItemRemoved } = useAnalytics();
   const [saved, setSaved] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -44,11 +46,13 @@ export function AddToMyPlanButton({
     if (saved) {
       removeSavedItem(id);
       setSaved(false);
+      trackItemRemoved(type, id);
     } else {
       addSavedItem(type, id, title, href, tags, region);
       setSaved(true);
       setIsAnimating(true);
       setTimeout(() => setIsAnimating(false), 600);
+      trackItemSaved(type, id, title, tags);
     }
   };
 
