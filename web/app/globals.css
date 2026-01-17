@@ -2884,3 +2884,91 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
 [data-scale="1.3"] { transform: scale(1.3); }
 [data-scale="1.4"] { transform: scale(1.4); }
 [data-scale="1.5"] { transform: scale(1.5); }
+
+/* ============================================================================
+   USER PREFERENCES STYLES
+   Applied via data attributes from UserPreferencesProvider
+   ============================================================================ */
+
+/* Dyslexia-friendly typography */
+html[data-dyslexia="on"] {
+  font-family: 'Comic Sans MS', 'Trebuchet MS', Arial, sans-serif;
+  letter-spacing: 0.05em;
+  word-spacing: 0.16em;
+  line-height: 1.8;
+}
+
+html[data-dyslexia="on"] h1,
+html[data-dyslexia="on"] h2,
+html[data-dyslexia="on"] h3,
+html[data-dyslexia="on"] h4,
+html[data-dyslexia="on"] h5,
+html[data-dyslexia="on"] h6 {
+  font-weight: 700;
+}
+
+html[data-dyslexia="on"] p,
+html[data-dyslexia="on"] li,
+html[data-dyslexia="on"] td,
+html[data-dyslexia="on"] th {
+  max-width: 70ch;
+}
+
+/* Reading levels */
+html[data-reading-level="simple"] .reading-standard,
+html[data-reading-level="simple"] .reading-detailed {
+  display: none;
+}
+
+html[data-reading-level="standard"] .reading-simple,
+html[data-reading-level="standard"] .reading-detailed {
+  display: none;
+}
+
+html[data-reading-level="detailed"] .reading-simple,
+html[data-reading-level="detailed"] .reading-standard {
+  display: none;
+}
+
+/* Text size adjustments */
+html[data-text-size="large"] {
+  font-size: 112.5%; /* 18px base */
+}
+
+html[data-text-size="xlarge"] {
+  font-size: 125%; /* 20px base */
+}
+
+/* High contrast mode */
+html[data-contrast="high"] {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 0%;
+  filter: contrast(1.2);
+}
+
+html[data-contrast="high"].dark {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  filter: contrast(1.3);
+}
+
+html[data-contrast="high"] a {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+html[data-contrast="high"] button,
+html[data-contrast="high"] .btn {
+  border: 2px solid currentColor;
+}
+
+/* Reduced motion */
+html[data-reduced-motion="on"] *,
+html[data-reduced-motion="on"] *::before,
+html[data-reduced-motion="on"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}

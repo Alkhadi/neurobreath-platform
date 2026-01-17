@@ -9,6 +9,8 @@ export const EXCLUDED_PREFIXES = [
   '/teacher',
   '/progress',
   '/send-report',
+  '/settings',
+  '/my-plan',
 ];
 
 export const CRITICAL_ALLOWLIST = new Set([

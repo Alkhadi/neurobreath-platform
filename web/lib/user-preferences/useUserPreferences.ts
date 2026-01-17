@@ -22,11 +22,11 @@ export function useUserPreferences() {
 }
 
 /**
- * Get current state (read-only)
+ * Get current state (read-only) with loading status
  */
-export function useUserPreferencesState(): UserPreferencesState {
-  const { state } = useUserPreferences();
-  return state;
+export function useUserPreferencesState(): UserPreferencesState & { isLoaded: boolean } {
+  const { state, isLoaded } = useUserPreferences();
+  return { ...state, isLoaded };
 }
 
 /**

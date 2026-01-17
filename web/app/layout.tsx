@@ -4,6 +4,7 @@ import { headers } from 'next/headers';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { BreathingSessionProvider } from '@/contexts/BreathingSessionContext';
+import { UserPreferencesProvider } from '@/components/user-preferences/UserPreferencesProvider';
 import { PageBuddy } from '@/components/page-buddy';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
@@ -55,14 +56,16 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <BreathingSessionProvider>
-            <div className="relative flex min-h-screen flex-col">
-              <SiteHeader />
-              <main className="flex-1">{children}</main>
-              <SiteFooter />
-            </div>
-            <PageBuddy />
-          </BreathingSessionProvider>
+          <UserPreferencesProvider>
+            <BreathingSessionProvider>
+              <div className="relative flex min-h-screen flex-col">
+                <SiteHeader />
+                <main className="flex-1">{children}</main>
+                <SiteFooter />
+              </div>
+              <PageBuddy />
+            </BreathingSessionProvider>
+          </UserPreferencesProvider>
           <Toaster position="top-right" />
         </ThemeProvider>
       </body>
