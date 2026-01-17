@@ -16,12 +16,6 @@ const ROUTE_SEO_CONFIGS: Record<string, RouteSeoConfig> = {
       'Evidence-based tools and resources for ADHD, autism, dyslexia and anxiety, plus breathing and focus support for families, teachers and carers across the UK.',
     path: '/',
   },
-  '/about': {
-    title: 'About NeuroBreath | Evidence-Based Neurodiversity Support',
-    description:
-      'Learn how NeuroBreath delivers evidence-based neurodiversity support, our research foundations, and our commitment to inclusive wellbeing tools across the UK.',
-    path: '/about',
-  },
   '/about-us': {
     title: 'About NeuroBreath | Our Story and Approach',
     description:

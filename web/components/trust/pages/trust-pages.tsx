@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { TrustPageShell } from '@/components/trust/TrustPageShell';
-import { References } from '@/components/trust/References';
+import { References, type ReferenceItem } from '@/components/trust/References';
 import { CitationList } from '@/components/trust/CitationList';
 import { EducationalDisclaimerInline } from '@/components/trust/EducationalDisclaimerInline';
 import type { Region } from '@/lib/region/region';
@@ -394,7 +394,7 @@ export function TrustLastReviewedPage({ region }: { region: Region }) {
 
 export function TrustSafeguardingPage({ region }: { region: Region }) {
   const prefix = region ? `/${region.toLowerCase()}` : '';
-  const references = region === 'US'
+  const references: ReferenceItem[] = region === 'US'
     ? [
         { title: '988 Suicide & Crisis Lifeline', publisher: 'SAMHSA', url: 'https://988lifeline.org/', region: 'US', badge: '988lifeline.org' },
       ]

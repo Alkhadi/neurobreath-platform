@@ -102,3 +102,69 @@ export interface ContentPage {
   summary?: string;
   pageType?: 'pillar' | 'cluster' | 'tool' | 'trust' | 'other';
 }
+
+export interface ResolvedFaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface ResolvedContentCTA {
+  label: string;
+  href: string;
+}
+
+export interface ResolvedRelatedContentItem {
+  href: string;
+  label: string;
+  description?: string;
+  typeBadge?: string;
+}
+
+export interface ResolvedContentBlockBase {
+  id: string;
+  type: ContentBlockBase['type'];
+}
+
+export interface ResolvedHeadingBlock extends ResolvedContentBlockBase {
+  type: 'heading';
+  level: 'h2' | 'h3';
+  text: string;
+}
+
+export interface ResolvedParagraphBlock extends ResolvedContentBlockBase {
+  type: 'paragraph';
+  text: string;
+}
+
+export interface ResolvedBulletsBlock extends ResolvedContentBlockBase {
+  type: 'bullets';
+  items: string[];
+}
+
+export interface ResolvedCalloutBlock extends ResolvedContentBlockBase {
+  type: 'callout';
+  text: string;
+}
+
+export interface ResolvedStepsBlock extends ResolvedContentBlockBase {
+  type: 'steps';
+  items: string[];
+}
+
+export interface ResolvedCtaBlock extends ResolvedContentBlockBase {
+  type: 'cta';
+  cta: ResolvedContentCTA;
+}
+
+export interface ResolvedDividerBlock extends ResolvedContentBlockBase {
+  type: 'divider';
+}
+
+export type ResolvedContentBlock =
+  | ResolvedHeadingBlock
+  | ResolvedParagraphBlock
+  | ResolvedBulletsBlock
+  | ResolvedCalloutBlock
+  | ResolvedStepsBlock
+  | ResolvedCtaBlock
+  | ResolvedDividerBlock;

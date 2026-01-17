@@ -1,22 +1,34 @@
-import type { ContentBlock, ContentPage, LocalisedString, RelatedContentItem } from './canonical-schema';
+import type {
+  ContentBlock,
+  ContentPage,
+  LocalisedString,
+  RelatedContentItem,
+  ResolvedContentBlock,
+  ResolvedFaqItem,
+  ResolvedRelatedContentItem,
+} from './canonical-schema';
 import type { Region } from '@/lib/region/region';
 import { withRegionPrefix } from '@/lib/region/region';
 
-const termMap = {
+const termMap: Record<'UK' | 'US', Record<string, string>> = {
   UK: {
     primary_care: 'GP',
     pediatrician: 'paediatrician',
+    paediatrician: 'paediatrician',
     counselor: 'counsellor',
+    counsellor: 'counsellor',
   },
   US: {
     primary_care: 'primary care doctor',
+    pediatrician: 'pediatrician',
     paediatrician: 'pediatrician',
+    counselor: 'counselor',
     counsellor: 'counselor',
   },
 };
 
 const applyTermMap = (text: string, region: 'UK' | 'US') => {
-  return text.replace(/\{term:([a-z_]+)\}/g, (_, key) => termMap[region][key] || key);
+  return text.replace(/\{term:([a-z_]+)\}/g, (_, key: string) => termMap[region][key] ?? key);
 };
 
 export const resolveString = (value: LocalisedString, region: 'UK' | 'US') => {
@@ -30,7 +42,7 @@ export const resolveFaqs = (faqs: ContentPage['faqs'] | undefined, region: 'UK' 
   return regionFaqs.map(item => ({
     question: resolveString(item.question, region),
     answer: resolveString(item.answer, region),
-  }));
+  })) satisfies ResolvedFaqItem[];
 };
 
 export const resolveBlocks = (blocks: ContentBlock[], region: 'UK' | 'US') =>
@@ -49,7 +61,7 @@ export const resolveBlocks = (blocks: ContentBlock[], region: 'UK' | 'US') =>
       default:
         return block;
     }
-  });
+  }) satisfies ResolvedContentBlock[];
 
 export const resolveSEO = (seo: ContentPage['seo'], region: 'UK' | 'US') => ({
   title: resolveString(seo.title, region),
@@ -69,5 +81,5 @@ export const resolveRelatedItems = (items: RelatedContentItem[] | undefined, reg
     const description = item.description ? resolveString(item.description, region) : undefined;
     const href = shouldPrefixRegion(item.href) ? withRegionPrefix(item.href, region) : item.href;
     return { ...item, label, description, href };
-  });
+  }) satisfies ResolvedRelatedContentItem[];
 };

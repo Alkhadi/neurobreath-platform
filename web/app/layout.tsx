@@ -18,16 +18,18 @@ import { getLocaleForRegion, getRegionFromPath } from '@/lib/region/region';
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const pathname = headers().get('x-pathname') || '/';
+  const hdrs = await headers();
+  const pathname = hdrs.get('x-pathname') || '/';
   return getRouteMetadata(pathname);
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = headers().get('x-pathname') || '/';
+  const hdrs = await headers();
+  const pathname = hdrs.get('x-pathname') || '/';
   const region = getRegionFromPath(pathname);
   const { language } = getLocaleForRegion(region);
   const seoConfig = getRouteSeoConfig(pathname);

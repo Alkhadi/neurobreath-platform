@@ -1,11 +1,11 @@
 import { cn } from '@/lib/utils';
-import type { ContentBlock } from '@/lib/content/canonical-schema';
+import type { ResolvedContentBlock } from '@/lib/content/canonical-schema';
 import type { Region } from '@/lib/region/region';
 import { splitTextWithGlossary } from '@/lib/glossary/recogniseTerms';
 import { GlossaryTooltip } from '@/components/glossary/GlossaryTooltip';
 
 interface ContentRendererProps {
-  blocks: ContentBlock[];
+  blocks: ResolvedContentBlock[];
   region?: Region;
   enableGlossaryTooltips?: boolean;
   glossaryMaxLinks?: number;
