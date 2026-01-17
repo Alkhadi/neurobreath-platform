@@ -18,7 +18,7 @@ import { evidenceByRoute } from '@/lib/evidence/page-evidence'
 
 export const dynamic = 'force-static'
 
-export const evidence = evidenceByRoute['/conditions/anxiety']
+const evidence = evidenceByRoute['/conditions/anxiety']
 
 export default function ConditionsAnxietyPage() {
   return (

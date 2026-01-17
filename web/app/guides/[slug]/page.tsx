@@ -8,15 +8,16 @@ import { SEO_GUIDES, SEO_GUIDES_MAP } from '@/content/seo-guides';
 import { getRelatedContentForUrl } from '@/lib/content/link-intel-runtime';
 
 interface GuidePageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
   return SEO_GUIDES.map(guide => ({ slug: guide.slug }));
 }
 
-export default function GuidePage({ params }: GuidePageProps) {
-  const guide = SEO_GUIDES_MAP.get(params.slug);
+export default async function GuidePage({ params }: GuidePageProps) {
+  const resolvedParams = await params;
+  const guide = SEO_GUIDES_MAP.get(resolvedParams.slug);
 
   if (!guide) {
     notFound();

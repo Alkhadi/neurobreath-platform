@@ -16,7 +16,7 @@ import { EvidenceFooter } from '@/components/evidence-footer';
 import { evidenceByRoute } from '@/lib/evidence/page-evidence';
 import { EducationalDisclaimerInline } from '@/components/trust/EducationalDisclaimerInline';
 
-export const evidence = evidenceByRoute['/conditions/dyslexia'];
+const evidence = evidenceByRoute['/conditions/dyslexia'];
 
 export default function DyslexiaHubPage() {
   // Refs for smooth scrolling

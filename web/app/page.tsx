@@ -12,7 +12,7 @@ import OrganisationsSection from '@/components/home/organisations-section'
 import { EvidenceFooter } from '@/components/evidence-footer'
 import { evidenceByRoute } from '@/lib/evidence/page-evidence'
 
-export const evidence = evidenceByRoute['/']
+const evidence = evidenceByRoute['/']
 
 export default function HomePage() {
   return (

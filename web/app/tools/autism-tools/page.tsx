@@ -31,7 +31,7 @@ import { EducationalDisclaimerInline } from '@/components/trust/EducationalDiscl
 import { TrustPanel } from '@/components/trust/TrustPanel';
 import type { Region } from '@/lib/region/region';
 
-export const evidence = evidenceByRoute['/tools/autism-tools'];
+const evidence = evidenceByRoute['/tools/autism-tools'];
 
 export default function AutismToolsPage() {
   const region: Region = 'UK';

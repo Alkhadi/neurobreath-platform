@@ -163,7 +163,7 @@ const initialChecklist: ChecklistItem[] = [
   { id: 'c10', text: 'Write down worries before bed', completed: false, category: 'routine' },
 ]
 
-export const evidence = evidenceByRoute['/sleep']
+const evidence = evidenceByRoute['/sleep']
 
 export default function SleepPage() {
   const region: Region = 'UK'

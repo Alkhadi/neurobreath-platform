@@ -25,7 +25,7 @@ import { EducationalDisclaimerInline } from '@/components/trust/EducationalDiscl
 import { TrustPanel } from '@/components/trust/TrustPanel';
 import type { Region } from '@/lib/region/region';
 
-export const evidence = evidenceByRoute['/tools/adhd-tools'];
+const evidence = evidenceByRoute['/tools/adhd-tools'];
 
 export default function ADHDToolsPage() {
   const region: Region = 'UK';

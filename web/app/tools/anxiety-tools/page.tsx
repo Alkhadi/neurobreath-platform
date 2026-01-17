@@ -19,7 +19,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { EvidenceFooter } from '@/components/evidence-footer';
 import { evidenceByRoute } from '@/lib/evidence/page-evidence';
 
-export const evidence = evidenceByRoute['/tools/anxiety-tools'];
+const evidence = evidenceByRoute['/tools/anxiety-tools'];
 
 export default function AnxietyToolsPage() {
   const [activeTab, setActiveTab] = useState('breathing');

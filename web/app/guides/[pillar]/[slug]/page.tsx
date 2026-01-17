@@ -12,19 +12,29 @@ export async function generateStaticParams() {
   return listClusterParams();
 }
 
-export async function generateMetadata({ params }: { params: { pillar: string; slug: string } }): Promise<Metadata> {
-  const cluster = getCluster(params.pillar, params.slug);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ pillar: string; slug: string }>;
+}): Promise<Metadata> {
+  const resolvedParams = await params;
+  const cluster = getCluster(resolvedParams.pillar, resolvedParams.slug);
   if (!cluster) return {};
   return generatePageMetadata({
     title: `${cluster.title} | NeuroBreath`,
     description: cluster.description,
-    path: `/guides/${params.pillar}/${params.slug}`,
+    path: `/guides/${resolvedParams.pillar}/${resolvedParams.slug}`,
   });
 }
 
-export default function ClusterPage({ params }: { params: { pillar: string; slug: string } }) {
-  const pillar = getPillar(params.pillar);
-  const cluster = getCluster(params.pillar, params.slug);
+export default async function ClusterPage({
+  params,
+}: {
+  params: Promise<{ pillar: string; slug: string }>;
+}) {
+  const resolvedParams = await params;
+  const pillar = getPillar(resolvedParams.pillar);
+  const cluster = getCluster(resolvedParams.pillar, resolvedParams.slug);
 
   if (!pillar || !cluster) return notFound();
 

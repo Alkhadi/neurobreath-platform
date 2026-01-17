@@ -304,7 +304,7 @@ function CrisisResources() {
   )
 }
 
-export const evidence = evidenceByRoute['/tools/depression-tools']
+const evidence = evidenceByRoute['/tools/depression-tools']
 
 export default function DepressionToolsPage() {
   return (

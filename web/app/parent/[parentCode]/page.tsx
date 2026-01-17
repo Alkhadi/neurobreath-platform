@@ -12,17 +12,18 @@ import { Eye, Lock, TrendingUp, Award, Calendar, Clock } from 'lucide-react'
 import { generatePageMetadata } from '@/lib/seo/metadata'
 
 interface ParentMetadataProps {
-  params: {
+  params: Promise<{
     parentCode: string
-  }
+  }>
 }
 
 export async function generateMetadata({ params }: ParentMetadataProps): Promise<Metadata> {
+  const { parentCode } = await params
   return generatePageMetadata({
     title: 'Parent View | NeuroBreath',
     description:
       'Read-only progress view for parents and carers, with secure access to session summaries, achievements and routines for the learner code provided.',
-    path: `/parent/${params.parentCode}`,
+    path: `/parent/${parentCode}`,
     noindex: true,
   })
 }

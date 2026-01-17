@@ -38,7 +38,7 @@ const SourcesSection = dynamic(() => import('@/components/blog/sources-section')
   loading: () => <div className="p-8 bg-card rounded-lg">Loading Sources...</div>
 })
 
-export const evidence = evidenceByRoute['/blog']
+const evidence = evidenceByRoute['/blog']
 
 export default function BlogPage() {
   return (

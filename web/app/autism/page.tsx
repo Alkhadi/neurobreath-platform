@@ -25,7 +25,7 @@ import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog
 import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial';
 import type { Region } from '@/lib/region/region';
 
-export const evidence = evidenceByRoute['/autism'];
+const evidence = evidenceByRoute['/autism'];
 
 export default function AutismHubPage() {
   const region: Region = 'UK';

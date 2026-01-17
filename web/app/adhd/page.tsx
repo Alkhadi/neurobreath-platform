@@ -22,7 +22,7 @@ import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog
 import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial';
 import type { Region } from '@/lib/region/region';
 
-export const evidence = evidenceByRoute['/adhd'];
+const evidence = evidenceByRoute['/adhd'];
 
 export default function HomePage() {
   const region: Region = 'UK';

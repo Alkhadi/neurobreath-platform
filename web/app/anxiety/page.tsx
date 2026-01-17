@@ -46,7 +46,7 @@ export const metadata: Metadata = generatePageMetadata({
   ],
 })
 
-export const evidence = evidenceByRoute['/anxiety']
+const evidence = evidenceByRoute['/anxiety']
 
 export default function AnxietyPage() {
   const region: Region = 'UK'

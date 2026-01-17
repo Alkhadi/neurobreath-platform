@@ -41,7 +41,7 @@ import { AssessmentHistory } from '@/components/AssessmentHistory';
 
 type TrainingApproach = 'focused' | 'direct' | 'fluency';
 
-export const evidence = evidenceByRoute['/dyslexia-reading-training'];
+const evidence = evidenceByRoute['/dyslexia-reading-training'];
 
 export default function DyslexiaReadingTrainingPage() {
   const region: Region = 'UK';

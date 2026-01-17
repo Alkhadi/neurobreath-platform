@@ -16,7 +16,7 @@ import { ScrollToTop } from './components/scroll-to-top';
 import { EvidenceFooter } from '@/components/evidence-footer';
 import { evidenceByRoute } from '@/lib/evidence/page-evidence';
 
-export const evidence = evidenceByRoute['/conditions/depression'];
+const evidence = evidenceByRoute['/conditions/depression'];
 
 export default function DepressionPage() {
   return (

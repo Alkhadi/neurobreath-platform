@@ -12,8 +12,13 @@ export async function generateStaticParams() {
   return listPillarKeys().map(pillar => ({ pillar }));
 }
 
-export async function generateMetadata({ params }: { params: { pillar: string } }): Promise<Metadata> {
-  const pillar = getPillar(params.pillar);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ pillar: string }>;
+}): Promise<Metadata> {
+  const resolvedParams = await params;
+  const pillar = getPillar(resolvedParams.pillar);
   if (!pillar) return {};
   return generatePageMetadata({
     title: `${pillar.title} | NeuroBreath`,
@@ -22,8 +27,13 @@ export async function generateMetadata({ params }: { params: { pillar: string } 
   });
 }
 
-export default function PillarPage({ params }: { params: { pillar: string } }) {
-  const pillar = getPillar(params.pillar);
+export default async function PillarPage({
+  params,
+}: {
+  params: Promise<{ pillar: string }>;
+}) {
+  const resolvedParams = await params;
+  const pillar = getPillar(resolvedParams.pillar);
   if (!pillar) return notFound();
 
   const pageUrl = generateCanonicalUrl(`/guides/${pillar.key}`);

@@ -11,7 +11,7 @@ import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog
 import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial'
 import type { Region } from '@/lib/region/region'
 
-export const evidence = evidenceByRoute['/breathing']
+const evidence = evidenceByRoute['/breathing']
 
 export default function BreathingExercisesPage() {
   const region: Region = 'UK'
