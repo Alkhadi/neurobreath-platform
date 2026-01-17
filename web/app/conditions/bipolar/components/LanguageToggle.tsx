@@ -37,30 +37,61 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
 
   return (
     <div className={styles.languageToggle} role="group" aria-label="Language selection">
-      <button
-        className={`${styles.languageButton} ${language === 'en-GB' ? styles.active : ''}`}
-        type="button"
-        onClick={() => handleLanguageChange('en-GB')}
-        aria-pressed={language === 'en-GB' ? 'true' : 'false'}
-        aria-label="Switch to UK English"
-      >
-        <span role="img" aria-label="UK flag">
-          🇬🇧
-        </span>
-        <span>UK</span>
-      </button>
-      <button
-        className={`${styles.languageButton} ${language === 'en-US' ? styles.active : ''}`}
-        type="button"
-        onClick={() => handleLanguageChange('en-US')}
-        aria-pressed={language === 'en-US' ? 'true' : 'false'}
-        aria-label="Switch to US English"
-      >
-        <span role="img" aria-label="US flag">
-          🇺🇸
-        </span>
-        <span>US</span>
-      </button>
+      {language === 'en-GB' ? (
+        <button
+          className={`${styles.languageButton} ${styles.active}`}
+          type="button"
+          onClick={() => handleLanguageChange('en-GB')}
+          aria-pressed="true"
+          aria-label="Switch to UK English"
+        >
+          <span role="img" aria-label="UK flag">
+            🇬🇧
+          </span>
+          <span>UK</span>
+        </button>
+      ) : (
+        <button
+          className={styles.languageButton}
+          type="button"
+          onClick={() => handleLanguageChange('en-GB')}
+          aria-pressed="false"
+          aria-label="Switch to UK English"
+        >
+          <span role="img" aria-label="UK flag">
+            🇬🇧
+          </span>
+          <span>UK</span>
+        </button>
+      )}
+
+      {language === 'en-US' ? (
+        <button
+          className={`${styles.languageButton} ${styles.active}`}
+          type="button"
+          onClick={() => handleLanguageChange('en-US')}
+          aria-pressed="true"
+          aria-label="Switch to US English"
+        >
+          <span role="img" aria-label="US flag">
+            🇺🇸
+          </span>
+          <span>US</span>
+        </button>
+      ) : (
+        <button
+          className={styles.languageButton}
+          type="button"
+          onClick={() => handleLanguageChange('en-US')}
+          aria-pressed="false"
+          aria-label="Switch to US English"
+        >
+          <span role="img" aria-label="US flag">
+            🇺🇸
+          </span>
+          <span>US</span>
+        </button>
+      )}
     </div>
   );
 };

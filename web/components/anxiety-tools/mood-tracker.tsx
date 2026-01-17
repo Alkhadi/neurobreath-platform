@@ -121,10 +121,13 @@ export function MoodTracker() {
         
         {/* Date */}
         <div>
-          <Label htmlFor="date" className="mb-2 block">Date</Label>
+          <Label id="mood-tracker-date-label" htmlFor="date" className="mb-2 block">Date</Label>
           <input
             id="date"
             name="date"
+            aria-labelledby="mood-tracker-date-label"
+            aria-label="Date"
+            title="Date"
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
@@ -135,12 +138,13 @@ export function MoodTracker() {
 
         {/* Anxiety Level */}
         <div>
-          <Label className="mb-2 block">
+          <Label id="anxiety-level-label" className="mb-2 block">
             Anxiety Level: <span className={`font-bold text-xl ${getAnxietyColor(anxietyLevel?.[0] ?? 5)}`}>
               {anxietyLevel?.[0] ?? 5}/10
             </span>
           </Label>
           <Slider
+            aria-labelledby="anxiety-level-label"
             value={anxietyLevel}
             onValueChange={setAnxietyLevel}
             min={0}
