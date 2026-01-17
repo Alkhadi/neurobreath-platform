@@ -148,30 +148,65 @@ export const MoodTracker: React.FC<MoodTrackerProps> = ({ language }) => {
       </div>
 
       <div className={s.viewToggle}>
-        <button
-          onClick={() => setView('form')}
-          type="button"
-          className={`${s.viewButton} ${view === 'form' ? s.viewButtonActive : ''}`}
-          aria-pressed={view === 'form' ? 'true' : 'false'}
-        >
-          Log Mood
-        </button>
-        <button
-          onClick={() => setView('calendar')}
-          type="button"
-          className={`${s.viewButton} ${view === 'calendar' ? s.viewButtonActive : ''}`}
-          aria-pressed={view === 'calendar' ? 'true' : 'false'}
-        >
-          Calendar
-        </button>
-        <button
-          onClick={() => setView('list')}
-          type="button"
-          className={`${s.viewButton} ${view === 'list' ? s.viewButtonActive : ''}`}
-          aria-pressed={view === 'list' ? 'true' : 'false'}
-        >
-          History
-        </button>
+        {view === 'form' ? (
+          <button
+            onClick={() => setView('form')}
+            type="button"
+            className={`${s.viewButton} ${s.viewButtonActive}`}
+            aria-pressed="true"
+          >
+            Log Mood
+          </button>
+        ) : (
+          <button
+            onClick={() => setView('form')}
+            type="button"
+            className={s.viewButton}
+            aria-pressed="false"
+          >
+            Log Mood
+          </button>
+        )}
+
+        {view === 'calendar' ? (
+          <button
+            onClick={() => setView('calendar')}
+            type="button"
+            className={`${s.viewButton} ${s.viewButtonActive}`}
+            aria-pressed="true"
+          >
+            Calendar
+          </button>
+        ) : (
+          <button
+            onClick={() => setView('calendar')}
+            type="button"
+            className={s.viewButton}
+            aria-pressed="false"
+          >
+            Calendar
+          </button>
+        )}
+
+        {view === 'list' ? (
+          <button
+            onClick={() => setView('list')}
+            type="button"
+            className={`${s.viewButton} ${s.viewButtonActive}`}
+            aria-pressed="true"
+          >
+            History
+          </button>
+        ) : (
+          <button
+            onClick={() => setView('list')}
+            type="button"
+            className={s.viewButton}
+            aria-pressed="false"
+          >
+            History
+          </button>
+        )}
       </div>
 
       {view === 'form' && (
