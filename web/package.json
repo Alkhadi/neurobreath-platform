@@ -27,7 +27,7 @@
     "seo:guard": "npm run seo:scan",
     "seo:sitemap:build": "node scripts/seo/sitemap-build.mjs",
     "seo:sitemap:validate": "node scripts/seo/sitemap-validate.mjs",
-    "seo:sitemap:ci": "yarn seo:sitemap:validate",
+    "seo:sitemap:ci": "npm run seo:sitemap:validate",
     "seo:search-console-ready": "node scripts/search-console/search-console-ready.mjs",
     "coverage:scan": "node scripts/coverage/scan-routes.mjs",
     "coverage:matrix": "node scripts/coverage/generate-matrix.mjs",

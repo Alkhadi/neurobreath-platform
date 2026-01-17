@@ -28,23 +28,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'yarn'
-          cache-dependency-path: web/yarn.lock
-
-      - name: Install Yarn 1 (Classic)
-        run: npm install -g yarn@1.22.22
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: TypeScript type check
-        run: yarn tsc --noEmit
+        run: npm run typecheck
 
       - name: Lint check
-        run: yarn lint
+        run: npm run lint
 
       - name: Build production bundle
-        run: yarn build
+        run: npm run build
         env:
           NEXT_PUBLIC_SITE_URL: https://www.neurobreath.co.uk
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/neurobreath?schema=public
@@ -77,11 +74,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'yarn'
-          cache-dependency-path: web/yarn.lock
-
-      - name: Install Yarn 1 (Classic)
-        run: npm install -g yarn@1.22.22
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -91,8 +85,8 @@ jobs:
 
       - name: Install dependencies and start server
         run: |
-          yarn install --frozen-lockfile
-          yarn start &
+          npm ci
+          npm run start &
           sleep 10
 
       - name: Run Lighthouse CI
@@ -119,11 +113,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'yarn'
-          cache-dependency-path: web/yarn.lock
-
-      - name: Install Yarn 1 (Classic)
-        run: npm install -g yarn@1.22.22
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -132,13 +123,13 @@ jobs:
           path: web/.next
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
       - name: Run content quality gate
-        run: yarn content:quality-gate
+        run: npm run content:quality-gate
         env:
           QUALITY_GATE_BASE_URL: http://localhost:3000
 
@@ -169,11 +160,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'yarn'
-          cache-dependency-path: web/yarn.lock
-
-      - name: Install Yarn 1 (Classic)
-        run: npm install -g yarn@1.22.22
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -182,7 +170,7 @@ jobs:
           path: web/.next
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Install Chromium
         run: |
@@ -191,19 +179,19 @@ jobs:
 
       - name: Start server
         run: |
-          PORT=3000 yarn start &
+          PORT=3000 npm run start &
           sleep 10
         env:
           NEXT_PUBLIC_SITE_URL: https://neurobreath.co.uk
 
       - name: Run sitemap validation
-        run: yarn seo:sitemap:ci
+        run: npm run seo:sitemap:ci
         env:
           SEO_BASE_URL: http://localhost:3000
           NEXT_PUBLIC_SITE_URL: https://neurobreath.co.uk
 
       - name: Run search console readiness
-        run: yarn seo:search-console-ready
+        run: npm run seo:search-console-ready
         env:
           SEO_BASE_URL: http://localhost:3000
           NEXT_PUBLIC_SITE_URL: https://neurobreath.co.uk
