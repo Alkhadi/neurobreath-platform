@@ -54,11 +54,22 @@ export function TailoredNextSteps({
 }: TailoredNextStepsProps) {
   const router = useRouter();
 
+  const isExternalUrl = (target: string) => /^https?:\/\//i.test(target);
+
+  const openExternal = (target: string) => {
+    // Prefer opening in a new tab without giving the new page access to window.opener
+    window.open(target, '_blank', 'noopener,noreferrer');
+  };
+
   const handleAction = (action: RecommendedAction) => {
     switch (action.type) {
       case 'navigate':
         if (action.target) {
-          router.push(action.target);
+          if (isExternalUrl(action.target)) {
+            openExternal(action.target);
+          } else {
+            router.push(action.target);
+          }
         }
         break;
       
@@ -98,7 +109,12 @@ export function TailoredNextSteps({
       case 'download':
         // Trigger download
         if (action.target) {
-          window.open(action.target, '_blank');
+          if (isExternalUrl(action.target)) {
+            openExternal(action.target);
+          } else {
+            // Allow internal downloads/routes as well
+            router.push(action.target);
+          }
         }
         break;
     }
