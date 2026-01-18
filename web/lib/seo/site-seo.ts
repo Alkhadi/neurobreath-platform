@@ -11,7 +11,7 @@ import { SITE_URL } from './site-config';
 export const SITE_CONFIG = {
   // Core brand identity
   siteName: 'NeuroBreath',
-  siteSlogan: 'Evidence-Based Neurodiversity Support',
+  siteSlogan: 'Embrace Your Unique Mind',
   brandDescription: 'NeuroBreath provides evidence-based tools, resources, and support for neurodivergent individuals, including those with ADHD, autism, dyslexia, anxiety, and other conditions. Our platform offers breathing exercises, focus tools, educational resources, and professional support for children, young people, parents, teachers, and carers.',
   
   // Domain configuration
@@ -47,7 +47,7 @@ export const SITE_CONFIG = {
   },
   
   // Default metadata
-  defaultTitle: 'NeuroBreath | Evidence-Based Neurodiversity Support',
+  defaultTitle: 'NeuroBreath | Embrace Your Unique Mind',
   defaultDescription: 'Evidence-based tools and resources for ADHD, autism, dyslexia and anxiety, plus breathing and focus support for families, teachers and carers across the UK.',
   titleTemplate: '%s | NeuroBreath',
   

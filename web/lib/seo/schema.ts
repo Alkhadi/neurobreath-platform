@@ -16,6 +16,9 @@ export function generateOrganizationSchema(): WithContext<Organization> {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: SITE_CONFIG.organisation.name,
+    // Help search engines associate the on-site slogan with the brand.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    slogan: SITE_CONFIG.siteSlogan as any,
     legalName: SITE_CONFIG.organisation.legalName,
     url: SITE_CONFIG.organisation.url,
     logo: SITE_CONFIG.organisation.logo,

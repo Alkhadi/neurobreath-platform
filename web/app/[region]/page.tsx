@@ -16,6 +16,7 @@ import { PILLARS } from '@/lib/content/content-seo-map';
 import { getRegionAlternates, getRegionFromKey, getRegionKey } from '@/lib/region/region';
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
 import { generatePageMetadata } from '@/lib/seo/metadata';
+import { SITE_CONFIG } from '@/lib/seo/site-seo';
 
 interface RegionHomePageProps {
 	params: Promise<{ region: string }>;
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: RegionHomePageProps): Promise
 	const copy = getLocaleCopy(region);
 
 	const base = generatePageMetadata({
-		title: region === 'US' ? 'NeuroBreath — Calm, focus, and routines' : 'NeuroBreath — Calm, focus, and routines',
+		title: SITE_CONFIG.defaultTitle,
 		description: copy.metaDescription,
 		path,
 	});
@@ -71,7 +72,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 	const webPageSchema = {
 		'@context': 'https://schema.org',
 		'@type': 'WebPage',
-		name: 'NeuroBreath',
+		name: SITE_CONFIG.defaultTitle,
 		description: copy.metaDescription,
 		url: pageUrl,
 	};

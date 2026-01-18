@@ -7,8 +7,9 @@ import { CredibilityFooter } from '@/components/trust/CredibilityFooter';
 import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog';
 import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial';
 import { CONDITIONS } from '@/lib/coverage/conditions';
-import { getRegionFromKey, getRegionKey } from '@/lib/region/region';
+import { getRegionAlternates, getRegionFromKey, getRegionKey } from '@/lib/region/region';
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
+import { generatePageMetadata } from '@/lib/seo/metadata';
 import ConditionsHub from '@/components/conditions/conditions-hub';
 import { GLOSSARY_TERM_MAP } from '@/lib/glossary/glossary';
 import type { Metadata } from 'next';
@@ -21,16 +22,24 @@ export async function generateMetadata({ params }: RegionConditionsProps): Promi
   const resolved = await params;
   const region = getRegionFromKey(resolved.region);
   const regionKey = getRegionKey(region);
-  const canonical = generateCanonicalUrl(`/${regionKey}/conditions`);
+  const path = `/${regionKey}/conditions`;
+  const canonical = generateCanonicalUrl(path);
+  const alternates = getRegionAlternates('/conditions');
+
+  const baseMetadata = generatePageMetadata({
+    title: 'Conditions we cover',
+    description:
+      'Educational support across neurodivergent conditions and related support areas, with practical tools and guides.',
+    path,
+  });
 
   return {
-    title: region === 'US' ? 'Conditions we cover' : 'Conditions we cover',
-    description: 'Educational support across neurodivergent conditions and related support areas, with practical tools and guides.',
+    ...baseMetadata,
     alternates: {
       canonical,
       languages: {
-        'en-GB': generateCanonicalUrl('/uk/conditions'),
-        'en-US': generateCanonicalUrl('/us/conditions'),
+        'en-GB': generateCanonicalUrl(alternates['en-GB']),
+        'en-US': generateCanonicalUrl(alternates['en-US']),
       },
     },
   };

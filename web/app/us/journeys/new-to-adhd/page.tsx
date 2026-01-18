@@ -5,8 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Clock, Users, CheckCircle } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Journey: new-to-adhd | NeuroBreath',
-  description: 'A guided journey for new-to-adhd',
+  title: 'New to ADHD Journey | NeuroBreath',
+  description: 'A guided introduction to ADHD with safe, practical next steps. Educational information only.',
   alternates: {
     canonical: 'https://neurobreath.co.uk/us/journeys/new-to-adhd',
     languages: {
@@ -15,8 +15,8 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: 'Journey: new-to-adhd',
-    description: 'A guided journey for new-to-adhd',
+    title: 'New to ADHD Journey | NeuroBreath',
+    description: 'A guided introduction to ADHD with safe, practical next steps. Educational information only.',
     url: 'https://neurobreath.co.uk/us/journeys/new-to-adhd',
     type: 'website',
   },

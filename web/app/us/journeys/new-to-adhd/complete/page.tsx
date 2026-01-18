@@ -5,8 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { CheckCircle, ArrowRight } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Journey Complete - Journey Complete | NeuroBreath',
-  description: 'You\'ve taken important first steps',
+  title: 'New to ADHD Journey — Complete | NeuroBreath',
+  description: 'You\'ve completed the New to ADHD journey. Review next steps and continue with tools and guides. Educational information only.',
   alternates: {
     canonical: 'https://neurobreath.co.uk/us/journeys/new-to-adhd/complete',
     languages: {

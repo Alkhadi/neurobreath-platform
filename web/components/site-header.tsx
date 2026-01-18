@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ChevronDown, Menu, X } from 'lucide-react'
+import { SITE_CONFIG } from '../lib/seo/site-seo'
 
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -24,16 +25,27 @@ export function SiteHeader() {
   return (
     <header className="nb-header">
       <div className="nb-header-container">
-        <Link href={regionPrefix} className="nb-brand" id="brandLink" onClick={closeMegaMenu}>
-          <Image 
-            src="/icons/neurobreath-logo-square-64.png" 
-            alt="NeuroBreath" 
-            width={48} 
-            height={48} 
-            className="nb-brand-logo" 
-            priority
-          />
-          <span className="nb-brand-text">NeuroBreath</span>
+        <Link
+          href={regionPrefix}
+          className="nb-brand"
+          id="brandLink"
+          onClick={closeMegaMenu}
+          aria-label={`NeuroBreath — ${SITE_CONFIG.siteSlogan}`}
+        >
+          <span className="nb-brand-mark">
+            <Image
+              src="/icons/neurobreath-logo-square-128.png"
+              alt="NeuroBreath"
+              width={36}
+              height={36}
+              className="nb-brand-logo"
+              priority
+            />
+          </span>
+          <span className="nb-brand-copy">
+            <span className="nb-brand-text">NeuroBreath</span>
+            <span className="nb-brand-tagline">{SITE_CONFIG.siteSlogan}</span>
+          </span>
         </Link>
 
         {/* Mobile Menu Toggle */}
@@ -54,11 +66,6 @@ export function SiteHeader() {
           role="navigation" 
           aria-label="Primary"
         >
-          {/* Home Link */}
-          <Link href={regionPrefix} className="nb-nav-link" onClick={closeMegaMenu}>
-            Home
-          </Link>
-
           {/* Conditions Mega Menu */}
           <div className="nb-mega-menu-wrapper">
             <button 

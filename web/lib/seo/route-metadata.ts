@@ -11,7 +11,7 @@ export interface RouteSeoConfig extends PageMetadataConfig {
 
 const ROUTE_SEO_CONFIGS: Record<string, RouteSeoConfig> = {
   '/': {
-    title: 'NeuroBreath | Evidence-Based Neurodiversity Support',
+    title: 'NeuroBreath | Embrace Your Unique Mind',
     description:
       'Evidence-based tools and resources for ADHD, autism, dyslexia and anxiety, plus breathing and focus support for families, teachers and carers across the UK.',
     path: '/',

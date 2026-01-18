@@ -1,0 +1,18 @@
+{
+  "name": "neurobreath-platform",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix web run dev",
+    "dev:clean": "npm --prefix web run dev:clean",
+    "build": "npm --prefix web run build",
+    "start": "npm --prefix web run start",
+    "lint": "npm --prefix web run lint",
+    "typecheck": "npm --prefix web run typecheck",
+    "brand:icons": "./.venv/bin/python web/scripts/generate-brand-icons.py",
+    "brand:icons:source": "./.venv/bin/python web/scripts/generate-brand-icons.py --source web/public/brand-source.png",
+    "brand:icons:poster": "./.venv/bin/python web/scripts/generate-brand-icons.py --source web/public/brand-source.png --auto-crop-mark",
+    "test:e2e": "npm --prefix web run test:e2e",
+    "test:visual": "npm --prefix web run test:visual",
+    "test:visual:update": "npm --prefix web run test:visual:update"
+  }
+}

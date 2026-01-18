@@ -53,7 +53,7 @@ export default async function PillarPage({
   return (
     <main className="mx-auto max-w-5xl px-4 py-10">
       <nav className="text-sm text-neutral-600">
-        <Link href="/" className="hover:underline">Home</Link> <span aria-hidden="true">›</span>{' '}
+        <Link href="/" className="hover:underline">NeuroBreath</Link> <span aria-hidden="true">›</span>{' '}
         <Link href="/guides" className="hover:underline">Guides</Link> <span aria-hidden="true">›</span>{' '}
         <span className="text-neutral-800">{pillar.title}</span>
       </nav>

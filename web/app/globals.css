@@ -832,15 +832,7 @@
   /* Print styles for certificates */
   @media print {
     /* Note: @page cannot be scoped to a selector; this applies to all print pages. */
-    @page {
-      size: A4 portrait;
-      margin: 0 !important;
-    }
-
-    .certificate-print {
-      /* Marker class for certificate print views */
-      display: block;
-    }
+    @page { size: A4 portrait; }
   }
 
   /* Suppress hydration warnings for dynamic content */
@@ -852,6 +844,14 @@
 /* ============================================
    MEGA MENU HEADER STYLES
    ============================================ */
+:root {
+  --nb-brand-magenta: #ff00ff;
+  --nb-brand-violet-ink: #6d28d9;
+  --nb-ink-900: #111827;
+  --nb-ink-700: #374151;
+  --nb-ink-500: #6b7280;
+}
+
 .nb-header {
   position: sticky;
   top: 0;
@@ -878,7 +878,7 @@
   text-decoration: none;
   font-weight: 700;
   font-size: 1.25rem;
-  color: #1f2937;
+  color: var(--nb-ink-900);
   transition: opacity 0.2s;
 }
 
@@ -886,13 +886,63 @@
   opacity: 0.8;
 }
 
+.nb-brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  padding: 6px;
+  background: radial-gradient(circle at 50% 42%, #5b2387 0%, #2f0a4d 55%, #110326 100%);
+  border: 1px solid rgba(255, 0, 255, 0.22);
+  box-shadow:
+    0 10px 22px rgba(255, 0, 255, 0.12),
+    0 6px 16px rgba(0, 0, 0, 0.10);
+}
+
 .nb-brand-logo {
-  border-radius: 8px;
+  border-radius: 10px;
+  filter: contrast(1.16) brightness(1.14) saturate(1.12) drop-shadow(0 0 0.9px rgba(255, 255, 255, 0.22));
+}
+
+.nb-brand-copy {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
 }
 
 .nb-brand-text {
-  font-size: 1.125rem;
-  font-weight: 700;
+  font-size: clamp(1.02rem, 0.96rem + 0.22vw, 1.14rem);
+  font-weight: 800;
+  letter-spacing: -0.012em;
+  color: var(--nb-ink-900);
+}
+
+.nb-brand-tagline {
+  margin-top: 0.15rem;
+  font-size: clamp(0.60rem, 0.56rem + 0.18vw, 0.72rem);
+  font-weight: 650;
+  color: color-mix(in srgb, var(--nb-ink-500) 82%, var(--nb-brand-violet-ink) 18%);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Mid-width desktops: hide tagline to prevent brand/nav collisions (nav is still in desktop mode above 1024px) */
+@media (max-width: 1180px) and (min-width: 1025px) {
+  .nb-brand-tagline {
+    display: none;
+  }
+}
+
+/* Ultra-small screens: keep tagline visible but tighten spacing to avoid collisions */
+@media (max-width: 420px) {
+  .nb-brand {
+    gap: 0.6rem;
+  }
+
+  .nb-brand-tagline {
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+  }
 }
 
 .nb-mobile-toggle {
@@ -2807,7 +2857,9 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
   background: hsl(var(--primary) / 0.2);
   border-radius: 3px;
 }
-
+  background: radial-gradient(circle at 50% 42%, #34105a 0%, #2b0a4a 55%, #0b0622 100%);
+  border: 1px solid rgba(255, 0, 255, 0.18);
+  box-shadow: 0 10px 22px rgba(255, 0, 255, 0.12), 0 6px 16px rgba(0, 0, 0, 0.10);
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--primary) / 0.3);
 }

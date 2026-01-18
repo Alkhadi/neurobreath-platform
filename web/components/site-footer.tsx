@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { RegionSwitcher } from '@/components/trust/RegionSwitcher'
 import { usePathname } from 'next/navigation'
+import { SITE_CONFIG } from '@/lib/seo/site-seo'
 
 export function SiteFooter() {
   const [currentYear, setCurrentYear] = useState(2025)
@@ -26,14 +27,21 @@ export function SiteFooter() {
         <div className="ft-nav-inner">
           {/* Brand + Support in Navigation Area */}
           <div className="ft-nav-brand">
-            <Link className="ft-logo" href={regionPrefix} aria-label="Return to NeuroBreath homepage">
-              <Image 
-                src="/icons/neurobreath-logo-square-64.png" 
-                alt="NeuroBreath" 
-                width={64}
-                height={64}
-                priority={false}
-              />
+            <Link
+              className="ft-logo"
+              href={regionPrefix}
+              aria-label={`Return to NeuroBreath homepage — ${SITE_CONFIG.siteSlogan}`}
+            >
+              <span className="nb-brand-mark">
+                <Image
+                  src="/icons/neurobreath-logo-square-128.png"
+                  alt="NeuroBreath"
+                  width={56}
+                  height={56}
+                  className="nb-brand-logo"
+                  priority={false}
+                />
+              </span>
             </Link>
             <Link href="/support-us" className="btn" aria-label="Support NeuroBreath">
               <span aria-hidden="true">☕</span> Support Us

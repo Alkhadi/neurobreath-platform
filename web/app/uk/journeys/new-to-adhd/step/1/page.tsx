@@ -5,8 +5,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'First Steps - Step 1 | NeuroBreath',
-  description: 'Begin your journey',
+  title: 'New to ADHD Journey — Step 1: First steps | NeuroBreath',
+  description: 'Step 1 of the New to ADHD journey: first steps and safe next actions. Educational information only.',
   alternates: {
     canonical: 'https://neurobreath.co.uk/uk/journeys/new-to-adhd/step/1',
     languages: {
