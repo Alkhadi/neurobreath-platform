@@ -501,7 +501,7 @@ export default function WordFamilySortingGame() {
                           focus-visible:ring-2 focus-visible:ring-offset-2
                         `}
                         aria-label={`Select word ${wordData.word}`}
-                        aria-pressed={isSelected}
+                        aria-pressed={isSelected ? 'true' : 'false'}
                       >
                         <div className="text-xl font-bold mb-1">{wordData.word}</div>
                         {isHighlighted && (
