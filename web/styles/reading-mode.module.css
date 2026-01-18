@@ -1,5 +1,6 @@
 .readingMode {
-  /* base styles live here; actual values come from data-* selectors */
+  /* Base styles live here; actual values come from data-* selectors */
+  font: inherit;
 }
 
 /* Font size (px): 12..32 */

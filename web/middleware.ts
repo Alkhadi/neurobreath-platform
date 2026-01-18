@@ -25,6 +25,15 @@ const detectRegion = (request: NextRequest): 'uk' | 'us' => {
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
+  // Next.js serves the metadata manifest at `/manifest.webmanifest`.
+  // Ensure `/manifest.json` (and any locale-prefixed variants) resolve to the manifest
+  // instead of being captured by the dynamic `[region]` route.
+  if (pathname === '/manifest.json' || pathname === '/uk/manifest.json' || pathname === '/us/manifest.json') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/manifest.webmanifest'
+    return NextResponse.rewrite(url)
+  }
+
   // Some tooling/environments inject a relative stylesheet reference like `layout.css?v=...`.
   // This can happen at root level or on deep routes.
   // Rewrite those requests to the root-level compatibility shim at `/layout.css`.
