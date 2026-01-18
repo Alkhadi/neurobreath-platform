@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import readingModeStyles from '@/styles/reading-mode.module.css';
 import {
   Select,
   SelectContent,
@@ -676,17 +677,37 @@ export default function ReadingComprehensionGamePage() {
   const state = question ? answers[question.id] : undefined;
   const hasAnswered = Boolean(state?.selectedIndex !== null && state?.selectedIndex !== undefined);
 
-  const passageStyle = readingModeEnabled
-    ? {
-        fontSize: `${readingPrefs.fontSize}px`,
-        lineHeight: readingPrefs.lineHeight,
-        letterSpacing: `${readingPrefs.letterSpacing}px`,
-        wordSpacing: `${readingPrefs.wordSpacing}px`,
-        fontFamily: readingPrefs.fontFamily || undefined,
-        color: readingPrefs.textColor,
-        backgroundColor: readingPrefs.backgroundColor,
-      }
-    : undefined;
+  const normalizedFontSize = Math.min(32, Math.max(12, Math.round(readingPrefs.fontSize)));
+  const normalizedLineHeight = Math.min(2.5, Math.max(1.0, Math.round(readingPrefs.lineHeight * 10) / 10));
+  const normalizedLetterSpacing = Math.min(5, Math.max(0, Math.round(readingPrefs.letterSpacing * 2) / 2));
+  const normalizedWordSpacing = Math.min(10, Math.max(0, Math.round(readingPrefs.wordSpacing)));
+
+  const bgToken: Record<string, string> = {
+    '#ffffff': 'white',
+    '#fffef0': 'cream',
+    '#e3f2fd': 'light-blue',
+    '#e8f5e9': 'light-green',
+    '#fffde7': 'light-yellow',
+    '#f5f5f5': 'light-gray',
+  };
+
+  const textToken: Record<string, string> = {
+    '#000000': 'black',
+    '#424242': 'dark-gray',
+    '#1565c0': 'dark-blue',
+    '#2e7d32': 'dark-green',
+  };
+
+  const fontFamilyToken = (fontFamily: string | undefined) => {
+    const value = (fontFamily || '').toLowerCase();
+    if (value.includes('opendyslexic')) return 'opendyslexic';
+    if (value.includes('arial')) return 'arial';
+    if (value.includes('comic sans')) return 'comic-sans';
+    if (value.includes('verdana')) return 'verdana';
+    if (value.includes('georgia')) return 'georgia';
+    if (value.includes('times new roman')) return 'times';
+    return 'arial';
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white dark:from-gray-950 dark:to-gray-900 p-4">
@@ -761,8 +782,14 @@ export default function ReadingComprehensionGamePage() {
                 <CardContent className="p-4 space-y-2">
                   <div className="text-xs text-muted-foreground">Passage</div>
                   <div
-                    className="rounded-lg border p-3"
-                    style={passageStyle}
+                    className={`rounded-lg border p-3 ${readingModeEnabled ? readingModeStyles.readingMode : ''}`}
+                    data-font-size={readingModeEnabled ? String(normalizedFontSize) : undefined}
+                    data-line-height={readingModeEnabled ? normalizedLineHeight.toFixed(1) : undefined}
+                    data-letter-spacing={readingModeEnabled ? String(normalizedLetterSpacing) : undefined}
+                    data-word-spacing={readingModeEnabled ? String(normalizedWordSpacing) : undefined}
+                    data-font-family={readingModeEnabled ? fontFamilyToken(readingPrefs.fontFamily) : undefined}
+                    data-bg={readingModeEnabled ? bgToken[readingPrefs.backgroundColor] || 'white' : undefined}
+                    data-text={readingModeEnabled ? textToken[readingPrefs.textColor] || 'black' : undefined}
                     aria-label="Reading passage"
                   >
                     <p className="whitespace-pre-wrap">{passage.text}</p>

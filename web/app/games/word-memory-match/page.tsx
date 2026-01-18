@@ -337,6 +337,7 @@ export default function WordMemoryMatchPage() {
   }
 
   const columns = difficulty === 'beginner' ? 3 : 4;
+  const gridColsClass = columns === 3 ? 'grid-cols-3' : 'grid-cols-4';
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-white dark:from-gray-950 dark:to-gray-900 p-4">
@@ -394,12 +395,7 @@ export default function WordMemoryMatchPage() {
               </div>
             </div>
 
-            <div
-              className="grid gap-3"
-              style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
-              role="grid"
-              aria-label="Memory match grid"
-            >
+            <div className={`grid gap-3 ${gridColsClass}`} role="list" aria-label="Memory match cards">
               {tiles.map(tile => {
                 const isRevealed = revealed.has(tile.tileId);
                 const isMatched = matched.has(tile.pairId);
@@ -411,27 +407,27 @@ export default function WordMemoryMatchPage() {
                     : 'Hidden card';
 
                 return (
-                  <button
-                    key={tile.tileId}
-                    type="button"
-                    onClick={() => onPick(tile.tileId)}
-                    className={
-                      'h-20 rounded-xl border px-3 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 ' +
-                      (isMatched
-                        ? 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900'
-                        : isRevealed
-                          ? 'bg-white dark:bg-white/5'
-                          : 'bg-cyan-50/70 dark:bg-cyan-950/20 hover:bg-cyan-50')
-                    }
-                    aria-label={label}
-                    aria-pressed={isRevealed || isMatched ? 'true' : 'false'}
-                    disabled={isMatched}
-                  >
-                    <div className="text-xs text-muted-foreground">{isMatched ? 'Matched' : isRevealed ? 'Word' : 'Flip'}</div>
-                    <div className="mt-1 text-base font-semibold">
-                      {isRevealed || isMatched ? tile.text : '•••'}
-                    </div>
-                  </button>
+                  <div key={tile.tileId} role="listitem">
+                    <button
+                      type="button"
+                      onClick={() => onPick(tile.tileId)}
+                      className={
+                        'h-20 w-full rounded-xl border px-3 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 ' +
+                        (isMatched
+                          ? 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900'
+                          : isRevealed
+                            ? 'bg-white dark:bg-white/5'
+                            : 'bg-cyan-50/70 dark:bg-cyan-950/20 hover:bg-cyan-50')
+                      }
+                      aria-label={label}
+                      disabled={isMatched}
+                    >
+                      <div className="text-xs text-muted-foreground">{isMatched ? 'Matched' : isRevealed ? 'Word' : 'Flip'}</div>
+                      <div className="mt-1 text-base font-semibold">
+                        {isRevealed || isMatched ? tile.text : '•••'}
+                      </div>
+                    </button>
+                  </div>
                 );
               })}
             </div>
