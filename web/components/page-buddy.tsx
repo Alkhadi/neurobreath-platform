@@ -767,43 +767,61 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
     
     // Special handling for focus session question
     if (q.includes('focus session') || (q.includes('start') && q.includes('focus'))) {
-      router.push('/breathing/focus');
-      setIsOpen(false);
+      const confirmMessage: Message = {
+        id: `nav-confirm-${Date.now()}`,
+        role: 'assistant',
+        content: `🎯 **Opening Focus Timer...**\n\nI'm taking you to the Focus Timer now. You can start a session and build your focus streak!\n\n💡 **Tip**: Try starting with a 15-25 minute session if you're new to the Pomodoro technique.`,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, confirmMessage]);
+      setTimeout(() => {
+        router.push('/breathing/focus');
+        setIsOpen(false);
+      }, 1500);
       return;
     }
     
-    // Define route mappings
-    const navigationMap: { [key: string]: string } = {
-      'adhd hub': '/adhd',
-      'adhd': '/adhd',
-      'autism hub': '/autism',
-      'autism': '/autism',
-      'dyslexia': '/conditions/dyslexia',
-      'breathing': '/breathing',
-      'anxiety': '/conditions/anxiety',
-      'depression': '/conditions/depression',
-      'stress': '/conditions/stress',
-      'sleep': '/conditions/sleep',
-      'bipolar': '/conditions/bipolar',
-      'parent': '/parent',
-      'teacher': '/teacher',
-      'carer': '/carer',
+    // Define route mappings with better descriptions
+    const navigationMap: { [key: string]: { route: string; description: string } } = {
+      'adhd hub': { route: '/adhd', description: 'ADHD Hub with Focus Timer, Quests, and Skills Library' },
+      'adhd': { route: '/adhd', description: 'ADHD support tools' },
+      'autism hub': { route: '/autism', description: 'Autism Hub with Calm Toolkit and Education Pathways' },
+      'autism': { route: '/autism', description: 'Autism support tools' },
+      'dyslexia': { route: '/conditions/dyslexia', description: 'Dyslexia support and reading tools' },
+      'breathing': { route: '/breathing', description: 'Breathing exercises' },
+      'anxiety': { route: '/conditions/anxiety', description: 'Anxiety support and strategies' },
+      'depression': { route: '/conditions/depression', description: 'Depression support resources' },
+      'stress': { route: '/conditions/stress', description: 'Stress management tools' },
+      'sleep': { route: '/conditions/sleep', description: 'Sleep support strategies' },
+      'bipolar': { route: '/conditions/bipolar', description: 'Bipolar disorder information' },
+      'parent': { route: '/parent', description: 'Parent resources' },
+      'teacher': { route: '/teacher', description: 'Teacher resources' },
+      'carer': { route: '/carer', description: 'Carer support' },
     };
     
     // Check for navigation keywords
     if (q.includes('take me to') || q.includes('visit') || q.includes('go to') || q.includes('show me')) {
       // Find matching route
-      for (const [keyword, route] of Object.entries(navigationMap)) {
+      for (const [keyword, navInfo] of Object.entries(navigationMap)) {
         if (q.includes(keyword)) {
-          // Navigate directly
-          router.push(route);
-          setIsOpen(false);
+          // Confirm navigation
+          const navMessage: Message = {
+            id: `nav-${Date.now()}`,
+            role: 'assistant',
+            content: `🧭 **Navigating to ${navInfo.description}...**\n\nOne moment while I take you there!`,
+            timestamp: new Date()
+          };
+          setMessages(prev => [...prev, navMessage]);
+          setTimeout(() => {
+            router.push(navInfo.route);
+            setIsOpen(false);
+          }, 1000);
           return;
         }
       }
     }
     
-    // Otherwise send as a regular question
+    // Otherwise send as a regular question to get a proper answer
     handleSend(question);
   };
   

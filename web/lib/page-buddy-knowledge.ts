@@ -372,42 +372,186 @@ export const MentalHealthKnowledge: Record<string, EvidenceBasedResponse> = {
 }
 
 /**
+ * NeuroBreath Platform-Specific Knowledge Base
+ */
+export const PlatformKnowledge: Record<string, EvidenceBasedResponse> = {
+  'how_to_use_tools': {
+    answer: `**How to Use NeuroBreath Tools** 🧰
+
+**Focus Timer** (/adhd, /breathing/focus):
+1. Select duration (5-50 min)
+2. Click Start
+3. Work until timer completes
+4. Take suggested break
+
+**Daily Quests** (/adhd, /autism):
+1. Check dashboard for today's quests
+2. Complete activities
+3. Earn XP and build streaks
+4. Quests refresh daily
+
+**Skills Library** (/adhd, /autism):
+1. Browse or search strategies
+2. Read step-by-step instructions
+3. Log practice to track effectiveness
+4. Strategies include evidence citations
+
+**Breathing Exercises** (/breathing):
+1. Choose technique (Box, Coherent, SOS)
+2. Follow guided timer
+3. Use visual/audio cues
+4. Track mood before/after
+
+**Progress Dashboard** (/progress):
+• View XP, level, streaks
+• See achievement badges
+• Export your data
+• All stored locally for privacy
+
+**AI Coach** (/blog):
+• Ask questions about wellbeing
+• Get personalized action plans
+• Evidence-informed responses
+• Cite NICE, NHS, CDC guidelines`,
+    sources: [],
+    confidence: 'high',
+    lastUpdated: '2026-01-18'
+  },
+
+  'quest_system': {
+    answer: `**Daily Quests Explained** 🏆
+
+**What Are Quests?**
+Gamified daily challenges that build habits through:
+• 3 new quests each day
+• 10-50 XP rewards per quest
+• Streak tracking for consistency
+• Progressive difficulty
+
+**Quest Categories:**
+1. **Practice**: Try tools (timer, breathing, skills)
+2. **Learn**: Read strategy pages
+3. **Explore**: Discover new sections
+4. **Routine**: Complete at consistent times
+
+**Why Quests Work for ADHD/Autism:**
+✅ **Instant rewards**: Dopamine boost from completion
+✅ **Clear goals**: No ambiguity about what to do
+✅ **Progress visible**: See XP and level increase
+✅ **Flexible**: No penalties for missed days
+✅ **Habit formation**: Daily engagement builds routines
+
+**Tips:**
+• Start with easier quests first
+• Complete in morning routine
+• Celebrate streaks (3, 7, 30 days)
+• Use for home-school accountability`,
+    sources: [],
+    confidence: 'high',
+    lastUpdated: '2026-01-18'
+  },
+
+  'platform_privacy': {
+    answer: `**NeuroBreath Privacy & Data** 🔒
+
+**What We Track:**
+✅ Progress (XP, quests, sessions)
+✅ Tool usage patterns
+✅ Achievements earned
+✅ Personal preferences
+
+**Where It's Stored:**
+✅ YOUR device only (localStorage)
+✅ NO server uploads
+✅ NO accounts required
+✅ NO third-party trackers
+
+**Your Control:**
+✅ **Export data**: Download JSON/CSV anytime
+✅ **Reset data**: Clear all with one click
+✅ **Optional tracking**: Use tools without tracking
+✅ **Portable**: Export and import on new device
+
+**What We DON'T Do:**
+❌ Never sell your data
+❌ No advertising/tracking cookies
+❌ No personal information collected
+❌ No cross-site tracking
+
+**GDPR Compliant**: All European data protection standards met.`,
+    sources: [
+      { title: 'UK ICO: GDPR Guidance', organization: 'UK ICO', url: 'https://ico.org.uk/for-organisations/guide-to-data-protection/', type: 'government_health', credibility: 'high' }
+    ],
+    confidence: 'high',
+    lastUpdated: '2026-01-18'
+  }
+}
+
+/**
  * Query knowledge base or fallback to APIs
  */
 export async function getEvidenceBasedAnswer(
   question: string,
   topic?: string
 ): Promise<EvidenceBasedResponse | null> {
-  const q = question.toLowerCase()
+  const q = question.toLowerCase().trim()
   
-  // Search ADHD knowledge
+  // Define query patterns with synonyms and variations
+  const queryPatterns: Record<string, string[]> = {
+    'what_is_adhd': ['what is adhd', 'define adhd', 'explain adhd', 'adhd definition', 'about adhd', 'understanding adhd'],
+    'adhd_treatment': ['adhd treatment', 'treat adhd', 'treating adhd', 'adhd therapy', 'help adhd', 'manage adhd', 'adhd management'],
+    'adhd_medication': ['adhd medication', 'adhd medicine', 'adhd drugs', 'adhd pills', 'ritalin', 'concerta', 'vyvanse', 'adderall', 'stimulant', 'methylphenidate', 'lisdexamfetamine'],
+    'what_is_autism': ['what is autism', 'define autism', 'explain autism', 'autism definition', 'about autism', 'understanding autism', 'asd', 'autism spectrum'],
+    'autism_support': ['autism support', 'autism help', 'autism treatment', 'autism therapy', 'autism intervention', 'help autism', 'support autistic'],
+    'anxiety_treatment': ['anxiety treatment', 'anxiety help', 'treating anxiety', 'anxiety therapy', 'manage anxiety', 'anxiety relief', 'anxious'],
+    'depression_treatment': ['depression treatment', 'depression help', 'treating depression', 'depression therapy', 'manage depression', 'depressed'],
+    'how_to_use_tools': ['how to use', 'how do i use', 'using the timer', 'using the tools', 'how does', 'what tools', 'tools available', 'show me tools'],
+    'quest_system': ['daily quests', 'what are quests', 'quest system', 'how do quests work', 'earn xp', 'level up', 'gamification'],
+    'platform_privacy': ['privacy', 'data', 'tracking', 'safe', 'secure', 'personal information', 'gdpr']
+  }
+  
+  // Search using pattern matching
+  for (const [key, patterns] of Object.entries(queryPatterns)) {
+    for (const pattern of patterns) {
+      if (q.includes(pattern)) {
+        // Check Platform knowledge first (most specific)
+        if (PlatformKnowledge[key]) return PlatformKnowledge[key]
+        // Check ADHD knowledge
+        if (ADHDKnowledge[key]) return ADHDKnowledge[key]
+        // Check Autism knowledge
+        if (AutismKnowledge[key]) return AutismKnowledge[key]
+        // Check Mental Health knowledge
+        if (MentalHealthKnowledge[key]) return MentalHealthKnowledge[key]
+      }
+    }
+  }
+  
+  // Fallback: Direct key match with underscores replaced
+  for (const [key, response] of Object.entries(PlatformKnowledge)) {
+    const keyWords = key.replace(/_/g, ' ')
+    if (q.includes(keyWords)) return response
+  }
+  
   for (const [key, response] of Object.entries(ADHDKnowledge)) {
-    if (q.includes(key.replace(/_/g, ' ')) || 
-        (key.includes('treatment') && q.includes('treat')) ||
-        (key.includes('medication') && (q.includes('medication') || q.includes('medicine')))) {
-      return response
-    }
+    const keyWords = key.replace(/_/g, ' ')
+    if (q.includes(keyWords)) return response
   }
   
-  // Search Autism knowledge
   for (const [key, response] of Object.entries(AutismKnowledge)) {
-    if (q.includes(key.replace(/_/g, ' '))) {
-      return response
-    }
+    const keyWords = key.replace(/_/g, ' ')
+    if (q.includes(keyWords)) return response
   }
   
-  // Search Mental Health knowledge
   for (const [key, response] of Object.entries(MentalHealthKnowledge)) {
-    if (q.includes(key.replace(/_/g, ' '))) {
-      return response
-    }
+    const keyWords = key.replace(/_/g, ' ')
+    if (q.includes(keyWords)) return response
   }
   
   // Fallback: Try to get NHS links
   const nhsLinks = getNHSLinks(question, topic)
   if (nhsLinks.length > 0) {
     return {
-      answer: `For evidence-based information about your question, please see these trusted NHS resources:`,
+      answer: `For evidence-based information about your question, I recommend these trusted NHS resources:\n\nThese pages provide clinically-reviewed guidance from UK healthcare professionals.`,
       sources: nhsLinks.map(link => ({
         title: link.title,
         organization: 'NHS',
