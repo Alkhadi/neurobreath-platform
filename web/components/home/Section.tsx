@@ -21,32 +21,29 @@ export function HomeSection({
   tone = 'default',
   withDivider,
 }: HomeSectionProps) {
-  const toneClass =
-    tone === 'muted'
-      ? 'bg-slate-50/70 dark:bg-slate-950/40'
-      : 'bg-transparent';
+  const toneClass = tone === 'muted' ? 'bg-muted/30' : 'bg-transparent';
 
   return (
     <section
       id={id}
-      className={`py-10 sm:py-14 ${toneClass} ${withDivider ? 'border-t border-slate-200/70 dark:border-slate-800/70' : ''}`}
+      className={`py-10 sm:py-14 ${toneClass} ${withDivider ? 'border-t border-border/60' : ''}`}
     >
-      <div className="mx-auto w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1200px]">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {eyebrow || title || subtitle || actions ? (
           <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               {eyebrow ? (
-                <p className="text-sm uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                <p className="text-sm uppercase tracking-wide text-muted-foreground">
                   {eyebrow}
                 </p>
               ) : null}
               {title ? (
-                <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900 dark:text-slate-50">
+                <h2 className="text-2xl sm:text-3xl font-semibold text-foreground">
                   {title}
                 </h2>
               ) : null}
               {subtitle ? (
-                <p className="mt-1 text-sm text-slate-600 dark:text-slate-300 max-w-3xl">
+                <p className="mt-1 text-sm text-muted-foreground max-w-3xl">
                   {subtitle}
                 </p>
               ) : null}

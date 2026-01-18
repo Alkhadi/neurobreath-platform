@@ -3,8 +3,13 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { HomeHero } from '@/components/home/Hero';
 import { HomeSection } from '@/components/home/Section';
-import { NextStepCards } from '@/components/home/NextStepCards';
-import { TrustCards } from '@/components/home/TrustCards';
+import { NextSteps } from '@/components/home/NextSteps';
+import { QuickStart } from '@/components/home/QuickStart';
+import { ToolsToday } from '@/components/home/ToolsToday';
+import { ConditionsGrid } from '@/components/home/ConditionsGrid';
+import { GuidesBlock } from '@/components/home/GuidesBlock';
+import { TrustSafety } from '@/components/home/TrustSafety';
+import { FinalCTA } from '@/components/home/FinalCTA';
 import { CONDITIONS } from '@/lib/coverage/conditions';
 import { getLocaleCopy } from '@/lib/i18n/localeCopy';
 import { PILLARS } from '@/lib/content/content-seo-map';
@@ -26,7 +31,7 @@ export async function generateMetadata({ params }: RegionHomePageProps): Promise
 
 	const base = generatePageMetadata({
 		title: region === 'US' ? 'NeuroBreath — Calm, focus, and routines' : 'NeuroBreath — Calm, focus, and routines',
-		description: copy.valueProp,
+		description: copy.metaDescription,
 		path,
 	});
 
@@ -67,7 +72,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 		'@context': 'https://schema.org',
 		'@type': 'WebPage',
 		name: 'NeuroBreath',
-		description: copy.valueProp,
+		description: copy.metaDescription,
 		url: pageUrl,
 	};
 
@@ -162,10 +167,11 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 
 	const nextStepCards = [
 		{
+			id: 'help-me-choose',
 			title: 'Help me choose',
 			description: 'Answer a few questions and get a safe, practical starting plan.',
 			href: `/${regionKey}/help-me-choose`,
-			highlight: true,
+			recommended: true,
 			icon: (
 				<svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5">
 					<path d="M4 6h16M4 12h10M4 18h13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -173,6 +179,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 			),
 		},
 		{
+			id: 'starter-journeys',
 			title: 'Starter journeys',
 			description: 'Short paths combining tools and guides (calm, focus, sleep).',
 			href: `/${regionKey}/journeys`,
@@ -190,6 +197,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 			),
 		},
 		{
+			id: 'browse-conditions',
 			title: 'Browse conditions',
 			description: 'Filter by audience and support need, then jump into tools and guides.',
 			href: `/${regionKey}/conditions`,
@@ -200,6 +208,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 			),
 		},
 		{
+			id: 'try-a-tool',
 			title: 'Try a quick tool',
 			description: 'Start with an accessible, low-friction tool you can use right now.',
 			href: `/${regionKey}/tools`,
@@ -211,6 +220,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 			),
 		},
 		{
+			id: 'learn-basics',
 			title: 'Learn the basics',
 			description: 'Plain-language guides with safe, evidence-informed routines.',
 			href: `/${regionKey}/guides`,
@@ -269,7 +279,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 	];
 
 	return (
-		<main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white dark:from-slate-950 dark:via-slate-950 dark:to-slate-950">
+		<main className="min-h-screen bg-background">
 			<HomeHero region={region} copy={copy} recommendations={recommendations} />
 
 			<HomeSection
@@ -278,7 +288,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 				title="Clear next actions — without medical claims"
 				subtitle="Use Help me choose for a quick plan, or pick a starting path that combines tools and guides."
 			>
-				<NextStepCards items={nextStepCards} />
+				<NextSteps items={nextStepCards} />
 			</HomeSection>
 
 			<HomeSection
@@ -288,43 +298,31 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 				subtitle={copy.sections.startHere.subtitle}
 				withDivider
 			>
-				<div className="grid gap-4 md:grid-cols-3">
-					{[
+				<QuickStart
+					cards={[
 						{
+							id: 'sos',
 							title: 'Quick calm (SOS 60)',
 							description: 'A one-minute reset for overwhelm or stress.',
-							extra: '1 minute',
+							time: '1 minute',
 							href: '/techniques/sos',
 						},
 						{
+							id: 'journeys',
 							title: 'Build a routine',
 							description: 'Starter journeys combine tools and guides into a short path.',
-							extra: '3–5 mins',
+							time: '3–5 mins',
 							href: `/${regionKey}/journeys`,
 						},
 						{
+							id: 'glossary',
 							title: 'Learn the basics',
 							description: 'Plain-English definitions for common terms.',
-							extra: '2 mins reading',
+							time: '2 mins reading',
 							href: `/${regionKey}/glossary`,
 						},
-					].map(card => (
-						<Link
-							key={card.href}
-							href={card.href}
-							className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:bg-slate-900 dark:border-slate-800 dark:hover:border-slate-700 dark:focus-visible:ring-offset-slate-950"
-						>
-							<div className="flex items-center justify-between gap-3">
-								<h3 className="text-base font-semibold text-slate-900 dark:text-slate-50">{card.title}</h3>
-								<span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{card.extra}</span>
-							</div>
-							<p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{card.description}</p>
-							<div className="mt-3 text-sm font-semibold text-indigo-700 dark:text-indigo-300">
-								Start →
-							</div>
-						</Link>
-					))}
-				</div>
+					]}
+				/>
 			</HomeSection>
 
 			<HomeSection
@@ -335,33 +333,19 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 				actions={
 					<Link
 						href={`/${regionKey}/conditions`}
-						className="text-sm font-semibold text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 rounded-sm dark:text-indigo-300 dark:focus-visible:ring-offset-slate-950"
+						className="text-sm font-semibold text-foreground/80 hover:text-foreground underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
 					>
 						{copy.sections.conditions.ctaLabel}
 					</Link>
 				}
 				withDivider
 			>
-				<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-					{topConditions.map(condition => (
-						<Link
-							key={condition.conditionId}
-							href={`/${regionKey}/conditions`}
-							className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:bg-slate-900 dark:border-slate-800 dark:hover:border-slate-700 dark:focus-visible:ring-offset-slate-950"
-						>
-							<div className="flex items-start gap-3">
-								<div className="mt-0.5 h-9 w-9 rounded-xl bg-slate-100 dark:bg-slate-800" aria-hidden="true" />
-								<div className="min-w-0">
-									<div className="text-base font-semibold text-slate-900 dark:text-slate-50">
-										{condition.canonicalName}
-									</div>
-									<p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{condition.summary}</p>
-								</div>
-							</div>
-						<div className="mt-3 text-sm font-semibold text-indigo-700 dark:text-indigo-300">Explore →</div>
-					</Link>
-					))}
-				</div>
+				<ConditionsGrid
+					conditions={topConditions}
+					regionKey={regionKey}
+					href={`/${regionKey}/conditions`}
+					ctaLabel="Explore"
+				/>
 			</HomeSection>
 
 			<HomeSection
@@ -372,37 +356,14 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 				actions={
 					<Link
 						href={`/${regionKey}/tools`}
-						className="text-sm font-semibold text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 rounded-sm dark:text-indigo-300 dark:focus-visible:ring-offset-slate-950"
+						className="text-sm font-semibold text-foreground/80 hover:text-foreground underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
 					>
 						{copy.sections.tools.ctaLabel}
 					</Link>
 				}
 				withDivider
 			>
-				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-					{toolsGroups.map(group => (
-						<div
-							key={group.title}
-							className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:bg-slate-900 dark:border-slate-800"
-						>
-							<div className="flex items-center justify-between">
-								<h3 className="text-base font-semibold text-slate-900 dark:text-slate-50">{group.title}</h3>
-								<span aria-hidden="true" className="text-slate-400 dark:text-slate-500">↗</span>
-							</div>
-							<div className="mt-3 space-y-2 text-sm">
-								{group.items.map(item => (
-									<Link
-										key={item.href + item.label}
-										href={item.href}
-										className="block font-semibold text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 rounded-sm dark:text-indigo-300 dark:focus-visible:ring-offset-slate-950"
-									>
-										{item.label}
-									</Link>
-								))}
-							</div>
-						</div>
-					))}
-				</div>
+				<ToolsToday groups={toolsGroups} />
 			</HomeSection>
 
 			<HomeSection
@@ -413,51 +374,22 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 				actions={
 					<Link
 						href={`/${regionKey}/guides`}
-						className="text-sm font-semibold text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 rounded-sm dark:text-indigo-300 dark:focus-visible:ring-offset-slate-950"
+						className="text-sm font-semibold text-foreground/80 hover:text-foreground underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
 					>
 						{copy.sections.guides.ctaLabel}
 					</Link>
 				}
 				withDivider
 			>
-				<div className="grid gap-6 lg:grid-cols-12">
-					<div className="lg:col-span-7">
-						<h3 className="text-base font-semibold text-slate-900 dark:text-slate-50">Featured guides</h3>
-						<div className="mt-3 grid gap-4 sm:grid-cols-2">
-							{guidesPreview.slice(0, 4).map(cluster => (
-								<Link
-									key={cluster.href}
-									href={cluster.href}
-									className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:bg-slate-900 dark:border-slate-800 dark:hover:border-slate-700 dark:focus-visible:ring-offset-slate-950"
-								>
-									<div className="text-base font-semibold text-slate-900 dark:text-slate-50">{cluster.title}</div>
-									<p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{cluster.description}</p>
-									<div className="mt-3 text-sm font-semibold text-indigo-700 dark:text-indigo-300">Read →</div>
-								</Link>
-							))}
-						</div>
-					</div>
-					<div className="lg:col-span-5">
-						<div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
-							<h3 className="text-base font-semibold text-slate-900 dark:text-slate-50">Topic clusters</h3>
-							<p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-								Start with a topic hub, then pick a specific guide.
-							</p>
-							<div className="mt-4 grid gap-3">
-								{featuredPillars.map(pillar => (
-									<Link
-										key={pillar.key}
-										href={`/guides/${pillar.key}`}
-										className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:bg-slate-950/30 dark:border-slate-800 dark:hover:border-slate-700 dark:focus-visible:ring-offset-slate-950"
-									>
-										<div className="font-semibold text-slate-900 dark:text-slate-50">{pillar.title}</div>
-										<div className="mt-1 text-slate-600 dark:text-slate-300">{pillar.description}</div>
-									</Link>
-								))}
-							</div>
-						</div>
-					</div>
-				</div>
+				<GuidesBlock
+					featured={guidesPreview.slice(0, 4)}
+					clusters={featuredPillars.map(p => ({
+						key: p.key,
+						title: p.title,
+						description: p.description,
+						href: `/guides/${p.key}`,
+					}))}
+				/>
 			</HomeSection>
 
 			<HomeSection
@@ -468,76 +400,38 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 				tone="muted"
 				withDivider
 			>
-				<div className="grid gap-6 lg:grid-cols-12">
-					<div className="lg:col-span-7">
-						<TrustCards items={trustCards} />
-						<div className="mt-4 text-xs text-slate-600 dark:text-slate-300">
-							Citations are shown as copy-only references (no external clicks). See the Trust Centre for details.
-						</div>
-					</div>
-					<div className="lg:col-span-5">
-						<div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
-							<h3 className="text-base font-semibold text-slate-900 dark:text-slate-50">Trust Centre</h3>
-							<p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-								Educational information only. Not medical advice. Use the Trust Centre to understand our evidence policy, citations,
-								privacy, and safeguarding.
-							</p>
-							<div className="mt-4 flex flex-wrap gap-3 text-sm">
-								{[
-									{ label: copy.trustStrip.trustCentreLabel, href: `/${regionKey}/trust` },
-									{ label: 'Evidence policy', href: `/${regionKey}/trust/evidence-policy` },
-									{ label: copy.trustStrip.lastReviewedLabel, href: `/${regionKey}/trust/last-reviewed` },
-									{ label: 'Disclaimer', href: `/${regionKey}/trust/disclaimer` },
-									{ label: 'Privacy', href: `/${regionKey}/trust/privacy` },
-								].map(item => (
-									<Link
-										key={item.href + item.label}
-										href={item.href}
-										className="font-semibold text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 rounded-sm dark:text-indigo-300 dark:focus-visible:ring-offset-slate-950"
-									>
-										{item.label}
-									</Link>
-								))}
-							</div>
-						</div>
-					</div>
-				</div>
+				<TrustSafety
+					cards={trustCards}
+					links={[
+						{ label: copy.trustStrip.trustCentreLabel, href: `/${regionKey}/trust` },
+						{ label: 'Evidence policy', href: `/${regionKey}/trust/evidence-policy` },
+						{ label: copy.trustStrip.lastReviewedLabel, href: `/${regionKey}/trust/last-reviewed` },
+						{ label: 'Disclaimer', href: `/${regionKey}/trust/disclaimer` },
+						{ label: 'Privacy', href: `/${regionKey}/trust/privacy` },
+					]}
+					educationOnlyLine="Educational information only. Not medical advice. No diagnosis or treatment claims."
+					extraNote="Citations are shown as copy-only references (no external clicks). See the Trust Centre for details."
+				/>
 			</HomeSection>
 
 			<HomeSection id="final-cta" tone="muted" withDivider>
-				<div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
-					<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-						<div>
-							<h2 className="text-xl font-semibold text-slate-900 dark:text-slate-50">Get started with a safe next step</h2>
-							<p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-								Educational only. Not medical advice.
-							</p>
-						</div>
-						<div className="flex flex-col gap-3 sm:flex-row">
-							<Link
-								href={`/${regionKey}/journeys`}
-								className="inline-flex w-full sm:w-auto items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950"
-							>
-								Get Started
-							</Link>
-							<Link
-								href={`/${regionKey}/help-me-choose`}
-								className="inline-flex w-full sm:w-auto items-center justify-center rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-900 hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:border-slate-800 dark:text-slate-50 dark:hover:border-slate-700 dark:focus-visible:ring-offset-slate-950"
-							>
-								Help me choose
-							</Link>
-						</div>
-					</div>
-				</div>
+				<FinalCTA
+					title="Get started with a safe next step"
+					educationOnlyLine={copy.trustStrip.disclaimer}
+					primaryHref={`/${regionKey}/journeys`}
+					primaryLabel="Get started"
+					secondaryHref={`/${regionKey}/help-me-choose`}
+					secondaryLabel="Help me choose"
+				/>
 			</HomeSection>
 
-			<footer className="mx-auto w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1200px] pb-14">
-				<div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
-					<div className="text-sm text-slate-700 dark:text-slate-200">
-						<span className="font-semibold">Privacy note:</span> Event counts are stored locally (no personal data). See{' '}
+			<footer className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-14">
+				<div className="rounded-2xl border border-border/60 bg-card p-6 shadow-sm">
+					<div className="text-sm text-muted-foreground">
+						<span className="font-semibold text-foreground">Privacy note:</span> Event counts are stored locally (no personal data). See{' '}
 						<Link
 							href={`/${regionKey}/trust/privacy`}
-							className="text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 rounded-sm dark:text-indigo-300 dark:focus-visible:ring-offset-slate-950"
+							className="font-semibold text-foreground/80 hover:text-foreground underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
 						>
 							Privacy
 						</Link>

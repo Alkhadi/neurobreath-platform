@@ -1,6 +1,7 @@
 import './globals.css';
 import '../styles/print.css';
 import { headers } from 'next/headers';
+import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { BreathingSessionProvider } from '@/contexts/BreathingSessionContext';
@@ -12,10 +13,16 @@ import { Toaster } from '@/components/ui/sonner';
 import { JsonLd } from '@/components/seo/json-ld';
 import { generateOrganizationSchema, generateWebSiteSchema, generateWebPageSchema, generateBreadcrumbsFromPath, generateBreadcrumbSchema } from '@/lib/seo/schema';
 import { SITE_CONFIG, generateCanonicalUrl } from '@/lib/seo/site-seo';
-import { getRouteSeoConfig } from '@/lib/seo/route-metadata';
+import { getRouteMetadata, getRouteSeoConfig } from '@/lib/seo/route-metadata';
 import { getLocaleForRegion, getRegionFromPath } from '@/lib/region/region';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
+
+export async function generateMetadata(): Promise<Metadata> {
+  const hdrs = await headers();
+  const pathname = hdrs.get('x-pathname') || '/';
+  return getRouteMetadata(pathname);
+}
 
 export default async function RootLayout({
   children,

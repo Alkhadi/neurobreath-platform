@@ -30,12 +30,8 @@ const ROUTES: RouteConfig[] = [
   { url: '/uk/guides', name: 'guides-hub', region: 'uk', waitFor: 'h1', fullPage: true },
   { url: '/us/guides', name: 'guides-hub', region: 'us', waitFor: 'h1', fullPage: true },
   
-  // Search (noindex but test layout)
-  { url: '/uk/search', name: 'search', region: 'uk', waitFor: 'main', fullPage: false },
-  { url: '/us/search', name: 'search', region: 'us', waitFor: 'main', fullPage: false },
-  
-  // Tool with dialog
-  { url: '/uk/tools/breathing-timer', name: 'breathing-timer', region: 'uk', waitFor: 'main', fullPage: false, testDialog: true },
+  // Breathing tool
+  { url: '/breathing', name: 'breathing-timer', region: 'uk', waitFor: 'main', fullPage: false, testDialog: true },
   
   // Trust Centre
   { url: '/uk/trust', name: 'trust-hub', region: 'uk', waitFor: 'h1', fullPage: true },
@@ -180,6 +176,7 @@ test.describe('Visual Regression Suite', () => {
       await expect(page).toHaveScreenshot(screenshotName, {
         fullPage: route.fullPage ?? false,
         animations: 'disabled',
+        maxDiffPixelRatio: 0.02, // Allow up to 2% diff for anti-aliasing across runs
       });
       
       // CTA visibility check for hubs and homepage

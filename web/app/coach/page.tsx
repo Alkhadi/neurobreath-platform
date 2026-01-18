@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { generatePageMetadata } from '@/lib/seo/metadata';
 import {
 	CoachHubHero,
 	CoachQuickStarts,
@@ -8,17 +9,12 @@ import {
 	CoachNotice,
 } from '@/components/coach-hub';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = generatePageMetadata({
 	title: 'Coach Hub',
 	description:
 		'Fast briefings, printable resources, and breathing plans for educators, coaches, and support staff. Educational information only; not medical advice.',
-	openGraph: {
-		title: 'Coach Hub · NeuroBreath',
-		description:
-			'Fast briefings, printable resources, and breathing plans for educators, coaches, and support staff.',
-		type: 'website',
-	},
-};
+	path: '/coach',
+});
 
 export default function CoachPage() {
 	return (

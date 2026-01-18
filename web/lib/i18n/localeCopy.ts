@@ -8,6 +8,7 @@ export interface LocaleCopy {
   locale: 'en-GB' | 'en-US';
   regionKey: RegionKey;
   valueProp: string;
+  metaDescription: string;
   heroSubtitle: string;
   trustStrip: {
     disclaimer: string;
@@ -42,6 +43,8 @@ export function getLocaleCopy(region: Region): LocaleCopy {
       locale: 'en-US',
       regionKey,
       valueProp: 'Calm, focus, and routines—clear next steps for everyday support.',
+      metaDescription:
+        'Evidence-informed tools and routines for calm, focus, sleep, and everyday support for neurodivergent needs (ADHD, autism, dyslexia, anxiety). Educational only.',
       heroSubtitle: 'Educational tools and guides. No diagnosis. No medical claims.',
       trustStrip: {
         disclaimer: 'Educational only. Not medical advice.',
@@ -99,6 +102,8 @@ export function getLocaleCopy(region: Region): LocaleCopy {
     locale: 'en-GB',
     regionKey,
     valueProp: 'Calm, focus, and routines—clear next steps for everyday support.',
+    metaDescription:
+      'Evidence-informed tools and routines for calm, focus, sleep, and everyday support for neurodivergent needs (ADHD, autism, dyslexia, anxiety). Educational only.',
     heroSubtitle: 'Educational tools and guides. No diagnosis. No medical claims.',
     trustStrip: {
       disclaimer: 'Educational only. Not medical advice.',

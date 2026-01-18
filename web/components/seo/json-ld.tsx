@@ -1,10 +1,9 @@
 /**
  * JSON-LD Component
- * 
- * Client-safe component for injecting structured data into pages
+ *
+ * Server-rendered JSON-LD for SEO and test stability.
  */
 
-import Script from 'next/script';
 import type { WithContext } from 'schema-dts';
 
 interface JsonLdProps {
@@ -29,29 +28,13 @@ export function JsonLd({ data }: JsonLdProps) {
     : JSON.stringify(data);
 
   return (
-    <Script
+    <script
       id={`json-ld-${Array.isArray(data) ? 'combined' : data['@type']}`}
       type="application/ld+json"
-      strategy="afterInteractive"
       dangerouslySetInnerHTML={{ __html: jsonString }}
     />
   );
 }
-
-/**
- * Helper hook to check if client-side rendering
- */
-export function useIsClient() {
-  const [isClient, setIsClient] = React.useState(false);
-  
-  React.useEffect(() => {
-    setIsClient(true);
-  }, []);
-  
-  return isClient;
-}
-
-import React from 'react';
 
 // Export for convenience
 export { type WithContext } from 'schema-dts';

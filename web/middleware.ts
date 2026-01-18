@@ -55,10 +55,16 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Add pathname to headers for server components (OnboardingCardWrapper)
-  const response = NextResponse.next()
-  response.headers.set('x-pathname', pathname)
-  return response
+  // Make the current pathname available to server components via request headers.
+  // `next/headers` reads *request* headers (not response headers), so we must
+  // override the request headers on the way into the route.
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-pathname', pathname)
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  })
 }
 
 export const config = {
