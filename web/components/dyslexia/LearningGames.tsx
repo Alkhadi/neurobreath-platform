@@ -223,6 +223,7 @@ const games = [
     difficulty: 'beginner' as Difficulty,
     icon: '🔊',
     color: 'yellow',
+    route: '/dyslexia-reading-training#phonics-lab',
   },
 ];
 
