@@ -20,6 +20,7 @@ import { HomophoneChallenge } from './games/HomophoneChallenge';
 import { SentenceScramble } from './games/SentenceScramble';
 import { StorySequencing } from './games/StorySequencing';
 import { PhonemeSegmentation } from './games/PhonemeSegmentation';
+import { PhonicsSoundBoard } from './games/PhonicsSoundBoard';
 
 type Difficulty = 'beginner' | 'intermediate' | 'advanced';
 type GameType = 'phonics' | 'word-recognition' | 'comprehension' | 'memory' | 'fluency' | 'vocabulary';
@@ -27,12 +28,23 @@ type GameType = 'phonics' | 'word-recognition' | 'comprehension' | 'memory' | 'f
 const games = [
   // New Interactive Games
   {
+    id: 'phonics-sound-board',
+    title: 'Phonics Sound Board',
+    description: 'Learn letter sounds with interactive alphabet board',
+    type: 'phonics' as GameType,
+    difficulty: 'beginner' as Difficulty,
+    icon: '🎵',
+    color: 'purple',
+    component: PhonicsSoundBoard,
+    featured: true,
+  },
+  {
     id: 'rhyming-pairs',
     title: 'Rhyming Pairs',
     description: 'Match rhyming words with audio support',
     type: 'phonics' as GameType,
     difficulty: 'beginner' as Difficulty,
-    icon: '🎵',
+    icon: '🎶',
     color: 'purple',
     component: RhymingPairs,
   },

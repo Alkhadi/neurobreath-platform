@@ -119,7 +119,7 @@ export async function searchPubMed(query: string, maxResults: number = 6): Promi
                     : undefined
                 return typeof name === 'string' ? name : ''
               })
-              .filter((name): name is string => Boolean(name))
+              .filter((name: string): name is string => Boolean(name))
           : [],
         abstract: abstract.substring(0, 500) // Truncate long abstracts
       })

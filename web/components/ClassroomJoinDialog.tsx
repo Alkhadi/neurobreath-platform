@@ -259,7 +259,7 @@ export function ClassroomJoinDialog({ open, onOpenChange, onJoined }: ClassroomJ
             <Label htmlFor="role" className="text-sm font-medium">
               Role <span className="text-muted-foreground text-xs">(optional)</span>
             </Label>
-            <Select value={role} onValueChange={setRole} disabled={isSubmitting}>
+            <Select value={role} onValueChange={(value) => setRole(value as ClassroomRole | '')} disabled={isSubmitting}>
               <SelectTrigger id="role" aria-describedby="role-help">
                 <SelectValue placeholder="Select your role" />
               </SelectTrigger>

@@ -158,8 +158,8 @@ export default function AICoachChatV2() {
               title: r.title,
               type: 'resource',
               url: r.path,
-              whyThisFits: r.whoItsFor || r.whenToUse,
-              howToUseThisWeek: r.howToDoIt || r.whenToUse
+              whyThisFits: r.whoItsFor || r.whenToUse || '',
+              howToUseThisWeek: r.howToDoIt || r.whenToUse || ''
             }))
         : []
 
