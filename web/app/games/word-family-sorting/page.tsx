@@ -491,6 +491,7 @@ export default function WordFamilySortingGame() {
                   return (
                     <div key={wordData.word} className="relative">
                       <button
+                        type="button"
                         onClick={() => setSelectedWord(wordData.word)}
                         className={`
                           w-full p-4 rounded-lg border-2 transition-all
