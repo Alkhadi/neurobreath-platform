@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -65,6 +65,29 @@ export default function WordFamilySortingGame() {
   const config = difficultyConfigs[difficulty];
   const totalRounds = config.totalRounds;
 
+  // Finish game
+  const finishGame = useCallback(() => {
+    const timeTaken = startTime ? Math.round((Date.now() - startTime) / 1000) : 0;
+    const totalWords = placedWords.length;
+    const correctWords = placedWords.filter(w => w.correct).length;
+    const accuracy = totalWords > 0 ? Math.round((correctWords / totalWords) * 100) : 0;
+
+    const wordsMissed = placedWords
+      .filter(w => !w.correct)
+      .map(w => ({ word: w.word, correctFamily: w.family }));
+
+    recordSession({
+      date: new Date().toISOString(),
+      difficulty,
+      score,
+      accuracy,
+      timeTaken,
+      wordsMissed,
+    });
+
+    setGameState('finished');
+  }, [difficulty, placedWords, recordSession, score, startTime]);
+
   // Timer effect
   useEffect(() => {
     if (gameState !== 'playing' || !timerEnabled) return;
@@ -80,7 +103,7 @@ export default function WordFamilySortingGame() {
     }, 1000);
     
     return () => clearInterval(interval);
-  }, [gameState, timerEnabled]);
+  }, [gameState, timerEnabled, finishGame]);
 
   // Start game
   const startGame = () => {
@@ -115,29 +138,6 @@ export default function WordFamilySortingGame() {
     setHighlightedWord(null);
     setCurrentRound(prev => prev + 1);
     setFeedback(null);
-  };
-
-  // Finish game
-  const finishGame = () => {
-    const timeTaken = startTime ? Math.round((Date.now() - startTime) / 1000) : 0;
-    const totalWords = placedWords.length;
-    const correctWords = placedWords.filter(w => w.correct).length;
-    const accuracy = totalWords > 0 ? Math.round((correctWords / totalWords) * 100) : 0;
-    
-    const wordsMissed = placedWords
-      .filter(w => !w.correct)
-      .map(w => ({ word: w.word, correctFamily: w.family }));
-    
-    recordSession({
-      date: new Date().toISOString(),
-      difficulty,
-      score,
-      accuracy,
-      timeTaken,
-      wordsMissed
-    });
-    
-    setGameState('finished');
   };
 
   // Place word in bin
@@ -490,27 +490,47 @@ export default function WordFamilySortingGame() {
                   
                   return (
                     <div key={wordData.word} className="relative">
-                      <button
-                        type="button"
-                        onClick={() => setSelectedWord(wordData.word)}
-                        className={`
-                          w-full p-4 rounded-lg border-2 transition-all
-                          ${isSelected 
-                            ? 'border-primary bg-primary/10 scale-105 shadow-lg' 
-                            : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700'}
-                          ${isHighlighted ? 'animate-pulse ring-2 ring-yellow-400' : ''}
-                          focus-visible:ring-2 focus-visible:ring-offset-2
-                        `}
-                        aria-label={`Select word ${wordData.word}`}
-                        aria-pressed={isSelected ? 'true' : 'false'}
-                      >
-                        <div className="text-xl font-bold mb-1">{wordData.word}</div>
-                        {isHighlighted && (
-                          <div className="text-xs text-yellow-700 dark:text-yellow-400 font-semibold">
-                            Ends with {wordData.family}
-                          </div>
-                        )}
-                      </button>
+                      {isSelected ? (
+                        <button
+                          type="button"
+                          onClick={() => setSelectedWord(wordData.word)}
+                          className={`
+                            w-full p-4 rounded-lg border-2 transition-all
+                            border-primary bg-primary/10 scale-105 shadow-lg
+                            ${isHighlighted ? 'animate-pulse ring-2 ring-yellow-400' : ''}
+                            focus-visible:ring-2 focus-visible:ring-offset-2
+                          `}
+                          aria-label={`Select word ${wordData.word}`}
+                          aria-pressed="true"
+                        >
+                          <div className="text-xl font-bold mb-1">{wordData.word}</div>
+                          {isHighlighted && (
+                            <div className="text-xs text-yellow-700 dark:text-yellow-400 font-semibold">
+                              Ends with {wordData.family}
+                            </div>
+                          )}
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => setSelectedWord(wordData.word)}
+                          className={`
+                            w-full p-4 rounded-lg border-2 transition-all
+                            border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700
+                            ${isHighlighted ? 'animate-pulse ring-2 ring-yellow-400' : ''}
+                            focus-visible:ring-2 focus-visible:ring-offset-2
+                          `}
+                          aria-label={`Select word ${wordData.word}`}
+                          aria-pressed="false"
+                        >
+                          <div className="text-xl font-bold mb-1">{wordData.word}</div>
+                          {isHighlighted && (
+                            <div className="text-xs text-yellow-700 dark:text-yellow-400 font-semibold">
+                              Ends with {wordData.family}
+                            </div>
+                          )}
+                        </button>
+                      )}
                       
                       <Button
                         variant="ghost"

@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { PrimaryCtaBlock } from '@/components/growth/PrimaryCtaBlock';
-import { SecondaryCtaRow } from '@/components/growth/SecondaryCtaRow';
-import { HomeAudienceSelector, type AudienceRecommendation } from '@/components/growth/HomeAudienceSelector';
-import { TrustMiniPanel } from '@/components/trust/TrustMiniPanel';
+import { HomeHero } from '@/components/home/Hero';
+import { HomeSection } from '@/components/home/Section';
+import { NextStepCards } from '@/components/home/NextStepCards';
+import { TrustCards } from '@/components/home/TrustCards';
 import { CONDITIONS } from '@/lib/coverage/conditions';
 import { getLocaleCopy } from '@/lib/i18n/localeCopy';
 import { PILLARS } from '@/lib/content/content-seo-map';
@@ -112,7 +112,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 		{ title: 'Sleep routines', href: `/guides/sleep`, description: 'Wind-down routines and consistency.' },
 	];
 
-	const recommendations: AudienceRecommendation[] = [
+	const recommendations = [
 		{
 			id: 'help-me-choose',
 			label: 'Help me choose (recommended)',
@@ -160,175 +160,391 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 
 	const featuredPillars = PILLARS.filter(p => ['focus-adhd', 'autism-support', 'dyslexia-reading', 'sleep'].includes(p.key));
 
+	const nextStepCards = [
+		{
+			title: 'Help me choose',
+			description: 'Answer a few questions and get a safe, practical starting plan.',
+			href: `/${regionKey}/help-me-choose`,
+			highlight: true,
+			icon: (
+				<svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5">
+					<path d="M4 6h16M4 12h10M4 18h13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+				</svg>
+			),
+		},
+		{
+			title: 'Starter journeys',
+			description: 'Short paths combining tools and guides (calm, focus, sleep).',
+			href: `/${regionKey}/journeys`,
+			icon: (
+				<svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5">
+					<path
+						d="M7 7h10M7 12h6M7 17h10M5 5v14"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="2"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					/>
+				</svg>
+			),
+		},
+		{
+			title: 'Browse conditions',
+			description: 'Filter by audience and support need, then jump into tools and guides.',
+			href: `/${regionKey}/conditions`,
+			icon: (
+				<svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5">
+					<path d="M4 6h16v6H4zM4 16h7v4H4zM13 16h7v4h-7z" fill="none" stroke="currentColor" strokeWidth="2" />
+				</svg>
+			),
+		},
+		{
+			title: 'Try a quick tool',
+			description: 'Start with an accessible, low-friction tool you can use right now.',
+			href: `/${regionKey}/tools`,
+			icon: (
+				<svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5">
+					<path d="M12 2v4m0 12v4M4 12H2m20 0h-2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+					<path d="M12 7a5 5 0 1 0 5 5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+				</svg>
+			),
+		},
+		{
+			title: 'Learn the basics',
+			description: 'Plain-language guides with safe, evidence-informed routines.',
+			href: `/${regionKey}/guides`,
+			icon: (
+				<svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5">
+					<path d="M6 4h10l2 2v14H6z" fill="none" stroke="currentColor" strokeWidth="2" />
+					<path d="M8 9h8M8 13h8M8 17h5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+				</svg>
+			),
+		},
+	];
+
+	const trustCards = [
+		{
+			title: 'Evidence-informed language',
+			description: 'Clear safety boundaries: educational support only, no diagnosis or treatment claims.',
+			icon: (
+				<svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5">
+					<path d="M12 2 20 6v6c0 5-3.5 9.4-8 10-4.5-.6-8-5-8-10V6l8-4z" fill="none" stroke="currentColor" strokeWidth="2" />
+					<path d="M8 12l2.5 2.5L16 9" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+				</svg>
+			),
+		},
+		{
+			title: 'Last-reviewed signals',
+			description: 'Key educational pages include review metadata so you can judge freshness.',
+			icon: (
+				<svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5">
+					<path d="M7 3v3m10-3v3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+					<path d="M4 7h16v14H4z" fill="none" stroke="currentColor" strokeWidth="2" />
+					<path d="M8 11h4m-4 4h8" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+				</svg>
+			),
+		},
+		{
+			title: 'Copy-only citations',
+			description: 'External sources are shown as references (no outbound tracking clicks).',
+			icon: (
+				<svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5">
+					<path d="M7 7h10v14H7z" fill="none" stroke="currentColor" strokeWidth="2" />
+					<path d="M9 11h6M9 15h6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+					<path d="M9 3h10v4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+				</svg>
+			),
+		},
+		{
+			title: 'Accessibility-first',
+			description: 'Keyboard, focus, contrast, and reduced motion respected across key flows.',
+			icon: (
+				<svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5">
+					<path d="M12 4a2 2 0 1 0 0.001 4.001A2 2 0 0 0 12 4z" fill="none" stroke="currentColor" strokeWidth="2" />
+					<path d="M4 9h16M12 9v12m-5 0 3-6m7 6-3-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+				</svg>
+			),
+		},
+	];
+
 	return (
-		<main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
-			<div className="mx-auto w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1200px] py-12 space-y-10">
-				<header className="space-y-4">
-					<p className="text-sm uppercase tracking-wide text-slate-500">NeuroBreath</p>
-					<h1 className="text-3xl sm:text-5xl font-semibold text-slate-900">{copy.valueProp}</h1>
-					<p className="text-base text-slate-600 max-w-3xl">{copy.heroSubtitle}</p>
+		<main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white dark:from-slate-950 dark:via-slate-950 dark:to-slate-950">
+			<HomeHero region={region} copy={copy} recommendations={recommendations} />
 
-					<PrimaryCtaBlock
-						region={region}
-						title={region === 'US' ? 'Get your next best step' : 'Get your next best step'}
-						description="Use Help Me Choose for a quick, safe starting plan, or browse conditions and tools." 
-						primary={{ label: 'Help me choose', href: `/${regionKey}/help-me-choose` }}
-						secondary={{ label: 'Starter journeys', href: `/${regionKey}/journeys` }}
-					/>
+			<HomeSection
+				id="next-best-step"
+				eyebrow="Get your next best step"
+				title="Clear next actions — without medical claims"
+				subtitle="Use Help me choose for a quick plan, or pick a starting path that combines tools and guides."
+			>
+				<NextStepCards items={nextStepCards} />
+			</HomeSection>
 
-					<SecondaryCtaRow
-						actions={[
-							{ label: copy.sections.conditions.ctaLabel, href: `/${regionKey}/conditions`, event: 'nav_to_conditions' },
-							{ label: 'Try a quick calm tool', href: '/techniques/sos', event: 'tool_try_now_click' },
-							{ label: copy.trustStrip.trustCentreLabel, href: `/${regionKey}/trust`, event: 'nav_to_trust' },
-						]}
-					/>
-
-					<div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-						<div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-							<div className="text-sm text-slate-700">
-								<span className="font-semibold">{copy.trustStrip.disclaimer}</span>{' '}
-								<span className="text-slate-600">We focus on practical, educational support — not diagnosis or treatment.</span>
+			<HomeSection
+				id="start-here"
+				eyebrow="Start here"
+				title={copy.sections.startHere.title}
+				subtitle={copy.sections.startHere.subtitle}
+				withDivider
+			>
+				<div className="grid gap-4 md:grid-cols-3">
+					{[
+						{
+							title: 'Quick calm (SOS 60)',
+							description: 'A one-minute reset for overwhelm or stress.',
+							extra: '1 minute',
+							href: '/techniques/sos',
+						},
+						{
+							title: 'Build a routine',
+							description: 'Starter journeys combine tools and guides into a short path.',
+							extra: '3–5 mins',
+							href: `/${regionKey}/journeys`,
+						},
+						{
+							title: 'Learn the basics',
+							description: 'Plain-English definitions for common terms.',
+							extra: '2 mins reading',
+							href: `/${regionKey}/glossary`,
+						},
+					].map(card => (
+						<Link
+							key={card.href}
+							href={card.href}
+							className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:bg-slate-900 dark:border-slate-800 dark:hover:border-slate-700 dark:focus-visible:ring-offset-slate-950"
+						>
+							<div className="flex items-center justify-between gap-3">
+								<h3 className="text-base font-semibold text-slate-900 dark:text-slate-50">{card.title}</h3>
+								<span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{card.extra}</span>
 							</div>
-							<div className="flex flex-wrap gap-3 text-sm">
-								<Link href={`/${regionKey}/trust`} className="text-indigo-600 hover:underline">{copy.trustStrip.trustCentreLabel}</Link>
-								<Link href={`/${regionKey}/trust/last-reviewed`} className="text-indigo-600 hover:underline">{copy.trustStrip.lastReviewedLabel}</Link>
+							<p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{card.description}</p>
+							<div className="mt-3 text-sm font-semibold text-indigo-700 dark:text-indigo-300">
+								Start →
 							</div>
-						</div>
-					</div>
-				</header>
-
-				<HomeAudienceSelector region={region} copy={copy} recommendations={recommendations} />
-
-				<section className="space-y-4">
-					<div>
-						<h2 className="text-2xl font-semibold text-slate-900">{copy.sections.startHere.title}</h2>
-						<p className="text-sm text-slate-600">{copy.sections.startHere.subtitle}</p>
-					</div>
-					<div className="grid gap-4 md:grid-cols-3">
-						<Link href="/techniques/sos" className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2">
-							<h3 className="text-base font-semibold text-slate-900">Quick calm (SOS 60)</h3>
-							<p className="mt-2 text-sm text-slate-600">A one-minute reset for overwhelm or stress.</p>
 						</Link>
-						<Link href={`/${regionKey}/journeys`} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2">
-							<h3 className="text-base font-semibold text-slate-900">Build a routine</h3>
-							<p className="mt-2 text-sm text-slate-600">Starter journeys combine tools and guides into a short path.</p>
-						</Link>
-						<Link href={`/${regionKey}/glossary`} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2">
-							<h3 className="text-base font-semibold text-slate-900">Learn the basics</h3>
-							<p className="mt-2 text-sm text-slate-600">Plain-English definitions for common terms.</p>
-						</Link>
-					</div>
-				</section>
+					))}
+				</div>
+			</HomeSection>
 
-				<section className="space-y-4">
-					<div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-						<div>
-							<h2 className="text-2xl font-semibold text-slate-900">{copy.sections.conditions.title}</h2>
-							<p className="text-sm text-slate-600">{copy.sections.conditions.subtitle}</p>
-						</div>
-						<Link href={`/${regionKey}/conditions`} className="text-sm font-semibold text-indigo-600 hover:underline">{copy.sections.conditions.ctaLabel}</Link>
-					</div>
-					<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-						{topConditions.map(condition => (
-							<Link
-								key={condition.conditionId}
-								href={`/${regionKey}/conditions`}
-								className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
-							>
-								<div className="text-base font-semibold text-slate-900">{condition.canonicalName}</div>
-								<p className="mt-2 text-sm text-slate-600">{condition.summary}</p>
-							</Link>
-						))}
-					</div>
-				</section>
-
-				<section className="space-y-4">
-					<div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-						<div>
-							<h2 className="text-2xl font-semibold text-slate-900">{copy.sections.tools.title}</h2>
-							<p className="text-sm text-slate-600">{copy.sections.tools.subtitle}</p>
-						</div>
-						<Link href={`/${regionKey}/tools`} className="text-sm font-semibold text-indigo-600 hover:underline">{copy.sections.tools.ctaLabel}</Link>
-					</div>
-					<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-						{toolsGroups.map(group => (
-							<div key={group.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-								<h3 className="text-base font-semibold text-slate-900">{group.title}</h3>
-								<div className="mt-3 flex flex-col gap-2 text-sm">
-									{group.items.map(item => (
-										<Link key={item.href + item.label} href={item.href} className="text-indigo-600 hover:underline">
-											{item.label}
-										</Link>
-									))}
+			<HomeSection
+				id="conditions"
+				eyebrow="Coverage"
+				title={copy.sections.conditions.title}
+				subtitle={copy.sections.conditions.subtitle}
+				actions={
+					<Link
+						href={`/${regionKey}/conditions`}
+						className="text-sm font-semibold text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 rounded-sm dark:text-indigo-300 dark:focus-visible:ring-offset-slate-950"
+					>
+						{copy.sections.conditions.ctaLabel}
+					</Link>
+				}
+				withDivider
+			>
+				<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+					{topConditions.map(condition => (
+						<Link
+							key={condition.conditionId}
+							href={`/${regionKey}/conditions`}
+							className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:bg-slate-900 dark:border-slate-800 dark:hover:border-slate-700 dark:focus-visible:ring-offset-slate-950"
+						>
+							<div className="flex items-start gap-3">
+								<div className="mt-0.5 h-9 w-9 rounded-xl bg-slate-100 dark:bg-slate-800" aria-hidden="true" />
+								<div className="min-w-0">
+									<div className="text-base font-semibold text-slate-900 dark:text-slate-50">
+										{condition.canonicalName}
+									</div>
+									<p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{condition.summary}</p>
 								</div>
 							</div>
-						))}
-					</div>
-				</section>
+						<div className="mt-3 text-sm font-semibold text-indigo-700 dark:text-indigo-300">Explore →</div>
+					</Link>
+					))}
+				</div>
+			</HomeSection>
 
-				<section className="space-y-4">
-					<div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-						<div>
-							<h2 className="text-2xl font-semibold text-slate-900">{copy.sections.guides.title}</h2>
-							<p className="text-sm text-slate-600">{copy.sections.guides.subtitle}</p>
+			<HomeSection
+				id="tools"
+				eyebrow="Try today"
+				title={copy.sections.tools.title}
+				subtitle={copy.sections.tools.subtitle}
+				actions={
+					<Link
+						href={`/${regionKey}/tools`}
+						className="text-sm font-semibold text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 rounded-sm dark:text-indigo-300 dark:focus-visible:ring-offset-slate-950"
+					>
+						{copy.sections.tools.ctaLabel}
+					</Link>
+				}
+				withDivider
+			>
+				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+					{toolsGroups.map(group => (
+						<div
+							key={group.title}
+							className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:bg-slate-900 dark:border-slate-800"
+						>
+							<div className="flex items-center justify-between">
+								<h3 className="text-base font-semibold text-slate-900 dark:text-slate-50">{group.title}</h3>
+								<span aria-hidden="true" className="text-slate-400 dark:text-slate-500">↗</span>
+							</div>
+							<div className="mt-3 space-y-2 text-sm">
+								{group.items.map(item => (
+									<Link
+										key={item.href + item.label}
+										href={item.href}
+										className="block font-semibold text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 rounded-sm dark:text-indigo-300 dark:focus-visible:ring-offset-slate-950"
+									>
+										{item.label}
+									</Link>
+								))}
+							</div>
 						</div>
-						<Link href={`/${regionKey}/guides`} className="text-sm font-semibold text-indigo-600 hover:underline">{copy.sections.guides.ctaLabel}</Link>
-					</div>
-					<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-						{guidesPreview.map(cluster => (
-							<Link
-								key={cluster.href}
-								href={cluster.href}
-								className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
-							>
-								<div className="text-base font-semibold text-slate-900">{cluster.title}</div>
-								<p className="mt-2 text-sm text-slate-600">{cluster.description}</p>
-							</Link>
-						))}
-					</div>
-					<div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-						<h3 className="text-base font-semibold text-slate-900">Topic clusters (browse)</h3>
-						<p className="mt-1 text-sm text-slate-600">Start with a topic hub, then pick a specific guide.</p>
-						<div className="mt-3 grid gap-3 sm:grid-cols-2">
-							{featuredPillars.map(pillar => (
+					))}
+				</div>
+			</HomeSection>
+
+			<HomeSection
+				id="guides"
+				eyebrow="Guides"
+				title={copy.sections.guides.title}
+				subtitle={copy.sections.guides.subtitle}
+				actions={
+					<Link
+						href={`/${regionKey}/guides`}
+						className="text-sm font-semibold text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 rounded-sm dark:text-indigo-300 dark:focus-visible:ring-offset-slate-950"
+					>
+						{copy.sections.guides.ctaLabel}
+					</Link>
+				}
+				withDivider
+			>
+				<div className="grid gap-6 lg:grid-cols-12">
+					<div className="lg:col-span-7">
+						<h3 className="text-base font-semibold text-slate-900 dark:text-slate-50">Featured guides</h3>
+						<div className="mt-3 grid gap-4 sm:grid-cols-2">
+							{guidesPreview.slice(0, 4).map(cluster => (
 								<Link
-									key={pillar.key}
-									href={`/guides/${pillar.key}`}
-									className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+									key={cluster.href}
+									href={cluster.href}
+									className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:bg-slate-900 dark:border-slate-800 dark:hover:border-slate-700 dark:focus-visible:ring-offset-slate-950"
 								>
-									<div className="font-semibold text-slate-900">{pillar.title}</div>
-									<div className="mt-1 text-slate-600">{pillar.description}</div>
+									<div className="text-base font-semibold text-slate-900 dark:text-slate-50">{cluster.title}</div>
+									<p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{cluster.description}</p>
+									<div className="mt-3 text-sm font-semibold text-indigo-700 dark:text-indigo-300">Read →</div>
 								</Link>
 							))}
 						</div>
 					</div>
-				</section>
-
-				<section className="space-y-4">
-					<h2 className="text-2xl font-semibold text-slate-900">{copy.sections.proof.title}</h2>
-					<div className="grid gap-4 lg:grid-cols-2">
-						<div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-							<ul className="space-y-2 text-sm text-slate-700">
-								{copy.sections.proof.bullets.map(item => (
-									<li key={item}>• {item}</li>
+					<div className="lg:col-span-5">
+						<div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
+							<h3 className="text-base font-semibold text-slate-900 dark:text-slate-50">Topic clusters</h3>
+							<p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+								Start with a topic hub, then pick a specific guide.
+							</p>
+							<div className="mt-4 grid gap-3">
+								{featuredPillars.map(pillar => (
+									<Link
+										key={pillar.key}
+										href={`/guides/${pillar.key}`}
+										className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:bg-slate-950/30 dark:border-slate-800 dark:hover:border-slate-700 dark:focus-visible:ring-offset-slate-950"
+									>
+										<div className="font-semibold text-slate-900 dark:text-slate-50">{pillar.title}</div>
+										<div className="mt-1 text-slate-600 dark:text-slate-300">{pillar.description}</div>
+									</Link>
 								))}
-							</ul>
-							<div className="mt-4 text-xs text-slate-500">
-								Citations are shown as copy-only references (no external clicks). See the Trust Centre for details.
 							</div>
 						</div>
-						<TrustMiniPanel region={region} />
 					</div>
-				</section>
+				</div>
+			</HomeSection>
 
-				<footer className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-					<div className="text-sm text-slate-700">
-						<span className="font-semibold">Privacy note:</span> Event counts are stored locally (no personal data). See{' '}
-						<Link href={`/${regionKey}/trust/privacy`} className="text-indigo-600 hover:underline">Privacy</Link>.
+			<HomeSection
+				id="trust"
+				eyebrow="Trust & safety"
+				title="Proof without claims"
+				subtitle="Credible language, review signals, and privacy-respecting citations — built for accessibility."
+				tone="muted"
+				withDivider
+			>
+				<div className="grid gap-6 lg:grid-cols-12">
+					<div className="lg:col-span-7">
+						<TrustCards items={trustCards} />
+						<div className="mt-4 text-xs text-slate-600 dark:text-slate-300">
+							Citations are shown as copy-only references (no external clicks). See the Trust Centre for details.
+						</div>
 					</div>
-				</footer>
-			</div>
+					<div className="lg:col-span-5">
+						<div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
+							<h3 className="text-base font-semibold text-slate-900 dark:text-slate-50">Trust Centre</h3>
+							<p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+								Educational information only. Not medical advice. Use the Trust Centre to understand our evidence policy, citations,
+								privacy, and safeguarding.
+							</p>
+							<div className="mt-4 flex flex-wrap gap-3 text-sm">
+								{[
+									{ label: copy.trustStrip.trustCentreLabel, href: `/${regionKey}/trust` },
+									{ label: 'Evidence policy', href: `/${regionKey}/trust/evidence-policy` },
+									{ label: copy.trustStrip.lastReviewedLabel, href: `/${regionKey}/trust/last-reviewed` },
+									{ label: 'Disclaimer', href: `/${regionKey}/trust/disclaimer` },
+									{ label: 'Privacy', href: `/${regionKey}/trust/privacy` },
+								].map(item => (
+									<Link
+										key={item.href + item.label}
+										href={item.href}
+										className="font-semibold text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 rounded-sm dark:text-indigo-300 dark:focus-visible:ring-offset-slate-950"
+									>
+										{item.label}
+									</Link>
+								))}
+							</div>
+						</div>
+					</div>
+				</div>
+			</HomeSection>
+
+			<HomeSection id="final-cta" tone="muted" withDivider>
+				<div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
+					<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+						<div>
+							<h2 className="text-xl font-semibold text-slate-900 dark:text-slate-50">Get started with a safe next step</h2>
+							<p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+								Educational only. Not medical advice.
+							</p>
+						</div>
+						<div className="flex flex-col gap-3 sm:flex-row">
+							<Link
+								href={`/${regionKey}/journeys`}
+								className="inline-flex w-full sm:w-auto items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950"
+							>
+								Get Started
+							</Link>
+							<Link
+								href={`/${regionKey}/help-me-choose`}
+								className="inline-flex w-full sm:w-auto items-center justify-center rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-900 hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:border-slate-800 dark:text-slate-50 dark:hover:border-slate-700 dark:focus-visible:ring-offset-slate-950"
+							>
+								Help me choose
+							</Link>
+						</div>
+					</div>
+				</div>
+			</HomeSection>
+
+			<footer className="mx-auto w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1200px] pb-14">
+				<div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
+					<div className="text-sm text-slate-700 dark:text-slate-200">
+						<span className="font-semibold">Privacy note:</span> Event counts are stored locally (no personal data). See{' '}
+						<Link
+							href={`/${regionKey}/trust/privacy`}
+							className="text-indigo-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 rounded-sm dark:text-indigo-300 dark:focus-visible:ring-offset-slate-950"
+						>
+							Privacy
+						</Link>
+						.
+					</div>
+				</div>
+			</footer>
 
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteSchema) }} />
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
