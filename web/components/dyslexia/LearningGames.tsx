@@ -13,7 +13,8 @@ import { SpellingPatterns } from './games/SpellingPatterns';
 import { ReadingFluencyRace } from './games/ReadingFluencyRace';
 import { LetterTracing } from './games/LetterTracing';
 import { SoundBlending } from './games/SoundBlending';
-import { WordFamilySorting } from './games/WordFamilySorting';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { ContextCluesDetective } from './games/ContextCluesDetective';
 import { PrefixSuffixMatch } from './games/PrefixSuffixMatch';
 import { HomophoneChallenge } from './games/HomophoneChallenge';
@@ -116,7 +117,7 @@ const games = [
     difficulty: 'beginner' as Difficulty,
     icon: '🏠',
     color: 'pink',
-    component: WordFamilySorting,
+    route: '/games/word-family-sorting', // Full-screen focus mode
   },
   {
     id: 'context-clues-detective',
@@ -231,6 +232,7 @@ export function LearningGames() {
   const [selectedType, setSelectedType] = useState<GameType | 'all'>('all');
   const [activeGame, setActiveGame] = useState<string | null>(null);
   const { incrementGameCompleted } = useProgress();
+  const router = useRouter();
 
   const filteredGames = games.filter(game => {
     const difficultyMatch = selectedDifficulty === 'all' || game.difficulty === selectedDifficulty;
@@ -240,7 +242,16 @@ export function LearningGames() {
 
   const handlePlayGame = (gameId: string) => {
     const game = games.find(g => g.id === gameId);
-    if (game && game.component) {
+    if (!game) return;
+    
+    // If game has a route, navigate to it
+    if ('route' in game && game.route) {
+      router.push(game.route);
+      return;
+    }
+    
+    // If game has a component, open in dialog
+    if ('component' in game && game.component) {
       setActiveGame(gameId);
     } else {
       // Legacy games without components
