@@ -27,10 +27,11 @@ export function SiteHeader() {
         <Link href={regionPrefix} className="nb-brand" id="brandLink" onClick={closeMegaMenu}>
           <Image 
             src="/icons/neurobreath-logo-square-64.png" 
-            alt="NeuroBreath Logo" 
+            alt="NeuroBreath" 
             width={48} 
             height={48} 
             className="nb-brand-logo" 
+            priority
           />
           <span className="nb-brand-text">NeuroBreath</span>
         </Link>

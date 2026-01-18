@@ -78,8 +78,8 @@ export const SITE_CONFIG = {
     cardType: 'summary_large_image' as const,
   },
   
-  // Theme colour
-  themeColor: '#6366f1', // Indigo-500
+  // Theme colour (Synthwave magenta)
+  themeColor: '#ff00ff',
 } as const;
 
 /**

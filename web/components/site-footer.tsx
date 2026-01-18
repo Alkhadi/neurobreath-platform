@@ -29,7 +29,7 @@ export function SiteFooter() {
             <Link className="ft-logo" href={regionPrefix} aria-label="Return to NeuroBreath homepage">
               <Image 
                 src="/icons/neurobreath-logo-square-64.png" 
-                alt="NeuroBreath logo" 
+                alt="NeuroBreath" 
                 width={64}
                 height={64}
                 priority={false}
