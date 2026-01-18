@@ -309,7 +309,7 @@ const games: GameCard[] = [
     difficulty: 'beginner' as Difficulty,
     icon: '🎵',
     color: 'blue',
-    comingSoon: true,
+    route: '/games/sound-matching',
   },
   {
     id: 'word-builder',
@@ -319,7 +319,7 @@ const games: GameCard[] = [
     difficulty: 'intermediate' as Difficulty,
     icon: '🔨',
     color: 'purple',
-    comingSoon: true,
+    route: '/games/word-builder',
   },
   {
     id: 'reading-comprehension',
@@ -329,7 +329,7 @@ const games: GameCard[] = [
     difficulty: 'intermediate' as Difficulty,
     icon: '📖',
     color: 'sky',
-    comingSoon: true,
+    route: '/games/reading-comprehension',
   },
   {
     id: 'memory-match',
@@ -339,7 +339,7 @@ const games: GameCard[] = [
     difficulty: 'beginner' as Difficulty,
     icon: '🧠',
     color: 'cyan',
-    comingSoon: true,
+    route: '/games/word-memory-match',
   },
   {
     id: 'letter-sounds',
