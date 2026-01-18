@@ -280,7 +280,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 	];
 
 	return (
-		<main className="min-h-screen bg-background">
+		<main className="min-h-screen bg-gradient-to-b from-muted/25 via-background to-muted/20 dark:from-gray-950 dark:via-gray-950 dark:to-gray-950">
 			<HomeHero region={region} copy={copy} recommendations={recommendations} />
 
 			<HomeSection
@@ -288,8 +288,11 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 				eyebrow="Get your next best step"
 				title="Clear next actions — without medical claims"
 				subtitle="Use Help me choose for a quick plan, or pick a starting path that combines tools and guides."
+				tone="surface"
 			>
-				<NextSteps items={nextStepCards} />
+				<div data-testid="home-primary-cards">
+					<NextSteps items={nextStepCards} />
+				</div>
 			</HomeSection>
 
 			<HomeSection
@@ -297,7 +300,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 				eyebrow="Start here"
 				title={copy.sections.startHere.title}
 				subtitle={copy.sections.startHere.subtitle}
-				withDivider
+				tone="surface"
 			>
 				<QuickStart
 					cards={[
@@ -331,6 +334,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 				eyebrow="Coverage"
 				title={copy.sections.conditions.title}
 				subtitle={copy.sections.conditions.subtitle}
+				tone="muted"
 				actions={
 					<Link
 						href={`/${regionKey}/conditions`}
@@ -339,7 +343,6 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 						{copy.sections.conditions.ctaLabel}
 					</Link>
 				}
-				withDivider
 			>
 				<ConditionsGrid
 					conditions={topConditions}
@@ -354,6 +357,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 				eyebrow="Try today"
 				title={copy.sections.tools.title}
 				subtitle={copy.sections.tools.subtitle}
+				tone="surface"
 				actions={
 					<Link
 						href={`/${regionKey}/tools`}
@@ -362,7 +366,6 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 						{copy.sections.tools.ctaLabel}
 					</Link>
 				}
-				withDivider
 			>
 				<ToolsToday groups={toolsGroups} />
 			</HomeSection>
@@ -372,6 +375,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 				eyebrow="Guides"
 				title={copy.sections.guides.title}
 				subtitle={copy.sections.guides.subtitle}
+				tone="muted"
 				actions={
 					<Link
 						href={`/${regionKey}/guides`}
@@ -380,7 +384,6 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 						{copy.sections.guides.ctaLabel}
 					</Link>
 				}
-				withDivider
 			>
 				<GuidesBlock
 					featured={guidesPreview.slice(0, 4)}
@@ -398,8 +401,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 				eyebrow="Trust & safety"
 				title="Proof without claims"
 				subtitle="Credible language, review signals, and privacy-respecting citations — built for accessibility."
-				tone="muted"
-				withDivider
+				tone="surface"
 			>
 				<TrustSafety
 					cards={trustCards}
@@ -426,7 +428,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 				/>
 			</HomeSection>
 
-			<footer className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-14">
+			<footer className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-14">
 				<div className="rounded-2xl border border-border/60 bg-card p-6 shadow-sm">
 					<div className="text-sm text-muted-foreground">
 						<span className="font-semibold text-foreground">Privacy note:</span> Event counts are stored locally (no personal data). See{' '}

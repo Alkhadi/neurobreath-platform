@@ -1,7 +1,5 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import fs from 'node:fs';
-import path from 'node:path';
 import type { Region } from '@/lib/region/region';
 import { getRegionKey } from '@/lib/region/region';
 import type { LocaleCopy } from '@/lib/i18n/localeCopy';
@@ -18,65 +16,50 @@ interface HomeHeroProps {
 
 export function HomeHero({ region, copy, recommendations }: HomeHeroProps) {
 	const regionKey = getRegionKey(region);
-
-	const publicDir = path.join(process.cwd(), 'public');
-	const fileExists = (src: string) => fs.existsSync(path.join(publicDir, src.replace(/^\//, '')));
-	const heroSrc = fileExists('/images/hero/neurobreath-home-hero.webp')
-		? '/images/hero/neurobreath-home-hero.webp'
-		: fileExists('/images/hero/neurobreath-home-hero.png')
-			? '/images/hero/neurobreath-home-hero.png'
-			: '/images/hero/neurobreath-hero.webp';
+	const heroBackgroundSrc = '/images/home/home-section-bg.png';
 
 	return (
-		<section aria-label="NeuroBreath homepage hero">
-			<div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pt-6">
+		<section aria-label="NeuroBreath homepage hero" data-testid="home-hero" className="relative overflow-hidden">
+			<Image
+				src={heroBackgroundSrc}
+				alt=""
+				aria-hidden="true"
+				fill
+				sizes="100vw"
+				priority={true}
+				className="object-cover object-center"
+			/>
+			<div
+				aria-hidden="true"
+				className="absolute inset-0 bg-gradient-to-b from-background/25 via-background/45 to-background/65 dark:from-background/60 dark:via-background/55 dark:to-background/70"
+			/>
+			<div
+				aria-hidden="true"
+				className="absolute inset-0 [background:radial-gradient(1100px_circle_at_25%_20%,rgba(255,255,255,0.50),rgba(255,255,255,0.12),transparent_62%)] dark:[background:radial-gradient(1100px_circle_at_25%_20%,rgba(0,0,0,0.40),rgba(0,0,0,0.18),transparent_62%)] pointer-events-none"
+			/>
+			<div aria-hidden="true" className="absolute inset-0 nb-noise opacity-[0.06] dark:opacity-[0.05] pointer-events-none" />
+
+			<div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6 pb-[2%]">
 				<div
 					className="
 						relative overflow-hidden
 						min-h-[560px] sm:min-h-[620px] lg:min-h-[680px]
 						rounded-2xl
 						border border-border/60
-						bg-background
+						bg-background/60 dark:bg-background/45
+						backdrop-blur-md
 					"
 				>
-					<Image
-						src={heroSrc}
-						fill
-						className="object-cover object-center scale-[1.02]"
-						priority={true}
-						sizes="100vw"
-						alt=""
+					<div
 						aria-hidden="true"
+						className="absolute inset-0 bg-gradient-to-br from-background/40 via-background/55 to-background/70 dark:from-background/35 dark:via-background/50 dark:to-background/70"
+					/>
+					<div
+						aria-hidden="true"
+						className="absolute inset-0 [background:radial-gradient(900px_circle_at_20%_25%,rgba(255,255,255,0.40),transparent_60%)] dark:[background:radial-gradient(900px_circle_at_20%_25%,rgba(0,0,0,0.30),transparent_60%)]"
 					/>
 
-					<div
-						className="
-							absolute inset-0
-							bg-gradient-to-b
-							from-background/80 via-background/55 to-background/85
-							dark:from-background/75 dark:via-background/45 dark:to-background/80
-						"
-					/>
-
-					<div
-						className="
-							absolute inset-0
-							[background:radial-gradient(900px_circle_at_25%_35%,rgba(255,255,255,0.65),rgba(255,255,255,0.18),transparent_60%)]
-							dark:[background:radial-gradient(900px_circle_at_25%_35%,rgba(0,0,0,0.55),rgba(0,0,0,0.22),transparent_60%)]
-							pointer-events-none
-						"
-					/>
-
-					<div className="absolute inset-0 nb-noise opacity-[0.06] dark:opacity-[0.05] pointer-events-none" />
-
-					<div
-						className="
-							relative z-10
-							mx-auto max-w-6xl
-							px-4 sm:px-6 lg:px-8
-							py-10 sm:py-14 lg:py-16
-						"
-					>
+					<div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16">
 						<div className="grid gap-8 lg:grid-cols-12 lg:items-start">
 							<div className="lg:col-span-7">
 								<div
@@ -130,7 +113,7 @@ export function HomeHero({ region, copy, recommendations }: HomeHeroProps) {
 
 									<div className="mt-6 text-sm text-muted-foreground">
 										<span className="font-semibold text-foreground">{copy.trustStrip.disclaimer}</span>{' '}
-										<span>Educational only. No diagnosis. No medical claims.</span>
+											<span>Educational only. Not medical advice. No diagnosis. No medical claims.</span>
 									</div>
 								</div>
 							</div>

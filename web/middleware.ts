@@ -16,9 +16,6 @@ const detectRegion = (request: NextRequest): 'uk' | 'us' => {
   const country = vercelCountry || cfCountry
   if (country === 'US') return 'us'
 
-  const acceptLanguage = request.headers.get('accept-language') || ''
-  if (acceptLanguage.toLowerCase().includes('en-us')) return 'us'
-
   return 'uk'
 }
 
