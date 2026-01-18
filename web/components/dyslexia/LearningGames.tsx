@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import type { ComponentType } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Gamepad2, Star, Trophy, Target, Sparkles, CheckCircle } from 'lucide-react';
 import { useProgress } from '@/contexts/ProgressContext';
+import Link from 'next/link';
 import { RhymingPairs } from './games/RhymingPairs';
 import { SyllableCounter } from './games/SyllableCounter';
 import { SightWordFlashCards } from './games/SightWordFlashCards';
@@ -25,7 +27,127 @@ import { PhonicsSoundBoard } from './games/PhonicsSoundBoard';
 type Difficulty = 'beginner' | 'intermediate' | 'advanced';
 type GameType = 'phonics' | 'word-recognition' | 'comprehension' | 'memory' | 'fluency' | 'vocabulary';
 
-const games = [
+type GameColor =
+  | 'purple'
+  | 'orange'
+  | 'emerald'
+  | 'violet'
+  | 'red'
+  | 'blue'
+  | 'cyan'
+  | 'pink'
+  | 'indigo'
+  | 'teal'
+  | 'amber'
+  | 'green'
+  | 'rose'
+  | 'yellow'
+  | 'sky';
+
+type GameCard = {
+  id: string;
+  title: string;
+  description: string;
+  type: GameType;
+  difficulty: Difficulty;
+  icon: string;
+  color: GameColor;
+  featured?: boolean;
+  route?: string;
+  component?: ComponentType;
+  comingSoon?: boolean;
+};
+
+const colorStyles: Record<GameColor, { iconBg: string; badgeBg: string; badgeText: string }> = {
+  purple: {
+    iconBg: 'bg-purple-50 dark:bg-purple-950/30',
+    badgeBg: 'bg-purple-100 dark:bg-purple-900/30',
+    badgeText: 'text-purple-700 dark:text-purple-300',
+  },
+  orange: {
+    iconBg: 'bg-orange-50 dark:bg-orange-950/30',
+    badgeBg: 'bg-orange-100 dark:bg-orange-900/30',
+    badgeText: 'text-orange-700 dark:text-orange-300',
+  },
+  emerald: {
+    iconBg: 'bg-emerald-50 dark:bg-emerald-950/30',
+    badgeBg: 'bg-emerald-100 dark:bg-emerald-900/30',
+    badgeText: 'text-emerald-700 dark:text-emerald-300',
+  },
+  violet: {
+    iconBg: 'bg-violet-50 dark:bg-violet-950/30',
+    badgeBg: 'bg-violet-100 dark:bg-violet-900/30',
+    badgeText: 'text-violet-700 dark:text-violet-300',
+  },
+  red: {
+    iconBg: 'bg-red-50 dark:bg-red-950/30',
+    badgeBg: 'bg-red-100 dark:bg-red-900/30',
+    badgeText: 'text-red-700 dark:text-red-300',
+  },
+  blue: {
+    iconBg: 'bg-blue-50 dark:bg-blue-950/30',
+    badgeBg: 'bg-blue-100 dark:bg-blue-900/30',
+    badgeText: 'text-blue-700 dark:text-blue-300',
+  },
+  cyan: {
+    iconBg: 'bg-cyan-50 dark:bg-cyan-950/30',
+    badgeBg: 'bg-cyan-100 dark:bg-cyan-900/30',
+    badgeText: 'text-cyan-700 dark:text-cyan-300',
+  },
+  pink: {
+    iconBg: 'bg-pink-50 dark:bg-pink-950/30',
+    badgeBg: 'bg-pink-100 dark:bg-pink-900/30',
+    badgeText: 'text-pink-700 dark:text-pink-300',
+  },
+  indigo: {
+    iconBg: 'bg-indigo-50 dark:bg-indigo-950/30',
+    badgeBg: 'bg-indigo-100 dark:bg-indigo-900/30',
+    badgeText: 'text-indigo-700 dark:text-indigo-300',
+  },
+  teal: {
+    iconBg: 'bg-teal-50 dark:bg-teal-950/30',
+    badgeBg: 'bg-teal-100 dark:bg-teal-900/30',
+    badgeText: 'text-teal-700 dark:text-teal-300',
+  },
+  amber: {
+    iconBg: 'bg-amber-50 dark:bg-amber-950/30',
+    badgeBg: 'bg-amber-100 dark:bg-amber-900/30',
+    badgeText: 'text-amber-700 dark:text-amber-300',
+  },
+  green: {
+    iconBg: 'bg-green-50 dark:bg-green-950/30',
+    badgeBg: 'bg-green-100 dark:bg-green-900/30',
+    badgeText: 'text-green-700 dark:text-green-300',
+  },
+  rose: {
+    iconBg: 'bg-rose-50 dark:bg-rose-950/30',
+    badgeBg: 'bg-rose-100 dark:bg-rose-900/30',
+    badgeText: 'text-rose-700 dark:text-rose-300',
+  },
+  yellow: {
+    iconBg: 'bg-yellow-50 dark:bg-yellow-950/30',
+    badgeBg: 'bg-yellow-100 dark:bg-yellow-900/30',
+    badgeText: 'text-yellow-700 dark:text-yellow-300',
+  },
+  sky: {
+    iconBg: 'bg-sky-50 dark:bg-sky-950/30',
+    badgeBg: 'bg-sky-100 dark:bg-sky-900/30',
+    badgeText: 'text-sky-700 dark:text-sky-300',
+  },
+};
+
+const labelType = (t: GameType) => {
+  switch (t) {
+    case 'word-recognition':
+      return 'Word recognition';
+    default:
+      return t.charAt(0).toUpperCase() + t.slice(1);
+  }
+};
+
+const labelDifficulty = (d: Difficulty) => d.charAt(0).toUpperCase() + d.slice(1);
+
+const games: GameCard[] = [
   // New Interactive Games
   {
     id: 'phonics-sound-board',
@@ -187,6 +309,7 @@ const games = [
     difficulty: 'beginner' as Difficulty,
     icon: '🎵',
     color: 'blue',
+    comingSoon: true,
   },
   {
     id: 'word-builder',
@@ -196,6 +319,7 @@ const games = [
     difficulty: 'intermediate' as Difficulty,
     icon: '🔨',
     color: 'purple',
+    comingSoon: true,
   },
   {
     id: 'reading-comprehension',
@@ -205,6 +329,7 @@ const games = [
     difficulty: 'intermediate' as Difficulty,
     icon: '📖',
     color: 'sky',
+    comingSoon: true,
   },
   {
     id: 'memory-match',
@@ -214,6 +339,7 @@ const games = [
     difficulty: 'beginner' as Difficulty,
     icon: '🧠',
     color: 'cyan',
+    comingSoon: true,
   },
   {
     id: 'letter-sounds',
@@ -243,15 +369,17 @@ export function LearningGames() {
   const handlePlayGame = (gameId: string) => {
     const game = games.find(g => g.id === gameId);
     if (!game) return;
+
+    if (game.comingSoon) return;
     
     // If game has a route, navigate to it
-    if ('route' in game && game.route) {
+    if (game.route) {
       router.push(game.route);
       return;
     }
     
     // If game has a component, open in dialog
-    if ('component' in game && game.component) {
+    if (game.component) {
       setActiveGame(gameId);
     } else {
       // Legacy games without components
@@ -262,6 +390,10 @@ export function LearningGames() {
 
   const activeGameData = games.find(g => g.id === activeGame);
   const GameComponent = activeGameData?.component;
+
+  const orderedGames = filteredGames
+    .slice()
+    .sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
 
   return (
     <section id="games" className="space-y-4">
@@ -370,11 +502,22 @@ export function LearningGames() {
 
       {/* Games Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filteredGames.map((game) => (
-          <Card key={game.id} className="hover:shadow-lg transition-shadow">
+        {orderedGames.map((game) => {
+          const styles = colorStyles[game.color];
+          const isAvailable = Boolean(game.route || game.component) && !game.comingSoon;
+
+          return (
+          <Card
+            key={game.id}
+            className={
+              isAvailable
+                ? 'hover:shadow-lg transition-shadow'
+                : 'opacity-90'
+            }
+          >
             <CardContent className="p-6 space-y-4">
               <div className="flex items-start justify-between">
-                <div className={`text-4xl p-3 rounded-lg bg-${game.color}-50 dark:bg-${game.color}-950/30`}>
+                <div className={`text-4xl p-3 rounded-lg ${styles.iconBg}`} aria-hidden="true">
                   {game.icon}
                 </div>
                 <div className="flex items-center gap-1">
@@ -401,24 +544,55 @@ export function LearningGames() {
               </div>
 
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span className={`px-2 py-1 rounded-full bg-${game.color}-100 dark:bg-${game.color}-900/30 text-${game.color}-700 dark:text-${game.color}-300`}>
-                  {game.type}
+                <span className={`px-2 py-1 rounded-full ${styles.badgeBg} ${styles.badgeText}`}>
+                  {labelType(game.type)}
                 </span>
                 <span className="px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-800">
-                  {game.difficulty}
+                  {labelDifficulty(game.difficulty)}
                 </span>
+                {game.featured ? (
+                  <span className="px-2 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200">
+                    Featured
+                  </span>
+                ) : null}
+                {game.route ? (
+                  <span className="px-2 py-1 rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                    Full screen
+                  </span>
+                ) : null}
+                {game.comingSoon ? (
+                  <span className="px-2 py-1 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
+                    Coming soon
+                  </span>
+                ) : null}
               </div>
 
-              <Button
-                onClick={() => handlePlayGame(game.id)}
-                className="w-full"
-              >
-                <Sparkles className="w-4 h-4 mr-2" />
-                Play Game
-              </Button>
+              {game.route ? (
+                <Button asChild className="w-full">
+                  <Link href={game.route} aria-label={`Play ${game.title}`}>
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Play game
+                  </Link>
+                </Button>
+              ) : game.component ? (
+                <Button onClick={() => handlePlayGame(game.id)} className="w-full" aria-label={`Open ${game.title}`}>
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Open game
+                </Button>
+              ) : (
+                <Button
+                  disabled
+                  variant="outline"
+                  className="w-full"
+                  aria-label={`${game.title} is coming soon`}
+                >
+                  Coming soon
+                </Button>
+              )}
             </CardContent>
           </Card>
-        ))}
+        );
+        })}
       </div>
 
       {filteredGames.length === 0 && (
