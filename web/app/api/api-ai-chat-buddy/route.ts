@@ -35,11 +35,28 @@ interface StructuredResponse {
 
 export async function POST(request: NextRequest) {
   try {
-    const { systemPrompt, messages, pageContext } = await request.json();
+    const body = await request.json();
+    const { systemPrompt, messages, pageContext } = body;
 
+    // Validate input
     if (!messages || !Array.isArray(messages)) {
+      console.error('[Buddy API] Invalid request: messages array missing or invalid');
       return NextResponse.json(
-        { error: 'Messages array is required' },
+        { 
+          error: 'Messages array is required',
+          answer: 'I need a valid question to help you. Could you try asking again?'
+        },
+        { status: 400 }
+      );
+    }
+
+    if (messages.length === 0) {
+      console.error('[Buddy API] Empty messages array');
+      return NextResponse.json(
+        { 
+          error: 'Messages array cannot be empty',
+          answer: 'Please ask me a question about this page!'
+        },
         { status: 400 }
       );
     }
@@ -88,6 +105,12 @@ RULES:
       ...messages,
     ];
 
+    // Check API key
+    if (!process.env.ABACUSAI_API_KEY) {
+      console.error('[Buddy API] ABACUSAI_API_KEY not configured');
+      throw new Error('API configuration error');
+    }
+
     const response = await fetch('https://apps.abacus.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -101,12 +124,17 @@ RULES:
         max_tokens: 800,
         temperature: 0.7,
       }),
+      signal: AbortSignal.timeout(30000), // 30s timeout
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('LLM API error:', errorText);
-      throw new Error(`LLM API error: ${response.statusText}`);
+      console.error('[Buddy API] LLM API error:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorText,
+      });
+      throw new Error(`LLM API error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
@@ -144,12 +172,37 @@ RULES:
 
     return NextResponse.json(structuredResponse);
   } catch (error) {
-    console.error('AI Chat Buddy API error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[Buddy API] Error:', {
+      error: errorMessage,
+      stack: error instanceof Error ? error.stack : undefined,
+      timestamp: new Date().toISOString(),
+    });
+
+    // Provide user-friendly fallback response
     return NextResponse.json(
       { 
         error: 'Failed to process request',
-        answer: 'I apologize, but I encountered an error. Please try asking your question again.',
-        references: []
+        answer: `I apologize for the interruption! I'm having trouble connecting right now, but I'm still here to help.\n\n**In the meantime, you can:**\n• Browse the page sections below\n• Try the Quick Questions buttons\n• Click the 🗺️ map icon for a guided tour\n\nPlease try asking your question again in a moment.`,
+        recommendedActions: [
+          {
+            id: 'tour',
+            type: 'scroll',
+            label: 'Start Page Tour',
+            icon: 'map',
+            description: 'Get a guided walkthrough of this page',
+            primary: true,
+          }
+        ],
+        references: [
+          {
+            title: 'NeuroBreath Help Centre',
+            url: '/help',
+            sourceLabel: 'NeuroBreath',
+            isExternal: false,
+          }
+        ],
+        availableTools: [],
       },
       { status: 500 }
     );

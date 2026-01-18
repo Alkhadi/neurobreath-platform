@@ -56,13 +56,48 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   }>({ headings: [], buttons: [], sections: [], features: [] });
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const lastFocusedElement = useRef<HTMLElement | null>(null);
   
   const config = getPageConfig(pathname);
+  
+  // Focus management for dialog
+  useEffect(() => {
+    if (isOpen) {
+      // Store the currently focused element
+      lastFocusedElement.current = document.activeElement as HTMLElement;
+      // Focus the input when dialog opens
+      setTimeout(() => {
+        if (inputRef.current && !isMinimized) {
+          inputRef.current.focus();
+        }
+      }, 100);
+    } else {
+      // Restore focus when dialog closes
+      if (lastFocusedElement.current && typeof lastFocusedElement.current.focus === 'function') {
+        lastFocusedElement.current.focus();
+      }
+    }
+  }, [isOpen, isMinimized]);
   
   // Initialize on mount
   useEffect(() => {
     setMounted(true);
   }, []);
+  
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (scrollRef.current && !isMinimized) {
+      const scrollContainer = scrollRef.current;
+      // Smooth scroll to bottom
+      requestAnimationFrame(() => {
+        scrollContainer.scrollTo({
+          top: scrollContainer.scrollHeight,
+          behavior: 'smooth'
+        });
+      });
+    }
+  }, [messages, isLoading, isMinimized]);
   
   // Scan page content dynamically
   const scanPageContent = useCallback(() => {
@@ -168,10 +203,15 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     return false;
   }, []);
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    if (scrollRef.current && !isMinimized && messages.length > 0) {
+      // Smooth scroll to bottom with requestAnimationFrame for better performance
+      requestAnimationFrame(() => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+      });
     }
-  }, [messages]);
+  }, [messages, isMinimized]);
   
   // Keyboard shortcuts
   useEffect(() => {
@@ -654,8 +694,8 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
     }
   };
   
-  // Handle sending message
-  const handleSend = async (messageText?: string) => {
+  // Handle sending message with retry logic
+  const handleSend = async (messageText?: string, retryCount = 0): Promise<void> => {
     const text = messageText || input.trim();
     if (!text || isLoading) return;
     
@@ -678,12 +718,41 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
         speak(assistantMessage.id, assistantMessage.content);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('[Buddy] Error generating response:', error);
+      
+      // Retry logic (max 2 retries)
+      if (retryCount < 2) {
+        console.log(`[Buddy] Retrying... Attempt ${retryCount + 2}/3`);
+        const delay = Math.min(1000 * Math.pow(2, retryCount), 5000); // Exponential backoff, max 5s
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return handleSend(text, retryCount + 1);
+      }
+      
+      // After all retries failed, show helpful error message
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: 'I apologize, but I encountered an error. Please try asking your question again.',
-        timestamp: new Date()
+        content: `I'm having trouble connecting right now. This could be due to:
+
+• **Network issues** - Check your internet connection
+• **Server load** - Try again in a moment
+• **Browser issues** - Try refreshing the page
+
+**You can still:**
+• Browse page sections below
+• Try Quick Questions
+• Click the 🗺️ map icon for a tour`,
+        timestamp: new Date(),
+        recommendedActions: [
+          {
+            id: 'refresh',
+            type: 'navigate',
+            label: 'Refresh Page',
+            description: 'Reload to fix connection issues',
+            target: window.location.href,
+            primary: false,
+          },
+        ],
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
@@ -862,25 +931,49 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
       
       {/* Chat dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className={cn(
-          "p-0 flex flex-col transition-all overflow-hidden",
-          // 2% gap from top (navigation bar) - applies to all viewports
-          "top-[calc(50%+1vh)]",
-          // Base mobile sizing - responsive for all devices
-          "w-[95vw] max-w-[340px]",
-          // Small devices (phones, unfolded screens)
-          "sm:w-[90vw] sm:max-w-[440px]",
-          // Medium devices and tablets
-          "md:w-[85vw] md:max-w-[520px]",
-          // Large devices
-          "lg:w-[80vw] lg:max-w-[580px]",
-          // Heights - adaptive for all devices with 2% top margin
-          "h-[86vh] max-h-[86vh]",
-          "sm:h-[84vh] sm:max-h-[84vh]",
-          "md:h-[82vh] md:max-h-[82vh]",
-          // Minimized state
-          isMinimized ? "h-[120px] sm:h-[130px]" : ""
-        )}>
+        <DialogContent 
+          ref={dialogRef}
+          className={cn(
+            "p-0 flex flex-col transition-all overflow-hidden",
+            // 2% gap from top (navigation bar) - applies to all viewports
+            "top-[calc(50%+1vh)]",
+            // Base mobile sizing - responsive for all devices
+            "w-[95vw] max-w-[340px]",
+            // Small devices (phones, unfolded screens)
+            "sm:w-[90vw] sm:max-w-[440px]",
+            // Medium devices and tablets
+            "md:w-[85vw] md:max-w-[520px]",
+            // Large devices
+            "lg:w-[80vw] lg:max-w-[580px]",
+            // Heights - adaptive for all devices with 2% top margin
+            "h-[86vh] max-h-[86vh]",
+            "sm:h-[84vh] sm:max-h-[84vh]",
+            "md:h-[82vh] md:max-h-[82vh]",
+            // Minimized state
+            isMinimized ? "h-[120px] sm:h-[130px]" : ""
+          )}
+          aria-describedby="buddy-description"
+          role="dialog"
+          aria-modal="true"
+        >
+          {/* Hidden description for screen readers */}
+          <div id="buddy-description" className="sr-only">
+            NeuroBreath Buddy is an AI assistant that can help you navigate this page,
+            answer questions about neurodiversity support, and guide you to relevant resources.
+          </div>
+          
+          {/* ARIA live region for announcing messages to screen readers */}
+          <div 
+            className="sr-only" 
+            role="status" 
+            aria-live="polite" 
+            aria-atomic="true"
+          >
+            {isLoading && "NeuroBreath Buddy is thinking..."}
+            {messages.length > 0 && messages[messages.length - 1].role === 'assistant' && 
+              `NeuroBreath Buddy says: ${messages[messages.length - 1].content.slice(0, 100)}`
+            }
+          </div>
           {/* Header */}
           <DialogHeader className="p-3 sm:p-4 md:p-5 pb-2 sm:pb-3 border-b border-border bg-gradient-to-r from-primary/10 to-purple-500/10 flex-shrink-0">
             <div className="flex items-center justify-between gap-2 sm:gap-3">
@@ -1188,18 +1281,33 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
               className="flex gap-1.5 sm:gap-2 md:gap-2.5"
               onSubmit={(e) => {
                 e.preventDefault();
-                handleSend();
+                e.stopPropagation();
+                if (!isLoading && input.trim()) {
+                  handleSend();
+                }
               }}
             >
               <Input
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  // Submit on Enter, but allow Shift+Enter for new lines
+                  if (e.key === 'Enter' && !e.shiftKey && !isLoading) {
+                    e.preventDefault();
+                    handleSend();
+                  }
+                }}
                 placeholder="Ask me about this page..."
                 className="flex-1 h-9 sm:h-10 md:h-11 text-xs sm:text-sm md:text-base touch-manipulation"
                 disabled={isLoading}
                 aria-label="Type your question"
+                aria-describedby="buddy-input-hint"
+                autoComplete="off"
               />
+              <span id="buddy-input-hint" className="sr-only">
+                Press Enter to send your message, or Shift+Enter for a new line
+              </span>
               <Button
                 type="submit"
                 size="icon"
