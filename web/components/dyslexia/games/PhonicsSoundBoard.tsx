@@ -190,16 +190,21 @@ export function PhonicsSoundBoard() {
               </span>
             </div>
             <div className="w-full h-3 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
-              {/* eslint-disable-next-line @microsoft/sdl/no-inline-styles */}
               <div 
-                className="h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-500"
+                className={`h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-500 ${
+                  progress === 0 ? 'w-0' :
+                  progress <= 10 ? 'w-[10%]' :
+                  progress <= 20 ? 'w-[20%]' :
+                  progress <= 30 ? 'w-[30%]' :
+                  progress <= 40 ? 'w-[40%]' :
+                  progress <= 50 ? 'w-[50%]' :
+                  progress <= 60 ? 'w-[60%]' :
+                  progress <= 70 ? 'w-[70%]' :
+                  progress <= 80 ? 'w-[80%]' :
+                  progress <= 90 ? 'w-[90%]' :
+                  'w-full'
+                }`}
                 data-progress={progress}
-                style={
-                  {
-                    // Dynamic width based on progress - inline style necessary for dynamic values
-                    width: `${progress}%`,
-                  } as React.CSSProperties
-                }
               />
             </div>
             <p className="text-xs text-muted-foreground">
