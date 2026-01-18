@@ -762,8 +762,30 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
   
   // Handle quick question click
   const handleQuickQuestion = (question: string) => {
-    // Check if it's a navigation request
-    const q = question.toLowerCase();
+    // Quick Question buttons should primarily produce an in-chat answer.
+    // Only a small, explicit subset should trigger navigation.
+    const q = question.toLowerCase().trim();
+
+    const explicitQuickNav: Record<string, { route: string; description: string }> = {
+      'take me to the adhd hub': { route: '/adhd', description: 'ADHD Hub with Focus Timer, Quests, and Skills Library' },
+      'take me to the autism hub': { route: '/autism', description: 'Autism Hub with Calm Toolkit and Education Pathways' },
+    };
+
+    const explicitNav = explicitQuickNav[q];
+    if (explicitNav) {
+      const navMessage: Message = {
+        id: `nav-${Date.now()}`,
+        role: 'assistant',
+        content: `🧭 **Navigating to ${explicitNav.description}...**\n\nOne moment while I take you there!`,
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, navMessage]);
+      setTimeout(() => {
+        router.push(explicitNav.route);
+        setIsOpen(false);
+      }, 1000);
+      return;
+    }
     
     // Special handling for focus session question
     if (q.includes('focus session') || (q.includes('start') && q.includes('focus'))) {
@@ -781,48 +803,8 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
       return;
     }
     
-    // Define route mappings with better descriptions
-    const navigationMap: { [key: string]: { route: string; description: string } } = {
-      'adhd hub': { route: '/adhd', description: 'ADHD Hub with Focus Timer, Quests, and Skills Library' },
-      'adhd': { route: '/adhd', description: 'ADHD support tools' },
-      'autism hub': { route: '/autism', description: 'Autism Hub with Calm Toolkit and Education Pathways' },
-      'autism': { route: '/autism', description: 'Autism support tools' },
-      'dyslexia': { route: '/conditions/dyslexia', description: 'Dyslexia support and reading tools' },
-      'breathing': { route: '/breathing', description: 'Breathing exercises' },
-      'anxiety': { route: '/conditions/anxiety', description: 'Anxiety support and strategies' },
-      'depression': { route: '/conditions/depression', description: 'Depression support resources' },
-      'stress': { route: '/conditions/stress', description: 'Stress management tools' },
-      'sleep': { route: '/conditions/sleep', description: 'Sleep support strategies' },
-      'bipolar': { route: '/conditions/bipolar', description: 'Bipolar disorder information' },
-      'parent': { route: '/parent', description: 'Parent resources' },
-      'teacher': { route: '/teacher', description: 'Teacher resources' },
-      'carer': { route: '/carer', description: 'Carer support' },
-    };
-    
-    // Check for navigation keywords
-    if (q.includes('take me to') || q.includes('visit') || q.includes('go to') || q.includes('show me')) {
-      // Find matching route
-      for (const [keyword, navInfo] of Object.entries(navigationMap)) {
-        if (q.includes(keyword)) {
-          // Confirm navigation
-          const navMessage: Message = {
-            id: `nav-${Date.now()}`,
-            role: 'assistant',
-            content: `🧭 **Navigating to ${navInfo.description}...**\n\nOne moment while I take you there!`,
-            timestamp: new Date()
-          };
-          setMessages(prev => [...prev, navMessage]);
-          setTimeout(() => {
-            router.push(navInfo.route);
-            setIsOpen(false);
-          }, 1000);
-          return;
-        }
-      }
-    }
-    
-    // Otherwise send as a regular question to get a proper answer
-    handleSend(question);
+    // Otherwise, treat it as a normal question so users always get a response.
+    void handleSend(question);
   };
   
   // Page tour - now using actual page content
