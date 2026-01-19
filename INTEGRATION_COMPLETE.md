@@ -149,7 +149,7 @@ $ cd web && yarn test:e2e
 
 ### Live Testing Checklist
 
-Test the evidence system at: **https://neurobreath.com/uk** (or your production URL)
+Test the evidence system at: **<https://neurobreath.com/uk>** (or your production URL)
 
 1. **Crisis Detection Test**
    - Open NeuroBreath Buddy
