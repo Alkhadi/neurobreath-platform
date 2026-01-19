@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { getPageConfig, platformInfo, type PageBuddyConfig } from '@/lib/page-buddy-configs';
 import { getEvidenceBasedAnswer, formatResponseWithCitations } from '@/lib/page-buddy-knowledge';
+import { loadPreferences } from '@/lib/ai/core/userPreferences';
 import { cn } from '@/lib/utils';
 import { useSpeechController } from '@/hooks/use-speech-controller';
 import { ReferencesSection, type ReferenceItemProps } from '@/components/buddy/reference-item';
@@ -651,27 +652,33 @@ ${config.sections.map((s) => `- ${s.name}: ${s.description}`).join('\n')}
 
 Available page features: ${pageContent.features.join(', ') || 'General navigation'}`;
 
+    // Load user preferences for jurisdiction
+    const prefs = loadPreferences();
+
     try {
-      const response = await fetch('/api/api-ai-chat-buddy', {
+      const response = await fetch('/api/ai-assistant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          systemPrompt,
+          query: userMessage,
           messages: [
             ...messages.slice(-6).map(m => ({ role: m.role, content: m.content })),
-            { role: 'user', content: userMessage }
           ],
+          role: 'buddy',
+          pageName: config.pageName,
           pageContext: {
             features: pageContent.features,
-            sections: pageContent.sections.map(s => s.name),
-            pageName: config.pageName,
-          }
+            sections: config.sections,
+            headings: pageContent.headings,
+          },
+          jurisdiction: prefs.regional.jurisdiction,
+          systemPrompt, // Include legacy prompt for backward compatibility
         })
       });
 
       // Always attempt to parse JSON so we can display server-provided fallback
       // answers even when the API is in a degraded state.
-      let data: any = null;
+      let data: { answer?: string; content?: string; citations?: string; recommendedActions?: RecommendedAction[]; references?: ReferenceItemProps[]; availableTools?: string[] } | null = null;
       try {
         data = await response.json();
       } catch {
@@ -682,15 +689,21 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
         throw new Error('API error');
       }
       
+      // Extract answer and append citations if present
+      let finalContent = data?.answer || data?.content || localResponse;
+      if (data?.citations) {
+        finalContent += '\n\n' + data.citations;
+      }
+      
       // Return structured message
       return {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: data.answer || data.content || localResponse,
+        content: finalContent,
         timestamp: new Date(),
-        recommendedActions: data.recommendedActions || [],
-        references: data.references || [],
-        availableTools: data.availableTools || pageContent.features,
+        recommendedActions: data?.recommendedActions || [],
+        references: data?.references || [],
+        availableTools: data?.availableTools || pageContent.features,
       };
     } catch (error) {
       console.error('AI response error:', error);

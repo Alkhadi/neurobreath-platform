@@ -12,7 +12,8 @@ import { test, expect, Page } from '@playwright/test';
 
 const USER_PREFS_KEY = 'neurobreath.userprefs.v1';
 
-const BUDDY_API_ROUTE = /\/api\/api-ai-chat-buddy(\?.*)?$/;
+// Support both old and new API routes during transition
+const BUDDY_API_ROUTE = /\/api\/(api-ai-chat-buddy|ai-assistant)(\?.*)?$/;
 
 async function mockBuddyApi(page: Page, body: unknown) {
   await page.route(BUDDY_API_ROUTE, async (route) => {
@@ -443,5 +444,135 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
 
     // Take final screenshot
     await page.screenshot({ path: 'test-results/buddy-integration.png', fullPage: true });
+  });
+});
+
+test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
+  const viewports = [
+    { name: 'mobile', width: 375, height: 667 },
+    { name: 'tablet', width: 768, height: 1024 },
+    { name: 'desktop', width: 1280, height: 800 },
+  ];
+
+  for (const viewport of viewports) {
+    test(`Buddy dialog renders correctly on ${viewport.name} (${viewport.width}x${viewport.height})`, async ({ page }) => {
+      // Set viewport
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      
+      // Navigate to UK homepage
+      await page.goto('/uk');
+      
+      // Mock Buddy API with evidence citations
+      await mockBuddyApi(page, {
+        answer: 'ADHD (Attention Deficit Hyperactivity Disorder) is a neurodevelopmental condition affecting focus, impulse control, and activity levels.',
+        recommendedActions: [
+          {
+            id: 'adhd-hub',
+            type: 'navigate',
+            label: 'Visit ADHD Hub',
+            description: 'Explore ADHD tools',
+            target: '/adhd',
+            primary: true,
+          }
+        ],
+        references: [
+          {
+            title: 'NHS: ADHD Overview',
+            url: 'https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/',
+            sourceLabel: 'NHS',
+            isExternal: true,
+          }
+        ],
+        citations: '**Evidence:** NHS (nhs.uk/conditions/adhd)',
+      });
+      
+      // Open Buddy dialog
+      const dialog = await openBuddyDialog(page);
+      
+      // Check dialog is visible and within viewport
+      const dialogBox = await dialog.boundingBox();
+      expect(dialogBox).not.toBeNull();
+      expect(dialogBox!.width).toBeLessThanOrEqual(viewport.width);
+      expect(dialogBox!.height).toBeLessThanOrEqual(viewport.height);
+      
+      // Check key elements are visible
+      const header = dialog.locator('h2:has-text("NeuroBreath Buddy")');
+      await expect(header).toBeVisible({ timeout: 5000 });
+      
+      const input = dialog.locator('input[aria-label="Type your question"]');
+      await expect(input).toBeVisible({ timeout: 5000 });
+      
+      // Send a message and wait for response
+      await sendMessageAndWaitForBuddyApi(page, 'What is ADHD?');
+      
+      // Verify message appears
+      await expect(dialog).toContainText('What is ADHD?', { timeout: 5000 });
+      
+      // Verify response with citations appears
+      await expect(dialog).toContainText('neurodevelopmental condition', { timeout: 10000 });
+      await expect(dialog).toContainText('Evidence:', { timeout: 5000 });
+      
+      // Verify recommended actions visible (mobile may need scrolling)
+      const recommendedSection = dialog.locator('text=Recommended Actions').or(dialog.locator('text=Next Steps'));
+      if (await recommendedSection.isVisible({ timeout: 2000 }).catch(() => false)) {
+        console.log(`✓ Recommended actions visible on ${viewport.name}`);
+      }
+      
+      // Screenshot for visual regression
+      await page.screenshot({ 
+        path: `test-results/buddy-${viewport.name}-${viewport.width}x${viewport.height}.png`, 
+        fullPage: true 
+      });
+      
+      console.log(`✓ Buddy dialog stable on ${viewport.name} (${viewport.width}x${viewport.height})`);
+    });
+  }
+  
+  test('Quick question chips trigger unified API correctly', async ({ page }) => {
+    await page.goto('/uk');
+    
+    // Mock unified API
+    await page.route(/\/api\/ai-assistant(\?.*)?$/, async (route) => {
+      const request = route.request();
+      const payload = request.postDataJSON();
+      
+      // Verify payload structure
+      expect(payload).toHaveProperty('query');
+      expect(payload).toHaveProperty('role');
+      expect(payload.role).toBe('buddy');
+      expect(payload).toHaveProperty('jurisdiction');
+      
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          answer: `Answered: ${payload.query}`,
+          recommendedActions: [],
+          references: [],
+          citations: '**Evidence:** Test source',
+        }),
+      });
+    });
+    
+    // Open Buddy
+    const dialog = await openBuddyDialog(page);
+    
+    // Find and click a quick question chip
+    const chipButton = dialog.locator('button').filter({ hasText: /What can you help me with|Show me around|Breathing exercises/i }).first();
+    
+    if (await chipButton.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await chipButton.click();
+      
+      // Wait for response
+      await page.waitForTimeout(2000);
+      
+      // Verify response appears with citations
+      await expect(dialog).toContainText('Answered:', { timeout: 5000 });
+      await expect(dialog).toContainText('Evidence:', { timeout: 5000 });
+      
+      console.log('✓ Quick question chips trigger unified API with citations');
+    } else {
+      console.log('ℹ Quick question chips not found (may not be on this page)');
+    }
   });
 });
