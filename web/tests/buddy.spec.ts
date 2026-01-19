@@ -133,30 +133,30 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
 
       // Polyfill SpeechSynthesisUtterance if missing
       if (!("SpeechSynthesisUtterance" in window)) {
-        // @ts-ignore
+        // @ts-expect-error - Polyfill for test environment
         window.SpeechSynthesisUtterance = function (text: string) {
-          // @ts-ignore
+          // @ts-expect-error - Polyfill property
           this.text = text;
-          // @ts-ignore
+          // @ts-expect-error - Polyfill property
           this.rate = 1;
-          // @ts-ignore
+          // @ts-expect-error - Polyfill property
           this.voice = null;
-          // @ts-ignore
+          // @ts-expect-error - Polyfill property
           this.lang = 'en-GB';
-          // @ts-ignore
+          // @ts-expect-error - Polyfill property
           this.onstart = null;
-          // @ts-ignore
+          // @ts-expect-error - Polyfill property
           this.onend = null;
-          // @ts-ignore
+          // @ts-expect-error - Polyfill property
           this.onerror = null;
-        } as any;
+        } as unknown;
       }
 
       // Stub speechSynthesis to reliably trigger utterance events.
       const stub = (() => {
-        let current: any = null;
+        let current: unknown = null;
         let speaking = false;
-        let endedTimer: any = null;
+        let endedTimer: unknown = null;
 
         const getVoices = () => [
           { name: 'Test Voice (en-GB)', lang: 'en-GB' },
@@ -164,34 +164,34 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
         ];
 
         const cancel = () => {
-          if (endedTimer) clearTimeout(endedTimer);
+          if (endedTimer) clearTimeout(endedTimer as number);
           speaking = false;
-          const u = current;
+          const u = current as Record<string, unknown>;
           current = null;
           try {
-            u?.onend?.({} as any);
+            (u?.onend as ((event: unknown) => void) | undefined)?.({}  as unknown);
           } catch {
             // ignore
           }
         };
 
-        const speak = (utterance: any) => {
+        const speak = (utterance: unknown) => {
           cancel();
           current = utterance;
           speaking = true;
           setTimeout(() => {
             try {
-              utterance?.onstart?.({} as any);
+              ((utterance as Record<string, unknown>)?.onstart as ((event: unknown) => void) | undefined)?.({} as unknown);
             } catch {
               // ignore
             }
           }, 0);
           endedTimer = setTimeout(() => {
             speaking = false;
-            const u = current;
+            const u = current as Record<string, unknown>;
             current = null;
             try {
-              u?.onend?.({} as any);
+              (u?.onend as ((event: unknown) => void) | undefined)?.({} as unknown);
             } catch {
               // ignore
             }
