@@ -231,6 +231,60 @@ export const ROUTE_REGISTRY: Record<string, RouteGovernance> = {
     notes: 'NICE CG170/CG128 (2021) aligned. Incorporates autistic community perspectives.',
   },
 
+  '/anxiety/pathway': {
+    route: '/anxiety/pathway',
+    category: 'pathway',
+    badges: ['Evidence-linked', 'Reviewed', 'Educational-only', 'NICE-aligned'],
+    evidenceRequirement: 'TierARequired',
+    reviewCadenceDays: 90,
+    lastReviewed: TODAY,
+    nextReview: calculateNextReview(TODAY, 90),
+    reviewedBy: 'Clinical Review Team',
+    primarySources: ['nice', 'nhs', 'cochrane'],
+    resourcePack: {
+      version: '1.0.0',
+      downloadUrl: '/downloads/anxiety-pathway-pack-v1.pdf',
+      lastUpdated: TODAY,
+      includes: [
+        'What is anxiety (1-page summary)',
+        'What helps checklist (CBT, exposure, relaxation)',
+        'Talking to GP preparation sheet',
+        'Myth-busting card',
+        'Crisis help card (UK)',
+        '7-day starter plan',
+        'Grounding techniques card',
+      ],
+    },
+    notes: 'NICE CG113 (2011, updated 2020) aligned. Covers GAD, panic disorder, social anxiety.',
+  },
+
+  '/sleep/pathway': {
+    route: '/sleep/pathway',
+    category: 'pathway',
+    badges: ['Evidence-linked', 'Reviewed', 'Educational-only'],
+    evidenceRequirement: 'TierARequired',
+    reviewCadenceDays: 90,
+    lastReviewed: TODAY,
+    nextReview: calculateNextReview(TODAY, 90),
+    reviewedBy: 'Clinical Review Team',
+    primarySources: ['nhs', 'cochrane'],
+    resourcePack: {
+      version: '1.0.0',
+      downloadUrl: '/downloads/sleep-pathway-pack-v1.pdf',
+      lastUpdated: TODAY,
+      includes: [
+        'Understanding sleep (1-page summary)',
+        'Sleep hygiene checklist',
+        'CBT-I basics guide',
+        'Age-appropriate sleep recommendations',
+        'Screen management plan',
+        'Sleep diary template',
+        'Crisis help card (UK)',
+      ],
+    },
+    notes: 'Evidence-based sleep guidance. CBT-I gold standard. Age-specific recommendations from AASM/NSF.',
+  },
+
   // ============================================================================
   // TOOLS (Interactive tools)
   // Review: Every 180 days | Evidence: Tier A or B

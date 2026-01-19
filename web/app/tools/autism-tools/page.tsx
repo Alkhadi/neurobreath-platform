@@ -111,36 +111,6 @@ export default function AutismToolsPage() {
 
           <div className="mt-4">
             <EducationalDisclaimerInline contextLabel="Autism tools" />
-          </div> 
-              onClick={() => scrollToSection('breathing-bundles')}
-              className="flex items-start gap-3 p-4 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all cursor-pointer text-left"
-            >
-              <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
-              <div>
-                <h4 className="font-semibold text-sm">Curated Breathing Bundles</h4>
-                <p className="text-xs opacity-90">Save to device, share with carers</p>
-              </div>
-            </button>
-            <button 
-              onClick={() => scrollToSection('sensory-communication')}
-              className="flex items-start gap-3 p-4 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all cursor-pointer text-left"
-            >
-              <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
-              <div>
-                <h4 className="font-semibold text-sm">Sensory & Communication Checklists</h4>
-                <p className="text-xs opacity-90">Request adjustments in writing</p>
-              </div>
-            </button>
-            <button 
-              onClick={() => scrollToSection('evidence')}
-              className="flex items-start gap-3 p-4 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all cursor-pointer text-left"
-            >
-              <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
-              <div>
-                <h4 className="font-semibold text-sm">Evidence-Backed UK Resources</h4>
-                <p className="text-xs opacity-90">NHS, NICE, NAS guidance</p>
-              </div>
-            </button>
           </div>
 
           <p className="text-sm opacity-75 max-w-2xl mx-auto pt-4">
