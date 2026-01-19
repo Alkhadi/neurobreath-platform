@@ -2,6 +2,7 @@
 
 import { Wind, Heart, Brain, Target, Zap, Moon, Play, BookOpen, Download, ChevronRight, Activity } from 'lucide-react'
 import Link from 'next/link'
+import { PageHeader } from '@/components/page/PageHeader'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { EvidenceFooter } from '@/components/evidence-footer'
@@ -38,18 +39,13 @@ export default function BreathingExercisesPage() {
       {/* Hero Section */}
       <section id="main-content" className="relative py-16 px-4 overflow-hidden bg-gradient-to-br from-blue-50 via-green-50 to-teal-50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-block p-3 bg-primary/10 rounded-full mb-6">
-              <Wind className="h-12 w-12 text-primary" />
-            </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-              Breathing Exercises
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-              Evidence-based breathing techniques for calm, focus, and wellbeing. 
-              Interactive guided exercises with audio support and visual timers.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
+          <div className="mb-12">
+            <PageHeader 
+              title="Breathing Exercises" 
+              description="Evidence-based breathing techniques for calm, focus, and wellbeing. Interactive guided exercises with audio support and visual timers."
+              showMetadata
+            />
+            <div className="flex flex-wrap justify-center gap-4 mt-6">
               <a href="#exercises">
                 <Button size="lg" className="px-8">
                   <Play className="mr-2 h-5 w-5" />

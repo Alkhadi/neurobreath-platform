@@ -1,4 +1,5 @@
 import { Brain, Wind, Heart, TrendingUp, BookOpen, AlertCircle, Users, Stethoscope, ChevronDown } from 'lucide-react'
+import { PageHeaderClient } from '@/components/page/PageHeaderClient'
 import { BreathingSuite } from '@/components/anxiety-tools/breathing-suite'
 import { GroundingExercise } from '@/components/anxiety-tools/grounding-exercise'
 import { CBTThoughtRecord } from '@/components/anxiety-tools/cbt-thought-record'
@@ -87,17 +88,13 @@ export default function AnxietyPage() {
       {/* Hero Section */}
       <section id="main-content" className="relative py-16 px-4 overflow-hidden">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-block p-3 bg-primary/10 rounded-full mb-6">
-              <Brain className="h-12 w-12 text-primary" />
-            </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-              Anxiety — Calm the Body, Train the Mind
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-              Evidence-based tools and resources to understand and manage anxiety. Track your progress, build resilience, and find calm.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
+          <div className="mb-12">
+            <PageHeaderClient 
+              title="Anxiety Hub" 
+              description="Evidence-based tools and resources to understand and manage anxiety. Track your progress, build resilience, and find calm."
+              showMetadata
+            />
+            <div className="flex flex-wrap justify-center gap-4 mt-6">
               <a href="#interactive-tools">
                 <Button size="lg" className="px-8">
                   <Wind className="mr-2 h-5 w-5" />

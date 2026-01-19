@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { PageHeaderCompact } from '@/components/page/PageHeader';
 import { PhonicsPlayer } from '@/components/PhonicsPlayer';
 import { PhonicsSoundsLab } from '@/components/PhonicsSoundsLab';
 import { VowelUniverse } from '@/components/VowelUniverse';
@@ -92,18 +93,10 @@ export default function DyslexiaReadingTrainingPage() {
               {/* Hero/Introduction Card */}
               <Card className="overflow-hidden border-2 border-primary/20">
                 <CardContent className="p-6 sm:p-8 space-y-6">
-                  <div className="space-y-3">
-                    <p className="text-xs sm:text-sm uppercase tracking-wider text-primary font-semibold">
-                      Dyslexia Reading Training • NeuroBreath
-                    </p>
-                    <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
-                      Multisensory Reading Development
-                    </h1>
-                    <p className="text-sm sm:text-base text-muted-foreground">
-                      Systematic, explicit, multisensory instruction based on the science of reading.
-                      Engaging sight, sound, and movement to reinforce letter-sound correspondences and word patterns.
-                    </p>
-                  </div>
+                  <PageHeaderCompact 
+                    title="Dyslexia Reading Training" 
+                    description="Systematic, explicit, multisensory instruction based on the science of reading. Engaging sight, sound, and movement to reinforce letter-sound correspondences and word patterns."
+                  />
 
                   <div className="space-y-3">
                     <Button

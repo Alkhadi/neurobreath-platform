@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { PageHeader } from '@/components/page/PageHeader'
 import { Button } from '@/components/ui/button'
 import { Moon, Trophy, Target, CheckCircle, Calendar, TrendingUp, Award, Flame, Sparkles, Heart, Brain, Users, BookOpen, Lightbulb, Shield } from 'lucide-react'
 import { EvidenceFooter } from '@/components/evidence-footer'
@@ -265,43 +266,40 @@ export default function SleepPage() {
       <div className="container max-w-4xl mx-auto px-4">
         
         {/* Hero Section */}
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 shadow-xl mb-8 text-white">
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-4xl">💤</span>
-            <h1 className="text-4xl font-bold">Sleep Issues</h1>
-          </div>
-          <p className="text-indigo-200 text-lg mb-4">Train the Mind</p>
-          <p className="text-white/90 text-lg">
-            Evidence-based tools and resources to understand and manage sleep issues. Track your progress, build resilience, and find rest.
-          </p>
+        <div className="mb-8">
+          <PageHeader 
+            title="Sleep Hub" 
+            description="Evidence-based tools and resources to understand and manage sleep. Track your progress, build resilience, and find rest."
+            showMetadata
+          />
           
           {/* Quick Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-            <div className="bg-white/20 rounded-xl p-4 text-center">
-              <Flame className="w-6 h-6 mx-auto mb-1" />
-              <p className="text-2xl font-bold">{streak}</p>
-              <p className="text-sm text-white/80">Day Streak</p>
+            <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-200">
+              <Flame className="w-6 h-6 mx-auto mb-1 text-orange-500" />
+              <p className="text-2xl font-bold text-slate-900">{streak}</p>
+              <p className="text-sm text-slate-600">Day Streak</p>
             </div>
-            <div className="bg-white/20 rounded-xl p-4 text-center">
-              <Target className="w-6 h-6 mx-auto mb-1" />
-              <p className="text-2xl font-bold">{sleepScore}</p>
-              <p className="text-sm text-white/80">Sleep Score</p>
+            <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-200">
+              <Target className="w-6 h-6 mx-auto mb-1 text-blue-500" />
+              <p className="text-2xl font-bold text-slate-900">{sleepScore}</p>
+              <p className="text-sm text-slate-600">Sleep Score</p>
             </div>
-            <div className="bg-white/20 rounded-xl p-4 text-center">
-              <Trophy className="w-6 h-6 mx-auto mb-1" />
-              <p className="text-2xl font-bold">{unlockedBadges}/{badges.length}</p>
-              <p className="text-sm text-white/80">Badges</p>
+            <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-200">
+              <Trophy className="w-6 h-6 mx-auto mb-1 text-yellow-500" />
+              <p className="text-2xl font-bold text-slate-900">{unlockedBadges}/{badges.length}</p>
+              <p className="text-sm text-slate-600">Badges</p>
             </div>
-            <div className="bg-white/20 rounded-xl p-4 text-center">
-              <CheckCircle className="w-6 h-6 mx-auto mb-1" />
-              <p className="text-2xl font-bold">{checklistProgress}%</p>
-              <p className="text-sm text-white/80">Hygiene</p>
+            <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-200">
+              <CheckCircle className="w-6 h-6 mx-auto mb-1 text-green-500" />
+              <p className="text-2xl font-bold text-slate-900">{checklistProgress}%</p>
+              <p className="text-sm text-slate-600">Hygiene</p>
             </div>
           </div>
           
           <Button 
             onClick={() => setShowTracker(!showTracker)} 
-            className="mt-6 bg-white text-indigo-600 hover:bg-indigo-100"
+            className="mt-6 bg-indigo-600 text-white hover:bg-indigo-700"
           >
             <Moon className="w-4 h-4 mr-2" /> {showTracker ? 'Hide' : 'Open'} Sleep Tracker
           </Button>

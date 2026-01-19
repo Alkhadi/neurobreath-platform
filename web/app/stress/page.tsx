@@ -1,6 +1,7 @@
 'use client'
 
 import { Zap, TrendingUp, BookOpen, AlertCircle, Users, Stethoscope, ChevronDown, Activity } from 'lucide-react'
+import { PageHeader } from '@/components/page/PageHeader'
 import { BreathingExercise } from './stress-tools/breathing-exercise'
 import { GroundingExercise } from './stress-tools/grounding-exercise'
 import { StressTracker } from './stress-tools/stress-tracker'
@@ -45,17 +46,13 @@ export default function StressPage() {
       {/* Hero Section */}
       <section id="main-content" className="relative py-16 px-4 overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-block p-3 bg-primary/10 rounded-full mb-6">
-              <Zap className="h-12 w-12 text-primary" />
-            </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-teal-600 to-purple-600 bg-clip-text text-transparent">
-              Stress — Understand, Manage, Thrive
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-              Evidence-based tools and resources to understand and manage stress. Track your progress, build resilience, and find calm.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
+          <div className="mb-12">
+            <PageHeader 
+              title="Stress Hub" 
+              description="Evidence-based tools and resources to understand and manage stress. Track your progress, build resilience, and find calm."
+              showMetadata
+            />
+            <div className="flex flex-wrap justify-center gap-4 mt-6">
               <a href="#interactive-tools">
                 <Button size="lg" className="px-8 bg-teal-600 hover:bg-teal-700">
                   <Activity className="mr-2 h-5 w-5" />
