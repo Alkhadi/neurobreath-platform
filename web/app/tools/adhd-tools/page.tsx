@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { PageHeader } from '@/components/page/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -34,43 +35,32 @@ export default function ADHDToolsPage() {
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950">
       
       {/* Hero Section */}
-      <section className="relative py-16 md:py-24 overflow-hidden bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 text-white">
-        <div className="mx-auto px-4 text-center space-y-6 w-[86vw] max-w-[86vw]">
-          <Badge className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 text-white border-white/30">
-            <Zap className="w-4 h-4" />
-            <span>Focus · Regulation · Planning</span>
-          </Badge>
+      <section className="py-12 md:py-16">
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
+          <PageHeader 
+            title="ADHD Tools & Focus Hub" 
+            description="Curated bundles, breathing resets, focus routines, and interactive games to help you plan work, protect energy, and build supportive habits."
+            showMetadata
+          />
           
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-            ADHD Tools & Focus Hub
-          </h1>
-          <div className="max-w-2xl mx-auto">
-            <EducationalDisclaimerInline contextLabel="ADHD tools" variant="compact" className="bg-white/10 text-white border-white/30" />
-          </div>
-          
-          <p className="text-xl md:text-2xl max-w-3xl mx-auto opacity-90 leading-relaxed">
-            Curated bundles, breathing resets, focus routines, and interactive games to help you plan work, protect energy, and build supportive habits.
-          </p>
-
-          <div className="flex flex-wrap gap-3 justify-center pt-4">
-            <Button size="lg" className="bg-white text-purple-600 hover:bg-white/90 gap-2 shadow-lg">
+          <div className="flex flex-wrap gap-3 justify-center mt-6">
+            <Button size="lg" className="gap-2 shadow-lg">
               <Play className="w-5 h-5" />
               Quick Start Guide
             </Button>
-            <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 gap-2">
+            <Button size="lg" variant="outline" className="gap-2">
               <Download className="w-5 h-5" />
               Download Toolkit
             </Button>
-            <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 gap-2">
+            <Button size="lg" variant="outline" className="gap-2">
               <Focus className="w-5 h-5" />
               Focus Sprint
             </Button>
           </div>
 
-          <p className="text-sm opacity-75 max-w-2xl mx-auto pt-4">
-            <AlertCircle className="w-4 h-4 inline mr-1" />
-            Educational information only; not medical advice. Built with evidence from NHS, CDC, and peer-reviewed research.
-          </p>
+          <div className="mt-4">
+            <EducationalDisclaimerInline contextLabel="ADHD tools" />
+          </div>
         </div>
       </section>
 

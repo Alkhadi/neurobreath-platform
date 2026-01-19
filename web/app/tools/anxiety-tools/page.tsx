@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { PageHeader } from '@/components/page/PageHeader';
 import { Brain, Wind, Heart, TrendingUp, BookOpen, AlertCircle, Users, Stethoscope, ChevronDown, Activity, Sparkles } from 'lucide-react';
 import { BreathingSuite } from '@/components/anxiety-tools/breathing-suite';
 import { GroundingExercise } from '@/components/anxiety-tools/grounding-exercise';
@@ -35,30 +36,22 @@ export default function AnxietyToolsPage() {
       </a>
 
       {/* Hero Section */}
-      <section className="relative py-20 md:py-32 overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 text-white">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative mx-auto px-4 text-center space-y-6 w-[86vw] max-w-[86vw]">
-          <div className="inline-block p-4 bg-white/10 backdrop-blur-sm rounded-full mb-4">
-            <Brain className="h-16 w-16" />
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            Anxiety Toolkit
-          </h1>
-          <p className="text-xl md:text-2xl max-w-3xl mx-auto opacity-90 mb-8">
-            Evidence-based tools and strategies to calm the body and train the mind
-          </p>
-          <p className="text-sm opacity-75 max-w-2xl mx-auto mb-8">
-            Built with guidance from NHS, NICE, CDC, Mental Health Foundation, APA, NAMI, and peer-reviewed research
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
+      <section className="py-12 md:py-16">
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
+          <PageHeader 
+            title="Anxiety Toolkit" 
+            description="Evidence-based tools and strategies to calm the body and train the mind. Built with guidance from NHS, NICE, CDC, Mental Health Foundation, APA, NAMI, and peer-reviewed research."
+            showMetadata
+          />
+          <div className="flex flex-wrap justify-center gap-4 mt-6">
             <a href="#interactive-tools">
-              <Button size="lg" className="px-8 bg-white text-blue-600 hover:bg-gray-100">
+              <Button size="lg" className="px-8">
                 <Wind className="mr-2 h-5 w-5" />
                 Start Practicing
               </Button>
             </a>
             <a href="#crisis-help">
-              <Button size="lg" variant="outline" className="px-8 border-white text-white hover:bg-white/10">
+              <Button size="lg" variant="outline" className="px-8">
                 <AlertCircle className="mr-2 h-5 w-5" />
                 Crisis Resources
               </Button>

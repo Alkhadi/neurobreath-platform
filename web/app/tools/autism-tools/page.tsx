@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { PageHeader } from '@/components/page/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -71,53 +72,46 @@ export default function AutismToolsPage() {
     <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950">
       
       {/* Hero Section */}
-      <section className="relative py-16 md:py-24 overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 text-white">
-        <div className="mx-auto px-4 text-center space-y-6 w-[86vw] max-w-[86vw]">
-          <Badge className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 text-white border-white/30">
-            <Brain className="w-4 h-4" />
-            <span>Sensory-Ready · Co-Regulation · Evidence-Backed</span>
-          </Badge>
-          
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-            Autism Tools & Support Hub
-          </h1>
-          <div className="max-w-2xl mx-auto">
-            <EducationalDisclaimerInline contextLabel="Autism tools" variant="compact" className="bg-white/10 text-white border-white/30" />
-          </div>
-          
-          <p className="text-xl md:text-2xl max-w-3xl mx-auto opacity-90 leading-relaxed">
-            Neuro-inclusive breathing, regulation, communication supports, and daily living tools. Everything designed with sensory processing and predictability in mind.
-          </p>
+      <section className="py-12 md:py-16">
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
+          <PageHeader 
+            title="Autism Tools & Support Hub" 
+            description="Neuro-inclusive breathing, regulation, communication supports, and daily living tools. Everything designed with sensory processing and predictability in mind."
+            showMetadata
+          />
 
-          <div className="flex flex-wrap gap-3 justify-center pt-4">
+          <div className="flex flex-wrap gap-3 justify-center mt-6">
             <Button 
               size="lg" 
-              className="bg-white text-blue-600 hover:bg-white/90 gap-2 shadow-lg"
+              className="gap-2 shadow-lg"
               onClick={handleQuickStart}
             >
-              <Play className="w-5 h-5 text-blue-600" />
+              <Play className="w-5 h-5" />
               Quick Start Guide
             </Button>
             <Button 
               size="lg" 
-              className="bg-white text-blue-600 hover:bg-white/90 gap-2 shadow-lg"
+              variant="outline"
+              className="gap-2"
               onClick={handleDownloadToolkit}
             >
-              <Download className="w-5 h-5 text-blue-600" />
+              <Download className="w-5 h-5" />
               Download Toolkit PDFs
             </Button>
             <Button 
               size="lg" 
-              className="bg-white text-blue-600 hover:bg-white/90 gap-2 shadow-lg"
+              variant="outline"
+              className="gap-2"
               onClick={handleSensoryProfile}
             >
-              <Shield className="w-5 h-5 text-blue-600" />
+              <Shield className="w-5 h-5" />
               Sensory Profile
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 max-w-4xl mx-auto">
-            <button 
+          <div className="mt-4">
+            <EducationalDisclaimerInline contextLabel="Autism tools" />
+          </div> 
               onClick={() => scrollToSection('breathing-bundles')}
               className="flex items-start gap-3 p-4 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all cursor-pointer text-left"
             >
