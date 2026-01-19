@@ -7,6 +7,7 @@
  * 2. No reviews are overdue
  * 3. Hubs/pathways have Tier A sources
  * 4. Pathways have resource packs
+ * 5. All filesystem routes are registered
  * 
  * Run: yarn trust:check
  * CI: Fails if critical errors found
@@ -15,8 +16,11 @@
 // @ts-ignore - process is available in Node.js environment
 declare const process: {
   exit: (code: number) => never;
+  cwd?: () => string;
 };
 
+import { readdirSync, statSync } from 'fs';
+import { join, sep } from 'path';
 import { ROUTE_REGISTRY, validateAllRoutes, getAllOverdueRoutes, getRoutesRequiringTierA } from '../web/lib/trust/routeRegistry.js';
 
 interface CheckResult {
@@ -119,12 +123,86 @@ if (pathwaysWithoutPacks.length > 0) {
 }
 
 /**
- * Check 5: Known routes validation
- * Note: Full filesystem scanning requires additional dependencies.
- * For now, we validate the routes we know exist.
+ * Check 5: Filesystem route scanning
+ * Scan web/app directory for page.tsx files and verify they're registered
  */
-console.log('\n🔍 Validating known routes...');
-console.log(`✅ ${Object.keys(ROUTE_REGISTRY).length} routes registered`);
+console.log('\n🔍 Scanning filesystem for unregistered routes...');
+
+function scanAppDirectory(dir: string, baseDir: string): string[] {
+  const routes: string[] = [];
+  
+  try {
+    const entries = readdirSync(dir);
+    
+    for (const entry of entries) {
+      const fullPath = join(dir, entry);
+      const stat = statSync(fullPath);
+      
+      if (stat.isDirectory()) {
+        // Skip special Next.js directories
+        if (entry.startsWith('_') || entry === 'api' || entry === 'fonts') {
+          continue;
+        }
+        
+        // Recursively scan subdirectories
+        routes.push(...scanAppDirectory(fullPath, baseDir));
+      } else if (entry === 'page.tsx' || entry === 'page.ts') {
+        // Convert filesystem path to route path
+        const relativePath = fullPath.replace(baseDir, '').replace(/\\/g, '/');
+        const routePath = relativePath
+          .replace(/\/page\.tsx?$/, '')
+          .replace(/\(.*?\)/g, '') // Remove route groups like (auth)
+          || '/';
+        
+        routes.push(routePath);
+      }
+    }
+  } catch (error) {
+    console.log(`⚠️  Could not scan directory: ${dir}`);
+  }
+  
+  return routes;
+}
+
+const appDir = join(process.cwd ? process.cwd() : '.', 'web', 'app');
+const discoveredRoutes = scanAppDirectory(appDir, appDir);
+
+// Exclude routes that shouldn't be in registry (dynamic routes, special pages, etc.)
+const excludePatterns = [
+  /\/\[.*\]/, // Dynamic routes like [id]
+  /\/loading$/,
+  /\/error$/,
+  /\/not-found$/,
+  /\/layout$/,
+  /\/template$/,
+  /^\/uk\//, // Regional routes (handled separately)
+  /^\/us\//,
+];
+
+const relevantRoutes = discoveredRoutes.filter(route => {
+  return !excludePatterns.some(pattern => pattern.test(route));
+});
+
+const unregisteredRoutes = relevantRoutes.filter(route => {
+  return !ROUTE_REGISTRY[route];
+});
+
+if (unregisteredRoutes.length > 0) {
+  result.warnings.push(`${unregisteredRoutes.length} route(s) found in filesystem but not registered`);
+  console.log(`⚠️  ${unregisteredRoutes.length} unregistered route(s) found:`);
+  
+  unregisteredRoutes.forEach(route => {
+    console.log(`  • ${route}`);
+  });
+  console.log('');
+  console.log('  To fix: Add these routes to web/lib/trust/routeRegistry.ts');
+  console.log('  Note: Routes not in registry will show fallback trust badges');
+  console.log('');
+} else {
+  console.log(`✅ All ${relevantRoutes.length} filesystem routes are registered`);
+}
+
+console.log(`   (${discoveredRoutes.length - relevantRoutes.length} routes excluded: dynamic, special, or regional)`);
 
 /**
  * Summary
