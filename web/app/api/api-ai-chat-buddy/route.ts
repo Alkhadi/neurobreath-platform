@@ -105,10 +105,56 @@ RULES:
       ...messages,
     ];
 
-    // Check API key
+    // Check API key. If missing, degrade gracefully (return a helpful response
+    // instead of a 500 so the UI can still work in local/dev environments).
     if (!process.env.ABACUSAI_API_KEY) {
       console.error('[Buddy API] ABACUSAI_API_KEY not configured');
-      throw new Error('API configuration error');
+
+      return NextResponse.json(
+        {
+          error: 'ABACUSAI_API_KEY not configured',
+          answer:
+            "I can still help, but I'm currently running in **limited mode** (the AI service isn't configured).\n\nTry: \"What tools are available?\" or \"Show me breathing techniques\" — and I’ll guide you to the right sections.",
+          recommendedActions: [
+            {
+              id: 'open-breathing',
+              type: 'navigate',
+              label: 'Breathing Exercises',
+              description: 'Open Box Breathing and SOS Calm tools',
+              icon: 'heart',
+              target: '/breathing',
+              primary: true,
+            },
+            {
+              id: 'open-adhd',
+              type: 'navigate',
+              label: 'ADHD Hub',
+              description: 'Focus Timer, Daily Quests, Skills Library',
+              icon: 'brain',
+              target: '/adhd',
+            },
+            {
+              id: 'open-autism',
+              type: 'navigate',
+              label: 'Autism Hub',
+              description: 'Calm Toolkit, Education Pathways',
+              icon: 'sparkles',
+              target: '/autism',
+            },
+          ],
+          references: [
+            {
+              title: 'NHS: Breathing exercises for stress',
+              url: 'https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/breathing-exercises-for-stress/',
+              sourceLabel: 'NHS',
+              updatedAt: new Date().toISOString().split('T')[0],
+              isExternal: true,
+            },
+          ],
+          availableTools: [],
+        },
+        { status: 200 }
+      );
     }
 
     const response = await fetch('https://apps.abacus.ai/v1/chat/completions', {
@@ -134,7 +180,35 @@ RULES:
         statusText: response.statusText,
         error: errorText,
       });
-      throw new Error(`LLM API error: ${response.status} ${response.statusText}`);
+
+      return NextResponse.json(
+        {
+          error: `LLM API error: ${response.status} ${response.statusText}`,
+          answer:
+            "I’m having trouble connecting to the AI service right now. I can still guide you around NeuroBreath — what would you like to do next?",
+          recommendedActions: [
+            {
+              id: 'breathing',
+              type: 'navigate',
+              label: 'Breathing Exercises',
+              description: 'Try a quick calming technique',
+              icon: 'heart',
+              target: '/breathing',
+              primary: true,
+            },
+          ],
+          references: [
+            {
+              title: 'NHS: Breathing exercises for stress',
+              url: 'https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/breathing-exercises-for-stress/',
+              sourceLabel: 'NHS',
+              isExternal: true,
+            },
+          ],
+          availableTools: [],
+        },
+        { status: 200 }
+      );
     }
 
     const data = await response.json();
@@ -204,7 +278,8 @@ RULES:
         ],
         availableTools: [],
       },
-      { status: 500 }
+      // Return 200 so the client can always display a helpful response.
+      { status: 200 }
     );
   }
 }

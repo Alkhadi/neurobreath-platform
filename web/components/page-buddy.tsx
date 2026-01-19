@@ -668,10 +668,19 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
           }
         })
       });
-      
-      if (!response.ok) throw new Error('API error');
-      
-      const data = await response.json();
+
+      // Always attempt to parse JSON so we can display server-provided fallback
+      // answers even when the API is in a degraded state.
+      let data: any = null;
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
+      }
+
+      if (!response.ok && !data?.answer && !data?.content) {
+        throw new Error('API error');
+      }
       
       // Return structured message
       return {
