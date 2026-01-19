@@ -281,6 +281,7 @@ resourcePack: {
 **Total Routes:** 52 (up from 50)
 
 ### Clinical Pathways (4):
+
 | Route | Guideline | Review Cadence | Resource Pack |
 |-------|-----------|----------------|---------------|
 | `/adhd/pathway` | NICE NG87 | 90 days | ✅ v1.0.0 |

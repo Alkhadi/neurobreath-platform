@@ -13,7 +13,17 @@
  * CI: Fails if critical errors found
  */
 
-// @ts-ignore - process is available in Node.js environment
+// @ts-ignore - Node.js built-in modules
+declare module 'fs' {
+  export function readdirSync(path: string, options?: { withFileTypes?: boolean }): any[];
+  export function statSync(path: string): any;
+}
+
+declare module 'path' {
+  export function join(...paths: string[]): string;
+  export const sep: string;
+}
+
 declare const process: {
   exit: (code: number) => never;
   cwd?: () => string;
