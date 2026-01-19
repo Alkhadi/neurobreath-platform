@@ -8,6 +8,7 @@
     "start": "npm --prefix web run start",
     "lint": "npm --prefix web run lint",
     "typecheck": "npm --prefix web run typecheck",
+    "trust:check": "tsx scripts/trust-check.ts",
     "brand:icons": "./.venv/bin/python web/scripts/generate-brand-icons.py",
     "brand:icons:source": "./.venv/bin/python web/scripts/generate-brand-icons.py --source web/public/brand-source.png",
     "brand:icons:poster": "./.venv/bin/python web/scripts/generate-brand-icons.py --source web/public/brand-source.png --auto-crop-mark",

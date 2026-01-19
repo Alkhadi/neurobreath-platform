@@ -37,7 +37,7 @@ export default function AutismPathwayPage() {
 
         {/* Trust Badge */}
         <div className="mb-8">
-          <TrustBadge route="/autism" variant="block" showDetails />
+          <TrustBadge variant="block" showDetails />
         </div>
 
         {/* Main Content */}

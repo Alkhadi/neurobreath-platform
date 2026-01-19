@@ -37,7 +37,7 @@ export default function ADHDPathwayPage() {
 
         {/* Trust Badge */}
         <div className="mb-8">
-          <TrustBadge route="/adhd" variant="block" showDetails />
+          <TrustBadge variant="block" showDetails />
         </div>
 
         {/* Main Content */}
