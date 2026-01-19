@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Brain, Heart, BookOpen, Lightbulb, TrendingUp, Shield, MessageCircle, AlertCircle } from 'lucide-react';
+import { PageHeader } from '@/components/page/PageHeader';
 import { HowToUse } from '@/components/autism/how-to-use';
 import { SkillsLibraryEnhanced } from '@/components/autism/skills-library-enhanced';
 import { CalmToolkitEnhanced } from '@/components/autism/calm-toolkit-enhanced';
@@ -74,89 +75,39 @@ export default function AutismHubPage() {
         Skip to main content
       </a>
 
-      {/* Hero Section - Full Width */}
-      <section className="relative w-full overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 text-white">
-        {/* Decorative Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-300 rounded-full blur-3xl" />
-        </div>
+      {/* Hero Section */}
+      <section className="py-6 sm:py-8 scroll-mt-20">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <PageHeader 
+            title="Autism Hub" 
+            description="Evidence-based autism support with tools, strategies, and resources for all ages. Built with guidance from NHS, NICE, CDC, and peer-reviewed research."
+            showMetadata
+          />
 
-        <div className="relative py-16 md:py-24 lg:py-32">
-          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="text-center space-y-6 md:space-y-8">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium border border-white/30">
-                <Brain className="w-4 h-4" />
-                <span>Evidence-Based Support Hub</span>
-              </div>
+          {/* Quick Actions */}
+          <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 mt-6">
+            <a href="#evidence" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 shadow-xl transition-all font-semibold text-base">
+                <Shield className="mr-2 h-5 w-5" />
+                Evidence Hub
+              </Button>
+            </a>
+            <a href="#skills" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 transition-all font-semibold text-base">
+                <Lightbulb className="mr-2 h-5 w-5" />
+                Skills Library
+              </Button>
+            </a>
+            <a href="#toolkit" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 transition-all font-semibold text-base">
+                <Heart className="mr-2 h-5 w-5" />
+                Calm Toolkit
+              </Button>
+            </a>
+          </div>
 
-              {/* Main Heading */}
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight">
-                Autism Hub
-              </h1>
-              
-              {/* Subheading */}
-              <p className="text-lg sm:text-xl md:text-2xl max-w-3xl mx-auto opacity-95 leading-relaxed">
-                Evidence-based autism support with tools, strategies, and resources for all ages
-              </p>
-
-              <div className="max-w-3xl mx-auto">
-                <EducationalDisclaimerInline contextLabel="Autism hub" variant="compact" className="bg-white/10 text-white border-white/30" />
-              </div>
-              
-              {/* Research Badge */}
-              <p className="text-sm md:text-base opacity-80 max-w-2xl mx-auto">
-                Built with guidance from <span className="font-semibold">NHS, NICE, CDC</span>, and peer-reviewed research
-              </p>
-              
-              {/* Primary CTA Buttons */}
-              <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 md:gap-4 pt-4">
-                <a href="#evidence" className="w-full sm:w-auto">
-                  <Button size="lg" className="w-full sm:w-auto bg-white text-blue-600 hover:bg-blue-50 shadow-xl hover:shadow-2xl transition-all font-semibold text-base">
-                    <Shield className="mr-2 h-5 w-5" />
-                    Evidence Hub
-                  </Button>
-                </a>
-                <a href="#skills" className="w-full sm:w-auto">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto bg-white/10 text-white border-2 border-white hover:bg-white/20 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all font-semibold text-base">
-                    <Lightbulb className="mr-2 h-5 w-5" />
-                    Skills Library
-                  </Button>
-                </a>
-                <a href="#toolkit" className="w-full sm:w-auto">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto bg-white/10 text-white border-2 border-white hover:bg-white/20 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all font-semibold text-base">
-                    <Heart className="mr-2 h-5 w-5" />
-                    Calm Toolkit
-                  </Button>
-                </a>
-              </div>
-
-              {/* Secondary Navigation - Clean Links */}
-              <div className="pt-6 border-t border-white/20 mt-8">
-                <nav className="flex flex-wrap justify-center gap-3 md:gap-6 text-sm md:text-base" aria-label="Quick navigation">
-                  <a href="#progress" className="text-white/90 hover:text-white font-medium transition-colors underline-offset-4 hover:underline">
-                    Progress
-                  </a>
-                  <a href="#quests" className="text-white/90 hover:text-white font-medium transition-colors underline-offset-4 hover:underline">
-                    Daily Quests
-                  </a>
-                  <a href="#pathways" className="text-white/90 hover:text-white font-medium transition-colors underline-offset-4 hover:underline">
-                    Pathways
-                  </a>
-                  <a href="#resources" className="text-white/90 hover:text-white font-medium transition-colors underline-offset-4 hover:underline">
-                    Resources
-                  </a>
-                  <a href="#ai-chat" className="text-white/90 hover:text-white font-medium transition-colors underline-offset-4 hover:underline">
-                    AI Support
-                  </a>
-                  <a href="#crisis" className="text-white/90 hover:text-white font-medium transition-colors underline-offset-4 hover:underline flex items-center gap-1">
-                    <AlertCircle className="w-4 h-4" />
-                    Crisis Help
-                  </a>
-                </nav>
-              </div>
-            </div>
+          <div className="mt-4">
+            <EducationalDisclaimerInline contextLabel="Autism hub" />
           </div>
         </div>
       </section>

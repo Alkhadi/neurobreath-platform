@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { ADHDHero } from '@/components/adhd/adhd-hero';
+import { PageHeader } from '@/components/page/PageHeader';
 import { DailyQuestsADHD } from '@/components/adhd/daily-quests-adhd';
 import { FocusPomodoro } from '@/components/adhd/focus-pomodoro';
 import { ADHDSkillsLibrary } from '@/components/adhd/adhd-skills-library';
@@ -13,7 +13,7 @@ import { initializeMilestones } from '@/lib/progress-store-enhanced';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Heart, Rocket, Zap, Star, BookOpen, Users } from 'lucide-react';
+import { Heart, Rocket, Zap, Star, BookOpen, Users, Target } from 'lucide-react';
 import { EvidenceFooter } from '@/components/evidence-footer';
 import { evidenceByRoute } from '@/lib/evidence/page-evidence';
 import { EducationalDisclaimerInline } from '@/components/trust/EducationalDisclaimerInline';
@@ -49,7 +49,51 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="py-6 sm:py-8 scroll-mt-20">
         <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
-          <ADHDHero />
+          <PageHeader 
+            title="ADHD Hub" 
+            description="Evidence-based support and interactive tools for ADHD management backed by NICE NG87, AAP 2019, CDC, and 10+ peer-reviewed systematic reviews. Get personalized guidance for all ages."
+            showMetadata
+          />
+
+          {/* Quick Actions */}
+          <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 mt-6">
+            <Button 
+              size="lg" 
+              className="gap-1.5 sm:gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 w-full sm:w-auto text-sm sm:text-base h-10 sm:h-11"
+              onClick={() => {
+                const element = document.getElementById('decision-tree');
+                if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+            >
+              <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="truncate">Treatment Decision Tree</span>
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="gap-1.5 sm:gap-2 border-2 w-full sm:w-auto text-sm sm:text-base h-10 sm:h-11"
+              onClick={() => {
+                const element = document.getElementById('myths-facts');
+                if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+            >
+              <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              Myths vs Facts
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="gap-1.5 sm:gap-2 border-2 w-full sm:w-auto text-sm sm:text-base h-10 sm:h-11"
+              onClick={() => {
+                const element = document.getElementById('skills');
+                if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+            >
+              <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              Skills Library
+            </Button>
+          </div>
+
           <div className="mt-4">
             <EducationalDisclaimerInline contextLabel="ADHD hub" />
           </div>
