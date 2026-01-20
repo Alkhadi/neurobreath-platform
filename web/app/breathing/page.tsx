@@ -1,6 +1,6 @@
 'use client'
 
-import { Wind, Heart, Brain, Target, Zap, Moon, Play, BookOpen, Download, ChevronRight, Activity } from 'lucide-react'
+import { Heart, Brain, Target, Zap, Moon, Play, BookOpen, Download, ChevronRight, Activity } from 'lucide-react'
 import Link from 'next/link'
 import { PageHeader } from '@/components/page/PageHeader'
 import { Card } from '@/components/ui/card'

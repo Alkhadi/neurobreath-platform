@@ -14,17 +14,40 @@
 - [ ] ✅ Test update
 - [ ] 🔧 Configuration/tooling update
 
-## Performance Playbook Compliance
+## AI Agent Rules Compliance
 
-This PR adheres to the [Performance Playbook](./web/PERFORMANCE_PLAYBOOK.md).
+This PR adheres to [AI_AGENT_RULES.md](../AI_AGENT_RULES.md) and the [Performance Playbook](../web/PERFORMANCE_PLAYBOOK.md).
+
+### ✅ Quality Gates (MANDATORY — Must Pass)
+- [ ] `yarn lint` passes (zero errors)
+- [ ] `yarn typecheck` passes (zero errors)
+- [ ] `yarn build` passes from clean state
+- [ ] Relevant tests pass (specify which: e.g., `yarn test:e2e tests/buddy.spec.ts`)
 
 ### Code Quality
 - [ ] No inline styles (`style=` or `<style>` blocks)
 - [ ] No ad-hoc JS hacks (reusable components/hooks/utils only)
 - [ ] No new console errors introduced
-- [ ] `npm run lint` passes
-- [ ] `npm run typecheck` passes
-- [ ] `npm run build` succeeds
+- [ ] No TypeScript `any` (use `unknown`, unions, or strict types)
+- [ ] No unused imports or variables
+
+### Build Safety (Next.js App Router)
+- [ ] API route handlers are build-safe (no throw on import)
+- [ ] External SDK clients instantiated **inside** handlers (not at module top-level)
+- [ ] Env vars validated **inside** handlers before use
+- [ ] Missing env vars return controlled JSON error (500), not throw
+- [ ] No server-only imports in client components
+- [ ] Prisma client only used server-side
+
+### Environment Variables
+- [ ] `.env.example` updated with new env var **names** (no values)
+- [ ] No secrets committed to code
+- [ ] Build does not fail due to missing env vars evaluated at import time
+
+### Artifacts & Hygiene
+- [ ] No build artifacts committed (`.next/`, `*.tsbuildinfo`, `playwright-report/`, `test-results/`)
+- [ ] Diffs are minimal and scoped
+- [ ] Changes are focused on stated objective
 
 ### Performance
 - [ ] Visual regression passes (or snapshots updated with justification)
@@ -75,16 +98,16 @@ This PR adheres to the [Performance Playbook](./web/PERFORMANCE_PLAYBOOK.md).
 ### Automated Testing
 ```bash
 # Visual regression
-npm run test:visual
+yarn test:visual
 
 # Performance gate
-npm run perf:gate
+yarn perf:gate
 
 # Dependency check
-npm run perf:deps
+yarn perf:deps
 
 # Lint and type check
-npm run lint && npm run typecheck && npm run build
+yarn lint && yarn typecheck && yarn build
 ```
 
 ## Performance Impact
@@ -150,6 +173,6 @@ For reviewers:
 
 ---
 
-**Engineering Standards:** [ENGINEERING_STANDARDS.md](./web/ENGINEERING_STANDARDS.md)  
-**Performance Playbook:** [PERFORMANCE_PLAYBOOK.md](./web/PERFORMANCE_PLAYBOOK.md)  
-**Scaffolder Guide:** [SCAFFOLDER_GUIDE.md](./web/SCAFFOLDER_GUIDE.md)
+**Engineering Standards:** [ENGINEERING_STANDARDS.md](../web/ENGINEERING_STANDARDS.md)  
+**Performance Playbook:** [PERFORMANCE_PLAYBOOK.md](../web/PERFORMANCE_PLAYBOOK.md)  
+**Scaffolder Guide:** [SCAFFOLDER_GUIDE.md](../web/SCAFFOLDER_GUIDE.md)

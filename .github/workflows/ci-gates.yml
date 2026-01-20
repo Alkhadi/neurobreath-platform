@@ -1,0 +1,45 @@
+name: CI Gates
+
+on:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  ci-gates:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: web
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node (LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "yarn"
+          cache-dependency-path: web/yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Typecheck
+        run: yarn typecheck
+
+      - name: Build
+        run: yarn build
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/neurobreath_test?schema=public
+
+      # Playwright E2E Smoke (minimal but meaningful)
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: E2E smoke test (Buddy)
+        run: yarn test:e2e tests/buddy.spec.ts

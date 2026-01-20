@@ -375,7 +375,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   };
   
   // Smart local response generator
-  const getLocalResponse = (query: string, cfg: PageBuddyConfig): string => {
+  const getLocalResponse = useCallback((query: string, cfg: PageBuddyConfig): string => {
     const q = query.toLowerCase().trim();
     
     // === DYNAMIC SECTION NAVIGATION ===
@@ -607,10 +607,10 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     
     // === DEFAULT HELPFUL RESPONSE ===
     return `I'm here to help you navigate **${cfg.pageName}**! 🤝\n\n**Popular questions:**\n• "What tools are available?"\n• "How do I get started?"\n• "What is NeuroBreath?"\n• "Show me printable resources"\n\n**This page includes:**\n${cfg.sections.slice(0, 3).map((s) => `• **${s.name}**: ${s.description}`).join('\n')}\n\n💡 **Tip:** Click the 🗺️ map icon for a guided tour!`;
-  };
+  }, [pageContent, scrollToSection]);
   
   // Generate AI response
-  const generateResponse = async (userMessage: string): Promise<Message> => {
+  const generateResponse = useCallback(async (userMessage: string): Promise<Message> => {
     const localFallback = getLocalResponse(userMessage, config);
 
     // Always attempt the backend first so typed sends + quick questions behave consistently.
@@ -721,7 +721,7 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
       console.error('[Buddy] AI response error:', error);
       throw error;
     }
-  };
+  }, [config, getLocalResponse, messages, pageContent.features, pageContent.headings, pathname]);
   
   // Unified send pipeline for typed sends + quick questions.
   const sendMessage = useCallback(async (text?: string): Promise<void> => {
