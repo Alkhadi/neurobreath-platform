@@ -22,8 +22,8 @@ jobs:
         shell: bash
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
         run: |
           missing=0
           for var in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
@@ -42,17 +42,16 @@ jobs:
           echo "ready=true" >> "$GITHUB_OUTPUT"
 
       # This action runs the Vercel CLI under the hood.
-      # Required secrets:
-      # - VERCEL_TOKEN
-      # - VERCEL_ORG_ID
-      # - VERCEL_PROJECT_ID
+      # Required configuration:
+      # - Secret: VERCEL_TOKEN
+      # - Variables: VERCEL_ORG_ID, VERCEL_PROJECT_ID
       - name: Deploy to Vercel (prod)
         if: steps.gate.outputs.ready == 'true'
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-org-id: ${{ vars.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ vars.VERCEL_PROJECT_ID }}
           working-directory: ./web
           vercel-args: '--prod'
 
