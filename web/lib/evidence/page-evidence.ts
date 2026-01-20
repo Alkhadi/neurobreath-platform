@@ -50,6 +50,12 @@ export const evidenceByRoute: Record<string, EvidenceManifest> = {
     citations: ['nhs_breathing_stress', 'pubmed_29616846', 'pubmed_28974862', 'pubmed_11744522'],
     notes: 'Breathing tools support wellbeing routines only; not medical advice.',
   },
+  '/tools/mood-tools': {
+    reviewedAt: '2026-01-16',
+    reviewIntervalDays: 120,
+    citations: ['nhs_depression', 'nice_ng222', 'nhs_breathing_stress', 'nhs_insomnia', 'pubmed_27470975'],
+    notes: 'Mood tools are educational supports only; not medical advice or treatment.',
+  },
   '/tools/depression-tools': {
     reviewedAt: '2026-01-16',
     reviewIntervalDays: 120,
