@@ -135,8 +135,9 @@ export async function POST(request: NextRequest) {
       systemPrompt: legacySystemPrompt,
     } = body;
 
-    // Extract user query from messages or query field
-    const userQuery = rawQuery || messages.find((m) => m.role === 'user')?.content || '';
+    // Extract user query from messages or query field (prefer the most recent user message)
+    const lastUserMessage = [...messages].reverse().find((m) => m.role === 'user')?.content;
+    const userQuery = rawQuery || lastUserMessage || '';
 
     // Validate input
     if (!userQuery.trim()) {
@@ -181,12 +182,9 @@ export async function POST(request: NextRequest) {
       role,
     });
 
-    // Generate system prompt
+    // Generate system prompt (always start from unified prompts; append legacy prompt as additional context)
     let systemPrompt: string;
-    if (legacySystemPrompt) {
-      // Use legacy prompt if provided (backward compatibility)
-      systemPrompt = legacySystemPrompt;
-    } else if (role === 'buddy' && pageName && pageContext) {
+    if (role === 'buddy' && pageName && pageContext) {
       systemPrompt = generateBuddyPrompt(
         pageName,
         {
@@ -204,6 +202,10 @@ export async function POST(request: NextRequest) {
       systemPrompt = `You are a helpful NeuroBreath AI assistant providing evidence-based neurodiversity support.`;
     }
 
+    if (legacySystemPrompt) {
+      systemPrompt = `${systemPrompt}\n\n---\n\nAdditional page/context instructions (client-provided):\n${legacySystemPrompt}`;
+    }
+
     // Check if we need LLM or can use knowledge base
     const useLLM = needsLLM(routing);
 
@@ -217,11 +219,19 @@ export async function POST(request: NextRequest) {
       // Check API key
       if (!process.env.ABACUSAI_API_KEY) {
         console.warn('[AI Assistant] ABACUSAI_API_KEY not configured, degraded mode');
-        
+
+        const degradedAnswer = generateDegradedModeAnswer({
+          query: sanitizedQuery,
+          routing,
+          role,
+          pageName,
+          pageContext,
+          jurisdiction,
+        });
+
         return NextResponse.json({
-          answer:
-            "I can still help, but I'm currently running in **limited mode** (AI service not configured).\n\nTry asking about tools, breathing techniques, or page navigation — I'll guide you to the right sections!",
-          recommendedActions: getDefaultRecommendedActions(role),
+          answer: wrapAnswerWithSafety(degradedAnswer, safetyCheck, jurisdiction),
+          recommendedActions: generateRecommendedActions(routing.queryType, role, pageContext),
           references: DEFAULT_NHS_CITATIONS.map(citationToReference),
         });
       }
@@ -245,7 +255,7 @@ export async function POST(request: NextRequest) {
             messages: fullMessages,
             stream: false,
             max_tokens: 800,
-            temperature: 0.7,
+            temperature: 0.4,
           }),
           signal: AbortSignal.timeout(30000),
         });
@@ -336,6 +346,56 @@ function generateKnowledgeBaseAnswer(query: string, queryType: QueryType, _pageC
   return "I'm here to help! Could you tell me more about what you're looking for?";
 }
 
+function generateDegradedModeAnswer(params: {
+  query: string;
+  routing: { queryType: QueryType; topic?: string };
+  role: RequestPayload['role'];
+  pageName?: string;
+  pageContext?: RequestPayload['pageContext'];
+  jurisdiction: RequestPayload['jurisdiction'];
+}): string {
+  const { query, routing, pageName, pageContext, jurisdiction } = params;
+
+  const contextLine = pageName ? ` on **${pageName}**` : '';
+  const opener = `I'm currently running in **limited mode** (the full AI service isn't configured), but I can still help with your question${contextLine}.\n\n**Your question:** ${query}`;
+
+  if (routing.queryType === 'navigation') {
+    const headings = pageContext?.headings || [];
+    const sections = pageContext?.sections || [];
+    const lower = query.toLowerCase();
+
+    const bestHeading = headings.find((h) => h.text.toLowerCase().split(/\s+/).some((w) => w.length > 3 && lower.includes(w)));
+    const bestSection = sections.find((s) => s.name.toLowerCase().split(/\s+/).some((w) => w.length > 3 && lower.includes(w)));
+
+    const suggestions: string[] = [];
+    if (bestHeading) suggestions.push(`- Try the section: **${bestHeading.text}**`);
+    if (bestSection) suggestions.push(`- Look for: **${bestSection.name}**`);
+    if (!suggestions.length && sections.length) {
+      suggestions.push(`- This page has sections like: ${sections.slice(0, 4).map((s) => `**${s.name}**`).join(', ')}`);
+    }
+
+    return `${opener}\n\n**Best next step:**\n${suggestions.join('\n') || '- Tell me what you want to find (e.g., “breathing”, “quests”, “skills”).'}`;
+  }
+
+  if (routing.queryType === 'tool_help') {
+    const features = pageContext?.features || [];
+    return `${opener}\n\nI can help you use tools on this page.\n\n**What tool are you trying to use?**${features.length ? `\n- Available here: ${features.map((f) => `**${f}**`).join(', ')}` : ''}`;
+  }
+
+  if (routing.queryType === 'health_evidence') {
+    const crisisLine = jurisdiction === 'UK'
+      ? 'If you feel in immediate danger or at risk of self-harm, call **999** (or **NHS 111** for urgent advice).'
+      : jurisdiction === 'US'
+        ? 'If you feel in immediate danger or at risk of self-harm, call **911** (or **988** for crisis support).'
+        : 'If you feel in immediate danger or at risk of self-harm, call your local emergency number (EU: **112**).';
+
+    return `${opener}\n\nI can't pull a fully tailored evidence summary right now, but here are safe, practical next steps you can try today:\n\n- **Name the goal** (e.g., focus, calm, sleep, overwhelm) and what “better” looks like\n- **Try one small strategy for 5 minutes** (breathing, timer, checklist, break)\n- **Tell me your age group + situation** (child/teen/adult; school/work/home) and I’ll narrow it down\n\n${crisisLine}`;
+  }
+
+  // general_info
+  return `${opener}\n\nCould you share one detail so I can answer more precisely (e.g., your goal, your age group, and where you're stuck)?`;
+}
+
 /**
  * Generate recommended actions based on context
  */
@@ -375,33 +435,6 @@ function generateRecommendedActions(
 /**
  * Get default recommended actions
  */
-function getDefaultRecommendedActions(_role: string): RecommendedAction[] {
-  return [
-    {
-      id: 'breathing',
-      type: 'navigate',
-      label: 'Breathing Exercises',
-      icon: 'heart',
-      target: '/breathing',
-      primary: true,
-    },
-    {
-      id: 'adhd',
-      type: 'navigate',
-      label: 'ADHD Hub',
-      icon: 'brain',
-      target: '/adhd',
-    },
-    {
-      id: 'autism',
-      type: 'navigate',
-      label: 'Autism Hub',
-      icon: 'sparkles',
-      target: '/autism',
-    },
-  ];
-}
-
 /**
  * Convert Citation to Reference format (backward compatibility)
  */

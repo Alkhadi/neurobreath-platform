@@ -94,13 +94,18 @@ function detectQueryType(query: string, _pagePath?: string, _role?: string): Que
     'where is',
     'how do i get to',
     'take me to',
-    'show me',
     'navigate',
     'find the',
-    'go to',
-    'open',
+    'scroll to',
   ];
-  if (navigationKeywords.some((kw) => lowerQuery.includes(kw))) {
+
+  // Avoid misclassifying content questions like "show me strategies for anxiety" as navigation.
+  // Only treat as navigation when the user is clearly asking about the UI/page.
+  const isProbablyPageNavigation =
+    navigationKeywords.some((kw) => lowerQuery.includes(kw)) ||
+    /\b(section|page|menu|button|tab|tool|feature|hub|timer|download)\b/.test(lowerQuery);
+
+  if (isProbablyPageNavigation && navigationKeywords.some((kw) => lowerQuery.includes(kw))) {
     return 'navigation';
   }
 
@@ -109,7 +114,6 @@ function detectQueryType(query: string, _pagePath?: string, _role?: string): Que
     'how to use',
     'how does this work',
     'what does this button',
-    'help with',
     'instructions for',
     'guide me through',
   ];
