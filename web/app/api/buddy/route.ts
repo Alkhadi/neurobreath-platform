@@ -53,7 +53,7 @@ interface ResponsePayload {
 }
 
 function toLegacyResponse(result: BuddyAskResponse): ResponsePayload {
-  const refs: Reference[] = (result.sources || []).map((s) => ({
+  const refs: Reference[] = (result.citations || []).map((s) => ({
     title: s.title,
     url: s.url,
     sourceLabel: s.provider,
@@ -63,9 +63,9 @@ function toLegacyResponse(result: BuddyAskResponse): ResponsePayload {
 
   const answerText = [
     `**${result.answer.title}**`,
-    result.answer.summaryMarkdown,
-    ...result.answer.sections.map((s) => `\n\n**${s.heading}**\n${s.markdown}`),
-    result.answer.safety.messageMarkdown ? `\n\n${result.answer.safety.messageMarkdown}` : '',
+    result.answer.summary,
+    ...result.answer.sections.map((s) => `\n\n**${s.heading}**\n${s.text}`),
+    result.answer.safety.message ? `\n\n${result.answer.safety.message}` : '',
   ]
     .filter(Boolean)
     .join('\n\n')
@@ -73,12 +73,12 @@ function toLegacyResponse(result: BuddyAskResponse): ResponsePayload {
 
   return {
     answer: answerText,
-    recommendedActions: result.recommendedActions || [],
+    recommendedActions: [],
     references: refs,
     citations: '',
     safety: {
       level: result.answer.safety.level,
-      signposting: result.answer.safety.messageMarkdown,
+      signposting: result.answer.safety.message,
     },
   };
 }

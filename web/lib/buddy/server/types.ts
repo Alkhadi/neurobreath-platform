@@ -1,46 +1,35 @@
 export type BuddySafetyLevel = 'none' | 'caution' | 'urgent' | 'emergency';
 
-export type BuddySourceProvider = 'NHS' | 'MedlinePlus' | 'PubMed' | 'NeuroBreath';
+export type BuddyCitationProvider = 'NeuroBreath' | 'NHS' | 'MedlinePlus' | 'PubMed';
 
 export interface BuddyAnswerSection {
   heading: string;
-  markdown: string;
+  text: string;
 }
 
 export interface BuddyAnswer {
   title: string;
-  summaryMarkdown: string;
+  summary: string;
   sections: BuddyAnswerSection[];
   safety: {
     level: BuddySafetyLevel;
-    messageMarkdown?: string;
+    message?: string;
   };
-  tailoredQuestions?: string[];
 }
 
-export interface BuddySource {
-  provider: BuddySourceProvider;
+export interface BuddyCitation {
+  provider: BuddyCitationProvider;
   title: string;
   url: string;
-  dateLabel?: string;
   lastReviewed?: string;
-  reliabilityBadge?: 'Primary' | 'Secondary';
 }
 
 export interface BuddyAskResponse {
   answer: BuddyAnswer;
-  sources: BuddySource[];
-  recommendedActions?: Array<{
-    id: string;
-    type: 'navigate' | 'scroll' | 'start_exercise' | 'open_tool' | 'download';
-    label: string;
-    description?: string;
-    icon?: 'target' | 'play' | 'book' | 'timer' | 'file' | 'heart' | 'brain' | 'sparkles' | 'map';
-    target?: string;
-    primary?: boolean;
-  }>;
-  debug?: {
-    matchedTopic?: string;
-    providerUsed?: BuddySourceProvider;
+  citations: BuddyCitation[];
+  meta: {
+    usedInternal: boolean;
+    usedExternal: boolean;
+    internalCoverage: 'high' | 'partial' | 'none';
   };
 }

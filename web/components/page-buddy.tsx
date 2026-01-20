@@ -16,9 +16,7 @@ import {
 import { getPageConfig, platformInfo, type PageBuddyConfig } from '@/lib/page-buddy-configs';
 import { loadPreferences } from '@/lib/ai/core/userPreferences';
 import { cn } from '@/lib/utils';
-import { useSpeechController } from '@/hooks/use-speech-controller';
-import { ReferencesSection, type ReferenceItemProps } from '@/components/buddy/reference-item';
-import { TailoredNextSteps, type RecommendedAction } from '@/components/buddy/tailored-next-steps';
+import { useSpeechSynthesis } from '@/hooks/use-speech-synthesis';
 import { BuddyErrorBoundary } from '@/components/buddy/error-boundary';
 import { SafeIcon } from '@/components/buddy/safe-icon';
 import { BuddyAnswerCard } from '@/components/buddy/answer-card';
@@ -29,11 +27,10 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
-  recommendedActions?: RecommendedAction[];
-  references?: ReferenceItemProps[];
   availableTools?: string[];
   buddyAnswer?: BuddyAskResponse['answer'];
-  buddySources?: BuddyAskResponse['sources'];
+  buddyCitations?: BuddyAskResponse['citations'];
+  buddyMeta?: BuddyAskResponse['meta'];
 }
 
 interface PageBuddyProps {
@@ -48,7 +45,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [autoSpeak, setAutoSpeak] = useState(false);
-  const { speak, stop, isSpeaking, speakingMessageId } = useSpeechController();
+  const { speak, stop, isSpeaking } = useSpeechSynthesis();
   const [showTour, setShowTour] = useState(false);
   const [currentTourStep, setCurrentTourStep] = useState(0);
   const [mounted, setMounted] = useState(false);
@@ -83,12 +80,19 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
         }
       }, 100);
     } else {
+      // Stop any ongoing speech when dialog closes.
+      stop();
       // Restore focus when dialog closes
       if (lastFocusedElement.current && typeof lastFocusedElement.current.focus === 'function') {
         lastFocusedElement.current.focus();
       }
     }
-  }, [isOpen, isMinimized]);
+  }, [isOpen, isMinimized, stop]);
+
+  // Stop any ongoing speech when minimized.
+  useEffect(() => {
+    if (isMinimized) stop();
+  }, [isMinimized, stop]);
   
   // Initialize on mount
   useEffect(() => {
@@ -616,7 +620,27 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   
   // Generate AI response
   const generateResponse = useCallback(async (userMessage: string): Promise<Message> => {
-    const localFallback = getLocalResponse(userMessage, config);
+    const q = userMessage.toLowerCase();
+    const isNavigationIntent =
+      q.includes('tour') ||
+      q.includes('map') ||
+      q.includes("what's on this page") ||
+      q.includes('what is on this page') ||
+      q.includes('page content') ||
+      q.includes('sections') ||
+      ((q.includes('show') || q.includes('find') || q.includes('where') || q.includes('take me') || q.includes('scroll')) &&
+        pageContent.sections.length > 0);
+
+    if (isNavigationIntent) {
+      const local = getLocalResponse(userMessage, config);
+      return {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: local,
+        timestamp: new Date(),
+        availableTools: pageContent.features,
+      };
+    }
 
     // Load user preferences for jurisdiction
     const prefs = loadPreferences();
@@ -658,36 +682,36 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       }
 
       const answer = data?.answer;
-      const sources = data?.sources || [];
-      const references: ReferenceItemProps[] = sources.map((s) => ({
-        title: s.title,
-        url: s.url,
-        sourceLabel: s.provider,
-        updatedAt: s.lastReviewed,
-        isExternal: s.provider !== 'NeuroBreath',
-      }));
+      const citations = data?.citations || [];
+      const meta = data?.meta;
 
       const contentForAria =
         answer
-          ? [answer.title, answer.summaryMarkdown, ...answer.sections.map((s) => `${s.heading}. ${s.markdown}`)].join('\n')
-          : localFallback;
+          ? [
+              answer.title,
+              answer.summary,
+              ...answer.sections.map((s) => `${s.heading}. ${s.text}`),
+              answer.safety.message ? `When to get help. ${answer.safety.message}` : '',
+            ]
+              .filter(Boolean)
+              .join('\n')
+          : "I couldn't find a verified answer for that right now. Try rephrasing, or ask about what's on this page.";
 
       return {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: contentForAria,
         timestamp: new Date(),
-        recommendedActions: data?.recommendedActions || [],
-        references,
         availableTools: pageContent.features,
         buddyAnswer: answer,
-        buddySources: sources,
+        buddyCitations: citations,
+        buddyMeta: meta,
       };
     } catch (error) {
       console.error('[Buddy] AI response error:', error);
       throw error;
     }
-  }, [config, getLocalResponse, pageContent.features, pathname]);
+  }, [config, getLocalResponse, pageContent.features, pageContent.sections.length, pathname]);
 
   
   // Unified send pipeline for typed sends + quick questions.
@@ -713,6 +737,9 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     setInput('');
     setIsLoading(true);
 
+    // If audio is speaking, stop immediately before sending the next request.
+    stop();
+
     // Keep focus in the composer for fast follow-ups.
     queueMicrotask(() => inputRef.current?.focus());
 
@@ -721,7 +748,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       setMessages((prev) => [...prev, assistantMessage]);
 
       if (autoSpeak && assistantMessage.content) {
-        speak(assistantMessage.id, assistantMessage.content);
+        speak(assistantMessage.content);
       }
 
       requestAnimationFrame(() => inputRef.current?.focus());
@@ -746,7 +773,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [autoSpeak, generateResponse, input, isLoading, speak]);
+  }, [autoSpeak, generateResponse, input, isLoading, speak, stop]);
 
   const retryLast = useCallback(() => {
     if (!lastSentMessageRef.current) return;
@@ -765,7 +792,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       };
       setMessages(prev => [...prev, alreadyActiveMessage]);
       if (autoSpeak) {
-        speak(alreadyActiveMessage.id, alreadyActiveMessage.content);
+        speak(alreadyActiveMessage.content);
       }
       return;
     }
@@ -796,7 +823,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     };
     setMessages(prev => [...prev, tourIntro]);
     if (autoSpeak) {
-      speak(tourIntro.id, tourIntro.content);
+      speak(tourIntro.content);
     }
   };
   
@@ -821,7 +848,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       };
       setMessages(prev => [...prev, tourEnd]);
       if (autoSpeak) {
-        speak(tourEnd.id, tourEnd.content);
+        speak(tourEnd.content);
       }
       return;
     }
@@ -842,7 +869,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     };
     setMessages(prev => [...prev, tourStep]);
     if (autoSpeak) {
-      speak(tourStep.id, tourStep.content);
+      speak(tourStep.content);
     }
   };
   
@@ -1067,7 +1094,8 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
                         {message.buddyAnswer ? (
                           <BuddyAnswerCard
                             answer={message.buddyAnswer}
-                            sources={message.buddySources || []}
+                            citations={message.buddyCitations || []}
+                            meta={message.buddyMeta}
                             renderLine={renderMessage}
                           />
                         ) : (
@@ -1092,18 +1120,18 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            if (isSpeaking && speakingMessageId === message.id) {
+                            if (isSpeaking) {
                               stop();
                               return;
                             }
-                            speak(message.id, message.content);
+                            speak(message.content);
                           }}
                           aria-label="Listen to this message"
                         >
                           <Volume2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 mr-1" />
                           <span className="text-[10px] sm:text-xs md:text-sm">Listen</span>
                         </Button>
-                        {isSpeaking && speakingMessageId === message.id && (
+                        {isSpeaking && (
                           <Button
                             type="button"
                             variant="outline"
@@ -1140,19 +1168,6 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
                         )}
                       </Button>
                     </div>
-                    
-                    {/* Tailored Next Steps */}
-                    {message.recommendedActions && message.recommendedActions.length > 0 && (
-                      <TailoredNextSteps 
-                        actions={message.recommendedActions}
-                        availableTools={message.availableTools}
-                      />
-                    )}
-                    
-                    {/* References Section */}
-                    {message.references && message.references.length > 0 && (
-                      <ReferencesSection references={message.references} />
-                    )}
                   </div>
                 </div>
                 );

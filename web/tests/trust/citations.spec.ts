@@ -8,7 +8,7 @@ test.describe('Citations component', () => {
       const store = { text: '' };
 
       // Expose for debugging if needed.
-      (window as any).__nbClipboardStore = store;
+      (window as Window & { __nbClipboardStore?: typeof store }).__nbClipboardStore = store;
 
       // WebKit projects can reject clipboard permissions; stub clipboard API instead.
       Object.defineProperty(navigator, 'clipboard', {

@@ -2,10 +2,10 @@
  * NeuroBreath Buddy DOM Audit - Automated E2E Tests
  * 
  * This test suite verifies the implementation of NeuroBreath Buddy upgrades:
- * 1. External references are NOT clickable (non-clickable text with copy buttons)
- * 2. Stop button cancels speech immediately
+ * 1. External citations are NOT clickable
+ * 2. Listen/Stop controls work reliably
  * 3. API answer is rendered verbatim (exact match)
- * 4. Tailored Next Steps are internal actions only
+ * 4. Visible answer shows ONLY the current response
  */
 
 import { test, expect, Page } from '@playwright/test';
@@ -229,31 +229,29 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
     await mockBuddyApi(page, {
       answer: {
         title: 'Breathing exercises',
-        summaryMarkdown: 'Here is some information about breathing exercises.',
+        summary: 'Here is some information about breathing exercises.',
         sections: [],
         safety: { level: 'none' },
       },
-      sources: [
+      citations: [
         {
           provider: 'NHS',
           title: 'NHS - Breathing exercises',
           url: 'https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/breathing-exercises-for-stress/',
-          reliabilityBadge: 'NHS',
           lastReviewed: '2024-01-01',
         },
         {
           provider: 'MedlinePlus',
           title: 'MedlinePlus - Breathing',
           url: 'https://medlineplus.gov/',
-          reliabilityBadge: 'MedlinePlus',
         },
         {
           provider: 'NeuroBreath',
           title: 'Internal Resource',
           url: '/breathing',
-          reliabilityBadge: 'NeuroBreath',
         },
       ],
+      meta: { usedInternal: true, usedExternal: true, internalCoverage: 'partial' },
     });
 
     const dialog = await openBuddyDialog(page);
@@ -277,12 +275,13 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
     await mockBuddyApi(page, {
       answer: {
         title: 'TTS test',
-        summaryMarkdown:
+        summary:
           'This is a test message that will be spoken aloud using text-to-speech. The quick brown fox jumps over the lazy dog. This should give us enough time to test the stop functionality.',
         sections: [],
         safety: { level: 'none' },
       },
-      sources: [],
+      citations: [],
+      meta: { usedInternal: true, usedExternal: false, internalCoverage: 'high' },
     });
 
     const dialog = await openBuddyDialog(page);
@@ -294,11 +293,14 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
     console.log('✓ Listen button is visible');
 
     // Click Listen to start speech.
-    // NOTE: Across Playwright browsers, Web Speech support varies; we validate
-    // that the control is present and clickable without asserting on Stop.
     await listenButton.click();
-    await page.waitForTimeout(250);
-    console.log('✓ Listen button is clickable');
+    const stopButton = dialog.getByRole('button', { name: 'Stop speaking' }).last();
+    await expect(stopButton).toBeVisible({ timeout: 5000 });
+    console.log('✓ Stop button appears after listening');
+
+    await stopButton.click();
+    await expect(stopButton).toBeHidden({ timeout: 5000 });
+    console.log('✓ Stop button hides after stopping');
 
     // Take screenshot
     await page.screenshot({ path: 'test-results/buddy-stop-button.png', fullPage: true });
@@ -311,11 +313,12 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
     await mockBuddyApi(page, {
       answer: {
         title: 'Verbatim test',
-        summaryMarkdown: verbatimAnswer,
+        summary: verbatimAnswer,
         sections: [],
         safety: { level: 'none' },
       },
-      sources: [],
+      citations: [],
+      meta: { usedInternal: true, usedExternal: false, internalCoverage: 'high' },
     });
 
     const dialog = await openBuddyDialog(page);
@@ -334,97 +337,36 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
     await page.screenshot({ path: 'test-results/buddy-verbatim-answer.png', fullPage: true });
   });
 
-  test('TEST 4: Tailored Next Steps are internal actions only', async ({ page }) => {
-    // Mock with recommended actions
+  test('TEST 4: Visible answer shows ONLY the current response', async ({ page }) => {
+    const dialog = await openBuddyDialog(page);
+
     await mockBuddyApi(page, {
       answer: {
-        title: 'Next steps',
-        summaryMarkdown: 'Try starting with box breathing.',
+        title: 'First answer',
+        summary: 'FIRST_RESPONSE_MARKER_abc123',
         sections: [],
         safety: { level: 'none' },
       },
-      sources: [],
-      recommendedActions: [
-        {
-          id: 'start-box-breathing',
-          type: 'navigate',
-          label: 'Start Box Breathing',
-          description: 'Open the Breathing Exercises page',
-          target: '/breathing',
-          icon: 'play',
-          primary: true,
-        },
-        {
-          id: 'scroll-timer',
-          type: 'scroll',
-          label: 'View Timer',
-          description: 'Scroll to the breathing timer on this page',
-          target: 'breathing-timer',
-          icon: 'timer',
-        },
-        {
-          id: 'start-exercise',
-          type: 'start_exercise',
-          label: 'Begin Exercise',
-          description: 'Start the exercise workflow',
-          target: 'box-breathing',
-          icon: 'target',
-        },
-      ],
-      availableTools: ['timer', 'form', 'progress-tracker'],
+      citations: [],
+      meta: { usedInternal: true, usedExternal: false, internalCoverage: 'high' },
     });
+    await sendMessageAndWaitForBuddyApi(page, 'FORCE_AI_TEST_FIRST');
+    await expect(dialog).toContainText('FIRST_RESPONSE_MARKER_abc123', { timeout: 10000 });
 
-    const dialog = await openBuddyDialog(page);
-    await sendMessageAndWaitForBuddyApi(page, 'FORCE_AI_TEST_ACTIONS_1c7d');
-
-    // ASSERTION 1: Tailored Next Steps section exists
-    const nextStepsSection = dialog.locator('text=Tailored Next Steps').or(
-      dialog.locator('text=Recommended Actions')
-    );
-    
-    if (await nextStepsSection.count() > 0) {
-      await expect(nextStepsSection).toBeVisible();
-      console.log('✓ "Tailored Next Steps" section is visible');
-    } else {
-      console.log('⚠ "Tailored Next Steps" section not found - may be conditionally rendered');
-    }
-
-    // ASSERTION 2: Action buttons exist
-    const actionButtons = dialog.locator('button').filter({ 
-      hasText: /Start Box Breathing|View Timer|Begin Exercise/i 
+    await mockBuddyApi(page, {
+      answer: {
+        title: 'Second answer',
+        summary: 'SECOND_RESPONSE_MARKER_def456',
+        sections: [],
+        safety: { level: 'none' },
+      },
+      citations: [],
+      meta: { usedInternal: true, usedExternal: false, internalCoverage: 'high' },
     });
-    
-    const actionButtonCount = await actionButtons.count();
-    console.log(`✓ Found ${actionButtonCount} action button(s)`);
+    await sendMessageAndWaitForBuddyApi(page, 'FORCE_AI_TEST_SECOND');
 
-    if (actionButtonCount > 0) {
-      // ASSERTION 3: Clicking action stays on same domain (internal navigation)
-      const firstActionButton = actionButtons.first();
-
-      await expect(firstActionButton).toBeVisible({ timeout: 5000 });
-      await firstActionButton.click({ force: true });
-      await page.waitForURL('**/breathing**', { timeout: 10000 });
-
-      const newUrl = page.url();
-      const urlObj = new URL(newUrl);
-
-      // Verify still on localhost/same domain
-      expect(urlObj.hostname).toMatch(/localhost|127\.0\.0\.1/);
-      console.log(`✓ Navigation stayed internal: ${newUrl}`);
-    }
-
-    // ASSERTION 4: "On this page" context shows available tools
-    const availableToolsText = dialog.locator('text=On this page:').or(
-      dialog.locator('text=Available:')
-    );
-    
-    if (await availableToolsText.count() > 0) {
-      await expect(availableToolsText).toBeVisible();
-      console.log('✓ "On this page" context is visible');
-    }
-
-    // Take screenshot
-    await page.screenshot({ path: 'test-results/buddy-tailored-actions.png', fullPage: true });
+    await expect(dialog).toContainText('SECOND_RESPONSE_MARKER_def456', { timeout: 10000 });
+    await expect(dialog).not.toContainText('FIRST_RESPONSE_MARKER_abc123', { timeout: 10000 });
   });
 
   test('TEST 5: Complete integration test', async ({ page }) => {
@@ -432,30 +374,19 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
     await mockBuddyApi(page, {
       answer: {
         title: 'Integration test',
-        summaryMarkdown: 'INTEGRATION_TEST_MARKER: Box breathing is an effective technique for managing anxiety and stress.',
+        summary: 'INTEGRATION_TEST_MARKER: Box breathing is an effective technique for managing anxiety and stress.',
         sections: [],
         safety: { level: 'none' },
       },
-      recommendedActions: [
-        {
-          id: 'try-box',
-          type: 'navigate',
-          label: 'Try Box Breathing',
-          description: 'Open the breathing exercises tool',
-          target: '/breathing',
-          icon: 'play',
-          primary: true,
-        },
-      ],
-      sources: [
+      citations: [
         {
           provider: 'NHS',
           title: 'NHS Mental Health',
           url: 'https://www.nhs.uk/mental-health/',
-          reliabilityBadge: 'NHS',
           lastReviewed: '2024-01-01',
         },
       ],
+      meta: { usedInternal: false, usedExternal: true, internalCoverage: 'none' },
     });
 
     const dialog = await openBuddyDialog(page);
@@ -500,30 +431,20 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
       await mockBuddyApi(page, {
         answer: {
           title: 'What is ADHD?',
-          summaryMarkdown:
+          summary:
             'ADHD (Attention Deficit Hyperactivity Disorder) is a neurodevelopmental condition affecting focus, impulse control, and activity levels.',
           sections: [],
           safety: { level: 'none' },
         },
-        recommendedActions: [
-          {
-            id: 'adhd-hub',
-            type: 'navigate',
-            label: 'Visit ADHD Hub',
-            description: 'Explore ADHD tools',
-            target: '/adhd',
-            primary: true,
-          }
-        ],
-        sources: [
+        citations: [
           {
             provider: 'NHS',
             title: 'NHS: ADHD Overview',
             url: 'https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/',
-            reliabilityBadge: 'NHS',
             lastReviewed: '2024-01-01',
           },
         ],
+        meta: { usedInternal: false, usedExternal: true, internalCoverage: 'none' },
       });
       
       // Open Buddy dialog
@@ -548,12 +469,6 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
       // Verify response with citations appears
       await expect(dialog).toContainText('neurodevelopmental condition', { timeout: 10000 });
       await expect(dialog.getByRole('button', { name: /Evidence sources/i })).toBeVisible({ timeout: 5000 });
-      
-      // Verify recommended actions visible (mobile may need scrolling)
-      const recommendedSection = dialog.locator('text=Recommended Actions').or(dialog.locator('text=Next Steps'));
-      if (await recommendedSection.isVisible({ timeout: 2000 }).catch(() => false)) {
-        console.log(`✓ Recommended actions visible on ${viewport.name}`);
-      }
       
       // Screenshot for visual regression
       await page.screenshot({ 
@@ -583,19 +498,18 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
         body: JSON.stringify({
           answer: {
             title: 'Quick question',
-            summaryMarkdown: `Answered: ${payload.question}`,
+              summary: `Answered: ${payload.question}`,
             sections: [],
             safety: { level: 'none' },
           },
-          recommendedActions: [],
-          sources: [
+            citations: [
             {
               provider: 'NeuroBreath',
               title: 'Test source',
               url: '/uk',
-              reliabilityBadge: 'NeuroBreath',
             },
           ],
+            meta: { usedInternal: true, usedExternal: false, internalCoverage: 'high' },
         }),
       });
     });
@@ -607,10 +521,11 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
     const chipButton = dialog.locator('button').filter({ hasText: /What can you help me with|Show me around|Breathing exercises/i }).first();
     
     if (await chipButton.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await chipButton.click();
-      
-      // Wait for response
-      await page.waitForTimeout(2000);
+        const [request] = await Promise.all([
+          page.waitForRequest((req) => BUDDY_API_ROUTE.test(req.url()) && req.method() === 'POST'),
+          chipButton.click({ force: true }),
+        ]);
+        await request.response();
       
       // Verify response appears with citations
       await expect(dialog).toContainText('Answered:', { timeout: 5000 });
@@ -634,12 +549,12 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
         body: JSON.stringify({
           answer: {
             title: 'Typed send',
-            summaryMarkdown: 'OK: typed send works',
+            summary: 'OK: typed send works',
             sections: [],
             safety: { level: 'none' },
           },
-          recommendedActions: [],
-          sources: [],
+          citations: [],
+          meta: { usedInternal: true, usedExternal: false, internalCoverage: 'high' },
         }),
       });
     });
@@ -685,12 +600,12 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
         body: JSON.stringify({
           answer: {
             title: 'Recovered',
-            summaryMarkdown: 'Recovered after retry',
+            summary: 'Recovered after retry',
             sections: [],
             safety: { level: 'none' },
           },
-          recommendedActions: [],
-          sources: [],
+          citations: [],
+          meta: { usedInternal: true, usedExternal: false, internalCoverage: 'high' },
         }),
       });
     });
