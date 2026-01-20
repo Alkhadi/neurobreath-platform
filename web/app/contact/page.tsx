@@ -208,7 +208,7 @@ export default function ContactPage() {
                   name="name"
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                  placeholder="John Doe"
+                  placeholder="Moe Koroma"
                 />
               </div>
               <div>
@@ -268,10 +268,15 @@ export default function ContactPage() {
                       <FaEnvelope className="text-xl" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-800">Email</h4>
-                      <a href="mailto:support@nbcard.app" className="text-purple-600 hover:text-purple-700">
-                        support@nbcard.app
-                      </a>
+                      <h4 className="font-semibold text-gray-800">Email:</h4>
+                      <div className="flex flex-col">
+                        <a href="mailto:info@neurobreath.co.uk" className="text-purple-600 hover:text-purple-700">
+                          info@neurobreath.co.uk
+                        </a>
+                        <a href="mailto:support@nbcard.app" className="text-purple-600 hover:text-purple-700">
+                          support@nbcard.app
+                        </a>
+                      </div>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -280,8 +285,8 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h4 className="font-semibold text-gray-800">Phone</h4>
-                      <a href="tel:+1234567890" className="text-purple-600 hover:text-purple-700">
-                        +1 (234) 567-890
+                      <a href="tel:+44232567890" className="text-purple-600 hover:text-purple-700">
+                        +44 (232) 567-890
                       </a>
                     </div>
                   </div>
@@ -291,17 +296,13 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h4 className="font-semibold text-gray-800">Location</h4>
-                      <p className="text-gray-600">San Francisco, CA</p>
+                      <div className="text-gray-600">
+                        <p>SE 15</p>
+                        <p>London United Kingdom</p>
+                        <p>England.</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-3">Business Hours</h3>
-                <div className="space-y-2 text-gray-600">
-                  <p><span className="font-semibold">Monday - Friday:</span> 9:00 AM - 6:00 PM</p>
-                  <p><span className="font-semibold">Saturday:</span> 10:00 AM - 4:00 PM</p>
-                  <p><span className="font-semibold">Sunday:</span> Closed</p>
                 </div>
               </div>
             </div>
