@@ -29,7 +29,7 @@ async function mockBuddyApi(page: Page, body: unknown) {
 async function sendMessageAndWaitForBuddyApi(page: Page, message: string) {
   const dialog = page.locator('div[role="dialog"]').filter({ hasText: 'NeuroBreath Buddy' });
 
-  const input = dialog.locator('input[aria-label="Type your question"]');
+  const input = dialog.getByLabel('Type your question');
   await expect(input).toBeVisible({ timeout: 5000 });
   await input.fill(message);
   await expect(input).toHaveValue(message, { timeout: 5000 });
@@ -74,7 +74,7 @@ async function sendMessage(page: Page, message: string) {
   const dialog = page.locator('div[role="dialog"]').filter({ hasText: 'NeuroBreath Buddy' });
   
   // Find the input by aria-label
-  const input = dialog.locator('input[aria-label="Type your question"]');
+  const input = dialog.getByLabel('Type your question');
   await expect(input).toBeVisible({ timeout: 5000 });
   
   await input.fill(message);
@@ -499,7 +499,7 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
       const header = dialog.locator('h2:has-text("NeuroBreath Buddy")');
       await expect(header).toBeVisible({ timeout: 5000 });
       
-      const input = dialog.locator('input[aria-label="Type your question"]');
+      const input = dialog.getByLabel('Type your question');
       await expect(input).toBeVisible({ timeout: 5000 });
       
       // Send a message and wait for response
@@ -574,5 +574,100 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
     } else {
       console.log('ℹ Quick question chips not found (may not be on this page)');
     }
+  });
+
+  test('Typed send: Enter sends, Shift+Enter adds newline', async ({ page }) => {
+    await page.goto('/uk');
+
+    let requestCount = 0;
+    await page.route(/\/api\/ai-assistant(\?.*)?$/, async (route) => {
+      requestCount += 1;
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          answer: 'OK: typed send works',
+          recommendedActions: [],
+          references: [],
+          citations: '**Evidence:** Test source',
+        }),
+      });
+    });
+
+    const dialog = await openBuddyDialog(page);
+    const input = dialog.getByLabel('Type your question');
+
+    await input.fill('Line 1');
+    await input.press('Shift+Enter');
+    await input.type('Line 2');
+    await expect(input).toHaveValue(/Line 1\nLine 2/);
+
+    const [request] = await Promise.all([
+      page.waitForRequest((req) => /\/api\/ai-assistant/.test(req.url()) && req.method() === 'POST'),
+      input.press('Enter'),
+    ]);
+    await request.response();
+
+    await expect(input).toHaveValue('', { timeout: 5000 });
+    await expect(dialog).toContainText('OK: typed send works', { timeout: 10000 });
+    expect(requestCount).toBe(1);
+  });
+
+  test('Surfaces errors and Retry re-sends', async ({ page }) => {
+    await page.goto('/uk');
+
+    let callCount = 0;
+    await page.route(/\/api\/ai-assistant(\?.*)?$/, async (route) => {
+      callCount += 1;
+
+      if (callCount === 1) {
+        await route.fulfill({
+          status: 500,
+          contentType: 'application/json',
+          body: JSON.stringify({ error: 'server exploded' }),
+        });
+        return;
+      }
+
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          answer: 'Recovered after retry',
+          recommendedActions: [],
+          references: [],
+          citations: '**Evidence:** Test source',
+        }),
+      });
+    });
+
+    const dialog = await openBuddyDialog(page);
+    const input = dialog.getByLabel('Type your question');
+    await input.fill('Trigger an error');
+
+    const sendButton = dialog.locator('button[aria-label="Send message"]');
+    await expect(sendButton).toBeEnabled();
+
+    await Promise.all([
+      page.waitForRequest((req) => /\/api\/ai-assistant/.test(req.url()) && req.method() === 'POST'),
+      sendButton.click({ force: true }),
+    ]);
+
+    const alert = dialog.locator('[role="alert"]');
+    await expect(alert).toBeVisible({ timeout: 10000 });
+    await expect(alert).toContainText('Request failed (500).', { timeout: 10000 });
+
+    await expect(input).toHaveValue('Trigger an error', { timeout: 5000 });
+
+    const retry = alert.getByRole('button', { name: 'Retry' });
+    await expect(retry).toBeVisible();
+
+    await Promise.all([
+      page.waitForRequest((req) => /\/api\/ai-assistant/.test(req.url()) && req.method() === 'POST'),
+      retry.click({ force: true }),
+    ]);
+
+    await expect(dialog).toContainText('Recovered after retry', { timeout: 10000 });
+    expect(callCount).toBeGreaterThanOrEqual(2);
   });
 });

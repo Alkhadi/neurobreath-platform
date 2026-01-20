@@ -4,9 +4,9 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
 import { 
   Bot, Send, Volume2, VolumeX, Sparkles, 
   MessageCircle, Map, ChevronRight,
@@ -14,7 +14,6 @@ import {
   RotateCcw, Copy, Check, ExternalLink, StopCircle
 } from 'lucide-react';
 import { getPageConfig, platformInfo, type PageBuddyConfig } from '@/lib/page-buddy-configs';
-import { getEvidenceBasedAnswer, formatResponseWithCitations } from '@/lib/page-buddy-knowledge';
 import { loadPreferences } from '@/lib/ai/core/userPreferences';
 import { cn } from '@/lib/utils';
 import { useSpeechController } from '@/hooks/use-speech-controller';
@@ -56,9 +55,13 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     features: string[];
   }>({ headings: [], buttons: [], sections: [], features: [] });
   const scrollRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const lastFocusedElement = useRef<HTMLElement | null>(null);
+  const isComposingRef = useRef(false);
+  const lastSentMessageRef = useRef<string | null>(null);
+  const [lastError, setLastError] = useState<string | null>(null);
+  const lastInitializedPathRef = useRef<string | null>(null);
   
   const config = getPageConfig(pathname);
   
@@ -103,48 +106,57 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   // Scan page content dynamically
   const scanPageContent = useCallback(() => {
     if (typeof window === 'undefined') return;
-    
-    // Give the page time to render
+
+    const schedule = (cb: () => void) => {
+      if (typeof window.requestIdleCallback === 'function') {
+        window.requestIdleCallback(() => cb(), { timeout: 1000 });
+        return;
+      }
+      setTimeout(cb, 0);
+    };
+
     setTimeout(() => {
-      const headings: { text: string; id: string; level: number }[] = [];
-      const buttons: { text: string; id: string }[] = [];
-      const sections: { name: string; id: string }[] = [];
-      const features: string[] = [];
-      
-      // Scan headings
-      document.querySelectorAll('h1, h2, h3').forEach((heading) => {
-        const text = heading.textContent?.trim();
-        const id = heading.id || heading.textContent?.toLowerCase().replace(/\s+/g, '-') || '';
-        const level = parseInt(heading.tagName.substring(1));
-        if (text) headings.push({ text, id, level });
+      schedule(() => {
+        try {
+          const headings: { text: string; id: string; level: number }[] = [];
+          const buttons: { text: string; id: string }[] = [];
+          const sections: { name: string; id: string }[] = [];
+          const features: string[] = [];
+
+          document.querySelectorAll('h1, h2, h3').forEach((heading) => {
+            const text = heading.textContent?.trim();
+            const id = heading.id || heading.textContent?.toLowerCase().replace(/\s+/g, '-') || '';
+            const level = parseInt(heading.tagName.substring(1));
+            if (text) headings.push({ text, id, level });
+          });
+
+          document.querySelectorAll('button[aria-label], a[href^="/"]').forEach((el, idx) => {
+            const text = el.getAttribute('aria-label') || el.textContent?.trim();
+            const id = el.id || `element-${idx}`;
+            if (text && text.length < 50) buttons.push({ text, id });
+          });
+
+          document.querySelectorAll('section[id], [data-section], [role="region"]').forEach((section) => {
+            const name = section.getAttribute('aria-label') ||
+              section.querySelector('h2, h3')?.textContent?.trim() ||
+              section.id.replace(/-/g, ' ');
+            const id = section.id || section.getAttribute('data-section') || '';
+            if (name && id) sections.push({ name, id });
+          });
+
+          if (document.querySelector('[data-timer], [class*="timer"]')) features.push('Timer');
+          if (document.querySelector('[data-quest], [class*="quest"]')) features.push('Quests');
+          if (document.querySelector('form')) features.push('Form');
+          if (document.querySelector('[class*="chart"], canvas')) features.push('Chart/Visualization');
+          if (document.querySelector('[data-download], [download]')) features.push('Downloads');
+          if (document.querySelector('video, audio')) features.push('Media Player');
+
+          setPageContent({ headings, buttons, sections, features });
+        } catch (error) {
+          console.error('[Buddy] Page scan error:', error);
+        }
       });
-      
-      // Scan interactive buttons and links
-      document.querySelectorAll('button[aria-label], a[href^="/"]').forEach((el, idx) => {
-        const text = el.getAttribute('aria-label') || el.textContent?.trim();
-        const id = el.id || `element-${idx}`;
-        if (text && text.length < 50) buttons.push({ text, id });
-      });
-      
-      // Scan sections with IDs or data attributes
-      document.querySelectorAll('section[id], [data-section], [role="region"]').forEach((section) => {
-        const name = section.getAttribute('aria-label') || 
-                    section.querySelector('h2, h3')?.textContent?.trim() ||
-                    section.id.replace(/-/g, ' ');
-        const id = section.id || section.getAttribute('data-section') || '';
-        if (name && id) sections.push({ name, id });
-      });
-      
-      // Detect page features
-      if (document.querySelector('[data-timer], [class*="timer"]')) features.push('Timer');
-      if (document.querySelector('[data-quest], [class*="quest"]')) features.push('Quests');
-      if (document.querySelector('form')) features.push('Form');
-      if (document.querySelector('[class*="chart"], canvas')) features.push('Chart/Visualization');
-      if (document.querySelector('[data-download], [download]')) features.push('Downloads');
-      if (document.querySelector('video, audio')) features.push('Media Player');
-      
-      setPageContent({ headings, buttons, sections, features });
-    }, 500);
+    }, 300);
   }, []);
   
   // Generate dynamic welcome message based on page content
@@ -171,22 +183,37 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     return baseWelcome;
   }, [config.welcomeMessage, pageContent]);
 
-  // Reset messages when page changes
+  // Initialize/reset chat only when the route changes. Page scans can update `pageContent`
+  // after the user has started chatting, so we must not clobber the message history.
   useEffect(() => {
-    if (mounted) {
-      // Scan page content
+    if (!mounted) return;
+
+    const welcomeContent = generateDynamicWelcome();
+
+    if (lastInitializedPathRef.current !== pathname) {
+      lastInitializedPathRef.current = pathname;
       scanPageContent();
-      
+
       const welcomeMessage: Message = {
         id: 'welcome',
         role: 'assistant',
-        content: generateDynamicWelcome(),
-        timestamp: new Date()
+        content: welcomeContent,
+        timestamp: new Date(),
       };
+
       setMessages([welcomeMessage]);
       setCurrentTourStep(0);
       setShowTour(false);
+      return;
     }
+
+    // Same route: only update the welcome text if the user hasn't started chatting yet.
+    setMessages((prev) => {
+      if (prev.length === 1 && prev[0]?.id === 'welcome') {
+        return [{ ...prev[0], content: welcomeContent }];
+      }
+      return prev;
+    });
   }, [generateDynamicWelcome, mounted, pathname, scanPageContent]);
   
   // Scroll to section helper
@@ -582,38 +609,9 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   
   // Generate AI response
   const generateResponse = async (userMessage: string): Promise<Message> => {
-    // PRIORITY 1: Check evidence-based knowledge system first
-    try {
-      const evidenceResponse = await getEvidenceBasedAnswer(userMessage, config.pageId);
-      if (evidenceResponse) {
-        const formattedContent = formatResponseWithCitations(evidenceResponse);
-        return {
-          id: (Date.now() + 1).toString(),
-          role: 'assistant',
-          content: formattedContent,
-          timestamp: new Date(),
-          references: [],
-        };
-      }
-    } catch (error) {
-      console.warn('Evidence knowledge system error:', error);
-    }
-    
-    // PRIORITY 2: Try local response for page-specific questions
-    const localResponse = getLocalResponse(userMessage, config);
-    const isGenericResponse = localResponse.includes('I\'m here to help you navigate');
-    
-    // If we have a specific local response, use it
-    if (!isGenericResponse) {
-      return {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: localResponse,
-        timestamp: new Date(),
-      };
-    }
-    
-    // PRIORITY 3: Use AI for conversational responses with structured output
+    const localFallback = getLocalResponse(userMessage, config);
+
+    // Always attempt the backend first so typed sends + quick questions behave consistently.
     const systemPrompt = `You are NeuroBreath Buddy, a friendly and supportive AI assistant for the ${config.pageName} page of the NeuroBreath neurodiversity support platform.
 
 Platform Mission: ${platformInfo.mission}
@@ -656,6 +654,9 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
     const prefs = loadPreferences();
 
     try {
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 30000);
+
       const response = await fetch('/api/ai-assistant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -673,8 +674,11 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
           },
           jurisdiction: prefs.regional.jurisdiction,
           systemPrompt, // Include legacy prompt for backward compatibility
-        })
+        }),
+        signal: controller.signal,
       });
+
+      window.clearTimeout(timeoutId);
 
       // Always attempt to parse JSON so we can display server-provided fallback
       // answers even when the API is in a degraded state.
@@ -685,12 +689,18 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
         data = null;
       }
 
-      if (!response.ok && !data?.answer && !data?.content) {
-        throw new Error('API error');
+      if (!response.ok) {
+        const maybeError = (data as { error?: string } | null)?.error;
+        const detail = maybeError ? ` ${maybeError}` : '';
+        throw new Error(`Request failed (${response.status}).${detail}`);
+      }
+
+      if ((data as { error?: string } | null)?.error) {
+        throw new Error((data as { error?: string })?.error || 'Assistant error');
       }
       
       // Extract answer and append citations if present
-      let finalContent = data?.answer || data?.content || localResponse;
+      let finalContent = data?.answer || data?.content || localFallback;
       if (data?.citations) {
         finalContent += '\n\n' + data.citations;
       }
@@ -706,128 +716,69 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
         availableTools: data?.availableTools || pageContent.features,
       };
     } catch (error) {
-      console.error('AI response error:', error);
-      return {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: localResponse,
-        timestamp: new Date(),
-      };
+      console.error('[Buddy] AI response error:', error);
+      throw error;
     }
   };
   
-  // Handle sending message with retry logic
-  const handleSend = async (messageText?: string, retryCount = 0): Promise<void> => {
-    const text = messageText || input.trim();
-    if (!text || isLoading) return;
-    
+  // Unified send pipeline for typed sends + quick questions.
+  const sendMessage = useCallback(async (text?: string): Promise<void> => {
+    const raw = (typeof text === 'string' ? text : input).trim();
+    if (!raw || isLoading) return;
+
+    setLastError(null);
+    lastSentMessageRef.current = raw;
+
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: text,
-      timestamp: new Date()
+      content: raw,
+      timestamp: new Date(),
     };
-    
-    setMessages(prev => [...prev, userMessage]);
+
+    setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
-    
+
+    // Keep focus in the composer for fast follow-ups.
+    queueMicrotask(() => inputRef.current?.focus());
+
     try {
-      const assistantMessage = await generateResponse(text);
-      setMessages(prev => [...prev, assistantMessage]);
-      
+      const assistantMessage = await generateResponse(raw);
+      setMessages((prev) => [...prev, assistantMessage]);
+
       if (autoSpeak && assistantMessage.content) {
         speak(assistantMessage.id, assistantMessage.content);
       }
+
+      requestAnimationFrame(() => inputRef.current?.focus());
     } catch (error) {
-      console.error('[Buddy] Error generating response:', error);
-      
-      // Retry logic (max 2 retries)
-      if (retryCount < 2) {
-        console.log(`[Buddy] Retrying... Attempt ${retryCount + 2}/3`);
-        const delay = Math.min(1000 * Math.pow(2, retryCount), 5000); // Exponential backoff, max 5s
-        await new Promise(resolve => setTimeout(resolve, delay));
-        return handleSend(text, retryCount + 1);
-      }
-      
-      // After all retries failed, show helpful error message
+      const message = error instanceof Error ? error.message : 'Something went wrong.';
+      setLastError(message);
+      toast.error('Could not send message', { description: message });
+      console.error('[Buddy] sendMessage failed:', { message: raw, error });
+
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: `I'm having trouble connecting right now. This could be due to:
-
-• **Network issues** - Check your internet connection
-• **Server load** - Try again in a moment
-• **Browser issues** - Try refreshing the page
-
-**You can still:**
-• Browse page sections below
-• Try Quick Questions
-• Click the 🗺️ map icon for a tour`,
+        content:
+          "I couldn't send that right now. Please try again.\n\nIf this keeps happening, check your connection or refresh the page.",
         timestamp: new Date(),
-        recommendedActions: [
-          {
-            id: 'refresh',
-            type: 'navigate',
-            label: 'Refresh Page',
-            description: 'Reload to fix connection issues',
-            target: window.location.href,
-            primary: false,
-          },
-        ],
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
+
+      // Restore input so the user can edit/resend.
+      setInput(raw);
+      requestAnimationFrame(() => inputRef.current?.focus());
     } finally {
       setIsLoading(false);
     }
-  };
-  
-  // Handle quick question click
-  const handleQuickQuestion = (question: string) => {
-    // Quick Question buttons should primarily produce an in-chat answer.
-    // Only a small, explicit subset should trigger navigation.
-    const q = question.toLowerCase().trim();
+  }, [autoSpeak, generateResponse, input, isLoading, speak]);
 
-    const explicitQuickNav: Record<string, { route: string; description: string }> = {
-      'take me to the adhd hub': { route: '/adhd', description: 'ADHD Hub with Focus Timer, Quests, and Skills Library' },
-      'take me to the autism hub': { route: '/autism', description: 'Autism Hub with Calm Toolkit and Education Pathways' },
-    };
-
-    const explicitNav = explicitQuickNav[q];
-    if (explicitNav) {
-      const navMessage: Message = {
-        id: `nav-${Date.now()}`,
-        role: 'assistant',
-        content: `🧭 **Navigating to ${explicitNav.description}...**\n\nOne moment while I take you there!`,
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, navMessage]);
-      setTimeout(() => {
-        router.push(explicitNav.route);
-        setIsOpen(false);
-      }, 1000);
-      return;
-    }
-    
-    // Special handling for focus session question
-    if (q.includes('focus session') || (q.includes('start') && q.includes('focus'))) {
-      const confirmMessage: Message = {
-        id: `nav-confirm-${Date.now()}`,
-        role: 'assistant',
-        content: `🎯 **Opening Focus Timer...**\n\nI'm taking you to the Focus Timer now. You can start a session and build your focus streak!\n\n💡 **Tip**: Try starting with a 15-25 minute session if you're new to the Pomodoro technique.`,
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, confirmMessage]);
-      setTimeout(() => {
-        router.push('/breathing/focus');
-        setIsOpen(false);
-      }, 1500);
-      return;
-    }
-    
-    // Otherwise, treat it as a normal question so users always get a response.
-    void handleSend(question);
-  };
+  const retryLast = useCallback(() => {
+    if (!lastSentMessageRef.current) return;
+    void sendMessage(lastSentMessageRef.current);
+  }, [sendMessage]);
   
   // Page tour - now using actual page content
   const startTour = () => {
@@ -1108,7 +1059,7 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
           
           {/* Messages */}
           {!isMinimized && (
-          <ScrollArea className="flex-1 p-3 sm:p-4 md:p-5 overflow-y-auto min-h-0" ref={scrollRef}>
+          <div className="flex-1 p-3 sm:p-4 md:p-5 overflow-y-auto min-h-0" ref={scrollRef}>
             <div className="space-y-3 sm:space-y-4">
               {messages.map((message) => (
                 <div
@@ -1249,7 +1200,7 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                 </div>
               )}
             </div>
-          </ScrollArea>
+          </div>
           )}
           
           {/* Quick questions */}
@@ -1285,7 +1236,7 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    handleQuickQuestion(question);
+                    void sendMessage(question);
                   }}
                   disabled={isLoading}
                 >
@@ -1299,29 +1250,53 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
           {/* Input area */}
           {!isMinimized && (
           <div className="p-3 sm:p-4 md:p-5 pt-2 sm:pt-2.5 md:pt-3 border-t border-border flex-shrink-0">
+            {lastError && (
+              <div className="mb-2 flex items-start justify-between gap-2 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2" role="alert" aria-live="polite">
+                <p className="text-xs sm:text-sm text-destructive">{lastError}</p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-7 px-2 text-xs"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    retryLast();
+                  }}
+                >
+                  Retry
+                </Button>
+              </div>
+            )}
             <form
               className="flex gap-1.5 sm:gap-2 md:gap-2.5"
               onSubmit={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 if (!isLoading && input.trim()) {
-                  handleSend();
+                  void sendMessage();
                 }
               }}
             >
-              <Input
+              <Textarea
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                onCompositionStart={() => {
+                  isComposingRef.current = true;
+                }}
+                onCompositionEnd={() => {
+                  isComposingRef.current = false;
+                }}
                 onKeyDown={(e) => {
-                  // Submit on Enter, but allow Shift+Enter for new lines
-                  if (e.key === 'Enter' && !e.shiftKey && !isLoading) {
+                  // Submit on Enter, but allow Shift+Enter for new lines. Avoid sending mid-IME composition.
+                  if (e.key === 'Enter' && !e.shiftKey && !isLoading && !isComposingRef.current) {
                     e.preventDefault();
-                    handleSend();
+                    void sendMessage();
                   }
                 }}
                 placeholder="Ask me about this page..."
-                className="flex-1 h-9 sm:h-10 md:h-11 text-xs sm:text-sm md:text-base touch-manipulation"
+                className="flex-1 min-h-9 sm:min-h-10 md:min-h-11 max-h-28 sm:max-h-32 md:max-h-36 resize-none text-xs sm:text-sm md:text-base touch-manipulation"
                 disabled={isLoading}
                 aria-label="Type your question"
                 aria-describedby="buddy-input-hint"
