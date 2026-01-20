@@ -47,7 +47,7 @@ jobs:
             3. Missing evidence: Hubs/pathways require Tier A sources
             4. Missing resource packs: Pathway pages need downloadable resource packs
 
-            To fix:
+            **To fix:**
             1. Run \`npm run trust:check\` locally to see detailed errors
             2. Add missing routes to \`web/lib/trust/routeRegistry.ts\`
             3. Ensure all pathways have resource packs defined
