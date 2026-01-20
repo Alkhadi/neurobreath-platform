@@ -270,6 +270,9 @@ export default function ContactPage() {
                     <div>
                       <h4 className="font-semibold text-gray-800">Email:</h4>
                       <div className="flex flex-col">
+                        <a href="mailto:admin@neurobreath.co.uk" className="text-purple-600 hover:text-purple-700">
+                          admin@neurobreath.co.uk
+                        </a>
                         <a href="mailto:info@neurobreath.co.uk" className="text-purple-600 hover:text-purple-700">
                           info@neurobreath.co.uk
                         </a>
