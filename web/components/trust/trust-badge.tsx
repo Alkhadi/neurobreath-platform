@@ -51,7 +51,11 @@ export function TrustBadge({ route, variant = 'inline', showDetails = false }: T
 function FallbackBadge({ variant }: { variant: 'inline' | 'block' }) {
   if (variant === 'block') {
     return (
-      <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+      <div
+        data-trust-badge
+        data-testid="trust-badge"
+        className="trust-badge bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4"
+      >
         <div className="flex items-start gap-2">
           <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5" />
           <div>
@@ -68,7 +72,12 @@ function FallbackBadge({ variant }: { variant: 'inline' | 'block' }) {
   }
 
   return (
-    <Badge variant="outline" className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
+    <Badge
+      data-trust-badge
+      data-testid="trust-badge"
+      variant="outline"
+      className="trust-badge bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800"
+    >
       <Info className="h-3 w-3 mr-1 text-amber-600 dark:text-amber-400" />
       Educational only
     </Badge>
@@ -117,7 +126,7 @@ function getBadgeStyle(badgeType: TrustBadgeType) {
 
 function TrustBadgeInline({ governance }: { governance: RouteGovernance }) {
   return (
-    <div className="flex flex-wrap items-center gap-2 text-sm">
+    <div data-trust-badge data-testid="trust-badge" className="trust-badge flex flex-wrap items-center gap-2 text-sm">
       {governance.badges.map((badgeType) => {
         const Icon = getBadgeIcon(badgeType);
         const style = getBadgeStyle(badgeType);
@@ -148,7 +157,11 @@ function TrustBadgeBlock({ governance, showDetails }: { governance: RouteGoverna
   const hasReviewed = governance.badges.includes('Reviewed');
   
   return (
-    <div className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
+    <div
+      data-trust-badge
+      data-testid="trust-badge"
+      className="trust-badge bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6"
+    >
       <div className="flex items-start gap-3 mb-4">
         <Shield className="h-6 w-6 text-blue-600 dark:text-blue-400 mt-0.5" />
         <div className="flex-1">
@@ -259,7 +272,7 @@ export function TrustBadgeMini({ route }: { route?: string }) {
 
   if (!governance) {
     return (
-      <div className="inline-flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400">
+      <div data-trust-badge data-testid="trust-badge" className="trust-badge inline-flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400">
         <Info className="h-3 w-3" />
         <span>Educational only</span>
       </div>
@@ -270,7 +283,7 @@ export function TrustBadgeMini({ route }: { route?: string }) {
   const hasEvidenceLinked = governance.badges.includes('Evidence-linked');
 
   return (
-    <div className="inline-flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400">
+    <div data-trust-badge data-testid="trust-badge" className="trust-badge inline-flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400">
       <Shield className="h-3 w-3 text-blue-600 dark:text-blue-400" />
       {hasReviewed && <span>Reviewed {formatReviewDate(governance.lastReviewed)}</span>}
       {hasEvidenceLinked && (

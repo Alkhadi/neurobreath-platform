@@ -4,7 +4,24 @@ const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
 test.describe('Citations component', () => {
   test('citations are copy-only and support clipboard', async ({ page }) => {
-    await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.addInitScript(() => {
+      const store = { text: '' };
+
+      // Expose for debugging if needed.
+      (window as any).__nbClipboardStore = store;
+
+      // WebKit projects can reject clipboard permissions; stub clipboard API instead.
+      Object.defineProperty(navigator, 'clipboard', {
+        value: {
+          writeText: async (text: string) => {
+            store.text = String(text ?? '');
+          },
+          readText: async () => store.text,
+        },
+        configurable: true,
+      });
+    });
+
     await page.goto(`${BASE_URL}/uk/printables/daily-routine-planner`);
 
     const citationList = page.locator('[data-citation-list]');
