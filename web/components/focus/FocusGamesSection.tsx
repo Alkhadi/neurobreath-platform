@@ -18,6 +18,12 @@ interface FocusGamesSectionProps {
 export function FocusGamesSection({ region }: FocusGamesSectionProps) {
   const regionKey = getRegionKey(region);
 
+  const resolveIcon = (iconKey: unknown) => {
+    if (typeof iconKey !== 'string') return Target;
+    const mapped = (iconMap as Record<string, unknown>)[iconKey];
+    return typeof mapped === 'function' ? (mapped as typeof Target) : Target;
+  };
+
   return (
     <Card className="p-6 mb-8">
       <h2 className="text-2xl font-bold mb-3 flex items-center gap-2">
@@ -30,7 +36,7 @@ export function FocusGamesSection({ region }: FocusGamesSectionProps) {
       </p>
       <div className="grid md:grid-cols-3 gap-4">
         {focusGames.map((game) => {
-          const Icon = iconMap[game.icon];
+          const Icon = resolveIcon(game.icon);
           return (
             <Link key={game.id} href={`/${regionKey}${game.href}`}>
               <Button variant="outline" className="w-full h-auto py-6">

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Profile, Contact, defaultProfile } from "@/lib/utils";
+import Script from "next/script";
 import { ProfileCard } from "./components/profile-card";
 import { ProfileManager } from "./components/profile-manager";
 import { ContactCapture } from "./components/contact-capture";
@@ -24,6 +25,9 @@ export default function ContactPage() {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallButton, setShowInstallButton] = useState(false);
+  const [contactSubmitStatus, setContactSubmitStatus] = useState<
+    { state: "idle" | "submitting" | "success" | "error"; message?: string }
+  >({ state: "idle" });
 
   // Load data from localStorage
   useEffect(() => {
@@ -153,20 +157,72 @@ export default function ContactPage() {
     setShowInstallButton(false);
   };
 
-  const handleContactFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+
+  const handleContactFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!turnstileSiteKey) {
+      setContactSubmitStatus({
+        state: "error",
+        message: "Spam protection is not configured yet. Please try again later.",
+      });
+      return;
+    }
+
     const formData = new FormData(e.currentTarget);
+
+    // Cloudflare injects this hidden field into the form
+    const turnstileToken = String(formData.get("cf-turnstile-response") || "").trim();
+    if (!turnstileToken) {
+      setContactSubmitStatus({ state: "error", message: "Please complete the verification check." });
+      return;
+    }
+
     const data = {
       name: formData.get("name"),
       email: formData.get("email"),
       subject: formData.get("subject"),
       message: formData.get("message"),
+      company: formData.get("company"),
+      turnstileToken,
     };
-    
-    // Here you can send the data to an API endpoint
-    console.log("Contact form submitted:", data);
-    alert("Thank you for your message! We'll get back to you soon.");
-    e.currentTarget.reset();
+
+    setContactSubmitStatus({ state: "submitting" });
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const json: unknown = await res.json().catch(() => null);
+      const maybeError =
+        json && typeof json === "object" && "error" in json
+          ? String((json as { error?: unknown }).error ?? "")
+          : "";
+
+      if (!res.ok) {
+        setContactSubmitStatus({
+          state: "error",
+          message: maybeError || "Failed to send message",
+        });
+        return;
+      }
+
+      setContactSubmitStatus({ state: "success", message: "Thanks! We’ll get back to you soon." });
+      e.currentTarget.reset();
+
+      // Best-effort reset (works when the Turnstile JS API is available)
+      try {
+        (window as unknown as { turnstile?: { reset: () => void } }).turnstile?.reset();
+      } catch {
+        // ignore
+      }
+    } catch (err) {
+      setContactSubmitStatus({ state: "error", message: "Network error. Please try again." });
+    }
   };
 
   if (!mounted) {
@@ -179,6 +235,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-blue-50 py-8 px-4">
+      <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
       <div className="max-w-6xl mx-auto">
         {/* Page Header */}
         <div className="text-center mb-8">
@@ -198,6 +255,18 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Contact Form */}
             <form onSubmit={handleContactFormSubmit} className="space-y-4">
+              {/* Honeypot field: bots often fill it, humans never see it */}
+              <div className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden">
+                <label htmlFor="company">Company</label>
+                <input
+                  id="company"
+                  name="company"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                />
+              </div>
               <div>
                 <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
                   Full Name *
@@ -250,11 +319,35 @@ export default function ContactPage() {
                   placeholder="Your message here..."
                 />
               </div>
+
+              <div className="pt-2 flex flex-col gap-2">
+                {turnstileSiteKey ? (
+                  <div
+                    className="cf-turnstile"
+                    data-sitekey={turnstileSiteKey}
+                    data-action="contact"
+                  />
+                ) : (
+                  <p className="text-sm text-amber-700">
+                    Turnstile is not configured yet (missing NEXT_PUBLIC_TURNSTILE_SITE_KEY).
+                  </p>
+                )}
+
+                {contactSubmitStatus.state === "error" && contactSubmitStatus.message ? (
+                  <p className="text-sm text-red-600">{contactSubmitStatus.message}</p>
+                ) : null}
+                {contactSubmitStatus.state === "success" && contactSubmitStatus.message ? (
+                  <p className="text-sm text-green-700">{contactSubmitStatus.message}</p>
+                ) : null}
+              </div>
+
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold"
+                disabled={contactSubmitStatus.state === "submitting" || !turnstileSiteKey}
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <FaEnvelope /> Send Message
+                <FaEnvelope />
+                {contactSubmitStatus.state === "submitting" ? "Sending..." : "Send Message"}
               </button>
             </form>
 

@@ -47,6 +47,12 @@ const iconMap = {
   sparkles: Sparkles,
 };
 
+function resolveIcon(icon: unknown) {
+  if (typeof icon !== 'string') return ChevronRight;
+  const mapped = (iconMap as Record<string, unknown>)[icon];
+  return typeof mapped === 'function' ? (mapped as typeof ChevronRight) : ChevronRight;
+}
+
 export function TailoredNextSteps({
   actions,
   availableTools,
@@ -139,7 +145,7 @@ export function TailoredNextSteps({
       
       <div className="space-y-1.5">
         {actions.map((action) => {
-          const Icon = action.icon ? iconMap[action.icon] : ChevronRight;
+          const Icon = resolveIcon(action.icon);
           return (
             <Button
               key={action.id}
