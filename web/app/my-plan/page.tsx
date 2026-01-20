@@ -19,6 +19,7 @@ import { AchievementsDisplay } from '@/components/achievements/AchievementsDispl
 import { useExperiment } from '@/lib/experiments/hooks';
 import { MY_PLAN_EMPTY_STATE_CTA_COPY } from '@/lib/experiments/definitions';
 import { ExportShareMyPlan } from '@/components/my-plan/ExportShareMyPlan';
+import { FocusGardenRoadmap } from '@/components/my-plan/FocusGardenRoadmap';
 
 export default function MyPlanPage() {
   const { myPlan, isLoaded } = useUserPreferencesState();
@@ -124,7 +125,7 @@ export default function MyPlanPage() {
       </div>
 
       <Tabs defaultValue="saved" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="saved" className="flex items-center gap-2">
             <BookmarkIcon className="w-4 h-4" />
             Saved ({savedItems.length})
@@ -144,6 +145,10 @@ export default function MyPlanPage() {
           <TabsTrigger value="achievements" className="flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4" />
             Achievements
+          </TabsTrigger>
+          <TabsTrigger value="focus-garden" className="flex items-center gap-2">
+            <Plus className="w-4 h-4" />
+            Focus Garden
           </TabsTrigger>
         </TabsList>
 
@@ -388,6 +393,11 @@ export default function MyPlanPage() {
         <TabsContent value="achievements" className="space-y-6">
           <AchievementsDisplay />
           <ActivityChart days={14} />
+
+        {/* Focus Garden Roadmap Tab */}
+        <TabsContent value="focus-garden" className="space-y-4">
+          <FocusGardenRoadmap />
+        </TabsContent>
         </TabsContent>
       </Tabs>
     </div>

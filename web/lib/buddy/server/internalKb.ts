@@ -3,6 +3,8 @@ import path from 'node:path';
 import Fuse from 'fuse.js';
 
 import { pageBuddyConfigs } from '@/lib/page-buddy-configs';
+import { getFixtures } from '@/lib/seo/route-fixtures';
+import { getSupportHubEntries } from '@/lib/support-hub/registry';
 import { ROUTE_REGISTRY } from '@/lib/trust/routeRegistry';
 import { cacheGetWithStatus, cacheSet } from './cache';
 import { extractTopicCandidates, normalizeQuery } from './text';
@@ -54,8 +56,14 @@ function titleFromRoute(route: string): string {
   return words || route;
 }
 
-async function getStaticRoutes(): Promise<Set<string>> {
-  const cached = cacheGetWithStatus<Set<string>>('buddy:routes:static');
+function normalizeRouteToFixturePattern(route: string): string {
+  return String(route)
+    .replace(/\[\.\.\.([^\]]+)\]/g, ':$1*')
+    .replace(/\[([^\]]+)\]/g, ':$1');
+}
+
+async function getAllowedRoutes(): Promise<Set<string>> {
+  const cached = cacheGetWithStatus<Set<string>>('buddy:routes:allowed');
   if (cached.value) return cached.value;
 
   let json: RoutesMap | null = null;
@@ -66,9 +74,19 @@ async function getStaticRoutes(): Promise<Set<string>> {
     json = null;
   }
 
-  const staticRoutes = new Set<string>(json?.staticRoutes || []);
-  cacheSet('buddy:routes:static', staticRoutes, ROUTES_TTL_MS);
-  return staticRoutes;
+  const allowed = new Set<string>(json?.staticRoutes || []);
+
+  // Expand dynamic routes using fixtures so we can safely cite real URLs.
+  for (const dyn of json?.dynamicRoutes || []) {
+    const pattern = normalizeRouteToFixturePattern(dyn);
+    const fixtures = getFixtures(pattern);
+    for (const url of fixtures) {
+      allowed.add(url);
+    }
+  }
+
+  cacheSet('buddy:routes:allowed', allowed, ROUTES_TTL_MS);
+  return allowed;
 }
 
 function normalizeTags(tags: string[]): string[] {
@@ -83,13 +101,13 @@ function normalizeTags(tags: string[]): string[] {
 }
 
 async function buildKbPages(): Promise<KbPage[]> {
-  const staticRoutes = await getStaticRoutes();
+  const allowedRoutes = await getAllowedRoutes();
 
   const pages: KbPage[] = [];
 
   // 1) Page Buddy configs (best metadata coverage)
   for (const [route, cfg] of Object.entries(pageBuddyConfigs)) {
-    if (!staticRoutes.has(route)) continue;
+    if (!allowedRoutes.has(route)) continue;
 
     pages.push({
       route,
@@ -103,7 +121,7 @@ async function buildKbPages(): Promise<KbPage[]> {
 
   // 2) Route registry (fallback for routes not in configs)
   for (const [route, gov] of Object.entries(ROUTE_REGISTRY)) {
-    if (!staticRoutes.has(route)) continue;
+    if (!allowedRoutes.has(route)) continue;
     if (pages.some((p) => p.route === route)) continue;
 
     pages.push({
@@ -113,6 +131,46 @@ async function buildKbPages(): Promise<KbPage[]> {
       tags: normalizeTags([gov.category, ...(gov.badges || []), ...(gov.primarySources || [])]),
       keySections: [],
       evidenceRefs: gov.primarySources || [],
+    });
+  }
+
+  // 3) Focus Garden “Support Hub” enrichment (curated tags + summaries)
+  const hubEntries = getSupportHubEntries();
+  const hubByRoute = new Map(hubEntries.map((e) => [e.route, e] as const));
+
+  for (const p of pages) {
+    const hub = hubByRoute.get(p.route);
+    if (!hub) continue;
+
+    // Prefer curated titles/summaries when available.
+    p.title = hub.title || p.title;
+    p.summary = hub.summary || p.summary;
+
+    p.tags = normalizeTags([
+      ...p.tags,
+      ...hub.tags,
+      ...(hub.domains || []),
+      ...(hub.conditions || []),
+      ...(hub.audiences || []),
+    ]);
+
+    if (hub.keySections?.length) {
+      p.keySections = Array.from(new Set([...(p.keySections || []), ...hub.keySections])).slice(0, 40);
+    }
+  }
+
+  // 4) Add any hub entries that weren't otherwise indexed but are routable.
+  for (const hub of hubEntries) {
+    if (!allowedRoutes.has(hub.route)) continue;
+    if (pages.some((p) => p.route === hub.route)) continue;
+
+    pages.push({
+      route: hub.route,
+      title: hub.title || titleFromRoute(hub.route),
+      summary: hub.summary,
+      tags: normalizeTags([...(hub.tags || []), ...(hub.domains || []), ...(hub.conditions || []), ...(hub.audiences || [])]),
+      keySections: hub.keySections || [],
+      evidenceRefs: ROUTE_REGISTRY[hub.route]?.primarySources || [],
     });
   }
 
@@ -184,6 +242,6 @@ export async function searchInternalKb(
 }
 
 export async function isValidInternalRoute(route: string): Promise<boolean> {
-  const staticRoutes = await getStaticRoutes();
-  return staticRoutes.has(route);
+  const allowedRoutes = await getAllowedRoutes();
+  return allowedRoutes.has(route);
 }

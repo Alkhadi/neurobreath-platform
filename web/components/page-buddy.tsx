@@ -67,6 +67,110 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   const lastInitializedPathRef = useRef<string | null>(null);
   
   const config = getPageConfig(pathname);
+
+  const buildUserSnapshot = useCallback(() => {
+    if (typeof window === 'undefined') return undefined;
+
+    const snapshot: {
+      role?: string;
+      savedItemsCount?: number;
+      routineSlotsCount?: number;
+      activeJourneysCount?: number;
+      topTags?: string[];
+      focusGarden?: {
+        conditions?: string[];
+        minutesPerDay?: number;
+        hasWeeklyPlan?: boolean;
+      };
+    } = {};
+
+    try {
+      const raw = window.localStorage.getItem('neurobreath.userprefs.v1');
+      if (raw) {
+        const parsed: unknown = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          const root = parsed as Record<string, unknown>;
+          const myPlanRaw = root.myPlan;
+          const myPlan = myPlanRaw && typeof myPlanRaw === 'object' ? (myPlanRaw as Record<string, unknown>) : null;
+          if (myPlan) {
+            const savedItemsRaw = myPlan.savedItems;
+            const savedItems = Array.isArray(savedItemsRaw) ? savedItemsRaw : [];
+
+            const journeyProgressRaw = myPlan.journeyProgress;
+            const journeyProgress =
+              journeyProgressRaw && typeof journeyProgressRaw === 'object' && !Array.isArray(journeyProgressRaw)
+                ? Object.values(journeyProgressRaw as Record<string, unknown>)
+                : [];
+
+            const routinePlanRaw = myPlan.routinePlan;
+            const routinePlan = routinePlanRaw && typeof routinePlanRaw === 'object' ? (routinePlanRaw as Record<string, unknown>) : null;
+            const routineSlotsRaw = routinePlan?.slots;
+            const routineSlots = Array.isArray(routineSlotsRaw) ? routineSlotsRaw : [];
+
+            snapshot.savedItemsCount = savedItems.length;
+            snapshot.routineSlotsCount = routineSlots.length;
+            snapshot.activeJourneysCount = journeyProgress.filter((j) => {
+              if (!j || typeof j !== 'object') return false;
+              return (j as Record<string, unknown>).completed === false;
+            }).length;
+
+            const tagCounts = new globalThis.Map<string, number>();
+            for (const item of savedItems) {
+              if (!item || typeof item !== 'object') continue;
+              const tagsRaw = (item as Record<string, unknown>).tags;
+              const tags = Array.isArray(tagsRaw) ? tagsRaw : [];
+              for (const t of tags) {
+                const tag = String(t || '').trim().toLowerCase();
+                if (!tag) continue;
+                tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+              }
+            }
+
+            snapshot.topTags = Array.from(tagCounts.entries())
+              .sort((a, b) => b[1] - a[1])
+              .slice(0, 8)
+              .map(([tag]) => tag);
+          }
+        }
+      }
+    } catch {
+      // ignore
+    }
+
+    try {
+      const raw = window.localStorage.getItem('neurobreath.focusGardenRoadmap.v1');
+      if (raw) {
+        const parsed: unknown = JSON.parse(raw);
+        const root = parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : null;
+        const inputsRaw = root?.inputs;
+        const inputs = inputsRaw && typeof inputsRaw === 'object' ? (inputsRaw as Record<string, unknown>) : null;
+        const answer = root?.answer;
+        snapshot.focusGarden = {
+          conditions: Array.isArray(inputs?.conditions)
+            ? (inputs?.conditions as unknown[])
+                .map((c) => String(c || '').trim())
+                .filter(Boolean)
+                .slice(0, 8)
+            : undefined,
+          minutesPerDay: typeof inputs?.minutesPerDay === 'number' ? (inputs.minutesPerDay as number) : undefined,
+          hasWeeklyPlan: Boolean(answer && typeof answer === 'object'),
+        };
+      }
+    } catch {
+      // ignore
+    }
+
+    // Pull role from AI prefs (if available)
+    try {
+      const prefs = loadPreferences();
+      snapshot.role = prefs.ai.role;
+    } catch {
+      // ignore
+    }
+
+    const hasAny = Object.values(snapshot).some((v) => v !== undefined);
+    return hasAny ? snapshot : undefined;
+  }, []);
   
   // Focus management for dialog
   useEffect(() => {
@@ -644,6 +748,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
 
     // Load user preferences for jurisdiction
     const prefs = loadPreferences();
+    const userSnapshot = buildUserSnapshot();
 
     try {
       const controller = new AbortController();
@@ -656,6 +761,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
           question: userMessage,
           pathname,
           jurisdiction: prefs.regional.jurisdiction,
+          userSnapshot,
         }),
         signal: controller.signal,
       });
@@ -711,7 +817,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       console.error('[Buddy] AI response error:', error);
       throw error;
     }
-  }, [config, getLocalResponse, pageContent.features, pageContent.sections.length, pathname]);
+  }, [buildUserSnapshot, config, getLocalResponse, pageContent.features, pageContent.sections.length, pathname]);
 
   
   // Unified send pipeline for typed sends + quick questions.

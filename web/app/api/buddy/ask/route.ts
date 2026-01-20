@@ -32,10 +32,60 @@ interface RequestPayload {
   question?: string;
   pathname?: string;
   locale?: string;
+  // Optional, non-identifying client-side snapshot for personalization
+  userSnapshot?: unknown;
   jurisdiction?: 'UK' | 'US' | 'EU';
 
   // Back-compat
   query?: string;
+}
+
+function toSafeNumber(input: unknown): number | undefined {
+  const n = typeof input === 'number' ? input : Number.parseInt(String(input || ''), 10);
+  if (!Number.isFinite(n)) return undefined;
+  return Math.max(0, Math.min(10_000, n));
+}
+
+function toSafeStringArray(input: unknown, max = 12): string[] | undefined {
+  if (!Array.isArray(input)) return undefined;
+  const out = input
+    .map((x) => String(x || '').trim())
+    .filter(Boolean)
+    .slice(0, max);
+  return out.length ? out : undefined;
+}
+
+function sanitizeUserSnapshot(input: unknown): Record<string, unknown> | undefined {
+  if (!input || typeof input !== 'object') return undefined;
+  const raw = input as Record<string, unknown>;
+
+  const focusGardenRaw = raw.focusGarden;
+  const focusGarden = focusGardenRaw && typeof focusGardenRaw === 'object'
+    ? {
+        conditions: toSafeStringArray((focusGardenRaw as Record<string, unknown>).conditions, 8),
+        minutesPerDay: toSafeNumber((focusGardenRaw as Record<string, unknown>).minutesPerDay),
+        hasWeeklyPlan: typeof (focusGardenRaw as Record<string, unknown>).hasWeeklyPlan === 'boolean'
+          ? (focusGardenRaw as Record<string, unknown>).hasWeeklyPlan
+          : undefined,
+      }
+    : undefined;
+
+  const safe: Record<string, unknown> = {
+    role: typeof raw.role === 'string' ? raw.role : undefined,
+    savedItemsCount: toSafeNumber(raw.savedItemsCount),
+    routineSlotsCount: toSafeNumber(raw.routineSlotsCount),
+    activeJourneysCount: toSafeNumber(raw.activeJourneysCount),
+    topTags: toSafeStringArray(raw.topTags, 8),
+    focusGarden,
+  };
+
+  // Remove empty focusGarden.
+  if (focusGarden && !focusGarden.conditions && typeof focusGarden.minutesPerDay !== 'number' && typeof focusGarden.hasWeeklyPlan !== 'boolean') {
+    delete safe.focusGarden;
+  }
+
+  const hasAny = Object.values(safe).some((v) => v !== undefined);
+  return hasAny ? safe : undefined;
 }
 
 export async function POST(req: NextRequest) {
@@ -62,6 +112,7 @@ export async function POST(req: NextRequest) {
         question: raw,
         pathname: body?.pathname,
         jurisdiction: body?.jurisdiction,
+        userSnapshot: sanitizeUserSnapshot(body?.userSnapshot),
       },
       { requestId }
     );

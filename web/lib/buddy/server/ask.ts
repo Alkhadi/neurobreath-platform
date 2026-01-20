@@ -227,9 +227,61 @@ function internalBlueprint(topic: string, coverage: InternalCoverage, internalRo
   };
 }
 
+export type BuddyUserRole = 'parent' | 'teacher' | 'carer' | 'individual' | 'professional';
+
+export interface BuddyUserSnapshot {
+  role?: BuddyUserRole;
+  savedItemsCount?: number;
+  routineSlotsCount?: number;
+  activeJourneysCount?: number;
+  topTags?: string[];
+  focusGarden?: {
+    conditions?: string[];
+    minutesPerDay?: number;
+    hasWeeklyPlan?: boolean;
+  };
+}
+
+function snapshotSection(snapshot: BuddyUserSnapshot): { heading: string; text: string } | null {
+  const lines: string[] = [];
+
+  const saved = typeof snapshot.savedItemsCount === 'number' ? snapshot.savedItemsCount : undefined;
+  const routine = typeof snapshot.routineSlotsCount === 'number' ? snapshot.routineSlotsCount : undefined;
+  const journeys = typeof snapshot.activeJourneysCount === 'number' ? snapshot.activeJourneysCount : undefined;
+  const tags = Array.isArray(snapshot.topTags) ? snapshot.topTags.filter(Boolean).slice(0, 8) : [];
+
+  if (snapshot.role) lines.push(`Role: ${snapshot.role}`);
+  if (typeof saved === 'number') lines.push(`Saved items: ${saved}`);
+  if (typeof journeys === 'number') lines.push(`Journeys in progress: ${journeys}`);
+  if (typeof routine === 'number') lines.push(`Routine slots: ${routine}`);
+  if (tags.length) lines.push(`Top areas: ${tags.join(', ')}`);
+
+  const fg = snapshot.focusGarden;
+  if (fg) {
+    if (Array.isArray(fg.conditions) && fg.conditions.length) {
+      lines.push(`Focus Garden: ${fg.conditions.join(' + ')}`);
+    }
+    if (typeof fg.minutesPerDay === 'number') {
+      lines.push(`Plan time budget: ${fg.minutesPerDay} min/day`);
+    }
+    if (typeof fg.hasWeeklyPlan === 'boolean') {
+      lines.push(`Weekly plan: ${fg.hasWeeklyPlan ? 'generated' : 'not yet generated'}`);
+    }
+  }
+
+  if (lines.length === 0) return null;
+
+  lines.push('Tip: Ask “make me a 7-day plan” or “help me pick today’s 2 tasks” for a tight, realistic next step.');
+
+  return {
+    heading: 'Your Focus Garden snapshot (this device)',
+    text: lines.map((l) => `• ${l}`).join('\n'),
+  };
+}
+
 export async function buddyAsk(
   req: NextRequest,
-  payload: { question: string; pathname?: string; jurisdiction?: 'UK' | 'US' | 'EU' },
+  payload: { question: string; pathname?: string; jurisdiction?: 'UK' | 'US' | 'EU'; userSnapshot?: BuddyUserSnapshot },
   opts?: { requestId?: string }
 ): Promise<BuddyAskResponse> {
   const tTotal0 = performance.now();
@@ -246,6 +298,7 @@ export async function buddyAsk(
 
   const pathname = payload.pathname || '/';
   const jurisdiction: 'UK' | 'US' | 'EU' = payload.jurisdiction || 'UK';
+  const userSnapshot = payload.userSnapshot;
 
   const question = sanitizeInput(payload.question.trim());
   const topic = topicLabel(question);
@@ -344,6 +397,11 @@ export async function buddyAsk(
 
   const answerSections: Array<{ heading: string; text: string }> = [...blueprint.sections];
   const citations: BuddyCitation[] = [...internalCitations];
+
+  const snap = userSnapshot ? snapshotSection(userSnapshot) : null;
+  if (snap) {
+    answerSections.unshift(snap);
+  }
 
   telemetry.timingsMs.t_internalAssemble_ms = Math.round(performance.now() - tAssemble0);
 

@@ -367,6 +367,64 @@ export const pageBuddyConfigs: Record<string, PageBuddyConfig> = {
     ],
     keywords: ['getting started', 'onboarding', 'welcome', 'introduction', 'guide', 'first time']
   },
+  '/my-plan': {
+    pageId: 'my-plan',
+    pageName: 'My Plan (Focus Garden Roadmap)',
+    audiences: ['everyone', 'neurodivergent individuals', 'parents', 'teachers', 'carers'],
+    welcomeMessage:
+      `Welcome to **My Plan**! 🌱\n\nThis is your personal Focus Garden roadmap — a place to save tools, build routines, track progress, and generate a coordinated weekly plan across focus, learning, and wellbeing.\n\n**What you can do here:**\n• 🔖 Save tools and guides from around NeuroBreath\n• 🗓️ Build a simple routine (morning/afternoon/evening)\n• 🧭 Track journeys and next actions\n• ✨ Generate a multi-condition 7‑day plan in the Focus Garden tab\n\nTell me what you’re trying to improve this week and I’ll suggest a tight, realistic plan.`,
+    quickQuestions: [
+      'How do I build a weekly routine?',
+      'What should I do first if I feel overwhelmed?',
+      'Help me create a 7-day plan across ADHD + anxiety',
+      'Which tools should I save for school mornings?',
+      'How do achievements and streaks work?'
+    ],
+    sections: [
+      {
+        id: 'saved',
+        name: 'Saved Items',
+        description: 'Your curated list of tools, guides, journeys, and printables',
+        tips: ['Save what you actually use', 'Tag items by goal (focus, calm, reading)', 'Add short notes for “what worked”']
+      },
+      {
+        id: 'routine',
+        name: 'Routine Planner',
+        description: 'A simple schedule you can keep consistent (morning/afternoon/evening)',
+        tips: ['Start with 1–2 slots per day', 'Keep sessions short (5–15 minutes)', 'Plan for “low-energy days”']
+      },
+      {
+        id: 'focus-garden',
+        name: 'Focus Garden Roadmap',
+        description: 'Generate a coordinated 7-day plan across multiple conditions and goals',
+        tips: ['Pick 1–2 priorities to avoid overload', 'Use the plan as a draft and adjust it', 'Ask Buddy to troubleshoot missed days']
+      }
+    ],
+    keywords: ['my plan', 'focus garden', 'roadmap', 'weekly plan', 'routine', 'journey', 'progress', 'saved items']
+  },
+  '/coach': {
+    pageId: 'coach',
+    pageName: 'AI Coach',
+    audiences: ['everyone', 'neurodivergent individuals', 'parents', 'teachers', 'carers'],
+    welcomeMessage:
+      `Welcome to the **AI Coach**! ✨\n\nPick your situation and topic to get a tailored 7‑day plan grounded in NHS/NICE guidance and research evidence.\n\nIf you want a multi-condition weekly roadmap, use **My Plan → Focus Garden** for a coordinated plan, then come back here to refine day-by-day details.`,
+    quickQuestions: [
+      'Generate a 7-day plan for school mornings',
+      'Help me pick the right breathing technique',
+      'What should I do this week for ADHD + dyslexia?',
+      'Give me parent scripts for homework battles',
+      'Show me teacher supports and classroom adaptations'
+    ],
+    sections: [
+      {
+        id: 'ai-chat',
+        name: 'Ask the AI Coach',
+        description: 'Context-driven coaching that returns practical plans + recommended tools',
+        tips: ['Use the context chips first', 'Ask for a 7-day plan', 'Keep constraints explicit (time per day, setting, age)']
+      }
+    ],
+    keywords: ['ai coach', '7-day plan', 'weekly plan', 'tailored', 'nhs', 'nice', 'pubmed', 'parent', 'teacher']
+  },
   '/about': {
     pageId: 'about',
     pageName: 'About NeuroBreath',
