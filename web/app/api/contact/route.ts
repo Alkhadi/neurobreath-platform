@@ -13,7 +13,8 @@ type TurnstileVerifyResponse = {
 };
 
 // ---- Config
-const resend = new Resend(process.env.RESEND_API_KEY);
+// NOTE: Do not construct the Resend client at module scope.
+// Next.js may evaluate route modules during build, and Resend throws if the API key is missing.
 
 // In-memory rate limit (baseline). For stronger multi-region limiting, replace with Redis/KV.
 const RATE_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
@@ -123,6 +124,8 @@ export async function POST(req: Request) {
     if (!process.env.RESEND_API_KEY) {
       return Response.json({ ok: false, error: "Server email is not configured" }, { status: 500 });
     }
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     const to = process.env.CONTACT_TO || "support@neurobreath.co.uk";
     const from = process.env.CONTACT_FROM || "NeuroBreath Support <onboarding@resend.dev>";

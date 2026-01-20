@@ -21,7 +21,9 @@ export function FocusGamesSection({ region }: FocusGamesSectionProps) {
   const resolveIcon = (iconKey: unknown) => {
     if (typeof iconKey !== 'string') return Target;
     const mapped = (iconMap as Record<string, unknown>)[iconKey];
-    return typeof mapped === 'function' ? (mapped as typeof Target) : Target;
+    const isRenderable =
+      typeof mapped === 'function' || (typeof mapped === 'object' && mapped !== null);
+    return isRenderable ? (mapped as typeof Target) : Target;
   };
 
   return (

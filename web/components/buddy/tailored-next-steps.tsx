@@ -50,7 +50,9 @@ const iconMap = {
 function resolveIcon(icon: unknown) {
   if (typeof icon !== 'string') return ChevronRight;
   const mapped = (iconMap as Record<string, unknown>)[icon];
-  return typeof mapped === 'function' ? (mapped as typeof ChevronRight) : ChevronRight;
+  const isRenderable =
+    typeof mapped === 'function' || (typeof mapped === 'object' && mapped !== null);
+  return isRenderable ? (mapped as typeof ChevronRight) : ChevronRight;
 }
 
 export function TailoredNextSteps({

@@ -19,6 +19,8 @@ import { cn } from '@/lib/utils';
 import { useSpeechController } from '@/hooks/use-speech-controller';
 import { ReferencesSection, type ReferenceItemProps } from '@/components/buddy/reference-item';
 import { TailoredNextSteps, type RecommendedAction } from '@/components/buddy/tailored-next-steps';
+import { BuddyErrorBoundary } from '@/components/buddy/error-boundary';
+import { SafeIcon } from '@/components/buddy/safe-icon';
 
 interface Message {
   id: string;
@@ -326,7 +328,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
             rel={isExternal ? 'noopener noreferrer' : undefined}
           >
             {text}
-            {isExternal && <ExternalLink className="h-3 w-3" />}
+            {isExternal && <SafeIcon icon={ExternalLink} className="h-3 w-3" aria-hidden="true" />}
           </a>
         );
       }
@@ -342,7 +344,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
             rel="noopener noreferrer"
           >
             {part}
-            <ExternalLink className="h-3 w-3" />
+            <SafeIcon icon={ExternalLink} className="h-3 w-3" aria-hidden="true" />
           </a>
         );
       }
@@ -1083,14 +1085,16 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                     )}
                   >
                     <div className="max-h-[300px] sm:max-h-[350px] md:max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent pr-1 sm:pr-2 md:pr-3 flex-shrink min-h-0">
-                      <div className="whitespace-pre-wrap leading-relaxed break-words">
-                        {message.content.split('\n').map((line, i) => (
-                          <span key={i}>
-                            {renderMessage(line)}
-                            {i < message.content.split('\n').length - 1 && <br />}
-                          </span>
-                        ))}
-                      </div>
+                      <BuddyErrorBoundary>
+                        <div className="whitespace-pre-wrap leading-relaxed break-words">
+                          {message.content.split('\n').map((line, i) => (
+                            <span key={i}>
+                              {renderMessage(line)}
+                              {i < message.content.split('\n').length - 1 && <br />}
+                            </span>
+                          ))}
+                        </div>
+                      </BuddyErrorBoundary>
                     </div>
                     <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 mt-2 pt-2 border-t border-border/50 flex-shrink-0">
                       {message.role === 'assistant' && (
