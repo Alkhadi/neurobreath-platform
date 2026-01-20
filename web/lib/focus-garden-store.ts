@@ -900,7 +900,6 @@ export function logSession(
   plantId?: string
 ): SessionResult {
   const progress = loadFocusGardenProgress();
-  const today = new Date().toISOString().split('T')[0];
   const hour = getCurrentHour();
 
   // Calculate XP
@@ -1014,7 +1013,7 @@ function checkAndAwardBadges(progress: FocusGardenProgress): string[] {
         break;
       case 'time-of-day':
         if (badge.requirement.timeRange) {
-          const { start, end } = badge.requirement.timeRange;
+          const { start, end: _end } = badge.requirement.timeRange;
           if (start < 12) { // Early bird type
             earned = progress.earlyBirdSessions >= (badge.requirement.count || 0);
           } else { // Night owl type
