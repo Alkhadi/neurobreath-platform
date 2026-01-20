@@ -54,7 +54,7 @@ export default function RoulettePage() {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 py-12">
       <div className="container max-w-4xl mx-auto px-4">
         <Button asChild variant="ghost" className="mb-6">
-          <Link href="/tools"><ArrowLeft className="w-4 h-4 mr-2" /> Back to Tools</Link>
+          <Link href="/tools/breath-tools"><ArrowLeft className="w-4 h-4 mr-2" /> Back to Breath Tools</Link>
         </Button>
 
         <div className="bg-white rounded-2xl p-8 shadow-xl mb-8">

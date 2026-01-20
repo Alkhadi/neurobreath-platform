@@ -44,6 +44,12 @@ export const evidenceByRoute: Record<string, EvidenceManifest> = {
     reviewIntervalDays: 90,
     citations: ['nice_cg113', 'nhs_gad', 'pubmed_30301513'],
   },
+  '/tools/breath-tools': {
+    reviewedAt: '2026-01-16',
+    reviewIntervalDays: 90,
+    citations: ['nhs_breathing_stress', 'pubmed_29616846', 'pubmed_28974862', 'pubmed_11744522'],
+    notes: 'Breathing tools support wellbeing routines only; not medical advice.',
+  },
   '/tools/depression-tools': {
     reviewedAt: '2026-01-16',
     reviewIntervalDays: 120,
