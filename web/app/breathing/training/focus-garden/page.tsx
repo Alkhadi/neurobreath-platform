@@ -1,10 +1,56 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Sprout, Trophy, TrendingUp, Star, Sparkles, Info } from 'lucide-react'
+import { Progress } from '@/components/ui/progress'
+import {
+  ArrowLeft, Sprout, Trophy, TrendingUp, Star, Sparkles, Info,
+  Flame, Shield, Gift, ScrollText, ChevronRight, Lock, Check,
+  Snowflake, Award, Clock
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+  loadFocusGardenProgress,
+  calculateGardenLevel,
+  getGardenLevelProgress,
+  plantTask as storePlantTask,
+  waterPlant as storeWaterPlant,
+  harvestPlant as storeHarvestPlant,
+  migrateOldProgress,
+  GARDEN_LEVELS,
+  FOCUS_GARDEN_BADGES,
+  MULTI_DAY_QUESTS,
+  startQuest,
+  completeQuestDay,
+  getAvailableQuests,
+  getActiveQuests,
+  getBadgeInfo,
+  type FocusGardenProgress,
+  type MultiDayQuest
+} from '@/lib/focus-garden-store'
+
+function badgeBgClass(color?: string): string {
+  const c = String(color || '').toUpperCase();
+  switch (c) {
+    case '#4CAF50':
+      return 'bg-green-100';
+    case '#FF5722':
+      return 'bg-orange-100';
+    case '#9C27B0':
+      return 'bg-purple-100';
+    case '#FFD700':
+      return 'bg-yellow-100';
+    case '#E91E63':
+      return 'bg-pink-100';
+    case '#FF9800':
+      return 'bg-amber-100';
+    case '#3F51B5':
+      return 'bg-blue-100';
+    default:
+      return 'bg-slate-100';
+  }
+}
 
 // Plant stages with enhanced visuals
 const PLANT_STAGES = {
@@ -12,6 +58,40 @@ const PLANT_STAGES = {
   sprout: { emoji: '🌿', name: 'Sprout', water: 1, color: 'text-green-500' },
   bud: { emoji: '🌷', name: 'Bud', water: 2, color: 'text-pink-500' },
   bloom: { emoji: '🌸', name: 'Bloom', water: 3, color: 'text-purple-500' }
+}
+
+// Garden level themes with visual styling
+const GARDEN_THEMES = {
+  'plot': {
+    bgGradient: 'from-amber-50 via-orange-50 to-yellow-50',
+    borderColor: 'border-amber-200',
+    accentColor: 'text-amber-600',
+    icon: '🌍'
+  },
+  'small-garden': {
+    bgGradient: 'from-green-50 via-emerald-50 to-teal-50',
+    borderColor: 'border-green-200',
+    accentColor: 'text-green-600',
+    icon: '🌿'
+  },
+  'garden': {
+    bgGradient: 'from-emerald-50 via-green-50 to-cyan-50',
+    borderColor: 'border-emerald-200',
+    accentColor: 'text-emerald-600',
+    icon: '🌳'
+  },
+  'lush-garden': {
+    bgGradient: 'from-teal-50 via-emerald-50 to-green-50',
+    borderColor: 'border-teal-200',
+    accentColor: 'text-teal-600',
+    icon: '🌴'
+  },
+  'paradise': {
+    bgGradient: 'from-purple-50 via-pink-50 to-rose-50',
+    borderColor: 'border-purple-200',
+    accentColor: 'text-purple-600',
+    icon: '🏝️'
+  }
 }
 
 // Enhanced task layers with modern styling
@@ -103,101 +183,106 @@ const TASK_LAYERS = {
   }
 }
 
-interface Plant {
-  id: string
-  taskId: string
-  stage: keyof typeof PLANT_STAGES
-  waterCount: number
-  layer: string
-  plantedAt: Date
-}
+// Tab type for navigation
+type ActiveTab = 'garden' | 'quests' | 'badges'
 
 export default function FocusGardenPage() {
+  const [progress, setProgress] = useState<FocusGardenProgress | null>(null)
   const [selectedLayer, setSelectedLayer] = useState<string>('structure')
-  const [garden, setGarden] = useState<Plant[]>([])
-  const [xp, setXp] = useState(0)
-  const [level, setLevel] = useState(1)
+  const [activeTab, setActiveTab] = useState<ActiveTab>('garden')
   const [showTutorial, setShowTutorial] = useState(false)
   const [showCelebration, setShowCelebration] = useState(false)
   const [celebrationText, setCelebrationText] = useState('')
+  const [celebrationIcon, setCelebrationIcon] = useState('')
+  const [showStreakFreezeModal, setShowStreakFreezeModal] = useState(false)
+  const [showQuestModal, setShowQuestModal] = useState<MultiDayQuest | null>(null)
 
-  // Load from localStorage
+  // Load progress on mount
   useEffect(() => {
-    const savedGarden = localStorage.getItem('focus-garden')
-    if (savedGarden) {
-      const data = JSON.parse(savedGarden)
-      setGarden(data.garden || [])
-      setXp(data.xp || 0)
-      setLevel(data.level || 1)
-    } else {
+    migrateOldProgress()
+    const loaded = loadFocusGardenProgress()
+    setProgress(loaded)
+
+    if (loaded.totalSessions === 0) {
       setShowTutorial(true)
     }
   }, [])
 
-  // Save to localStorage
-  useEffect(() => {
-    if (garden.length > 0 || xp > 0) {
-      localStorage.setItem('focus-garden', JSON.stringify({ garden, xp, level }))
-    }
-  }, [garden, xp, level])
-
-  const celebrate = (text: string) => {
+  const celebrate = useCallback((text: string, icon: string = '🎉') => {
     setCelebrationText(text)
+    setCelebrationIcon(icon)
     setShowCelebration(true)
     setTimeout(() => setShowCelebration(false), 3000)
-  }
+  }, [])
 
-  const plantTask = (taskId: string, layer: string) => {
-    const newPlant: Plant = {
-      id: `plant-${Date.now()}`,
-      taskId,
-      stage: 'seed',
-      waterCount: 0,
-      layer,
-      plantedAt: new Date()
+  const refreshProgress = useCallback(() => {
+    setProgress(loadFocusGardenProgress())
+  }, [])
+
+  const handlePlantTask = useCallback((taskId: string, layer: string) => {
+    storePlantTask(taskId, layer)
+    refreshProgress()
+    celebrate('🌱 Task planted! Water it to help it grow.', '🌱')
+  }, [celebrate, refreshProgress])
+
+  const handleWaterPlant = useCallback((plantId: string) => {
+    const result = storeWaterPlant(plantId)
+    refreshProgress()
+
+    if (result.bloomed) {
+      celebrate('🌸 Plant bloomed! Ready to harvest!', '🌸')
+    } else if (result.xpEarned > 0) {
+      celebrate(`💧 Plant watered! +${result.xpEarned} XP`, '💧')
     }
-    setGarden([...garden, newPlant])
-    celebrate('🌱 Task planted! Water it to help it grow.')
-  }
+  }, [celebrate, refreshProgress])
 
-  const waterPlant = (plantId: string) => {
-    setGarden(garden.map(plant => {
-      if (plant.id === plantId && plant.stage !== 'bloom') {
-        const newWaterCount = plant.waterCount + 1
-        let newStage: keyof typeof PLANT_STAGES = plant.stage
-        
-        if (newWaterCount === 1) newStage = 'sprout'
-        else if (newWaterCount === 2) newStage = 'bud'
-        else if (newWaterCount === 3) newStage = 'bloom'
-        
-        if (newStage === 'bloom') {
-          celebrate('🌸 Plant bloomed! Ready to harvest!')
-        }
-        
-        return { ...plant, waterCount: newWaterCount, stage: newStage }
-      }
-      return plant
-    }))
-    
-    // Award XP
-    setXp(prev => {
-      const newXp = prev + 10
-      if (newXp >= level * 100) {
-        setLevel(l => l + 1)
-        celebrate(`🎉 Level Up! You're now Level ${level + 1}!`)
-        return newXp - (level * 100)
-      }
-      return newXp
-    })
-  }
-
-  const harvestPlant = (plantId: string) => {
-    const plant = garden.find(p => p.id === plantId)
-    if (plant && plant.stage === 'bloom') {
-      setGarden(garden.filter(p => p.id !== plantId))
-      setXp(prev => prev + 50)
-      celebrate('🎉 Harvest complete! +50 XP earned!')
+  const handleHarvestPlant = useCallback((plantId: string) => {
+    const result = storeHarvestPlant(plantId)
+    if (result.success) {
+      refreshProgress()
+      celebrate(`🎉 Harvest complete! +${result.xpEarned} XP earned!`, '🌺')
     }
+  }, [celebrate, refreshProgress])
+
+  const handleStartQuest = useCallback((questId: string) => {
+    const success = startQuest(questId)
+    if (success) {
+      refreshProgress()
+      setShowQuestModal(null)
+      celebrate('📜 Quest started! Check the Quests tab for your progress.', '📜')
+    }
+  }, [celebrate, refreshProgress])
+
+  const handleCompleteQuestDay = useCallback((questId: string, day: number) => {
+    const result = completeQuestDay(questId, day)
+    if (result.success) {
+      refreshProgress()
+      if (result.questCompleted) {
+        celebrate(`🏆 Quest Complete! +${result.xpEarned} XP earned!`, '🏆')
+      } else {
+        celebrate(`✅ Day ${day} complete! +${result.xpEarned} XP`, '✅')
+      }
+    }
+  }, [celebrate, refreshProgress])
+
+  if (!progress) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
+        <div className="text-center">
+          <Sprout className="w-12 h-12 mx-auto mb-4 text-green-500 animate-pulse" />
+          <p className="text-slate-600">Loading your garden...</p>
+        </div>
+      </div>
+    )
+  }
+
+  const currentGardenLevel = calculateGardenLevel(progress.totalXP)
+  const levelProgress = getGardenLevelProgress(progress.totalXP)
+  const gardenTheme = GARDEN_THEMES[currentGardenLevel.gardenTheme] || GARDEN_THEMES['plot']
+  const currentLayer = TASK_LAYERS[selectedLayer as keyof typeof TASK_LAYERS]
+
+  const isTaskPlanted = (taskId: string) => {
+    return progress.garden.some(p => p.taskId === taskId)
   }
 
   const getTaskInfo = (taskId: string, layerKey: string) => {
@@ -205,20 +290,13 @@ export default function FocusGardenPage() {
     return layer?.tasks.find(t => t.id === taskId)
   }
 
-  const isTaskPlanted = (taskId: string) => {
-    return garden.some(p => p.taskId === taskId)
-  }
-
-  const currentLayer = TASK_LAYERS[selectedLayer as keyof typeof TASK_LAYERS]
-  const xpPercentage = Math.min(100, (xp / (level * 100)) * 100)
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
+    <div className={cn("min-h-screen bg-gradient-to-br", gardenTheme.bgGradient)}>
       {/* Celebration Toast */}
       {showCelebration && (
         <div className="fixed top-8 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-top duration-300">
           <div className="bg-white px-6 py-4 rounded-2xl shadow-2xl border-2 border-green-200 flex items-center gap-3">
-            <Sparkles className="w-6 h-6 text-yellow-500" />
+            <span className="text-3xl">{celebrationIcon}</span>
             <p className="font-semibold text-slate-900">{celebrationText}</p>
           </div>
         </div>
@@ -227,7 +305,7 @@ export default function FocusGardenPage() {
       {/* Tutorial Modal */}
       {showTutorial && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-3xl w-full shadow-2xl animate-in zoom-in-95 duration-300">
+          <div className="bg-white rounded-3xl p-8 max-w-3xl w-full shadow-2xl animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-14 h-14 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-3xl">
                 🌱
@@ -244,41 +322,174 @@ export default function FocusGardenPage() {
                 <ol className="space-y-3">
                   <li className="flex gap-3">
                     <span className="font-bold text-blue-600 min-w-[24px]">1.</span>
-                    <span><strong>Choose a task</strong> from five categories (Structure, Communication, Zones, Self-Management, Mindfulness)</span>
+                    <span><strong>Choose a task</strong> from five categories and plant it in your garden</span>
                   </li>
                   <li className="flex gap-3">
                     <span className="font-bold text-blue-600 min-w-[24px]">2.</span>
-                    <span><strong>Plant it</strong> in your garden as a seed 🌱</span>
+                    <span><strong>Water daily</strong> by completing tasks - watch plants grow through 4 stages!</span>
                   </li>
                   <li className="flex gap-3">
                     <span className="font-bold text-blue-600 min-w-[24px]">3.</span>
-                    <span><strong>Water daily</strong> by completing the task - watch it grow through 4 stages!</span>
+                    <span><strong>Harvest blooms</strong> 🌸 to earn XP and level up your garden!</span>
                   </li>
                   <li className="flex gap-3">
                     <span className="font-bold text-blue-600 min-w-[24px]">4.</span>
-                    <span><strong>Harvest blooms</strong> 🌸 to earn bonus XP and level up!</span>
+                    <span><strong>Complete quests</strong> for bonus rewards and unlock badges!</span>
                   </li>
                 </ol>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-green-50 p-4 rounded-xl border border-green-200">
-                  <p className="text-sm"><strong className="text-green-700">💡 Pro Tip:</strong> Start with gentle tasks like "Zone Check-In" or "Morning Routine"</p>
+                <div className="bg-orange-50 p-4 rounded-xl border border-orange-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Flame className="w-5 h-5 text-orange-500" />
+                    <strong className="text-orange-700">Streaks</strong>
+                  </div>
+                  <p className="text-sm">Practice daily to build streaks. Miss a day? Use a Streak Freeze to protect your progress!</p>
                 </div>
                 <div className="bg-purple-50 p-4 rounded-xl border border-purple-200">
-                  <p className="text-sm"><strong className="text-purple-700">🎯 Goal:</strong> Complete 3 tasks daily for steady progress</p>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Trophy className="w-5 h-5 text-purple-500" />
+                    <strong className="text-purple-700">Garden Levels</strong>
+                  </div>
+                  <p className="text-sm">Earn XP to level up your garden from a bare plot to a paradise!</p>
                 </div>
               </div>
             </div>
 
-            <Button 
-              onClick={() => setShowTutorial(false)} 
+            <Button
+              onClick={() => setShowTutorial(false)}
               className="mt-8 w-full h-14 text-lg bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
               size="lg"
             >
               <Sparkles className="w-5 h-5 mr-2" />
-              Let&apos;s Grow! 
+              Let&apos;s Grow!
             </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Streak Freeze Modal */}
+      {showStreakFreezeModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl animate-in zoom-in-95 duration-300">
+            <div className="text-center mb-6">
+              <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center">
+                <Snowflake className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-slate-900">Streak Freezes</h3>
+              <p className="text-slate-600 mt-2">Protect your streak when life gets busy</p>
+            </div>
+
+            <div className="space-y-4 mb-6">
+              <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-semibold text-slate-700">Available Freezes</span>
+                  <span className="text-2xl font-bold text-blue-600">{progress.streak.streakFreezes}/{progress.streak.maxStreakFreezes}</span>
+                </div>
+                <div className="flex gap-2">
+                  {[...Array(progress.streak.maxStreakFreezes)].map((_, i) => (
+                    <div
+                      key={i}
+                      className={cn(
+                        "w-10 h-10 rounded-full flex items-center justify-center transition-all",
+                        i < progress.streak.streakFreezes
+                          ? "bg-gradient-to-br from-blue-400 to-cyan-500 text-white shadow-md"
+                          : "bg-slate-200 text-slate-400"
+                      )}
+                    >
+                      <Snowflake className="w-5 h-5" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="text-sm text-slate-600 space-y-2">
+                <p>• Streak Freezes automatically protect your streak if you miss one day</p>
+                <p>• Earn more freezes by completing quests and hitting milestones</p>
+                <p>• Maximum of {progress.streak.maxStreakFreezes} freezes can be stored</p>
+              </div>
+            </div>
+
+            <Button
+              onClick={() => setShowStreakFreezeModal(false)}
+              className="w-full"
+              variant="outline"
+            >
+              Got it!
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Quest Details Modal */}
+      {showQuestModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-3xl">
+                📜
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900">{showQuestModal.title}</h3>
+                <p className="text-sm text-slate-600">{showQuestModal.days.length}-Day Quest</p>
+              </div>
+            </div>
+
+            <p className="text-slate-700 mb-4 italic">&quot;{showQuestModal.narrative}&quot;</p>
+            <p className="text-slate-600 mb-6">{showQuestModal.description}</p>
+
+            <div className="space-y-3 mb-6">
+              <h4 className="font-semibold text-slate-900">Quest Days:</h4>
+              {showQuestModal.days.map((day, index) => (
+                <div
+                  key={day.day}
+                  className={cn(
+                    "p-3 rounded-xl border transition-all",
+                    index === 0 ? "bg-amber-50 border-amber-200" : "bg-slate-50 border-slate-200"
+                  )}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="font-semibold text-slate-900">Day {day.day}: {day.title}</span>
+                      <p className="text-sm text-slate-600">{day.task}</p>
+                    </div>
+                    <span className="text-xs font-medium text-amber-600 bg-amber-100 px-2 py-1 rounded-full">
+                      +{day.xpReward} XP
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border border-green-200 mb-6">
+              <div className="flex items-center gap-2 mb-2">
+                <Gift className="w-5 h-5 text-green-600" />
+                <span className="font-semibold text-green-800">Completion Rewards</span>
+              </div>
+              <p className="text-sm text-green-700">+{showQuestModal.xpReward} XP bonus</p>
+              {showQuestModal.badgeReward && (
+                <p className="text-sm text-green-700">
+                  + Unlock &quot;{getBadgeInfo(showQuestModal.badgeReward)?.name}&quot; badge
+                </p>
+              )}
+            </div>
+
+            <div className="flex gap-3">
+              <Button
+                onClick={() => setShowQuestModal(null)}
+                variant="outline"
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => handleStartQuest(showQuestModal.id)}
+                className="flex-1 bg-gradient-to-r from-amber-500 to-orange-600"
+              >
+                Start Quest
+              </Button>
+            </div>
           </div>
         </div>
       )}
@@ -287,33 +498,32 @@ export default function FocusGardenPage() {
         {/* Back Button */}
         <Button asChild variant="ghost" className="mb-6 hover:bg-white/80">
           <Link href="/breathing/breath" className="flex items-center gap-2">
-            <ArrowLeft className="w-4 h-4" /> 
+            <ArrowLeft className="w-4 h-4" />
             <span>Back to Breathing Guides</span>
           </Link>
         </Button>
 
-        {/* Hero Header */}
+        {/* Hero Header with Garden Level */}
         <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden mb-8">
           <div className="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 p-8 text-white">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-4xl">
-                    🌱
+                    {gardenTheme.icon}
                   </div>
                   <div>
                     <h1 className="text-4xl md:text-5xl font-bold mb-1">Focus Garden</h1>
-                    <p className="text-green-100 text-lg">Focus Training Hub</p>
+                    <p className="text-green-100 text-lg">Level {currentGardenLevel.level}: {currentGardenLevel.name}</p>
                   </div>
                 </div>
                 <p className="text-lg text-green-50 leading-relaxed max-w-3xl">
-                  A calming, supportive space to grow focus through gentle plant-based tasks. Build skills in structure, 
-                  communication, emotional regulation, and mindfulness.
+                  {currentGardenLevel.description}
                 </p>
               </div>
-              <Button 
-                onClick={() => setShowTutorial(true)} 
-                variant="outline" 
+              <Button
+                onClick={() => setShowTutorial(true)}
+                variant="outline"
                 className="bg-white/10 border-white/30 text-white hover:bg-white/20 backdrop-blur-sm"
               >
                 <Info className="w-4 h-4 mr-2" />
@@ -324,174 +534,169 @@ export default function FocusGardenPage() {
 
           {/* Stats Dashboard */}
           <div className="p-8 bg-gradient-to-br from-slate-50 to-blue-50">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+              {/* Garden Level */}
               <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
                 <div className="flex items-center gap-2 mb-2">
                   <Trophy className="w-5 h-5 text-yellow-500" />
-                  <span className="text-sm font-medium text-slate-600">Level</span>
+                  <span className="text-sm font-medium text-slate-600">Garden Level</span>
                 </div>
-                <p className="text-3xl font-bold text-slate-900">{level}</p>
+                <p className="text-3xl font-bold text-slate-900">{currentGardenLevel.level}</p>
               </div>
-              
+
+              {/* Total XP */}
               <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
                 <div className="flex items-center gap-2 mb-2">
                   <Star className="w-5 h-5 text-purple-500" />
                   <span className="text-sm font-medium text-slate-600">Total XP</span>
                 </div>
-                <p className="text-3xl font-bold text-slate-900">{xp + (level - 1) * 100}</p>
+                <p className="text-3xl font-bold text-slate-900">{progress.totalXP}</p>
               </div>
-              
+
+              {/* Streak */}
+              <div
+                className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 cursor-pointer hover:border-orange-300 transition-colors"
+                onClick={() => setShowStreakFreezeModal(true)}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Flame className="w-5 h-5 text-orange-500" />
+                  <span className="text-sm font-medium text-slate-600">Streak</span>
+                  <Snowflake className="w-4 h-4 text-blue-400 ml-auto" />
+                  <span className="text-xs text-blue-500">{progress.streak.streakFreezes}</span>
+                </div>
+                <p className="text-3xl font-bold text-slate-900">{progress.streak.currentStreak}</p>
+              </div>
+
+              {/* Plants */}
               <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
                 <div className="flex items-center gap-2 mb-2">
                   <Sprout className="w-5 h-5 text-green-500" />
-                  <span className="text-sm font-medium text-slate-600">Plants</span>
+                  <span className="text-sm font-medium text-slate-600">Growing</span>
                 </div>
-                <p className="text-3xl font-bold text-slate-900">{garden.length}</p>
+                <p className="text-3xl font-bold text-slate-900">{progress.garden.length}</p>
               </div>
-              
+
+              {/* Harvests */}
               <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
                 <div className="flex items-center gap-2 mb-2">
                   <TrendingUp className="w-5 h-5 text-blue-500" />
-                  <span className="text-sm font-medium text-slate-600">Progress</span>
+                  <span className="text-sm font-medium text-slate-600">Harvests</span>
                 </div>
-                <p className="text-3xl font-bold text-slate-900">{Math.round(xpPercentage)}%</p>
+                <p className="text-3xl font-bold text-slate-900">{progress.totalHarvests}</p>
               </div>
             </div>
 
-            {/* Level Progress Bar */}
+            {/* Garden Level Progress Bar */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-slate-700">Level {level} Progress</span>
-                <span className="text-sm font-medium text-slate-600">{xp} / {level * 100} XP</span>
+                <span className="text-sm font-semibold text-slate-700">
+                  Progress to {GARDEN_LEVELS[currentGardenLevel.level]?.name || 'Max Level'}
+                </span>
+                <span className="text-sm font-medium text-slate-600">
+                  {levelProgress.current} / {levelProgress.required} XP
+                </span>
               </div>
-              <div className="w-full h-4 bg-slate-200 rounded-full overflow-hidden shadow-inner">
-                <div
-                  className="h-full bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 rounded-full transition-all duration-500 ease-out relative overflow-hidden"
-                  style={{ width: `${xpPercentage}%` }}
-                >
-                  <div className="absolute inset-0 bg-white/20 animate-pulse" />
-                </div>
+              <div className="relative">
+                <Progress
+                  value={levelProgress.percentage}
+                  className="h-4 bg-slate-200 shadow-inner [&>div]:bg-gradient-to-r [&>div]:from-green-500 [&>div]:via-emerald-500 [&>div]:to-teal-500"
+                />
+                <div className="pointer-events-none absolute inset-0 rounded-full bg-white/10" />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Task Categories - Full Width */}
-        <div className="mb-8">
-          <div className="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-2xl border-2 border-slate-200 p-7 overflow-hidden">
-              {/* Decorative background elements */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-200 to-blue-200 rounded-full blur-3xl opacity-20 -mr-16 -mt-16" />
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-green-200 to-teal-200 rounded-full blur-3xl opacity-20 -ml-16 -mb-16" />
-              
-              <div className="relative z-10">
-                <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-slate-200">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center text-2xl shadow-lg animate-pulse">
-                      📚
-                    </div>
-                    <div>
-                      <h2 className="text-2xl font-bold text-slate-900">Categories</h2>
-                      <p className="text-xs text-slate-600">Choose your focus area</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-                  {Object.entries(TASK_LAYERS).map(([key, layer]) => {
-                    const isSelected = selectedLayer === key
-                    return (
-                      <button
-                        key={key}
-                        onClick={() => setSelectedLayer(key)}
-                        className={cn(
-                          "w-full text-left p-4 rounded-2xl border-2 transition-all duration-300 group relative overflow-hidden",
-                          isSelected
-                            ? `bg-gradient-to-r ${layer.bgGradient} ${layer.borderColor} shadow-lg scale-[1.03] ring-2 ring-offset-2 ${layer.borderColor.replace('border', 'ring')}`
-                            : `bg-white border-slate-200 hover:bg-gradient-to-r ${layer.bgGradient} hover:border-slate-300 hover:shadow-md hover:scale-[1.01]`
-                        )}
-                      >
-                        {/* Shine effect on hover */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-500 transform -skew-x-12 group-hover:translate-x-full" />
-                        
-                        <div className="flex items-center gap-3 relative z-10">
-                          <div className={cn(
-                            "w-14 h-14 rounded-xl flex items-center justify-center text-3xl transition-all duration-300 shadow-md",
-                            isSelected 
-                              ? `${layer.iconBg} transform scale-110 rotate-3` 
-                              : 'bg-slate-100 group-hover:scale-110 group-hover:-rotate-3'
-                          )}>
-                            {layer.icon}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className={cn(
-                                "font-bold text-sm transition-colors",
-                                isSelected ? "text-slate-900" : "text-slate-700 group-hover:text-slate-900"
-                              )}>
-                                {layer.name}
-                              </span>
-                              {isSelected && (
-                                <div className="w-2 h-2 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 animate-pulse" />
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className={cn(
-                                "text-xs font-semibold px-2 py-0.5 rounded-full transition-colors",
-                                isSelected 
-                                  ? "bg-white/80 text-slate-700" 
-                                  : "bg-slate-200 text-slate-600 group-hover:bg-white/60"
-                              )}>
-                                {layer.tasks.length} tasks
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </button>
-                    )
-                  })}
-                </div>
+        {/* Navigation Tabs */}
+        <div className="flex gap-2 mb-8">
+          {[
+            { id: 'garden', label: 'Garden', icon: Sprout },
+            { id: 'quests', label: 'Quests', icon: ScrollText },
+            { id: 'badges', label: 'Badges', icon: Award }
+          ].map(tab => (
+            <Button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as ActiveTab)}
+              variant={activeTab === tab.id ? 'default' : 'outline'}
+              className={cn(
+                "flex-1 md:flex-none px-6",
+                activeTab === tab.id && "bg-gradient-to-r from-green-500 to-emerald-600"
+              )}
+            >
+              <tab.icon className="w-4 h-4 mr-2" />
+              {tab.label}
+            </Button>
+          ))}
+        </div>
 
-                {/* Progress indicator */}
-                <div className="mt-6 pt-6 border-t-2 border-slate-200">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Trophy className="w-6 h-6 text-amber-500" />
-                    <span className="text-lg font-bold text-slate-700">Your Progress</span>
+        {/* Garden Tab Content */}
+        {activeTab === 'garden' && (
+          <div className="space-y-8">
+            {/* Task Categories */}
+            <div className="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-2xl border-2 border-slate-200 p-7 overflow-hidden">
+              <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-slate-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center text-2xl shadow-lg">
+                    📚
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-                    {Object.entries(TASK_LAYERS).map(([key, layer]) => {
-                      const completedTasks = garden.filter(p => p.layer === key && p.stage === 'bloom').length
-                      const totalTasks = layer.tasks.length
-                      const percentage = (completedTasks / totalTasks) * 100
-                      
-                      return (
-                        <div key={`progress-${key}`} className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-slate-200">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-2xl">{layer.icon}</span>
-                            <span className="font-semibold text-slate-700 text-sm">{layer.name}</span>
-                          </div>
-                          <div className="flex items-center justify-between text-xs mb-2">
-                            <span className="text-slate-600">Completed</span>
-                            <span className="font-bold text-slate-900">
-                              {completedTasks}/{totalTasks}
-                            </span>
-                          </div>
-                          <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-                            <div 
-                              className={cn("h-full rounded-full transition-all duration-500 bg-gradient-to-r", layer.gradient)}
-                              style={{ width: `${percentage}%` }}
-                            />
-                          </div>
-                        </div>
-                      )
-                    })}
+                  <div>
+                    <h2 className="text-2xl font-bold text-slate-900">Task Categories</h2>
+                    <p className="text-xs text-slate-600">Choose your focus area</p>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-        {/* Main Content Area */}
-        <div className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                {Object.entries(TASK_LAYERS).map(([key, layer]) => {
+                  const isSelected = selectedLayer === key
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => setSelectedLayer(key)}
+                      className={cn(
+                        "w-full text-left p-4 rounded-2xl border-2 transition-all duration-300 group relative overflow-hidden",
+                        isSelected
+                          ? `bg-gradient-to-r ${layer.bgGradient} ${layer.borderColor} shadow-lg scale-[1.03] ring-2 ring-offset-2 ${layer.borderColor.replace('border', 'ring')}`
+                          : `bg-white border-slate-200 hover:bg-gradient-to-r ${layer.bgGradient} hover:border-slate-300 hover:shadow-md hover:scale-[1.01]`
+                      )}
+                    >
+                      <div className="flex items-center gap-3 relative z-10">
+                        <div className={cn(
+                          "w-14 h-14 rounded-xl flex items-center justify-center text-3xl transition-all duration-300 shadow-md",
+                          isSelected
+                            ? `${layer.iconBg} transform scale-110 rotate-3`
+                            : 'bg-slate-100 group-hover:scale-110 group-hover:-rotate-3'
+                        )}>
+                          {layer.icon}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className={cn(
+                              "font-bold text-sm transition-colors",
+                              isSelected ? "text-slate-900" : "text-slate-700 group-hover:text-slate-900"
+                            )}>
+                              {layer.name}
+                            </span>
+                            {isSelected && (
+                              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 animate-pulse" />
+                            )}
+                          </div>
+                          <span className={cn(
+                            "text-xs font-semibold px-2 py-0.5 rounded-full transition-colors",
+                            isSelected
+                              ? "bg-white/80 text-slate-700"
+                              : "bg-slate-200 text-slate-600 group-hover:bg-white/60"
+                          )}>
+                            {layer.tasks.length} tasks
+                          </span>
+                        </div>
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
             {/* Available Tasks */}
             <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
               <div className="flex items-center gap-3 mb-6">
@@ -532,7 +737,7 @@ export default function FocusGardenPage() {
                           <p className="text-sm text-slate-600 leading-relaxed">{task.description}</p>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center justify-between mb-3">
                         <span className="text-xs font-semibold text-slate-600 bg-white/60 px-2 py-1 rounded-full">
                           +{task.xp} XP per water
@@ -540,19 +745,19 @@ export default function FocusGardenPage() {
                       </div>
 
                       <Button
-                        onClick={() => plantTask(task.id, selectedLayer)}
+                        onClick={() => handlePlantTask(task.id, selectedLayer)}
                         disabled={isPlanted}
                         size="lg"
                         className={cn(
                           "w-full",
-                          isPlanted 
-                            ? 'bg-slate-300 text-slate-600 cursor-not-allowed' 
+                          isPlanted
+                            ? 'bg-slate-300 text-slate-600 cursor-not-allowed'
                             : `bg-gradient-to-r ${currentLayer.gradient} text-white hover:shadow-lg`
                         )}
                       >
                         {isPlanted ? (
                           <>
-                            <span className="mr-2">✓</span> Already Planted
+                            <Check className="w-4 h-4 mr-2" /> Already Planted
                           </>
                         ) : (
                           <>
@@ -567,27 +772,27 @@ export default function FocusGardenPage() {
             </div>
 
             {/* Garden Section */}
-            <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
+            <div className={cn("rounded-3xl shadow-xl border p-8", gardenTheme.borderColor, `bg-gradient-to-br ${gardenTheme.bgGradient}`)}>
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-3xl">
-                    🌿
+                  <div className="w-14 h-14 rounded-2xl bg-white/80 shadow-lg flex items-center justify-center text-3xl">
+                    {gardenTheme.icon}
                   </div>
                   <div>
-                    <h2 className="text-3xl font-bold text-slate-900">Your Garden</h2>
+                    <h2 className="text-3xl font-bold text-slate-900">Your {currentGardenLevel.name}</h2>
                     <p className="text-slate-600">Water your plants daily to help them bloom</p>
                   </div>
                 </div>
-                {garden.length > 0 && (
+                {progress.garden.length > 0 && (
                   <div className="text-right">
                     <p className="text-sm text-slate-600">Growing</p>
-                    <p className="text-2xl font-bold text-slate-900">{garden.length} plant{garden.length !== 1 ? 's' : ''}</p>
+                    <p className="text-2xl font-bold text-slate-900">{progress.garden.length} plant{progress.garden.length !== 1 ? 's' : ''}</p>
                   </div>
                 )}
               </div>
 
-              {garden.length === 0 ? (
-                <div className="text-center py-16 bg-gradient-to-br from-slate-50 to-blue-50 rounded-2xl border-2 border-dashed border-slate-300">
+              {progress.garden.length === 0 ? (
+                <div className="text-center py-16 bg-white/60 rounded-2xl border-2 border-dashed border-slate-300">
                   <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-white shadow-lg flex items-center justify-center">
                     <Sprout className="w-12 h-12 text-slate-400" />
                   </div>
@@ -595,7 +800,7 @@ export default function FocusGardenPage() {
                   <p className="text-slate-600 mb-6 max-w-md mx-auto">
                     Plant your first task from the categories above to begin your growth journey!
                   </p>
-                  <Button 
+                  <Button
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                     className="bg-gradient-to-r from-green-500 to-emerald-600"
                   >
@@ -605,7 +810,7 @@ export default function FocusGardenPage() {
                 </div>
               ) : (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                  {garden.map(plant => {
+                  {progress.garden.map(plant => {
                     const task = getTaskInfo(plant.taskId, plant.layer)
                     const stageInfo = PLANT_STAGES[plant.stage]
                     const canWater = plant.stage !== 'bloom'
@@ -616,8 +821,8 @@ export default function FocusGardenPage() {
                       <div
                         key={plant.id}
                         className={cn(
-                          "group p-6 rounded-2xl border-2 transition-all duration-200 hover:shadow-xl hover:scale-[1.02]",
-                          `bg-gradient-to-br ${layerInfo.bgGradient} ${layerInfo.borderColor}`
+                          "group p-6 rounded-2xl border-2 bg-white/80 transition-all duration-200 hover:shadow-xl hover:scale-[1.02]",
+                          layerInfo?.borderColor || 'border-slate-200'
                         )}
                       >
                         <div className="text-center mb-4">
@@ -627,7 +832,7 @@ export default function FocusGardenPage() {
                           )}>
                             {stageInfo.emoji}
                           </div>
-                          <div className="inline-block px-3 py-1 bg-white/80 rounded-full mb-2">
+                          <div className="inline-block px-3 py-1 bg-white rounded-full mb-2 shadow-sm">
                             <span className="text-xs font-bold text-slate-700 uppercase tracking-wide">
                               {stageInfo.name}
                             </span>
@@ -638,13 +843,13 @@ export default function FocusGardenPage() {
                           {task?.title || 'Unknown Task'}
                         </h4>
                         <p className="text-xs text-slate-600 text-center mb-4">
-                          {layerInfo.name}
+                          {layerInfo?.name || 'Unknown'}
                         </p>
 
                         <div className="space-y-2">
                           {canWater && (
                             <Button
-                              onClick={() => waterPlant(plant.id)}
+                              onClick={() => handleWaterPlant(plant.id)}
                               size="sm"
                               className="w-full bg-blue-500 hover:bg-blue-600 text-white"
                             >
@@ -653,11 +858,11 @@ export default function FocusGardenPage() {
                           )}
                           {canHarvest && (
                             <Button
-                              onClick={() => harvestPlant(plant.id)}
+                              onClick={() => handleHarvestPlant(plant.id)}
                               size="sm"
                               className={cn(
                                 "w-full text-white",
-                                `bg-gradient-to-r ${layerInfo.gradient} hover:shadow-lg`
+                                layerInfo ? `bg-gradient-to-r ${layerInfo.gradient} hover:shadow-lg` : 'bg-purple-500'
                               )}
                             >
                               <Sparkles className="w-4 h-4 mr-1" />
@@ -673,7 +878,7 @@ export default function FocusGardenPage() {
                               key={i}
                               className={cn(
                                 "w-2 h-2 rounded-full transition-all",
-                                i < plant.waterCount
+                                i < plant.waterCount + 1
                                   ? 'bg-blue-500 scale-125'
                                   : 'bg-slate-300'
                               )}
@@ -686,154 +891,353 @@ export default function FocusGardenPage() {
                 </div>
               )}
             </div>
+          </div>
+        )}
 
-            {/* Tips Section */}
-            <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 rounded-3xl p-8 border-2 border-blue-200 shadow-xl">
-              <div className="flex items-start gap-4 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-                  <Info className="w-6 h-6 text-white" />
+        {/* Quests Tab Content */}
+        {activeTab === 'quests' && (
+          <div className="space-y-8">
+            {/* Active Quests */}
+            {getActiveQuests().length > 0 && (
+              <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-3xl">
+                    📜
+                  </div>
+                  <div>
+                    <h2 className="text-3xl font-bold text-slate-900">Active Quests</h2>
+                    <p className="text-slate-600">Your current adventures</p>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  {getActiveQuests().map(quest => (
+                    <div
+                      key={quest.id}
+                      className="p-6 rounded-2xl border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50"
+                    >
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-bold text-lg text-slate-900">{quest.title}</h3>
+                        <span className="text-sm font-semibold text-amber-600 bg-amber-100 px-3 py-1 rounded-full">
+                          Day {quest.currentDay}/{quest.days.length}
+                        </span>
+                      </div>
+
+                      <Progress
+                        value={(quest.days.filter(d => d.completed).length / quest.days.length) * 100}
+                        className="h-3 mb-4"
+                      />
+
+                      <div className="space-y-2 mb-4">
+                        {quest.days.map(day => (
+                          <div
+                            key={day.day}
+                            className={cn(
+                              "flex items-center gap-3 p-3 rounded-xl transition-all",
+                              day.completed
+                                ? "bg-green-100 border border-green-200"
+                                : day.day === quest.currentDay
+                                ? "bg-white border-2 border-amber-300"
+                                : "bg-slate-100 border border-slate-200 opacity-60"
+                            )}
+                          >
+                            <div className={cn(
+                              "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold",
+                              day.completed
+                                ? "bg-green-500 text-white"
+                                : day.day === quest.currentDay
+                                ? "bg-amber-500 text-white"
+                                : "bg-slate-300 text-slate-600"
+                            )}>
+                              {day.completed ? <Check className="w-4 h-4" /> : day.day}
+                            </div>
+                            <div className="flex-1">
+                              <span className="font-semibold text-sm text-slate-900">{day.title}</span>
+                              <p className="text-xs text-slate-600">{day.task}</p>
+                            </div>
+                            {day.day === quest.currentDay && !day.completed && (
+                              <Button
+                                size="sm"
+                                onClick={() => handleCompleteQuestDay(quest.id, day.day)}
+                                className="bg-amber-500 hover:bg-amber-600"
+                              >
+                                Complete
+                              </Button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="flex items-center gap-2 text-sm text-amber-700">
+                        <Gift className="w-4 h-4" />
+                        <span>+{quest.xpReward} XP on completion</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Available Quests */}
+            <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center text-3xl">
+                  🗺️
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-slate-900 mb-2">Focus Garden Tips</h3>
-                  <p className="text-slate-600">Master each category to become a well-rounded focus champion</p>
+                  <h2 className="text-3xl font-bold text-slate-900">Available Quests</h2>
+                  <p className="text-slate-600">Start a new adventure to earn bonus rewards</p>
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-emerald-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-2xl">📋</span>
-                    <strong className="text-slate-900">Structure</strong>
-                  </div>
-                  <p className="text-sm text-slate-700">Build predictable routines and visual supports for daily success</p>
+              {getAvailableQuests().length === 0 ? (
+                <div className="text-center py-12 bg-slate-50 rounded-2xl">
+                  <Trophy className="w-16 h-16 mx-auto mb-4 text-amber-500" />
+                  <h3 className="text-xl font-bold text-slate-900 mb-2">All Quests Completed!</h3>
+                  <p className="text-slate-600">Check back later for new adventures</p>
                 </div>
+              ) : (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {getAvailableQuests().map(quest => (
+                    <div
+                      key={quest.id}
+                      className="p-6 rounded-2xl border-2 border-slate-200 hover:border-purple-300 hover:shadow-lg transition-all cursor-pointer group"
+                      onClick={() => setShowQuestModal(quest)}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-100 to-indigo-100 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                            📜
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-slate-900">{quest.title}</h3>
+                            <p className="text-sm text-slate-600">{quest.days.length}-Day Quest</p>
+                          </div>
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-purple-500 group-hover:translate-x-1 transition-all" />
+                      </div>
 
-                <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-blue-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-2xl">💬</span>
-                    <strong className="text-slate-900">Communication</strong>
-                  </div>
-                  <p className="text-sm text-slate-700">Practice expressing needs and navigating social interactions</p>
-                </div>
+                      <p className="text-sm text-slate-600 mb-4">{quest.description}</p>
 
-                <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-purple-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-2xl">🌈</span>
-                    <strong className="text-slate-900">Zones</strong>
-                  </div>
-                  <p className="text-sm text-slate-700">Learn to recognize and regulate emotional states effectively</p>
+                      <div className="flex items-center gap-4 text-sm">
+                        <span className="text-purple-600 font-semibold">+{quest.xpReward} XP</span>
+                        {quest.badgeReward && (
+                          <span className="text-amber-600">+ Badge</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-
-                <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-amber-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-2xl">🧭</span>
-                    <strong className="text-slate-900">Self-Management</strong>
-                  </div>
-                  <p className="text-sm text-slate-700">Develop independence and problem-solving skills for life</p>
-                </div>
-
-                <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-pink-200 md:col-span-2">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-2xl">🦋</span>
-                    <strong className="text-slate-900">Mindfulness & Calm</strong>
-                  </div>
-                  <p className="text-sm text-slate-700">Build awareness and find inner peace through gentle practices</p>
-                </div>
-              </div>
+              )}
             </div>
 
-            {/* Related Tools & Resources */}
+            {/* Completed Quests */}
+            {progress.completedQuests.length > 0 && (
+              <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-3xl">
+                    ✅
+                  </div>
+                  <div>
+                    <h2 className="text-3xl font-bold text-slate-900">Completed Quests</h2>
+                    <p className="text-slate-600">{progress.completedQuests.length} quest{progress.completedQuests.length !== 1 ? 's' : ''} finished</p>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-4">
+                  {progress.completedQuests.map(questId => {
+                    const quest = MULTI_DAY_QUESTS.find(q => q.id === questId)
+                    if (!quest) return null
+                    return (
+                      <div
+                        key={questId}
+                        className="p-4 rounded-xl bg-green-50 border border-green-200 flex items-center gap-3"
+                      >
+                        <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center">
+                          <Check className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-slate-900">{quest.title}</h4>
+                          <p className="text-xs text-green-600">+{quest.xpReward} XP earned</p>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Badges Tab Content */}
+        {activeTab === 'badges' && (
+          <div className="space-y-8">
+            {/* Earned Badges */}
+            {progress.earnedBadges.length > 0 && (
+              <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center text-3xl">
+                    🏆
+                  </div>
+                  <div>
+                    <h2 className="text-3xl font-bold text-slate-900">Your Badges</h2>
+                    <p className="text-slate-600">{progress.earnedBadges.length} badge{progress.earnedBadges.length !== 1 ? 's' : ''} earned</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                  {progress.earnedBadges.map(badgeId => {
+                    const badge = getBadgeInfo(badgeId)
+                    if (!badge) return null
+                    return (
+                      <div
+                        key={badgeId}
+                        className="group p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-yellow-50 border-2 border-amber-200 text-center hover:shadow-lg hover:scale-105 transition-all"
+                      >
+                        <div
+                          className={cn(
+                            'w-16 h-16 mx-auto mb-3 rounded-full flex items-center justify-center text-3xl shadow-lg',
+                            badgeBgClass(badge.color)
+                          )}
+                        >
+                          {badge.icon}
+                        </div>
+                        <h4 className="font-bold text-sm text-slate-900 mb-1">{badge.name}</h4>
+                        <p className="text-xs text-slate-600">{badge.description}</p>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* All Badges */}
             <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
-              <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center text-xl">
-                  🔗
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-400 to-slate-500 flex items-center justify-center text-3xl">
+                  🎖️
                 </div>
-                Explore More Tools
-              </h3>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* Breathing Techniques */}
-                <Link 
-                  href="/breathing/breath"
-                  className="group p-5 rounded-2xl border-2 border-slate-200 hover:border-blue-400 hover:bg-gradient-to-br hover:from-blue-50 hover:to-indigo-50 transition-all hover:shadow-lg hover:scale-[1.02]"
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-3xl">🫁</span>
-                    <h4 className="font-bold text-slate-900 group-hover:text-blue-700">Breathing Guides</h4>
-                  </div>
-                  <p className="text-sm text-slate-600">Learn breathing techniques for calm and focus</p>
-                </Link>
-
-                <Link 
-                  href="/breathing/mindfulness"
-                  className="group p-5 rounded-2xl border-2 border-slate-200 hover:border-purple-400 hover:bg-gradient-to-br hover:from-purple-50 hover:to-pink-50 transition-all hover:shadow-lg hover:scale-[1.02]"
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-3xl">🧘</span>
-                    <h4 className="font-bold text-slate-900 group-hover:text-purple-700">Mindfulness</h4>
-                  </div>
-                  <p className="text-sm text-slate-600">Guided mindfulness and meditation practices</p>
-                </Link>
-
-                <Link 
-                  href="/techniques/sos"
-                  className="group p-5 rounded-2xl border-2 border-slate-200 hover:border-red-400 hover:bg-gradient-to-br hover:from-red-50 hover:to-orange-50 transition-all hover:shadow-lg hover:scale-[1.02]"
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-3xl">🆘</span>
-                    <h4 className="font-bold text-slate-900 group-hover:text-red-700">60-Second SOS</h4>
-                  </div>
-                  <p className="text-sm text-slate-600">Quick emergency calm-down breathing</p>
-                </Link>
-
-                <Link 
-                  href="/tools/adhd-tools"
-                  className="group p-5 rounded-2xl border-2 border-slate-200 hover:border-green-400 hover:bg-gradient-to-br hover:from-green-50 hover:to-emerald-50 transition-all hover:shadow-lg hover:scale-[1.02]"
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-3xl">🎯</span>
-                    <h4 className="font-bold text-slate-900 group-hover:text-green-700">ADHD Tools</h4>
-                  </div>
-                  <p className="text-sm text-slate-600">Focus support tools for ADHD minds</p>
-                </Link>
-
-                <Link 
-                  href="/tools/autism-tools"
-                  className="group p-5 rounded-2xl border-2 border-slate-200 hover:border-indigo-400 hover:bg-gradient-to-br hover:from-indigo-50 hover:to-blue-50 transition-all hover:shadow-lg hover:scale-[1.02]"
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-3xl">🧩</span>
-                    <h4 className="font-bold text-slate-900 group-hover:text-indigo-700">Autism Tools</h4>
-                  </div>
-                  <p className="text-sm text-slate-600">Sensory-friendly regulation resources</p>
-                </Link>
-
-                <Link 
-                  href="/tools/focus-tiles"
-                  className="group p-5 rounded-2xl border-2 border-slate-200 hover:border-amber-400 hover:bg-gradient-to-br hover:from-amber-50 hover:to-yellow-50 transition-all hover:shadow-lg hover:scale-[1.02]"
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-3xl">🧩</span>
-                    <h4 className="font-bold text-slate-900 group-hover:text-amber-700">Focus Tiles</h4>
-                  </div>
-                  <p className="text-sm text-slate-600">Interactive focus training exercises</p>
-                </Link>
+                <div>
+                  <h2 className="text-3xl font-bold text-slate-900">All Badges</h2>
+                  <p className="text-slate-600">{progress.earnedBadges.length}/{FOCUS_GARDEN_BADGES.length} unlocked</p>
+                </div>
               </div>
 
-              {/* Homepage Link */}
-              <div className="mt-6 pt-6 border-t border-slate-200">
-                <Link 
-                  href="/"
-                  className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium transition-colors"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  <span>Back to Homepage</span>
-                </Link>
-              </div>
+              {/* Badge categories */}
+              {(['streak', 'time', 'growth', 'resilience', 'mastery', 'special'] as const).map(category => {
+                const categoryBadges = FOCUS_GARDEN_BADGES.filter(b => b.category === category)
+                const categoryNames = {
+                  streak: { name: 'Streak Badges', icon: <Flame className="w-5 h-5 text-orange-500" /> },
+                  time: { name: 'Time of Day', icon: <Clock className="w-5 h-5 text-blue-500" /> },
+                  growth: { name: 'Garden Growth', icon: <Sprout className="w-5 h-5 text-green-500" /> },
+                  resilience: { name: 'Resilience', icon: <Shield className="w-5 h-5 text-purple-500" /> },
+                  mastery: { name: 'Mastery', icon: <Star className="w-5 h-5 text-amber-500" /> },
+                  special: { name: 'Special', icon: <Trophy className="w-5 h-5 text-pink-500" /> }
+                }
+
+                return (
+                  <div key={category} className="mb-8 last:mb-0">
+                    <div className="flex items-center gap-2 mb-4">
+                      {categoryNames[category].icon}
+                      <h3 className="font-bold text-lg text-slate-900">{categoryNames[category].name}</h3>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                      {categoryBadges.map(badge => {
+                        const isEarned = progress.earnedBadges.includes(badge.id)
+                        return (
+                          <div
+                            key={badge.id}
+                            className={cn(
+                              "group p-4 rounded-2xl border-2 text-center transition-all",
+                              isEarned
+                                ? "bg-gradient-to-br from-white to-slate-50 border-slate-200 hover:shadow-lg hover:scale-105"
+                                : "bg-slate-100 border-slate-200 opacity-60"
+                            )}
+                          >
+                            <div
+                              className={cn(
+                                "w-14 h-14 mx-auto mb-3 rounded-full flex items-center justify-center text-2xl",
+                                isEarned ? "shadow-lg" : "grayscale"
+                              )}
+                            >
+                              <div
+                                className={cn(
+                                  'w-full h-full rounded-full flex items-center justify-center',
+                                  isEarned ? badgeBgClass(badge.color) : 'bg-slate-200'
+                                )}
+                              >
+                                {isEarned ? badge.icon : <Lock className="w-6 h-6 text-slate-400" />}
+                              </div>
+                            </div>
+                            <h4 className="font-bold text-sm text-slate-900 mb-1">{badge.name}</h4>
+                            <p className="text-xs text-slate-600">{badge.description}</p>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )
+              })}
             </div>
+          </div>
+        )}
+
+        {/* Related Tools */}
+        <div className="mt-8 bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
+          <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center text-xl">
+              🔗
+            </div>
+            Explore More Tools
+          </h3>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Link
+              href="/breathing/breath"
+              className="group p-5 rounded-2xl border-2 border-slate-200 hover:border-blue-400 hover:bg-gradient-to-br hover:from-blue-50 hover:to-indigo-50 transition-all hover:shadow-lg hover:scale-[1.02]"
+            >
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-3xl">🫁</span>
+                <h4 className="font-bold text-slate-900 group-hover:text-blue-700">Breathing Guides</h4>
+              </div>
+              <p className="text-sm text-slate-600">Learn breathing techniques for calm and focus</p>
+            </Link>
+
+            <Link
+              href="/tools/adhd-tools"
+              className="group p-5 rounded-2xl border-2 border-slate-200 hover:border-green-400 hover:bg-gradient-to-br hover:from-green-50 hover:to-emerald-50 transition-all hover:shadow-lg hover:scale-[1.02]"
+            >
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-3xl">🎯</span>
+                <h4 className="font-bold text-slate-900 group-hover:text-green-700">ADHD Tools</h4>
+              </div>
+              <p className="text-sm text-slate-600">Focus support tools for ADHD minds</p>
+            </Link>
+
+            <Link
+              href="/tools/autism-tools"
+              className="group p-5 rounded-2xl border-2 border-slate-200 hover:border-indigo-400 hover:bg-gradient-to-br hover:from-indigo-50 hover:to-blue-50 transition-all hover:shadow-lg hover:scale-[1.02]"
+            >
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-3xl">🧩</span>
+                <h4 className="font-bold text-slate-900 group-hover:text-indigo-700">Autism Tools</h4>
+              </div>
+              <p className="text-sm text-slate-600">Sensory-friendly regulation resources</p>
+            </Link>
+          </div>
+
+          <div className="mt-6 pt-6 border-t border-slate-200">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Homepage</span>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
   )
 }
-

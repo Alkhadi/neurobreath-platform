@@ -4,7 +4,7 @@ import Fuse from 'fuse.js';
 
 import { pageBuddyConfigs } from '@/lib/page-buddy-configs';
 import { ROUTE_REGISTRY } from '@/lib/trust/routeRegistry';
-import { cacheGet, cacheSet } from './cache';
+import { cacheGetWithStatus, cacheSet } from './cache';
 import { extractTopicCandidates, normalizeQuery } from './text';
 
 export type InternalCoverage = 'high' | 'partial' | 'none';
@@ -55,8 +55,8 @@ function titleFromRoute(route: string): string {
 }
 
 async function getStaticRoutes(): Promise<Set<string>> {
-  const cached = cacheGet<Set<string>>('buddy:routes:static');
-  if (cached) return cached;
+  const cached = cacheGetWithStatus<Set<string>>('buddy:routes:static');
+  if (cached.value) return cached.value;
 
   let json: RoutesMap | null = null;
   try {
@@ -120,20 +120,27 @@ async function buildKbPages(): Promise<KbPage[]> {
 }
 
 export async function getKbIndex(): Promise<KbPage[]> {
-  const cached = cacheGet<KbPage[]>('buddy:kb:index');
-  if (cached) return cached;
+  return (await getKbIndexWithCache()).pages;
+}
+
+export async function getKbIndexWithCache(): Promise<{ pages: KbPage[]; cache: 'hit' | 'miss' }> {
+  const cached = cacheGetWithStatus<KbPage[]>('buddy:kb:index');
+  if (cached.value) return { pages: cached.value, cache: cached.hit };
 
   const pages = await buildKbPages();
   cacheSet('buddy:kb:index', pages, KB_TTL_MS);
-  return pages;
+  return { pages, cache: 'miss' };
 }
 
-export async function searchInternalKb(question: string, limit = 5): Promise<{ hits: InternalSearchHit[]; coverage: InternalCoverage }> {
-  const pages = await getKbIndex();
+export async function searchInternalKb(
+  question: string,
+  limit = 5
+): Promise<{ hits: InternalSearchHit[]; coverage: InternalCoverage; cache: 'hit' | 'miss' }> {
+  const { pages, cache } = await getKbIndexWithCache();
   const q = String(question || '').trim();
 
   if (!q || pages.length === 0) {
-    return { hits: [], coverage: 'none' };
+    return { hits: [], coverage: 'none', cache };
   }
 
   const fuse = new Fuse(pages, {
@@ -173,7 +180,7 @@ export async function searchInternalKb(question: string, limit = 5): Promise<{ h
     else if (best <= 0.38) coverage = 'partial';
   }
 
-  return { hits, coverage };
+  return { hits, coverage, cache };
 }
 
 export async function isValidInternalRoute(route: string): Promise<boolean> {

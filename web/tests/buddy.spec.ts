@@ -12,10 +12,15 @@ import { test, expect, Page } from '@playwright/test';
 
 const USER_PREFS_KEY = 'neurobreath.userprefs.v1';
 
-// Support both old and new API routes during transition
-const BUDDY_API_ROUTE = /\/api\/(buddy(\/ask)?|api-ai-chat-buddy|ai-assistant)(\?.*)?$/;
+// Support both legacy and unified Buddy endpoints.
+// Intentionally narrow this to Buddy only so unrelated background AI calls
+// (e.g., other assistants) can't satisfy `waitForRequest` and create flakes.
+const BUDDY_API_ROUTE = /\/(?:(?:uk|us)\/)?api\/buddy(?:\/ask)?(\?.*)?$/;
 
 async function mockBuddyApi(page: Page, body: unknown) {
+  // Replace any previously-registered handlers so tests can change the mocked
+  // response within a single test (e.g., TEST 4/6).
+  await page.unroute(BUDDY_API_ROUTE);
   await page.route(BUDDY_API_ROUTE, async (route) => {
     await route.fulfill({
       status: 200,
@@ -54,8 +59,9 @@ async function sendMessageAndWaitForBuddyApi(page: Page, message: string) {
 
 // Helper to open the NeuroBreath Buddy dialog
 async function openBuddyDialog(page: Page) {
-  // Wait for the page to be fully loaded
-  await page.waitForLoadState('networkidle');
+  // Avoid `networkidle` here: the app can keep background connections alive
+  // (analytics, prefetches), which makes this flaky across browsers/viewports.
+  await page.waitForLoadState('domcontentloaded');
   
   // Find and click the buddy trigger button using aria-label
   const buddyTrigger = page.locator('button[aria-label*="Open NeuroBreath Buddy"]');
@@ -251,11 +257,22 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
           url: '/breathing',
         },
       ],
-      meta: { usedInternal: true, usedExternal: true, internalCoverage: 'partial' },
+      meta: {
+        usedInternal: true,
+        usedExternal: true,
+        internalCoverage: 'partial',
+        usedProviders: ['NeuroBreath', 'NHS', 'MedlinePlus'],
+        verifiedLinks: { totalLinks: 3, validLinks: 3, removedLinks: 0 },
+      },
     });
 
     const dialog = await openBuddyDialog(page);
     await sendMessageAndWaitForBuddyApi(page, 'FORCE_AI_TEST_REFERENCES_9f3c');
+
+    // Source Coverage panel
+    await expect(dialog.locator('[data-buddy-source-coverage]')).toBeVisible();
+    await expect(dialog.locator('[data-buddy-coverage-label]')).toContainText('Internal: Partial');
+    await expect(dialog.locator('[data-buddy-verified-links]')).toContainText('Verified links: 3/3');
 
     // New UI renders Evidence sources as plain text (no external anchors).
     const sourcesTrigger = dialog.getByRole('button', { name: /Evidence sources/i });
@@ -281,7 +298,13 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
         safety: { level: 'none' },
       },
       citations: [],
-      meta: { usedInternal: true, usedExternal: false, internalCoverage: 'high' },
+      meta: {
+        usedInternal: true,
+        usedExternal: false,
+        internalCoverage: 'high',
+        usedProviders: ['NeuroBreath'],
+        verifiedLinks: { totalLinks: 0, validLinks: 0, removedLinks: 0 },
+      },
     });
 
     const dialog = await openBuddyDialog(page);
@@ -318,7 +341,13 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
         safety: { level: 'none' },
       },
       citations: [],
-      meta: { usedInternal: true, usedExternal: false, internalCoverage: 'high' },
+      meta: {
+        usedInternal: true,
+        usedExternal: false,
+        internalCoverage: 'high',
+        usedProviders: ['NeuroBreath'],
+        verifiedLinks: { totalLinks: 0, validLinks: 0, removedLinks: 0 },
+      },
     });
 
     const dialog = await openBuddyDialog(page);
@@ -348,7 +377,13 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
         safety: { level: 'none' },
       },
       citations: [],
-      meta: { usedInternal: true, usedExternal: false, internalCoverage: 'high' },
+      meta: {
+        usedInternal: true,
+        usedExternal: false,
+        internalCoverage: 'high',
+        usedProviders: ['NeuroBreath'],
+        verifiedLinks: { totalLinks: 0, validLinks: 0, removedLinks: 0 },
+      },
     });
     await sendMessageAndWaitForBuddyApi(page, 'FORCE_AI_TEST_FIRST');
     await expect(dialog).toContainText('FIRST_RESPONSE_MARKER_abc123', { timeout: 10000 });
@@ -361,7 +396,13 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
         safety: { level: 'none' },
       },
       citations: [],
-      meta: { usedInternal: true, usedExternal: false, internalCoverage: 'high' },
+      meta: {
+        usedInternal: true,
+        usedExternal: false,
+        internalCoverage: 'high',
+        usedProviders: ['NeuroBreath'],
+        verifiedLinks: { totalLinks: 0, validLinks: 0, removedLinks: 0 },
+      },
     });
     await sendMessageAndWaitForBuddyApi(page, 'FORCE_AI_TEST_SECOND');
 
@@ -386,7 +427,13 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
           lastReviewed: '2024-01-01',
         },
       ],
-      meta: { usedInternal: false, usedExternal: true, internalCoverage: 'none' },
+      meta: {
+        usedInternal: false,
+        usedExternal: true,
+        internalCoverage: 'none',
+        usedProviders: ['NHS'],
+        verifiedLinks: { totalLinks: 1, validLinks: 1, removedLinks: 0 },
+      },
     });
 
     const dialog = await openBuddyDialog(page);
@@ -395,6 +442,9 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
     // Verify answer with unique marker is visible
     await expect(dialog).toContainText('INTEGRATION_TEST_MARKER', { timeout: 10000 });
     console.log('✓ Answer text with marker is visible');
+
+    await expect(dialog.locator('[data-buddy-coverage-label]')).toContainText('Internal: None');
+    await expect(dialog.locator('[data-buddy-verified-links]')).toContainText('Verified links: 1/1');
 
     const sourcesTrigger = dialog.getByRole('button', { name: /Evidence sources/i });
     await expect(sourcesTrigger).toBeVisible({ timeout: 15000 });
@@ -406,6 +456,71 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
 
     // Take final screenshot
     await page.screenshot({ path: 'test-results/buddy-integration.png', fullPage: true });
+  });
+
+  test('TEST 6: Source Coverage reflects internal vs external providers', async ({ page }) => {
+    const dialog = await openBuddyDialog(page);
+
+    // Internal-first ADHD (high internal coverage)
+    await mockBuddyApi(page, {
+      answer: {
+        title: 'ADHD Hub',
+        summary: 'ADHD internal coverage test',
+        sections: [],
+        safety: { level: 'none' },
+      },
+      citations: [{ provider: 'NeuroBreath', title: 'ADHD hub', url: '/adhd' }],
+      meta: {
+        usedInternal: true,
+        usedExternal: false,
+        internalCoverage: 'high',
+        usedProviders: ['NeuroBreath'],
+        verifiedLinks: { totalLinks: 1, validLinks: 1, removedLinks: 0 },
+      },
+    });
+    await sendMessageAndWaitForBuddyApi(page, 'Explain ADHD support');
+    await expect(dialog.locator('[data-buddy-coverage-label]')).toContainText('Internal: High');
+    await expect(dialog.locator('[data-buddy-source-coverage]')).toContainText('NeuroBreath');
+
+    // PTSD (no internal coverage; external providers used)
+    await mockBuddyApi(page, {
+      answer: {
+        title: 'PTSD (overview)',
+        summary: 'PTSD external coverage test',
+        sections: [],
+        safety: { level: 'none' },
+      },
+      citations: [
+        {
+          provider: 'NHS',
+          title: 'NHS - Post-traumatic stress disorder (PTSD)',
+          url: 'https://www.nhs.uk/mental-health/conditions/post-traumatic-stress-disorder-ptsd/overview/',
+          lastReviewed: '2024-01-01',
+        },
+        {
+          provider: 'MedlinePlus',
+          title: 'MedlinePlus - Post-Traumatic Stress Disorder',
+          url: 'https://medlineplus.gov/posttraumaticstressdisorder.html',
+        },
+      ],
+      meta: {
+        usedInternal: false,
+        usedExternal: true,
+        internalCoverage: 'none',
+        usedProviders: ['NHS', 'MedlinePlus'],
+        verifiedLinks: { totalLinks: 2, validLinks: 2, removedLinks: 0 },
+      },
+    });
+    await sendMessageAndWaitForBuddyApi(page, 'Explain PTSD');
+
+    await expect(dialog.locator('[data-buddy-coverage-label]')).toContainText('Internal: None');
+    await expect(dialog.locator('[data-buddy-source-coverage]')).toContainText('NHS');
+    await expect(dialog.locator('[data-buddy-source-coverage]')).toContainText('MedlinePlus');
+    await expect(dialog.locator('[data-buddy-verified-links]')).toContainText('Verified links: 2/2');
+
+    // Verify the citation list count matches valid links.
+    await dialog.getByRole('button', { name: /Evidence sources/i }).click();
+    await expect(dialog.locator('[data-buddy-citation-list] > div')).toHaveCount(2);
   });
 });
 

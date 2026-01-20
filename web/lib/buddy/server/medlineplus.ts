@@ -1,4 +1,4 @@
-import { cacheGet, cacheSet, rateLimit } from './cache';
+import { cacheGetWithStatus, cacheSet, rateLimit } from './cache';
 
 const MEDLINE_TTL_MS = 12 * 60 * 60 * 1000;
 
@@ -28,25 +28,28 @@ function extractFirstResult(xml: string): { title: string; summary: string; url:
   };
 }
 
-export async function fetchMedlinePlus(topic: string, ipKey: string): Promise<{ title: string; summary: string; url: string } | null> {
+export async function fetchMedlinePlus(
+  topic: string,
+  ipKey: string
+): Promise<{ result: { title: string; summary: string; url: string } | null; cache: 'hit' | 'miss' }> {
   const key = `medline:${topic.toLowerCase()}`;
-  const cached = cacheGet<{ title: string; summary: string; url: string }>(key);
-  if (cached) return cached;
+  const cached = cacheGetWithStatus<{ title: string; summary: string; url: string }>(key);
+  if (cached.value) return { result: cached.value, cache: cached.hit };
 
   // NLM guidance: 85 req/min/IP. Stay under.
   const rl = rateLimit(`medline:${ipKey}`, 80, 60_000);
-  if (!rl.ok) return null;
+  if (!rl.ok) return { result: null, cache: 'miss' };
 
   const base = 'https://wsearch.nlm.nih.gov/ws/query';
   const url = `${base}?db=healthTopics&term=${encodeURIComponent(topic)}`;
 
   const res = await fetch(url, { signal: AbortSignal.timeout(12000) }).catch(() => null);
-  if (!res?.ok) return null;
+  if (!res?.ok) return { result: null, cache: 'miss' };
 
   const xml = await res.text().catch(() => '');
   const top = extractFirstResult(xml);
-  if (!top) return null;
+  if (!top) return { result: null, cache: 'miss' };
 
   cacheSet(key, top, MEDLINE_TTL_MS);
-  return top;
+  return { result: top, cache: 'miss' };
 }

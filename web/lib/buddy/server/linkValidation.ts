@@ -1,4 +1,4 @@
-import { cacheGet, cacheSet } from './cache';
+import { cacheGetWithStatus, cacheSet } from './cache';
 
 const EXTERNAL_VALIDATION_TTL_MS = 6 * 60 * 60 * 1000;
 
@@ -47,10 +47,17 @@ async function tryGetSnippet(url: string): Promise<{ res: Response; snippet: str
   return { res, snippet: text.slice(0, 20000) };
 }
 
-export async function validateExternalUrl(url: string): Promise<ExternalLinkValidation> {
+export async function validateExternalUrl(
+  url: string,
+  onCache?: (hit: 'hit' | 'miss') => void
+): Promise<ExternalLinkValidation> {
   const key = `buddy:extlink:${url}`;
-  const cached = cacheGet<ExternalLinkValidation>(key);
-  if (cached) return cached;
+  const cached = cacheGetWithStatus<ExternalLinkValidation>(key);
+  if (cached.value) {
+    onCache?.(cached.hit);
+    return cached.value;
+  }
+  onCache?.('miss');
 
   if (!url || !isHttpUrl(url)) {
     const fail: ExternalLinkValidation = { ok: false, reason: 'Invalid URL' };

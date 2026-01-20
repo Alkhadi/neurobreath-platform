@@ -33,10 +33,32 @@ function isInternalUrl(url: string): boolean {
   return url.startsWith('/');
 }
 
+function coverageBadge(coverage: BuddyAskResponse['meta']['internalCoverage']): { label: string; variant: 'default' | 'secondary' | 'outline' } {
+  switch (coverage) {
+    case 'high':
+      return { label: 'Internal: High', variant: 'secondary' };
+    case 'partial':
+      return { label: 'Internal: Partial', variant: 'outline' };
+    case 'none':
+    default:
+      return { label: 'Internal: None', variant: 'outline' };
+  }
+}
+
 export function BuddyAnswerCard({ answer, citations, meta, renderLine, className }: BuddyAnswerCardProps) {
-  const primaryProvider = citations[0]?.provider;
-  const primaryBadge = primaryProvider ? providerBadge(primaryProvider) : null;
+  const providers = (meta?.usedProviders?.length ? meta.usedProviders : Array.from(new Set(citations.map((c) => c.provider)))) || [];
   const lastReviewed = citations.find((s) => s.lastReviewed)?.lastReviewed;
+
+  const verifiedLinks = meta?.verifiedLinks;
+  const verifiedText = verifiedLinks
+    ? `${verifiedLinks.validLinks}/${verifiedLinks.totalLinks}`
+    : `${citations.length}/${citations.length}`;
+
+  const coverage = meta?.internalCoverage || 'none';
+  const coverageChip = coverageBadge(coverage);
+
+  const warning = meta?.warnings?.[0];
+  const isDev = process.env.NODE_ENV !== 'production';
 
   return (
     <div className={cn('space-y-3', className)} data-buddy-answer-card>
@@ -46,21 +68,12 @@ export function BuddyAnswerCard({ answer, citations, meta, renderLine, className
             {answer.title}
           </div>
           <div className="mt-1 flex flex-wrap items-center gap-1.5">
-            {primaryBadge && (
-              <Badge variant={primaryBadge.variant} className="text-[10px]">
-                {primaryBadge.label}
-              </Badge>
-            )}
-            {meta?.usedInternal && (
-              <Badge variant="secondary" className="text-[10px]">
-                Internal first
-              </Badge>
-            )}
-            {meta?.usedExternal && (
-              <Badge variant="outline" className="text-[10px]">
-                External verified
-              </Badge>
-            )}
+            <Badge variant={coverageChip.variant} className="text-[10px]" data-buddy-coverage-label>
+              {coverageChip.label}
+            </Badge>
+            <Badge variant="outline" className="text-[10px]" data-buddy-verified-links>
+              Verified links: {verifiedText}
+            </Badge>
             {lastReviewed && (
               <Badge variant="outline" className="text-[10px]">
                 Last reviewed: {lastReviewed}
@@ -72,6 +85,30 @@ export function BuddyAnswerCard({ answer, citations, meta, renderLine, className
               </Badge>
             )}
           </div>
+
+          <div className="mt-2 flex flex-wrap items-center gap-1.5" data-buddy-source-coverage>
+            <div className="text-[10px] text-muted-foreground">Sources used:</div>
+            {providers.length > 0 ? (
+              providers.map((p) => {
+                const b = providerBadge(p);
+                return (
+                  <Badge key={p} variant={b.variant} className="text-[10px]">
+                    {b.label}
+                  </Badge>
+                );
+              })
+            ) : (
+              <Badge variant="outline" className="text-[10px]">
+                None
+              </Badge>
+            )}
+          </div>
+
+          {warning && (
+            <div className="mt-2 text-[11px] text-muted-foreground">
+              {warning}
+            </div>
+          )}
         </div>
       </div>
 
@@ -150,6 +187,69 @@ export function BuddyAnswerCard({ answer, citations, meta, renderLine, className
                     )}
                   </div>
                 ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      )}
+
+      {isDev && meta && (
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="details">
+            <AccordionTrigger className="text-xs">Details</AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-2 text-xs text-muted-foreground">
+                {meta.requestId && (
+                  <div>
+                    <span className="font-medium text-foreground/80">Request ID:</span> {meta.requestId}
+                  </div>
+                )}
+
+                {meta.intentClass && (
+                  <div>
+                    <span className="font-medium text-foreground/80">Intent:</span> {meta.intentClass}
+                  </div>
+                )}
+
+                {meta.timingsMs && (
+                  <div>
+                    <span className="font-medium text-foreground/80">Timings (ms):</span>{' '}
+                    {Object.entries(meta.timingsMs)
+                      .filter(([, v]) => typeof v === 'number')
+                      .map(([k, v]) => `${k}=${Math.round(Number(v))}`)
+                      .join(' • ')}
+                  </div>
+                )}
+
+                {meta.cache && (
+                  <div>
+                    <span className="font-medium text-foreground/80">Cache:</span>{' '}
+                    {Object.entries(meta.cache)
+                      .filter(([, v]) => v)
+                      .map(([k, v]) => `${k}=${v}`)
+                      .join(' • ') || 'none'}
+                  </div>
+                )}
+
+                {meta.verifiedLinks?.removed && meta.verifiedLinks.removed.length > 0 && (
+                  <div>
+                    <div className="font-medium text-foreground/80">Excluded links:</div>
+                    <div className="mt-1 space-y-1">
+                      {meta.verifiedLinks.removed.slice(0, 6).map((r) => (
+                        <div key={r.url} className="break-all">
+                          {r.provider ? `${r.provider}: ` : ''}{r.url} — {r.reason}
+                          {typeof r.status === 'number' ? ` (HTTP ${r.status})` : ''}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {meta.dev?.matchedTopic && (
+                  <div>
+                    <span className="font-medium text-foreground/80">Matched topic:</span> {meta.dev.matchedTopic}
+                  </div>
+                )}
               </div>
             </AccordionContent>
           </AccordionItem>

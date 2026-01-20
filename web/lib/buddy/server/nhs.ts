@@ -1,4 +1,4 @@
-import { cacheGet, cacheSet } from './cache';
+import { cacheGetWithStatus, cacheSet } from './cache';
 import { extractTopicCandidates, scoreTextMatch } from './text';
 
 export interface NhsManifestEntry {
@@ -90,8 +90,8 @@ async function fetchJson(url: string, apiKey: string): Promise<Record<string, un
 }
 
 export async function getManifestIndex(): Promise<NhsManifestEntry[] | null> {
-  const cached = cacheGet<NhsManifestEntry[]>('nhs:manifest:index');
-  if (cached) return cached;
+  const cached = cacheGetWithStatus<NhsManifestEntry[]>('nhs:manifest:index');
+  if (cached.value) return cached.value;
 
   const apiKey = process.env.NHS_WEBSITE_CONTENT_API_KEY;
   if (!apiKey) return null;
@@ -128,9 +128,16 @@ export async function getManifestIndex(): Promise<NhsManifestEntry[] | null> {
   return deduped;
 }
 
-export async function resolveNhsTopic(question: string): Promise<NhsManifestEntry | null> {
+export async function getManifestIndexWithCache(): Promise<{ index: NhsManifestEntry[] | null; cache: 'hit' | 'miss' }> {
+  const cached = cacheGetWithStatus<NhsManifestEntry[]>('nhs:manifest:index');
+  if (cached.value) return { index: cached.value, cache: cached.hit };
   const index = await getManifestIndex();
-  if (!index) return null;
+  return { index, cache: index ? 'miss' : 'miss' };
+}
+
+export async function resolveNhsTopic(question: string): Promise<{ entry: NhsManifestEntry | null; cache: 'hit' | 'miss' }> {
+  const { index, cache } = await getManifestIndexWithCache();
+  if (!index) return { entry: null, cache };
 
   const candidates = extractTopicCandidates(question);
 
@@ -147,8 +154,8 @@ export async function resolveNhsTopic(question: string): Promise<NhsManifestEntr
     if (!best || score > best.score) best = { entry, score };
   }
 
-  if (!best || best.score < 60) return null;
-  return best.entry;
+  if (!best || best.score < 60) return { entry: null, cache };
+  return { entry: best.entry, cache };
 }
 
 export function extractTextFromNhsJson(json: unknown): { title: string; text: string; lastReviewed?: string; publicUrl?: string } | null {

@@ -1,7 +1,17 @@
 import type { NextRequest } from 'next/server';
+import { performance } from 'node:perf_hooks';
 import { checkQuerySafety, generateEmergencyResponse, sanitizeInput } from '@/lib/ai/core/safety';
 import { routeQuery } from '@/lib/ai/core/answerRouter';
-import type { BuddyAskResponse, BuddyCitation, BuddySafetyLevel } from './types';
+import type {
+  BuddyAskResponse,
+  BuddyCacheSummary,
+  BuddyCitation,
+  BuddyCitationProvider,
+  BuddyIntentClass,
+  BuddyLinkValidationSummary,
+  BuddySafetyLevel,
+  BuddyTimingsMs,
+} from './types';
 import { extractTopicCandidates, normalizeQuery } from './text';
 import { fetchMedlinePlus } from './medlineplus';
 import { fetchPubMed } from './pubmed';
@@ -73,10 +83,48 @@ async function addInternalCitations(hits: Array<{ page: { route: string; title: 
   return citations;
 }
 
-async function addExternalCitation(input: BuddyCitation | null): Promise<BuddyCitation | null> {
+type TelemetryState = {
+  requestId?: string;
+  intentClass: BuddyIntentClass;
+  timingsMs: BuddyTimingsMs;
+  cache: BuddyCacheSummary;
+  verifiedLinks: BuddyLinkValidationSummary;
+  usedProviders: Set<BuddyCitationProvider>;
+  warnings: string[];
+  devMatchedTopic?: string;
+};
+
+async function addExternalCitation(
+  input: BuddyCitation | null,
+  telemetry: TelemetryState
+): Promise<BuddyCitation | null> {
   if (!input?.url) return null;
-  const verdict = await validateExternalUrl(input.url);
-  if (!verdict.ok) return null;
+
+  telemetry.verifiedLinks.totalLinks += 1;
+
+  const t0 = performance.now();
+  const verdict = await validateExternalUrl(input.url, (hit) => {
+    // For the user-facing panel we only need a coarse hit/miss summary.
+    if (!telemetry.cache.linkValidation) telemetry.cache.linkValidation = hit;
+    if (hit === 'hit') telemetry.cache.linkValidation = 'hit';
+  });
+  telemetry.timingsMs.t_linkValidation_ms = (telemetry.timingsMs.t_linkValidation_ms || 0) + (performance.now() - t0);
+
+  if (!verdict.ok) {
+    telemetry.verifiedLinks.removedLinks += 1;
+    telemetry.verifiedLinks.removed = telemetry.verifiedLinks.removed || [];
+    telemetry.verifiedLinks.removed.push({
+      provider: input.provider,
+      url: input.url,
+      status: verdict.status,
+      reason: verdict.reason,
+    });
+    telemetry.warnings.push('Some sources could not be verified, so they were excluded.');
+    return null;
+  }
+
+  telemetry.verifiedLinks.validLinks += 1;
+  telemetry.usedProviders.add(input.provider);
   return input;
 }
 
@@ -181,8 +229,21 @@ function internalBlueprint(topic: string, coverage: InternalCoverage, internalRo
 
 export async function buddyAsk(
   req: NextRequest,
-  payload: { question: string; pathname?: string; jurisdiction?: 'UK' | 'US' | 'EU' }
+  payload: { question: string; pathname?: string; jurisdiction?: 'UK' | 'US' | 'EU' },
+  opts?: { requestId?: string }
 ): Promise<BuddyAskResponse> {
+  const tTotal0 = performance.now();
+
+  const telemetry: TelemetryState = {
+    requestId: opts?.requestId,
+    intentClass: 'general',
+    timingsMs: {},
+    cache: {},
+    verifiedLinks: { totalLinks: 0, validLinks: 0, removedLinks: 0 },
+    usedProviders: new Set<BuddyCitationProvider>(),
+    warnings: [],
+  };
+
   const pathname = payload.pathname || '/';
   const jurisdiction: 'UK' | 'US' | 'EU' = payload.jurisdiction || 'UK';
 
@@ -211,14 +272,28 @@ export async function buddyAsk(
         usedInternal: true,
         usedExternal: false,
         internalCoverage: 'none',
+        requestId: telemetry.requestId,
+        intentClass: 'general',
+        timingsMs: { t_total_ms: Math.round(performance.now() - tTotal0) },
+        cache: telemetry.cache,
+        verifiedLinks: telemetry.verifiedLinks,
       },
     };
   }
 
   // Navigation/tool routing stays internal-only.
   const routing = routeQuery(question, { pagePath: pathname, jurisdiction, role: 'buddy' });
+  telemetry.intentClass = routing.queryType === 'navigation' ? 'navigation' : routing.queryType === 'tool_help' ? 'tool_help' : 'general';
+
   if (routing.queryType === 'navigation' || routing.queryType === 'tool_help') {
     const internalOk = await isValidInternalRoute(pathname);
+
+    if (internalOk) {
+      telemetry.usedProviders.add('NeuroBreath');
+      telemetry.verifiedLinks.totalLinks += 1;
+      telemetry.verifiedLinks.validLinks += 1;
+    }
+
     return {
       answer: {
         title: 'NeuroBreath navigation help',
@@ -238,20 +313,39 @@ export async function buddyAsk(
         usedInternal: true,
         usedExternal: false,
         internalCoverage: 'high',
+        usedProviders: Array.from(telemetry.usedProviders),
+        verifiedLinks: telemetry.verifiedLinks,
+        requestId: telemetry.requestId,
+        intentClass: telemetry.intentClass,
+        timingsMs: { t_total_ms: Math.round(performance.now() - tTotal0) },
+        cache: telemetry.cache,
       },
     };
   }
 
   // 1) Internal-first retrieval
+  const tInternal0 = performance.now();
   const internal = await searchInternalKb(question, 5);
+  telemetry.timingsMs.t_internalSearch_ms = Math.round(performance.now() - tInternal0);
+  telemetry.cache.internalIndex = internal.cache;
+
   const internalRoutes = internal.hits.slice(0, 3).map((h) => h.page.route);
+
+  const tAssemble0 = performance.now();
   const internalCitations = await addInternalCitations(internal.hits);
+
+  telemetry.verifiedLinks.totalLinks += internalCitations.length;
+  telemetry.verifiedLinks.validLinks += internalCitations.length;
+  if (internalCitations.length > 0) telemetry.usedProviders.add('NeuroBreath');
 
   // 2) Build internal answer skeleton
   const blueprint = internalBlueprint(topic, internal.coverage, internalRoutes);
+  telemetry.devMatchedTopic = normalizeQuery(topic);
 
   const answerSections: Array<{ heading: string; text: string }> = [...blueprint.sections];
   const citations: BuddyCitation[] = [...internalCitations];
+
+  telemetry.timingsMs.t_internalAssemble_ms = Math.round(performance.now() - tAssemble0);
 
   let usedExternal = false;
   let externalAdded = false;
@@ -262,11 +356,19 @@ export async function buddyAsk(
 
   if (internal.coverage !== 'high') {
     // NHS (preferred) if configured
-    const nhsEntry = await resolveNhsTopic(question);
-    if (nhsEntry) {
-      const nhsPage = await fetchResolvedNhsPage(nhsEntry);
+    const tManifest0 = performance.now();
+    const nhsResolved = await resolveNhsTopic(question);
+    telemetry.timingsMs.t_externalManifestSearch_ms = Math.round(performance.now() - tManifest0);
+    telemetry.cache.nhsManifest = nhsResolved.cache;
+
+    if (nhsResolved.entry) {
+      const tFetch0 = performance.now();
+      const nhsPage = await fetchResolvedNhsPage(nhsResolved.entry);
+      telemetry.timingsMs.t_externalFetch_ms = (telemetry.timingsMs.t_externalFetch_ms || 0) + (performance.now() - tFetch0);
+      telemetry.cache.externalFetch = telemetry.cache.externalFetch || 'miss';
+
       if (nhsPage?.text) {
-        const humanUrl = nhsPage.publicUrl || nhsEntry.webUrl;
+        const humanUrl = nhsPage.publicUrl || nhsResolved.entry.webUrl;
         const c = await addExternalCitation(
           humanUrl
             ? {
@@ -276,7 +378,7 @@ export async function buddyAsk(
                 lastReviewed: nhsPage.lastReviewed,
               }
             : null
-        );
+        , telemetry);
 
         if (c) {
           citations.push(c);
@@ -287,18 +389,24 @@ export async function buddyAsk(
             text: truncate(stripMarkdown(nhsPage.text), 800),
           });
         }
+      } else {
+        telemetry.warnings.push('Some sources could not be verified, so they were excluded.');
       }
     }
 
     // MedlinePlus fallback
     if (!externalAdded) {
+      const tFetch0 = performance.now();
       const medline = await fetchMedlinePlus(primaryTopic, ipKey);
-      if (medline?.summary && medline?.url) {
+      telemetry.timingsMs.t_externalFetch_ms = (telemetry.timingsMs.t_externalFetch_ms || 0) + (performance.now() - tFetch0);
+      telemetry.cache.externalFetch = medline.cache === 'hit' ? 'hit' : (telemetry.cache.externalFetch || 'miss');
+
+      if (medline.result?.summary && medline.result?.url) {
         const c = await addExternalCitation({
           provider: 'MedlinePlus',
-          title: medline.title,
-          url: medline.url,
-        });
+          title: medline.result.title,
+          url: medline.result.url,
+        }, telemetry);
 
         if (c) {
           citations.push(c);
@@ -306,25 +414,31 @@ export async function buddyAsk(
           externalAdded = true;
           answerSections.unshift({
             heading: 'Verified external overview',
-            text: truncate(stripMarkdown(medline.summary), 800),
+            text: truncate(stripMarkdown(medline.result.summary), 800),
           });
         }
+      } else {
+        telemetry.warnings.push('Some sources could not be verified, so they were excluded.');
       }
     }
   }
 
   // 4) Optional research citations (never replaces patient guidance)
   if (wantsResearch(question)) {
+    const tFetch0 = performance.now();
     const pubs = await fetchPubMed(primaryTopic, ipKey);
+    telemetry.timingsMs.t_externalFetch_ms = (telemetry.timingsMs.t_externalFetch_ms || 0) + (performance.now() - tFetch0);
+    telemetry.cache.externalFetch = pubs.cache === 'hit' ? 'hit' : (telemetry.cache.externalFetch || 'miss');
+
     const pubmedCitations: BuddyCitation[] = [];
 
-    for (const p of pubs.slice(0, 3)) {
+    for (const p of pubs.results.slice(0, 3)) {
       const c = await addExternalCitation({
         provider: 'PubMed',
         title: p.title,
         url: p.url,
         lastReviewed: p.year ? String(p.year) : undefined,
-      });
+      }, telemetry);
       if (c) pubmedCitations.push(c);
     }
 
@@ -353,6 +467,19 @@ export async function buddyAsk(
     });
   }
 
+  // Consolidate warnings (avoid duplicates)
+  telemetry.warnings = Array.from(new Set(telemetry.warnings));
+  telemetry.timingsMs.t_total_ms = Math.round(performance.now() - tTotal0);
+
+  // If we performed any link validation but never hit cache, mark miss.
+  if (telemetry.timingsMs.t_linkValidation_ms && !telemetry.cache.linkValidation) {
+    telemetry.cache.linkValidation = 'miss';
+  }
+
+  const providersUsed: BuddyCitationProvider[] = Array.from(
+    new Set<BuddyCitationProvider>(citations.map((c) => c.provider))
+  );
+
   return {
     answer: {
       title: blueprint.title,
@@ -368,6 +495,14 @@ export async function buddyAsk(
       usedInternal: internalCitations.length > 0,
       usedExternal,
       internalCoverage: internal.coverage,
+      usedProviders: providersUsed,
+      verifiedLinks: telemetry.verifiedLinks,
+      requestId: telemetry.requestId,
+      intentClass: telemetry.intentClass,
+      timingsMs: telemetry.timingsMs,
+      cache: telemetry.cache,
+      warnings: telemetry.warnings.length ? telemetry.warnings : undefined,
+      dev: process.env.NODE_ENV !== 'production' ? { matchedTopic: telemetry.devMatchedTopic } : undefined,
     },
   };
 }

@@ -2,6 +2,8 @@ type CacheEntry<T> = { value: T; expiresAt: number };
 
 const cache = new Map<string, CacheEntry<unknown>>();
 
+export type CacheLookup<T> = { value: T | null; hit: 'hit' | 'miss' };
+
 export function cacheGet<T>(key: string): T | null {
   const entry = cache.get(key);
   if (!entry) return null;
@@ -10,6 +12,16 @@ export function cacheGet<T>(key: string): T | null {
     return null;
   }
   return entry.value as T;
+}
+
+export function cacheGetWithStatus<T>(key: string): CacheLookup<T> {
+  const entry = cache.get(key);
+  if (!entry) return { value: null, hit: 'miss' };
+  if (Date.now() > entry.expiresAt) {
+    cache.delete(key);
+    return { value: null, hit: 'miss' };
+  }
+  return { value: entry.value as T, hit: 'hit' };
 }
 
 export function cacheSet<T>(key: string, value: T, ttlMs: number): void {

@@ -1,4 +1,4 @@
-import { cacheGet, cacheSet, rateLimit } from './cache';
+import { cacheGetWithStatus, cacheSet, rateLimit } from './cache';
 
 const PUBMED_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -8,14 +8,17 @@ export interface PubMedCitation {
   year?: number;
 }
 
-export async function fetchPubMed(query: string, ipKey: string): Promise<PubMedCitation[]> {
+export async function fetchPubMed(
+  query: string,
+  ipKey: string
+): Promise<{ results: PubMedCitation[]; cache: 'hit' | 'miss' }> {
   const cacheKey = `pubmed:${query.toLowerCase()}`;
-  const cached = cacheGet<PubMedCitation[]>(cacheKey);
-  if (cached) return cached;
+  const cached = cacheGetWithStatus<PubMedCitation[]>(cacheKey);
+  if (cached.value) return { results: cached.value, cache: cached.hit };
 
   // NCBI guidance: 3 req/sec without API key.
   const rl = rateLimit(`pubmed:${ipKey}`, 3, 1000);
-  if (!rl.ok) return [];
+  if (!rl.ok) return { results: [], cache: 'miss' };
 
   const tool = process.env.NCBI_TOOL || 'neurobreath';
   const email = process.env.NCBI_EMAIL || 'contact@example.com';
@@ -28,15 +31,15 @@ export async function fetchPubMed(query: string, ipKey: string): Promise<PubMedC
   const esearch = `${base}/esearch.fcgi?db=pubmed&retmode=json&retmax=3&sort=relevance&${common}${keyParam}&term=${encodeURIComponent(query)}`;
 
   const sRes = await fetch(esearch, { signal: AbortSignal.timeout(12000) }).catch(() => null);
-  if (!sRes?.ok) return [];
+  if (!sRes?.ok) return { results: [], cache: 'miss' };
 
   const sJson = (await sRes.json().catch(() => null)) as Record<string, unknown> | null;
   const idList = (sJson?.esearchresult as { idlist?: string[] } | undefined)?.idlist || [];
-  if (!idList.length) return [];
+  if (!idList.length) return { results: [], cache: 'miss' };
 
   const esummary = `${base}/esummary.fcgi?db=pubmed&retmode=json&${common}${keyParam}&id=${idList.join(',')}`;
   const sumRes = await fetch(esummary, { signal: AbortSignal.timeout(12000) }).catch(() => null);
-  if (!sumRes?.ok) return [];
+  if (!sumRes?.ok) return { results: [], cache: 'miss' };
 
   const sumJson = (await sumRes.json().catch(() => null)) as Record<string, unknown> | null;
   const result = (sumJson?.result as Record<string, Record<string, unknown>> | undefined) || {};
@@ -52,5 +55,5 @@ export async function fetchPubMed(query: string, ipKey: string): Promise<PubMedC
   }
 
   cacheSet(cacheKey, citations, PUBMED_TTL_MS);
-  return citations;
+  return { results: citations, cache: 'miss' };
 }
