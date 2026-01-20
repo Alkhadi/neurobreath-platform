@@ -21,6 +21,8 @@ import { ReferencesSection, type ReferenceItemProps } from '@/components/buddy/r
 import { TailoredNextSteps, type RecommendedAction } from '@/components/buddy/tailored-next-steps';
 import { BuddyErrorBoundary } from '@/components/buddy/error-boundary';
 import { SafeIcon } from '@/components/buddy/safe-icon';
+import { BuddyAnswerCard } from '@/components/buddy/answer-card';
+import type { BuddyAskResponse } from '@/lib/buddy/server/types';
 
 interface Message {
   id: string;
@@ -30,6 +32,8 @@ interface Message {
   recommendedActions?: RecommendedAction[];
   references?: ReferenceItemProps[];
   availableTools?: string[];
+  buddyAnswer?: BuddyAskResponse['answer'];
+  buddySources?: BuddyAskResponse['sources'];
 }
 
 interface PageBuddyProps {
@@ -621,16 +625,12 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       const controller = new AbortController();
       const timeoutId = window.setTimeout(() => controller.abort(), 30000);
 
-      const response = await fetch('/api/buddy', {
+      const response = await fetch('/api/buddy/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           question: userMessage,
-          query: userMessage,
           pathname,
-          messages: [
-            ...messages.slice(-6).map(m => ({ role: m.role, content: m.content })),
-          ],
           jurisdiction: prefs.regional.jurisdiction,
         }),
         signal: controller.signal,
@@ -640,7 +640,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
 
       // Always attempt to parse JSON so we can display server-provided fallback
       // answers even when the API is in a degraded state.
-      let data: { answer?: string; content?: string; citations?: string; recommendedActions?: RecommendedAction[]; references?: ReferenceItemProps[]; availableTools?: string[] } | null = null;
+      let data: (BuddyAskResponse & { error?: string }) | null = null;
       try {
         data = await response.json();
       } catch {
@@ -656,34 +656,48 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       if ((data as { error?: string } | null)?.error) {
         throw new Error((data as { error?: string })?.error || 'Assistant error');
       }
-      
-      // Extract answer and append citations if present
-      let finalContent = data?.answer || data?.content || localFallback;
-      if (data?.citations) {
-        finalContent += '\n\n' + data.citations;
-      }
-      
-      // Return structured message
+
+      const answer = data?.answer;
+      const sources = data?.sources || [];
+      const references: ReferenceItemProps[] = sources.map((s) => ({
+        title: s.title,
+        url: s.url,
+        sourceLabel: s.provider,
+        updatedAt: s.lastReviewed,
+        isExternal: s.provider !== 'NeuroBreath',
+      }));
+
+      const contentForAria =
+        answer
+          ? [answer.title, answer.summaryMarkdown, ...answer.sections.map((s) => `${s.heading}. ${s.markdown}`)].join('\n')
+          : localFallback;
+
       return {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: finalContent,
+        content: contentForAria,
         timestamp: new Date(),
         recommendedActions: data?.recommendedActions || [],
-        references: data?.references || [],
-        availableTools: data?.availableTools || pageContent.features,
+        references,
+        availableTools: pageContent.features,
+        buddyAnswer: answer,
+        buddySources: sources,
       };
     } catch (error) {
       console.error('[Buddy] AI response error:', error);
       throw error;
     }
-  }, [config, getLocalResponse, messages, pageContent.features, pathname]);
+  }, [config, getLocalResponse, pageContent.features, pathname]);
 
   
   // Unified send pipeline for typed sends + quick questions.
-  const sendMessage = useCallback(async (text?: string): Promise<void> => {
+  const sendMessage = useCallback(async (text?: string, origin: 'typed' | 'quick' | 'system' = 'typed'): Promise<void> => {
     const raw = (typeof text === 'string' ? text : input).trim();
     if (!raw || isLoading) return;
+
+    if (process.env.NODE_ENV === 'development') {
+      console.debug('[Buddy] sendMessage', { origin, raw });
+    }
 
     setLastError(null);
     lastSentMessageRef.current = raw;
@@ -736,7 +750,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
 
   const retryLast = useCallback(() => {
     if (!lastSentMessageRef.current) return;
-    void sendMessage(lastSentMessageRef.current);
+    void sendMessage(lastSentMessageRef.current, 'system');
   }, [sendMessage]);
   
   // Page tour - now using actual page content
@@ -1050,14 +1064,22 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
                   >
                     <div className="max-h-[300px] sm:max-h-[350px] md:max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent pr-1 sm:pr-2 md:pr-3 flex-shrink min-h-0">
                       <BuddyErrorBoundary>
-                        <div className="whitespace-pre-wrap leading-relaxed break-words">
-                          {message.content.split('\n').map((line, i) => (
-                            <span key={i}>
-                              {renderMessage(line)}
-                              {i < message.content.split('\n').length - 1 && <br />}
-                            </span>
-                          ))}
-                        </div>
+                        {message.buddyAnswer ? (
+                          <BuddyAnswerCard
+                            answer={message.buddyAnswer}
+                            sources={message.buddySources || []}
+                            renderLine={renderMessage}
+                          />
+                        ) : (
+                          <div className="whitespace-pre-wrap leading-relaxed break-words">
+                            {message.content.split('\n').map((line, i) => (
+                              <span key={i}>
+                                {renderMessage(line)}
+                                {i < message.content.split('\n').length - 1 && <br />}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </BuddyErrorBoundary>
                     </div>
                     <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 mt-2 pt-2 border-t border-border/50 flex-shrink-0">
@@ -1070,9 +1092,12 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
+                            if (isSpeaking && speakingMessageId === message.id) {
+                              stop();
+                              return;
+                            }
                             speak(message.id, message.content);
                           }}
-                          disabled={isSpeaking && speakingMessageId === message.id}
                           aria-label="Listen to this message"
                         >
                           <Volume2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 mr-1" />
@@ -1204,7 +1229,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
                     e.preventDefault();
                     e.stopPropagation();
                     setInput(question);
-                    void sendMessage(question);
+                    void sendMessage(question, 'quick');
                   }}
                   disabled={isLoading}
                 >
@@ -1242,7 +1267,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
                 e.preventDefault();
                 e.stopPropagation();
                 if (!isLoading && input.trim()) {
-                  void sendMessage();
+                  void sendMessage(undefined, 'typed');
                 }
               }}
             >
@@ -1260,7 +1285,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
                   // Submit on Enter, but allow Shift+Enter for new lines. Avoid sending mid-IME composition.
                   if (e.key === 'Enter' && !e.shiftKey && !isLoading && !isComposingRef.current) {
                     e.preventDefault();
-                    void sendMessage();
+                    void sendMessage(undefined, 'typed');
                   }
                 }}
                 placeholder="Ask me about this page..."

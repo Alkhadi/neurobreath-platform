@@ -9,6 +9,25 @@ export function sanitizeForTTS(input: string, opts?: { locale?: TTSLocale }): st
 
   let text = textValue;
 
+  // Strip common Markdown patterns before any other cleanup.
+  // Links: [label](url) -> label
+  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1');
+  // Images: ![alt](url) -> alt
+  text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '$1');
+  // Fenced code blocks
+  text = text.replace(/```[\s\S]*?```/g, ' ');
+  // Inline code
+  text = text.replace(/`([^`]+)`/g, '$1');
+  // Headings
+  text = text.replace(/^\s{0,3}#{1,6}\s+/gm, '');
+  // Bold/italic
+  text = text.replace(/\*\*([^*]+)\*\*/g, '$1');
+  text = text.replace(/\*([^*]+)\*/g, '$1');
+  text = text.replace(/__([^_]+)__/g, '$1');
+  text = text.replace(/_([^_]+)_/g, '$1');
+  // Blockquotes
+  text = text.replace(/^\s*>\s?/gm, '');
+
   // Remove SVG/icon markup blocks and tags
   text = text.replace(/<svg[\s\S]*?<\/svg>/gi, ' ');
   text = text.replace(/<path[\s\S]*?>/gi, ' ');

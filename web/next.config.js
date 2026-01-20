@@ -25,6 +25,16 @@ const nextConfig = {
       exclude: ['error', 'warn'],
     } : false,
   },
+  webpack: (config, { isServer }) => {
+    // Ensure the Node.js server runtime can locate emitted chunks.
+    // Next normally emits server chunks under `.next/server/chunks/*`.
+    // Under some Node/webpack combinations the runtime can incorrectly try
+    // to load `./<id>.js` from `.next/server/` instead of `./chunks/<id>.js`.
+    if (isServer && config?.output) {
+      config.output.chunkFilename = 'chunks/[id].js';
+    }
+    return config;
+  },
 };
 
 module.exports = nextConfig;

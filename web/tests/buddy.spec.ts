@@ -13,7 +13,7 @@ import { test, expect, Page } from '@playwright/test';
 const USER_PREFS_KEY = 'neurobreath.userprefs.v1';
 
 // Support both old and new API routes during transition
-const BUDDY_API_ROUTE = /\/api\/(buddy|api-ai-chat-buddy|ai-assistant)(\?.*)?$/;
+const BUDDY_API_ROUTE = /\/api\/(buddy(\/ask)?|api-ai-chat-buddy|ai-assistant)(\?.*)?$/;
 
 async function mockBuddyApi(page: Page, body: unknown) {
   await page.route(BUDDY_API_ROUTE, async (route) => {
@@ -227,25 +227,31 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
   test('TEST 1: External references are NOT clickable', async ({ page }) => {
     // Mock the API response with external references
     await mockBuddyApi(page, {
-      answer: 'Here is some information about breathing exercises.',
-      references: [
+      answer: {
+        title: 'Breathing exercises',
+        summaryMarkdown: 'Here is some information about breathing exercises.',
+        sections: [],
+        safety: { level: 'none' },
+      },
+      sources: [
         {
+          provider: 'NHS',
           title: 'NHS - Breathing exercises',
           url: 'https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/breathing-exercises-for-stress/',
-          sourceLabel: 'NHS',
-          isExternal: true,
+          reliabilityBadge: 'NHS',
+          lastReviewed: '2024-01-01',
         },
         {
-          title: 'NICE Guidelines',
-          url: 'https://www.nice.org.uk/guidance',
-          sourceLabel: 'NICE',
-          isExternal: true,
+          provider: 'MedlinePlus',
+          title: 'MedlinePlus - Breathing',
+          url: 'https://medlineplus.gov/',
+          reliabilityBadge: 'MedlinePlus',
         },
         {
+          provider: 'NeuroBreath',
           title: 'Internal Resource',
           url: '/breathing',
-          sourceLabel: 'NeuroBreath',
-          isExternal: false,
+          reliabilityBadge: 'NeuroBreath',
         },
       ],
     });
@@ -253,14 +259,14 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
     const dialog = await openBuddyDialog(page);
     await sendMessageAndWaitForBuddyApi(page, 'FORCE_AI_TEST_REFERENCES_9f3c');
 
-    // References may render differently across viewports; assert via the stable Copy link UI.
-    const copyButtons = dialog.locator('button').filter({ hasText: /Copy link/i });
-    await expect(copyButtons.first()).toBeVisible({ timeout: 15000 });
+    // New UI renders Evidence sources as plain text (no external anchors).
+    const sourcesTrigger = dialog.getByRole('button', { name: /Evidence sources/i });
+    await expect(sourcesTrigger).toBeVisible({ timeout: 15000 });
+    await sourcesTrigger.click();
 
-    const referenceItems = dialog.locator('div:has(button:has-text("Copy link"))');
-    const externalAnchorsInReferences = referenceItems.locator('a[href^="http://"], a[href^="https://"]');
-    await expect(externalAnchorsInReferences).toHaveCount(0);
-    console.log('✓ External references render with Copy link buttons (non-clickable URLs)');
+    const externalAnchorsInDialog = dialog.locator('a[href^="http://"], a[href^="https://"]');
+    await expect(externalAnchorsInDialog).toHaveCount(0);
+    console.log('✓ Evidence sources show non-clickable external URLs');
 
     // Take screenshot
     await page.screenshot({ path: 'test-results/buddy-external-references.png', fullPage: true });
@@ -269,7 +275,14 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
   test('TEST 2: Stop button cancels speech immediately', async ({ page }) => {
     // Mock the API response
     await mockBuddyApi(page, {
-      answer: 'This is a test message that will be spoken aloud using text-to-speech. The quick brown fox jumps over the lazy dog. This should give us enough time to test the stop functionality.',
+      answer: {
+        title: 'TTS test',
+        summaryMarkdown:
+          'This is a test message that will be spoken aloud using text-to-speech. The quick brown fox jumps over the lazy dog. This should give us enough time to test the stop functionality.',
+        sections: [],
+        safety: { level: 'none' },
+      },
+      sources: [],
     });
 
     const dialog = await openBuddyDialog(page);
@@ -295,7 +308,15 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
     // Mock with unique verbatim text
     const verbatimAnswer = 'VERBATIM_TEST:: A b c!!\nLine2\nExact  spacing   preserved!!';
     
-    await mockBuddyApi(page, { answer: verbatimAnswer });
+    await mockBuddyApi(page, {
+      answer: {
+        title: 'Verbatim test',
+        summaryMarkdown: verbatimAnswer,
+        sections: [],
+        safety: { level: 'none' },
+      },
+      sources: [],
+    });
 
     const dialog = await openBuddyDialog(page);
     await sendMessageAndWaitForBuddyApi(page, 'FORCE_AI_TEST_VERBATIM_b2a1');
@@ -316,7 +337,13 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
   test('TEST 4: Tailored Next Steps are internal actions only', async ({ page }) => {
     // Mock with recommended actions
     await mockBuddyApi(page, {
-      answer: 'Try starting with box breathing.',
+      answer: {
+        title: 'Next steps',
+        summaryMarkdown: 'Try starting with box breathing.',
+        sections: [],
+        safety: { level: 'none' },
+      },
+      sources: [],
       recommendedActions: [
         {
           id: 'start-box-breathing',
@@ -403,7 +430,12 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
   test('TEST 5: Complete integration test', async ({ page }) => {
     // Mock comprehensive response with unique marker
     await mockBuddyApi(page, {
-      answer: 'INTEGRATION_TEST_MARKER: Box breathing is an effective technique for managing anxiety and stress.',
+      answer: {
+        title: 'Integration test',
+        summaryMarkdown: 'INTEGRATION_TEST_MARKER: Box breathing is an effective technique for managing anxiety and stress.',
+        sections: [],
+        safety: { level: 'none' },
+      },
       recommendedActions: [
         {
           id: 'try-box',
@@ -415,12 +447,13 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
           primary: true,
         },
       ],
-      references: [
+      sources: [
         {
+          provider: 'NHS',
           title: 'NHS Mental Health',
           url: 'https://www.nhs.uk/mental-health/',
-          sourceLabel: 'NHS',
-          isExternal: true,
+          reliabilityBadge: 'NHS',
+          lastReviewed: '2024-01-01',
         },
       ],
     });
@@ -432,14 +465,13 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
     await expect(dialog).toContainText('INTEGRATION_TEST_MARKER', { timeout: 10000 });
     console.log('✓ Answer text with marker is visible');
 
-    // References may render differently across viewports; assert via the stable Copy link UI.
-    const copyButtons = dialog.locator('button').filter({ hasText: /Copy link/i });
-    await expect(copyButtons.first()).toBeVisible({ timeout: 15000 });
+    const sourcesTrigger = dialog.getByRole('button', { name: /Evidence sources/i });
+    await expect(sourcesTrigger).toBeVisible({ timeout: 15000 });
+    await sourcesTrigger.click();
 
-    const referenceItems = dialog.locator('div:has(button:has-text("Copy link"))');
-    const externalLinksInReferences = referenceItems.locator('a[href^="http://"], a[href^="https://"]');
-    await expect(externalLinksInReferences).toHaveCount(0);
-    console.log('✓ References render with Copy link buttons (non-clickable external URLs)');
+    const externalAnchorsInDialog = dialog.locator('a[href^="http://"], a[href^="https://"]');
+    await expect(externalAnchorsInDialog).toHaveCount(0);
+    console.log('✓ Evidence sources render without clickable external URLs');
 
     // Take final screenshot
     await page.screenshot({ path: 'test-results/buddy-integration.png', fullPage: true });
@@ -466,7 +498,13 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
       
       // Mock Buddy API with evidence citations
       await mockBuddyApi(page, {
-        answer: 'ADHD (Attention Deficit Hyperactivity Disorder) is a neurodevelopmental condition affecting focus, impulse control, and activity levels.',
+        answer: {
+          title: 'What is ADHD?',
+          summaryMarkdown:
+            'ADHD (Attention Deficit Hyperactivity Disorder) is a neurodevelopmental condition affecting focus, impulse control, and activity levels.',
+          sections: [],
+          safety: { level: 'none' },
+        },
         recommendedActions: [
           {
             id: 'adhd-hub',
@@ -477,15 +515,15 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
             primary: true,
           }
         ],
-        references: [
+        sources: [
           {
+            provider: 'NHS',
             title: 'NHS: ADHD Overview',
             url: 'https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/',
-            sourceLabel: 'NHS',
-            isExternal: true,
-          }
+            reliabilityBadge: 'NHS',
+            lastReviewed: '2024-01-01',
+          },
         ],
-        citations: '**Evidence:** NHS (nhs.uk/conditions/adhd)',
       });
       
       // Open Buddy dialog
@@ -509,7 +547,7 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
       
       // Verify response with citations appears
       await expect(dialog).toContainText('neurodevelopmental condition', { timeout: 10000 });
-      await expect(dialog).toContainText('Evidence:', { timeout: 5000 });
+      await expect(dialog.getByRole('button', { name: /Evidence sources/i })).toBeVisible({ timeout: 5000 });
       
       // Verify recommended actions visible (mobile may need scrolling)
       const recommendedSection = dialog.locator('text=Recommended Actions').or(dialog.locator('text=Next Steps'));
@@ -531,22 +569,33 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
     await page.goto('/uk');
     
     // Mock unified API
-    await page.route(/\/api\/buddy(\?.*)?$/, async (route) => {
+    await page.route(BUDDY_API_ROUTE, async (route) => {
       const request = route.request();
       const payload = request.postDataJSON();
       
       // Verify payload structure
-      expect(payload).toHaveProperty('query');
+      expect(payload).toHaveProperty('question');
       expect(payload).toHaveProperty('jurisdiction');
       
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
-          answer: `Answered: ${payload.query}`,
+          answer: {
+            title: 'Quick question',
+            summaryMarkdown: `Answered: ${payload.question}`,
+            sections: [],
+            safety: { level: 'none' },
+          },
           recommendedActions: [],
-          references: [],
-          citations: '**Evidence:** Test source',
+          sources: [
+            {
+              provider: 'NeuroBreath',
+              title: 'Test source',
+              url: '/uk',
+              reliabilityBadge: 'NeuroBreath',
+            },
+          ],
         }),
       });
     });
@@ -565,7 +614,7 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
       
       // Verify response appears with citations
       await expect(dialog).toContainText('Answered:', { timeout: 5000 });
-      await expect(dialog).toContainText('Evidence:', { timeout: 5000 });
+      await expect(dialog.getByRole('button', { name: /Evidence sources/i })).toBeVisible({ timeout: 5000 });
       
       console.log('✓ Quick question chips trigger unified API with citations');
     } else {
@@ -577,16 +626,20 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
     await page.goto('/uk');
 
     let requestCount = 0;
-    await page.route(/\/api\/buddy(\?.*)?$/, async (route) => {
+    await page.route(BUDDY_API_ROUTE, async (route) => {
       requestCount += 1;
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
-          answer: 'OK: typed send works',
+          answer: {
+            title: 'Typed send',
+            summaryMarkdown: 'OK: typed send works',
+            sections: [],
+            safety: { level: 'none' },
+          },
           recommendedActions: [],
-          references: [],
-          citations: '**Evidence:** Test source',
+          sources: [],
         }),
       });
     });
@@ -600,7 +653,7 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
     await expect(input).toHaveValue(/Line 1\nLine 2/);
 
     const [request] = await Promise.all([
-      page.waitForRequest((req) => /\/api\/buddy/.test(req.url()) && req.method() === 'POST'),
+      page.waitForRequest((req) => BUDDY_API_ROUTE.test(req.url()) && req.method() === 'POST'),
       input.press('Enter'),
     ]);
     await request.response();
@@ -614,7 +667,7 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
     await page.goto('/uk');
 
     let callCount = 0;
-    await page.route(/\/api\/buddy(\?.*)?$/, async (route) => {
+    await page.route(BUDDY_API_ROUTE, async (route) => {
       callCount += 1;
 
       if (callCount === 1) {
@@ -630,10 +683,14 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
-          answer: 'Recovered after retry',
+          answer: {
+            title: 'Recovered',
+            summaryMarkdown: 'Recovered after retry',
+            sections: [],
+            safety: { level: 'none' },
+          },
           recommendedActions: [],
-          references: [],
-          citations: '**Evidence:** Test source',
+          sources: [],
         }),
       });
     });
@@ -646,7 +703,7 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
     await expect(sendButton).toBeEnabled();
 
     await Promise.all([
-      page.waitForRequest((req) => /\/api\/buddy/.test(req.url()) && req.method() === 'POST'),
+      page.waitForRequest((req) => BUDDY_API_ROUTE.test(req.url()) && req.method() === 'POST'),
       sendButton.click({ force: true }),
     ]);
 
@@ -660,7 +717,7 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
     await expect(retry).toBeVisible();
 
     await Promise.all([
-      page.waitForRequest((req) => /\/api\/buddy/.test(req.url()) && req.method() === 'POST'),
+      page.waitForRequest((req) => BUDDY_API_ROUTE.test(req.url()) && req.method() === 'POST'),
       retry.click({ force: true }),
     ]);
 

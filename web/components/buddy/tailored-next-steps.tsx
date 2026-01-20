@@ -14,6 +14,7 @@ import {
   BookOpen, 
   Timer, 
   FileText,
+  Map as MapIcon,
   Heart,
   Brain,
   Sparkles
@@ -25,7 +26,7 @@ export interface RecommendedAction {
   type: 'navigate' | 'scroll' | 'start_exercise' | 'open_tool' | 'download';
   label: string;
   description?: string;
-  icon?: 'target' | 'play' | 'book' | 'timer' | 'file' | 'heart' | 'brain' | 'sparkles';
+  icon?: 'target' | 'play' | 'book' | 'timer' | 'file' | 'map' | 'heart' | 'brain' | 'sparkles';
   target?: string; // URL or element ID
   primary?: boolean;
 }
@@ -42,6 +43,7 @@ const iconMap = {
   book: BookOpen,
   timer: Timer,
   file: FileText,
+  map: MapIcon,
   heart: Heart,
   brain: Brain,
   sparkles: Sparkles,
