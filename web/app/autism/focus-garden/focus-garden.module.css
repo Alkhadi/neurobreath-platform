@@ -3,8 +3,8 @@
   height: 0.75rem; /* matches Tailwind h-3 */
   border-radius: 9999px;
   overflow: hidden;
-  appearance: none;
   -webkit-appearance: none;
+  appearance: none;
   border: 0;
   background-color: #e5e7eb; /* gray-200 */
   display: block;

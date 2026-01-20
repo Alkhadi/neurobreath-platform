@@ -271,10 +271,13 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   
   // Export chat history
   const exportChat = useCallback(() => {
-    const chatText = messages.map(m => 
-      `[${m.timestamp.toLocaleString()}] ${m.role === 'user' ? 'You' : 'NeuroBreath Buddy'}: ${m.content}`
-    ).join('\n\n');
-    
+    const chatText = messages
+      .map(
+        (m) =>
+          `[${m.timestamp.toLocaleString()}] ${m.role === 'user' ? 'You' : 'NeuroBreath Buddy'}: ${m.content}`
+      )
+      .join('\n\n');
+
     const blob = new Blob([chatText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -289,16 +292,14 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   // Clear chat history
   const clearChat = useCallback(() => {
     scanPageContent();
-    const welcomeMessage: Message = {
-      id: `welcome-${Date.now()}`,
-      role: 'assistant',
-      content: generateDynamicWelcome(),
-      timestamp: new Date()
-    };
-    setMessages([welcomeMessage]);
+    setMessages([]);
     setShowTour(false);
     setCurrentTourStep(0);
-  }, [generateDynamicWelcome, scanPageContent]);
+    setLastError(null);
+    stop();
+    setIsMinimized(false);
+    setCopiedMessageId(null);
+  }, [scanPageContent, stop]);
   
   // Render markdown-like formatting with clickable links
   const renderMessage = (content: string) => {
@@ -613,45 +614,6 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   const generateResponse = useCallback(async (userMessage: string): Promise<Message> => {
     const localFallback = getLocalResponse(userMessage, config);
 
-    // Always attempt the backend first so typed sends + quick questions behave consistently.
-    const systemPrompt = `You are NeuroBreath Buddy, a friendly and supportive AI assistant for the ${config.pageName} page of the NeuroBreath neurodiversity support platform.
-
-Platform Mission: ${platformInfo.mission}
-
-Current page: ${config.pageName} (${pathname})
-Audiences: ${config.audiences.join(', ')}
-
-Your role:
-1. Help users understand and navigate this page
-2. Explain features and how to use them
-3. Provide supportive, evidence-based information about ${config.pageId === 'adhd' ? 'ADHD' : config.pageId === 'autism' ? 'autism' : 'neurodiversity'}
-4. Guide users to relevant sections based on their needs
-5. Support parents, teachers, carers, and neurodivergent individuals equally
-6. Promote home-school collaboration
-
-CRITICAL - Internal Navigation:
-- ALWAYS recommend internal NeuroBreath pages and tools (e.g., /adhd, /autism, /breathing)
-- Direct users to our internal tools: ADHD Hub, Autism Hub, Breathing Exercises, Focus Timer, etc.
-- Evidence citations should be provided as external references
-
-CRITICAL - Evidence-Based Responses: When answering medical/clinical questions:
-- Cite UK sources first (NICE guidelines, NHS), then US sources (CDC, AAP, NIH)
-- Reference specific clinical guidelines: NICE NG87 (ADHD), NICE CG128/CG170 (Autism)
-- For research claims, cite PubMed sources
-- Evidence references should be provided in the "references" array
-
-Internal Tools to Recommend:
-- ADHD: [ADHD Hub](/adhd) - Focus Timer, Daily Quests, Skills Library
-- Autism: [Autism Hub](/autism) - Calm Toolkit, Skills Library, Education Pathways, Workplace Tools
-- Breathing: [Breathing Exercises](/breathing) - Box Breathing, Coherent Breathing, SOS 60-Second Calm
-- Reading: [Phonics Garden](/tools/phonics-garden), [Reading Fluency](/tools/reading-fluency)
-- Blog: [AI-Powered Wellbeing Hub](/blog) - AI Coach for tailored plans
-
-Page sections:
-${config.sections.map((s) => `- ${s.name}: ${s.description}`).join('\n')}
-
-Available page features: ${pageContent.features.join(', ') || 'General navigation'}`;
-
     // Load user preferences for jurisdiction
     const prefs = loadPreferences();
 
@@ -659,23 +621,17 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
       const controller = new AbortController();
       const timeoutId = window.setTimeout(() => controller.abort(), 30000);
 
-      const response = await fetch('/api/ai-assistant', {
+      const response = await fetch('/api/buddy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          question: userMessage,
           query: userMessage,
+          pathname,
           messages: [
             ...messages.slice(-6).map(m => ({ role: m.role, content: m.content })),
           ],
-          role: 'buddy',
-          pageName: config.pageName,
-          pageContext: {
-            features: pageContent.features,
-            sections: config.sections,
-            headings: pageContent.headings,
-          },
           jurisdiction: prefs.regional.jurisdiction,
-          systemPrompt, // Include legacy prompt for backward compatibility
         }),
         signal: controller.signal,
       });
@@ -721,7 +677,8 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
       console.error('[Buddy] AI response error:', error);
       throw error;
     }
-  }, [config, getLocalResponse, messages, pageContent.features, pageContent.headings, pathname]);
+  }, [config, getLocalResponse, messages, pageContent.features, pathname]);
+
   
   // Unified send pipeline for typed sends + quick questions.
   const sendMessage = useCallback(async (text?: string): Promise<void> => {
@@ -1063,25 +1020,32 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
           {!isMinimized && (
           <div className="flex-1 p-3 sm:p-4 md:p-5 overflow-y-auto min-h-0" ref={scrollRef}>
             <div className="space-y-3 sm:space-y-4">
-              {messages.map((message) => (
+              {(() => {
+                const currentAnswer = [...messages].reverse().find((m) => m.role === 'assistant');
+                if (!currentAnswer) {
+                  return (
+                    <div className="text-xs sm:text-sm text-muted-foreground">
+                      Ask a question to get a response.
+                    </div>
+                  );
+                }
+
+                const message = currentAnswer;
+                return (
                 <div
                   key={message.id}
                   className={cn(
                     "flex gap-2 sm:gap-3",
-                    message.role === 'user' ? 'justify-end' : 'justify-start'
+                    'justify-start'
                   )}
                 >
-                  {message.role === 'assistant' && (
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                      <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 text-primary" />
-                    </div>
-                  )}
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 text-primary" />
+                  </div>
                   <div
                     className={cn(
                       "max-w-[85%] sm:max-w-[80%] md:max-w-[75%] rounded-2xl px-3 py-2 sm:px-4 sm:py-2.5 md:px-5 md:py-3 text-xs sm:text-sm md:text-base group relative flex flex-col",
-                      message.role === 'user'
-                        ? 'bg-primary text-primary-foreground rounded-br-md'
-                        : 'bg-muted rounded-bl-md'
+                      'bg-muted rounded-bl-md'
                     )}
                   >
                     <div className="max-h-[300px] sm:max-h-[350px] md:max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent pr-1 sm:pr-2 md:pr-3 flex-shrink min-h-0">
@@ -1097,43 +1061,41 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                       </BuddyErrorBoundary>
                     </div>
                     <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 mt-2 pt-2 border-t border-border/50 flex-shrink-0">
-                      {message.role === 'assistant' && (
-                        <>
+                      <>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="h-6 sm:h-7 md:h-8 px-2 sm:px-3 md:px-4 text-xs md:text-sm bg-background/50 hover:bg-background border-border/50 touch-manipulation active:scale-95 transition-transform"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            speak(message.id, message.content);
+                          }}
+                          disabled={isSpeaking && speakingMessageId === message.id}
+                          aria-label="Listen to this message"
+                        >
+                          <Volume2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 mr-1" />
+                          <span className="text-[10px] sm:text-xs md:text-sm">Listen</span>
+                        </Button>
+                        {isSpeaking && speakingMessageId === message.id && (
                           <Button
                             type="button"
                             variant="outline"
                             size="sm"
-                            className="h-6 sm:h-7 md:h-8 px-2 sm:px-3 md:px-4 text-xs md:text-sm bg-background/50 hover:bg-background border-border/50 touch-manipulation active:scale-95 transition-transform"
+                            className="h-6 sm:h-7 md:h-8 px-2 sm:px-3 md:px-4 text-xs md:text-sm bg-destructive/10 hover:bg-destructive/20 border-destructive/50 text-destructive touch-manipulation active:scale-95 transition-transform"
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
-                              speak(message.id, message.content);
+                              stop();
                             }}
-                            disabled={isSpeaking && speakingMessageId === message.id}
-                            aria-label="Listen to this message"
+                            aria-label="Stop speaking"
                           >
-                            <Volume2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 mr-1" />
-                            <span className="text-[10px] sm:text-xs md:text-sm">Listen</span>
+                            <StopCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 mr-1" />
+                            <span className="text-[10px] sm:text-xs md:text-sm">Stop</span>
                           </Button>
-                          {isSpeaking && speakingMessageId === message.id && (
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              className="h-6 sm:h-7 md:h-8 px-2 sm:px-3 md:px-4 text-xs md:text-sm bg-destructive/10 hover:bg-destructive/20 border-destructive/50 text-destructive touch-manipulation active:scale-95 transition-transform"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                stop();
-                              }}
-                              aria-label="Stop speaking"
-                            >
-                              <StopCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 mr-1" />
-                              <span className="text-[10px] sm:text-xs md:text-sm">Stop</span>
-                            </Button>
-                          )}
-                        </>
-                      )}
+                        )}
+                      </>
                       <Button
                         type="button"
                         variant="outline"
@@ -1155,7 +1117,7 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                     </div>
                     
                     {/* Tailored Next Steps */}
-                    {message.role === 'assistant' && message.recommendedActions && message.recommendedActions.length > 0 && (
+                    {message.recommendedActions && message.recommendedActions.length > 0 && (
                       <TailoredNextSteps 
                         actions={message.recommendedActions}
                         availableTools={message.availableTools}
@@ -1163,12 +1125,13 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                     )}
                     
                     {/* References Section */}
-                    {message.role === 'assistant' && message.references && message.references.length > 0 && (
+                    {message.references && message.references.length > 0 && (
                       <ReferencesSection references={message.references} />
                     )}
                   </div>
                 </div>
-              ))}
+                );
+              })()}
               
               {isLoading && (
                 <div className="flex gap-2 sm:gap-3 md:gap-4 justify-start">
@@ -1240,6 +1203,7 @@ Available page features: ${pageContent.features.join(', ') || 'General navigatio
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
+                    setInput(question);
                     void sendMessage(question);
                   }}
                   disabled={isLoading}

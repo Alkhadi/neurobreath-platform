@@ -13,7 +13,7 @@ import { test, expect, Page } from '@playwright/test';
 const USER_PREFS_KEY = 'neurobreath.userprefs.v1';
 
 // Support both old and new API routes during transition
-const BUDDY_API_ROUTE = /\/api\/(api-ai-chat-buddy|ai-assistant)(\?.*)?$/;
+const BUDDY_API_ROUTE = /\/api\/(buddy|api-ai-chat-buddy|ai-assistant)(\?.*)?$/;
 
 async function mockBuddyApi(page: Page, body: unknown) {
   await page.route(BUDDY_API_ROUTE, async (route) => {
@@ -85,7 +85,6 @@ async function sendMessage(page: Page, message: string) {
   await expect(sendButton).toBeEnabled({ timeout: 2000 });
   await sendButton.click({ force: true });
   await expect(input).toHaveValue('', { timeout: 5000 });
-  await expect(dialog).toContainText(message, { timeout: 10000 });
   
   // Wait for response
   await page.waitForTimeout(2000);
@@ -448,6 +447,9 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
 });
 
 test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
+  // These tests are screenshot-heavy and can be slower on CI / WebKit.
+  test.setTimeout(60_000);
+
   const viewports = [
     { name: 'mobile', width: 375, height: 667 },
     { name: 'tablet', width: 768, height: 1024 },
@@ -460,7 +462,7 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       
       // Navigate to UK homepage
-      await page.goto('/uk');
+      await page.goto('/uk', { waitUntil: 'domcontentloaded', timeout: 45_000 });
       
       // Mock Buddy API with evidence citations
       await mockBuddyApi(page, {
@@ -505,9 +507,6 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
       // Send a message and wait for response
       await sendMessageAndWaitForBuddyApi(page, 'What is ADHD?');
       
-      // Verify message appears
-      await expect(dialog).toContainText('What is ADHD?', { timeout: 5000 });
-      
       // Verify response with citations appears
       await expect(dialog).toContainText('neurodevelopmental condition', { timeout: 10000 });
       await expect(dialog).toContainText('Evidence:', { timeout: 5000 });
@@ -532,14 +531,12 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
     await page.goto('/uk');
     
     // Mock unified API
-    await page.route(/\/api\/ai-assistant(\?.*)?$/, async (route) => {
+    await page.route(/\/api\/buddy(\?.*)?$/, async (route) => {
       const request = route.request();
       const payload = request.postDataJSON();
       
       // Verify payload structure
       expect(payload).toHaveProperty('query');
-      expect(payload).toHaveProperty('role');
-      expect(payload.role).toBe('buddy');
       expect(payload).toHaveProperty('jurisdiction');
       
       await route.fulfill({
@@ -580,7 +577,7 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
     await page.goto('/uk');
 
     let requestCount = 0;
-    await page.route(/\/api\/ai-assistant(\?.*)?$/, async (route) => {
+    await page.route(/\/api\/buddy(\?.*)?$/, async (route) => {
       requestCount += 1;
       await route.fulfill({
         status: 200,
@@ -603,7 +600,7 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
     await expect(input).toHaveValue(/Line 1\nLine 2/);
 
     const [request] = await Promise.all([
-      page.waitForRequest((req) => /\/api\/ai-assistant/.test(req.url()) && req.method() === 'POST'),
+      page.waitForRequest((req) => /\/api\/buddy/.test(req.url()) && req.method() === 'POST'),
       input.press('Enter'),
     ]);
     await request.response();
@@ -617,7 +614,7 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
     await page.goto('/uk');
 
     let callCount = 0;
-    await page.route(/\/api\/ai-assistant(\?.*)?$/, async (route) => {
+    await page.route(/\/api\/buddy(\?.*)?$/, async (route) => {
       callCount += 1;
 
       if (callCount === 1) {
@@ -649,7 +646,7 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
     await expect(sendButton).toBeEnabled();
 
     await Promise.all([
-      page.waitForRequest((req) => /\/api\/ai-assistant/.test(req.url()) && req.method() === 'POST'),
+      page.waitForRequest((req) => /\/api\/buddy/.test(req.url()) && req.method() === 'POST'),
       sendButton.click({ force: true }),
     ]);
 
@@ -663,7 +660,7 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
     await expect(retry).toBeVisible();
 
     await Promise.all([
-      page.waitForRequest((req) => /\/api\/ai-assistant/.test(req.url()) && req.method() === 'POST'),
+      page.waitForRequest((req) => /\/api\/buddy/.test(req.url()) && req.method() === 'POST'),
       retry.click({ force: true }),
     ]);
 

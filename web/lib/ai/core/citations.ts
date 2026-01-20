@@ -175,6 +175,13 @@ export function createPubMedCitation(
 }
 
 /**
+ * Create citation from MedlinePlus
+ */
+export function createMedlinePlusCitation(title: string, url: string, updatedAt?: string): Citation | null {
+  return createCitation({ title, url, sourceId: 'medlineplus', updatedAt });
+}
+
+/**
  * Validate citation structure
  */
 export function validateCitation(citation: Citation): { valid: boolean; errors: string[] } {

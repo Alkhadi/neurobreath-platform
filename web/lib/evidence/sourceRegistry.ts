@@ -149,6 +149,24 @@ export const EVIDENCE_SOURCES: Record<string, EvidenceSource> = {
     notes: 'Peer-reviewed biomedical literature (35M+ citations)',
   },
 
+  medlineplus: {
+    id: 'medlineplus',
+    name: 'MedlinePlus',
+    shortName: 'MedlinePlus',
+    organization: 'US National Library of Medicine',
+    orgType: 'academic',
+    tier: 'A',
+    domains: ['medlineplus.gov', 'www.medlineplus.gov'],
+    baseUrl: 'https://medlineplus.gov',
+    topics: ['adhd', 'autism', 'dyslexia', 'anxiety', 'depression', 'breathing', 'sleep', 'bipolar', 'stress', 'general'],
+    citationFormat: {
+      publisher: 'US National Library of Medicine',
+      jurisdiction: 'International',
+      type: 'clinical_guideline',
+    },
+    notes: 'Evidence-informed health topic summaries (not a substitute for clinical advice)',
+  },
+
   cochrane: {
     id: 'cochrane',
     name: 'Cochrane Library',

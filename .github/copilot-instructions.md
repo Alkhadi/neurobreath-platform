@@ -1,6 +1,6 @@
 # Copilot / AI Agent Instructions (NeuroBreath)
 
-All AI agents working in this repository MUST follow the rules in [AI_AGENT_RULES.md](../AI_AGENT_RULES.md).
+All AI agents working in this repository MUST follow the rules in [AI_AGENT_RULES.md](https://github.com/Alkhadi/neurobreath-platform/blob/main/AI_AGENT_RULES.md).
 
 ## Working Directory
 
