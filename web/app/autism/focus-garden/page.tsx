@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Sprout } from 'lucide-react'
+import styles from './focus-garden.module.css'
 
 // Plant stages
 const PLANT_STAGES = {
@@ -12,7 +13,6 @@ const PLANT_STAGES = {
   bud: { emoji: '🌷', name: 'Bud', water: 2 },
   bloom: { emoji: '🌸', name: 'Bloom', water: 3 }
 }
-
 // Task layers for autism
 const TASK_LAYERS = {
   structure: {
@@ -192,11 +192,11 @@ export default function FocusGardenPage() {
               <span className="text-sm text-gray-600">{xp} / {level * 100} XP</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-3">
-              {/* webhint-disable-next-line no-inline-styles */}
-              {/* eslint-disable-next-line react/forbid-dom-props */}
-              <div
-                className="bg-gradient-to-r from-green-500 to-blue-500 h-3 rounded-full transition-all duration-300"
-                style={{ width: `${Math.min(100, (xp / (level * 100)) * 100)}%` }}
+              <progress
+                className={styles.progress}
+                value={xp}
+                max={level * 100}
+                aria-label="XP progress"
               />
             </div>
           </div>
