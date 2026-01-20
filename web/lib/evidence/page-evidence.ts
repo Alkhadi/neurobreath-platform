@@ -56,6 +56,12 @@ export const evidenceByRoute: Record<string, EvidenceManifest> = {
     citations: ['nhs_depression', 'nice_ng222', 'nhs_breathing_stress', 'nhs_insomnia', 'pubmed_27470975'],
     notes: 'Mood tools are educational supports only; not medical advice or treatment.',
   },
+  '/tools/sleep-tools': {
+    reviewedAt: '2026-01-20',
+    reviewIntervalDays: 120,
+    citations: ['nhs_insomnia', 'nice_mtg70', 'nhs_breathing_stress', 'pubmed_26447429', 'pubmed_28974862'],
+    notes: 'Sleep tools support sleep hygiene routines only; not medical advice or treatment. For persistent insomnia, consider CBT-I.',
+  },
   '/tools/depression-tools': {
     reviewedAt: '2026-01-16',
     reviewIntervalDays: 120,
