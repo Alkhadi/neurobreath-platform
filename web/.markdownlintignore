@@ -2,3 +2,7 @@ QA_VISUAL_REGRESSION.md
 PERFORMANCE_BUDGETS.md
 PERF_AUTOPLAN.md
 QA_PERF_IMPLEMENTATION_SUMMARY.md
+
+test-results/**
+playwright-report/**
+.next/**

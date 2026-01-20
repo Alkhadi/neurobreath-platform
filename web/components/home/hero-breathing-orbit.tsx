@@ -69,36 +69,46 @@ export function HeroBreathingOrbit() {
       const lastSessionDate = localStorage.getItem('nb-last-session-date')
 
       if (savedStats) {
-        const parsedStats = JSON.parse(savedStats)
-
-        // Calculate streak
-        const today = new Date().toDateString()
-        const yesterday = new Date(Date.now() - 86400000).toDateString()
-
-        let streakInfo = {
-          streak: 'No streak yet',
-          message: 'Complete any 1-minute challenge to start your streak. Small, regular practice helps your nervous system learn a predictable calm pattern.',
-          awards: 'Log a quick session to unlock your first badge.'
+        let parsedStats: unknown = null
+        try {
+          parsedStats = JSON.parse(savedStats)
+        } catch {
+          parsedStats = null
         }
 
-        if (lastSessionDate) {
-          const lastDate = new Date(lastSessionDate).toDateString()
-          const currentStreak = parsedStats.currentStreak || 0
+        if (parsedStats && typeof parsedStats === 'object') {
+          const stored = parsedStats as Partial<BreathingStats> & Record<string, unknown>
 
-          if (lastDate === today && currentStreak > 0) {
-            streakInfo = calculateStreakInfo(currentStreak, parsedStats.sessions)
-          } else if (lastDate === yesterday && currentStreak > 0) {
-            streakInfo = calculateStreakInfo(currentStreak, parsedStats.sessions)
-          } else if (currentStreak === 0 && parsedStats.sessions > 0) {
-            streakInfo = {
-              streak: '1 day',
-              message: 'Great start! Practice again tomorrow to build your streak.',
-              awards: parsedStats.sessions >= 5 ? '🥉 Bronze badge unlocked!' : `${parsedStats.sessions}/5 sessions to Bronze badge`
+          // Calculate streak
+          const today = new Date().toDateString()
+          const yesterday = new Date(Date.now() - 86400000).toDateString()
+
+          let streakInfo = {
+            streak: 'No streak yet',
+            message: 'Complete any 1-minute challenge to start your streak. Small, regular practice helps your nervous system learn a predictable calm pattern.',
+            awards: 'Log a quick session to unlock your first badge.'
+          }
+
+          if (lastSessionDate) {
+            const lastDate = new Date(lastSessionDate).toDateString()
+            const currentStreak = typeof stored.currentStreak === 'number' ? stored.currentStreak : 0
+            const sessionsCount = typeof stored.sessions === 'number' ? stored.sessions : 0
+
+            if (lastDate === today && currentStreak > 0) {
+              streakInfo = calculateStreakInfo(currentStreak, sessionsCount)
+            } else if (lastDate === yesterday && currentStreak > 0) {
+              streakInfo = calculateStreakInfo(currentStreak, sessionsCount)
+            } else if (currentStreak === 0 && sessionsCount > 0) {
+              streakInfo = {
+                streak: '1 day',
+                message: 'Great start! Practice again tomorrow to build your streak.',
+                awards: sessionsCount >= 5 ? '🥉 Bronze badge unlocked!' : `${sessionsCount}/5 sessions to Bronze badge`
+              }
             }
           }
-        }
 
-        setStats({ ...parsedStats, ...streakInfo })
+          setStats({ ...(stored as BreathingStats), ...streakInfo })
+        }
       }
     }
 

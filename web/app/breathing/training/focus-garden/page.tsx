@@ -1,23 +1,43 @@
+
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
+import { Slider } from '@/components/ui/slider'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import {
   ArrowLeft, Sprout, Trophy, TrendingUp, Star, Sparkles, Info,
   Flame, Shield, Gift, ScrollText, ChevronRight, Lock, Check,
-  Snowflake, Award, Clock
+  Snowflake, Award, Clock, Music, Vibrate
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Companion, CompactCompanion, CompanionInSession } from '@/components/focus/companion'
+import { CompanionCustomizationModal } from '@/components/focus/companion-customization-modal'
+import { getUnlockableAccessories } from '@/lib/focus/companion-data'
 import {
   loadFocusGardenProgress,
+  saveFocusGardenProgress,
   calculateGardenLevel,
   getGardenLevelProgress,
+  logSession,
   plantTask as storePlantTask,
   waterPlant as storeWaterPlant,
   harvestPlant as storeHarvestPlant,
   migrateOldProgress,
+  interactWithCompanion,
+  updateCompanionMood,
+  changeCompanionType,
+  setCompanionName,
+  equipAccessory,
+  unequipAccessory,
   GARDEN_LEVELS,
   FOCUS_GARDEN_BADGES,
   MULTI_DAY_QUESTS,
@@ -29,6 +49,589 @@ import {
   type FocusGardenProgress,
   type MultiDayQuest
 } from '@/lib/focus-garden-store'
+
+type BreathingPhase = 'inhale' | 'hold' | 'exhale' | 'rest'
+
+function formatTime(seconds: number): string {
+  const m = Math.floor(seconds / 60)
+  const s = seconds % 60
+  return `${m}:${String(s).padStart(2, '0')}`
+}
+
+function vibrate(pattern: number | number[]) {
+  if (typeof window === 'undefined') return
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const nav: any = navigator
+  if (nav?.vibrate) {
+    nav.vibrate(pattern)
+  }
+}
+
+async function fireConfettiBurst(options?: { particleCount?: number; spread?: number; startVelocity?: number }) {
+  if (typeof window === 'undefined') return
+  const confetti = (await import('canvas-confetti')).default
+  confetti({
+    particleCount: options?.particleCount ?? 90,
+    spread: options?.spread ?? 70,
+    startVelocity: options?.startVelocity ?? 30,
+    origin: { y: 0.65 }
+  })
+}
+
+type SensorySettings = {
+  hapticsEnabled: boolean
+  confettiEnabled: boolean
+}
+
+const SENSORY_SETTINGS_KEY = 'nb:focus-garden:v2:sensory'
+
+function loadSensorySettings(): SensorySettings {
+  if (typeof window === 'undefined') return { hapticsEnabled: true, confettiEnabled: true }
+  try {
+    const raw = window.localStorage.getItem(SENSORY_SETTINGS_KEY)
+    if (!raw) return { hapticsEnabled: true, confettiEnabled: true }
+    const parsed = JSON.parse(raw) as Partial<SensorySettings>
+    return {
+      hapticsEnabled: parsed.hapticsEnabled ?? true,
+      confettiEnabled: parsed.confettiEnabled ?? true
+    }
+  } catch {
+    return { hapticsEnabled: true, confettiEnabled: true }
+  }
+}
+
+function saveSensorySettings(next: SensorySettings) {
+  if (typeof window === 'undefined') return
+  try {
+    window.localStorage.setItem(SENSORY_SETTINGS_KEY, JSON.stringify(next))
+  } catch {
+    // ignore storage failures
+  }
+}
+
+function hapticPulse(kind: 'minor' | 'major' | 'unlock') {
+  if (kind === 'minor') return vibrate(10)
+  if (kind === 'unlock') return vibrate([15, 20, 15, 20, 30])
+  return vibrate([25, 30, 25])
+}
+
+type AmbienceType =
+  | 'none'
+  | 'cosmic'
+  | 'rain'
+  | 'ocean'
+  | 'forest'
+  | 'birds'
+  | 'tibetan'
+  | 'meditation'
+  | 'spiritual'
+
+const AMBIENCE_OPTIONS: Array<{ value: AmbienceType; label: string }> = [
+  { value: 'none', label: 'None' },
+  { value: 'rain', label: 'Soft rain' },
+  { value: 'ocean', label: 'Ocean waves' },
+  { value: 'forest', label: 'Forest hush' },
+  { value: 'cosmic', label: 'Cosmic hum' },
+  { value: 'tibetan', label: 'Tibetan bowls' },
+  { value: 'meditation', label: 'Meditation tones' },
+  { value: 'spiritual', label: 'Harmonic tones' },
+  { value: 'birds', label: 'Birdsong' }
+]
+
+class AmbientSoundGenerator {
+  private audioContext: AudioContext | null = null
+  private masterGain: GainNode | null = null
+  private oscillators: OscillatorNode[] = []
+  private noiseNode: AudioBufferSourceNode | null = null
+
+  constructor() {
+    if (typeof window === 'undefined') return
+    const AudioContextClass =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext })
+        .webkitAudioContext
+    if (!AudioContextClass) return
+    this.audioContext = new AudioContextClass()
+    this.masterGain = this.audioContext.createGain()
+    this.masterGain.connect(this.audioContext.destination)
+  }
+
+  setVolume(volume: number) {
+    if (!this.masterGain) return
+    this.masterGain.gain.setValueAtTime(
+      Math.max(0, Math.min(1, volume)),
+      this.audioContext?.currentTime || 0
+    )
+  }
+
+  private createNoiseBuffer(type: 'white' | 'pink' | 'brown'): AudioBuffer {
+    const ctx = this.audioContext
+    if (!ctx) throw new Error('AudioContext not available')
+
+    const bufferSize = ctx.sampleRate * 2
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate)
+    const output = buffer.getChannelData(0)
+
+    let b0 = 0,
+      b1 = 0,
+      b2 = 0,
+      b3 = 0,
+      b4 = 0,
+      b5 = 0,
+      b6 = 0
+
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1
+
+      if (type === 'white') {
+        output[i] = white * 0.5
+      } else if (type === 'pink') {
+        b0 = 0.99886 * b0 + white * 0.0555179
+        b1 = 0.99332 * b1 + white * 0.0750759
+        b2 = 0.969 * b2 + white * 0.153852
+        b3 = 0.8665 * b3 + white * 0.3104856
+        b4 = 0.55 * b4 + white * 0.5329522
+        b5 = -0.7616 * b5 - white * 0.016898
+        output[i] =
+          (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11
+        b6 = white * 0.115926
+      } else {
+        output[i] = (b0 = (b0 + 0.02 * white) / 1.02) * 3.5
+      }
+    }
+    return buffer
+  }
+
+  private createOscillator(
+    freq: number,
+    type: OscillatorType,
+    gain: number
+  ): OscillatorNode {
+    const ctx = this.audioContext
+    if (!ctx || !this.masterGain) throw new Error('AudioContext not available')
+    const osc = ctx.createOscillator()
+    const oscGain = ctx.createGain()
+    osc.type = type
+    osc.frequency.setValueAtTime(freq, ctx.currentTime)
+    oscGain.gain.setValueAtTime(gain, ctx.currentTime)
+    osc.connect(oscGain)
+    oscGain.connect(this.masterGain)
+    return osc
+  }
+
+  play(type: AmbienceType) {
+    if (!this.audioContext || !this.masterGain || type === 'none') return
+
+    this.stop()
+
+    if (this.audioContext.state === 'suspended') {
+      this.audioContext.resume().catch(() => {})
+    }
+
+    switch (type) {
+      case 'cosmic': {
+        const freqs = [55, 110, 165, 220]
+        freqs.forEach((f) => {
+          const osc = this.createOscillator(f, 'sine', 0.03)
+          this.oscillators.push(osc)
+          osc.start()
+        })
+        break
+      }
+      case 'rain': {
+        const noiseBuffer = this.createNoiseBuffer('pink')
+        this.noiseNode = this.audioContext.createBufferSource()
+        this.noiseNode.buffer = noiseBuffer
+        this.noiseNode.loop = true
+        const filter = this.audioContext.createBiquadFilter()
+        filter.type = 'lowpass'
+        filter.frequency.setValueAtTime(800, this.audioContext.currentTime)
+        this.noiseNode.connect(filter)
+        filter.connect(this.masterGain)
+        this.noiseNode.start()
+        break
+      }
+      case 'ocean': {
+        const noiseBuffer = this.createNoiseBuffer('brown')
+        this.noiseNode = this.audioContext.createBufferSource()
+        this.noiseNode.buffer = noiseBuffer
+        this.noiseNode.loop = true
+        const filter = this.audioContext.createBiquadFilter()
+        filter.type = 'lowpass'
+        filter.frequency.setValueAtTime(400, this.audioContext.currentTime)
+        this.noiseNode.connect(filter)
+        filter.connect(this.masterGain)
+        this.noiseNode.start()
+        break
+      }
+      case 'forest': {
+        const noiseBuffer = this.createNoiseBuffer('pink')
+        this.noiseNode = this.audioContext.createBufferSource()
+        this.noiseNode.buffer = noiseBuffer
+        this.noiseNode.loop = true
+        const filter = this.audioContext.createBiquadFilter()
+        filter.type = 'bandpass'
+        filter.frequency.setValueAtTime(2000, this.audioContext.currentTime)
+        filter.Q.setValueAtTime(0.5, this.audioContext.currentTime)
+        this.noiseNode.connect(filter)
+        filter.connect(this.masterGain)
+        this.noiseNode.start()
+        break
+      }
+      case 'birds': {
+        const freqs = [1200, 1800, 2400, 3000]
+        freqs.forEach((f) => {
+          const osc = this.createOscillator(f, 'sine', 0.01)
+          this.oscillators.push(osc)
+          osc.start()
+        })
+        break
+      }
+      case 'tibetan': {
+        const freqs = [136.1, 272.2, 408.3]
+        freqs.forEach((f) => {
+          const osc = this.createOscillator(f, 'sine', 0.05)
+          this.oscillators.push(osc)
+          osc.start()
+        })
+        break
+      }
+      case 'meditation': {
+        const freqs = [256, 384, 512]
+        freqs.forEach((f) => {
+          const osc = this.createOscillator(f, 'sine', 0.04)
+          this.oscillators.push(osc)
+          osc.start()
+        })
+        break
+      }
+      case 'spiritual': {
+        const freqs = [432, 528, 639]
+        freqs.forEach((f) => {
+          const osc = this.createOscillator(f, 'sine', 0.03)
+          this.oscillators.push(osc)
+          osc.start()
+        })
+        break
+      }
+    }
+  }
+
+  stop() {
+    this.oscillators.forEach((osc) => {
+      try {
+        osc.stop()
+      } catch {}
+    })
+    this.oscillators = []
+
+    if (this.noiseNode) {
+      try {
+        this.noiseNode.stop()
+      } catch {}
+      this.noiseNode = null
+    }
+  }
+}
+
+function BreathingSessionModal({
+  companion,
+  onClose,
+  onComplete,
+  onInteract,
+  hapticsEnabled,
+  confettiEnabled,
+  onToggleHaptics,
+  onToggleConfetti
+}: {
+  companion: FocusGardenProgress['companion']
+  onClose: () => void
+  onComplete: (minutes: number) => void
+  onInteract: () => void
+  hapticsEnabled: boolean
+  confettiEnabled: boolean
+  onToggleHaptics: () => void
+  onToggleConfetti: () => void
+}) {
+  const [isRunning, setIsRunning] = useState(false)
+  const [targetMinutes, setTargetMinutes] = useState<2 | 5>(2)
+  const [elapsedSeconds, setElapsedSeconds] = useState(0)
+  const [phase, setPhase] = useState<BreathingPhase>('rest')
+  const [sensoryOpen, setSensoryOpen] = useState(false)
+  const [ambience, setAmbience] = useState<AmbienceType>('none')
+  const [ambienceVolume, setAmbienceVolume] = useState(0.3)
+  const ambientSoundRef = useRef<AmbientSoundGenerator | null>(null)
+
+  // Box breathing: 4-4-4-4
+  const phases = useMemo(() => {
+    return [
+      { phase: 'inhale' as const, seconds: 4 },
+      { phase: 'hold' as const, seconds: 4 },
+      { phase: 'exhale' as const, seconds: 4 },
+      { phase: 'rest' as const, seconds: 4 }
+    ]
+  }, [])
+
+  const totalSeconds = targetMinutes * 60
+  const remainingSeconds = Math.max(0, totalSeconds - elapsedSeconds)
+
+  useEffect(() => {
+    ambientSoundRef.current = new AmbientSoundGenerator()
+    ambientSoundRef.current?.setVolume(ambienceVolume)
+    return () => {
+      ambientSoundRef.current?.stop()
+      ambientSoundRef.current = null
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (!isRunning) return
+
+    const tick = setInterval(() => {
+      setElapsedSeconds((prev) => prev + 1)
+    }, 1000)
+
+    return () => clearInterval(tick)
+  }, [isRunning])
+
+  useEffect(() => {
+    if (!isRunning) return
+
+    if (elapsedSeconds >= totalSeconds) {
+      setIsRunning(false)
+      ambientSoundRef.current?.stop()
+      if (hapticsEnabled) vibrate([30, 40, 30])
+      if (confettiEnabled) fireConfettiBurst({ particleCount: 110 }).catch(() => {})
+      onComplete(targetMinutes)
+      return
+    }
+
+    // Determine current phase based on elapsed time
+    const cycleSeconds = phases.reduce((sum, p) => sum + p.seconds, 0)
+    const inCycle = elapsedSeconds % cycleSeconds
+    let acc = 0
+    for (const p of phases) {
+      acc += p.seconds
+      if (inCycle < acc) {
+        setPhase((prevPhase) => {
+          if (prevPhase !== p.phase) {
+            // light haptic cue on transitions
+            if (hapticsEnabled) {
+              vibrate(p.phase === 'inhale' ? 15 : p.phase === 'exhale' ? 10 : 5)
+            }
+          }
+          return p.phase
+        })
+        break
+      }
+    }
+  }, [confettiEnabled, elapsedSeconds, hapticsEnabled, isRunning, onComplete, phases, targetMinutes, totalSeconds])
+
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 p-6 text-white flex items-center justify-between">
+          <div>
+            <h3 className="text-2xl font-bold">Companion Breathing</h3>
+            <p className="text-blue-100 text-sm">Box breathing • {targetMinutes} minutes</p>
+          </div>
+          <Button
+            onClick={() => {
+              setIsRunning(false)
+              ambientSoundRef.current?.stop()
+              onClose()
+            }}
+            variant="outline"
+            className="bg-white/10 border-white/30 text-white hover:bg-white/20"
+          >
+            Close
+          </Button>
+        </div>
+
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-sm font-semibold text-slate-700">Time Remaining</p>
+              <p className="text-3xl font-bold text-slate-900">{formatTime(remainingSeconds)}</p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant={targetMinutes === 2 ? 'default' : 'outline'}
+                onClick={() => {
+                  setTargetMinutes(2)
+                  setElapsedSeconds(0)
+                  setIsRunning(false)
+                  setPhase('rest')
+                  ambientSoundRef.current?.stop()
+                }}
+              >
+                2m
+              </Button>
+              <Button
+                type="button"
+                variant={targetMinutes === 5 ? 'default' : 'outline'}
+                onClick={() => {
+                  setTargetMinutes(5)
+                  setElapsedSeconds(0)
+                  setIsRunning(false)
+                  setPhase('rest')
+                  ambientSoundRef.current?.stop()
+                }}
+              >
+                5m
+              </Button>
+            </div>
+          </div>
+
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <Button
+              type="button"
+              variant={sensoryOpen ? 'default' : 'outline'}
+              onClick={() => setSensoryOpen((v) => !v)}
+            >
+              <Music className="w-4 h-4 mr-2" />
+              Sensory
+            </Button>
+            <Button
+              type="button"
+              variant={hapticsEnabled ? 'default' : 'outline'}
+              onClick={onToggleHaptics}
+              aria-pressed={hapticsEnabled ? 'true' : 'false'}
+            >
+              <Vibrate className="w-4 h-4 mr-2" />
+              Haptics {hapticsEnabled ? 'On' : 'Off'}
+            </Button>
+          </div>
+
+          {sensoryOpen && (
+            <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-semibold text-slate-700 mb-2">Soundscape</p>
+                  <Select
+                    value={ambience}
+                    onValueChange={(value) => {
+                      const next = value as AmbienceType
+                      setAmbience(next)
+
+                      // user gesture (select change) is a good time to restart ambience
+                      ambientSoundRef.current?.stop()
+                      if (isRunning && next !== 'none') {
+                        ambientSoundRef.current?.setVolume(ambienceVolume)
+                        ambientSoundRef.current?.play(next)
+                      }
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose ambience" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {AMBIENCE_OPTIONS.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-semibold text-slate-700">Volume</p>
+                    <p className="text-xs text-slate-500">{Math.round(ambienceVolume * 100)}%</p>
+                  </div>
+                  <Slider
+                    value={[ambienceVolume]}
+                    min={0}
+                    max={1}
+                    step={0.05}
+                    onValueChange={(v) => {
+                      const next = v[0] ?? 0
+                      setAmbienceVolume(next)
+                      ambientSoundRef.current?.setVolume(next)
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  variant={confettiEnabled ? 'default' : 'outline'}
+                  onClick={onToggleConfetti}
+                  aria-pressed={confettiEnabled ? 'true' : 'false'}
+                >
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Visual rewards {confettiEnabled ? 'On' : 'Off'}
+                </Button>
+              </div>
+              <p className="mt-3 text-xs text-slate-600">
+                If audio is blocked, press Start again.
+              </p>
+            </div>
+          )}
+
+          <div className="bg-gradient-to-br from-slate-50 to-blue-50 border border-slate-200 rounded-2xl p-6 flex flex-col items-center gap-6">
+            <CompanionInSession
+              companion={companion}
+              isBreathing
+              breathPhase={phase}
+              phaseDurationMs={4000}
+            />
+            <div className="flex items-center gap-3">
+              <Button
+                type="button"
+                onClick={() => {
+                  onInteract()
+                  setIsRunning(true)
+
+                  if (ambience !== 'none') {
+                    ambientSoundRef.current?.setVolume(ambienceVolume)
+                    ambientSoundRef.current?.play(ambience)
+                  }
+                }}
+                disabled={isRunning}
+                className="bg-gradient-to-r from-green-500 to-emerald-600"
+              >
+                Start
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setIsRunning(false)
+                  ambientSoundRef.current?.stop()
+                }}
+                disabled={!isRunning}
+              >
+                Pause
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setIsRunning(false)
+                  setElapsedSeconds(0)
+                  setPhase('rest')
+                  ambientSoundRef.current?.stop()
+                  if (hapticsEnabled) vibrate(10)
+                }}
+              >
+                Reset
+              </Button>
+            </div>
+
+            <p className="text-xs text-slate-600 text-center max-w-sm">
+              Tip: keep shoulders relaxed. Inhale through nose, exhale slowly.
+              If you feel dizzy, stop and breathe normally.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function badgeBgClass(color?: string): string {
   const c = String(color || '').toUpperCase();
@@ -196,16 +799,51 @@ export default function FocusGardenPage() {
   const [celebrationIcon, setCelebrationIcon] = useState('')
   const [showStreakFreezeModal, setShowStreakFreezeModal] = useState(false)
   const [showQuestModal, setShowQuestModal] = useState<MultiDayQuest | null>(null)
+  const [showCompanionModal, setShowCompanionModal] = useState(false)
+  const [showBreathingModal, setShowBreathingModal] = useState(false)
+  const [sensory, setSensory] = useState<SensorySettings>({
+    hapticsEnabled: true,
+    confettiEnabled: true
+  })
+  const [companionContext, setCompanionContext] = useState<
+    'greeting' | 'session-start' | 'session-end' | 'harvest' | 'streak' | 'idle' | 'comeback' | 'breathing' | 'level-up' | 'quest-complete'
+  >('greeting')
 
   // Load progress on mount
   useEffect(() => {
     migrateOldProgress()
+    setSensory(loadSensorySettings())
     const loaded = loadFocusGardenProgress()
     setProgress(loaded)
 
     if (loaded.totalSessions === 0) {
       setShowTutorial(true)
     }
+  }, [])
+
+  useEffect(() => {
+    saveSensorySettings(sensory)
+  }, [sensory])
+
+  const refreshProgress = useCallback(() => {
+    const latest = loadFocusGardenProgress()
+
+    // Sync companion accessory unlocks (kept in-progress-only storage for now)
+    const unlockable = getUnlockableAccessories(
+      latest.gardenLevel,
+      latest.totalHarvests,
+      latest.streak.currentStreak,
+      latest.earnedBadges,
+      latest.completedQuests.length
+    )
+
+    const merged = Array.from(new Set([...(latest.companion.unlockedAccessories ?? []), ...unlockable]))
+    if (merged.length !== (latest.companion.unlockedAccessories ?? []).length) {
+      latest.companion.unlockedAccessories = merged
+      saveFocusGardenProgress(latest)
+    }
+
+    setProgress(latest)
   }, [])
 
   const celebrate = useCallback((text: string, icon: string = '🎉') => {
@@ -215,55 +853,146 @@ export default function FocusGardenPage() {
     setTimeout(() => setShowCelebration(false), 3000)
   }, [])
 
-  const refreshProgress = useCallback(() => {
-    setProgress(loadFocusGardenProgress())
-  }, [])
+  const applySensoryRewards = useCallback(
+    async (before: FocusGardenProgress | null, after: FocusGardenProgress, hint?: 'minor' | 'major') => {
+      if (!before) {
+        if (sensory.hapticsEnabled && hint) hapticPulse(hint)
+        return
+      }
+
+      const beforeLevel = calculateGardenLevel(before.totalXP).level
+      const afterLevel = calculateGardenLevel(after.totalXP).level
+      const leveledUp = afterLevel > beforeLevel
+
+      const badgesUnlocked = (after.earnedBadges?.length ?? 0) > (before.earnedBadges?.length ?? 0)
+      const questCompleted = (after.completedQuests?.length ?? 0) > (before.completedQuests?.length ?? 0)
+      const harvested = (after.totalHarvests ?? 0) > (before.totalHarvests ?? 0)
+
+      if (sensory.hapticsEnabled) {
+        if (badgesUnlocked) hapticPulse('unlock')
+        else if (questCompleted || harvested || leveledUp) hapticPulse('major')
+        else if (hint) hapticPulse(hint)
+      }
+
+      if (sensory.confettiEnabled) {
+        if (badgesUnlocked) {
+          await fireConfettiBurst({ particleCount: 70, spread: 90, startVelocity: 22 }).catch(() => {})
+        } else if (questCompleted || harvested || leveledUp) {
+          await fireConfettiBurst({ particleCount: 110 }).catch(() => {})
+        }
+      }
+    },
+    [sensory.confettiEnabled, sensory.hapticsEnabled]
+  )
+
+  const companionUserProgress = useMemo(() => {
+    if (!progress) {
+      return {
+        gardenLevel: 1,
+        totalHarvests: 0,
+        currentStreak: 0,
+        earnedBadges: [],
+        completedQuests: 0
+      }
+    }
+    return {
+      gardenLevel: progress.gardenLevel,
+      totalHarvests: progress.totalHarvests,
+      currentStreak: progress.streak.currentStreak,
+      earnedBadges: progress.earnedBadges,
+      completedQuests: progress.completedQuests.length
+    }
+  }, [progress])
 
   const handlePlantTask = useCallback((taskId: string, layer: string) => {
+    const before = progress
     storePlantTask(taskId, layer)
+    const after = loadFocusGardenProgress()
     refreshProgress()
     celebrate('🌱 Task planted! Water it to help it grow.', '🌱')
-  }, [celebrate, refreshProgress])
+    setCompanionContext('session-start')
+    updateCompanionMood('encouraging')
+    void applySensoryRewards(before, after, 'minor')
+  }, [applySensoryRewards, celebrate, progress, refreshProgress])
 
   const handleWaterPlant = useCallback((plantId: string) => {
+    const before = progress
     const result = storeWaterPlant(plantId)
+    const after = loadFocusGardenProgress()
     refreshProgress()
 
     if (result.bloomed) {
       celebrate('🌸 Plant bloomed! Ready to harvest!', '🌸')
+      setCompanionContext('harvest')
+      updateCompanionMood('excited')
+      void applySensoryRewards(before, after, 'major')
     } else if (result.xpEarned > 0) {
       celebrate(`💧 Plant watered! +${result.xpEarned} XP`, '💧')
+      setCompanionContext('session-end')
+      updateCompanionMood('proud')
+      void applySensoryRewards(before, after, 'minor')
     }
-  }, [celebrate, refreshProgress])
+  }, [applySensoryRewards, celebrate, progress, refreshProgress])
 
   const handleHarvestPlant = useCallback((plantId: string) => {
+    const before = progress
     const result = storeHarvestPlant(plantId)
     if (result.success) {
+      const after = loadFocusGardenProgress()
       refreshProgress()
       celebrate(`🎉 Harvest complete! +${result.xpEarned} XP earned!`, '🌺')
+      setCompanionContext('harvest')
+      updateCompanionMood('excited')
+      void applySensoryRewards(before, after, 'major')
     }
-  }, [celebrate, refreshProgress])
+  }, [applySensoryRewards, celebrate, progress, refreshProgress])
+
+  const handleBreathingComplete = useCallback((minutes: number) => {
+    // Log breathing session for XP/stats/badges
+    const before = progress
+    logSession(minutes, 'breathing')
+    const after = loadFocusGardenProgress()
+    refreshProgress()
+    celebrate(`🌬️ Breathing complete! +XP earned`, '🌬️')
+    setCompanionContext('session-end')
+    updateCompanionMood('proud')
+    setShowBreathingModal(false)
+    void applySensoryRewards(before, after, 'minor')
+  }, [applySensoryRewards, celebrate, progress, refreshProgress])
 
   const handleStartQuest = useCallback((questId: string) => {
+    const before = progress
     const success = startQuest(questId)
     if (success) {
+      const after = loadFocusGardenProgress()
       refreshProgress()
       setShowQuestModal(null)
       celebrate('📜 Quest started! Check the Quests tab for your progress.', '📜')
+      setCompanionContext('session-start')
+      updateCompanionMood('happy')
+      void applySensoryRewards(before, after, 'minor')
     }
-  }, [celebrate, refreshProgress])
+  }, [applySensoryRewards, celebrate, progress, refreshProgress])
 
   const handleCompleteQuestDay = useCallback((questId: string, day: number) => {
+    const before = progress
     const result = completeQuestDay(questId, day)
     if (result.success) {
+      const after = loadFocusGardenProgress()
       refreshProgress()
       if (result.questCompleted) {
         celebrate(`🏆 Quest Complete! +${result.xpEarned} XP earned!`, '🏆')
+        setCompanionContext('quest-complete')
+        updateCompanionMood('excited')
+        void applySensoryRewards(before, after, 'major')
       } else {
         celebrate(`✅ Day ${day} complete! +${result.xpEarned} XP`, '✅')
+        setCompanionContext('session-end')
+        updateCompanionMood('proud')
+        void applySensoryRewards(before, after, 'minor')
       }
     }
-  }, [celebrate, refreshProgress])
+  }, [applySensoryRewards, celebrate, progress, refreshProgress])
 
   if (!progress) {
     return (
@@ -494,6 +1223,61 @@ export default function FocusGardenPage() {
         </div>
       )}
 
+      {/* Companion Customization Modal */}
+      {showCompanionModal && progress && (
+        <CompanionCustomizationModal
+          companion={progress.companion}
+          userProgress={companionUserProgress}
+          onClose={() => setShowCompanionModal(false)}
+          onChangeType={(type) => {
+            changeCompanionType(type)
+            refreshProgress()
+            celebrate('✨ Companion changed!', '✨')
+          }}
+          onChangeName={(name) => {
+            setCompanionName(name)
+            refreshProgress()
+            celebrate('📝 Name updated!', '📝')
+          }}
+          onEquipAccessory={(accessoryId) => {
+            // ensure unlock list is synced before equipping
+            refreshProgress()
+            equipAccessory(accessoryId)
+            refreshProgress()
+            celebrate('🎀 Accessory equipped!', '🎀')
+          }}
+          onUnequipAccessory={() => {
+            unequipAccessory()
+            refreshProgress()
+            celebrate('✅ Accessory removed!', '✅')
+          }}
+        />
+      )}
+
+      {showBreathingModal && progress && (
+        <BreathingSessionModal
+          companion={progress.companion}
+          onClose={() => {
+            setShowBreathingModal(false)
+            setCompanionContext('greeting')
+            updateCompanionMood('neutral')
+          }}
+          onInteract={() => {
+            interactWithCompanion()
+            refreshProgress()
+          }}
+          onComplete={handleBreathingComplete}
+          hapticsEnabled={sensory.hapticsEnabled}
+          confettiEnabled={sensory.confettiEnabled}
+          onToggleHaptics={() =>
+            setSensory((prev) => ({ ...prev, hapticsEnabled: !prev.hapticsEnabled }))
+          }
+          onToggleConfetti={() =>
+            setSensory((prev) => ({ ...prev, confettiEnabled: !prev.confettiEnabled }))
+          }
+        />
+      )}
+
       <div className="w-[96%] max-w-[2000px] mx-auto py-8 px-4">
         {/* Back Button */}
         <Button asChild variant="ghost" className="mb-6 hover:bg-white/80">
@@ -521,14 +1305,33 @@ export default function FocusGardenPage() {
                   {currentGardenLevel.description}
                 </p>
               </div>
-              <Button
-                onClick={() => setShowTutorial(true)}
-                variant="outline"
-                className="bg-white/10 border-white/30 text-white hover:bg-white/20 backdrop-blur-sm"
-              >
-                <Info className="w-4 h-4 mr-2" />
-                How it Works
-              </Button>
+              <div className="flex items-center gap-4">
+                <div className="hidden md:block">
+                  <Companion
+                    companion={progress.companion}
+                    context={companionContext}
+                    onInteract={() => {
+                      interactWithCompanion()
+                      refreshProgress()
+                    }}
+                    onCustomize={() => setShowCompanionModal(true)}
+                  />
+                </div>
+                <div className="md:hidden">
+                  <CompactCompanion
+                    companion={progress.companion}
+                    onClick={() => setShowCompanionModal(true)}
+                  />
+                </div>
+                <Button
+                  onClick={() => setShowTutorial(true)}
+                  variant="outline"
+                  className="bg-white/10 border-white/30 text-white hover:bg-white/20 backdrop-blur-sm"
+                >
+                  <Info className="w-4 h-4 mr-2" />
+                  How it Works
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -603,6 +1406,49 @@ export default function FocusGardenPage() {
                 />
                 <div className="pointer-events-none absolute inset-0 rounded-full bg-white/10" />
               </div>
+            </div>
+
+            <div className="mt-6 flex flex-col sm:flex-row gap-3">
+              <Button
+                type="button"
+                onClick={() => {
+                  setShowBreathingModal(true)
+                  setCompanionContext('breathing')
+                  updateCompanionMood('neutral')
+                }}
+                className="bg-gradient-to-r from-blue-500 to-indigo-600"
+              >
+                🌬️ Start Breathing
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowCompanionModal(true)}
+              >
+                ⚙️ Customize Companion
+              </Button>
+              <Button
+                type="button"
+                variant={sensory.hapticsEnabled ? 'default' : 'outline'}
+                onClick={() =>
+                  setSensory((prev) => ({ ...prev, hapticsEnabled: !prev.hapticsEnabled }))
+                }
+                aria-pressed={sensory.hapticsEnabled ? 'true' : 'false'}
+              >
+                <Vibrate className="w-4 h-4 mr-2" />
+                Haptics
+              </Button>
+              <Button
+                type="button"
+                variant={sensory.confettiEnabled ? 'default' : 'outline'}
+                onClick={() =>
+                  setSensory((prev) => ({ ...prev, confettiEnabled: !prev.confettiEnabled }))
+                }
+                aria-pressed={sensory.confettiEnabled ? 'true' : 'false'}
+              >
+                <Sparkles className="w-4 h-4 mr-2" />
+                Rewards
+              </Button>
             </div>
           </div>
         </div>

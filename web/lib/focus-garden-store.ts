@@ -1,10 +1,21 @@
 // Focus Garden Progress Store
 // Centralized state management for Focus Garden gamification features
-// Including: Streak Freezes, Garden Levels, Multi-day Quests, Enhanced Badges
+// Including: Streak Freezes, Garden Levels, Multi-day Quests, Enhanced Badges, Virtual Companion
 
 const STORAGE_KEY = 'nb:focus-garden:v2:progress';
 
 // ========== TYPES ==========
+
+export type CompanionType = 'fox' | 'cat' | 'dog' | 'robot' | 'fairy';
+
+export type CompanionMood = 
+  | 'happy' // User is active, focusing well
+  | 'excited' // Just achieved something
+  | 'neutral' // Default state
+  | 'lonely' // User hasn't been active
+  | 'sleeping' // Long period of inactivity
+  | 'encouraging' // During a session
+  | 'proud'; // After harvest/achievement
 
 export interface FocusGardenPlant {
   id: string;
@@ -76,6 +87,18 @@ export interface FocusGardenBadge {
   };
 }
 
+export interface CompanionData {
+  type: CompanionType;
+  name: string;
+  mood: CompanionMood;
+  level: number;
+  xp: number;
+  unlockedAccessories: string[];
+  activeAccessory: string | null;
+  lastInteraction: string | null;
+  totalInteractions: number;
+}
+
 export interface FocusGardenProgress {
   // Core stats
   totalXP: number;
@@ -110,6 +133,9 @@ export interface FocusGardenProgress {
   nightOwlSessions: number; // Sessions after 9pm
   deepBreathingSessions: number; // Sessions with breathing exercises
   perfectDays: number; // Days with 3+ sessions
+
+  // Companion
+  companion: CompanionData;
 }
 
 export interface SessionRecord {
@@ -713,7 +739,18 @@ function getDefaultProgress(): FocusGardenProgress {
     earlyBirdSessions: 0,
     nightOwlSessions: 0,
     deepBreathingSessions: 0,
-    perfectDays: 0
+    perfectDays: 0,
+    companion: {
+      type: 'fox', // Default companion
+      name: 'Buddy',
+      mood: 'neutral',
+      level: 1,
+      xp: 0,
+      unlockedAccessories: [],
+      activeAccessory: null,
+      lastInteraction: null,
+      totalInteractions: 0
+    }
   };
 }
 
@@ -1291,4 +1328,70 @@ export function migrateOldProgress(): void {
       console.error('[Focus Garden] Migration failed:', error);
     }
   }
+}
+
+// ========== COMPANION MANAGEMENT ==========
+
+export function changeCompanionType(newType: CompanionType): boolean {
+  const progress = loadFocusGardenProgress();
+  
+  // Check if companion is unlocked
+  // This would check COMPANION_TYPES unlock requirements
+  
+  progress.companion.type = newType;
+  progress.companion.mood = 'happy'; // Happy about the change!
+  saveFocusGardenProgress(progress);
+  return true;
+}
+
+export function setCompanionName(name: string): void {
+  const progress = loadFocusGardenProgress();
+  progress.companion.name = name;
+  saveFocusGardenProgress(progress);
+}
+
+export function interactWithCompanion(): void {
+  const progress = loadFocusGardenProgress();
+  progress.companion.totalInteractions += 1;
+  progress.companion.lastInteraction = new Date().toISOString();
+  
+  // Update companion XP and level
+  progress.companion.xp += 5;
+  const companionLevel = Math.floor(progress.companion.xp / 50) + 1;
+  progress.companion.level = Math.min(companionLevel, 10);
+  
+  saveFocusGardenProgress(progress);
+}
+
+export function updateCompanionMood(mood: CompanionMood): void {
+  const progress = loadFocusGardenProgress();
+  progress.companion.mood = mood;
+  saveFocusGardenProgress(progress);
+}
+
+export function equipAccessory(accessoryId: string): void {
+  const progress = loadFocusGardenProgress();
+  
+  if (!progress.companion.unlockedAccessories.includes(accessoryId)) {
+    return; // Not unlocked
+  }
+  
+  progress.companion.activeAccessory = accessoryId;
+  saveFocusGardenProgress(progress);
+}
+
+export function unequipAccessory(): void {
+  const progress = loadFocusGardenProgress();
+  progress.companion.activeAccessory = null;
+  saveFocusGardenProgress(progress);
+}
+
+export function checkAndUnlockAccessories(): string[] {
+  const progress = loadFocusGardenProgress();
+  
+  // This would use getUnlockableAccessories from companion-data
+  // For now, just return existing unlocked
+  
+  saveFocusGardenProgress(progress);
+  return progress.companion.unlockedAccessories;
 }
