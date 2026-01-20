@@ -1,4 +1,3 @@
-# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Deploy to Vercel (Production)
 
 'on':
@@ -23,17 +22,13 @@ jobs:
         shell: bash
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
           missing=0
           for var in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
             if [ -z "${!var}" ]; then
-              if [ "$var" = "VERCEL_TOKEN" ]; then
-                echo "::warning::Missing required GitHub Actions secret: ${var}"
-              else
-                echo "::warning::Missing required GitHub Actions variable: ${var}"
-              fi
+              echo "::warning::Missing required GitHub Actions secret: ${var}"
               missing=1
             fi
           done
@@ -56,8 +51,8 @@ jobs:
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ vars.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ vars.VERCEL_PROJECT_ID }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: ./web
           vercel-args: '--prod'
 

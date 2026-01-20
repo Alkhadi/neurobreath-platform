@@ -1,4 +1,7 @@
 {
+  "files.associations": {
+    "**/.github/workflows/deploy-vercel.yml": "yaml"
+  },
   "markdownlint.config": {
     "default": true,
     "MD013": false,
