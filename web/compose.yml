@@ -1,23 +1,18 @@
-name: neurobreath
-
 services:
-  postgres:
+  db:
     image: postgres:16
-    container_name: neurobreath-postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: neurobreath
+    container_name: neurobreath_postgres
+    restart: unless-stopped
     ports:
       - "5432:5432"
+    environment:
+      # Set these in your shell or an untracked .env file.
+      # Never commit secrets.
+      POSTGRES_DB: ${POSTGRES_DB:-neurobreath}
+      POSTGRES_USER: ${POSTGRES_USER:-neurobreath}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me}
     volumes:
       - neurobreath_pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d neurobreath"]
-      interval: 5s
-      timeout: 5s
-      retries: 20
 
 volumes:
   neurobreath_pgdata:
-
