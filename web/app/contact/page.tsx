@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { Profile, Contact, defaultProfile } from "@/lib/utils";
-import Script from "next/script";
 import { ProfileCard } from "./components/profile-card";
 import { ProfileManager } from "./components/profile-manager";
 import { ContactCapture } from "./components/contact-capture";
 import { ShareButtons } from "./components/share-buttons";
+import { TurnstileWidget } from "@/components/security/turnstile-widget";
 import { FaEdit, FaPlus, FaUsers, FaChevronDown, FaEnvelope, FaPhone, FaMapMarkerAlt, FaDownload } from "react-icons/fa";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -28,6 +28,8 @@ export default function ContactPage() {
   const [contactSubmitStatus, setContactSubmitStatus] = useState<
     { state: "idle" | "submitting" | "success" | "error"; message?: string }
   >({ state: "idle" });
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
 
   // Load data from localStorage
   useEffect(() => {
@@ -170,14 +172,12 @@ export default function ContactPage() {
       return;
     }
 
-    const formData = new FormData(e.currentTarget);
-
-    // Cloudflare injects this hidden field into the form
-    const turnstileToken = String(formData.get("cf-turnstile-response") || "").trim();
     if (!turnstileToken) {
       setContactSubmitStatus({ state: "error", message: "Please complete the verification check." });
       return;
     }
+
+    const formData = new FormData(e.currentTarget);
 
     const data = {
       name: formData.get("name"),
@@ -202,6 +202,7 @@ export default function ContactPage() {
         json && typeof json === "object" && "error" in json
           ? String((json as { error?: unknown }).error ?? "")
           : "";
+      const isDev = json && typeof json === "object" && "dev" in json;
 
       if (!res.ok) {
         setContactSubmitStatus({
@@ -211,15 +212,14 @@ export default function ContactPage() {
         return;
       }
 
-      setContactSubmitStatus({ state: "success", message: "Thanks! We’ll get back to you soon." });
+      const successMessage = isDev 
+        ? "Thanks! Your message was received. (Development mode - email not sent)" 
+        : "Thanks! We'll get back to you soon.";
+      
+      setContactSubmitStatus({ state: "success", message: successMessage });
       e.currentTarget.reset();
-
-      // Best-effort reset (works when the Turnstile JS API is available)
-      try {
-        (window as unknown as { turnstile?: { reset: () => void } }).turnstile?.reset();
-      } catch {
-        // ignore
-      }
+      setTurnstileToken("");
+      setTurnstileResetKey((prev) => prev + 1);
     } catch (err) {
       setContactSubmitStatus({ state: "error", message: "Network error. Please try again." });
     }
@@ -235,7 +235,6 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-blue-50 py-8 px-4">
-      <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
       <div className="max-w-6xl mx-auto">
         {/* Page Header */}
         <div className="text-center mb-8">
@@ -322,10 +321,14 @@ export default function ContactPage() {
 
               <div className="pt-2 flex flex-col gap-2">
                 {turnstileSiteKey ? (
-                  <div
-                    className="cf-turnstile"
-                    data-sitekey={turnstileSiteKey}
-                    data-action="contact"
+                  <TurnstileWidget
+                    siteKey={turnstileSiteKey}
+                    onVerify={setTurnstileToken}
+                    onError={() => setTurnstileToken("")}
+                    onExpire={() => setTurnstileToken("")}
+                    action="contact"
+                    theme="light"
+                    resetKey={turnstileResetKey}
                   />
                 ) : (
                   <p className="text-sm text-amber-700">

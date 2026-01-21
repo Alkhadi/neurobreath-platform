@@ -125,6 +125,19 @@ export async function POST(req: Request) {
       return Response.json({ ok: false, error: "Server email is not configured" }, { status: 500 });
     }
 
+    // Check if we're in development mode and SKIP_EMAIL_SEND is set
+    const skipEmailInDev = process.env.NODE_ENV === "development" && process.env.SKIP_EMAIL_SEND === "true";
+    
+    if (skipEmailInDev) {
+      console.log("DEV MODE: Skipping actual email send. Contact data:", {
+        name,
+        email,
+        subject,
+        message: message.substring(0, 100),
+      });
+      return Response.json({ ok: true, dev: true });
+    }
+
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     const to = process.env.CONTACT_TO || "support@neurobreath.co.uk";
@@ -140,8 +153,29 @@ export async function POST(req: Request) {
     });
 
     if (adminSend.error) {
-      return Response.json({ ok: false, error: "Email send failed" }, { status: 500 });
+      console.error("Resend API error:", JSON.stringify(adminSend.error, null, 2));
+      
+      // Provide user-friendly error messages based on common Resend errors
+      let userMessage = "Email send failed. ";
+      
+      if (adminSend.error.message?.includes("domain") || adminSend.error.message?.includes("verify")) {
+        userMessage += "The email service is not properly configured. Please contact support.";
+      } else if (adminSend.error.message?.includes("API key")) {
+        userMessage += "Email service authentication failed. Please contact support.";
+      } else {
+        userMessage += adminSend.error.message || "Please try again later.";
+      }
+      
+      return Response.json(
+        { 
+          ok: false, 
+          error: userMessage
+        }, 
+        { status: 500 }
+      );
     }
+
+    console.log("Admin email sent successfully:", adminSend.data?.id);
 
     // 2) Auto-responder to the user (best-effort)
     await resend.emails.send({
@@ -156,7 +190,9 @@ export async function POST(req: Request) {
     });
 
     return Response.json({ ok: true });
-  } catch {
-    return Response.json({ ok: false, error: "Server error" }, { status: 500 });
+  } catch (err) {
+    console.error("Contact form error:", err);
+    const errorMessage = err instanceof Error ? err.message : "Server error";
+    return Response.json({ ok: false, error: errorMessage }, { status: 500 });
   }
 }
