@@ -115,6 +115,12 @@ export async function POST(req: Request) {
     // Turnstile validation (strict anti-spam)
     const turnstile = await verifyTurnstile(turnstileToken, ip);
     if (!turnstile.ok) {
+      if (turnstile.error === "Missing TURNSTILE_SECRET_KEY") {
+        return Response.json(
+          { ok: false, error: "Spam protection is not configured yet. Please try again later." },
+          { status: 500 }
+        );
+      }
       return Response.json(
         { ok: false, error: "Verification failed. Please try again." },
         { status: 400 }
@@ -140,7 +146,7 @@ export async function POST(req: Request) {
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const to = process.env.CONTACT_TO || "support@neurobreath.co.uk";
+    const to = process.env.CONTACT_TO || "info@neurobreath.co.uk";
     const from = process.env.CONTACT_FROM || "NeuroBreath Support <onboarding@resend.dev>";
 
     // 1) Send to your support inbox
