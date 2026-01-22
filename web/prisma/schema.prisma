@@ -451,3 +451,40 @@ model UserProfile {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @default(now()) @updatedAt
 }
+
+// ============================================================================
+// OPTIONAL AUTH (NEXTAUTH JWT + CREDENTIALS) — ISOLATED FROM EXISTING Session
+// ============================================================================
+
+model AuthUser {
+  id                 String   @id @default(cuid())
+  email              String   @unique
+  name               String?
+  passwordHash       String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now()) @updatedAt
+
+  // Optional link into the existing “deviceId” ecosystem
+  primaryDeviceId    String?
+
+  // 2FA (TOTP)
+  twoFactorEnabled   Boolean  @default(false)
+  twoFactorSecretEnc String?  // encrypted secret blob (AES-256-GCM)
+
+  passwordResets     AuthPasswordResetToken[]
+
+  @@index([primaryDeviceId])
+}
+
+model AuthPasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
