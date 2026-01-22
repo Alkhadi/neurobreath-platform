@@ -164,6 +164,10 @@ export default function ContactPage() {
   const handleContactFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Capture the form element synchronously. In some React/event implementations,
+    // `e.currentTarget` can become null after awaiting.
+    const form = e.currentTarget;
+
     if (!turnstileSiteKey) {
       setContactSubmitStatus({
         state: "error",
@@ -177,7 +181,7 @@ export default function ContactPage() {
       return;
     }
 
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(form);
 
     const data = {
       name: String(formData.get("name") ?? ""),
@@ -227,7 +231,7 @@ export default function ContactPage() {
         : "Thanks! We'll get back to you soon.";
       
       setContactSubmitStatus({ state: "success", message: successMessage });
-      e.currentTarget.reset();
+      form.reset();
       setTurnstileToken("");
       setTurnstileResetKey((prev) => prev + 1);
     } catch (err) {
@@ -283,7 +287,10 @@ export default function ContactPage() {
             {/* Contact Form */}
             <form onSubmit={handleContactFormSubmit} className="space-y-4">
               {/* Honeypot field: bots often fill it, humans never see it */}
-              <div className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden">
+              <div
+                className="absolute overflow-hidden"
+                style={{ left: "-10000px", top: "auto", width: "1px", height: "1px" }}
+              >
                 <label htmlFor="company">Company</label>
                 <input
                   id="company"
