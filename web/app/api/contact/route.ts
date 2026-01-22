@@ -95,6 +95,23 @@ async function verifyTurnstile(token: string, ip: string) {
   return { ok: !!data?.success, data } as const;
 }
 
+export function GET() {
+  return Response.json(
+    {
+      ok: true,
+      route: "/api/contact",
+      methods: ["POST"],
+      note: "Send a POST request to submit the contact form.",
+      ts: Date.now(),
+    },
+    {
+      headers: {
+        "Cache-Control": "no-store",
+      },
+    }
+  );
+}
+
 export async function POST(req: Request) {
   try {
     const ip = getClientIp(req);

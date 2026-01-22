@@ -38,7 +38,10 @@ export default defineConfig({
   webServer: {
     command: 'npm run dev:clean',
     url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
+    // Default to NOT reusing an existing server.
+    // Reuse can accidentally point tests at a stale/incorrect process already on :3000.
+    // Opt-in via env var if you know what you're doing.
+    reuseExistingServer: !!process.env.PW_REUSE_SERVER && !process.env.CI,
     timeout: 120 * 1000,
   },
 });

@@ -210,9 +210,14 @@ export default function ContactPage() {
       const isDev = json && typeof json === "object" && "dev" in json;
 
       if (!res.ok) {
+        const vercelId = res.headers.get("x-vercel-id");
+        const statusHint = `Request failed (${res.status}${res.statusText ? ` ${res.statusText}` : ""})`;
+
         setContactSubmitStatus({
           state: "error",
-          message: maybeError || "Failed to send message",
+          message:
+            maybeError ||
+            (vercelId ? `${statusHint}. Reference: ${vercelId}` : `${statusHint}. Please try again.`),
         });
         return;
       }
@@ -226,7 +231,25 @@ export default function ContactPage() {
       setTurnstileToken("");
       setTurnstileResetKey((prev) => prev + 1);
     } catch (err) {
-      setContactSubmitStatus({ state: "error", message: "Network error. Please try again." });
+      console.error("Contact submit failed:", err);
+
+      const message =
+        err instanceof Error && err.message
+          ? err.message
+          : "Network error. Please try again.";
+
+      const likelyBlocked =
+        typeof message === "string" &&
+        (message.toLowerCase().includes("failed to fetch") ||
+          message.toLowerCase().includes("networkerror") ||
+          message.toLowerCase().includes("load failed"));
+
+      setContactSubmitStatus({
+        state: "error",
+        message: likelyBlocked
+          ? "We couldn’t reach the server. If you’re using an ad-blocker, VPN, or strict privacy mode, try disabling it for this site and retry."
+          : message,
+      });
     }
   };
 

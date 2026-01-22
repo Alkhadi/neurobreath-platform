@@ -323,13 +323,14 @@ Create a `.env` file in the project root with the following variables:
 #### Vercel: Production vs Preview
 
 - **Production**: set `NEXT_PUBLIC_SITE_URL` to your real domain, e.g. `https://neurobreath.co.uk`.
-- **Preview deployments**: leave `NEXT_PUBLIC_SITE_URL` unset.
-   - Previews will automatically use Vercel-provided `VERCEL_URL` for `metadataBase`/canonical generation.
-   - Previews are forced to `noindex` by default to prevent preview domains being indexed.
+- **Preview deployments**: leave `NEXT_PUBLIC_SITE_URL` unset. Previews will automatically use Vercel-provided `VERCEL_URL` for `metadataBase`/canonical generation. Previews are forced to `noindex` by default to prevent preview domains being indexed.
 
 Notes:
 - `VERCEL_ENV` and `VERCEL_URL` are injected automatically by Vercel.
 - If you set `NEXT_PUBLIC_SITE_URL` at the project level for all environments, previews will still be `noindex`, but their canonical base will point at production.
+
+API notes:
+- `/api/contact` accepts `POST` for contact form submissions. A `GET` request returns a small JSON response for quick health/reachability checks.
 
 ### Security Warning
 
