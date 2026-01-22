@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { Profile, Contact, defaultProfile } from "@/lib/utils";
+import { loadNbcardLocalState, saveNbcardLocalState } from "./lib/nbcard-storage";
 import styles from "./contact.module.css";
 import { ProfileCard } from "./components/profile-card";
 import { ProfileManager } from "./components/profile-manager";
@@ -9,6 +10,7 @@ import { ContactCapture } from "./components/contact-capture";
 import { ShareButtons } from "./components/share-buttons";
 import { TurnstileWidget } from "@/components/security/turnstile-widget";
 import { FaEdit, FaPlus, FaUsers, FaChevronDown, FaEnvelope, FaPhone, FaMapMarkerAlt, FaDownload } from "react-icons/fa";
+import { toast } from "sonner";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -32,28 +34,38 @@ export default function ContactPage() {
   const [turnstileToken, setTurnstileToken] = useState<string>("");
   const [turnstileResetKey, setTurnstileResetKey] = useState(0);
 
-  // Load data from localStorage
+  // Load NBCard state + set up PWA install prompt
   useEffect(() => {
+    let cancelled = false;
     setMounted(true);
-    const storedProfiles = localStorage.getItem("nbcard_profiles");
-    const storedContacts = localStorage.getItem("nbcard_contacts");
 
-    if (storedProfiles) {
-      try {
-        const parsed = JSON.parse(storedProfiles);
-        setProfiles(parsed?.length > 0 ? parsed : [defaultProfile]);
-      } catch (e) {
-        console.error("Failed to load profiles", e);
-      }
-    }
+    (async () => {
+      const state = await loadNbcardLocalState([defaultProfile], []);
+      if (cancelled) return;
+      setProfiles(state.profiles);
+      setContacts(state.contacts);
 
-    if (storedContacts) {
+      // Support deep-linking to a specific profile via /contact?profile=<id>
       try {
-        setContacts(JSON.parse(storedContacts));
-      } catch (e) {
-        console.error("Failed to load contacts", e);
+        const params = new URLSearchParams(window.location.search);
+        const profileId = params.get("profile");
+        if (profileId) {
+          const index = state.profiles.findIndex((p) => p.id === profileId);
+          if (index >= 0) setCurrentProfileIndex(index);
+        }
+      } catch {
+        // ignore
       }
-    }
+
+      // Register NBCard service worker (offline-ready for /contact)
+      try {
+        if ("serviceWorker" in navigator) {
+          await navigator.serviceWorker.register("/nbcard-sw.js");
+        }
+      } catch {
+        // Don't block page; SW is best-effort
+      }
+    })().catch((e) => console.error("Failed to load NBCard state", e));
 
     // PWA Install Prompt
     const handleBeforeInstallPrompt = (e: Event) => {
@@ -65,23 +77,17 @@ export default function ContactPage() {
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
     return () => {
+      cancelled = true;
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     };
   }, []);
 
-  // Save profiles to localStorage
+  // Persist profiles + contacts (local-first)
   useEffect(() => {
     if (mounted) {
-      localStorage.setItem("nbcard_profiles", JSON.stringify(profiles));
+      saveNbcardLocalState({ profiles, contacts }).catch((e) => console.error("Failed to persist NBCard state", e));
     }
-  }, [profiles, mounted]);
-
-  // Save contacts to localStorage
-  useEffect(() => {
-    if (mounted) {
-      localStorage.setItem("nbcard_contacts", JSON.stringify(contacts));
-    }
-  }, [contacts, mounted]);
+  }, [profiles, contacts, mounted]);
 
   const currentProfile = profiles?.[currentProfileIndex] ?? defaultProfile;
 
@@ -100,7 +106,7 @@ export default function ContactPage() {
 
   const handleDeleteProfile = () => {
     if (profiles.length === 1) {
-      alert("Cannot delete the last profile");
+      toast.error("Cannot delete the last profile");
       return;
     }
     if (confirm("Are you sure you want to delete this profile?")) {
@@ -133,8 +139,16 @@ export default function ContactPage() {
     setShowProfileManager(true);
   };
 
-  const handleSaveContact = (contact: Contact) => {
-    setContacts([...contacts, contact]);
+  const handleUpsertContact = (contact: Contact) => {
+    setContacts((prev) => {
+      const idx = prev.findIndex((c) => c.id === contact.id);
+      if (idx >= 0) {
+        const next = [...prev];
+        next[idx] = contact;
+        return next;
+      }
+      return [...prev, contact];
+    });
   };
 
   const handleDeleteContact = (id: string) => {
@@ -145,7 +159,9 @@ export default function ContactPage() {
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) {
-      alert("Install prompt not available. Please use your browser's menu to install the app.");
+      toast.message("Install prompt not available", {
+        description: "Please use your browser's menu to install the app.",
+      });
       return;
     }
 
@@ -533,16 +549,18 @@ export default function ContactPage() {
           <div>
             {/* Profile Card with Capture Wrapper */}
             <div className="mb-6">
-              <div
+              <button
                 id="profile-card-capture"
-                className="cursor-pointer"
+                type="button"
+                className="cursor-pointer text-left w-full"
+                aria-label="Edit profile"
                 onClick={handleEditProfile}
               >
                 <ProfileCard profile={currentProfile} showEditButton onPhotoClick={(e) => {
                   e?.stopPropagation();
                   handleEditProfile();
                 }} />
-              </div>
+              </button>
             </div>
             <p className="text-center text-sm text-gray-600 mb-4">
               Click on the card to edit your profile
@@ -562,18 +580,36 @@ export default function ContactPage() {
               >
                 <FaPlus /> New Profile
               </button>
+              <button
+                onClick={() => {
+                  const el = document.getElementById("share-your-profile");
+                  el?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  toast.message("Share Your Profile", { description: "Choose a share option on the right." });
+                }}
+                className="flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold"
+              >
+                Share Your Profile
+              </button>
             </div>
           </div>
 
           {/* Right Column - Share Buttons */}
           <div className="bg-white rounded-2xl shadow-xl p-6">
-            <ShareButtons profile={currentProfile} />
+            <div id="share-your-profile">
+              <ShareButtons
+                profile={currentProfile}
+                profiles={profiles}
+                contacts={contacts}
+                onSetProfiles={setProfiles}
+                onSetContacts={setContacts}
+              />
+            </div>
           </div>
         </div>
 
         {/* Contact Capture Section */}
         <div className="mb-8">
-          <ContactCapture contacts={contacts} onSave={handleSaveContact} onDelete={handleDeleteContact} />
+          <ContactCapture contacts={contacts} onUpsert={handleUpsertContact} onDelete={handleDeleteContact} />
         </div>
 
         {/* PWA Install Section */}

@@ -1,305 +1,542 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Profile } from "@/lib/utils";
-import { FaQrcode, FaFilePdf, FaDownload, FaImage, FaWhatsapp, FaEnvelope, FaSms, FaShareAlt } from "react-icons/fa";
-import { QRCodeSVG } from "qrcode.react";
+import * as React from "react";
 
-interface ShareButtonsProps {
+import html2canvas from "html2canvas";
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { QRCodeSVG } from "qrcode.react";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import type { Contact, Profile } from "@/lib/utils";
+
+import {
+  downloadBlob,
+  copyTextToClipboard,
+  shareViaWebShare,
+  getProfileShareUrl,
+  generateProfileVCard,
+  buildMailtoUrl,
+  buildSmsUrl,
+  buildWhatsappUrl,
+} from "../lib/nbcard-share";
+import {
+  exportNbcardLocalState,
+  importNbcardLocalState,
+  resetNbcardContacts,
+  resetNbcardProfiles,
+} from "../lib/nbcard-storage";
+
+import { Download, Link as LinkIcon, Mail, MessageSquare, QrCode, Share2 } from "lucide-react";
+
+export type ShareButtonsProps = {
   profile: Profile;
+  profiles: Profile[];
+  contacts: Contact[];
+  onSetProfiles: (next: Profile[]) => void;
+  onSetContacts: (next: Contact[]) => void;
+};
+
+function contactsToCsv(contacts: Contact[]): string {
+  const header = ["id", "name", "email", "phone", "notes", "createdAt"].join(",");
+  const rows = contacts.map((c) =>
+    [
+      c.id,
+      c.name ?? "",
+      c.email ?? "",
+      c.phone ?? "",
+      (c.notes ?? "").replace(/\r\n|\r|\n/g, " "),
+      c.createdAt ?? "",
+    ]
+      .map((v) => `"${String(v).replace(/"/g, '""')}"`)
+      .join(",")
+  );
+  return [header, ...rows].join("\n");
 }
 
-export function ShareButtons({ profile }: ShareButtonsProps) {
-  const [showQR, setShowQR] = useState(false);
-  const [generating, setGenerating] = useState(false);
-  const [generatingImage, setGeneratingImage] = useState(false);
-  const [generatingQR, setGeneratingQR] = useState(false);
-  const [downloadingQR, setDownloadingQR] = useState(false);
-  const [profileImageDataUrl, setProfileImageDataUrl] = useState<string>("");
-  const [qrCodeValue, setQrCodeValue] = useState<string>("");
-  const qrRef = useRef<HTMLDivElement>(null);
+async function dataUrlToPngBlob(dataUrl: string): Promise<Blob> {
+  const res = await fetch(dataUrl);
+  return await res.blob();
+}
 
-  // Generate comprehensive vCard data with photo
-  const generateVCardData = async (includePhoto: boolean = false) => {
-    let vcard = `BEGIN:VCARD
-VERSION:3.0
-FN:${profile?.fullName ?? ""}
-TITLE:${profile?.jobTitle ?? ""}
-TEL;TYPE=CELL:${profile?.phone ?? ""}
-EMAIL;TYPE=INTERNET:${profile?.email ?? ""}`;
+async function captureProfileCardPng(): Promise<Blob> {
+  const target = document.getElementById("profile-card-capture");
+  if (!target) throw new Error("Profile card element not found");
 
-    if (profile?.profileDescription) {
-      vcard += `\nNOTE:${profile.profileDescription}`;
-    }
-    
-    if (profile?.businessDescription) {
-      vcard += `\nORG:${profile.businessDescription}`;
-    }
+  const canvas = await html2canvas(target, {
+    scale: 2,
+    backgroundColor: null,
+    useCORS: true,
+    logging: false,
+  });
 
-    // Add photo if requested
-    if (includePhoto && profileImageDataUrl) {
-      const base64Data = profileImageDataUrl.split(',')[1];
-      vcard += `\nPHOTO;ENCODING=B;TYPE=PNG:${base64Data}`;
-    }
+  return await new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (!blob) reject(new Error("Failed to create image blob"));
+      else resolve(blob);
+    }, "image/png");
+  });
+}
 
-    // Add social media URLs
-    if (profile?.socialMedia?.website) {
-      vcard += `\nURL:${profile.socialMedia.website}`;
-    }
-    if (profile?.socialMedia?.instagram) {
-      vcard += `\nX-SOCIALPROFILE;TYPE=instagram:${profile.socialMedia.instagram}`;
-    }
-    if (profile?.socialMedia?.facebook) {
-      vcard += `\nX-SOCIALPROFILE;TYPE=facebook:${profile.socialMedia.facebook}`;
-    }
-    if (profile?.socialMedia?.twitter) {
-      vcard += `\nX-SOCIALPROFILE;TYPE=twitter:${profile.socialMedia.twitter}`;
-    }
-    if (profile?.socialMedia?.linkedin) {
-      vcard += `\nX-SOCIALPROFILE;TYPE=linkedin:${profile.socialMedia.linkedin}`;
-    }
-    if (profile?.socialMedia?.tiktok) {
-      vcard += `\nX-SOCIALPROFILE;TYPE=tiktok:${profile.socialMedia.tiktok}`;
-    }
+async function createSimplePdf(profile: Profile, shareUrl: string, qrDataUrl?: string) {
+  const doc = await PDFDocument.create();
+  const page = doc.addPage([595.28, 841.89]); // A4
+  const { width, height } = page.getSize();
 
-    vcard += `\nEND:VCARD`;
-    return vcard;
-  };
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const fontBold = await doc.embedFont(StandardFonts.HelveticaBold);
 
-  const profileText = `${profile?.fullName ?? ""}
-${profile?.jobTitle ?? ""}
+  page.drawText(profile.fullName || "NBCard", {
+    x: 48,
+    y: height - 80,
+    size: 22,
+    font: fontBold,
+    color: rgb(0.12, 0.12, 0.14),
+  });
 
-📞 ${profile?.phone ?? ""}
-📧 ${profile?.email ?? ""}${
-    profile?.profileDescription ? `\n\n📝 ${profile.profileDescription}` : ""
-  }${
-    profile?.businessDescription ? `\n\n💼 ${profile.businessDescription}` : ""
-  }${
-    profile?.socialMedia?.website ? `\n\n🌐 ${profile.socialMedia.website}` : ""
+  const lines: string[] = [];
+  if (profile.jobTitle) lines.push(profile.jobTitle);
+  if (profile.email) lines.push(profile.email);
+  if (profile.phone) lines.push(profile.phone);
+
+  let y = height - 120;
+  for (const line of lines) {
+    page.drawText(line, {
+      x: 48,
+      y,
+      size: 12,
+      font,
+      color: rgb(0.20, 0.20, 0.23),
+    });
+    y -= 18;
   }
 
----
-Shared via NBCard - Digital Business Card`;
+  page.drawText("Profile link:", {
+    x: 48,
+    y: y - 6,
+    size: 11,
+    font: fontBold,
+    color: rgb(0.20, 0.20, 0.23),
+  });
 
-  // Capture profile card as high-quality image
-  const captureProfileCard = async (): Promise<string> => {
-    const html2canvas = (await import("html2canvas")).default;
-    const cardElement = document.getElementById("profile-card-capture");
-    
-    if (!cardElement) {
-      throw new Error("Profile card not found");
-    }
+  page.drawText(shareUrl, {
+    x: 48,
+    y: y - 24,
+    size: 11,
+    font,
+    color: rgb(0.23, 0.36, 0.95),
+  });
 
-    const canvas = await html2canvas(cardElement, {
-      scale: 3,
-      useCORS: true,
-      logging: false,
-      backgroundColor: null,
-      allowTaint: true,
-      foreignObjectRendering: false,
-      imageTimeout: 0,
-      removeContainer: true,
+  if (qrDataUrl) {
+    const qrBytes = await fetch(qrDataUrl).then((r) => r.arrayBuffer());
+    const qrImage = await doc.embedPng(qrBytes);
+    const qrSize = 160;
+    page.drawImage(qrImage, {
+      x: width - 48 - qrSize,
+      y: height - 140 - qrSize,
+      width: qrSize,
+      height: qrSize,
     });
+  }
 
-    return canvas.toDataURL("image/png", 1.0);
-  };
+  page.drawText("Generated by NBCard", {
+    x: 48,
+    y: 36,
+    size: 9,
+    font,
+    color: rgb(0.55, 0.55, 0.60),
+  });
 
-  // Generate QR Code with embedded profile image
-  const generateQRWithImage = async () => {
-    setGeneratingQR(true);
+  return await doc.save();
+}
+
+export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSetContacts }: ShareButtonsProps) {
+  const [isQrOpen, setIsQrOpen] = React.useState(false);
+  const [isPrivacyOpen, setIsPrivacyOpen] = React.useState(false);
+  const [isQrVcard, setIsQrVcard] = React.useState(false);
+  const [busyKey, setBusyKey] = React.useState<string | null>(null);
+
+  const shareUrl = React.useMemo(() => getProfileShareUrl(profile.id), [profile.id]);
+
+  const qrValue = React.useMemo(() => {
+    if (!isQrVcard) return shareUrl;
+    const vcard = generateProfileVCard(profile);
+    if (vcard.length > 1200) return shareUrl;
+    return vcard;
+  }, [isQrVcard, profile, shareUrl]);
+
+  async function withBusy<T>(key: string, fn: () => Promise<T>): Promise<T | null> {
+    if (busyKey) return null;
+    setBusyKey(key);
     try {
-      // First capture the profile card image
-      const imageDataUrl = await captureProfileCard();
-      setProfileImageDataUrl(imageDataUrl);
-
-      // Generate vCard with embedded photo
-      const vCardData = await generateVCardData(true);
-      setQrCodeValue(vCardData);
-      
-      // Show the QR modal
-      setShowQR(true);
-      
-      setTimeout(() => {
-        alert("✅ QR Code generated with embedded profile image!");
-      }, 500);
-    } catch (error) {
-      console.error("QR generation error:", error);
-      alert("❌ Failed to generate QR code. Please try again.");
+      return await fn();
     } finally {
-      setGeneratingQR(false);
+      setBusyKey(null);
     }
-  };
+  }
 
-  const downloadQR = async () => {
-    setDownloadingQR(true);
-    try {
-      if (!qrRef.current) {
-        alert("❌ QR code not found. Please open the QR code first.");
-        setDownloadingQR(false);
-        return;
-      }
+  async function handleCopyLink() {
+    await withBusy("copy", async () => {
+      const ok = await copyTextToClipboard(shareUrl);
+      if (!ok) throw new Error("Copy failed");
+      toast.success("Profile link copied");
+    });
+  }
 
-      const svg = qrRef.current.querySelector("svg");
-      if (!svg) {
-        alert("❌ QR code not found. Please try again.");
-        setDownloadingQR(false);
-        return;
-      }
-
-      // Create a professional QR code image with branding
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      
-      if (!ctx) {
-        alert("❌ Failed to create canvas.");
-        setDownloadingQR(false);
-        return;
-      }
-
-      // Set canvas size (larger for better quality)
-      canvas.width = 800;
-      canvas.height = 900;
-
-      // White background
-      ctx.fillStyle = "white";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Add title
-      ctx.fillStyle = "#1f2937";
-      ctx.font = "bold 32px Arial";
-      ctx.textAlign = "center";
-      ctx.fillText(profile?.fullName ?? "Profile Card", canvas.width / 2, 50);
-
-      // Add subtitle
-      ctx.fillStyle = "#6b7280";
-      ctx.font = "20px Arial";
-      ctx.fillText("Scan to save contact", canvas.width / 2, 85);
-
-      // Draw QR code
-      const svgData = new XMLSerializer().serializeToString(svg);
-      const img = new Image();
-
-      await new Promise<void>((resolve, reject) => {
-        img.onload = () => {
-          try {
-            // Center the QR code with padding
-            const qrSize = 600;
-            const x = (canvas.width - qrSize) / 2;
-            const y = 120;
-            
-            // Add shadow
-            ctx.shadowColor = "rgba(0, 0, 0, 0.1)";
-            ctx.shadowBlur = 20;
-            ctx.shadowOffsetY = 10;
-            
-            // White background for QR
-            ctx.fillStyle = "white";
-            ctx.fillRect(x - 20, y - 20, qrSize + 40, qrSize + 40);
-            
-            // Draw QR code
-            ctx.shadowColor = "transparent";
-            ctx.drawImage(img, x, y, qrSize, qrSize);
-            
-            resolve();
-          } catch (error) {
-            reject(error);
-          }
-        };
-        img.onerror = () => reject(new Error("Failed to load image"));
-        img.src = `data:image/svg+xml;base64,${btoa(svgData)}`;
+  async function handleShareNative() {
+    await withBusy("share", async () => {
+      const ok = await shareViaWebShare({
+        title: `NBCard — ${profile.fullName}`,
+        text: `Here’s my contact card: ${shareUrl}`,
       });
+      if (!ok) {
+        const copied = await copyTextToClipboard(shareUrl);
+        toast.message("Share not available", { description: copied ? "Link copied instead." : "Copy the link manually." });
+      }
+    });
+  }
 
-      // Add footer
-      ctx.fillStyle = "#9ca3af";
-      ctx.font = "16px Arial";
-      ctx.fillText("NBCard - Digital Business Card", canvas.width / 2, 860);
+  async function handleDownloadVcard() {
+    await withBusy("vcard", async () => {
+      const vcard = generateProfileVCard(profile);
+      downloadBlob(new Blob([vcard], { type: "text/vcard" }), `${profile.fullName.replace(/\s+/g, "_")}_NBCard.vcf`);
+      toast.success("vCard downloaded");
+    });
+  }
 
-      // Convert to blob and download
-      await new Promise<void>((resolve, reject) => {
-        canvas.toBlob((blob) => {
-          if (!blob) {
-            reject(new Error("Failed to create blob"));
-            return;
-          }
-          try {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = `${profile?.fullName?.replace(/\s+/g, "_") ?? "profile"}_QR.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            resolve();
-          } catch (error) {
-            reject(error);
-          }
-        }, "image/png", 1.0);
+  async function handleShareVcardFile() {
+    await withBusy("vcard-share", async () => {
+      const vcard = generateProfileVCard(profile);
+      const blob = new Blob([vcard], { type: "text/vcard" });
+      const fileName = `${profile.fullName.replace(/\s+/g, "_")}.vcf`;
+      const ok = await shareViaWebShare({
+        title: `vCard — ${profile.fullName}`,
+        text: "Add me to your contacts.",
+        files: [new File([blob], fileName, { type: "text/vcard" })],
       });
+      if (ok) {
+        toast.success("Shared vCard");
+      } else {
+        downloadBlob(blob, fileName);
+        toast.message("Share not supported", { description: "vCard downloaded instead." });
+      }
+    });
+  }
 
-      setTimeout(() => {
-        alert("✅ Professional QR code downloaded successfully!");
-      }, 100);
-    } catch (error) {
-      console.error("QR download error:", error);
-      alert("❌ Failed to download QR code. Please try again.");
-    } finally {
-      setDownloadingQR(false);
-    }
-  };
+  async function handleDownloadPng() {
+    await withBusy("png", async () => {
+      const png = await captureProfileCardPng();
+      downloadBlob(png, `${profile.fullName.replace(/\s+/g, "_")}_NBCard.png`);
+      toast.success("PNG downloaded");
+    });
+  }
 
-  // Generate Professional PDF with 100% exact capture and clickable text overlays
-  const generatePDF = async () => {
-    setGenerating(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 100));
+  async function handleSharePng() {
+    await withBusy("png-share", async () => {
+      const png = await captureProfileCardPng();
+      const fileName = `${profile.fullName.replace(/\s+/g, "_")}.png`;
+      const ok = await shareViaWebShare({
+        title: `NBCard — ${profile.fullName}`,
+        files: [new File([png], fileName, { type: "image/png" })],
+      });
+      if (ok) {
+        toast.success("Shared image");
+      } else {
+        downloadBlob(png, `${profile.fullName.replace(/\s+/g, "_")}_NBCard.png`);
+        toast.message("Share not supported", { description: "Image downloaded instead." });
+      }
+    });
+  }
 
-      // Capture the profile card at maximum quality
-      const imageDataUrl = await captureProfileCard();
-
-      // Dynamically import jsPDF
-      const { default: jsPDF } = await import("jspdf");
-      
-      // Get the actual card element to calculate dimensions
-      const cardElement = document.getElementById("profile-card-capture");
-      if (!cardElement) {
-        throw new Error("Profile card not found");
+  async function handleDownloadPdf() {
+    await withBusy("pdf", async () => {
+      let qrPngUrl: string | undefined;
+      try {
+        const svg = document.getElementById("nbcard-qr-svg");
+        if (svg) {
+          const xml = new XMLSerializer().serializeToString(svg);
+          const svgDataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(xml)}`;
+          const pngBlob = await dataUrlToPngBlob(svgDataUrl);
+          qrPngUrl = URL.createObjectURL(pngBlob);
+        }
+      } catch {
+        // ignore
       }
 
-      // Get card dimensions
-      const cardRect = cardElement.getBoundingClientRect();
-      const aspectRatio = cardRect.height / cardRect.width;
-      
-      // Create PDF with optimal size for the card
-      const pdfWidth = 210; // A4 width in mm
-      const cardWidth = 180; // Card width in mm (leaving margins)
-      const cardHeight = cardWidth * aspectRatio;
-      const pdfHeight = cardHeight + 60; // Add space for margins and footer
-      
-      const pdf = new jsPDF({
-        orientation: cardHeight > cardWidth ? "portrait" : "portrait",
-        unit: "mm",
-        format: [pdfWidth, Math.max(pdfHeight, 297)], // Minimum A4 height
-      });
+      const pdfBytes = await createSimplePdf(profile, shareUrl, qrPngUrl);
+      if (qrPngUrl) URL.revokeObjectURL(qrPngUrl);
 
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
+      downloadBlob(new Blob([pdfBytes], { type: "application/pdf" }), `${profile.fullName.replace(/\s+/g, "_")}_NBCard.pdf`);
+      toast.success("PDF downloaded");
+    });
+  }
 
-      // Add subtle gradient background
-      pdf.setFillColor(249, 250, 251);
-      pdf.rect(0, 0, pageWidth, pageHeight, "F");
+  function openWhatsapp() {
+    const url = buildWhatsappUrl(`Here’s my contact card: ${shareUrl}`);
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
 
-      // Calculate card position (centered)
-      const cardX = (pageWidth - cardWidth) / 2;
-      const cardY = 30;
-      
-      // Add the 100% accurate captured image
-      pdf.addImage(imageDataUrl, "PNG", cardX, cardY, cardWidth, cardHeight, undefined, "FAST");
+  function openEmail() {
+    window.location.href = buildMailtoUrl(profile);
+  }
 
-      // Now overlay transparent clickable links on top of the image
-      // These positions are calculated based on the profile card layout
-      
-      // Calculate link positions (these correspond to where elements appear on the card)
+  function openSms() {
+    window.location.href = buildSmsUrl(profile);
+  }
+
+  async function handleExportContactsCsv() {
+    await withBusy("contacts-csv", async () => {
+      const csv = contactsToCsv(contacts);
+      downloadBlob(new Blob([csv], { type: "text/csv" }), `nbcard_contacts.csv`);
+      toast.success("Contacts CSV exported");
+    });
+  }
+
+  async function handleExportJson() {
+    await withBusy("json-export", async () => {
+      const json = await exportNbcardLocalState();
+      downloadBlob(new Blob([JSON.stringify(json, null, 2)], { type: "application/json" }), `nbcard_backup.json`);
+      toast.success("Backup exported");
+    });
+  }
+
+  async function handleImportJson(file: File) {
+    await withBusy("json-import", async () => {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      await importNbcardLocalState(parsed);
+      const next = await exportNbcardLocalState();
+      onSetProfiles(next.profiles);
+      onSetContacts(next.contacts);
+      toast.success("Backup imported");
+    });
+  }
+
+  async function handleResetProfiles() {
+    await withBusy("reset-profiles", async () => {
+      await resetNbcardProfiles();
+      toast.success("Profiles reset");
+      onSetProfiles(profiles.slice(0, 1));
+    });
+  }
+
+  async function handleResetContacts() {
+    await withBusy("reset-contacts", async () => {
+      await resetNbcardContacts();
+      onSetContacts([]);
+      toast.success("Contacts cleared");
+    });
+  }
+
+  return (
+    <div className="rounded-2xl border bg-card p-4 md:p-6">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h2 className="text-lg font-semibold">Share Your Profile</h2>
+          <p className="text-sm text-muted-foreground">Export as QR/PDF/vCard/image, or share via WhatsApp, email, or SMS.</p>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={handleCopyLink} disabled={!!busyKey}>
+            <LinkIcon className="mr-2 h-4 w-4" />
+            Copy Link
+          </Button>
+
+          <Button onClick={handleShareNative} disabled={!!busyKey}>
+            <Share2 className="mr-2 h-4 w-4" />
+            Share
+          </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" disabled={!!busyKey}>
+                <Download className="mr-2 h-4 w-4" />
+                Export
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Exports</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => setIsQrOpen(true)}>
+                <QrCode className="mr-2 h-4 w-4" />
+                QR Code
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDownloadPdf} disabled={!!busyKey}>
+                Download PDF
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDownloadPng} disabled={!!busyKey}>
+                Download PNG
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSharePng} disabled={!!busyKey}>
+                Share PNG
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDownloadVcard} disabled={!!busyKey}>
+                Download vCard
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleShareVcardFile} disabled={!!busyKey}>
+                Share vCard
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleExportContactsCsv} disabled={!!busyKey}>
+                Export contacts CSV
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setIsPrivacyOpen(true)}>Privacy & Storage</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Button variant="outline" onClick={openWhatsapp} disabled={!!busyKey}>
+            <MessageSquare className="mr-2 h-4 w-4" />
+            WhatsApp
+          </Button>
+          <Button variant="outline" onClick={openEmail} disabled={!!busyKey}>
+            <Mail className="mr-2 h-4 w-4" />
+            Email
+          </Button>
+          <Button variant="outline" onClick={openSms} disabled={!!busyKey}>
+            SMS
+          </Button>
+        </div>
+      </div>
+
+      <Dialog open={isQrOpen} onOpenChange={setIsQrOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>QR Code</DialogTitle>
+            <DialogDescription>Default encodes your profile link. Optionally encode a lightweight vCard.</DialogDescription>
+          </DialogHeader>
+
+          <div className="flex items-center justify-between rounded-lg border p-3">
+            <div className="text-sm">
+              <div className="font-medium">Encode vCard</div>
+              <div className="text-muted-foreground">If too large, we fall back to link.</div>
+            </div>
+            <Button
+              type="button"
+              variant={isQrVcard ? "default" : "outline"}
+              onClick={() => {
+                const next = !isQrVcard;
+                if (next) {
+                  const vcard = generateProfileVCard(profile);
+                  if (vcard.length > 1200) {
+                    toast.message("vCard too large for QR", { description: "Using link QR instead." });
+                    setIsQrVcard(false);
+                    return;
+                  }
+                }
+                setIsQrVcard(next);
+              }}
+            >
+              {isQrVcard ? "On" : "Off"}
+            </Button>
+          </div>
+
+          <div className="flex items-center justify-center rounded-xl border bg-muted/30 p-4">
+            <QRCodeSVG id="nbcard-qr-svg" value={qrValue} size={260} includeMargin level="M" />
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button type="button" variant="outline" onClick={handleCopyLink}>
+              Copy Link
+            </Button>
+            <Button
+              type="button"
+              onClick={async () => {
+                await withBusy("qr-png", async () => {
+                  const svg = document.getElementById("nbcard-qr-svg");
+                  if (!svg) throw new Error("QR not found");
+                  const xml = new XMLSerializer().serializeToString(svg);
+                  const svgDataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(xml)}`;
+                  const pngBlob = await dataUrlToPngBlob(svgDataUrl);
+                  downloadBlob(pngBlob, `${profile.fullName.replace(/\s+/g, "_")}_QR.png`);
+                  toast.success("QR downloaded");
+                });
+              }}
+              disabled={!!busyKey}
+            >
+              Download QR
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isPrivacyOpen} onOpenChange={setIsPrivacyOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Privacy & Data Controls</DialogTitle>
+            <DialogDescription>Your profiles and captured contacts are stored locally on this device.</DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-3">
+            <div className="rounded-lg border p-3">
+              <div className="text-sm font-medium">Backup</div>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <Button variant="outline" onClick={handleExportJson} disabled={!!busyKey}>
+                  Export JSON
+                </Button>
+                <label className="inline-flex">
+                  <input
+                    type="file"
+                    accept="application/json"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const f = e.target.files?.[0];
+                      if (!f) return;
+                      await handleImportJson(f);
+                      e.target.value = "";
+                    }}
+                  />
+                  <Button asChild variant="outline" disabled={!!busyKey}>
+                    <span>Import JSON</span>
+                  </Button>
+                </label>
+              </div>
+            </div>
+
+            <div className="rounded-lg border p-3">
+              <div className="text-sm font-medium">Reset</div>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <Button variant="destructive" onClick={handleResetProfiles} disabled={!!busyKey}>
+                  Reset Profiles
+                </Button>
+                <Button variant="destructive" onClick={handleResetContacts} disabled={!!busyKey}>
+                  Clear Contacts
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button type="button" onClick={() => setIsPrivacyOpen(false)}>
+              Done
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+/*
+ * Legacy share-buttons implementation kept temporarily for safety.
+ * It is fully commented out to avoid build/typecheck issues.
+ 
       const linkHeight = 8; // Height of clickable area
       const cardCenterX = cardX + (cardWidth / 2);
       
@@ -531,7 +768,7 @@ Shared via NBCard - Digital Business Card`;
     <div className="space-y-4">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Share Your Profile</h2>
 
-      {/* Sharing Options Grid */}
+      {/* Sharing Options Grid * /}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <button
           onClick={generateQRWithImage}
@@ -601,7 +838,7 @@ Shared via NBCard - Digital Business Card`;
         </button>
       </div>
 
-      {/* QR Code Modal */}
+      {/* QR Code Modal * /}
       {showQR && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowQR(false)}>
           <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
@@ -651,3 +888,5 @@ Shared via NBCard - Digital Business Card`;
     </div>
   );
 }
+
+*/
