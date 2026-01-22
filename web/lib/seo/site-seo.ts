@@ -6,7 +6,7 @@
  */
 
 import { Metadata } from 'next';
-import { SITE_URL } from './site-config';
+import { IS_PUBLIC_DEPLOYMENT, SITE_URL } from './site-config';
 
 export const SITE_CONFIG = {
   // Core brand identity
@@ -219,17 +219,22 @@ export const DEFAULT_METADATA: Metadata = {
     description: SITE_CONFIG.defaultDescription,
     images: [SITE_CONFIG.defaultOGImage],
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
+  robots: IS_PUBLIC_DEPLOYMENT
+    ? {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          'max-video-preview': -1,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
+        },
+      }
+    : {
+        index: false,
+        follow: false,
+      },
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },

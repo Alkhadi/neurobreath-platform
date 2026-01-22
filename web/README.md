@@ -309,6 +309,7 @@ Create a `.env` file in the project root with the following variables:
 |----------|----------|---------|---------|------------|
 | `DATABASE_URL` | ✅ Yes | `postgresql://postgres:postgres@localhost:5432/neurobreath` | PostgreSQL connection string | Prisma client (`lib/db.ts`) |
 | `ABACUSAI_API_KEY` | ✅ Yes | — | Abacus.AI API key for PageBuddy & AI Coach | `app/api/api-ai-chat-buddy/route.ts` |
+| `NEXT_PUBLIC_SITE_URL` | ✅ Yes (prod) | — | Canonical base URL for SEO + absolute metadata URLs | `lib/seo/site-config.ts` |
 | `NEXTAUTH_URL` | ⚠️ Recommended | `http://localhost:3000` | NextAuth base URL | NextAuth config |
 | `NEXTAUTH_SECRET` | ⚠️ Recommended | — | NextAuth JWT secret (generate with `openssl rand -base64 32`) | NextAuth config |
 | `NHS_API_KEY` | ❌ Optional | — | NHS API key for health data (not required for core features) | Legacy blog scripts |
@@ -318,6 +319,17 @@ Create a `.env` file in the project root with the following variables:
 | `AWS_FOLDER_PREFIX` | ❌ Optional | — | S3 folder prefix (e.g., `nbcard/`) | `lib/aws-config.ts` |
 | `NEXT_DIST_DIR` | ❌ Optional | `.next` | Custom Next.js build output directory | `next.config.js` |
 | `NEXT_OUTPUT_MODE` | ❌ Optional | — | Next.js output mode (`standalone`, etc.) | `next.config.js` |
+
+#### Vercel: Production vs Preview
+
+- **Production**: set `NEXT_PUBLIC_SITE_URL` to your real domain, e.g. `https://neurobreath.co.uk`.
+- **Preview deployments**: leave `NEXT_PUBLIC_SITE_URL` unset.
+   - Previews will automatically use Vercel-provided `VERCEL_URL` for `metadataBase`/canonical generation.
+   - Previews are forced to `noindex` by default to prevent preview domains being indexed.
+
+Notes:
+- `VERCEL_ENV` and `VERCEL_URL` are injected automatically by Vercel.
+- If you set `NEXT_PUBLIC_SITE_URL` at the project level for all environments, previews will still be `noindex`, but their canonical base will point at production.
 
 ### Security Warning
 

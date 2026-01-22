@@ -7,6 +7,7 @@
 import { Metadata } from 'next';
 import { SITE_CONFIG, generateCanonicalUrl, generatePageTitle } from './site-seo';
 import { getIndexingDecision } from './indexing-policy';
+import { IS_PUBLIC_DEPLOYMENT } from './site-config';
 
 export interface PageMetadataConfig {
   title: string;
@@ -44,7 +45,7 @@ export function generatePageMetadata(config: PageMetadataConfig): Metadata {
   
   const allKeywords = [...SITE_CONFIG.defaultKeywords, ...keywords];
 
-  const resolvedNoindex = noindex ?? !getIndexingDecision(path).index;
+  const resolvedNoindex = IS_PUBLIC_DEPLOYMENT ? (noindex ?? !getIndexingDecision(path).index) : true;
 
   return {
     title: fullTitle,

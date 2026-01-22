@@ -1,18 +1,38 @@
 'use client'
 
 /* eslint-disable jsx-a11y/aria-proptypes */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ChevronDown, Menu, X } from 'lucide-react'
 import { SITE_CONFIG } from '../lib/seo/site-seo'
 
+const REGION_COOKIE = 'nb_region'
+
+function getRegionPrefixFromCookie(): '/uk' | '/us' {
+  if (typeof document === 'undefined') return '/uk'
+  const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${REGION_COOKIE}=(uk|us)(?:;|$)`))
+  return match?.[1] === 'us' ? '/us' : '/uk'
+}
+
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null)
   const pathname = usePathname() || '/'
-  const regionPrefix = pathname.startsWith('/us') ? '/us' : '/uk'
+  const [regionPrefix, setRegionPrefix] = useState<'/uk' | '/us'>(pathname.startsWith('/us') ? '/us' : '/uk')
+
+  useEffect(() => {
+    if (pathname.startsWith('/us')) {
+      setRegionPrefix('/us')
+      return
+    }
+    if (pathname.startsWith('/uk')) {
+      setRegionPrefix('/uk')
+      return
+    }
+    setRegionPrefix(getRegionPrefixFromCookie())
+  }, [pathname])
 
   const toggleMegaMenu = (menuName: string) => {
     setActiveMegaMenu(activeMegaMenu === menuName ? null : menuName)

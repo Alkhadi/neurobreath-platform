@@ -7,14 +7,34 @@ import { RegionSwitcher } from '@/components/trust/RegionSwitcher'
 import { usePathname } from 'next/navigation'
 import { SITE_CONFIG } from '@/lib/seo/site-seo'
 
+const REGION_COOKIE = 'nb_region'
+
+function getRegionPrefixFromCookie(): '/uk' | '/us' {
+  if (typeof document === 'undefined') return '/uk'
+  const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${REGION_COOKIE}=(uk|us)(?:;|$)`))
+  return match?.[1] === 'us' ? '/us' : '/uk'
+}
+
 export function SiteFooter() {
   const [currentYear, setCurrentYear] = useState(2025)
   const pathname = usePathname() || '/'
-  const regionPrefix = pathname.startsWith('/us') ? '/us' : '/uk'
+  const [regionPrefix, setRegionPrefix] = useState<'/uk' | '/us'>(pathname.startsWith('/us') ? '/us' : '/uk')
 
   useEffect(() => {
     setCurrentYear(new Date().getFullYear())
   }, [])
+
+  useEffect(() => {
+    if (pathname.startsWith('/us')) {
+      setRegionPrefix('/us')
+      return
+    }
+    if (pathname.startsWith('/uk')) {
+      setRegionPrefix('/uk')
+      return
+    }
+    setRegionPrefix(getRegionPrefixFromCookie())
+  }, [pathname])
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
