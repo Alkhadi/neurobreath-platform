@@ -55,8 +55,21 @@ const Schema = z.object({
   subject: z.string().min(2).max(140),
   message: z.string().min(10).max(5000),
 
+  // Optional metadata
+  organization: z.preprocess(
+    (v) => (typeof v === "string" && v.trim().length === 0 ? undefined : v),
+    z.string().max(200).optional()
+  ),
+  phone: z.preprocess(
+    (v) => (typeof v === "string" && v.trim().length === 0 ? undefined : v),
+    z.string().max(50).optional()
+  ),
+
   // Honeypot (bots fill it)
-  company: z.string().optional(),
+  company: z.preprocess(
+    (v) => (typeof v === "string" && v.trim().length === 0 ? undefined : v),
+    z.string().max(200).optional()
+  ),
 
   // Turnstile token from client
   turnstileToken: z.string().min(10),
@@ -105,7 +118,7 @@ export async function POST(req: Request) {
       return Response.json({ ok: false, error: "Invalid form data" }, { status: 400 });
     }
 
-    const { name, email, subject, message, company, turnstileToken } = parsed.data;
+    const { name, email, subject, message, organization, phone, company, turnstileToken } = parsed.data;
 
     // Honeypot: silently accept, but do not send
     if (company && company.trim().length > 0) {
@@ -139,6 +152,8 @@ export async function POST(req: Request) {
         name,
         email,
         subject,
+        organization,
+        phone,
         message: message.substring(0, 100),
       });
       return Response.json({ ok: true, dev: true });
@@ -155,7 +170,13 @@ export async function POST(req: Request) {
       to,
       subject: `[Contact] ${subject}`,
       replyTo: email,
-      text: `Name: ${name}\nEmail: ${email}\nIP: ${ip}\n\n${message}`,
+      text:
+        `Name: ${name}\n` +
+        `Email: ${email}\n` +
+        (organization ? `Organisation: ${organization}\n` : "") +
+        (phone ? `Phone: ${phone}\n` : "") +
+        `IP: ${ip}\n\n` +
+        `${message}`,
     });
 
     if (adminSend.error) {

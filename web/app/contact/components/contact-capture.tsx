@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Contact } from "@/lib/utils";
 import { FaSave, FaTimes, FaTrash, FaDownload, FaUser, FaInstagram, FaFacebook, FaTiktok, FaLinkedin, FaTwitter, FaGlobe } from "react-icons/fa";
 
@@ -30,7 +30,7 @@ export function ContactCapture({ contacts, onSave, onDelete }: ContactCapturePro
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const contact: Contact = {
       ...newContact,

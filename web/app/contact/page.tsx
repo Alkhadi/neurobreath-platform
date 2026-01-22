@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Profile, Contact, defaultProfile } from "@/lib/utils";
 import { ProfileCard } from "./components/profile-card";
 import { ProfileManager } from "./components/profile-manager";
@@ -161,7 +161,7 @@ export default function ContactPage() {
 
   const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
-  const handleContactFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleContactFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!turnstileSiteKey) {
@@ -180,11 +180,16 @@ export default function ContactPage() {
     const formData = new FormData(e.currentTarget);
 
     const data = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      subject: formData.get("subject"),
-      message: formData.get("message"),
-      company: formData.get("company"),
+      name: String(formData.get("name") ?? ""),
+      email: String(formData.get("email") ?? ""),
+      subject: String(formData.get("subject") ?? ""),
+      message: String(formData.get("message") ?? ""),
+      organization: String(formData.get("organization") ?? ""),
+      phone: String(formData.get("phone") ?? ""),
+
+      // Honeypot (bots fill it)
+      company: String(formData.get("company") ?? ""),
+
       turnstileToken,
     };
 
@@ -275,6 +280,9 @@ export default function ContactPage() {
                   id="name"
                   name="name"
                   required
+                  minLength={2}
+                  maxLength={80}
+                  autoComplete="name"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="Moe Koroma"
                 />
@@ -288,10 +296,43 @@ export default function ContactPage() {
                   id="email"
                   name="email"
                   required
+                  maxLength={200}
+                  autoComplete="email"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="john@example.com"
                 />
               </div>
+
+              <div>
+                <label htmlFor="organization" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Organisation (optional)
+                </label>
+                <input
+                  type="text"
+                  id="organization"
+                  name="organization"
+                  maxLength={200}
+                  autoComplete="organization"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  placeholder="NeuroBreath"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Phone (optional)
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  maxLength={50}
+                  autoComplete="tel"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  placeholder="+44 7xxx xxxxxx"
+                />
+              </div>
+
               <div>
                 <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
                   Subject *
@@ -301,6 +342,9 @@ export default function ContactPage() {
                   id="subject"
                   name="subject"
                   required
+                  minLength={2}
+                  maxLength={140}
+                  autoComplete="off"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="How can we help?"
                 />
@@ -313,7 +357,10 @@ export default function ContactPage() {
                   id="message"
                   name="message"
                   required
+                  minLength={10}
+                  maxLength={5000}
                   rows={5}
+                  autoComplete="off"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all resize-none"
                   placeholder="Your message here..."
                 />
@@ -336,21 +383,31 @@ export default function ContactPage() {
                   </p>
                 )}
 
-                {contactSubmitStatus.state === "error" && contactSubmitStatus.message ? (
-                  <p className="text-sm text-red-600">{contactSubmitStatus.message}</p>
-                ) : null}
-                {contactSubmitStatus.state === "success" && contactSubmitStatus.message ? (
-                  <p className="text-sm text-green-700">{contactSubmitStatus.message}</p>
-                ) : null}
+                <div aria-live="polite" aria-atomic="true">
+                  {contactSubmitStatus.state === "error" && contactSubmitStatus.message ? (
+                    <p className="text-sm text-red-600">{contactSubmitStatus.message}</p>
+                  ) : null}
+                  {contactSubmitStatus.state === "success" && contactSubmitStatus.message ? (
+                    <p className="text-sm text-green-700">{contactSubmitStatus.message}</p>
+                  ) : null}
+                </div>
               </div>
 
               <button
                 type="submit"
-                disabled={contactSubmitStatus.state === "submitting" || !turnstileSiteKey}
+                disabled={
+                  contactSubmitStatus.state === "submitting" ||
+                  !turnstileSiteKey ||
+                  (turnstileSiteKey ? !turnstileToken : false)
+                }
                 className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 <FaEnvelope />
-                {contactSubmitStatus.state === "submitting" ? "Sending..." : "Send Message"}
+                {contactSubmitStatus.state === "submitting"
+                  ? "Sending..."
+                  : turnstileSiteKey && !turnstileToken
+                    ? "Complete verification to send"
+                    : "Send Message"}
               </button>
             </form>
 
