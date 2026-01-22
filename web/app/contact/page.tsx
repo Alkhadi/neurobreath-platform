@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { Profile, Contact, defaultProfile } from "@/lib/utils";
+import styles from "./contact.module.css";
 import { ProfileCard } from "./components/profile-card";
 import { ProfileManager } from "./components/profile-manager";
 import { ContactCapture } from "./components/contact-capture";
@@ -287,10 +288,7 @@ export default function ContactPage() {
             {/* Contact Form */}
             <form onSubmit={handleContactFormSubmit} className="space-y-4">
               {/* Honeypot field: bots often fill it, humans never see it */}
-              <div
-                className="absolute overflow-hidden"
-                style={{ left: "-10000px", top: "auto", width: "1px", height: "1px" }}
-              >
+              <div className={styles.honeypot}>
                 <label htmlFor="company">Company</label>
                 <input
                   id="company"
