@@ -19,6 +19,9 @@ out
 .logs
 *.tsbuildinfo
 
+# Avoid mixing package managers
+**/package-lock.json
+
 
 .env
 .env.*
