@@ -16,7 +16,7 @@ These test keys are guaranteed to work on all domains (including localhost).
 ### 2. **Email Service Not Configured Locally**
 **Problem**: Attempting to send real emails during local development failed due to missing proper configuration.
 
-**Solution**: 
+**Solution**:
 - Added `SKIP_EMAIL_SEND=true` to `.env.local` for development mode
 - When `NODE_ENV === "development"` and `SKIP_EMAIL_SEND === "true"`, the API logs contact data to console instead of sending real emails
 - This allows testing the full form flow without hitting Resend API limits

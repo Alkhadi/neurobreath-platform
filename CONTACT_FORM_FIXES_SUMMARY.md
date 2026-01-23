@@ -49,7 +49,7 @@ if (skipEmailInDev) {
 }
 ```
 
-**Impact**: 
+**Impact**:
 - Local testing no longer requires Resend API
 - Contact data is logged to console for inspection
 - Client sees: "Development mode - email not sent" message

@@ -31,7 +31,7 @@
    - `CONTACT_FROM` (sender identity)
    - `TURNSTILE_SECRET_KEY` (production key from Cloudflare)
    - `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (production key from Cloudflare)
-   
+
    **DO NOT set** `SKIP_EMAIL_SEND` on production
 
 2. [ ] Verify Turnstile domain setting in Cloudflare:
@@ -45,7 +45,7 @@
    ```
 
 ## Post-Deployment Testing (Live Site)
-1. [ ] Navigate to https://neurobreath.co.uk/contact
+1. [ ] Navigate to <https://neurobreath.co.uk/contact>
 2. [ ] Fill out contact form with test data
 3. [ ] Submit and verify success message
 4. [ ] Check support inbox for received email
