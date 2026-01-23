@@ -11,7 +11,7 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const webDir = path.resolve(__dirname, '..');
+const webDir = path.resolve(__dirname, '..', '..');
 const reportsDir = path.join(webDir, 'reports', 'perf');
 
 // Recommendation taxonomy

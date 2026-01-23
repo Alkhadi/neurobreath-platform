@@ -8,11 +8,13 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { PERFORMANCE_BUDGET } from '../perf/budgets.config.ts';
+import budgetsModule from '../../perf/budgets.config.ts';
+
+const PERFORMANCE_BUDGET = budgetsModule?.default ?? budgetsModule;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const webDir = path.resolve(__dirname, '..');
+const webDir = path.resolve(__dirname, '..', '..');
 const reportsDir = path.join(webDir, 'reports', 'perf');
 const baselineDir = path.join(webDir, 'perf', 'baseline');
 

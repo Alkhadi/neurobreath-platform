@@ -10,6 +10,10 @@ jobs:
   trust-check:
     name: Validate Route Governance
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
     
     steps:
       - name: Checkout code
@@ -19,13 +23,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: 'web/package-lock.json'
+          cache: 'yarn'
+          cache-dependency-path: web/yarn.lock
       
       - name: Install dependencies
         run: |
           cd web
-          npm ci
+          yarn install --frozen-lockfile
       
       - name: Install tsx (TypeScript executor)
         run: npm install -g tsx
@@ -57,10 +61,14 @@ jobs:
             Trust governance ensures NeuroBreath maintains credibility and accountability. All health-related content must be properly governed.
 
             See the [Actions log](${context.payload.pull_request.html_url}/checks) for details.`;
-            
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: body
-            });
+
+            try {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
+              });
+            } catch (err) {
+              core.warning(`Unable to comment on PR (likely permissions): ${err.message || err}`);
+            }

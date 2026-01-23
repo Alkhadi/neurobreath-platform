@@ -79,8 +79,8 @@ export const PERFORMANCE_BUDGET: PerformanceBudget = {
     { url: '/uk/guides', name: 'uk-guides', type: 'hub', priority: 'high' },
     { url: '/us/guides', name: 'us-guides', type: 'hub', priority: 'high' },
     
-    // Representative tool
-    { url: '/uk/tools/breathing-timer', name: 'uk-breathing-timer', type: 'tool', priority: 'high' },
+    // Representative tool (tool pages are not region-prefixed)
+    { url: '/tools/breath-tools', name: 'breath-tools', type: 'tool', priority: 'high' },
     
     // Trust centre
     { url: '/uk/trust', name: 'uk-trust', type: 'trust', priority: 'medium' },
