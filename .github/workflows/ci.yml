@@ -101,6 +101,8 @@ jobs:
     name: Web App - Content Quality Gate
     runs-on: ubuntu-latest
     needs: web-build
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres?schema=public
     defaults:
       run:
         working-directory: ./web
@@ -148,6 +150,8 @@ jobs:
     name: Web App - SEO Validation
     runs-on: ubuntu-latest
     needs: web-build
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres?schema=public
     defaults:
       run:
         working-directory: ./web
