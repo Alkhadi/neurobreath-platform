@@ -62,6 +62,7 @@ export function SiteFooter() {
                   priority={false}
                 />
               </span>
+              <span className="sr-only">NeuroBreath Home</span>
             </Link>
             <Link href="/support-us" className="btn" aria-label="Support NeuroBreath">
               <span aria-hidden="true">☕</span> Support Us
