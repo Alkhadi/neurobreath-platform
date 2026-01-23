@@ -549,18 +549,25 @@ export default function ContactPage() {
           <div>
             {/* Profile Card with Capture Wrapper */}
             <div className="mb-6">
-              <button
+              <div
                 id="profile-card-capture"
-                type="button"
                 className="cursor-pointer text-left w-full"
+                role="button"
+                tabIndex={0}
                 aria-label="Edit profile"
                 onClick={handleEditProfile}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleEditProfile();
+                  }
+                }}
               >
                 <ProfileCard profile={currentProfile} showEditButton onPhotoClick={(e) => {
                   e?.stopPropagation();
                   handleEditProfile();
                 }} />
-              </button>
+              </div>
             </div>
             <p className="text-center text-sm text-gray-600 mb-4">
               Click on the card to edit your profile

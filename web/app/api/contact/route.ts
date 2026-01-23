@@ -85,14 +85,26 @@ async function verifyTurnstile(token: string, ip: string) {
   form.set("response", token);
   if (ip && ip !== "0.0.0.0") form.set("remoteip", ip);
 
-  const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-    method: "POST",
-    headers: { "content-type": "application/x-www-form-urlencoded" },
-    body: form.toString(),
-  });
+  try {
+    const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: form.toString(),
+    });
 
-  const data = (await res.json().catch(() => null)) as TurnstileVerifyResponse | null;
-  return { ok: !!data?.success, data } as const;
+    const data = (await res.json().catch(() => null)) as TurnstileVerifyResponse | null;
+    
+    if (!data?.success) {
+      const errorCodes = data?.["error-codes"]?.join(", ") || "Unknown error";
+      console.warn("Turnstile verification failed:", { errorCodes, token: token.substring(0, 10) });
+      return { ok: false, error: errorCodes, data } as const;
+    }
+
+    return { ok: true, data } as const;
+  } catch (err) {
+    console.error("Turnstile verification network error:", err);
+    return { ok: false, error: "Verification service unreachable" } as const;
+  }
 }
 
 export function GET() {
@@ -151,8 +163,22 @@ export async function POST(req: Request) {
           { status: 500 }
         );
       }
+      
+      // Check for common Turnstile error codes
+      const errorStr = turnstile.error?.toLowerCase() || "";
+      let userMessage = "Verification failed. Please try again.";
+      
+      if (errorStr.includes("domain")) {
+        userMessage = "The contact form is not properly configured for this domain. Please try again later or contact support.";
+      } else if (errorStr.includes("timeout")) {
+        userMessage = "Verification timed out. Please try again.";
+      } else if (errorStr.includes("invalid")) {
+        userMessage = "Verification token is invalid. Please refresh the page and try again.";
+      }
+      
+      console.warn("Turnstile verification error:", { errorStr, ip });
       return Response.json(
-        { ok: false, error: "Verification failed. Please try again." },
+        { ok: false, error: userMessage },
         { status: 400 }
       );
     }
@@ -201,14 +227,25 @@ export async function POST(req: Request) {
       
       // Provide user-friendly error messages based on common Resend errors
       let userMessage = "Email send failed. ";
+      const errorMsg = (adminSend.error.message || "").toLowerCase();
       
-      if (adminSend.error.message?.includes("domain") || adminSend.error.message?.includes("verify")) {
-        userMessage += "The email service is not properly configured. Please contact support.";
-      } else if (adminSend.error.message?.includes("API key")) {
-        userMessage += "Email service authentication failed. Please contact support.";
+      if (errorMsg.includes("domain")) {
+        userMessage = "Email service domain is not verified. Please contact support (domain error).";
+      } else if (errorMsg.includes("verify") || errorMsg.includes("verification")) {
+        userMessage = "Email service is not properly verified. Please contact support (verification error).";
+      } else if (errorMsg.includes("api key") || errorMsg.includes("authentication")) {
+        userMessage = "Email service authentication failed. Please contact support (API error).";
+      } else if (errorMsg.includes("invalid email") || errorMsg.includes("invalid_email")) {
+        userMessage = "The recipient email address is invalid. Please contact support.";
+      } else if (errorMsg.includes("rate limit") || errorMsg.includes("429")) {
+        userMessage = "Too many emails sent. Please try again in a few minutes.";
+      } else if (adminSend.error.message) {
+        userMessage += adminSend.error.message;
       } else {
-        userMessage += adminSend.error.message || "Please try again later.";
+        userMessage += "Please try again later.";
       }
+      
+      console.error("Mapped error message:", { original: adminSend.error.message, mapped: userMessage });
       
       return Response.json(
         { 
@@ -222,21 +259,48 @@ export async function POST(req: Request) {
     console.log("Admin email sent successfully:", adminSend.data?.id);
 
     // 2) Auto-responder to the user (best-effort)
-    await resend.emails.send({
-      from,
-      to: email,
-      subject: "We received your message — NeuroBreath",
-      text:
-        `Hello ${name},\n\n` +
-        `Thank you for contacting NeuroBreath. We have received your message and will reply as soon as possible.\n\n` +
-        `Your subject: ${subject}\n\n` +
-        `Kind regards,\nNeuroBreath Support`,
-    });
+    try {
+      await resend.emails.send({
+        from,
+        to: email,
+        subject: "We received your message — NeuroBreath",
+        text:
+          `Hello ${name},\n\n` +
+          `Thank you for contacting NeuroBreath. We have received your message and will reply as soon as possible.\n\n` +
+          `Your subject: ${subject}\n\n` +
+          `Kind regards,\nNeuroBreath Support`,
+      });
+    } catch (err) {
+      // Auto-responder failure is not critical; log but continue
+      console.warn("Auto-responder email failed (non-critical):", err instanceof Error ? err.message : err);
+    }
 
     return Response.json({ ok: true });
   } catch (err) {
     console.error("Contact form error:", err);
-    const errorMessage = err instanceof Error ? err.message : "Server error";
-    return Response.json({ ok: false, error: errorMessage }, { status: 500 });
+    
+    // Provide helpful error messages based on error type
+    let userMessage = "An unexpected error occurred. ";
+    
+    if (err instanceof Error) {
+      const msg = err.message.toLowerCase();
+      if (msg.includes("fetch") || msg.includes("network")) {
+        userMessage += "Network error. Please try again.";
+      } else if (msg.includes("json")) {
+        userMessage += "Invalid response from server. Please try again.";
+      } else {
+        userMessage += err.message;
+      }
+    } else {
+      userMessage += "Please try again later.";
+    }
+    
+    return Response.json(
+      { 
+        ok: false, 
+        error: userMessage 
+      }, 
+      { status: 500 }
+    );
   }
 }
