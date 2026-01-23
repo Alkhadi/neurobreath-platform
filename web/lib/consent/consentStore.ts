@@ -142,7 +142,11 @@ function writeConsentToCookie(state: ConsentState): void {
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + CONSENT_EXPIRY_DAYS);
     
-    document.cookie = `${CONSENT_COOKIE_NAME}=${encoded}; path=/; expires=${expiryDate.toUTCString()}; SameSite=Lax; Secure`;
+    // Only add Secure flag if on HTTPS
+    const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+    const secureFlag = isHttps ? '; Secure' : '';
+    
+    document.cookie = `${CONSENT_COOKIE_NAME}=${encoded}; path=/; expires=${expiryDate.toUTCString()}; SameSite=Lax${secureFlag}`;
   } catch (err) {
     console.error('[Consent] Failed to write to cookie:', err);
   }
