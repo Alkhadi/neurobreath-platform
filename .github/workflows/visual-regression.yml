@@ -55,7 +55,6 @@ jobs:
       
       - name: Run visual regression tests
         run: yarn test:visual
-        continue-on-error: true
         env:
           CI: true
       

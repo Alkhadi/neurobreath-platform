@@ -10,15 +10,26 @@ export interface SitemapUrlEntry {
 
 const SORTER = new Intl.Collator('en', { sensitivity: 'base' });
 
-const LOCALIZED_PREFIXES = ['/', '/trust', '/guides', '/help-me-choose', '/glossary', '/printables', '/journeys', '/about', '/editorial'];
+const normalisePath = (pathname: string): string => {
+  const withLeadingSlash = pathname.startsWith('/') ? pathname : `/${pathname}`;
+  if (withLeadingSlash !== '/' && withLeadingSlash.endsWith('/')) {
+    return withLeadingSlash.replace(/\/+$/, '');
+  }
+  return withLeadingSlash;
+};
+
+const GLOBAL_EXCLUDED_PATHS = new Set([
+  '/trust/editorial-policy',
+  '/trust/sources',
+]);
+
+function isGlobalExcluded(path: string): boolean {
+  const cleaned = stripLocale(path);
+  return GLOBAL_EXCLUDED_PATHS.has(cleaned);
+}
 
 function stripLocale(pathname: string): string {
   return pathname.replace(/^\/(uk|us)(?=\/|$)/, '') || '/';
-}
-
-function isLocalizedRoute(pathname: string): boolean {
-  const cleaned = stripLocale(pathname);
-  return LOCALIZED_PREFIXES.some(prefix => cleaned === prefix || cleaned.startsWith(`${prefix}/`));
 }
 
 function withLocale(pathname: string, locale: LocaleKey): string {
@@ -30,23 +41,35 @@ function withLocale(pathname: string, locale: LocaleKey): string {
 export async function buildLocaleSitemap(locale: LocaleKey) {
   const { routes, missingFixtures } = await loadRouteInventory();
   const indexableRoutes = routes.flatMap(route => {
-    if (!route.isDynamic) return [{ path: route.url, filePath: route.filePath }];
-    return expandRoutePattern(route.pattern).map(pathname => ({ path: pathname, filePath: route.filePath }));
+    const paths = route.isDynamic ? expandRoutePattern(route.pattern) : [route.url];
+    return paths.map(pathname => ({
+      path: normalisePath(pathname),
+      filePath: route.filePath,
+      hasRegionParam: route.pattern.includes(':region'),
+      pattern: route.pattern,
+    }));
   });
 
   const entries: SitemapUrlEntry[] = [];
+  const seen = new Set<string>();
 
   for (const route of indexableRoutes) {
     const cleaned = stripLocale(route.path);
-    if (!isSitemapAllowed(cleaned)) continue;
+    if (cleaned.includes(':')) continue;
+    if (isGlobalExcluded(cleaned)) continue;
 
-    const localePath = isLocalizedRoute(cleaned) ? withLocale(cleaned, locale) : cleaned;
+    const targetPath = route.hasRegionParam ? withLocale(cleaned, locale) : cleaned;
+    if (!isSitemapAllowed(targetPath)) continue;
+    if (seen.has(targetPath)) continue;
+
     const lastModified = await resolveLastmod(cleaned, route.filePath);
 
     entries.push({
-      url: `${SITE_URL}${localePath}`,
+      url: `${SITE_URL}${targetPath}`,
       ...(lastModified ? { lastModified } : {}),
     });
+
+    seen.add(targetPath);
   }
 
   entries.sort((a, b) => SORTER.compare(a.url, b.url));

@@ -4,6 +4,7 @@ import { getToken } from 'next-auth/jwt'
 
 const REGION_COOKIE = 'nb_region'
 const EXCLUDED_PREFIXES = ['/api', '/_next', '/favicon', '/robots', '/sitemap', '/assets', '/images']
+const REGION_LOCALISED_PREFIXES = ['/', '/trust', '/help-me-choose', '/glossary', '/printables', '/journeys', '/about', '/editorial', '/conditions']
 
 const AUTH_PROTECTED_PATHS = ['/uk/my-account', '/uk/change-password']
 
@@ -63,8 +64,8 @@ export async function middleware(request: NextRequest) {
   }
 
   if (!isExcluded(pathname) && !pathname.startsWith('/uk') && !pathname.startsWith('/us')) {
-    const isLocalizedSection = pathname === '/' || pathname.startsWith('/trust') || pathname.startsWith('/guides')
-    if (isLocalizedSection) {
+    const shouldLocalize = REGION_LOCALISED_PREFIXES.some(prefix => pathname === prefix || pathname.startsWith(`${prefix}/`))
+    if (shouldLocalize) {
       const region = detectRegion(request)
       const redirectUrl = request.nextUrl.clone()
       redirectUrl.pathname = `/${region}${pathname === '/' ? '' : pathname}`
