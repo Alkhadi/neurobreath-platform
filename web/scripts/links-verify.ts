@@ -4,6 +4,7 @@ import path from 'node:path'
 import { chromium } from '@playwright/test'
 
 import { expandRoutePattern, loadRouteInventory } from '@/lib/seo/route-registry'
+import { withLocalServer } from './utils/local-server'
 
 type LinkCheck = {
   url: string
@@ -55,25 +56,22 @@ function uniq<T>(items: T[]): T[] {
   return Array.from(new Set(items))
 }
 
-function normalizeInternalPath(href: string): string | null {
+function normalizeInternalPath(href: string, baseURL: string): string | null {
   if (!href) return null
   const trimmed = href.trim()
   if (!trimmed) return null
   if (trimmed === '#') return '#'
 
-  // Absolute URL pointing at same origin still counts
   try {
-    const asUrl = new URL(trimmed, DEFAULT_BASE_URL)
-    if (asUrl.origin !== new URL(DEFAULT_BASE_URL).origin) {
-      return null
-    }
+    const asUrl = new URL(trimmed, baseURL)
+    if (asUrl.origin !== new URL(baseURL).origin) return null
     return asUrl.pathname + asUrl.search + asUrl.hash
   } catch {
     return null
   }
 }
 
-async function checkUrl(url: string, timeoutMs = 12_000): Promise<LinkCheck> {
+async function checkUrl(url: string, timeoutMs = 30_000): Promise<LinkCheck> {
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
 
@@ -110,7 +108,7 @@ async function discoverInternalLinksFromDom(baseURL: string): Promise<{ links: s
     const hrefs = await page.$$eval('a[href]', (els) => els.map((a) => (a as HTMLAnchorElement).getAttribute('href') || ''))
 
     for (const raw of hrefs) {
-      const normalized = normalizeInternalPath(raw)
+      const normalized = normalizeInternalPath(raw, baseURL)
       if (!normalized) continue
       if (normalized === '#') {
         invalidHrefs.push(raw)
@@ -166,8 +164,7 @@ async function getInternalUrlsFromRouteInventory(): Promise<{ urls: string[]; to
   return { urls: uniq(out), total: routes.length, expanded }
 }
 
-async function main() {
-  const baseURL = (process.env.BASE_URL || DEFAULT_BASE_URL).replace(/\/$/, '')
+async function verifyLinks(baseURL: string) {
   const startedAt = new Date().toISOString()
 
   const [{ urls: inventoryUrls, total: inventoryTotal, expanded: inventoryExpanded }, dom] = await Promise.all([
@@ -184,14 +181,14 @@ async function main() {
     '/robots.txt',
     '/sitemap.xml',
   ])
-    .filter((p) => p.startsWith('/'))
-    .filter((p) => !p.includes(':'))
+    .filter((p: string) => p.startsWith('/'))
+    .filter((p: string) => !p.includes(':'))
 
   // Basic concurrency without extra deps
   const checks: LinkCheck[] = []
   const failures: LinkCheck[] = []
-  const queue = internalPaths.map((p) => `${baseURL}${p}`)
-  const CONCURRENCY = 8
+  const queue = internalPaths.map((p: string) => `${baseURL}${p}`)
+  const CONCURRENCY = 4
 
   let idx = 0
   async function worker() {
@@ -248,6 +245,12 @@ async function main() {
     }
     process.exit(1)
   }
+}
+
+async function main() {
+  await withLocalServer(async (resolvedBaseURL) => {
+    await verifyLinks(resolvedBaseURL)
+  })
 }
 
 main().catch((err) => {

@@ -5,6 +5,8 @@ import lighthouse from 'lighthouse'
 import type { Config, Flags } from 'lighthouse'
 import * as chromeLauncher from 'chrome-launcher'
 
+import { withLocalServer } from './utils/local-server'
+
 const DEFAULT_BASE_URL = 'http://localhost:3000'
 
 const PAGES = [
@@ -72,60 +74,60 @@ async function runOnce(url: string, profile: Profile) {
 }
 
 async function main() {
-  const baseURL = (process.env.BASE_URL || DEFAULT_BASE_URL).replace(/\/$/, '')
+  await withLocalServer(async (baseURL) => {
+    const outDir = path.resolve(process.cwd(), 'reports', 'lighthouse')
+    await fs.mkdir(outDir, { recursive: true })
 
-  const outDir = path.resolve(process.cwd(), 'reports', 'lighthouse')
-  await fs.mkdir(outDir, { recursive: true })
+    const summary: Array<{
+      profile: Profile
+      page: string
+      url: string
+      performance: number
+      accessibility: number
+      bestPractices: number
+      seo: number
+      html: string
+      json: string
+    }> = []
 
-  const summary: Array<{
-    profile: Profile
-    page: string
-    url: string
-    performance: number
-    accessibility: number
-    bestPractices: number
-    seo: number
-    html: string
-    json: string
-  }> = []
+    for (const profile of ['mobile', 'desktop'] as const) {
+      const profileDir = path.join(outDir, profile)
+      await fs.mkdir(profileDir, { recursive: true })
 
-  for (const profile of ['mobile', 'desktop'] as const) {
-    const profileDir = path.join(outDir, profile)
-    await fs.mkdir(profileDir, { recursive: true })
+      for (const page of PAGES) {
+        const url = `${baseURL}${page.path}`
+        // eslint-disable-next-line no-console
+        console.log(`[perf:lighthouse] ${profile} ${url}`)
 
-    for (const page of PAGES) {
-      const url = `${baseURL}${page.path}`
-      // eslint-disable-next-line no-console
-      console.log(`[perf:lighthouse] ${profile} ${url}`)
+        const { lhr, reportJson, reportHtml } = await runOnce(url, profile)
 
-      const { lhr, reportJson, reportHtml } = await runOnce(url, profile)
+        const baseName = `${slugify(page.name)}__${slugify(page.path === '/' ? 'root' : page.path)}`
+        const jsonPath = path.join(profileDir, `${baseName}.json`)
+        const htmlPath = path.join(profileDir, `${baseName}.html`)
 
-      const baseName = `${slugify(page.name)}__${slugify(page.path === '/' ? 'root' : page.path)}`
-      const jsonPath = path.join(profileDir, `${baseName}.json`)
-      const htmlPath = path.join(profileDir, `${baseName}.html`)
+        await fs.writeFile(jsonPath, reportJson, 'utf8')
+        await fs.writeFile(htmlPath, reportHtml, 'utf8')
 
-      await fs.writeFile(jsonPath, reportJson, 'utf8')
-      await fs.writeFile(htmlPath, reportHtml, 'utf8')
-
-      summary.push({
-        profile,
-        page: page.path,
-        url,
-        performance: Math.round((lhr.categories.performance?.score ?? 0) * 100),
-        accessibility: Math.round((lhr.categories.accessibility?.score ?? 0) * 100),
-        bestPractices: Math.round((lhr.categories['best-practices']?.score ?? 0) * 100),
-        seo: Math.round((lhr.categories.seo?.score ?? 0) * 100),
-        html: path.relative(process.cwd(), htmlPath),
-        json: path.relative(process.cwd(), jsonPath),
-      })
+        summary.push({
+          profile,
+          page: page.path,
+          url,
+          performance: Math.round((lhr.categories.performance?.score ?? 0) * 100),
+          accessibility: Math.round((lhr.categories.accessibility?.score ?? 0) * 100),
+          bestPractices: Math.round((lhr.categories['best-practices']?.score ?? 0) * 100),
+          seo: Math.round((lhr.categories.seo?.score ?? 0) * 100),
+          html: path.relative(process.cwd(), htmlPath),
+          json: path.relative(process.cwd(), jsonPath),
+        })
+      }
     }
-  }
 
-  const summaryPath = path.join(outDir, 'summary.json')
-  await fs.writeFile(summaryPath, JSON.stringify({ generatedAt: new Date().toISOString(), baseURL, summary }, null, 2) + '\n', 'utf8')
+    const summaryPath = path.join(outDir, 'summary.json')
+    await fs.writeFile(summaryPath, JSON.stringify({ generatedAt: new Date().toISOString(), baseURL, summary }, null, 2) + '\n', 'utf8')
 
-  // eslint-disable-next-line no-console
-  console.log(`[perf:lighthouse] Done. Summary: reports/lighthouse/summary.json`)
+    // eslint-disable-next-line no-console
+    console.log(`[perf:lighthouse] Done. Summary: reports/lighthouse/summary.json`)
+  })
 }
 
 main().catch((err) => {

@@ -69,7 +69,8 @@
     "evidence:ingest": "tsx scripts/ingest-evidence.ts",
     "links:verify": "tsx scripts/links-verify.ts",
     "responsive:scan": "tsx scripts/responsive-scan.ts",
-    "perf:lighthouse": "tsx scripts/lighthouse-run.ts"
+    "perf:lighthouse": "tsx scripts/lighthouse-run.ts",
+    "nav:validate": "tsx scripts/nav-validate.ts"
   },
   "devDependencies": {
     "@next/swc-wasm-nodejs": "13.5.1",

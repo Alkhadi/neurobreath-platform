@@ -201,8 +201,12 @@ export function SiteHeader() {
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null)
   const [userEmail, setUserEmail] = useState<string | null>(null)
   const [isSigningOut, setIsSigningOut] = useState(false)
+  const navRef = useRef<HTMLElement | null>(null)
+  const mobileToggleRef = useRef<HTMLButtonElement | null>(null)
+  const mobileClosingRef = useRef(false)
   const pathname = usePathname() || '/'
   const [regionPrefix, setRegionPrefix] = useState<'/uk' | '/us'>(pathname.startsWith('/us') ? '/us' : '/uk')
+  const isMobile = useMediaQuery('(max-width: 1024px)')
 
   useEffect(() => {
     if (pathname.startsWith('/us')) {
@@ -221,6 +225,98 @@ export function SiteHeader() {
     setActiveMegaMenu(null)
     setMobileMenuOpen(false)
   }, [pathname])
+
+  // Mobile drawer: trap focus, ESC-close, and scroll-lock
+  useEffect(() => {
+    if (typeof document === 'undefined') return
+    if (!isMobile) return
+    if (!mobileMenuOpen) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    const getFocusable = () => {
+      const nav = navRef.current
+      if (!nav) return [] as HTMLElement[]
+
+      const focusables = Array.from(
+        nav.querySelectorAll<HTMLElement>(
+          'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
+        )
+      )
+
+      return focusables.filter((el) => {
+        const style = window.getComputedStyle(el)
+        if (style.visibility === 'hidden' || style.display === 'none') return false
+        return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length)
+      })
+    }
+
+    const focusFirst = () => {
+      const focusables = getFocusable()
+      focusables[0]?.focus()
+    }
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        mobileClosingRef.current = true
+        setActiveMegaMenu(null)
+        setMobileMenuOpen(false)
+        requestAnimationFrame(() => {
+          mobileToggleRef.current?.focus()
+          mobileClosingRef.current = false
+        })
+        return
+      }
+
+      if (e.key !== 'Tab') return
+
+      const nav = navRef.current
+      const focusables = getFocusable()
+
+      if (!nav || focusables.length === 0) {
+        e.preventDefault()
+        return
+      }
+
+      const first = focusables[0]
+      const last = focusables[focusables.length - 1]
+      const active = document.activeElement as HTMLElement | null
+
+      if (e.shiftKey) {
+        if (!active || !nav.contains(active) || active === first) {
+          e.preventDefault()
+          last.focus()
+        }
+        return
+      }
+
+      if (active === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    const onFocusIn = (e: FocusEvent) => {
+      if (mobileClosingRef.current) return
+      const nav = navRef.current
+      if (!nav) return
+      const target = e.target as Node | null
+      if (target && nav.contains(target)) return
+      focusFirst()
+    }
+
+    document.addEventListener('keydown', onKeyDown, true)
+    document.addEventListener('focusin', onFocusIn, true)
+    requestAnimationFrame(() => focusFirst())
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener('keydown', onKeyDown, true)
+      document.removeEventListener('focusin', onFocusIn, true)
+    }
+  }, [isMobile, mobileMenuOpen])
 
   // Check auth status on mount
   useEffect(() => {
@@ -265,6 +361,7 @@ export function SiteHeader() {
 
         {/* Mobile Menu Toggle */}
         <button
+          ref={mobileToggleRef}
           type="button"
           className="nb-mobile-toggle"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -276,6 +373,7 @@ export function SiteHeader() {
 
         {/* Main Navigation */}
         <nav 
+          ref={navRef}
           className={`nb-main-nav ${mobileMenuOpen ? 'nb-main-nav--open' : ''}`}
           id="mainNav" 
           role="navigation" 

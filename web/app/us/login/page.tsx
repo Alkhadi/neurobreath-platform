@@ -102,11 +102,11 @@ function MicrosoftIcon({ className }: { className?: string }) {
   );
 }
 
-export default function UkLoginPage() {
+export default function UsLoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const callbackUrl = searchParams.get('callbackUrl') || '/uk/my-account';
+  const callbackUrl = searchParams.get('callbackUrl') || '/us/my-account';
   const error = searchParams.get('error');
 
   const [step, setStep] = useState<Step>('credentials');
@@ -324,7 +324,7 @@ export default function UkLoginPage() {
                   Account temporarily locked. Try again in{' '}
                   <span className="font-mono font-semibold">{formatCountdown(countdown)}</span>
                   {' '}or{' '}
-                  <Link href="/uk/password-reset" className="underline font-medium">
+                  <Link href="/us/password-reset" className="underline font-medium">
                     reset your password
                   </Link>
                   .
@@ -451,7 +451,7 @@ export default function UkLoginPage() {
                     <div className="flex items-center justify-between">
                       <Label htmlFor="password">Password</Label>
                       <Link
-                        href="/uk/password-reset"
+                        href="/us/password-reset"
                         className="text-xs text-muted-foreground hover:text-primary transition-colors"
                         tabIndex={-1}
                       >
@@ -585,7 +585,7 @@ export default function UkLoginPage() {
                   type="button"
                   variant="secondary"
                   className="w-full"
-                  onClick={() => router.push('/uk/register')}
+                  onClick={() => router.push('/us/register')}
                   disabled={loading}
                 >
                   Create a free account
@@ -635,7 +635,7 @@ export default function UkLoginPage() {
                   </div>
                   <p className="text-xs text-muted-foreground text-center mt-2">
                     Can't access your authenticator?{' '}
-                    <Link href="/uk/password-reset" className="underline hover:text-primary">
+                    <Link href="/us/password-reset" className="underline hover:text-primary">
                       Use a recovery code
                     </Link>
                   </p>
