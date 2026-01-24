@@ -10,10 +10,16 @@ export function CookieConsentBanner() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    // Debug logging to help troubleshoot
+    console.log('[CookieConsentBanner] hasSavedConsent:', hasSavedConsent);
+    
     // Show banner only if consent not yet saved
     if (!hasSavedConsent) {
       // Delay slightly for better UX (avoid flash on page load)
-      const timer = setTimeout(() => setIsVisible(true), 500);
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+        console.log('[CookieConsentBanner] Banner now visible');
+      }, 500);
       return () => clearTimeout(timer);
     }
   }, [hasSavedConsent]);

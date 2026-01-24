@@ -12,8 +12,13 @@ export function useConsent() {
 
   useEffect(() => {
     // Update state on mount (SSR hydration)
-    setConsent(getConsent());
-    setHasSavedConsent(hasConsent());
+    const currentConsent = getConsent();
+    const hasExistingConsent = hasConsent();
+    
+    console.log('[useConsent] Initial state:', { hasExistingConsent, currentConsent });
+    
+    setConsent(currentConsent);
+    setHasSavedConsent(hasExistingConsent);
 
     // Listen for consent changes
     const handleConsentChange = (event: Event) => {

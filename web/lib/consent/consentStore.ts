@@ -49,11 +49,18 @@ export function hasConsent(): boolean {
   
   // Check cookie first
   const cookieConsent = readConsentFromCookie();
-  if (cookieConsent) return true;
+  if (cookieConsent) {
+    console.log('[hasConsent] Found consent in cookie');
+    return true;
+  }
   
   // Fallback to localStorage
   const storageConsent = readConsentFromStorage();
-  return storageConsent !== null;
+  const result = storageConsent !== null;
+  
+  console.log('[hasConsent] Result:', { hasCookie: false, hasStorage: result, overall: result });
+  
+  return result;
 }
 
 /**
@@ -146,9 +153,16 @@ function writeConsentToCookie(state: ConsentState): void {
     const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
     const secureFlag = isHttps ? '; Secure' : '';
     
-    document.cookie = `${CONSENT_COOKIE_NAME}=${encoded}; path=/; expires=${expiryDate.toUTCString()}; SameSite=Lax${secureFlag}`;
+    const cookieString = `${CONSENT_COOKIE_NAME}=${encoded}; path=/; expires=${expiryDate.toUTCString()}; SameSite=Lax${secureFlag}`;
+    document.cookie = cookieString;
+    
+    // Verify cookie was written (for debugging)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[Consent] Cookie written:', { isHttps, secureFlag, success: document.cookie.includes(CONSENT_COOKIE_NAME) });
+    }
   } catch (err) {
     console.error('[Consent] Failed to write to cookie:', err);
+    // Cookie write failed, localStorage will be the fallback
   }
 }
 
