@@ -38,6 +38,23 @@ async function main() {
   const browser = await chromium.launch()
   const page = await browser.newPage({ baseURL })
 
+  await page.addInitScript(() => {
+    try {
+      window.localStorage.setItem(
+        'nb_consent_prefs',
+        JSON.stringify({
+          essential: true,
+          functional: true,
+          analytics: false,
+          timestamp: Date.now(),
+          version: '1.0',
+        })
+      )
+    } catch {
+      // ignore
+    }
+  })
+
   const results: ScanResult[] = []
 
   try {

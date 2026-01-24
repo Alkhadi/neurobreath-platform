@@ -465,6 +465,10 @@ Outputs:
 - `web/reports/links-verification.json`
 - `web/reports/lighthouse/` (HTML/JSON + `summary.json`)
 
+Runbook:
+
+- `web/QA_RELIABILITY_CHECKLIST.md`
+
 ### Manual Testing Checklist
 
 **Core Flows:**
@@ -490,22 +494,18 @@ Outputs:
 
 ### Automated Testing
 
-**TODO:** No automated test suite detected in `package.json` scripts.
+This repo uses Playwright E2E tests:
 
-Recommended setup:
-- **Unit Tests:** Vitest or Jest
-- **Component Tests:** React Testing Library
-- **E2E Tests:** Playwright or Cypress
-- **API Tests:** Supertest
+- `yarn test:e2e` — default cross-browser suite (chromium + firefox + webkit)
+- `yarn test:e2e tests/buddy.spec.ts` — fast, high-signal smoke for Buddy
+- `yarn test:e2e tests/responsive.spec.ts` — overflow + Tesla mega-menu regression
 
-Example test structure:
-```bash
-web/
-├── __tests__/
-│   ├── unit/
-│   ├── integration/
-│   └── e2e/
-```
+Visual regression is intentionally separate to keep baseline management sane:
+
+- `yarn test:visual` — visual suite (dedicated config)
+- `yarn test:visual:update` — update snapshots intentionally
+
+See `web/tests/` and `web/playwright.config.visual.ts`.
 
 ---
 

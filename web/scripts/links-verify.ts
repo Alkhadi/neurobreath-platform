@@ -32,6 +32,25 @@ const DEFAULT_BASE_URL = 'http://localhost:3000'
 
 const NAV_DISCOVERY_PAGES = ['/', '/settings']
 
+function applyConsentSeed(page: import('@playwright/test').Page) {
+  return page.addInitScript(() => {
+    try {
+      window.localStorage.setItem(
+        'nb_consent_prefs',
+        JSON.stringify({
+          essential: true,
+          functional: true,
+          analytics: false,
+          timestamp: Date.now(),
+          version: '1.0',
+        })
+      )
+    } catch {
+      // ignore
+    }
+  })
+}
+
 function uniq<T>(items: T[]): T[] {
   return Array.from(new Set(items))
 }
@@ -81,6 +100,8 @@ async function checkUrl(url: string, timeoutMs = 12_000): Promise<LinkCheck> {
 async function discoverInternalLinksFromDom(baseURL: string): Promise<{ links: string[]; invalidHrefs: string[] }> {
   const browser = await chromium.launch()
   const page = await browser.newPage({ baseURL })
+
+  await applyConsentSeed(page)
 
   const invalidHrefs: string[] = []
   const internalPaths = new Set<string>()
