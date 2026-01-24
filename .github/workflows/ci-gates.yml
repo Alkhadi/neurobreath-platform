@@ -43,3 +43,6 @@ jobs:
 
       - name: E2E smoke test (Buddy)
         run: yarn test:e2e tests/buddy.spec.ts
+
+      - name: E2E responsive overflow guard (Tesla)
+        run: yarn test:e2e tests/responsive.spec.ts
