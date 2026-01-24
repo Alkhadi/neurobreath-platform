@@ -46,3 +46,23 @@ jobs:
 
       - name: E2E responsive overflow guard (Tesla)
         run: yarn test:e2e tests/responsive.spec.ts
+
+      - name: Link verification (internal routes)
+        run: |
+          set -euo pipefail
+
+          SERVER_PID=""
+          PORT=3000 DATABASE_URL="${DATABASE_URL}" yarn dev:e2e &
+          SERVER_PID=$!
+          trap 'if [ -n "${SERVER_PID}" ]; then kill "${SERVER_PID}" || true; fi' EXIT
+
+          for i in {1..60}; do
+            if curl -fsS "http://localhost:3000/robots.txt" >/dev/null; then
+              break
+            fi
+            sleep 2
+          done
+
+          BASE_URL="http://localhost:3000" yarn links:verify
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/neurobreath_test?schema=public
