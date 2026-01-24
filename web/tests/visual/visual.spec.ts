@@ -131,6 +131,8 @@ async function checkCtaVisible(page: Page): Promise<boolean> {
 
 // Test suite
 test.describe('Visual Regression Suite', () => {
+  test.skip(({ browserName }) => browserName !== 'chromium', 'Visual snapshots are maintained for Chromium only');
+
   test.beforeEach(async ({ page }, testInfo) => {
     // Collect console errors
     page.on('console', (msg) => {

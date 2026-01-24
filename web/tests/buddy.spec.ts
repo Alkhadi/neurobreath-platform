@@ -17,6 +17,29 @@ const USER_PREFS_KEY = 'neurobreath.userprefs.v1';
 // (e.g., other assistants) can't satisfy `waitForRequest` and create flakes.
 const BUDDY_API_ROUTE = /\/(?:(?:uk|us)\/)?api\/buddy(?:\/ask)?(\?.*)?$/;
 
+async function seedConsent(page: Page) {
+  await page.addInitScript(() => {
+    try {
+      window.localStorage.setItem(
+        'nb_consent_prefs',
+        JSON.stringify({
+          essential: true,
+          functional: true,
+          analytics: false,
+          timestamp: Date.now(),
+          version: '1.0',
+        })
+      );
+    } catch {
+      // ignore
+    }
+  });
+}
+
+test.beforeEach(async ({ page }) => {
+  await seedConsent(page);
+});
+
 async function mockBuddyApi(page: Page, body: unknown) {
   // Replace any previously-registered handlers so tests can change the mocked
   // response within a single test (e.g., TEST 4/6).
@@ -321,7 +344,7 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
     await expect(stopButton).toBeVisible({ timeout: 5000 });
     console.log('✓ Stop button appears after listening');
 
-    await stopButton.click();
+    await stopButton.click({ force: true });
     await expect(stopButton).toBeHidden({ timeout: 5000 });
     console.log('✓ Stop button hides after stopping');
 

@@ -43,6 +43,7 @@ const evidence = evidenceByRoute['/blog']
 export default function BlogPage() {
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+      <h1 className="sr-only">NeuroBreath Blog</h1>
       {/* Hero / Positioning */}
       <Suspense fallback={<div className="p-8 bg-muted rounded-lg animate-pulse">Loading Hero...</div>}>
         <div data-tour="blog-hero">

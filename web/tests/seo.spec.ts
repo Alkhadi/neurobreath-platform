@@ -144,29 +144,29 @@ test.describe('Accessibility', () => {
 
 test.describe('Technical SEO', () => {
   test('sitemap.xml is accessible', async ({ page }) => {
-    const response = await page.goto(`${BASE_URL}/sitemap.xml`);
-    expect(response?.status()).toBe(200);
+    const response = await page.request.get(`${BASE_URL}/sitemap.xml`);
+    expect(response.status()).toBe(200);
 
-    const content = await response!.text();
+    const content = await response.text();
     expect(content).toContain('<?xml');
     expect(content).toContain('<urlset');
     expect(content).toContain('<url>');
   });
 
   test('robots.txt is accessible', async ({ page }) => {
-    const response = await page.goto(`${BASE_URL}/robots.txt`);
-    expect(response?.status()).toBe(200);
+    const response = await page.request.get(`${BASE_URL}/robots.txt`);
+    expect(response.status()).toBe(200);
 
-    const content = await page.textContent('body');
-    expect(content?.toLowerCase()).toContain('user-agent:');
+    const content = await response.text();
+    expect(content.toLowerCase()).toContain('user-agent:');
     expect(content).toContain('Sitemap:');
   });
 
   test('manifest.json is accessible', async ({ page }) => {
-    const response = await page.goto(`${BASE_URL}/manifest.json`);
-    expect(response?.status()).toBe(200);
+    const response = await page.request.get(`${BASE_URL}/manifest.json`);
+    expect(response.status()).toBe(200);
 
-    const content = await response!.text();
+    const content = await response.text();
     const manifest = JSON.parse(content);
     
     expect(manifest.name).toBeTruthy();

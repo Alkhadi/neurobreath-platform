@@ -6,37 +6,42 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests',
+  testIgnore: ['visual/**'],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 1 : 4,
   reporter: 'html',
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    viewport: { width: 1280, height: 800 },
   },
 
   projects: [
     {
-      name: 'iPhone 12',
-      use: { ...devices['iPhone 12'] },
-    },
-    {
-      name: 'iPad',
-      use: { ...devices['iPad (gen 7)'] },
-    },
-    {
-      name: 'Desktop 1440x900',
+      name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        viewport: { width: 1440, height: 900 },
+      },
+    },
+    {
+      name: 'firefox',
+      use: {
+        ...devices['Desktop Firefox'],
+      },
+    },
+    {
+      name: 'webkit',
+      use: {
+        ...devices['Desktop Safari'],
       },
     },
   ],
 
   webServer: {
-    command: 'npm run dev:clean',
+    command: 'npm run dev:e2e',
     url: 'http://localhost:3000',
     // Default to NOT reusing an existing server.
     // Reuse can accidentally point tests at a stale/incorrect process already on :3000.

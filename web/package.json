@@ -7,6 +7,7 @@
     "dev": "next dev",
     "clean:next": "node scripts/clean-next.js",
     "dev:clean": "npm run clean:next && next dev",
+    "dev:e2e": "npm run clean:next && npm run routes:generate && next dev -p 3000",
     "prebuild": "tsx scripts/generateRoutesMap.ts",
     "build": "prisma generate && next build",
     "start": "next start",
@@ -66,7 +67,9 @@
     "buddy:index": "tsx scripts/build-buddy-index.ts",
     "buddy:coverage": "tsx scripts/buddy-coverage-report.ts",
     "evidence:ingest": "tsx scripts/ingest-evidence.ts",
-    "links:verify": "tsx scripts/verify-links.ts"
+    "links:verify": "tsx scripts/links-verify.ts",
+    "responsive:scan": "tsx scripts/responsive-scan.ts",
+    "perf:lighthouse": "tsx scripts/lighthouse-run.ts"
   },
   "devDependencies": {
     "@next/swc-wasm-nodejs": "13.5.1",

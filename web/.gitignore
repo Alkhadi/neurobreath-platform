@@ -18,3 +18,6 @@ generated/appRoutes.json
 .next/
 playwright-report/
 test-results/
+
+# Playwright visual test artifacts (reports only)
+reports/visual/

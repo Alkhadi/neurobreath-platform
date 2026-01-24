@@ -447,6 +447,24 @@ npm run typecheck
 
 ## Testing
 
+### Quality Gates (must be green)
+
+Run these from `web/`:
+
+- `yarn lint`
+- `yarn typecheck`
+- `yarn build`
+- `yarn test:e2e` (Playwright: chromium + firefox + webkit)
+- `yarn responsive:scan` (screenshots + horizontal overflow detection)
+- `yarn links:verify` (route inventory + DOM-discovered links -> HTTP 200/3xx)
+- `yarn perf:lighthouse` (Lighthouse mobile + desktop reports)
+
+Outputs:
+
+- `web/reports/responsive/` (screenshots + `responsive-scan.json`)
+- `web/reports/links-verification.json`
+- `web/reports/lighthouse/` (HTML/JSON + `summary.json`)
+
 ### Manual Testing Checklist
 
 **Core Flows:**

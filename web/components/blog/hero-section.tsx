@@ -16,9 +16,9 @@ export default function HeroSection() {
         <div className="space-y-6">
           <div>
             <Badge variant="secondary" className="mb-4">Blog · AI-powered hub</Badge>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
               AI-Powered Neurodiversity &amp; Wellbeing Hub
-            </h1>
+            </h2>
           </div>
           
           <p className="text-lg text-muted-foreground">
