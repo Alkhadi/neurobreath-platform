@@ -50,7 +50,10 @@ export function SupportFAQ() {
         <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center">Frequently Asked Questions</h2>
 
         <div className="space-y-4">
-          {faqs.map((faq, index) => (
+          {faqs.map((faq, index) => {
+            const isOpen = openIndex === index
+            const ariaExpanded: 'true' | 'false' = isOpen ? 'true' : 'false'
+            return (
             <div
               key={index}
               className="bg-white rounded-lg border-2 border-gray-200 hover:border-purple-300 transition-colors overflow-hidden"
@@ -59,22 +62,23 @@ export function SupportFAQ() {
                 type="button"
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
                 className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-inset"
-                aria-expanded={openIndex === index ? 'true' : 'false'}
+                {...{ 'aria-expanded': ariaExpanded }}
               >
                 <span className="font-semibold text-lg pr-4">{faq.question}</span>
                 <ChevronDown
                   className={`h-5 w-5 text-purple-600 flex-shrink-0 transition-transform ${
-                    openIndex === index ? 'rotate-180' : ''
+                    isOpen ? 'rotate-180' : ''
                   }`}
                 />
               </button>
-              {openIndex === index && (
+              {isOpen && (
                 <div className="px-6 pb-5 text-muted-foreground leading-relaxed">
                   {faq.answer}
                 </div>
               )}
             </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>
