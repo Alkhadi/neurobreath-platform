@@ -196,7 +196,7 @@ function writeConsentToStorage(state: ConsentState): void {
 // Dev-only Debug Utilities
 // ============================================================================
 
-if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+if (typeof window !== 'undefined') {
   const debugWindow = window as DebugConsentWindow;
   debugWindow.__debugConsent = {
     get: getConsent,
@@ -204,5 +204,8 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
     clear: clearConsent,
     has: hasConsent,
   };
+  
+  // Always log in browser for debugging live site issues
   console.log('[Consent] Debug utilities available: window.__debugConsent');
+  console.log('[Consent] To clear consent and see banner: window.__debugConsent.clear()');
 }
