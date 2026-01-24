@@ -13,6 +13,7 @@ export default function SupportUsPage() {
   useEffect(() => {
     document.title = 'Support Us | NeuroBreath'
   }, [])
+  
   return (
     <main className="min-h-screen">
       {/* Skip Link for Accessibility */}
