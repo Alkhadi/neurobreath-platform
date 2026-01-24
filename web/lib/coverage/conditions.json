@@ -638,6 +638,123 @@
         "What should teachers know?"
       ],
       "requiredPillar": false
+    },
+    {
+      "conditionId": "depression",
+      "canonicalName": "Depression",
+      "aliases": ["depression", "low mood", "depressive episodes"],
+      "category": "mental health",
+      "scope": "condition",
+      "audience": ["teen", "adult", "parent-carer"],
+      "supportNeeds": ["emotional-regulation", "sleep", "routines", "motivation"],
+      "summary": "Evidence-based support for understanding and managing depression.",
+      "resources": [
+        "NHS depression overview (UK)",
+        "NICE depression guidance (UK)",
+        "NIMH depression information (US)"
+      ],
+      "pillarPath": "/conditions/depression",
+      "starterGuides": [
+        "/guides/wind-down-routine",
+        "/guides/body-scan-for-stress",
+        "/guides/quick-calm-in-5-minutes"
+      ],
+      "tools": [
+        "/tools/depression-tools",
+        "/tools/sleep-tools",
+        "/tools/stress-tools"
+      ],
+      "recommendedClusters": [
+        "understanding-depression",
+        "self-care-routines",
+        "sleep-support",
+        "motivation-building",
+        "professional-support"
+      ],
+      "recommendedFaqs": [
+        "What is depression?",
+        "What can help with low mood?",
+        "When should I seek professional help?"
+      ],
+      "requiredPillar": true
+    },
+    {
+      "conditionId": "bipolar",
+      "canonicalName": "Bipolar disorder",
+      "aliases": ["bipolar", "mood episodes", "manic depression"],
+      "category": "mental health",
+      "scope": "condition",
+      "audience": ["teen", "adult", "parent-carer"],
+      "supportNeeds": ["emotional-regulation", "sleep", "routines", "stress"],
+      "summary": "Evidence-based support for bipolar disorder management and wellbeing.",
+      "resources": [
+        "NHS bipolar overview (UK)",
+        "NICE bipolar guidance (UK)",
+        "NIMH bipolar information (US)"
+      ],
+      "pillarPath": "/conditions/bipolar",
+      "starterGuides": [
+        "/guides/wind-down-routine",
+        "/guides/body-scan-for-stress",
+        "/guides/quick-calm-in-5-minutes"
+      ],
+      "tools": [
+        "/tools/sleep-tools",
+        "/tools/stress-tools",
+        "/tools/mood-tools"
+      ],
+      "recommendedClusters": [
+        "mood-tracking",
+        "sleep-consistency",
+        "episode-management",
+        "professional-support",
+        "self-care-routines"
+      ],
+      "recommendedFaqs": [
+        "What is bipolar disorder?",
+        "How does mood tracking help?",
+        "What professional support is available?"
+      ],
+      "requiredPillar": true
+    },
+    {
+      "conditionId": "ptsd",
+      "canonicalName": "PTSD / Trauma",
+      "aliases": ["PTSD", "post-traumatic stress", "trauma", "traumatic stress"],
+      "category": "mental health",
+      "scope": "condition",
+      "audience": ["teen", "adult", "parent-carer"],
+      "supportNeeds": ["emotional-regulation", "stress", "sleep", "routines"],
+      "summary": "Evidence-based information for understanding and managing PTSD in neurodivergent individuals.",
+      "resources": [
+        "NHS PTSD overview (UK)",
+        "NICE trauma-focused CBT guidance (UK)",
+        "NIMH PTSD information (US)"
+      ],
+      "pillarPath": "/conditions/ptsd",
+      "starterGuides": [
+        "/guides/body-scan-for-stress",
+        "/guides/quick-calm-in-5-minutes",
+        "/guides/wind-down-routine"
+      ],
+      "tools": [
+        "/tools/breath-tools",
+        "/tools/stress-tools",
+        "/tools/sleep-tools"
+      ],
+      "recommendedClusters": [
+        "understanding-trauma",
+        "grounding-techniques",
+        "sleep-support",
+        "professional-therapy",
+        "safety-planning"
+      ],
+      "recommendedFaqs": [
+        "What is PTSD?",
+        "How does neurodivergence affect trauma recovery?",
+        "What therapy approaches are evidence-based?"
+      ],
+      "requiredPillar": true
     }
   ]
 }
