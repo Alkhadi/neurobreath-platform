@@ -1,8 +1,5 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import Script from 'next/script'
-
 interface StripeBuyButtonProps {
   buyButtonId: string
   publishableKey: string
@@ -11,7 +8,7 @@ interface StripeBuyButtonProps {
 
 /**
  * Stripe Buy Button integration for Next.js
- * Loads Stripe script once and renders custom buy-button element
+ * Note: The Stripe script is loaded at the page level in DonationPanel
  * @see https://stripe.com/docs/payments/buy-button
  */
 export function StripeBuyButton({
@@ -19,36 +16,14 @@ export function StripeBuyButton({
   publishableKey,
   disabled = false,
 }: StripeBuyButtonProps) {
-  const scriptLoaded = useRef(false)
-
-  useEffect(() => {
-    // Only log in development
-    if (process.env.NODE_ENV === 'development' && !publishableKey) {
-      console.warn(
-        '[StripeBuyButton] Missing publishable key. Set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY in .env'
-      )
-    }
-  }, [publishableKey])
-
   if (disabled) {
     return null
   }
 
   return (
-    <>
-      {!scriptLoaded.current && (
-        <Script
-          src="https://js.stripe.com/v3/buy-button.js"
-          strategy="afterInteractive"
-          onLoad={() => {
-            scriptLoaded.current = true
-          }}
-        />
-      )}
-      <stripe-buy-button
-        buy-button-id={buyButtonId}
-        publishable-key={publishableKey}
-      />
-    </>
+    <stripe-buy-button
+      buy-button-id={buyButtonId}
+      publishable-key={publishableKey}
+    />
   )
 }

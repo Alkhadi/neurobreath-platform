@@ -2,6 +2,7 @@
 
 import { Coffee, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
+import Script from 'next/script'
 import { Card, CardContent } from '@/components/ui/card'
 import { StripeBuyButton } from './StripeBuyButton'
 import { DONATION_TIERS, STRIPE_PUBLISHABLE_KEY } from '@/lib/support/donation-config'
@@ -9,6 +10,12 @@ import { DONATION_TIERS, STRIPE_PUBLISHABLE_KEY } from '@/lib/support/donation-c
 export function DonationPanel() {
   return (
     <section className="py-20 px-4 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+      {/* Load Stripe Buy Button script once for all buttons */}
+      <Script
+        src="https://js.stripe.com/v3/buy-button.js"
+        strategy="afterInteractive"
+      />
+      
       <div className="max-w-6xl mx-auto">
         {/* Main CTA */}
         <div className="text-center mb-16">
