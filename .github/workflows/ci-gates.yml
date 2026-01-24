@@ -47,22 +47,57 @@ jobs:
       - name: E2E responsive overflow guard (Tesla)
         run: yarn test:e2e tests/responsive.spec.ts
 
-      - name: Link verification (internal routes)
+      - name: Start Next.js server
         run: |
           set -euo pipefail
 
-          SERVER_PID=""
-          PORT=3000 DATABASE_URL="${DATABASE_URL}" yarn dev:e2e &
-          SERVER_PID=$!
-          trap 'if [ -n "${SERVER_PID}" ]; then kill "${SERVER_PID}" || true; fi' EXIT
+          PORT=3000 NODE_ENV=production DATABASE_URL="${DATABASE_URL}" yarn start &
+          echo $! > /tmp/nb_server.pid
 
           for i in {1..60}; do
             if curl -fsS "http://localhost:3000/robots.txt" >/dev/null; then
-              break
+              exit 0
             fi
             sleep 2
           done
 
-          BASE_URL="http://localhost:3000" yarn links:verify
+          echo "Server did not become ready in time" >&2
+          exit 1
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/neurobreath_test?schema=public
+
+      - name: Link verification (internal routes)
+        run: BASE_URL="http://localhost:3000" yarn links:verify
+
+      - name: Install Chromium (for Lighthouse)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+
+      - name: Lighthouse smoke (perf/a11y/seo)
+        run: BASE_URL="http://localhost:3000" yarn perf:lighthouse
+
+      - name: Upload link verification report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: links-verification
+          path: web/reports/links-verification.json
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: web/reports/lighthouse
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Stop Next.js server
+        if: always()
+        run: |
+          if [ -f /tmp/nb_server.pid ]; then
+            kill "$(cat /tmp/nb_server.pid)" || true
+          fi
