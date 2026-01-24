@@ -4,7 +4,7 @@ import { getToken } from 'next-auth/jwt'
 
 const REGION_COOKIE = 'nb_region'
 const EXCLUDED_PREFIXES = ['/api', '/_next', '/favicon', '/robots', '/sitemap', '/assets', '/images']
-const REGION_LOCALISED_PREFIXES = ['/', '/trust', '/help-me-choose', '/glossary', '/printables', '/journeys', '/about', '/editorial', '/conditions']
+const REGION_LOCALISED_PREFIXES = ['/', '/trust', '/help-me-choose', '/glossary', '/printables', '/journeys', '/about', '/editorial']
 
 const AUTH_PROTECTED_PATHS = ['/uk/my-account', '/uk/change-password']
 
