@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ChevronDown, Menu, X } from 'lucide-react'
+import { ChevronDown, Menu, X, LogIn, User } from 'lucide-react'
+import { getSession, signOut } from 'next-auth/react'
 import { SITE_CONFIG } from '../lib/seo/site-seo'
 
 const REGION_COOKIE = 'nb_region'
@@ -19,6 +20,8 @@ function getRegionPrefixFromCookie(): '/uk' | '/us' {
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null)
+  const [userEmail, setUserEmail] = useState<string | null>(null)
+  const [isSigningOut, setIsSigningOut] = useState(false)
   const pathname = usePathname() || '/'
   const [regionPrefix, setRegionPrefix] = useState<'/uk' | '/us'>(pathname.startsWith('/us') ? '/us' : '/uk')
 
@@ -33,6 +36,17 @@ export function SiteHeader() {
     }
     setRegionPrefix(getRegionPrefixFromCookie())
   }, [pathname])
+
+  // Check auth status on mount
+  useEffect(() => {
+    getSession()
+      .then((session) => {
+        setUserEmail(session?.user?.email || null)
+      })
+      .catch(() => {
+        setUserEmail(null)
+      })
+  }, [])
 
   const toggleMegaMenu = (menuName: string) => {
     setActiveMegaMenu(activeMegaMenu === menuName ? null : menuName)
@@ -262,6 +276,54 @@ export function SiteHeader() {
           <Link href="/settings" className="nb-nav-link" onClick={closeMegaMenu}>
             ⚙️ Settings
           </Link>
+
+          {/* Authentication */}
+          {userEmail ? (
+            <div className="nb-user-menu">
+              <button
+                type="button"
+                className="nb-nav-link nb-user-button"
+                onClick={() => setActiveMegaMenu(activeMegaMenu === 'user' ? null : 'user')}
+                aria-haspopup="true"
+                data-expanded={activeMegaMenu === 'user'}
+              >
+                <User size={18} />
+                {userEmail.split('@')[0]}
+                <ChevronDown size={16} className="nb-chevron" />
+              </button>
+              {activeMegaMenu === 'user' && (
+                <div className="nb-user-dropdown">
+                  <Link 
+                    href="/uk/my-account" 
+                    className="nb-user-dropdown-item"
+                    onClick={closeMegaMenu}
+                  >
+                    👤 My Account
+                  </Link>
+                  <button
+                    type="button"
+                    className="nb-user-dropdown-item nb-user-dropdown-item--danger"
+                    onClick={async () => {
+                      setIsSigningOut(true)
+                      await signOut({ callbackUrl: '/' })
+                    }}
+                    disabled={isSigningOut}
+                  >
+                    🚪 {isSigningOut ? 'Signing out...' : 'Sign out'}
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link 
+              href="/uk/login" 
+              className="nb-nav-link nb-login-link"
+              onClick={closeMegaMenu}
+            >
+              <LogIn size={18} />
+              Sign in
+            </Link>
+          )}
 
           {/* Get Started Button */}
           <Link href="/get-started" className="nb-nav-cta" onClick={closeMegaMenu}>
