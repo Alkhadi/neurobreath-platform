@@ -1,6 +1,6 @@
 'use client'
 
-import { Coffee, AlertCircle } from 'lucide-react'
+import { Heart, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 import Script from 'next/script'
 import { Card, CardContent } from '@/components/ui/card'
@@ -20,9 +20,9 @@ export function DonationPanel() {
         {/* Main CTA */}
         <div className="text-center mb-16">
           <div className="inline-block p-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full mb-8 shadow-lg">
-            <Coffee className="h-16 w-16 text-white" />
+            <Heart className="h-16 w-16 text-white" />
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Buy Me a Coffee ☕</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">Support NeuroBreath ❤️</h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             If NeuroBreath has helped you or someone you care about, consider supporting our mission.
             Every contribution, no matter how small, helps us continue providing free,
