@@ -1,0 +1,228 @@
+{
+  "generatedAt": "2026-01-24T12:28:24.202Z",
+  "repo": "neurobreath-platform",
+  "regionSupport": [
+    "uk",
+    "us"
+  ],
+  "quickIntents": [
+    {
+      "id": "what_is_neurobreath",
+      "label": "What is NeuroBreath?",
+      "primaryInternalPaths": [
+        "/"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    },
+    {
+      "id": "tools_available",
+      "label": "What tools are available?",
+      "primaryInternalPaths": [
+        "/tools"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    },
+    {
+      "id": "adhd_hub",
+      "label": "Take me to the ADHD Hub",
+      "primaryInternalPaths": [
+        "/adhd"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    },
+    {
+      "id": "autism_hub",
+      "label": "Take me to the Autism Hub",
+      "primaryInternalPaths": [
+        "/autism"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    },
+    {
+      "id": "dyslexia_support",
+      "label": "Tell me about Dyslexia support",
+      "primaryInternalPaths": [
+        "/conditions/dyslexia"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    },
+    {
+      "id": "breathing_techniques",
+      "label": "Show me breathing techniques",
+      "primaryInternalPaths": [
+        "/techniques"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    },
+    {
+      "id": "anxiety_help",
+      "label": "Help with Anxiety",
+      "primaryInternalPaths": [
+        "/conditions/anxiety"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    },
+    {
+      "id": "depression_support",
+      "label": "Depression support",
+      "primaryInternalPaths": [
+        "/conditions/depression"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    },
+    {
+      "id": "stress_management",
+      "label": "Stress management tools",
+      "primaryInternalPaths": [
+        "/conditions/stress"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    },
+    {
+      "id": "sleep_support",
+      "label": "Sleep support",
+      "primaryInternalPaths": [
+        "/conditions/sleep"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    },
+    {
+      "id": "bipolar_support",
+      "label": "What about Bipolar?",
+      "primaryInternalPaths": [
+        "/conditions/bipolar"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    },
+    {
+      "id": "low_mood_burnout",
+      "label": "Low mood & burnout help",
+      "primaryInternalPaths": [
+        "/conditions/low-mood-burnout"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    },
+    {
+      "id": "parent_support",
+      "label": "Parent support available?",
+      "primaryInternalPaths": [
+        "/support/parents"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    },
+    {
+      "id": "teacher_resources",
+      "label": "Teacher resources",
+      "primaryInternalPaths": [
+        "/support/teachers"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    },
+    {
+      "id": "carer_support",
+      "label": "Carer support tools",
+      "primaryInternalPaths": [
+        "/support/carers"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    },
+    {
+      "id": "evidence_based",
+      "label": "How is this evidence-based?",
+      "primaryInternalPaths": [
+        "/evidence"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    },
+    {
+      "id": "ask_about_page",
+      "label": "Ask me about this page...",
+      "primaryInternalPaths": [
+        "/"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    },
+    {
+      "id": "ptsd_support",
+      "label": "Tell me about PTSD",
+      "primaryInternalPaths": [
+        "/conditions/ptsd"
+      ],
+      "status": "covered",
+      "missingReasons": [],
+      "lastVerified": "2026-01-24T12:28:24.202Z"
+    }
+  ],
+  "typedQueriesSmoke": [
+    {
+      "query": "what is PTSD?",
+      "status": "covered",
+      "primaryAnswerPath": "/conditions/ptsd"
+    },
+    {
+      "query": "Tell me about anxiety",
+      "status": "covered",
+      "primaryAnswerPath": "/conditions/anxiety"
+    },
+    {
+      "query": "Dyslexia support",
+      "status": "covered",
+      "primaryAnswerPath": "/conditions/dyslexia"
+    },
+    {
+      "query": "Sleep tools",
+      "status": "missing"
+    },
+    {
+      "query": "What is NeuroBreath?",
+      "status": "covered",
+      "primaryAnswerPath": "/"
+    }
+  ],
+  "stats": {
+    "totalQuickIntents": 18,
+    "coveredIntents": 18,
+    "partialIntents": 0,
+    "missingIntents": 0,
+    "coveragePercentage": 100
+  },
+  "notes": [
+    "✓ All quick intents are fully covered with internal pages",
+    "PTSD page has been created with comprehensive content and tools",
+    "Evidence ingestion script available for integrating external sources"
+  ]
+}

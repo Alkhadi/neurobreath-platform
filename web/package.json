@@ -62,7 +62,11 @@
     "printables:validate": "tsx scripts/printables/validate.mjs",
     "glossary:validate": "tsx scripts/glossary/validate.mjs",
     "editorial:validate": "node scripts/editorial/validate.mjs",
-    "about:validate": "node scripts/about/validate.mjs"
+    "about:validate": "node scripts/about/validate.mjs",
+    "buddy:index": "tsx scripts/build-buddy-index.ts",
+    "buddy:coverage": "tsx scripts/buddy-coverage-report.ts",
+    "evidence:ingest": "tsx scripts/ingest-evidence.ts",
+    "links:verify": "tsx scripts/verify-links.ts"
   },
   "devDependencies": {
     "@next/swc-wasm-nodejs": "13.5.1",

@@ -1,0 +1,143 @@
+{
+  "timestamp": "2026-01-24T12:32:34.483Z",
+  "summary": {
+    "internal": {
+      "total": 15,
+      "valid": 15,
+      "broken": 0
+    },
+    "external": {
+      "total": 6,
+      "valid": 6,
+      "broken": 0
+    }
+  },
+  "results": [
+    {
+      "url": "/",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:33.750Z"
+    },
+    {
+      "url": "/adhd",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:33.751Z"
+    },
+    {
+      "url": "/autism",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:33.751Z"
+    },
+    {
+      "url": "/conditions/anxiety",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:33.751Z"
+    },
+    {
+      "url": "/conditions/depression",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:33.751Z"
+    },
+    {
+      "url": "/conditions/bipolar",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:33.751Z"
+    },
+    {
+      "url": "/conditions/dyslexia",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:33.751Z"
+    },
+    {
+      "url": "/conditions/low-mood-burnout",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:33.751Z"
+    },
+    {
+      "url": "/conditions/ptsd",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:33.751Z"
+    },
+    {
+      "url": "/techniques",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:33.751Z"
+    },
+    {
+      "url": "/tools",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:33.751Z"
+    },
+    {
+      "url": "/contact",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:33.751Z"
+    },
+    {
+      "url": "/evidence",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:33.751Z"
+    },
+    {
+      "url": "/trust/sources",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:33.751Z"
+    },
+    {
+      "url": "/about-us",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:33.751Z"
+    },
+    {
+      "url": "https://www.nice.org.uk/guidance/ng26",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:33.856Z"
+    },
+    {
+      "url": "https://www.nhs.uk/mental-health/conditions/post-traumatic-stress-disorder-ptsd/",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:33.895Z"
+    },
+    {
+      "url": "https://medlineplus.gov/posttraumaticstressdisorder.html",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:34.219Z"
+    },
+    {
+      "url": "https://pubmed.ncbi.nlm.nih.gov/",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:34.385Z"
+    },
+    {
+      "url": "https://medlineplus.gov/",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:34.414Z"
+    },
+    {
+      "url": "https://www.who.int/",
+      "status": 200,
+      "isValid": true,
+      "timestamp": "2026-01-24T12:32:34.483Z"
+    }
+  ]
+}
