@@ -621,6 +621,17 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     if (q.includes('depression')) {
       return `**💙 Depression Support** – Daily support tools\n\n**Understanding Depression:**\n• It's a medical condition\n• Not just "feeling sad"\n• Chemical & neurological\n• Treatable & manageable\n• Recovery is possible\n\n**Daily Strategies:**\n• **Behavioral Activation** – Small activities\n• **Mood Tracking** – Identify patterns\n• **Sleep Routine** – Consistent times\n• **Gentle Exercise** – Even 10 min walks\n• **Social Connection** – Even brief contact\n\n**Self-Care:**\n• Basic needs first (eat, sleep, hygiene)\n• Set tiny, achievable goals\n• Celebrate micro-wins\n• Be self-compassionate\n• Accept help offered\n\n**Professional Support:**\n• GP/Doctor consultation\n• Therapy options (CBT, IPT)\n• Medication (if recommended)\n• Support groups\n• Crisis services\n\n**Crisis Support:**\n• UK: Samaritans 116 123, Text SHOUT to 85258\n• US: 988 Suicide & Crisis Lifeline\n• EU: 112\n\n**Visit /conditions/depression for resources!**`;
     }
+
+    if (
+      q.includes('ptsd') ||
+      q.includes('trauma') ||
+      q.includes('post traumatic') ||
+      q.includes('post-traumatic') ||
+      q.includes('flashback') ||
+      q.includes('nightmare')
+    ) {
+      return `**🛡️ PTSD / Trauma Support** – Grounding & next steps\n\nIf you’re dealing with trauma responses (flashbacks, hypervigilance, nightmares), you’re not alone — and support can help.\n\n**In-the-moment grounding (try one):**\n• **5-4-3-2-1** – Name 5 things you see, 4 you feel, 3 you hear, 2 you smell, 1 you taste\n• **Feet + breath** – Feel both feet on the floor; slow exhale (4 in / 6–8 out)\n• **Orienting** – Look around and name: where you are, the date, what’s safe right now\n\n**Breathing tools (gentle options):**\n• Extended exhale (4–6 or 4–8)\n• Coherent breathing (5–5)\n• **No-hold variants** if breath holds feel uncomfortable\n\n**Daily support ideas:**\n• Sleep wind-down routine (reduce nightmares / arousal)\n• Trigger plan: identify triggers + coping steps + safe contacts\n• Professional pathways: trauma-focused therapy (e.g., TF-CBT/EMDR where appropriate)\n\n**Crisis / urgent help:**\n• UK: Samaritans 116 123, Text SHOUT to 85258\n• US: 988 Suicide & Crisis Lifeline\n• EU: 112\n\n👉 **Visit /conditions/ptsd for the full PTSD / Trauma page**`;
+    }
     
     if (q.includes('stress')) {
       return `**😓 Stress Management** – Daily relief tools\n\n**Quick Stress Relief:**\n• **Breathing** – 60-second reset, box breathing\n• **Movement** – Walk, stretch, shake it out\n• **Cold Water** – Face splash, cold drink\n• **Music** – Calming playlist\n• **Nature** – Even 5 minutes outside\n\n**Daily Prevention:**\n• Time management systems\n• Boundary setting (saying no)\n• Regular breaks (Pomodoro)\n• Physical activity routine\n• Sleep priority\n\n**Work/School Stress:**\n• Task prioritization\n• Break large tasks down\n• Realistic expectations\n• Ask for help early\n• Separate work/home time\n\n**Long-term:**\n• Identify stressors\n• Eliminate/reduce when possible\n• Build stress tolerance gradually\n• Support network\n• Professional help if chronic\n\n**Burnout Warning Signs:**\n• Exhaustion despite rest\n• Cynicism/detachment\n• Reduced performance\n• Physical symptoms\n• Need intervention\n\n**Visit /stress for complete toolkit!**`;
