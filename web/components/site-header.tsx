@@ -138,6 +138,7 @@ export function SiteHeader() {
                     <Link href="/conditions/anxiety-carer" onClick={closeMegaMenu}>❤️ Anxiety Carers Support</Link>
                     <Link href="/conditions/depression" onClick={closeMegaMenu}>💙 Depression</Link>
                     <Link href="/conditions/bipolar" onClick={closeMegaMenu}>⚡ Bipolar</Link>
+                    <Link href="/conditions/ptsd" onClick={closeMegaMenu}>🛡️ PTSD / Trauma</Link>
                     <Link href="/stress" onClick={closeMegaMenu}>😓 Stress</Link>
                     <Link href="/sleep" onClick={closeMegaMenu}>💤 Sleep Issues</Link>
                     <Link href="/conditions/low-mood-burnout" onClick={closeMegaMenu}>🌧️ Low Mood & Burnout</Link>

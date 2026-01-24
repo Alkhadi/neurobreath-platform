@@ -1,14 +1,19 @@
 const path = require('path');
 
+const nextOutputMode = process.env.NEXT_OUTPUT_MODE;
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   distDir: process.env.NEXT_DIST_DIR || '.next',
-  output: process.env.NEXT_OUTPUT_MODE,
+  // Only allow known-safe output modes. This app uses server features like
+  // `headers()` in layouts/metadata, so `output: 'export'` would break routes.
+  output: nextOutputMode === 'standalone' ? 'standalone' : undefined,
   outputFileTracingRoot: path.join(__dirname, '../'),
-  // Force cache invalidation - build timestamp
-  generateBuildId: async () => {
-    return `build-${Date.now()}`
-  },
+  // Keep dev asset URLs stable; if you need cache-busting in production,
+  // rely on the deployment platform or opt-in here.
+  generateBuildId: process.env.NODE_ENV === 'production'
+    ? async () => `build-${Date.now()}`
+    : undefined,
   eslint: {
     ignoreDuringBuilds: true,
   },
