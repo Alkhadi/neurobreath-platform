@@ -1,7 +1,7 @@
 import './globals.css';
 import '../styles/print.css';
 import { headers } from 'next/headers';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { BreathingSessionProvider } from '@/contexts/BreathingSessionContext';
@@ -19,6 +19,13 @@ import { getRouteMetadata, getRouteSeoConfig } from '@/lib/seo/route-metadata';
 import { getLocaleForRegion, getRegionFromPath } from '@/lib/region/region';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: SITE_CONFIG.themeColor,
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   const hdrs = await headers();

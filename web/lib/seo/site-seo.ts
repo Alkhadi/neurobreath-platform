@@ -245,10 +245,4 @@ export const DEFAULT_METADATA: Metadata = {
     ],
   },
   manifest: '/manifest.json',
-  themeColor: SITE_CONFIG.themeColor,
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-  },
 };
