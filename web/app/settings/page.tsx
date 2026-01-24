@@ -324,12 +324,12 @@ export default function SettingsPage() {
                 </div>
                 <Switch
                   id="tts-enabled"
-                  checked={ttsSettings.enabled}
+                  checked={ttsSettings?.enabled ?? false}
                   onCheckedChange={setTTSEnabled}
                 />
               </div>
 
-              {ttsSettings.enabled && (
+              {ttsSettings?.enabled && (
                 <>
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
@@ -340,19 +340,19 @@ export default function SettingsPage() {
                     </div>
                     <Switch
                       id="auto-speak"
-                      checked={ttsSettings.autoSpeak}
+                      checked={ttsSettings?.autoSpeak ?? false}
                       onCheckedChange={setAutoSpeak}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="rate">Speaking Rate: {ttsSettings.rate.toFixed(1)}x</Label>
+                    <Label htmlFor="rate">Speaking Rate: {(ttsSettings?.rate ?? 1.0).toFixed(1)}x</Label>
                     <Slider
                       id="rate"
                       min={0.8}
                       max={1.2}
                       step={0.1}
-                      value={[ttsSettings.rate]}
+                      value={[ttsSettings?.rate ?? 1.0]}
                       onValueChange={([value]) => setRate(value)}
                       className="w-full"
                     />
@@ -370,7 +370,7 @@ export default function SettingsPage() {
                     </div>
                     <Switch
                       id="prefer-uk"
-                      checked={ttsSettings.preferUKVoice}
+                      checked={ttsSettings?.preferUKVoice ?? false}
                       onCheckedChange={setPreferUKVoice}
                     />
                   </div>
@@ -384,7 +384,7 @@ export default function SettingsPage() {
                     </div>
                     <Switch
                       id="filter-symbols"
-                      checked={ttsSettings.filterNonAlphanumeric}
+                      checked={ttsSettings?.filterNonAlphanumeric ?? true}
                       onCheckedChange={setFilterNonAlphanumeric}
                     />
                   </div>

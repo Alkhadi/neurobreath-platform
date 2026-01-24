@@ -39,7 +39,7 @@ export function useSpeechSynthesis() {
 
   const speak = useCallback(
     (text: string) => {
-      if (!ttsSettings.enabled) return;
+      if (!ttsSettings?.enabled) return;
       const cleaned = stripForSpeech(text);
       if (!cleaned) return;
 

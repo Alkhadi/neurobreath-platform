@@ -54,7 +54,7 @@ export function useSpeechController(): UseSpeechControllerReturn {
   // Speak text for a specific message
   const speak = useCallback((messageId: string, text: string) => {
     // Only speak if TTS is enabled
-    if (!ttsSettings.enabled) {
+    if (!ttsSettings?.enabled) {
       return;
     }
 

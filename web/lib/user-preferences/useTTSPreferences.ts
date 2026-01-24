@@ -7,10 +7,26 @@
 'use client';
 
 import { useUserPreferences } from './useUserPreferences';
+import { DEFAULT_TTS_SETTINGS } from './schema';
 import type { TTSSettings } from './schema';
 
 export function useTTSPreferences() {
   const { state, updateState } = useUserPreferences();
+
+  // Defensive guard: ensure preferences exists
+  if (!state?.preferences) {
+    console.warn('[useTTSPreferences] preferences not loaded yet');
+    return {
+      ttsSettings: undefined,
+      setTTSEnabled: () => {},
+      setAutoSpeak: () => {},
+      setRate: () => {},
+      setVoice: () => {},
+      setFilterNonAlphanumeric: () => {},
+      setPreferUKVoice: () => {},
+      setTTSSettings: () => {},
+    };
+  }
 
   const setTTSEnabled = (enabled: boolean) => {
     updateState({
@@ -99,7 +115,7 @@ export function useTTSPreferences() {
   };
 
   return {
-    ttsSettings: state.preferences.tts,
+    ttsSettings: state.preferences?.tts || DEFAULT_TTS_SETTINGS,
     setTTSEnabled,
     setAutoSpeak,
     setRate,

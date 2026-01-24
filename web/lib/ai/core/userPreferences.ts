@@ -177,8 +177,7 @@ function validatePreferences(prefs: unknown): prefs is UserPreferences {
 
   return !!(
     p.version &&
-    p.tts &&
-    typeof p.tts.enabled === 'boolean' &&
+    // tts is optional - will use defaults if missing
     p.accessibility &&
     p.regional &&
     p.ai
@@ -269,6 +268,9 @@ export function getAvailableTTSVoices(): SpeechSynthesisVoice[] {
 export function getPreferredTTSVoice(): SpeechSynthesisVoice | null {
   const prefs = loadPreferences();
   const voices = getAvailableTTSVoices();
+
+  // Guard against undefined tts
+  if (!prefs?.tts) return voices[0] || null;
 
   if (prefs.tts.voice) {
     const preferred = voices.find((v) => v.voiceURI === prefs.tts.voice);
