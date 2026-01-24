@@ -1,9 +1,7 @@
 /**
  * Donation configuration for Stripe Buy Buttons
  * 
- * IMPORTANT: The £20 button currently uses the same buy-button-id as £10.
- * This is a known issue - contact Stripe support or create a new £20 Buy Button.
- * Until then, the £20 option will be displayed as "Temporarily unavailable".
+ * All donation tiers now have active Stripe Buy Button integrations.
  */
 
 export const STRIPE_PUBLISHABLE_KEY =
@@ -34,11 +32,9 @@ export const DONATION_TIERS: DonationTier[] = [
   },
   {
     amount: 20,
-    buttonId: 'buy_btn_1Sswj1RTUOLBisTT0wf0JVXh', // Same as £10 - needs unique button ID
+    buttonId: 'buy_btn_1Sswj1RTUOLBisTT0wf0JVXh',
     label: '£20',
     benefit: 'Funds research and evidence-based content creation.',
-    disabled: true,
-    disabledReason: "We're updating this amount.",
   },
   {
     amount: 50,
