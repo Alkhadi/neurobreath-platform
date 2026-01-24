@@ -1,12 +1,9 @@
 import type { Metadata } from 'next'
 import { SupportHero } from '@/components/support/SupportHero'
-import { ImpactCards } from '@/components/support/ImpactCards'
 import { DonationPanel } from '@/components/support/DonationPanel'
-import { WhereDonationsGo } from '@/components/support/WhereDonationsGo'
+import { DonationDisclosure } from '@/components/support/DonationDisclosure'
 import { SupportFAQ } from '@/components/support/SupportFAQ'
-import { TransparencyCard } from '@/components/support/TransparencyCard'
-import { OtherWaysToSupport } from '@/components/support/OtherWaysToSupport'
-import { FinalCTA } from '@/components/support/FinalCTA'
+import { RoadmapAndAccountability } from '@/components/support/RoadmapAndAccountability'
 
 export const metadata: Metadata = {
   title: 'Support NeuroBreath | Help Keep Mental Health Resources Free',
@@ -22,16 +19,22 @@ export const metadata: Metadata = {
 /**
  * Support Us page - handles voluntary donations via Stripe Buy Buttons
  * 
- * Features:
- * - Four donation tiers (£5, £10, £20, £50)
- * - Secure Stripe integration
- * - Transparent communication about how donations are used
- * - FAQ section
- * - Multiple ways to support (donations, sharing, volunteering)
+ * Page structure:
+ * 1. Hero: Mission statement and development phase explanation
+ * 2. Donation Panel: Four tiers (£5, £10, £20, £50) with Stripe Buy Buttons
+ * 3. Donation Disclosure: One-paragraph voluntary donation and terms disclosure
+ * 4. FAQ: 13 comprehensive questions covering donations, privacy, security, and roadmap
+ * 5. Roadmap & Accountability: Two milestones with transparent timelines and deliverables
+ * 
+ * Security & compliance:
+ * - All Stripe Buy Button IDs and payment handlers are preserved unchanged
+ * - No card details stored; Stripe handles all PCI compliance
+ * - All copy emphasizes voluntary donation, no tax-deductible claims
+ * - Accessibility: Semantic heading hierarchy, skip links, keyboard navigation
  */
 export default function SupportUsPage() {
   return (
-    <main className="min-h-screen">
+    <main id="main-content" className="min-h-screen">
       {/* Skip Link for Accessibility */}
       <a
         href="#main-content"
@@ -41,13 +44,10 @@ export default function SupportUsPage() {
       </a>
 
       <SupportHero />
-      <ImpactCards />
       <DonationPanel />
-      <WhereDonationsGo />
+      <DonationDisclosure />
       <SupportFAQ />
-      <TransparencyCard />
-      <OtherWaysToSupport />
-      <FinalCTA />
+      <RoadmapAndAccountability />
     </main>
   )
 }
