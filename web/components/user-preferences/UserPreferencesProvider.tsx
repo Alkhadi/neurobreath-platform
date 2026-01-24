@@ -53,7 +53,7 @@ export function UserPreferencesProvider({ children }: UserPreferencesProviderPro
 
   // Apply preferences to DOM via data attributes
   useEffect(() => {
-    if (!isLoaded || typeof document === 'undefined') return;
+    if (!isLoaded || typeof document === 'undefined' || !state?.preferences) return;
 
     const html = document.documentElement;
 

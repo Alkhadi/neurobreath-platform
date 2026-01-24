@@ -8,17 +8,33 @@
 'use client';
 
 import { useUserPreferences } from './useUserPreferences';
-import type {
-  GuestPreferences,
-  RegionPreference,
-  ReadingLevel,
-  ReducedMotionPreference,
-  TextSizePreference,
-  ContrastPreference,
+import {
+  DEFAULT_GUEST_PREFERENCES,
+  type GuestPreferences,
+  type RegionPreference,
+  type ReadingLevel,
+  type ReducedMotionPreference,
+  type TextSizePreference,
+  type ContrastPreference,
 } from './schema';
 
 export function useGuestPreferences() {
   const { state, updateState } = useUserPreferences();
+
+  // Defensive guard: ensure preferences exists
+  if (!state?.preferences) {
+    console.warn('[useGuestPreferences] preferences not loaded yet');
+    return {
+      preferences: DEFAULT_GUEST_PREFERENCES,
+      setRegionPreference: () => {},
+      setReadingLevel: () => {},
+      setDyslexiaMode: () => {},
+      setReducedMotion: () => {},
+      setTextSize: () => {},
+      setContrast: () => {},
+      setPreferences: () => {},
+    };
+  }
 
   const setRegionPreference = (regionPreference: RegionPreference) => {
     updateState({
@@ -84,7 +100,7 @@ export function useGuestPreferences() {
   };
 
   return {
-    preferences: state.preferences,
+    preferences: state.preferences || DEFAULT_GUEST_PREFERENCES,
     setRegionPreference,
     setReadingLevel,
     setDyslexiaMode,
