@@ -32,7 +32,7 @@ const faqs: FAQItem[] = [
   {
     question: 'Are donations tax-deductible?',
     answer:
-      'NeuroBreath is not currently registered as a charity, so donations are not tax-deductible. We are an independent educational wellbeing platform.',
+      'At this time, donations to NeuroBreath are not tax-deductible because we are not currently registered as a charity. NeuroBreath is an independent educational wellbeing platform, and the website is still in active development.\n\nWe have already secured our domain and are investing heavily in extensive research and careful build work to ensure we deliver credible, plausible, and high-value support—including training, routine cultivation, practical techniques, and condition-focused guidance—in a responsible and evidence-informed way.\n\nOnce we complete this development phase, our intention is to formalise the organisation by registering with Companies House, and then expand our presence across prominent social media platforms to improve accessibility, communication, and community support.\n\nIf you choose to donate now, please view it as supporting the platform\'s development and research work rather than as a charitable contribution for tax purposes.',
   },
   {
     question: 'How can I contact support?',
