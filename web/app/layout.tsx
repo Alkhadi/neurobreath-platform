@@ -9,6 +9,8 @@ import { UserPreferencesProvider } from '@/components/user-preferences/UserPrefe
 import { PageBuddy } from '@/components/page-buddy';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
+import { CookieConsentBanner } from '@/components/consent/CookieConsentBanner';
+import { CookieSettingsButton } from '@/components/consent/CookieSettingsButton';
 import { Toaster } from '@/components/ui/sonner';
 import { JsonLd } from '@/components/seo/json-ld';
 import { generateOrganizationSchema, generateWebSiteSchema, generateWebPageSchema, generateBreadcrumbsFromPath, generateBreadcrumbSchema } from '@/lib/seo/schema';
@@ -71,6 +73,8 @@ export default async function RootLayout({
                 <SiteFooter />
               </div>
               <PageBuddy />
+              <CookieConsentBanner />
+              <CookieSettingsButton />
             </BreathingSessionProvider>
           </UserPreferencesProvider>
           <Toaster position="top-right" />

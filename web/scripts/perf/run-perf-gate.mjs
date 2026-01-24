@@ -11,11 +11,13 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import lighthouse from 'lighthouse';
 import * as chromeLauncher from 'chrome-launcher';
-import { PERFORMANCE_BUDGET } from '../perf/budgets.config.ts';
+import budgetsModule from '../../perf/budgets.config.ts';
+
+const PERFORMANCE_BUDGET = budgetsModule?.default ?? budgetsModule;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const webDir = path.resolve(__dirname, '..');
+const webDir = path.resolve(__dirname, '..', '..');
 const reportsDir = path.join(webDir, 'reports', 'perf');
 const baselineDir = path.join(webDir, 'perf', 'baseline');
 
@@ -44,8 +46,18 @@ function runCommand(cmd, args, cwd) {
 // Check if server is running
 async function checkServer() {
   try {
-    const res = await fetch(`${BASE_URL}/api/health`).catch(() => fetch(`${BASE_URL}/`));
-    return res.ok;
+    const candidates = [`${BASE_URL}/api/healthz`, `${BASE_URL}/api/health`, `${BASE_URL}/`];
+
+    for (const url of candidates) {
+      try {
+        const res = await fetch(url);
+        if (res.ok) return true;
+      } catch {
+        // ignore and try next candidate
+      }
+    }
+
+    return false;
   } catch {
     return false;
   }
@@ -101,6 +113,7 @@ async function runLighthouseAudit(url, name) {
     output: ['json', 'html'],
     onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'],
     port: chrome.port,
+    formFactor: 'desktop',
     throttling: {
       rttMs: 40,
       throughputKbps: 10 * 1024,

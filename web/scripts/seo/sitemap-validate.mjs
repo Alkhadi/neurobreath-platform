@@ -51,16 +51,25 @@ const usUrls = usResponse.ok ? parseSitemapUrls(usResponse.text) : [];
 
 const urlsToCheck = Array.from(new Set([...ukUrls, ...usUrls]));
 
+// When testing locally, convert canonical URLs to localhost for fetching
+const isLocalTest = baseUrl.includes('localhost') && canonicalBase !== baseUrl;
+
 for (const url of urlsToCheck) {
   const parsed = new URL(url);
-  const pathname = parsed.pathname;
+  let pathname = parsed.pathname;
+  
+  // For local testing, convert canonical domain URLs to localhost
+  let fetchUrl = url;
+  if (isLocalTest && parsed.host === canonicalHost) {
+    fetchUrl = new URL(pathname, baseUrl).toString();
+  }
 
   if (isExcluded(pathname)) {
     critical.push(`Sitemap contains excluded URL: ${url}`);
     continue;
   }
 
-  const htmlResponse = await fetchText(url);
+  const htmlResponse = await fetchText(fetchUrl);
   if (!htmlResponse.ok) {
     critical.push(`Failed to fetch HTML for ${url} (${htmlResponse.status})`);
     continue;
@@ -124,6 +133,21 @@ const reportMd = `# Sitemap validation report\n\nGenerated at: ${reportJson.gene
 
 await writeReport(path.join(projectRoot, 'reports', 'sitemap-validation.json'), JSON.stringify(reportJson, null, 2));
 await writeReport(path.join(projectRoot, 'reports', 'sitemap-validation.md'), reportMd);
+
+console.log(`\n📊 Sitemap Validation Summary:`);
+console.log(`   Total URLs: ${reportJson.counts.totalUrls}`);
+console.log(`   Critical issues: ${reportJson.counts.critical}`);
+console.log(`   Warnings: ${reportJson.counts.warnings}`);
+
+if (critical.length > 0) {
+  console.log(`\n❌ Critical Issues:`);
+  critical.forEach((issue, i) => console.log(`   ${i + 1}. ${issue}`));
+}
+
+if (warnings.length > 0) {
+  console.log(`\n⚠️  Warnings:`);
+  warnings.forEach((warn, i) => console.log(`   ${i + 1}. ${warn}`));
+}
 
 if (critical.length) {
   process.exit(1);

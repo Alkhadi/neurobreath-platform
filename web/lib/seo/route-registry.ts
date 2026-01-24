@@ -100,16 +100,18 @@ export async function loadRouteInventory(): Promise<{ routes: RouteInventoryEntr
 
 export function expandRoutePattern(pattern: string): string[] {
   if (!pattern.includes(':')) return [pattern];
-  const direct = getFixtures(pattern);
+  const direct = getFixtures(pattern).filter(pathname => !pathname.includes(':'));
   if (direct.length) return direct;
 
   if (pattern.includes(':region')) {
     const regions = getFixtures('/:region');
     if (regions.length) {
-      return regions.map(regionPath => {
-        const regionKey = regionPath.replace(/^\//, '');
-        return pattern.replace(':region', regionKey);
-      });
+      return regions
+        .map(regionPath => {
+          const regionKey = regionPath.replace(/^\//, '');
+          return pattern.replace(':region', regionKey);
+        })
+        .filter(pathname => !pathname.includes(':'));
     }
   }
 

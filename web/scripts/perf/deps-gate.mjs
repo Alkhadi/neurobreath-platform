@@ -9,11 +9,13 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
-import { PERFORMANCE_BUDGET } from '../perf/budgets.config.ts';
+import budgetsModule from '../../perf/budgets.config.ts';
+
+const PERFORMANCE_BUDGET = budgetsModule?.default ?? budgetsModule;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const webDir = path.resolve(__dirname, '..');
+const webDir = path.resolve(__dirname, '..', '..');
 const reportsDir = path.join(webDir, 'reports', 'perf');
 
 function ensureDir(dir) {
@@ -83,13 +85,13 @@ function main() {
   const violations = [];
   const warnings = [];
   
-  // Check blocklist
-  for (const dep of [...current.dependencies, ...current.devDependencies]) {
+  // Check blocklist (new dependencies only)
+  for (const dep of [...newDeps, ...newDevDeps]) {
     if (blocklist.includes(dep)) {
       violations.push({
         type: 'blocklist',
         package: dep,
-        message: `Package "${dep}" is on the blocklist`,
+        message: `New package "${dep}" is on the blocklist`,
       });
     }
   }

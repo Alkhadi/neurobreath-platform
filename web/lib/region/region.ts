@@ -30,8 +30,11 @@ export function withRegionPrefix(path: string, region: Region): string {
 
 export function getRegionAlternates(path: string) {
   const clean = path.startsWith('/') ? path : `/${path}`;
+  // Remove trailing slash to match canonical URL pattern (e.g., /uk not /uk/)
+  const ukPath = clean === '/' ? '/uk' : `/uk${clean}`;
+  const usPath = clean === '/' ? '/us' : `/us${clean}`;
   return {
-    'en-GB': `/uk${clean}`,
-    'en-US': `/us${clean}`,
+    'en-GB': ukPath,
+    'en-US': usPath,
   };
 }

@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { PrimaryCtaBlock } from '@/components/growth/PrimaryCtaBlock';
 import { RelatedResources } from '@/components/growth/RelatedResources';
 import { TrustMiniPanel } from '@/components/trust/TrustMiniPanel';
-import { TrackClick } from '@/components/analytics/TrackClick';
+import { TrackedLink } from '@/components/analytics/TrackedLink';
 import { CredibilityFooter } from '@/components/trust/CredibilityFooter';
 import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog';
 import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial';
@@ -185,16 +185,17 @@ export default async function RegionToolsPage({ params }: RegionToolsPageProps) 
 
               <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {group.tools.map(tool => (
-                  <TrackClick key={tool.href + tool.label} event="tool_try_now_click" payload={{ href: tool.href, label: tool.label, source: path }}>
-                    <Link
-                      href={tool.href}
-                      className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
-                    >
-                      <div className="text-base font-semibold text-slate-900 group-hover:text-slate-950">{tool.label}</div>
-                      <p className="mt-2 text-sm text-slate-600">{tool.summary}</p>
-                      <div className="mt-4 inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">Try now</div>
-                    </Link>
-                  </TrackClick>
+                  <TrackedLink
+                    key={tool.href + tool.label}
+                    href={tool.href}
+                    event="tool_try_now_click"
+                    payload={{ href: tool.href, label: tool.label, source: path }}
+                    className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+                  >
+                    <div className="text-base font-semibold text-slate-900 group-hover:text-slate-950">{tool.label}</div>
+                    <p className="mt-2 text-sm text-slate-600">{tool.summary}</p>
+                    <div className="mt-4 inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">Try now</div>
+                  </TrackedLink>
                 ))}
               </div>
 

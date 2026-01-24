@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation'
 import { SITE_CONFIG } from '@/lib/seo/site-seo'
 
 const REGION_COOKIE = 'nb_region'
+type CookieSettingsWindow = Window & { __openCookieSettings?: () => void }
 
 function getRegionPrefixFromCookie(): '/uk' | '/us' {
   if (typeof document === 'undefined') return '/uk'
@@ -19,7 +20,6 @@ export function SiteFooter() {
   const [currentYear, setCurrentYear] = useState(2025)
   const pathname = usePathname() || '/'
   const [regionPrefix, setRegionPrefix] = useState<'/uk' | '/us'>(pathname.startsWith('/us') ? '/us' : '/uk')
-
   useEffect(() => {
     setCurrentYear(new Date().getFullYear())
   }, [])
@@ -62,6 +62,7 @@ export function SiteFooter() {
                   priority={false}
                 />
               </span>
+              <span className="sr-only">NeuroBreath Home</span>
             </Link>
             <Link href="/support-us" className="btn" aria-label="Support NeuroBreath">
               <span aria-hidden="true">☕</span> Support Us
@@ -167,15 +168,36 @@ export function SiteFooter() {
               <div className="links">
                 <p>
                   <Link href={`${regionPrefix}/trust`}>Trust Centre</Link> ·{' '}
-                  <Link href={`${regionPrefix}/trust/disclaimer`}>Disclaimer</Link> ·{' '}
+                  <Link href={`${regionPrefix}/legal/disclaimer`}>Disclaimer</Link> ·{' '}
                   <Link href={`${regionPrefix}/trust/evidence-policy`}>Evidence Policy</Link>
                 </p>
                 <p>
-                  <Link href={`${regionPrefix}/trust/accessibility`}>Accessibility</Link> ·{' '}
+                  <Link href={`${regionPrefix}/legal/accessibility`}>Accessibility</Link> ·{' '}
                   <Link href={`${regionPrefix}/trust/editorial-standards`}>Editorial standards</Link> ·{' '}
-                  <Link href={`${regionPrefix}/trust/privacy`}>Privacy</Link> ·{' '}
-                  <Link href={`${regionPrefix}/trust/terms`}>Terms</Link> ·{' '}
                   <Link href={`${regionPrefix}/trust/contact`}>Report a concern</Link>
+                </p>
+              </div>
+            </details>
+            <details className="ft-group">
+              <summary>Legal <span aria-hidden="true">▾</span></summary>
+              <div className="links">
+                <p>
+                  <Link href={`${regionPrefix}/legal/privacy`}>Privacy Policy</Link> ·{' '}
+                  <Link href={`${regionPrefix}/legal/terms`}>Terms of Service</Link> ·{' '}
+                  <Link href={`${regionPrefix}/legal/cookies`}>Cookie Policy</Link>
+                </p>
+                <p>
+                  {regionPrefix === '/uk' ? (
+                    <Link href={`${regionPrefix}/legal/data-rights`}>Your Data Rights</Link>
+                  ) : (
+                    <Link href={`${regionPrefix}/legal/privacy-rights`}>Your Privacy Rights</Link>
+                  )}
+                  {' '}· <button type="button" className="text-blue-600 dark:text-blue-400 hover:underline" onClick={() => {
+                    if (typeof window !== 'undefined') {
+                      const win = window as CookieSettingsWindow;
+                      win.__openCookieSettings?.();
+                    }
+                  }}>Cookie settings</button>
                 </p>
               </div>
             </details>

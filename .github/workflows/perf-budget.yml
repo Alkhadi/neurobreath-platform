@@ -20,6 +20,12 @@ jobs:
     name: Performance Budget Check
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres?schema=public
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
     
     defaults:
       run:
@@ -35,33 +41,33 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: web/package-lock.json
+          cache: 'yarn'
+          cache-dependency-path: web/yarn.lock
       
       - name: Install dependencies
-        run: npm ci
+        run: yarn install --frozen-lockfile
       
       - name: Build Next.js
-        run: npm run build
+        run: yarn build
         env:
           NODE_ENV: production
       
       - name: Run performance gate
-        run: npm run perf:gate
+        run: yarn perf:gate
         env:
           CI: true
           PERF_BASE_URL: http://localhost:3000
       
       - name: Run dependency check
-        run: npm run perf:deps
+        run: yarn perf:deps
         if: always()
       
       - name: Compare to baseline
-        run: npm run perf:compare
+        run: yarn perf:compare
         if: always()
       
       - name: Generate AutoPlan
-        run: npm run perf:autoplan
+        run: yarn perf:autoplan
         if: always()
       
       - name: Upload performance reports
@@ -70,6 +76,7 @@ jobs:
         with:
           name: performance-reports
           path: web/reports/perf/
+          if-no-files-found: ignore
           retention-days: 30
       
       - name: Upload Lighthouse HTML reports
@@ -78,6 +85,7 @@ jobs:
         with:
           name: lighthouse-reports
           path: web/reports/perf/*.html
+          if-no-files-found: ignore
           retention-days: 30
       
       - name: Comment PR with results
@@ -114,10 +122,14 @@ jobs:
             }
             
             body += '\n📊 Full reports available in workflow artifacts.';
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body
-            });
+
+            try {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body
+              });
+            } catch (err) {
+              core.warning(`Unable to comment on PR (likely permissions): ${err.message || err}`);
+            }

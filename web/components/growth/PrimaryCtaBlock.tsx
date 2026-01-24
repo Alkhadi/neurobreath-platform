@@ -1,7 +1,6 @@
-import Link from 'next/link';
 import type { Region } from '@/lib/region/region';
 import { getRegionKey } from '@/lib/region/region';
-import { TrackClick } from '@/components/analytics/TrackClick';
+import { TrackedLink } from '@/components/analytics/TrackedLink';
 
 interface PrimaryCtaBlockProps {
   region: Region;
@@ -22,24 +21,24 @@ export function PrimaryCtaBlock({ region, title, description, primary, secondary
       </div>
 
       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <TrackClick event={primary.event || 'home_primary_cta_click'} payload={{ href: primary.href, source: `/${regionKey}` }}>
-          <Link
-            href={primary.href}
-            className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
-          >
-            {primary.label}
-          </Link>
-        </TrackClick>
+        <TrackedLink
+          href={primary.href}
+          event={primary.event || 'home_primary_cta_click'}
+          payload={{ href: primary.href, source: `/${regionKey}` }}
+          className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+        >
+          {primary.label}
+        </TrackedLink>
 
         {secondary ? (
-          <TrackClick event={secondary.event || 'home_secondary_cta_click'} payload={{ href: secondary.href, source: `/${regionKey}` }}>
-            <Link
-              href={secondary.href}
-              className="inline-flex items-center justify-center rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-900 hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
-            >
-              {secondary.label}
-            </Link>
-          </TrackClick>
+          <TrackedLink
+            href={secondary.href}
+            event={secondary.event || 'home_secondary_cta_click'}
+            payload={{ href: secondary.href, source: `/${regionKey}` }}
+            className="inline-flex items-center justify-center rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-900 hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+          >
+            {secondary.label}
+          </TrackedLink>
         ) : null}
       </div>
     </section>

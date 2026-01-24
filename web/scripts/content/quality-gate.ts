@@ -247,9 +247,20 @@ const buildReport = async () => {
       }
     }
 
-    const anchorIssues = links.filter(link => !link.text || /click here/i.test(link.text));
+    // Check for empty or generic anchor text (a11y/SEO requirement)
+    const genericAnchors = /^(click here|here|read more|learn more|more|view|see more|go|click|link)$/i;
+    const anchorIssues = links.filter(link => {
+      const text = link.text.toLowerCase().trim();
+      return !text || genericAnchors.test(text);
+    });
     if (anchorIssues.length) {
-      issues.push({ severity: 'CRITICAL', code: 'ANCHOR_TEXT_INVALID', message: 'Empty or generic anchor text found.' });
+      // Store detailed info for debugging
+      const detailed = anchorIssues.map(l => `${JSON.stringify(l.text || '')} (${l.href})`).slice(0, 5);
+      issues.push({ 
+        severity: 'CRITICAL', 
+        code: 'ANCHOR_TEXT_INVALID', 
+        message: `Empty or generic anchor text found (${anchorIssues.length} issues). Examples: ${detailed.join('; ')}` 
+      });
     }
 
     const anchorCount: Record<string, number> = {};

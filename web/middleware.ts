@@ -1,8 +1,12 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
+import { getToken } from 'next-auth/jwt'
 
 const REGION_COOKIE = 'nb_region'
 const EXCLUDED_PREFIXES = ['/api', '/_next', '/favicon', '/robots', '/sitemap', '/assets', '/images']
+const REGION_LOCALISED_PREFIXES = ['/', '/trust', '/help-me-choose', '/glossary', '/printables', '/journeys', '/about', '/editorial', '/conditions']
+
+const AUTH_PROTECTED_PATHS = ['/uk/my-account', '/uk/change-password']
 
 const isExcluded = (pathname: string) =>
   EXCLUDED_PREFIXES.some(prefix => pathname.startsWith(prefix))
@@ -19,8 +23,27 @@ const detectRegion = (request: NextRequest): 'uk' | 'us' => {
   return 'uk'
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
+
+  // Optional auth protection (keep the rest of the site public)
+  if (AUTH_PROTECTED_PATHS.some(p => pathname === p || pathname.startsWith(`${p}/`))) {
+    const secret = process.env.NEXTAUTH_SECRET
+    if (!secret) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/uk/login'
+      url.searchParams.set('error', 'AUTH_CONFIG')
+      return NextResponse.redirect(url)
+    }
+
+    const token = await getToken({ req: request, secret })
+    if (!token) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/uk/login'
+      url.searchParams.set('callbackUrl', pathname)
+      return NextResponse.redirect(url)
+    }
+  }
 
   // Next.js serves the metadata manifest at `/manifest.webmanifest`.
   // Ensure `/manifest.json` (and any locale-prefixed variants) resolve to the manifest
@@ -41,8 +64,8 @@ export function middleware(request: NextRequest) {
   }
 
   if (!isExcluded(pathname) && !pathname.startsWith('/uk') && !pathname.startsWith('/us')) {
-    const isLocalizedSection = pathname === '/' || pathname.startsWith('/trust') || pathname.startsWith('/guides')
-    if (isLocalizedSection) {
+    const shouldLocalize = REGION_LOCALISED_PREFIXES.some(prefix => pathname === prefix || pathname.startsWith(`${prefix}/`))
+    if (shouldLocalize) {
       const region = detectRegion(request)
       const redirectUrl = request.nextUrl.clone()
       redirectUrl.pathname = `/${region}${pathname === '/' ? '' : pathname}`
