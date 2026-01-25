@@ -17,6 +17,39 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
 }
 
+const SOCIAL_PLACEHOLDER_VALUES = new Set([
+  "https://instagram.com/username",
+  "https://facebook.com/username",
+  "https://tiktok.com/username",
+  "https://linkedin.com/username",
+  "https://twitter.com/username",
+  "https://website.com/username",
+]);
+
+function sanitizeSocialUrl(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  if (SOCIAL_PLACEHOLDER_VALUES.has(trimmed)) return undefined;
+  return trimmed;
+}
+
+function sanitizeProfile(profile: Profile): Profile {
+  const social = profile.socialMedia || {};
+
+  return {
+    ...profile,
+    socialMedia: {
+      instagram: sanitizeSocialUrl(social.instagram),
+      facebook: sanitizeSocialUrl(social.facebook),
+      tiktok: sanitizeSocialUrl(social.tiktok),
+      linkedin: sanitizeSocialUrl(social.linkedin),
+      twitter: sanitizeSocialUrl(social.twitter),
+      website: sanitizeSocialUrl(social.website),
+    },
+  };
+}
+
 export default function ContactPage() {
   const [mounted, setMounted] = useState(false);
   const [profiles, setProfiles] = useState<Profile[]>([defaultProfile]);
@@ -42,7 +75,8 @@ export default function ContactPage() {
     (async () => {
       const state = await loadNbcardLocalState([defaultProfile], []);
       if (cancelled) return;
-      setProfiles(state.profiles);
+      const sanitizedProfiles = state.profiles.map(sanitizeProfile);
+      setProfiles(sanitizedProfiles);
       setContacts(state.contacts);
 
       // Support deep-linking to a specific profile via /contact?profile=<id>
@@ -50,7 +84,7 @@ export default function ContactPage() {
         const params = new URLSearchParams(window.location.search);
         const profileId = params.get("profile");
         if (profileId) {
-          const index = state.profiles.findIndex((p) => p.id === profileId);
+          const index = sanitizedProfiles.findIndex((p) => p.id === profileId);
           if (index >= 0) setCurrentProfileIndex(index);
         }
       } catch {

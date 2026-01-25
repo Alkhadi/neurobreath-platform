@@ -371,26 +371,35 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
           <div>
             <h3 className="text-lg font-bold text-gray-800 mb-3">Social Media Links</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {["instagram", "facebook", "tiktok", "linkedin", "twitter", "website"].map((platform) => (
-                <div key={platform}>
-                  <label
-                    htmlFor={`social-${platform}`}
-                    className="block text-sm font-semibold text-gray-700 mb-2 capitalize"
-                  >
-                    {platform}
+              {([
+                { key: "instagram", label: "Instagram", placeholder: "https://instagram.com/yourname" },
+                { key: "facebook", label: "Facebook", placeholder: "https://facebook.com/yourname" },
+                { key: "tiktok", label: "TikTok", placeholder: "https://tiktok.com/@yourname" },
+                { key: "linkedin", label: "LinkedIn", placeholder: "https://linkedin.com/in/yourname" },
+                { key: "twitter", label: "X (Twitter)", placeholder: "https://x.com/yourname" },
+                { key: "website", label: "Website", placeholder: "https://your-site.com" },
+              ] as const).map(({ key, label, placeholder }) => (
+                <div key={key}>
+                  <label htmlFor={`social-${key}`} className="block text-sm font-semibold text-gray-700 mb-2">
+                    {label}
                   </label>
                   <input
                     type="url"
-                    id={`social-${platform}`}
-                    name={platform}
-                    value={editedProfile.socialMedia?.[platform as keyof typeof editedProfile.socialMedia] ?? ""}
+                    id={`social-${key}`}
+                    name={`social-${key}`}
+                    autoComplete="off"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    inputMode="url"
+                    value={editedProfile.socialMedia?.[key] ?? ""}
                     onChange={(e) =>
                       setEditedProfile({
                         ...editedProfile,
-                        socialMedia: { ...editedProfile.socialMedia, [platform]: e.target.value },
+                        socialMedia: { ...editedProfile.socialMedia, [key]: e.target.value },
                       })
                     }
-                    placeholder={`https://${platform}.com/username`}
+                    placeholder={placeholder}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
                 </div>
