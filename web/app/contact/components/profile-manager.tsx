@@ -51,7 +51,10 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
         }),
       });
 
-      if (!presignedRes.ok) throw new Error("Failed to get upload URL");
+      if (!presignedRes.ok) {
+        const errorText = await presignedRes.text().catch(() => "Failed to get upload URL");
+        throw new Error(errorText || "Failed to get upload URL");
+      }
       const { uploadUrl, cloud_storage_path } = await presignedRes.json();
 
       // Check if Content-Disposition header is required
@@ -85,7 +88,10 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
         }),
       });
 
-      if (!completeRes.ok) throw new Error("Failed to complete upload");
+      if (!completeRes.ok) {
+        const errorText = await completeRes.text().catch(() => "Failed to complete upload");
+        throw new Error(errorText || "Failed to complete upload");
+      }
       const { fileUrl } = await completeRes.json();
 
       setEditedProfile({ ...editedProfile, photoUrl: fileUrl });
@@ -97,7 +103,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
         const dataUrl = await toDataUrl(file);
         setEditedProfile({ ...editedProfile, photoUrl: dataUrl });
         toast.message("Photo stored locally", {
-          description: "Avatar updated on this device. Upload service unavailable.",
+          description: "Cloud upload unavailable; avatar saved on this device.",
         });
       } catch (fallbackError) {
         console.error("Local fallback failed:", fallbackError);
@@ -134,7 +140,10 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
         }),
       });
 
-      if (!presignedRes.ok) throw new Error("Failed to get upload URL");
+      if (!presignedRes.ok) {
+        const errorText = await presignedRes.text().catch(() => "Failed to get upload URL");
+        throw new Error(errorText || "Failed to get upload URL");
+      }
       const { uploadUrl, cloud_storage_path } = await presignedRes.json();
 
       const urlObj = new URL(uploadUrl);
@@ -165,7 +174,10 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
         }),
       });
 
-      if (!completeRes.ok) throw new Error("Failed to complete upload");
+      if (!completeRes.ok) {
+        const errorText = await completeRes.text().catch(() => "Failed to complete upload");
+        throw new Error(errorText || "Failed to complete upload");
+      }
       const { fileUrl } = await completeRes.json();
 
       setEditedProfile({ ...editedProfile, backgroundUrl: fileUrl });
@@ -175,7 +187,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
         const dataUrl = await toDataUrl(file);
         setEditedProfile({ ...editedProfile, backgroundUrl: dataUrl });
         toast.message("Background stored locally", {
-          description: "Card background updated on this device.",
+          description: "Cloud upload unavailable; background saved on this device.",
         });
       } catch (fallbackError) {
         console.error("Background local fallback failed:", fallbackError);

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getFileUrl } from "@/lib/s3";
+import { UploadConfigError, getFileUrl } from "@/lib/s3";
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,6 +18,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ fileUrl });
   } catch (error) {
     console.error("Error completing upload:", error);
+    if (error instanceof UploadConfigError) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 503 }
+      );
+    }
     return NextResponse.json(
       { error: "Failed to complete upload" },
       { status: 500 }
