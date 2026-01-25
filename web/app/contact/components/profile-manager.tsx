@@ -99,7 +99,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
         });
       } catch (fallbackError) {
         console.error("Local fallback failed:", fallbackError);
-        alert("Failed to upload photo");
+        toast.error("Failed to upload photo. Please try a smaller image.");
       }
     } finally {
       setUploading(false);
