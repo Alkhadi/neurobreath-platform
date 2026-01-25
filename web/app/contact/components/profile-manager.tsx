@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { toast } from "sonner";
 import { Profile } from "@/lib/utils";
 import { GradientSelector } from "./gradient-selector";
 import { FaSave, FaTimes, FaTrash } from "react-icons/fa";
@@ -28,6 +29,14 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
     }
 
     setUploading(true);
+    const toDataUrl = (blob: Blob) =>
+      new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error("Failed to read file"));
+        reader.onload = () => resolve(String(reader.result));
+        reader.readAsDataURL(blob);
+      });
+
     try {
       // Get presigned URL
       const presignedRes = await fetch("/api/upload/presigned", {
@@ -80,7 +89,18 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
       setEditedProfile({ ...editedProfile, photoUrl: fileUrl });
     } catch (error) {
       console.error("Upload error:", error);
-      alert("Failed to upload photo");
+
+      // Fallback: store locally as data URL so avatar still updates on this device.
+      try {
+        const dataUrl = await toDataUrl(file);
+        setEditedProfile({ ...editedProfile, photoUrl: dataUrl });
+        toast.message("Photo stored locally", {
+          description: "Avatar updated on this device. Upload service unavailable.",
+        });
+      } catch (fallbackError) {
+        console.error("Local fallback failed:", fallbackError);
+        alert("Failed to upload photo");
+      }
     } finally {
       setUploading(false);
     }

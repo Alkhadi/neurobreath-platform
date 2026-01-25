@@ -204,7 +204,8 @@ export async function POST(req: Request) {
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const to = process.env.CONTACT_TO || "info@neurobreath.co.uk";
+    // Default to the requested inbox if CONTACT_TO is not set.
+    const to = process.env.CONTACT_TO || "alkhadikoroma@yahoo.com";
     const from = process.env.CONTACT_FROM || "NeuroBreath Support <onboarding@resend.dev>";
 
     // 1) Send to your support inbox
