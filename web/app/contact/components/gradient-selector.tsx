@@ -5,9 +5,10 @@ import { gradientOptions } from "@/lib/utils";
 interface GradientSelectorProps {
   selectedGradient: string;
   onSelect: (gradient: string) => void;
+  onClearBackground?: () => void;
 }
 
-export function GradientSelector({ selectedGradient, onSelect }: GradientSelectorProps) {
+export function GradientSelector({ selectedGradient, onSelect, onClearBackground }: GradientSelectorProps) {
   const gradientClassMap: Record<string, string> = {
     'linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)': 'bg-gradient-to-br from-purple-600 to-blue-500',
     'linear-gradient(135deg, #667eea 0%, #764ba2 100%)': 'bg-gradient-to-br from-indigo-500 to-purple-600',
@@ -21,7 +22,18 @@ export function GradientSelector({ selectedGradient, onSelect }: GradientSelecto
 
   return (
     <div className="mb-6">
-      <label className="block text-sm font-semibold text-gray-700 mb-3">Background Style</label>
+      <div className="flex items-center justify-between mb-3">
+        <label className="block text-sm font-semibold text-gray-700">Background Style</label>
+        {onClearBackground && (
+          <button
+            type="button"
+            onClick={onClearBackground}
+            className="text-xs text-purple-700 hover:text-purple-900 underline"
+          >
+            Use gradient
+          </button>
+        )}
+      </div>
       <div className="grid grid-cols-4 gap-3">
         {gradientOptions.map((option, index) => (
           <button

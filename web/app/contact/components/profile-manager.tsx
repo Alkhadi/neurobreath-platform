@@ -18,24 +18,26 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
   const [editedProfile, setEditedProfile] = useState<Profile>(profile);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const backgroundInputRef = useRef<HTMLInputElement>(null);
+
+  const toDataUrl = (blob: Blob) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("Failed to read file"));
+      reader.onload = () => resolve(String(reader.result));
+      reader.readAsDataURL(blob);
+    });
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     if (file.size > 100 * 1024 * 1024) {
-      alert("File size must be less than 100MB");
+      toast.error("File size must be less than 100MB");
       return;
     }
 
     setUploading(true);
-    const toDataUrl = (blob: Blob) =>
-      new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onerror = () => reject(new Error("Failed to read file"));
-        reader.onload = () => resolve(String(reader.result));
-        reader.readAsDataURL(blob);
-      });
 
     try {
       // Get presigned URL
@@ -106,6 +108,84 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
     }
   };
 
+  const handleClearBackground = () => {
+    setEditedProfile({ ...editedProfile, backgroundUrl: undefined });
+  };
+
+  const handleBackgroundUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 100 * 1024 * 1024) {
+      toast.error("File size must be less than 100MB");
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      const presignedRes = await fetch("/api/upload/presigned", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fileName: file.name,
+          contentType: file.type,
+          isPublic: true,
+        }),
+      });
+
+      if (!presignedRes.ok) throw new Error("Failed to get upload URL");
+      const { uploadUrl, cloud_storage_path } = await presignedRes.json();
+
+      const urlObj = new URL(uploadUrl);
+      const signedHeaders = urlObj.searchParams.get("X-Amz-SignedHeaders") ?? "";
+      const needsContentDisposition = signedHeaders.includes("content-disposition");
+
+      const uploadHeaders: Record<string, string> = {
+        "Content-Type": file.type,
+      };
+      if (needsContentDisposition) {
+        uploadHeaders["Content-Disposition"] = "attachment";
+      }
+
+      const uploadRes = await fetch(uploadUrl, {
+        method: "PUT",
+        headers: uploadHeaders,
+        body: file,
+      });
+
+      if (!uploadRes.ok) throw new Error("Failed to upload file");
+
+      const completeRes = await fetch("/api/upload/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cloud_storage_path,
+          isPublic: true,
+        }),
+      });
+
+      if (!completeRes.ok) throw new Error("Failed to complete upload");
+      const { fileUrl } = await completeRes.json();
+
+      setEditedProfile({ ...editedProfile, backgroundUrl: fileUrl });
+    } catch (error) {
+      console.error("Background upload error:", error);
+      try {
+        const dataUrl = await toDataUrl(file);
+        setEditedProfile({ ...editedProfile, backgroundUrl: dataUrl });
+        toast.message("Background stored locally", {
+          description: "Card background updated on this device.",
+        });
+      } catch (fallbackError) {
+        console.error("Background local fallback failed:", fallbackError);
+        toast.error("Failed to upload background. Please try a smaller image.");
+      }
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(editedProfile);
@@ -126,7 +206,47 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
           <GradientSelector
             selectedGradient={editedProfile.gradient}
             onSelect={(gradient) => setEditedProfile({ ...editedProfile, gradient })}
+            onClearBackground={editedProfile.backgroundUrl ? handleClearBackground : undefined}
           />
+
+          {/* Background Upload */}
+          <div>
+            <label htmlFor="profile-background" className="block text-sm font-semibold text-gray-700 mb-2">
+              Card Background (optional)
+            </label>
+            <input
+              ref={backgroundInputRef}
+              id="profile-background"
+              type="file"
+              accept="image/*"
+              onChange={handleBackgroundUpload}
+              className="hidden"
+            />
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => backgroundInputRef.current?.click()}
+                disabled={uploading}
+                className="flex-1 px-4 py-3 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+              >
+                {uploading
+                  ? "Uploading..."
+                  : editedProfile.backgroundUrl
+                  ? "Change Background Image"
+                  : "Upload Background Image"}
+              </button>
+              {editedProfile.backgroundUrl && (
+                <button
+                  type="button"
+                  onClick={handleClearBackground}
+                  className="px-4 py-3 border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                >
+                  Use Gradient
+                </button>
+              )}
+            </div>
+            <p className="mt-2 text-xs text-gray-500">Uploads fall back to your device if the server is unavailable.</p>
+          </div>
 
           {/* Photo Upload */}
           <div>
