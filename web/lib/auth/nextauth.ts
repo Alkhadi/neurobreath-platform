@@ -1,5 +1,8 @@
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
+import AppleProvider from 'next-auth/providers/apple';
+import AzureADProvider from 'next-auth/providers/azure-ad';
 import { verifySync } from 'otplib';
 
 import { prisma } from '@/lib/db';
@@ -11,18 +14,47 @@ function normalizeEmail(email: string): string {
 }
 
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === 'development',
   session: { strategy: 'jwt' },
   pages: {
     signIn: '/uk/login',
     error: '/uk/login',
   },
   providers: [
+    ...(process.env.GOOGLE_CLIENT_ID
+      ? [
+          GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+          }),
+        ]
+      : []),
+    ...(process.env.APPLE_CLIENT_ID && process.env.APPLE_CLIENT_SECRET
+      ? [
+          AppleProvider({
+            clientId: process.env.APPLE_CLIENT_ID,
+            clientSecret: process.env.APPLE_CLIENT_SECRET,
+          }),
+        ]
+      : []),
+    ...(process.env.AZURE_AD_CLIENT_ID
+      ? [
+          AzureADProvider({
+            clientId: process.env.AZURE_AD_CLIENT_ID,
+            clientSecret: process.env.AZURE_AD_CLIENT_SECRET || '',
+            tenantId: process.env.AZURE_AD_TENANT_ID,
+          }),
+        ]
+      : []),
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
         token: { label: 'One-time code', type: 'text' },
+        trustDevice: { label: 'Trust device', type: 'text' },
+        rememberMe: { label: 'Remember me', type: 'text' },
       },
       async authorize(credentials) {
         const emailRaw = credentials?.email;

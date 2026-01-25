@@ -39,7 +39,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const turnstileRequired = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+    const turnstileRequired = process.env.NODE_ENV === 'production' && !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
     if (turnstileRequired) {
       if (!turnstileToken) {
         return Response.json({ ok: false, message: 'Spam protection required' }, { status: 400 });
@@ -80,9 +80,20 @@ export async function POST(req: Request) {
 
     const msg = error instanceof Error ? error.message : 'Server error';
     const isMisconfig = msg.includes('PASSWORD_PEPPER');
+    const isMissingTable = msg.includes('AuthUser') && (msg.includes('does not exist') || msg.includes('relation'));
+    const isDbError = msg.includes('P1001') || msg.includes('ECONNREFUSED') || msg.includes('PrismaClientInitializationError');
 
     return Response.json(
-      { ok: false, message: isMisconfig ? 'Server auth is not configured yet' : 'Registration failed' },
+      {
+        ok: false,
+        message: isMisconfig
+          ? 'Server auth is not configured yet'
+          : isMissingTable
+          ? 'Auth database tables are not ready yet. Run Prisma migrations and try again.'
+          : isDbError
+          ? 'Database unavailable'
+          : 'Registration failed',
+      },
       { status: 500 }
     );
   }

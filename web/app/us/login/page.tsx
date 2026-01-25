@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { signIn } from 'next-auth/react';
+import { getProviders, signIn } from 'next-auth/react';
 import {
   Eye,
   EyeOff,
@@ -196,6 +196,8 @@ export default function UsLoginPage() {
         redirect: false,
         email,
         password,
+        trustDevice: trustDevice ? 'true' : 'false',
+        rememberMe: rememberMe ? 'true' : 'false',
       });
 
       if (res?.error === '2FA_REQUIRED') {
@@ -207,6 +209,12 @@ export default function UsLoginPage() {
         return;
       }
 
+      if (res?.error) {
+        setMessage({ type: 'error', text: 'Sign in failed. Please check your details and try again.' });
+        handleFailedAttempt();
+        return;
+      }
+
       if (!res?.ok) {
         handleFailedAttempt();
         return;
@@ -215,6 +223,11 @@ export default function UsLoginPage() {
       // Success - clear attempts and redirect
       clearStoredAttempts();
       router.push(callbackUrl);
+    } catch {
+      setMessage({
+        type: 'error',
+        text: 'Sign in failed. Please try again in a moment.',
+      });
     } finally {
       setLoading(false);
     }
@@ -231,11 +244,18 @@ export default function UsLoginPage() {
         email,
         password,
         token: otp,
+        trustDevice: trustDevice ? 'true' : 'false',
+        rememberMe: rememberMe ? 'true' : 'false',
       });
 
       if (res?.error === 'INVALID_OTP') {
         setMessage({ type: 'error', text: 'Invalid code. Please check and try again.' });
         setOtp('');
+        return;
+      }
+
+      if (res?.error) {
+        setMessage({ type: 'error', text: 'Sign in failed. Please try again.' });
         return;
       }
 
@@ -246,6 +266,8 @@ export default function UsLoginPage() {
 
       clearStoredAttempts();
       router.push(callbackUrl);
+    } catch {
+      setMessage({ type: 'error', text: 'Sign in failed. Please try again.' });
     } finally {
       setLoading(false);
     }
@@ -271,8 +293,16 @@ export default function UsLoginPage() {
     setMessage(null);
 
     try {
-      // Simulate magic link request - in production, this would call an API
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const providers = await getProviders();
+      if (!providers?.email) {
+        setMessage({ type: 'error', text: 'Email sign-in is not configured yet.' });
+        return;
+      }
+      const res = await signIn('email', { email, callbackUrl, redirect: false });
+      if (res?.error) {
+        setMessage({ type: 'error', text: 'Failed to send sign-in link. Please try again.' });
+        return;
+      }
       setStep('magic-link-sent');
       setMessage({
         type: 'success',
