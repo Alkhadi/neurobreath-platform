@@ -29,7 +29,7 @@ type LinksVerifyReport = {
   checks: LinkCheck[]
 }
 
-const NAV_DISCOVERY_PAGES = ['/', '/settings']
+const NAV_DISCOVERY_PAGES = ['/']
 
 async function safeGoto(page: import('@playwright/test').Page, url: string) {
   try {

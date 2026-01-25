@@ -170,8 +170,18 @@ export default function UsLoginPage() {
 
   const errorBanner = useMemo(() => {
     if (error === 'AUTH_CONFIG') return 'Login is not configured yet. Please try again later.';
-    if (error === 'OAuthAccountNotLinked') return 'This email is already associated with a different sign-in method.';
+    if (error === 'OAuthAccountNotLinked') return 'This email is already linked to a different sign-in method.';
     if (error === 'AccessDenied') return 'Access denied. Please contact support if you believe this is an error.';
+    if (error === 'OAuthSignin') return 'Error connecting to sign-in provider. Please try again.';
+    if (error === 'OAuthCallback') return 'Error during sign-in. Please try again.';
+    if (error === 'OAuthCreateAccount') return 'Could not create account. Please try another method.';
+    if (error === 'EmailCreateAccount') return 'Could not create account with this email.';
+    if (error === 'Callback') return 'Sign-in error occurred. Please try again.';
+    if (error === 'OAuthAccountNotLinked') return 'This email is already linked to a different sign-in method.';
+    if (error === 'EmailSignin') return 'Unable to send email. Please check your email address.';
+    if (error === 'CredentialsSignin') return 'Invalid email or password.';
+    if (error === 'SessionRequired') return 'Please sign in to continue.';
+    if (error === 'Default') return 'An error occurred during sign-in. Please try again.';
     return null;
   }, [error]);
 
