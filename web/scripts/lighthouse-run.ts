@@ -7,8 +7,6 @@ import * as chromeLauncher from 'chrome-launcher'
 
 import { withLocalServer } from './utils/local-server'
 
-const DEFAULT_BASE_URL = 'http://localhost:3000'
-
 const PAGES = [
   { name: 'home', path: '/' },
   { name: 'tools', path: '/tools' },

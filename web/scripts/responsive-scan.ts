@@ -5,8 +5,6 @@ import { chromium } from '@playwright/test'
 
 import { withLocalServer } from './utils/local-server'
 
-const DEFAULT_BASE_URL = 'http://localhost:3000'
-
 const VIEWPORTS = [
   { name: 'small-phone', width: 360, height: 740 },
   { name: 'iphone-12-class', width: 390, height: 844 },

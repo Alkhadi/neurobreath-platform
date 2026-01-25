@@ -29,9 +29,31 @@ type LinksVerifyReport = {
   checks: LinkCheck[]
 }
 
-const DEFAULT_BASE_URL = 'http://localhost:3000'
-
 const NAV_DISCOVERY_PAGES = ['/', '/settings']
+
+async function safeGoto(page: import('@playwright/test').Page, url: string) {
+  try {
+    await page.goto(url, { waitUntil: 'domcontentloaded' })
+    return
+  } catch (err) {
+    const msg = String((err as Error)?.message ?? err)
+    if (msg.includes('net::ERR_ABORTED')) {
+      try {
+        await page.waitForLoadState('domcontentloaded', { timeout: 15000 })
+      } catch {
+        // ignore
+      }
+
+      const finalUrl = page.url()
+      if (finalUrl && finalUrl !== url) {
+        // eslint-disable-next-line no-console
+        console.log(`[links:verify] NOTE: navigation redirected/aborted: ${url} -> ${finalUrl}`)
+        return
+      }
+    }
+    throw err
+  }
+}
 
 function applyConsentSeed(page: import('@playwright/test').Page) {
   return page.addInitScript(() => {
@@ -120,7 +142,7 @@ async function discoverInternalLinksFromDom(baseURL: string): Promise<{ links: s
 
   try {
     for (const url of NAV_DISCOVERY_PAGES) {
-      await page.goto(url, { waitUntil: 'domcontentloaded' })
+      await safeGoto(page, url)
       await collectAnchors()
 
       // Open mega menus to reveal their links
