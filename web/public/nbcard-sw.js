@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-globals */
 
-const CACHE_NAME = 'nbcard-v1';
+// Bump this to force clients to drop old cached /contact assets.
+const CACHE_NAME = 'nbcard-v2';
 const CORE_URLS = [
   '/contact',
   '/manifest.json',
