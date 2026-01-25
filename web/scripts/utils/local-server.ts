@@ -92,14 +92,35 @@ function startNextServer(port: number) {
 }
 
 export async function withLocalServer<T>(fn: (baseURL: string) => Promise<T>, opts: WithServerOptions = {}) {
+  const envBaseURL = process.env.BASE_URL
+  const requestedBaseURL = (opts.baseURL ?? envBaseURL)?.replace(/\/$/, '')
   const preferredPort = opts.port ?? Number(process.env.LOCAL_SERVER_PORT || 3000)
   const healthPath = opts.healthPath ?? '/api/health'
 
-  // If BASE_URL is explicitly set, assume caller manages server.
-  if (process.env.BASE_URL) {
-    const baseURL = process.env.BASE_URL.replace(/\/$/, '')
-    await waitForHealth(`${baseURL}${healthPath}`, 30_000)
-    return fn(baseURL)
+  // If a baseURL is explicitly provided, prefer it. If it's local and not healthy,
+  // start a server for it (so gates can run with BASE_URL=http://localhost:3001).
+  if (requestedBaseURL) {
+    try {
+      const url = new URL(requestedBaseURL)
+      const isLocalhost = url.hostname === 'localhost' || url.hostname === '127.0.0.1'
+      const requestedPort = url.port ? Number(url.port) : url.protocol === 'https:' ? 443 : 80
+
+      if (!isLocalhost) {
+        await waitForHealth(`${requestedBaseURL}${healthPath}`, 30_000)
+        return fn(requestedBaseURL)
+      }
+
+      try {
+        await waitForHealth(`${requestedBaseURL}${healthPath}`, 2_500)
+        return fn(requestedBaseURL)
+      } catch {
+        // fall through to managed server startup on requested port
+      }
+
+      opts = { ...opts, port: requestedPort, reuseExisting: false }
+    } catch {
+      // If BASE_URL is malformed, ignore and proceed with managed server.
+    }
   }
 
   // Prefer reusing an already-running server on the preferred port if it's healthy.
@@ -114,7 +135,7 @@ export async function withLocalServer<T>(fn: (baseURL: string) => Promise<T>, op
   }
 
   // If the preferred port is occupied but unhealthy, don't fight it; pick another port.
-  const port = await pickPort(preferredPort)
+  const port = await pickPort(opts.port ?? preferredPort)
   const baseURL = `http://localhost:${port}`
   const healthUrl = `${baseURL}${healthPath}`
 

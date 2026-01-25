@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getProviders, signIn } from 'next-auth/react';
+import type { ClientSafeProvider } from 'next-auth/react';
+import Cookies from 'js-cookie';
 import {
   Eye,
   EyeOff,
@@ -123,12 +125,23 @@ export default function UsLoginPage() {
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [lockedUntil, setLockedUntil] = useState<number | null>(null);
   const [countdown, setCountdown] = useState(0);
+  const [availableProviders, setAvailableProviders] = useState<Record<string, ClientSafeProvider> | null>(null);
+  const [deviceToken, setDeviceToken] = useState<string | null>(null);
 
-  // Load stored attempts on mount
+  // Load stored attempts and device token on mount
   useEffect(() => {
     const stored = getStoredAttempts();
     setLoginAttempts(stored.count);
     setLockedUntil(stored.lockedUntil);
+    
+    // Load device token cookie
+    const token = Cookies.get('nb_device_token');
+    if (token) {
+      setDeviceToken(token);
+    }
+    
+    // Load available providers
+    getProviders().then(setAvailableProviders);
   }, []);
 
   // Countdown timer for lockout
@@ -198,6 +211,7 @@ export default function UsLoginPage() {
         password,
         trustDevice: trustDevice ? 'true' : 'false',
         rememberMe: rememberMe ? 'true' : 'false',
+        deviceToken: deviceToken || '',
       });
 
       if (res?.error === '2FA_REQUIRED') {
@@ -222,6 +236,10 @@ export default function UsLoginPage() {
 
       // Success - clear attempts and redirect
       clearStoredAttempts();
+      // Store device token if trust device was enabled
+      if (trustDevice && res?.url) {
+        // Token should be in session, client will get it after redirect
+      }
       router.push(callbackUrl);
     } catch {
       setMessage({
@@ -246,6 +264,7 @@ export default function UsLoginPage() {
         token: otp,
         trustDevice: trustDevice ? 'true' : 'false',
         rememberMe: rememberMe ? 'true' : 'false',
+        deviceToken: deviceToken || '',
       });
 
       if (res?.error === 'INVALID_OTP') {
@@ -293,9 +312,10 @@ export default function UsLoginPage() {
     setMessage(null);
 
     try {
-      const providers = await getProviders();
-      if (!providers?.email) {
-        setMessage({ type: 'error', text: 'Email sign-in is not configured yet.' });
+      // Check if email provider is configured
+      if (!availableProviders?.email) {
+        setMessage({ type: 'error', text: 'Email sign-in is not configured yet (SMTP not set up).' });
+        setMagicLinkLoading(false);
         return;
       }
       const res = await signIn('email', { email, callbackUrl, redirect: false });
@@ -354,7 +374,7 @@ export default function UsLoginPage() {
                   Account temporarily locked. Try again in{' '}
                   <span className="font-mono font-semibold">{formatCountdown(countdown)}</span>
                   {' '}or{' '}
-                  <Link href="/us/password-reset" className="underline font-medium">
+                  <Link href="/uk/password-reset" className="underline font-medium">
                     reset your password
                   </Link>
                   .
@@ -387,65 +407,73 @@ export default function UsLoginPage() {
 
             {step === 'credentials' && (
               <>
-                {/* Social login buttons */}
-                <div className="grid grid-cols-3 gap-3">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="w-full"
-                        onClick={() => handleSocialSignIn('google')}
-                        disabled={isLocked || loading || socialLoading !== null}
-                      >
-                        {socialLoading === 'google' ? (
-                          <Loader2 className="h-5 w-5 animate-spin" />
-                        ) : (
-                          <GoogleIcon className="h-5 w-5" />
-                        )}
-                        <span className="sr-only">Sign in with Google</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Sign in with Google</TooltipContent>
-                  </Tooltip>
+                {/* Social login buttons - only show if providers are configured */}
+                {(availableProviders?.google || availableProviders?.apple || availableProviders?.['azure-ad']) && (
+                    <div className="grid grid-cols-3 gap-3">
+                    {availableProviders?.google && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className="w-full"
+                            onClick={() => handleSocialSignIn('google')}
+                            disabled={isLocked || loading || socialLoading !== null}
+                          >
+                            {socialLoading === 'google' ? (
+                              <Loader2 className="h-5 w-5 animate-spin" />
+                            ) : (
+                              <GoogleIcon className="h-5 w-5" />
+                            )}
+                            <span className="sr-only">Sign in with Google</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Sign in with Google</TooltipContent>
+                      </Tooltip>
+                    )}
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="w-full"
-                        onClick={() => handleSocialSignIn('apple')}
-                        disabled={isLocked || loading || socialLoading !== null}
-                      >
-                        {socialLoading === 'apple' ? (
-                          <Loader2 className="h-5 w-5 animate-spin" />
-                        ) : (
-                          <AppleIcon className="h-5 w-5" />
-                        )}
-                        <span className="sr-only">Sign in with Apple</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Sign in with Apple</TooltipContent>
-                  </Tooltip>
+                    {availableProviders?.apple && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className="w-full"
+                            onClick={() => handleSocialSignIn('apple')}
+                            disabled={isLocked || loading || socialLoading !== null}
+                          >
+                            {socialLoading === 'apple' ? (
+                              <Loader2 className="h-5 w-5 animate-spin" />
+                            ) : (
+                              <AppleIcon className="h-5 w-5" />
+                            )}
+                            <span className="sr-only">Sign in with Apple</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Sign in with Apple</TooltipContent>
+                      </Tooltip>
+                    )}
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="w-full"
-                        onClick={() => handleSocialSignIn('azure-ad')}
-                        disabled={isLocked || loading || socialLoading !== null}
-                      >
-                        {socialLoading === 'azure-ad' ? (
-                          <Loader2 className="h-5 w-5 animate-spin" />
-                        ) : (
-                          <MicrosoftIcon className="h-5 w-5" />
-                        )}
-                        <span className="sr-only">Sign in with Microsoft</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Sign in with Microsoft</TooltipContent>
-                  </Tooltip>
-                </div>
+                    {availableProviders?.['azure-ad'] && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className="w-full"
+                            onClick={() => handleSocialSignIn('azure-ad')}
+                            disabled={isLocked || loading || socialLoading !== null}
+                          >
+                            {socialLoading === 'azure-ad' ? (
+                              <Loader2 className="h-5 w-5 animate-spin" />
+                            ) : (
+                              <MicrosoftIcon className="h-5 w-5" />
+                            )}
+                            <span className="sr-only">Sign in with Microsoft</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Sign in with Microsoft</TooltipContent>
+                      </Tooltip>
+                    )}
+                  </div>
+                )}
 
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
@@ -481,7 +509,7 @@ export default function UsLoginPage() {
                     <div className="flex items-center justify-between">
                       <Label htmlFor="password">Password</Label>
                       <Link
-                        href="/us/password-reset"
+                        href="/uk/password-reset"
                         className="text-xs text-muted-foreground hover:text-primary transition-colors"
                         tabIndex={-1}
                       >
@@ -585,7 +613,8 @@ export default function UsLoginPage() {
                   variant="outline"
                   className="w-full"
                   onClick={handleMagicLink}
-                  disabled={loading || magicLinkLoading || isLocked || !email}
+                  disabled={loading || magicLinkLoading || isLocked || !email || !availableProviders?.email}
+                  title={!availableProviders?.email ? 'Email sign-in is not configured' : undefined}
                 >
                   {magicLinkLoading ? (
                     <>

@@ -104,7 +104,7 @@ async function checkUrl(url: string, timeoutMs = 30_000): Promise<LinkCheck> {
       signal: controller.signal,
     }).catch(() => null)
 
-    const response = head ?? (await fetch(url, { method: 'GET', redirect: 'follow', signal: controller.signal }))
+    const response = head && head.status < 400 ? head : await fetch(url, { method: 'GET', redirect: 'follow', signal: controller.signal })
     const ok = response.status >= 200 && response.status < 400
 
     return { url, status: response.status, ok }
@@ -149,7 +149,7 @@ async function discoverInternalLinksFromDom(baseURL: string): Promise<{ links: s
       for (const name of ['Conditions', 'Breathing & Focus', 'Tools', 'Resources']) {
         const trigger = page.getByRole('button', { name: new RegExp(`^${name}$`, 'i') })
         if (await trigger.count()) {
-          await trigger.first().click()
+          await trigger.first().click({ force: true })
           await page.waitForTimeout(100)
           await collectAnchors()
           await page.keyboard.press('Escape')
