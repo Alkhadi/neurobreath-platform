@@ -563,6 +563,12 @@ export default function ContactPage() {
         </div>
         </section>
 
+        {/* Gradient Divider */}
+        <div className="my-12">
+          <div className="h-px w-full bg-gradient-to-r from-purple-200 via-blue-200 to-purple-200" />
+          <div className="mt-6 h-10 w-full rounded-2xl bg-gradient-to-r from-purple-50 via-blue-50 to-pink-50 opacity-70" />
+        </div>
+
         {/* Section B: NBCard Profile & Contact Capture */}
         <section aria-labelledby="nbcard-profile-heading" className="mt-4">
           <div className="text-center mb-6">
