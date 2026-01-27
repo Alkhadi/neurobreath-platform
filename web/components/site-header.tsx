@@ -503,7 +503,7 @@ export function SiteHeader() {
                 <h4 className="nb-mega-menu-heading">Downloads</h4>
                 <Link href="/downloads" onClick={closeMegaMenu}>📥 Downloadable Resources</Link>
                 <Link href="/resources" onClick={closeMegaMenu}>📚 Resource Library</Link>
-                <Link href="/resources/nb-card" onClick={closeMegaMenu}>💳 NB-Card</Link>
+                <Link href={`${regionPrefix}/resources/nb-card`} onClick={closeMegaMenu}>💳 NB-Card</Link>
               </div>
               <div className="nb-mega-menu-section">
                 <h4 className="nb-mega-menu-heading">About</h4>
