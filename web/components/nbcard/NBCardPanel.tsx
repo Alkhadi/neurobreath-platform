@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { FaChevronDown, FaDownload, FaEdit, FaPlus, FaUsers } from "react-icons/fa";
 
@@ -73,6 +73,30 @@ export function NBCardPanel() {
   const [showInstallButton, setShowInstallButton] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
 
+  const handleInstallClick = useCallback(async () => {
+    if (isInstalled) {
+      toast.message("NB-Card is already installed");
+      return;
+    }
+
+    if (!deferredPrompt) {
+      toast.message("Install prompt not available", {
+        description: "Use your browser menu (or iOS Safari Share → Add to Home Screen).",
+      });
+      return;
+    }
+
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+
+    if (outcome === "accepted") {
+      console.log("User accepted the install prompt");
+    }
+
+    setDeferredPrompt(null);
+    setShowInstallButton(false);
+  }, [deferredPrompt, isInstalled]);
+
   // Load NBCard state + set up PWA install prompt
   useEffect(() => {
     let cancelled = false;
@@ -119,6 +143,7 @@ export function NBCardPanel() {
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
+
     const media = window.matchMedia?.("(display-mode: standalone)");
     const onDisplayModeChange = () => updateInstalled();
 
@@ -143,6 +168,15 @@ export function NBCardPanel() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    const handleInstallRequest = () => {
+      handleInstallClick().catch(() => undefined);
+    };
+
+    window.addEventListener("nbcard:install-request", handleInstallRequest);
+    return () => window.removeEventListener("nbcard:install-request", handleInstallRequest);
+  }, [handleInstallClick]);
 
   // Persist profiles + contacts (local-first)
   useEffect(() => {
@@ -217,30 +251,6 @@ export function NBCardPanel() {
     if (confirm("Are you sure you want to delete this contact?")) {
       setContacts(contacts.filter((c) => c.id !== id));
     }
-  };
-
-  const handleInstallClick = async () => {
-    if (isInstalled) {
-      toast.message("NB-Card is already installed");
-      return;
-    }
-
-    if (!deferredPrompt) {
-      toast.message("Install prompt not available", {
-        description: "Please use your browser's menu to install the app.",
-      });
-      return;
-    }
-
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-
-    if (outcome === "accepted") {
-      console.log("User accepted the install prompt");
-    }
-
-    setDeferredPrompt(null);
-    setShowInstallButton(false);
   };
 
   return (
@@ -375,14 +385,14 @@ export function NBCardPanel() {
         ) : null}
 
         {/* Install Button */}
-        {!isInstalled && showInstallButton && (
+        {!isInstalled && (
           <div className="mb-4">
             <button
               onClick={handleInstallClick}
               className="w-full max-w-md mx-auto flex items-center justify-center gap-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-4 rounded-xl hover:shadow-lg transition-all font-bold text-lg"
             >
               <FaDownload className="text-2xl" />
-              Install NBCard App Now
+              {deferredPrompt || showInstallButton ? "Install NBCard App Now" : "Install NBCard (see instructions below)"}
             </button>
           </div>
         )}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 import { NBCardPanel } from "@/components/nbcard/NBCardPanel";
+import { NBCardJumpLinks } from "@/components/nbcard/NBCardJumpLinks";
 
 export const metadata: Metadata = {
   title: "NB-Card — Digital Business Card",
@@ -39,20 +40,7 @@ export default function NBCardPage() {
               </div>
             </div>
 
-            <div className="md:ml-auto flex flex-col sm:flex-row gap-3">
-              <a
-                href="#nbcard-install"
-                className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 font-semibold hover:shadow-lg transition-all"
-              >
-                Download / Install
-              </a>
-              <a
-                href="#nbcard-app"
-                className="inline-flex items-center justify-center rounded-xl border border-purple-200 bg-white text-gray-800 px-6 py-3 font-semibold hover:bg-purple-50 transition-all"
-              >
-                Open App
-              </a>
-            </div>
+            <NBCardJumpLinks />
           </div>
 
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
