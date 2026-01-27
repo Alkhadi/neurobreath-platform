@@ -9,15 +9,21 @@ export type NbcardLocalState = {
   updatedAt: string; // ISO
 };
 
-const STORAGE_KEY_PROFILES = 'nbcard_profiles';
-const STORAGE_KEY_CONTACTS = 'nbcard_contacts';
-const STORAGE_KEY_UPDATED_AT = 'nbcard_updated_at';
+// Versioned keys ensure future website updates don't overwrite user data.
+const STORAGE_KEY_PROFILES = 'nbcard:v1:profiles';
+const STORAGE_KEY_CONTACTS = 'nbcard:v1:contacts';
+const STORAGE_KEY_UPDATED_AT = 'nbcard:v1:updatedAt';
+
+// Backwards-compatible legacy keys (read-only migration).
+const LEGACY_KEY_PROFILES = 'nbcard_profiles';
+const LEGACY_KEY_CONTACTS = 'nbcard_contacts';
+const LEGACY_KEY_UPDATED_AT = 'nbcard_updated_at';
 
 const DB_NAME = 'nbcard';
 const DB_VERSION = 1;
 const STORE_KV = 'kv';
 
-type KvKey = typeof STORAGE_KEY_PROFILES | typeof STORAGE_KEY_CONTACTS | typeof STORAGE_KEY_UPDATED_AT;
+type KvKey = string;
 
 let dbPromise: Promise<IDBPDatabase> | null = null;
 
@@ -80,10 +86,24 @@ async function kvDel(key: KvKey): Promise<void> {
 }
 
 export async function loadNbcardLocalState(fallbackProfiles: Profile[], fallbackContacts: Contact[] = []): Promise<NbcardLocalState> {
-  const [profiles, contacts, updatedAt] = await Promise.all([
+  const [profilesV1, contactsV1, updatedAtV1, profilesLegacy, contactsLegacy, updatedAtLegacy] = await Promise.all([
     kvGet<Profile[]>(STORAGE_KEY_PROFILES),
     kvGet<Contact[]>(STORAGE_KEY_CONTACTS),
     kvGet<string>(STORAGE_KEY_UPDATED_AT),
+    kvGet<Profile[]>(LEGACY_KEY_PROFILES),
+    kvGet<Contact[]>(LEGACY_KEY_CONTACTS),
+    kvGet<string>(LEGACY_KEY_UPDATED_AT),
+  ]);
+
+  // One-way migration: if v1 is missing but legacy exists, copy forward.
+  const profiles = profilesV1 ?? profilesLegacy;
+  const contacts = contactsV1 ?? contactsLegacy;
+  const updatedAt = updatedAtV1 ?? updatedAtLegacy;
+
+  await Promise.all([
+    profilesV1 ? Promise.resolve() : profilesLegacy ? kvSet(STORAGE_KEY_PROFILES, profilesLegacy) : Promise.resolve(),
+    contactsV1 ? Promise.resolve() : contactsLegacy ? kvSet(STORAGE_KEY_CONTACTS, contactsLegacy) : Promise.resolve(),
+    updatedAtV1 ? Promise.resolve() : updatedAtLegacy ? kvSet(STORAGE_KEY_UPDATED_AT, updatedAtLegacy) : Promise.resolve(),
   ]);
 
   return {
