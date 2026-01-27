@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { FaChevronDown, FaDownload, FaEdit, FaPlus, FaUsers } from "react-icons/fa";
+import { FaChevronDown, FaEdit, FaPlus, FaUsers } from "react-icons/fa";
 
 import type { Contact, Profile } from "@/lib/utils";
 import { defaultProfile } from "@/lib/utils";
@@ -12,11 +12,6 @@ import { ContactCapture } from "@/app/contact/components/contact-capture";
 import { ProfileCard } from "@/app/contact/components/profile-card";
 import { ProfileManager } from "@/app/contact/components/profile-manager";
 import { ShareButtons } from "@/app/contact/components/share-buttons";
-
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
-}
 
 const SOCIAL_PLACEHOLDER_VALUES = new Set([
   "https://instagram.com/username",
@@ -69,35 +64,9 @@ export function NBCardPanel() {
   const [editingProfile, setEditingProfile] = useState<Profile | null>(null);
   const [isNewProfile, setIsNewProfile] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [showInstallButton, setShowInstallButton] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
 
-  const handleInstallClick = useCallback(async () => {
-    if (isInstalled) {
-      toast.message("NB-Card is already installed");
-      return;
-    }
-
-    if (!deferredPrompt) {
-      toast.message("Install prompt not available", {
-        description: "Use your browser menu (or iOS Safari Share → Add to Home Screen).",
-      });
-      return;
-    }
-
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-
-    if (outcome === "accepted") {
-      console.log("User accepted the install prompt");
-    }
-
-    setDeferredPrompt(null);
-    setShowInstallButton(false);
-  }, [deferredPrompt, isInstalled]);
-
-  // Load NBCard state + set up PWA install prompt
+  // Load NBCard state + register SW
   useEffect(() => {
     let cancelled = false;
     setMounted(true);
@@ -134,16 +103,6 @@ export function NBCardPanel() {
     const updateInstalled = () => setIsInstalled(detectStandalone());
     updateInstalled();
 
-    // PWA Install Prompt
-    const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-      setShowInstallButton(true);
-    };
-
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-
-
     const media = window.matchMedia?.("(display-mode: standalone)");
     const onDisplayModeChange = () => updateInstalled();
 
@@ -158,7 +117,6 @@ export function NBCardPanel() {
 
     return () => {
       cancelled = true;
-      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
       window.removeEventListener("appinstalled", updateInstalled);
 
       if (media?.removeEventListener) {
@@ -168,15 +126,6 @@ export function NBCardPanel() {
       }
     };
   }, []);
-
-  useEffect(() => {
-    const handleInstallRequest = () => {
-      handleInstallClick().catch(() => undefined);
-    };
-
-    window.addEventListener("nbcard:install-request", handleInstallRequest);
-    return () => window.removeEventListener("nbcard:install-request", handleInstallRequest);
-  }, [handleInstallClick]);
 
   // Persist profiles + contacts (local-first)
   useEffect(() => {
@@ -371,7 +320,7 @@ export function NBCardPanel() {
       <div id="nbcard-install" className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl shadow-xl p-6">
         <div className="text-center mb-4">
           <h3 className="text-2xl font-bold text-gray-800 mb-2">Install as App</h3>
-          <p className="text-gray-600">Add NBCard to your home screen for quick access and offline functionality.</p>
+          <p className="text-gray-600">Use the “Download & Install NB-Card” button at the top of the page, or follow the steps below.</p>
         </div>
 
         {/* Installed State */}
@@ -384,18 +333,7 @@ export function NBCardPanel() {
           </div>
         ) : null}
 
-        {/* Install Button */}
-        {!isInstalled && (
-          <div className="mb-4">
-            <button
-              onClick={handleInstallClick}
-              className="w-full max-w-md mx-auto flex items-center justify-center gap-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-4 rounded-xl hover:shadow-lg transition-all font-bold text-lg"
-            >
-              <FaDownload className="text-2xl" />
-              {deferredPrompt || showInstallButton ? "Install NBCard App Now" : "Install NBCard (see instructions below)"}
-            </button>
-          </div>
-        )}
+        {/* Install button removed: primary one-shot install is handled by the page CTA */}
 
         {/* Manual Install Instructions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
