@@ -564,9 +564,9 @@ export default function ContactPage() {
         </section>
 
         {/* Gradient Divider */}
-        <div className="my-12">
-          <div className="h-px w-full bg-gradient-to-r from-purple-200 via-blue-200 to-purple-200" />
-          <div className="mt-6 h-10 w-full rounded-2xl bg-gradient-to-r from-purple-50 via-blue-50 to-pink-50 opacity-70" />
+        <div className="my-12" aria-hidden="true">
+          <div className="h-[2px] w-full bg-gradient-to-r from-purple-300 via-blue-300 to-pink-300 opacity-70" />
+          <div className="mt-4 h-4 w-full rounded-full bg-gradient-to-r from-purple-100 via-blue-100 to-pink-100 opacity-90 shadow-sm" />
         </div>
 
         {/* Section B: NBCard Profile & Contact Capture */}
