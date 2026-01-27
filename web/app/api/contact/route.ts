@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { Resend } from "resend";
+import { randomBytes } from "crypto";
 
 export const runtime = "nodejs";
 
@@ -20,6 +21,27 @@ type TurnstileVerifyResponse = {
 const RATE_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
 const RATE_MAX = 5; // max submissions per IP per window
 const rateMap = new Map<string, { count: number; resetAt: number }>();
+
+function stripNewlines(value: string) {
+  return value.replace(/[\r\n]+/g, " ").trim();
+}
+
+function formatYmd(date: Date) {
+  const y = String(date.getFullYear());
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}${m}${d}`;
+}
+
+function generateTicketId(now = new Date()) {
+  const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const bytes = randomBytes(6);
+  let code = "";
+  for (let i = 0; i < 6; i += 1) {
+    code += alphabet[bytes[i] % alphabet.length];
+  }
+  return `NB-${formatYmd(now)}-${code}`;
+}
 
 function getClientIp(req: Request) {
   // Vercel provides x-forwarded-for. If you also proxy through Cloudflare, CF-Connecting-IP may exist.
@@ -50,10 +72,10 @@ function rateLimit(ip: string) {
 }
 
 const Schema = z.object({
-  name: z.string().min(2).max(80),
-  email: z.string().email().max(200),
-  subject: z.string().min(2).max(140),
-  message: z.string().min(10).max(5000),
+  name: z.preprocess((v) => stripNewlines(String(v ?? "")), z.string().min(1).max(80)),
+  email: z.preprocess((v) => stripNewlines(String(v ?? "")), z.string().email().max(254)),
+  subject: z.preprocess((v) => stripNewlines(String(v ?? "")), z.string().min(1).max(120)),
+  message: z.preprocess((v) => String(v ?? "").trim(), z.string().min(5).max(4000)),
 
   // Optional metadata
   organization: z.preprocess(
@@ -67,6 +89,12 @@ const Schema = z.object({
 
   // Honeypot (bots fill it)
   company: z.preprocess(
+    (v) => (typeof v === "string" && v.trim().length === 0 ? undefined : v),
+    z.string().max(200).optional()
+  ),
+
+  // Honeypot (bots fill it)
+  website: z.preprocess(
     (v) => (typeof v === "string" && v.trim().length === 0 ? undefined : v),
     z.string().max(200).optional()
   ),
@@ -126,6 +154,7 @@ export function GET() {
 
 export async function POST(req: Request) {
   try {
+    const ticketId = generateTicketId();
     const ip = getClientIp(req);
 
     // Rate limit first (cheap)
@@ -147,11 +176,11 @@ export async function POST(req: Request) {
       return Response.json({ ok: false, error: "Invalid form data" }, { status: 400 });
     }
 
-    const { name, email, subject, message, organization, phone, company, turnstileToken } = parsed.data;
+    const { name, email, subject, message, organization, phone, company, website, turnstileToken } = parsed.data;
 
-    // Honeypot: silently accept, but do not send
-    if (company && company.trim().length > 0) {
-      return Response.json({ ok: true });
+    // Honeypot: reject if filled
+    if ((company && company.trim().length > 0) || (website && website.trim().length > 0)) {
+      return Response.json({ ok: false, error: "Invalid form data" }, { status: 400 });
     }
 
     // Turnstile validation (strict anti-spam)
@@ -199,24 +228,25 @@ export async function POST(req: Request) {
         phone,
         message: message.substring(0, 100),
       });
-      return Response.json({ ok: true, dev: true });
+      return Response.json({ ok: true, dev: true, ticketId, adminEmailId: "dev" });
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    // Default to the requested inbox if CONTACT_TO is not set.
-    const to = process.env.CONTACT_TO || "alkhadikoroma@yahoo.com";
+    const to = "admin@neurobreath.co.uk";
     const from = process.env.CONTACT_FROM || "NeuroBreath Support <onboarding@resend.dev>";
 
     // 1) Send to your support inbox
     const adminSend = await resend.emails.send({
       from,
       to,
-      subject: `[Contact] ${subject}`,
+      subject: `[Contact] ${subject} (${ticketId})`,
       replyTo: email,
       text:
+        `Ticket: ${ticketId}\n` +
         `Name: ${name}\n` +
         `Email: ${email}\n` +
+        `Subject: ${subject}\n` +
         (organization ? `Organisation: ${organization}\n` : "") +
         (phone ? `Phone: ${phone}\n` : "") +
         `IP: ${ip}\n\n` +
@@ -259,24 +289,111 @@ export async function POST(req: Request) {
 
     console.log("Admin email sent successfully:", adminSend.data?.id);
 
-    // 2) Auto-responder to the user (best-effort)
+    const adminEmailId = adminSend.data?.id;
+    let autoReplyEmailId: string | undefined;
+    let autoReplyWarning = false;
+
+    // 2) Auto-responder to the user (best-effort, non-blocking)
+    const autoReplySubject = "We received your message — NeuroBreath";
+    const autoReplyText =
+      `Hello ${name},\n\n` +
+      `We received your message and will respond as soon as possible.\n\n` +
+      `If you need to add more details, reply to this email and keep the subject.\n\n` +
+      `Reference: ${ticketId}\n\n` +
+      `Kind regards,\n` +
+      `NeuroBreath Support\n\n` +
+      `Privacy note: Please avoid sending sensitive medical information.`;
+
+    const autoReplyHtml = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>${autoReplySubject}</title>
+  </head>
+  <body style="margin:0;padding:0;background:#ffffff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#111827;">
+    <div style="max-width:640px;margin:0 auto;padding:24px;">
+      <h1 style="margin:0 0 16px 0;font-size:20px;line-height:1.3;">We received your message</h1>
+      <p style="margin:0 0 12px 0;">Hello ${name},</p>
+      <p style="margin:0 0 12px 0;">We received your message and will respond as soon as possible.</p>
+      <p style="margin:0 0 12px 0;">If you need to add more details, reply to this email and keep the subject.</p>
+      <div style="margin:16px 0;padding:12px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#f9fafb;">
+        <strong>Reference:</strong> ${ticketId}
+      </div>
+      <p style="margin:0 0 12px 0;">Kind regards,<br/>NeuroBreath Support</p>
+      <hr style="border:none;border-top:1px solid #e5e7eb;margin:20px 0;" />
+      <p style="margin:0;font-size:12px;line-height:1.4;color:#6b7280;">Privacy note: Please avoid sending sensitive medical information.</p>
+    </div>
+  </body>
+</html>`;
+
+    const supportFrom = "NeuroBreath Support <support@neurobreath.co.uk>";
+    const fallbackFrom = "NeuroBreath Support <no-reply@neurobreath.co.uk>";
+
     try {
-      await resend.emails.send({
-        from,
+      const first = await resend.emails.send({
+        from: supportFrom,
         to: email,
-        subject: "We received your message — NeuroBreath",
-        text:
-          `Hello ${name},\n\n` +
-          `Thank you for contacting NeuroBreath. We have received your message and will reply as soon as possible.\n\n` +
-          `Your subject: ${subject}\n\n` +
-          `Kind regards,\nNeuroBreath Support`,
+        replyTo: "admin@neurobreath.co.uk",
+        subject: autoReplySubject,
+        text: autoReplyText,
+        html: autoReplyHtml,
       });
+
+      if (!first.error) {
+        autoReplyEmailId = first.data?.id;
+      } else {
+        const msg = String(first.error.message || "").toLowerCase();
+        const shouldFallback =
+          msg.includes("from") ||
+          msg.includes("domain") ||
+          msg.includes("verify") ||
+          msg.includes("verification") ||
+          msg.includes("unauthor") ||
+          msg.includes("not verified");
+
+        if (shouldFallback) {
+          const second = await resend.emails.send({
+            from: fallbackFrom,
+            to: email,
+            replyTo: "admin@neurobreath.co.uk",
+            subject: autoReplySubject,
+            text: autoReplyText,
+            html: autoReplyHtml,
+          });
+
+          if (!second.error) {
+            autoReplyEmailId = second.data?.id;
+          } else {
+            autoReplyWarning = true;
+            console.warn("Auto-reply failed (non-critical)", {
+              ticketId,
+              error: second.error,
+            });
+          }
+        } else {
+          autoReplyWarning = true;
+          console.warn("Auto-reply failed (non-critical)", {
+            ticketId,
+            error: first.error,
+          });
+        }
+      }
     } catch (err) {
-      // Auto-responder failure is not critical; log but continue
-      console.warn("Auto-responder email failed (non-critical):", err instanceof Error ? err.message : err);
+      autoReplyWarning = true;
+      console.warn("Auto-reply threw (non-critical)", {
+        ticketId,
+        error: err instanceof Error ? err.message : err,
+      });
     }
 
-    return Response.json({ ok: true });
+    return Response.json({
+      ok: true,
+      ticketId,
+      adminEmailId,
+      autoReplyEmailId,
+      ...(autoReplyWarning ? { autoReplyWarning: true } : {}),
+    });
   } catch (err) {
     console.error("Contact form error:", err);
     

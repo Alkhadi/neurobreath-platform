@@ -215,6 +215,8 @@ export default function ContactPage() {
   const handleContactFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (contactSubmitStatus.state === "submitting") return;
+
     // Capture the form element synchronously. In some React/event implementations,
     // `e.currentTarget` can become null after awaiting.
     const form = e.currentTarget;
@@ -244,6 +246,7 @@ export default function ContactPage() {
 
       // Honeypot (bots fill it)
       company: String(formData.get("company") ?? ""),
+      website: String(formData.get("website") ?? ""),
 
       turnstileToken,
     };
@@ -263,8 +266,12 @@ export default function ContactPage() {
           ? String((json as { error?: unknown }).error ?? "")
           : "";
       const isDev = json && typeof json === "object" && "dev" in json;
+      const okFlag =
+        json && typeof json === "object" && "ok" in json
+          ? Boolean((json as { ok?: unknown }).ok)
+          : false;
 
-      if (!res.ok) {
+      if (!res.ok || !okFlag) {
         const vercelId = res.headers.get("x-vercel-id");
         const statusHint = `Request failed (${res.status}${res.statusText ? ` ${res.statusText}` : ""})`;
 
@@ -349,6 +356,17 @@ export default function ContactPage() {
                   aria-hidden="true"
                 />
               </div>
+              <div className={styles.honeypot}>
+                <label htmlFor="website">Website</label>
+                <input
+                  id="website"
+                  name="website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                />
+              </div>
               <div>
                 <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
                   Full Name *
@@ -374,7 +392,7 @@ export default function ContactPage() {
                   id="email"
                   name="email"
                   required
-                  maxLength={200}
+                  maxLength={254}
                   autoComplete="email"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="john@example.com"
@@ -421,7 +439,7 @@ export default function ContactPage() {
                   name="subject"
                   required
                   minLength={2}
-                  maxLength={140}
+                  maxLength={120}
                   autoComplete="off"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="How can we help?"
@@ -435,8 +453,8 @@ export default function ContactPage() {
                   id="message"
                   name="message"
                   required
-                  minLength={10}
-                  maxLength={5000}
+                  minLength={5}
+                  maxLength={4000}
                   rows={5}
                   autoComplete="off"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all resize-none"
