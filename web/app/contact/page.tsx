@@ -334,7 +334,8 @@ export default function ContactPage() {
           <p className="text-gray-600 text-lg">Create, manage, and share your professional profile</p>
         </div>
 
-        {/* Contact Us Section */}
+        {/* Section A: Main Contact Page */}
+        <section aria-label="Contact Us" className="mb-12">
         <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 mb-8">
           <div className="text-center mb-6">
             <h2 className="text-3xl font-bold text-gray-800 mb-2">Contact Us</h2>
@@ -560,6 +561,14 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
+        </section>
+
+        {/* Section B: NBCard Profile & Contact Capture */}
+        <section aria-labelledby="nbcard-profile-heading" className="mt-4">
+          <div className="text-center mb-6">
+            <h2 id="nbcard-profile-heading" className="text-3xl font-bold text-gray-800 mb-2">NBCard Profile</h2>
+            <p className="text-gray-600">Manage your profile, share your card, and capture contacts.</p>
+          </div>
 
         {/* Profile Selector */}
         {profiles.length > 1 && (
@@ -721,6 +730,7 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
+        </section>
       </div>
 
       {/* Profile Manager Modal */}
