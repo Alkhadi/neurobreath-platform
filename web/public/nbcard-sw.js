@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 
 // Bump this to force clients to drop old cached /contact assets.
-const CACHE_NAME = 'nbcard-v3';
+const CACHE_NAME = 'nbcard-v4';
 const CORE_URLS = [
   '/contact',
   '/resources/nb-card',
@@ -71,7 +71,8 @@ self.addEventListener('fetch', (event) => {
           return res;
         } catch {
           const cached = await caches.match(req);
-          return cached || caches.match(fallbackPath);
+          const fallback = await caches.match(fallbackPath);
+          return cached || fallback || Response.error();
         }
       })()
     );
@@ -90,7 +91,8 @@ self.addEventListener('fetch', (event) => {
         })
         .catch(() => undefined);
 
-      return cached || (await fetchPromise) || cached;
+      const fetched = await fetchPromise;
+      return cached || fetched || Response.error();
     })()
   );
 });
