@@ -22,14 +22,15 @@
     
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assets/css/legacy-fallback.css">
     
     <!-- React/Babel CDN removed (legacy file; scripts are blocked in app render) -->
 </head>
 <body>
-    <main style="max-width: 900px; margin: 0 auto; padding: 48px 16px; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height: 1.5;">
-        <h1 style="margin: 0 0 12px;">4-7-8 Breathing</h1>
-        <p style="margin: 0 0 16px; color: #444;">This legacy page used a browser-compiled React app. The current 4-7-8 breathing guide is available in the main NeuroBreath app.</p>
-        <p style="margin: 0 0 16px;"><a href="/guides/breathing/4-7-8-breathing" style="color: #0b63ce; text-decoration: underline;">Open the 4-7-8 guide</a></p>
+    <main class="nb-legacy-fallback">
+        <h1 class="nb-legacy-fallback__title">4-7-8 Breathing</h1>
+        <p class="nb-legacy-fallback__p nb-legacy-fallback__p--muted">This legacy page used a browser-compiled React app. The current 4-7-8 breathing guide is available in the main NeuroBreath app.</p>
+        <p class="nb-legacy-fallback__p"><a href="/guides/breathing/4-7-8-breathing" class="nb-legacy-fallback__link">Open the 4-7-8 guide</a></p>
     </main>
 </body>
 </html>
