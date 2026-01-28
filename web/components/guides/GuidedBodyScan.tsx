@@ -67,7 +67,6 @@ export function GuidedBodyScan() {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [stepTimeRemaining, setStepTimeRemaining] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
-  const [showAdaptations, setShowAdaptations] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const currentStep = SCAN_STEPS[currentStepIndex];
@@ -331,43 +330,37 @@ export function GuidedBodyScan() {
           Press Space or Enter to start/pause. Text cues only — no audio.
         </p>
 
-        <div className="border-t border-slate-200 pt-4 mt-4">
-          <button
-            type="button"
-            onClick={() => setShowAdaptations(!showAdaptations)}
-            className="flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-slate-900"
-            aria-expanded={showAdaptations}
-          >
-            {showAdaptations ? (
+        <details className="group border-t border-slate-200 pt-4 mt-4">
+          <summary className="flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-slate-900 cursor-pointer select-none [&::-webkit-details-marker]:hidden">
+            <span className="hidden group-open:block">
               <ChevronUp className="h-4 w-4" />
-            ) : (
+            </span>
+            <span className="group-open:hidden">
               <ChevronDown className="h-4 w-4" />
-            )}
+            </span>
             If this feels uncomfortable
-          </button>
-          {showAdaptations && (
-            <div className="mt-3 rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-900">
-              <ul className="space-y-2">
-                <li>
-                  <strong>Keep your eyes open</strong> if closing them feels unsettling.
-                </li>
-                <li>
-                  <strong>Shorten the scan</strong> — focus on hands and feet only.
-                </li>
-                <li>
-                  <strong>Switch to grounding</strong> — try the 5-4-3-2-1 method instead.
-                </li>
-                <li>
-                  <strong>Stop at any time</strong> if you feel panicky or distressed.
-                </li>
-              </ul>
-              <p className="mt-3 text-xs text-amber-800">
-                Body scans are not helpful for everyone. If this approach does not suit you,
-                that is completely normal.
-              </p>
-            </div>
-          )}
-        </div>
+          </summary>
+          <div className="mt-3 rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-900">
+            <ul className="space-y-2">
+              <li>
+                <strong>Keep your eyes open</strong> if closing them feels unsettling.
+              </li>
+              <li>
+                <strong>Shorten the scan</strong> — focus on hands and feet only.
+              </li>
+              <li>
+                <strong>Switch to grounding</strong> — try the 5-4-3-2-1 method instead.
+              </li>
+              <li>
+                <strong>Stop at any time</strong> if you feel panicky or distressed.
+              </li>
+            </ul>
+            <p className="mt-3 text-xs text-amber-800">
+              Body scans are not helpful for everyone. If this approach does not suit you, that is
+              completely normal.
+            </p>
+          </div>
+        </details>
       </div>
     </div>
   );
