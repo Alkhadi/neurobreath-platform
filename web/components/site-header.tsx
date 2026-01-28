@@ -343,15 +343,17 @@ export function SiteHeader() {
           onClick={closeMegaMenu}
           aria-label={`NeuroBreath — ${SITE_CONFIG.siteSlogan}`}
         >
-          <span className="nb-brand-mark">
-            <Image
-              src="/icons/neurobreath-logo-square-128.png"
-              alt="NeuroBreath"
-              width={36}
-              height={36}
-              className="nb-brand-logo"
-              priority
-            />
+          <span className="nb-brand-tile">
+            <span className="nb-brand-mark">
+              <Image
+                src="/icons/neurobreath-logo-square-128.png"
+                alt="NeuroBreath"
+                width={56}
+                height={56}
+                className="nb-brand-logo"
+                priority
+              />
+            </span>
           </span>
           <span className="nb-brand-copy">
             <span className="nb-brand-text">NeuroBreath</span>
