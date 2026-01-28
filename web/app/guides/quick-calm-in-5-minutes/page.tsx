@@ -7,24 +7,17 @@ import { FaqSection } from '@/components/seo/FAQSection';
 import { Breadcrumb } from '@/components/seo/breadcrumb';
 import { Citations } from '@/components/evidence/Citations';
 import { GuidedResetStepper } from '@/components/guides/GuidedResetStepper';
-import { GuidedBodyScan } from '@/components/guides/GuidedBodyScan';
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
 import { getRelatedContentForUrl } from '@/lib/content/link-intel-runtime';
-import { INTERACTIVE_GUIDES, INTERACTIVE_GUIDES_MAP } from '@/lib/content/interactive-guides';
+import { INTERACTIVE_GUIDES_MAP } from '@/lib/content/interactive-guides';
 import { evidenceSources } from '@/lib/evidence/evidence-registry';
 
-interface GuidePageProps {
-  params: Promise<{ slug: string }>;
-}
+const SLUG = 'quick-calm-in-5-minutes';
 
-export async function generateStaticParams() {
-  return INTERACTIVE_GUIDES.map(guide => ({ slug: guide.slug }));
-}
-
-export async function generateMetadata({ params }: GuidePageProps): Promise<Metadata> {
-  const resolvedParams = await params;
-  const guide = INTERACTIVE_GUIDES_MAP.get(resolvedParams.slug);
+export async function generateMetadata(): Promise<Metadata> {
+  const guide = INTERACTIVE_GUIDES_MAP.get(SLUG);
   if (!guide) return {};
+
   return generatePageMetadata({
     title: `${guide.title} | NeuroBreath`,
     description: guide.description,
@@ -32,9 +25,8 @@ export async function generateMetadata({ params }: GuidePageProps): Promise<Meta
   });
 }
 
-export default async function InteractiveGuidePage({ params }: GuidePageProps) {
-  const resolvedParams = await params;
-  const guide = INTERACTIVE_GUIDES_MAP.get(resolvedParams.slug);
+export default async function QuickCalmIn5MinutesGuidePage() {
+  const guide = INTERACTIVE_GUIDES_MAP.get(SLUG);
 
   if (!guide) {
     notFound();
@@ -48,9 +40,7 @@ export default async function InteractiveGuidePage({ params }: GuidePageProps) {
     existing: guide.related,
   });
 
-  const citations = guide.evidenceIds
-    .map(id => evidenceSources[id])
-    .filter(Boolean);
+  const citations = guide.evidenceIds.map(id => evidenceSources[id]).filter(Boolean);
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background">
@@ -73,8 +63,7 @@ export default async function InteractiveGuidePage({ params }: GuidePageProps) {
           <p className="text-base text-muted-foreground leading-relaxed">{guide.intro}</p>
         </section>
 
-        {guide.slug === 'quick-calm-in-5-minutes' && <GuidedResetStepper />}
-        {guide.slug === 'body-scan-for-stress' && <GuidedBodyScan />}
+        <GuidedResetStepper />
 
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold text-foreground">Practical steps</h2>
@@ -122,9 +111,7 @@ export default async function InteractiveGuidePage({ params }: GuidePageProps) {
 
         <FaqSection title="Quick FAQs" faqs={guide.faqs} pageUrl={pageUrl} />
 
-        {citations.length > 0 && (
-          <Citations sources={citations} title="Evidence sources" />
-        )}
+        {citations.length > 0 && <Citations sources={citations} title="Evidence sources" />}
 
         <section className="rounded-xl bg-slate-50 border border-slate-200 p-5 text-sm text-slate-700">
           <p className="font-medium text-slate-900">Disclaimer</p>
