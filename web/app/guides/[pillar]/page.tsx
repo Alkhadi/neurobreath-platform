@@ -8,6 +8,16 @@ import { getPillar, listPillarKeys } from '@/lib/content/content-seo-map';
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
 import { getRelatedContentForUrl } from '@/lib/content/link-intel-runtime';
 
+const dedupeByHref = <T extends { href: string }>(items: T[]) => {
+  const seen = new Set<string>();
+  return items.filter(item => {
+    const key = item.href.length > 1 ? item.href.replace(/\/$/, '') : item.href;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
+
 export async function generateStaticParams() {
   return listPillarKeys().map(pillar => ({ pillar }));
 }
@@ -45,10 +55,12 @@ export default async function PillarPage({
     typeBadge: 'Guide' as const,
   }));
 
-  const relatedItems = getRelatedContentForUrl({
+  const supportingOverrides = getRelatedContentForUrl({
     url: `/guides/${pillar.key}`,
-    existing: guideItems,
+    existing: [],
   });
+
+  const relatedItems = dedupeByHref([...guideItems, ...supportingOverrides]);
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-10">

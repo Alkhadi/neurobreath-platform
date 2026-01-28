@@ -29,9 +29,6 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false }: P
 
   const hasBackgroundImage = Boolean(profile?.backgroundUrl);
 
-  const isDataOrBlob = (url?: string) =>
-    typeof url === "string" && (url.startsWith("data:") || url.startsWith("blob:"));
-
   const socialMediaLinks = [
     { icon: FaInstagram, url: profile?.socialMedia?.instagram, color: "#E1306C" },
     { icon: FaFacebook, url: profile?.socialMedia?.facebook, color: "#1877F2" },
@@ -51,21 +48,14 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false }: P
     >
       {hasBackgroundImage && (
         <div className="absolute inset-0 -z-10">
-          {isDataOrBlob(profile.backgroundUrl) ? (
-            <img
-              src={profile.backgroundUrl}
-              alt="Card background"
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <Image
-              src={profile.backgroundUrl ?? ""}
-              alt="Card background"
-              fill
-              className="object-cover"
-              unoptimized
-            />
-          )}
+          <Image
+            src={profile.backgroundUrl ?? ""}
+            alt="Card background"
+            fill
+            className="object-cover"
+            unoptimized
+            sizes="100vw"
+          />
           <div className="absolute inset-0 bg-black/30" aria-hidden="true" />
         </div>
       )}
@@ -76,23 +66,16 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false }: P
           <div className="relative group">
             <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-white">
               {profile?.photoUrl ? (
-                isDataOrBlob(profile.photoUrl) ? (
-                  <img
+                <div className="relative w-full h-full">
+                  <Image
                     src={profile.photoUrl}
                     alt={profile?.fullName ?? "Profile"}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
+                    unoptimized
+                    sizes="128px"
                   />
-                ) : (
-                  <div className="relative w-full h-full">
-                    <Image
-                      src={profile.photoUrl}
-                      alt={profile?.fullName ?? "Profile"}
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  </div>
-                )
+                </div>
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-400 to-blue-500 text-4xl font-bold text-white">
                   {profile?.fullName?.charAt(0)?.toUpperCase() ?? "A"}
