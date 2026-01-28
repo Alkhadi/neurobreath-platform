@@ -336,7 +336,7 @@ export function GuidedBodyScan() {
             type="button"
             onClick={() => setShowAdaptations(!showAdaptations)}
             className="flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-slate-900"
-            aria-expanded={showAdaptations ? 'true' : 'false'}
+            aria-expanded={showAdaptations}
           >
             {showAdaptations ? (
               <ChevronUp className="h-4 w-4" />
