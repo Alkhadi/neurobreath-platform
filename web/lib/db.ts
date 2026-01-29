@@ -15,6 +15,8 @@ function readNonEmptyEnv(name: string): string | undefined {
 export function getDatabaseUrl(): string | undefined {
   return (
     readNonEmptyEnv('DATABASE_URL') ||
+    // Prisma Postgres
+    readNonEmptyEnv('PRISMA_DATABASE_URL') ||
     // Common hosting/integration env vars (e.g. Vercel Postgres)
     readNonEmptyEnv('POSTGRES_PRISMA_URL') ||
     readNonEmptyEnv('POSTGRES_URL_NON_POOLING') ||
@@ -24,11 +26,13 @@ export function getDatabaseUrl(): string | undefined {
 
 export function getDatabaseUrlSource():
   | 'DATABASE_URL'
+  | 'PRISMA_DATABASE_URL'
   | 'POSTGRES_PRISMA_URL'
   | 'POSTGRES_URL_NON_POOLING'
   | 'POSTGRES_URL'
   | null {
   if (readNonEmptyEnv('DATABASE_URL')) return 'DATABASE_URL'
+  if (readNonEmptyEnv('PRISMA_DATABASE_URL')) return 'PRISMA_DATABASE_URL'
   if (readNonEmptyEnv('POSTGRES_PRISMA_URL')) return 'POSTGRES_PRISMA_URL'
   if (readNonEmptyEnv('POSTGRES_URL_NON_POOLING')) return 'POSTGRES_URL_NON_POOLING'
   if (readNonEmptyEnv('POSTGRES_URL')) return 'POSTGRES_URL'
