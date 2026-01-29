@@ -25,6 +25,64 @@ let memoryStorage: UserPreferencesState | null = null;
 let persistenceTimer: NodeJS.Timeout | null = null;
 const DEBOUNCE_MS = 500;
 
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function normalizeLoadedState(raw: unknown): UserPreferencesState {
+  const nowIso = new Date().toISOString();
+
+  if (!isPlainObject(raw)) {
+    return {
+      ...DEFAULT_USER_PREFERENCES_STATE,
+      createdAt: nowIso,
+      updatedAt: nowIso,
+    };
+  }
+
+  const schemaVersion =
+    typeof raw.schemaVersion === 'number' && Number.isFinite(raw.schemaVersion)
+      ? raw.schemaVersion
+      : 0;
+
+  const rawPreferences = isPlainObject(raw.preferences) ? raw.preferences : {};
+  const rawTts = isPlainObject(rawPreferences.tts) ? rawPreferences.tts : {};
+
+  const rawMyPlan = isPlainObject(raw.myPlan) ? raw.myPlan : {};
+  const rawRoutinePlan = isPlainObject(rawMyPlan.routinePlan) ? rawMyPlan.routinePlan : {};
+
+  return {
+    schemaVersion,
+    createdAt: typeof raw.createdAt === 'string' ? raw.createdAt : nowIso,
+    updatedAt: nowIso,
+    preferences: {
+      ...DEFAULT_USER_PREFERENCES_STATE.preferences,
+      ...rawPreferences,
+      tts: {
+        ...DEFAULT_USER_PREFERENCES_STATE.preferences.tts,
+        ...rawTts,
+      },
+    },
+    myPlan: {
+      ...DEFAULT_USER_PREFERENCES_STATE.myPlan,
+      ...rawMyPlan,
+      savedItems: Array.isArray(rawMyPlan.savedItems)
+        ? (rawMyPlan.savedItems as UserPreferencesState['myPlan']['savedItems'])
+        : DEFAULT_USER_PREFERENCES_STATE.myPlan.savedItems,
+      journeyProgress: isPlainObject(rawMyPlan.journeyProgress)
+        ? (rawMyPlan.journeyProgress as UserPreferencesState['myPlan']['journeyProgress'])
+        : DEFAULT_USER_PREFERENCES_STATE.myPlan.journeyProgress,
+      routinePlan: {
+        ...DEFAULT_USER_PREFERENCES_STATE.myPlan.routinePlan,
+        ...rawRoutinePlan,
+        slots: Array.isArray(rawRoutinePlan.slots)
+          ? (rawRoutinePlan.slots as UserPreferencesState['myPlan']['routinePlan']['slots'])
+          : DEFAULT_USER_PREFERENCES_STATE.myPlan.routinePlan.slots,
+      },
+    },
+  };
+}
+
 function getLocalStorage(): Storage | null {
   if (typeof window !== 'undefined' && window.localStorage) return window.localStorage;
   const maybeGlobal = globalThis as unknown as { localStorage?: Storage };
@@ -69,17 +127,15 @@ export function loadUserPreferences(): UserPreferencesState {
     const raw = storage.getItem(STORAGE_KEY);
     
     if (raw) {
-      const parsed = JSON.parse(raw) as UserPreferencesState;
-      
+      const parsed = JSON.parse(raw) as unknown;
+      const normalized = normalizeLoadedState(parsed);
+
       // Validate and migrate if needed
-      if (parsed.schemaVersion < CURRENT_SCHEMA_VERSION) {
-        return migrateSchema(parsed);
+      if (normalized.schemaVersion < CURRENT_SCHEMA_VERSION) {
+        return migrateSchema(normalized);
       }
-      
-      return {
-        ...parsed,
-        updatedAt: new Date().toISOString(),
-      };
+
+      return normalized;
     }
 
     // If no unified state, check for legacy keys and migrate
