@@ -9,7 +9,7 @@
     "dev:clean": "npm run clean:next && next dev",
     "dev:e2e": "npm run clean:next && npm run routes:generate && next dev -p 3000",
     "prebuild": "tsx scripts/generateRoutesMap.ts",
-    "build": "prisma generate && next build",
+    "build": "yarn prisma generate && yarn next build",
     "start": "next start",
     "brand:icons": "../.venv/bin/python scripts/generate-brand-icons.py",
     "brand:icons:source": "../.venv/bin/python scripts/generate-brand-icons.py --source public/brand-source.png",

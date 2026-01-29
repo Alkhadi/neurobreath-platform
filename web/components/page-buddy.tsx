@@ -38,7 +38,7 @@ interface PageBuddyProps {
 }
 
 export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
-  const pathname = usePathname();
+  const pathname = usePathname() || '/';
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -991,12 +991,10 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     }
   };
   
-  if (!mounted) return null;
-  
   return (
     <>
       {/* Floating trigger button */}
-      <div className={cn("fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50", isOpen && "hidden")}>
+      <div className={cn("fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[60]", isOpen && "hidden")}>
         <Button
           type="button"
           onClick={(e) => {
@@ -1026,6 +1024,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
           ref={dialogRef}
           className={cn(
             "p-0 flex flex-col transition-all overflow-hidden",
+            "z-[60]",
             // 2% gap from top (navigation bar) - applies to all viewports
             "top-[calc(50%+1vh)]",
             // Base mobile sizing - responsive for all devices

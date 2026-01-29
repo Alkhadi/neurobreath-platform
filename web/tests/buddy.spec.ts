@@ -89,12 +89,21 @@ async function openBuddyDialog(page: Page) {
   // Find and click the buddy trigger button using aria-label
   const buddyTrigger = page.locator('button[aria-label*="Open NeuroBreath Buddy"]');
   await expect(buddyTrigger).toBeVisible({ timeout: 10000 });
-  await buddyTrigger.click({ force: true });
-  
-  // Wait for dialog to open
+
+  // Wait for dialog to open. In dev-mode, the trigger can be server-rendered
+  // before hydration wires up click handlers. Retry a couple times to avoid
+  // cross-browser flakes.
   const dialog = page.locator('div[role="dialog"]').filter({ hasText: 'NeuroBreath Buddy' });
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    await buddyTrigger.click({ force: true });
+    if (await dialog.isVisible({ timeout: 1500 }).catch(() => false)) {
+      return dialog;
+    }
+    await page.waitForTimeout(350);
+  }
+
   await expect(dialog).toBeVisible({ timeout: 5000 });
-  
   return dialog;
 }
 

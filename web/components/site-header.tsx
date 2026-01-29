@@ -1,25 +1,12 @@
 'use client'
 
 /* eslint-disable jsx-a11y/aria-proptypes */
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ChevronDown, Menu, X, LogIn, User } from 'lucide-react'
 import { getSession, signOut } from 'next-auth/react'
-import {
-  FloatingFocusManager,
-  FloatingPortal,
-  autoUpdate,
-  flip,
-  offset,
-  shift,
-  size,
-  useDismiss,
-  useFloating,
-  useInteractions,
-  useRole,
-} from '@floating-ui/react'
 import { SITE_CONFIG } from '../lib/seo/site-seo'
 
 const REGION_COOKIE = 'nb_region'
@@ -72,80 +59,42 @@ function FloatingNavMenu({
   children,
 }: FloatingNavMenuProps) {
   const isDesktop = useMediaQuery('(min-width: 1025px)')
-  const floatingElRef = useRef<HTMLDivElement | null>(null)
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
 
-  const middleware = useMemo(
-    () => [
-      offset(8),
-      flip({ padding: 10 }),
-      shift({ padding: 10 }),
-      size({
-        padding: 10,
-        apply({ availableWidth, availableHeight, elements }) {
-          Object.assign(elements.floating.style, {
-            maxWidth: `${availableWidth}px`,
-            maxHeight: `${Math.max(160, availableHeight)}px`,
-          })
-        },
-      }),
-    ],
-    []
-  )
+  useEffect(() => {
+    if (!open) return
 
-  const { x, y, strategy, refs, context } = useFloating({
-    open: isDesktop ? open : false,
-    onOpenChange: setOpen,
-    placement,
-    strategy: 'fixed',
-    whileElementsMounted: autoUpdate,
-    middleware,
-  })
-
-  const setFloatingEl = useCallback(
-    (node: HTMLDivElement | null) => {
-      refs.setFloating(node)
-      floatingElRef.current = node
-    },
-    [refs]
-  )
-
-  useLayoutEffect(() => {
-    const el = floatingElRef.current
-    if (!el) return
-
-    if (!open || !isDesktop || x == null || y == null) {
-      el.style.transform = ''
-      el.style.position = ''
-      el.style.left = ''
-      el.style.top = ''
-      return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false)
     }
 
-    el.style.position = strategy
-    // Anchor at (0,0) and translate for smoother updates
-    el.style.left = '0px'
-    el.style.top = '0px'
-    el.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(y)}px, 0)`
-    el.style.willChange = 'transform'
-  }, [open, isDesktop, x, y, strategy])
+    const onPointerDown = (event: PointerEvent) => {
+      const root = wrapperRef.current
+      if (!root) return
+      const target = event.target
+      if (target instanceof Node && !root.contains(target)) {
+        setOpen(false)
+      }
+    }
 
-  const dismiss = useDismiss(context, {
-    escapeKey: true,
-    outsidePress: true,
-  })
-  const role = useRole(context, { role: 'dialog' })
+    document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('pointerdown', onPointerDown)
+    }
+  }, [open, setOpen])
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([dismiss, role])
-
-  const referenceProps = getReferenceProps({
+  const referenceProps = {
     onClick: () => setOpen(!open),
-  })
+  }
+
+  const floatingPositionClass = placement === 'bottom-end' ? 'right-0' : 'left-0'
 
   return (
-    <div className="nb-mega-menu-wrapper" data-menu={id}>
+    <div ref={wrapperRef} className="nb-mega-menu-wrapper relative" data-menu={id}>
       {open ? (
         <button
-          ref={refs.setReference}
           type="button"
           className={triggerClassName}
           aria-haspopup="dialog"
@@ -159,7 +108,6 @@ function FloatingNavMenu({
         </button>
       ) : (
         <button
-          ref={refs.setReference}
           type="button"
           className={triggerClassName}
           aria-haspopup="dialog"
@@ -179,18 +127,14 @@ function FloatingNavMenu({
       )}
 
       {open && isDesktop && (
-        <FloatingPortal>
-          <FloatingFocusManager context={context} modal={false} returnFocus>
-            <div
-              ref={setFloatingEl}
-              id={`${id}-menu`}
-              className="nb-mega-menu nb-mega-menu--floating"
-              {...getFloatingProps()}
-            >
-              {children}
-            </div>
-          </FloatingFocusManager>
-        </FloatingPortal>
+        <div
+          id={`${id}-menu`}
+          className={`nb-mega-menu nb-mega-menu--floating absolute top-full mt-2 z-50 ${floatingPositionClass}`}
+          role="dialog"
+          aria-modal="false"
+        >
+          {children}
+        </div>
       )}
     </div>
   )
@@ -549,7 +493,7 @@ export function SiteHeader() {
                 triggerClassName="nb-nav-link nb-user-button"
               >
                 <div className="nb-user-dropdown">
-                  <Link href="/uk/my-account" className="nb-user-dropdown-item" onClick={closeMegaMenu}>
+                  <Link href={`${regionPrefix}/my-account`} className="nb-user-dropdown-item" onClick={closeMegaMenu}>
                     👤 My Account
                   </Link>
                   <button
@@ -557,7 +501,7 @@ export function SiteHeader() {
                     className="nb-user-dropdown-item nb-user-dropdown-item--danger"
                     onClick={async () => {
                       setIsSigningOut(true)
-                      await signOut({ callbackUrl: '/' })
+                      await signOut({ callbackUrl: regionPrefix })
                     }}
                     disabled={isSigningOut}
                   >
@@ -568,7 +512,7 @@ export function SiteHeader() {
             </div>
           ) : (
             <Link 
-              href="/uk/login" 
+              href={`${regionPrefix}/login`}
               className="nb-nav-link nb-login-link"
               onClick={closeMegaMenu}
             >
