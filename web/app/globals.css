@@ -940,10 +940,11 @@
   border: 0;
   box-shadow: none;
   border-radius: var(--radius-md);
+  overflow: hidden;
 }
 
 .nb-brand-tile .nb-brand-logo {
-  border-radius: 0;
+  border-radius: 10px;
   filter: none;
 }
 
@@ -998,6 +999,33 @@
 @media (max-width: 1180px) and (min-width: 1025px) {
   .nb-brand-tagline {
     display: none;
+  }
+}
+
+/* Tesla/tablet full-nav: add gutters + compact nav so CTAs stay visible */
+@media (max-width: 1280px) and (min-width: 1025px) {
+  .nb-header-container {
+    padding-left: calc(1.5rem + env(safe-area-inset-left));
+    padding-right: calc(1.5rem + env(safe-area-inset-right));
+  }
+
+  .nb-main-nav {
+    gap: 0.25rem;
+  }
+
+  .nb-nav-link {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .nb-login-link {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .nb-nav-cta {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
   }
 }
 
