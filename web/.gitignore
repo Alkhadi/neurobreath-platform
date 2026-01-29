@@ -21,3 +21,5 @@ test-results/
 
 # Playwright visual test artifacts (reports only)
 reports/visual/
+.vercel
+.env*.local
