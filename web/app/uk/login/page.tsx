@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getProviders, signIn } from 'next-auth/react';
+import { getProviders, getSession, signIn } from 'next-auth/react';
 import type { ClientSafeProvider } from 'next-auth/react';
 import Cookies from 'js-cookie';
 import {
@@ -51,6 +51,19 @@ type Step = 'credentials' | 'otp' | 'magic-link-sent';
 
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
+
+const TRUST_DEVICE_PREF_KEY = 'nb_trust_device_pref';
+
+function getSafeCallbackUrl(raw: string | null): string {
+  const fallback = '/uk/my-account';
+  const value = raw?.trim();
+  if (!value) return fallback;
+  if (!value.startsWith('/')) return fallback;
+  if (value.startsWith('//')) return fallback;
+  if (value.startsWith('/api')) return fallback;
+  if (value.startsWith('/uk/login') || value.startsWith('/uk/register')) return fallback;
+  return value;
+}
 
 function getStoredAttempts(): { count: number; lockedUntil: number | null } {
   if (typeof window === 'undefined') return { count: 0, lockedUntil: null };
@@ -108,8 +121,9 @@ export default function UkLoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const callbackUrl = searchParams.get('callbackUrl') || '/uk/my-account';
+  const callbackUrl = getSafeCallbackUrl(searchParams.get('callbackUrl'));
   const error = searchParams.get('error');
+  const registered = searchParams.get('registered') === '1';
 
   const [step, setStep] = useState<Step>('credentials');
   const [email, setEmail] = useState('');
@@ -139,9 +153,47 @@ export default function UkLoginPage() {
     if (token) {
       setDeviceToken(token);
     }
+
+    try {
+      const pref = localStorage.getItem(TRUST_DEVICE_PREF_KEY);
+      if (pref === 'true') setTrustDevice(true);
+    } catch {
+      // ignore
+    }
     
     // Load available providers
     getProviders().then(setAvailableProviders);
+  }, []);
+
+  useEffect(() => {
+    if (!registered) return;
+    setMessage({ type: 'success', text: 'Account created. You can now sign in.' });
+  }, [registered]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(TRUST_DEVICE_PREF_KEY, trustDevice ? 'true' : 'false');
+    } catch {
+      // ignore
+    }
+  }, [trustDevice]);
+
+  const persistTrustedDeviceToken = useCallback(async () => {
+    try {
+      const session = await getSession();
+      const token = (session as unknown as { deviceToken?: string } | null)?.deviceToken;
+      if (!token) return;
+
+      Cookies.set('nb_device_token', token, {
+        expires: 30,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        path: '/',
+      });
+      setDeviceToken(token);
+    } catch {
+      // ignore
+    }
   }, []);
 
   // Countdown timer for lockout
@@ -246,9 +298,8 @@ export default function UkLoginPage() {
 
       // Success - clear attempts and redirect
       clearStoredAttempts();
-      // Store device token if trust device was enabled
-      if (trustDevice && res?.url) {
-        // Token should be in session, client will get it after redirect
+      if (trustDevice) {
+        await persistTrustedDeviceToken();
       }
       router.push(callbackUrl);
     } catch {
@@ -294,6 +345,9 @@ export default function UkLoginPage() {
       }
 
       clearStoredAttempts();
+      if (trustDevice) {
+        await persistTrustedDeviceToken();
+      }
       router.push(callbackUrl);
     } catch {
       setMessage({ type: 'error', text: 'Sign in failed. Please try again.' });
@@ -623,7 +677,7 @@ export default function UkLoginPage() {
                   variant="outline"
                   className="w-full"
                   onClick={handleMagicLink}
-                  disabled={loading || magicLinkLoading || isLocked || !email || !availableProviders?.email}
+                  disabled={loading || magicLinkLoading || isLocked}
                   title={!availableProviders?.email ? 'Email sign-in is not configured' : undefined}
                 >
                   {magicLinkLoading ? (

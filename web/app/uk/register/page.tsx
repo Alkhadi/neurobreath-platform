@@ -52,13 +52,13 @@ export default function UkRegisterPage() {
       const data = (await res.json().catch(() => null)) as { ok?: boolean; message?: string } | null;
 
       if (!res.ok || !data?.ok) {
-        setMessage(data?.message || 'Registration failed');
+        setMessage(data?.message || 'Registration failed. Please try again in a moment.');
         setTurnstileToken('');
         setTurnstileResetKey((k) => k + 1);
         return;
       }
 
-      router.push('/uk/login');
+      router.push('/uk/login?registered=1');
     } finally {
       setLoading(false);
     }

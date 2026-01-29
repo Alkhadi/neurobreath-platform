@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { Prisma } from '@prisma/client';
 
 import { prisma, isDbDown, getDbDownReason, markDbDown } from '@/lib/db';
 import { hashPassword } from '@/lib/auth/password';
@@ -39,44 +40,61 @@ export async function POST(req: Request) {
       );
     }
 
-    const turnstileRequired = process.env.NODE_ENV === 'production' && !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
-    if (turnstileRequired) {
+    const turnstileEnabled = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+    if (turnstileEnabled) {
       if (!turnstileToken) {
-        return Response.json({ ok: false, message: 'Spam protection required' }, { status: 400 });
+        return Response.json({ ok: false, message: 'Please complete the spam protection check.' }, { status: 400 });
       }
+
       const verified = await verifyTurnstile(req, turnstileToken);
       if (!verified.ok) {
         const status = verified.error === 'MISSING_SECRET' ? 500 : 400;
         const message =
           verified.error === 'MISSING_SECRET'
-            ? 'Spam protection is not configured yet. Please try again later.'
-            : 'Verification failed. Please try again.';
+            ? 'Security check is not configured yet. Please contact support.'
+            : verified.error === 'NETWORK_ERROR'
+            ? 'Security check temporarily unavailable. Please try again.'
+            : 'Security check failed. Please try again.';
         return Response.json({ ok: false, message }, { status });
       }
     }
 
     const normalizedEmail = email.trim().toLowerCase();
 
-    // Do not reveal account existence; behave the same for existing emails.
     const existing = await prisma.authUser.findUnique({ where: { email: normalizedEmail } });
     if (existing) {
-      return Response.json({ ok: true, message: 'If your email can be registered, you can now sign in.' });
+      return Response.json(
+        { ok: false, message: 'An account with this email already exists. Please sign in.' },
+        { status: 409 }
+      );
     }
 
     const passwordHash = await hashPassword(password);
 
-    await prisma.authUser.create({
-      data: {
-        email: normalizedEmail,
-        name: name?.trim() || null,
-        passwordHash,
-        primaryDeviceId: primaryDeviceId?.trim() || null,
-      },
-    });
+    try {
+      await prisma.authUser.create({
+        data: {
+          email: normalizedEmail,
+          name: name?.trim() || null,
+          passwordHash,
+          primaryDeviceId: primaryDeviceId?.trim() || null,
+        },
+      });
+    } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+        return Response.json(
+          { ok: false, message: 'An account with this email already exists. Please sign in.' },
+          { status: 409 }
+        );
+      }
+      throw err;
+    }
 
     return Response.json({ ok: true, message: 'Account created. You can now sign in.' });
   } catch (error) {
     markDbDown(error);
+
+    console.error('[auth/register] error', error instanceof Error ? error.message : error);
 
     const msg = error instanceof Error ? error.message : 'Server error';
     const isMisconfig = msg.includes('PASSWORD_PEPPER');
@@ -92,7 +110,7 @@ export async function POST(req: Request) {
           ? 'Auth database tables are not ready yet. Run Prisma migrations and try again.'
           : isDbError
           ? 'Database unavailable'
-          : 'Registration failed',
+          : 'Registration failed. Please try again in a moment.',
       },
       { status: 500 }
     );
