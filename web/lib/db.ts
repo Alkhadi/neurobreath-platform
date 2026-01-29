@@ -6,9 +6,27 @@ const globalForPrisma = globalThis as unknown as {
   prismaLastDownReason: string | undefined
 }
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient()
+function ensurePrisma(): PrismaClient {
+  if (!process.env.DATABASE_URL) {
+    throw new Error('Missing DATABASE_URL')
+  }
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+  if (globalForPrisma.prisma) return globalForPrisma.prisma
+
+  const client = new PrismaClient()
+  if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = client
+  return client
+}
+
+// Avoid instantiating Prisma at module scope when env is missing.
+// Preserve existing import API via a Proxy.
+export const prisma = new Proxy({} as PrismaClient, {
+  get(_target, prop, receiver) {
+    const client = ensurePrisma()
+    const value = Reflect.get(client as unknown as object, prop, receiver)
+    return typeof value === 'function' ? value.bind(client) : value
+  },
+})
 
 const DEFAULT_DB_DOWN_MS = 30_000
 

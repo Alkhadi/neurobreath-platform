@@ -15,6 +15,14 @@ if (!process.env.NEXTAUTH_SECRET && process.env.AUTH_SECRET) {
 
 const handler = NextAuth(authOptions);
 
+type NextAuthRouteContext = {
+	params?: {
+		nextauth?: string[];
+	};
+};
+
+const routeHandler = handler as unknown as (req: NextRequest, context: NextAuthRouteContext) => Promise<Response>;
+
 function getSetCookieHeaders(res: Response): string[] {
 	const headersAny = res.headers as unknown as { getSetCookie?: () => string[] };
 	if (typeof headersAny.getSetCookie === 'function') {
@@ -68,11 +76,11 @@ function rewriteSessionCookieMaxAge(res: Response, maxAgeSeconds: number): Respo
 	});
 }
 
-export async function GET(req: NextRequest, context: unknown) {
-	return handler(req, context as any);
+export async function GET(req: NextRequest, context: NextAuthRouteContext) {
+	return routeHandler(req, context);
 }
 
-export async function POST(req: NextRequest, context: unknown) {
+export async function POST(req: NextRequest, context: NextAuthRouteContext) {
 	const url = new URL(req.url);
 	const isCredentialsCallback = url.pathname.endsWith('/callback/credentials');
 
@@ -82,7 +90,7 @@ export async function POST(req: NextRequest, context: unknown) {
 		rememberMe = form?.get('rememberMe') === 'true';
 	}
 
-	const res = await handler(req, context as any);
+	const res = await routeHandler(req, context);
 	if (!isCredentialsCallback) return res;
 
 	const maxAgeSeconds = rememberMe ? 30 * 24 * 60 * 60 : 24 * 60 * 60;

@@ -97,6 +97,7 @@ export async function POST(req: Request) {
     console.error('[auth/register] error', error instanceof Error ? error.message : error);
 
     const msg = error instanceof Error ? error.message : 'Server error';
+    const isMissingDbUrl = msg.includes('Missing DATABASE_URL');
     const isMisconfig = msg.includes('PASSWORD_PEPPER');
     const isMissingTable = msg.includes('AuthUser') && (msg.includes('does not exist') || msg.includes('relation'));
     const isDbError = msg.includes('P1001') || msg.includes('ECONNREFUSED') || msg.includes('PrismaClientInitializationError');
@@ -104,8 +105,10 @@ export async function POST(req: Request) {
     return Response.json(
       {
         ok: false,
-        message: isMisconfig
-          ? 'Server auth is not configured yet'
+        message: isMissingDbUrl
+          ? 'Server database is not configured yet. Please contact support.'
+          : isMisconfig
+          ? 'Server auth is not configured yet. Please contact support.'
           : isMissingTable
           ? 'Auth database tables are not ready yet. Run Prisma migrations and try again.'
           : isDbError
