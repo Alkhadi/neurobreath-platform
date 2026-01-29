@@ -52,6 +52,19 @@ type Step = 'credentials' | 'otp' | 'magic-link-sent';
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
 
+const TRUST_DEVICE_PREF_KEY = 'nb_trust_device_pref';
+
+function getSafeCallbackUrl(raw: string | null): string {
+  const fallback = '/us/my-account';
+  const value = raw?.trim();
+  if (!value) return fallback;
+  if (!value.startsWith('/')) return fallback;
+  if (value.startsWith('//')) return fallback;
+  if (value.startsWith('/api')) return fallback;
+  if (value.startsWith('/us/login') || value.startsWith('/us/register')) return fallback;
+  return value;
+}
+
 function getStoredAttempts(): { count: number; lockedUntil: number | null } {
   if (typeof window === 'undefined') return { count: 0, lockedUntil: null };
   try {
@@ -108,8 +121,9 @@ export default function UsLoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const callbackUrl = searchParams.get('callbackUrl') || '/us/my-account';
+  const callbackUrl = getSafeCallbackUrl(searchParams.get('callbackUrl'));
   const error = searchParams.get('error');
+  const registered = searchParams.get('registered') === '1';
 
   const [step, setStep] = useState<Step>('credentials');
   const [email, setEmail] = useState('');
@@ -139,10 +153,30 @@ export default function UsLoginPage() {
     if (token) {
       setDeviceToken(token);
     }
+
+    try {
+      const pref = localStorage.getItem(TRUST_DEVICE_PREF_KEY);
+      if (pref === 'true') setTrustDevice(true);
+    } catch {
+      // ignore
+    }
     
     // Load available providers
     getProviders().then(setAvailableProviders);
   }, []);
+
+  useEffect(() => {
+    if (!registered) return;
+    setMessage({ type: 'success', text: 'Account created. You can now sign in.' });
+  }, [registered]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(TRUST_DEVICE_PREF_KEY, trustDevice ? 'true' : 'false');
+    } catch {
+      // ignore
+    }
+  }, [trustDevice]);
 
   // Countdown timer for lockout
   useEffect(() => {

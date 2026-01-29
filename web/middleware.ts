@@ -4,9 +4,24 @@ import { getToken } from 'next-auth/jwt'
 
 const REGION_COOKIE = 'nb_region'
 const EXCLUDED_PREFIXES = ['/api', '/_next', '/favicon', '/robots', '/sitemap', '/assets', '/images']
-const REGION_LOCALISED_PREFIXES = ['/', '/trust', '/help-me-choose', '/glossary', '/printables', '/journeys', '/about', '/editorial']
+const REGION_LOCALISED_PREFIXES = [
+  '/',
+  '/trust',
+  '/help-me-choose',
+  '/glossary',
+  '/printables',
+  '/journeys',
+  '/about',
+  '/editorial',
+  // Auth routes (support non-region canonical paths)
+  '/login',
+  '/register',
+  '/my-account',
+  '/change-password',
+  '/password-reset',
+]
 
-const AUTH_PROTECTED_PATHS = ['/uk/my-account', '/uk/change-password']
+const AUTH_PROTECTED_PATHS = ['/uk/my-account', '/uk/change-password', '/us/my-account', '/us/change-password']
 
 const isExcluded = (pathname: string) =>
   EXCLUDED_PREFIXES.some(prefix => pathname.startsWith(prefix))
@@ -15,11 +30,7 @@ const detectRegion = (request: NextRequest): 'uk' | 'us' => {
   const cookieRegion = request.cookies.get(REGION_COOKIE)?.value?.toLowerCase()
   if (cookieRegion === 'us' || cookieRegion === 'uk') return cookieRegion
 
-  const vercelCountry = request.headers.get('x-vercel-ip-country')?.toUpperCase()
-  const cfCountry = request.headers.get('cf-ipcountry')?.toUpperCase()
-  const country = vercelCountry || cfCountry
-  if (country === 'US') return 'us'
-
+  // UK is the global default unless the user explicitly chose US.
   return 'uk'
 }
 

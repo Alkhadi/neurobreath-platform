@@ -6,10 +6,36 @@ const globalForPrisma = globalThis as unknown as {
   prismaLastDownReason: string | undefined
 }
 
-function ensurePrisma(): PrismaClient {
-  if (!process.env.DATABASE_URL) {
+function readNonEmptyEnv(name: string): string | undefined {
+  const value = process.env[name]
+  const trimmed = typeof value === 'string' ? value.trim() : ''
+  return trimmed ? trimmed : undefined
+}
+
+export function getDatabaseUrl(): string | undefined {
+  return (
+    readNonEmptyEnv('DATABASE_URL') ||
+    // Common hosting/integration env vars (e.g. Vercel Postgres)
+    readNonEmptyEnv('POSTGRES_PRISMA_URL') ||
+    readNonEmptyEnv('POSTGRES_URL_NON_POOLING') ||
+    readNonEmptyEnv('POSTGRES_URL')
+  )
+}
+
+function ensureDatabaseUrl(): string {
+  const url = getDatabaseUrl()
+  if (url && !readNonEmptyEnv('DATABASE_URL')) {
+    // Prisma schema expects env("DATABASE_URL"); map provider-specific vars.
+    process.env.DATABASE_URL = url
+  }
+  if (!url) {
     throw new Error('Missing DATABASE_URL')
   }
+  return url
+}
+
+function ensurePrisma(): PrismaClient {
+  ensureDatabaseUrl()
 
   if (globalForPrisma.prisma) return globalForPrisma.prisma
 

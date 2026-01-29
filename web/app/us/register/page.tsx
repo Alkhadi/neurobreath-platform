@@ -58,7 +58,7 @@ export default function UsRegisterPage() {
         return;
       }
 
-      router.push('/us/login');
+      router.push('/us/login?registered=1');
     } finally {
       setLoading(false);
     }

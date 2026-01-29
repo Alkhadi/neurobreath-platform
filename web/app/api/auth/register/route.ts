@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { Prisma } from '@prisma/client';
 
-import { prisma, isDbDown, getDbDownReason, markDbDown } from '@/lib/db';
+import { prisma, isDbDown, getDbDownReason, markDbDown, getDatabaseUrl } from '@/lib/db';
 import { hashPassword } from '@/lib/auth/password';
 import { verifyTurnstile } from '@/lib/security/turnstile';
 
@@ -124,7 +124,7 @@ export async function POST(req: Request) {
           ? {
               debug: {
                 nodeEnv: process.env.NODE_ENV ?? 'unknown',
-                hasDatabaseUrl: !!process.env.DATABASE_URL,
+                hasDatabaseUrl: !!getDatabaseUrl(),
                 hasPasswordPepper: !!process.env.PASSWORD_PEPPER,
               },
             }
