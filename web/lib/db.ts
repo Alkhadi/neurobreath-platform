@@ -22,6 +22,19 @@ export function getDatabaseUrl(): string | undefined {
   )
 }
 
+export function getDatabaseUrlSource():
+  | 'DATABASE_URL'
+  | 'POSTGRES_PRISMA_URL'
+  | 'POSTGRES_URL_NON_POOLING'
+  | 'POSTGRES_URL'
+  | null {
+  if (readNonEmptyEnv('DATABASE_URL')) return 'DATABASE_URL'
+  if (readNonEmptyEnv('POSTGRES_PRISMA_URL')) return 'POSTGRES_PRISMA_URL'
+  if (readNonEmptyEnv('POSTGRES_URL_NON_POOLING')) return 'POSTGRES_URL_NON_POOLING'
+  if (readNonEmptyEnv('POSTGRES_URL')) return 'POSTGRES_URL'
+  return null
+}
+
 function ensureDatabaseUrl(): string {
   const url = getDatabaseUrl()
   if (url && !readNonEmptyEnv('DATABASE_URL')) {

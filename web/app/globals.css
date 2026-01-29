@@ -961,6 +961,7 @@
   justify-content: center;
   border-radius: 12px;
   padding: 6px;
+  overflow: hidden;
   background: radial-gradient(circle at 50% 42%, #5b2387 0%, #2f0a4d 55%, #110326 100%);
   border: 1px solid rgba(255, 0, 255, 0.22);
   box-shadow:
