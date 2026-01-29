@@ -102,18 +102,33 @@ export async function POST(req: Request) {
     const isMissingTable = msg.includes('AuthUser') && (msg.includes('does not exist') || msg.includes('relation'));
     const isDbError = msg.includes('P1001') || msg.includes('ECONNREFUSED') || msg.includes('PrismaClientInitializationError');
 
+    const isDev = process.env.NODE_ENV !== 'production';
+
     return Response.json(
       {
         ok: false,
         message: isMissingDbUrl
-          ? 'Server database is not configured yet. Please contact support.'
+          ? isDev
+            ? 'Database is not configured (DATABASE_URL is missing). Set it in web/.env.local (or your container env) and restart the server.'
+            : 'Server database is not configured yet. Please contact support.'
           : isMisconfig
-          ? 'Server auth is not configured yet. Please contact support.'
+          ? isDev
+            ? 'Auth is not configured (PASSWORD_PEPPER is missing). Set it in web/.env.local (or your container env) and restart the server.'
+            : 'Server auth is not configured yet. Please contact support.'
           : isMissingTable
           ? 'Auth database tables are not ready yet. Run Prisma migrations and try again.'
           : isDbError
           ? 'Database unavailable'
           : 'Registration failed. Please try again in a moment.',
+        ...(isDev
+          ? {
+              debug: {
+                nodeEnv: process.env.NODE_ENV ?? 'unknown',
+                hasDatabaseUrl: !!process.env.DATABASE_URL,
+                hasPasswordPepper: !!process.env.PASSWORD_PEPPER,
+              },
+            }
+          : null),
       },
       { status: 500 }
     );
