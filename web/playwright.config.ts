@@ -41,12 +41,15 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'npm run dev:e2e',
+    command: 'yarn dev:e2e',
     url: 'http://localhost:3000',
     // Default to NOT reusing an existing server.
     // Reuse can accidentally point tests at a stale/incorrect process already on :3000.
     // Opt-in via env var if you know what you're doing.
     reuseExistingServer: !!process.env.PW_REUSE_SERVER && !process.env.CI,
     timeout: 120 * 1000,
+    env: {
+      NEXTAUTH_DEBUG: 'false',
+    },
   },
 });
