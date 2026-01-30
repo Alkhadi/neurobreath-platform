@@ -55,7 +55,7 @@ const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
 const TRUST_DEVICE_PREF_KEY = 'nb_trust_device_pref';
 
 function getSafeCallbackUrl(raw: string | null): string {
-  const fallback = '/us/my-account';
+  const fallback = '/us';
   const value = raw?.trim();
   if (!value) return fallback;
   if (!value.startsWith('/')) return fallback;
@@ -692,6 +692,16 @@ export default function UsLoginPage() {
                   disabled={loading}
                 >
                   Create a free account
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="w-full"
+                  onClick={() => router.push('/us')}
+                  disabled={loading}
+                >
+                  Continue without an account
                 </Button>
               </>
             )}

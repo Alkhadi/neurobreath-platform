@@ -58,7 +58,7 @@ export default function UkRegisterPage() {
         return;
       }
 
-      router.push('/uk/login?registered=1');
+      router.push('/uk/login?registered=1&callbackUrl=/uk');
     } finally {
       setLoading(false);
     }

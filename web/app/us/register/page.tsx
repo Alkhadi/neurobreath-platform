@@ -58,7 +58,7 @@ export default function UsRegisterPage() {
         return;
       }
 
-      router.push('/us/login?registered=1');
+      router.push('/us/login?registered=1&callbackUrl=/us');
     } finally {
       setLoading(false);
     }
