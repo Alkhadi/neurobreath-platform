@@ -41,6 +41,11 @@ export default async function RootLayout({
 }) {
   const hdrs = await headers();
   const pathname = hdrs.get('x-pathname') || '/';
+  const disablePageBuddy =
+    pathname === '/uk/login' ||
+    pathname === '/uk/register' ||
+    pathname === '/us/login' ||
+    pathname === '/us/register';
   const region = getRegionFromPath(pathname);
   const { language } = getLocaleForRegion(region);
   const seoConfig = getRouteSeoConfig(pathname);
@@ -80,7 +85,7 @@ export default async function RootLayout({
                 <main className="flex-1">{children}</main>
                 <SiteFooter />
               </div>
-              <PageBuddy />
+              {!disablePageBuddy && <PageBuddy />}
               <CookieConsentBanner />
               <CookieSettingsButton />
             </BreathingSessionProvider>
