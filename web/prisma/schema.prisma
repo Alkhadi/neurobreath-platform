@@ -465,6 +465,10 @@ model AuthUser {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @default(now()) @updatedAt
 
+  // Cookie consent (shared across devices for signed-in users)
+  consentState        Json?
+  consentUpdatedAt    DateTime?
+
   // Optional link into the existing “deviceId” ecosystem
   primaryDeviceId    String?
 

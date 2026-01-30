@@ -5,7 +5,7 @@ import { useConsent } from '@/lib/consent/useConsent';
 import { CookiePreferencesModal } from './CookiePreferencesModal';
 
 export function CookieConsentBanner() {
-  const { hasSavedConsent, updateConsent } = useConsent();
+  const { hasSavedConsent, updateConsent, isSyncingFromAccount } = useConsent();
   const [isVisible, setIsVisible] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
@@ -14,7 +14,7 @@ export function CookieConsentBanner() {
     console.log('[CookieConsentBanner] hasSavedConsent:', hasSavedConsent);
     
     // Show banner only if consent not yet saved
-    if (!hasSavedConsent) {
+    if (!hasSavedConsent && !isSyncingFromAccount) {
       // Delay slightly for better UX (avoid flash on page load)
       const timer = setTimeout(() => {
         setIsVisible(true);
@@ -22,7 +22,7 @@ export function CookieConsentBanner() {
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [hasSavedConsent]);
+  }, [hasSavedConsent, isSyncingFromAccount]);
 
   const handleAcceptAll = () => {
     updateConsent({ essential: true, functional: true, analytics: true });
