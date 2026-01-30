@@ -58,7 +58,7 @@ function FloatingNavMenu({
   triggerClassName,
   children,
 }: FloatingNavMenuProps) {
-  const isDesktop = useMediaQuery('(min-width: 1025px)')
+  const isDesktop = useMediaQuery('(min-width: 1440px)')
   const wrapperRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -150,7 +150,7 @@ export function SiteHeader() {
   const mobileClosingRef = useRef(false)
   const pathname = usePathname() || '/'
   const [regionPrefix, setRegionPrefix] = useState<'/uk' | '/us'>(pathname.startsWith('/us') ? '/us' : '/uk')
-  const isMobile = useMediaQuery('(max-width: 1024px)')
+  const isMobile = useMediaQuery('(max-width: 1439px)')
 
   useEffect(() => {
     if (pathname.startsWith('/us')) {
@@ -312,6 +312,8 @@ export function SiteHeader() {
           className="nb-mobile-toggle"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-controls="mainNav"
+          aria-expanded={mobileMenuOpen ? "true" : "false"}
           data-expanded={mobileMenuOpen}
         >
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -324,6 +326,7 @@ export function SiteHeader() {
           id="mainNav" 
           role="navigation" 
           aria-label="Primary"
+          aria-hidden={isMobile ? (mobileMenuOpen ? "false" : "true") : undefined}
         >
           {/* Conditions Mega Menu */}
           <FloatingNavMenu

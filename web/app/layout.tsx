@@ -2,7 +2,6 @@ import './globals.css';
 import '../styles/print.css';
 import { headers } from 'next/headers';
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { ThemeProvider } from '@/components/theme-provider';
 import { BreathingSessionProvider } from '@/contexts/BreathingSessionContext';
@@ -18,8 +17,6 @@ import { generateOrganizationSchema, generateWebSiteSchema, generateWebPageSchem
 import { SITE_CONFIG, generateCanonicalUrl } from '@/lib/seo/site-seo';
 import { getRouteMetadata, getRouteSeoConfig } from '@/lib/seo/route-metadata';
 import { getLocaleForRegion, getRegionFromPath } from '@/lib/region/region';
-
-const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -71,7 +68,7 @@ export default async function RootLayout({
       <head>
         <JsonLd data={schemaGraph} />
       </head>
-      <body className={`${inter.className} antialiased overflow-x-hidden`} suppressHydrationWarning>
+      <body className="font-sans antialiased overflow-x-hidden" suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

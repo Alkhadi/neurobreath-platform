@@ -944,7 +944,7 @@
 }
 
 .nb-brand-tile .nb-brand-logo {
-  border-radius: 10px;
+  border-radius: 12px;
   filter: none;
 }
 
@@ -970,7 +970,7 @@
 }
 
 .nb-brand-logo {
-  border-radius: 10px;
+  border-radius: 12px;
   filter: contrast(1.16) brightness(1.14) saturate(1.12) drop-shadow(0 0 0.9px rgba(255, 255, 255, 0.22));
 }
 
@@ -1027,6 +1027,14 @@
   .nb-nav-cta {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
+  }
+}
+
+/* Tesla + smaller: keep comfortable gutters even in hamburger mode */
+@media (max-width: 1439px) {
+  .nb-header-container {
+    padding-left: calc(1.5rem + env(safe-area-inset-left));
+    padding-right: calc(1.5rem + env(safe-area-inset-right));
   }
 }
 
@@ -1298,8 +1306,8 @@
   }
 }
 
-/* Mobile Responsive */
-@media (max-width: 1024px) {
+/* Mobile/Tesla Responsive: use hamburger drawer up to 1439px */
+@media (max-width: 1439px) {
   .nb-mobile-toggle {
     display: block;
   }
@@ -1317,11 +1325,15 @@
     padding: 1rem;
     overflow-y: auto;
     transform: translateX(-100%);
+    visibility: hidden;
+    pointer-events: none;
     transition: transform 0.3s ease-out;
   }
 
   .nb-main-nav--open {
     transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
   }
 
   .nb-nav-link,
