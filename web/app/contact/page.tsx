@@ -1,23 +1,214 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import { Profile, Contact, defaultProfile } from "@/lib/utils";
+import { loadNbcardLocalState, saveNbcardLocalState } from "./lib/nbcard-storage";
 import styles from "./contact.module.css";
+import { ProfileCard } from "./components/profile-card";
+import { ProfileManager } from "./components/profile-manager";
+import { ContactCapture } from "./components/contact-capture";
+import { ShareButtons } from "./components/share-buttons";
 import { TurnstileWidget } from "@/components/security/turnstile-widget";
-import { FaEnvelope, FaMapMarkerAlt, FaPhone } from "react-icons/fa";
+import { FaEdit, FaPlus, FaUsers, FaChevronDown, FaEnvelope, FaPhone, FaMapMarkerAlt, FaDownload } from "react-icons/fa";
+import { toast } from "sonner";
 
-type SubmitState = { state: "idle" | "submitting" | "success" | "error"; message?: string };
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
+}
+
+const SOCIAL_PLACEHOLDER_VALUES = new Set([
+  "https://instagram.com/username",
+  "https://facebook.com/username",
+  "https://tiktok.com/username",
+  "https://linkedin.com/username",
+  "https://twitter.com/username",
+  "https://website.com/username",
+]);
+
+function sanitizeSocialUrl(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  if (SOCIAL_PLACEHOLDER_VALUES.has(trimmed)) return undefined;
+  return trimmed;
+}
+
+function sanitizeProfile(profile: Profile): Profile {
+  const social = profile.socialMedia || {};
+
+  return {
+    ...profile,
+    socialMedia: {
+      instagram: sanitizeSocialUrl(social.instagram),
+      facebook: sanitizeSocialUrl(social.facebook),
+      tiktok: sanitizeSocialUrl(social.tiktok),
+      linkedin: sanitizeSocialUrl(social.linkedin),
+      twitter: sanitizeSocialUrl(social.twitter),
+      website: sanitizeSocialUrl(social.website),
+    },
+  };
+}
 
 export default function ContactPage() {
   const [mounted, setMounted] = useState(false);
-  const [contactSubmitStatus, setContactSubmitStatus] = useState<SubmitState>({ state: "idle" });
+  const [profiles, setProfiles] = useState<Profile[]>([defaultProfile]);
+  const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [showProfileManager, setShowProfileManager] = useState(false);
+  const [editingProfile, setEditingProfile] = useState<Profile | null>(null);
+  const [isNewProfile, setIsNewProfile] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [showInstallButton, setShowInstallButton] = useState(false);
+  const [contactSubmitStatus, setContactSubmitStatus] = useState<
+    { state: "idle" | "submitting" | "success" | "error"; message?: string }
+  >({ state: "idle" });
   const [turnstileToken, setTurnstileToken] = useState<string>("");
   const [turnstileResetKey, setTurnstileResetKey] = useState(0);
-  const isDevBuild = process.env.NODE_ENV !== "production";
 
-  // Ensure browser-only APIs render safely
+  // Load NBCard state + set up PWA install prompt
   useEffect(() => {
+    let cancelled = false;
     setMounted(true);
+
+    (async () => {
+      const state = await loadNbcardLocalState([defaultProfile], []);
+      if (cancelled) return;
+      const sanitizedProfiles = state.profiles.map(sanitizeProfile);
+      setProfiles(sanitizedProfiles);
+      setContacts(state.contacts);
+
+      // Support deep-linking to a specific profile via /contact?profile=<id>
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const profileId = params.get("profile");
+        if (profileId) {
+          const index = sanitizedProfiles.findIndex((p) => p.id === profileId);
+          if (index >= 0) setCurrentProfileIndex(index);
+        }
+      } catch {
+        // ignore
+      }
+
+      // Register NBCard service worker (offline-ready for /contact)
+      try {
+        if ("serviceWorker" in navigator) {
+          await navigator.serviceWorker.register("/nbcard-sw.js");
+        }
+      } catch {
+        // Don't block page; SW is best-effort
+      }
+    })().catch((e) => console.error("Failed to load NBCard state", e));
+
+    // PWA Install Prompt
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      setShowInstallButton(true);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    };
   }, []);
+
+  // Persist profiles + contacts (local-first)
+  useEffect(() => {
+    if (mounted) {
+      saveNbcardLocalState({ profiles, contacts }).catch((e) => console.error("Failed to persist NBCard state", e));
+    }
+  }, [profiles, contacts, mounted]);
+
+  const currentProfile = profiles?.[currentProfileIndex] ?? defaultProfile;
+
+  const handleSaveProfile = (profile: Profile) => {
+    if (isNewProfile) {
+      setProfiles([...profiles, { ...profile, id: Date.now().toString() }]);
+      setCurrentProfileIndex(profiles.length);
+    } else {
+      const updated = profiles.map((p) => (p.id === profile.id ? profile : p));
+      setProfiles(updated);
+    }
+    setShowProfileManager(false);
+    setEditingProfile(null);
+    setIsNewProfile(false);
+  };
+
+  const handleDeleteProfile = () => {
+    if (profiles.length === 1) {
+      toast.error("Cannot delete the last profile");
+      return;
+    }
+    if (confirm("Are you sure you want to delete this profile?")) {
+      const updated = profiles.filter((p) => p.id !== currentProfile.id);
+      setProfiles(updated);
+      setCurrentProfileIndex(0);
+      setShowProfileManager(false);
+    }
+  };
+
+  const handleCreateNewProfile = () => {
+    setEditingProfile({
+      id: "",
+      fullName: "",
+      jobTitle: "",
+      phone: "",
+      email: "",
+      profileDescription: "",
+      businessDescription: "",
+      gradient: "linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)",
+      socialMedia: {},
+    });
+    setIsNewProfile(true);
+    setShowProfileManager(true);
+  };
+
+  const handleEditProfile = () => {
+    setEditingProfile(currentProfile);
+    setIsNewProfile(false);
+    setShowProfileManager(true);
+  };
+
+  const handleUpsertContact = (contact: Contact) => {
+    setContacts((prev) => {
+      const idx = prev.findIndex((c) => c.id === contact.id);
+      if (idx >= 0) {
+        const next = [...prev];
+        next[idx] = contact;
+        return next;
+      }
+      return [...prev, contact];
+    });
+  };
+
+  const handleDeleteContact = (id: string) => {
+    if (confirm("Are you sure you want to delete this contact?")) {
+      setContacts(contacts.filter((c) => c.id !== id));
+    }
+  };
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) {
+      toast.message("Install prompt not available", {
+        description: "Please use your browser's menu to install the app.",
+      });
+      return;
+    }
+
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === "accepted") {
+      console.log("User accepted the install prompt");
+    }
+    
+    setDeferredPrompt(null);
+    setShowInstallButton(false);
+  };
 
   const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
@@ -93,10 +284,10 @@ export default function ContactPage() {
         return;
       }
 
-      const successMessage = isDev
-        ? "Thanks! Your message was received. (Development mode - email not sent)"
+      const successMessage = isDev 
+        ? "Thanks! Your message was received. (Development mode - email not sent)" 
         : "Thanks! We'll get back to you soon.";
-
+      
       setContactSubmitStatus({ state: "success", message: successMessage });
       form.reset();
       setTurnstileToken("");
@@ -133,285 +324,435 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-blue-50 py-10 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-blue-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
-        <header className="text-center mb-10">
-          <p className="inline-flex items-center gap-2 rounded-full bg-white/70 px-4 py-1 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-black/5">
-            Contact
-          </p>
-          <h1 className="mt-4 text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
-            Get in touch with NeuroBreath
+        {/* Page Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 mb-3">
+            NBCard - Digital Business Card
           </h1>
-          <p className="mt-3 text-gray-600 text-lg max-w-2xl mx-auto">
-            Questions, partnerships, or support — send a message and we’ll respond as soon as we can.
-          </p>
-        </header>
+          <p className="text-gray-600 text-lg">Create, manage, and share your professional profile</p>
+        </div>
 
-        <section aria-label="Contact form" className="mb-6">
-          <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between mb-8">
+        {/* Section A: Main Contact Page */}
+        <section aria-label="Contact Us" className="mb-12">
+        <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 mb-8">
+          <div className="text-center mb-6">
+            <h2 className="text-3xl font-bold text-gray-800 mb-2">Contact Us</h2>
+            <p className="text-gray-600">Have questions? We'd love to hear from you!</p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Contact Form */}
+            <form onSubmit={handleContactFormSubmit} className="space-y-4">
+              {/* Honeypot field: bots often fill it, humans never see it */}
+              <div className={styles.honeypot}>
+                <label htmlFor="company">Company</label>
+                <input
+                  id="company"
+                  name="company"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                />
+              </div>
+              <div className={styles.honeypot}>
+                <label htmlFor="website">Website</label>
+                <input
+                  id="website"
+                  name="website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                />
+              </div>
               <div>
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Send a message</h2>
-                <p className="text-gray-600 mt-1">We typically reply within 1–2 business days.</p>
+                <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                  minLength={2}
+                  maxLength={80}
+                  autoComplete="name"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  placeholder="Moe Koroma"
+                />
               </div>
-              <div className="text-sm text-gray-500">
-                Fields marked <span className="font-semibold text-gray-700">*</span> are required
+              <div>
+                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  maxLength={254}
+                  autoComplete="email"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  placeholder="john@example.com"
+                />
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <form onSubmit={handleContactFormSubmit} className="space-y-4">
-                {/* Honeypot field: bots often fill it, humans never see it */}
-                <div className={styles.honeypot}>
-                  <label htmlFor="company">Company</label>
-                  <input
-                    id="company"
-                    name="company"
-                    type="text"
-                    tabIndex={-1}
-                    autoComplete="off"
-                    aria-hidden="true"
+              <div>
+                <label htmlFor="organization" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Organisation (optional)
+                </label>
+                <input
+                  type="text"
+                  id="organization"
+                  name="organization"
+                  maxLength={200}
+                  autoComplete="organization"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  placeholder="NeuroBreath"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Phone (optional)
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  maxLength={50}
+                  autoComplete="tel"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  placeholder="+44 7xxx xxxxxx"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Subject *
+                </label>
+                <input
+                  type="text"
+                  id="subject"
+                  name="subject"
+                  required
+                  minLength={2}
+                  maxLength={120}
+                  autoComplete="off"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  placeholder="How can we help?"
+                />
+              </div>
+              <div>
+                <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Message *
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  required
+                  minLength={5}
+                  maxLength={4000}
+                  rows={5}
+                  autoComplete="off"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all resize-none"
+                  placeholder="Your message here..."
+                />
+              </div>
+
+              <div className="pt-2 flex flex-col gap-2">
+                {turnstileSiteKey ? (
+                  <TurnstileWidget
+                    siteKey={turnstileSiteKey}
+                    onVerify={setTurnstileToken}
+                    onError={() => setTurnstileToken("")}
+                    onExpire={() => setTurnstileToken("")}
+                    action="contact"
+                    theme="light"
+                    resetKey={turnstileResetKey}
                   />
+                ) : (
+                  <p className="text-sm text-amber-700">
+                    Turnstile is not configured yet (missing NEXT_PUBLIC_TURNSTILE_SITE_KEY).
+                  </p>
+                )}
+
+                <div aria-live="polite" aria-atomic="true">
+                  {contactSubmitStatus.state === "error" && contactSubmitStatus.message ? (
+                    <p className="text-sm text-red-600">{contactSubmitStatus.message}</p>
+                  ) : null}
+                  {contactSubmitStatus.state === "success" && contactSubmitStatus.message ? (
+                    <p className="text-sm text-green-700">{contactSubmitStatus.message}</p>
+                  ) : null}
                 </div>
-                <div className={styles.honeypot}>
-                  <label htmlFor="website">Website</label>
-                  <input
-                    id="website"
-                    name="website"
-                    type="text"
-                    tabIndex={-1}
-                    autoComplete="off"
-                    aria-hidden="true"
-                  />
-                </div>
+              </div>
 
-                <div>
-                  <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    required
-                    minLength={2}
-                    maxLength={80}
-                    autoComplete="name"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                    placeholder="Moe Koroma"
-                  />
-                </div>
+              <button
+                type="submit"
+                disabled={
+                  contactSubmitStatus.state === "submitting" ||
+                  !turnstileSiteKey ||
+                  (turnstileSiteKey ? !turnstileToken : false)
+                }
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                <FaEnvelope />
+                {contactSubmitStatus.state === "submitting"
+                  ? "Sending..."
+                  : turnstileSiteKey && !turnstileToken
+                    ? "Complete verification to send"
+                    : "Send Message"}
+              </button>
+            </form>
 
-                <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    maxLength={254}
-                    autoComplete="email"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                    placeholder="you@example.com"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="organization" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Organisation (optional)
-                  </label>
-                  <input
-                    type="text"
-                    id="organization"
-                    name="organization"
-                    maxLength={200}
-                    autoComplete="organization"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                    placeholder="NeuroBreath"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Phone (optional)
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    maxLength={50}
-                    autoComplete="tel"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                    placeholder="+44 7xxx xxxxxx"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Subject *
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    required
-                    minLength={2}
-                    maxLength={120}
-                    autoComplete="off"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                    placeholder="How can we help?"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Message *
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    required
-                    minLength={5}
-                    maxLength={4000}
-                    rows={5}
-                    autoComplete="off"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none"
-                    placeholder="Tell us a bit about what you need and any helpful context."
-                  />
-                </div>
-
-                <div className="pt-2 flex flex-col gap-2">
-                  {turnstileSiteKey ? (
-                    <TurnstileWidget
-                      siteKey={turnstileSiteKey}
-                      onVerify={setTurnstileToken}
-                      onError={() => setTurnstileToken("")}
-                      onExpire={() => setTurnstileToken("")}
-                      action="contact"
-                      theme="light"
-                      resetKey={turnstileResetKey}
-                    />
-                  ) : (
-                    <p className="text-sm text-amber-800">
-                      {isDevBuild ? (
-                        "Turnstile is not configured yet (missing NEXT_PUBLIC_TURNSTILE_SITE_KEY)."
-                      ) : (
-                        <>
-                          Verification is temporarily unavailable. Please email{" "}
-                          <a
-                            href="mailto:info@neurobreath.co.uk"
-                            className="font-semibold text-purple-700 hover:text-purple-800"
-                          >
-                            info@neurobreath.co.uk
-                          </a>
-                          .
-                        </>
-                      )}
-                    </p>
-                  )}
-
-                  <div aria-live="polite" aria-atomic="true">
-                    {contactSubmitStatus.state === "error" && contactSubmitStatus.message ? (
-                      <p className="text-sm text-red-600">{contactSubmitStatus.message}</p>
-                    ) : null}
-                    {contactSubmitStatus.state === "success" && contactSubmitStatus.message ? (
-                      <p className="text-sm text-green-700">{contactSubmitStatus.message}</p>
-                    ) : null}
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={
-                    contactSubmitStatus.state === "submitting" ||
-                    !turnstileSiteKey ||
-                    (turnstileSiteKey ? !turnstileToken : false)
-                  }
-                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  <FaEnvelope />
-                  {contactSubmitStatus.state === "submitting"
-                    ? "Sending..."
-                    : turnstileSiteKey && !turnstileToken
-                      ? "Complete verification to send"
-                      : "Send Message"}
-                </button>
-              </form>
-
-              <aside className="space-y-6">
-                <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-purple-50 to-blue-50 p-6">
-                  <h3 className="text-xl font-bold text-gray-900">Contact details</h3>
-                  <p className="text-gray-600 mt-2">Prefer email? Use any of the addresses below.</p>
-
-                  <div className="mt-6 space-y-4">
-                    <div className="flex items-start gap-4">
-                      <div className="bg-purple-600 text-white p-3 rounded-xl shadow-sm">
-                        <FaEnvelope className="text-xl" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-900">Email</h4>
-                        <div className="mt-1 flex flex-col">
-                          <a
-                            href="mailto:info@neurobreath.co.uk"
-                            className="text-purple-700 hover:text-purple-800"
-                          >
-                            info@neurobreath.co.uk
-                          </a>
-                          <a
-                            href="mailto:admin@neurobreath.co.uk"
-                            className="text-purple-700 hover:text-purple-800"
-                          >
-                            admin@neurobreath.co.uk
-                          </a>
-                        </div>
-                      </div>
+            {/* Contact Information */}
+            <div className="space-y-6">
+              <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Get In Touch</h3>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-purple-600 text-white p-3 rounded-lg">
+                      <FaEnvelope className="text-xl" />
                     </div>
-
-                    <div className="flex items-start gap-4">
-                      <div className="bg-blue-600 text-white p-3 rounded-xl shadow-sm">
-                        <FaPhone className="text-xl" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-900">Phone</h4>
-                        <a
-                          href="tel:+44232567890"
-                          className="mt-1 inline-block text-purple-700 hover:text-purple-800"
-                        >
-                          +44 (232) 567-890
+                    <div>
+                      <h4 className="font-semibold text-gray-800">Email:</h4>
+                      <div className="flex flex-col">
+                        <a href="mailto:admin@neurobreath.co.uk" className="text-purple-600 hover:text-purple-700">
+                          admin@neurobreath.co.uk
+                        </a>
+                        <a href="mailto:info@neurobreath.co.uk" className="text-purple-600 hover:text-purple-700">
+                          info@neurobreath.co.uk
+                        </a>
+                        <a href="mailto:support@nbcard.app" className="text-purple-600 hover:text-purple-700">
+                          support@nbcard.app
                         </a>
                       </div>
                     </div>
-
-                    <div className="flex items-start gap-4">
-                      <div className="bg-indigo-600 text-white p-3 rounded-xl shadow-sm">
-                        <FaMapMarkerAlt className="text-xl" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-900">Location</h4>
-                        <div className="mt-1 text-gray-600">
-                          <p>SE 15</p>
-                          <p>London, United Kingdom</p>
-                        </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="bg-blue-600 text-white p-3 rounded-lg">
+                      <FaPhone className="text-xl" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-800">Phone</h4>
+                      <a href="tel:+44232567890" className="text-purple-600 hover:text-purple-700">
+                        +44 (232) 567-890
+                      </a>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="bg-indigo-600 text-white p-3 rounded-lg">
+                      <FaMapMarkerAlt className="text-xl" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-800">Location</h4>
+                      <div className="text-gray-600">
+                        <p>SE 15</p>
+                        <p>London United Kingdom</p>
+                        <p>England.</p>
                       </div>
                     </div>
                   </div>
                 </div>
-
-                <div className="rounded-2xl border border-gray-200 bg-white p-6">
-                  <h3 className="text-lg font-bold text-gray-900">Before you send</h3>
-                  <ul className="mt-3 space-y-2 text-sm text-gray-600">
-                    <li>Please include the email you want us to reply to.</li>
-                    <li>If you’re reporting a bug, share steps to reproduce.</li>
-                    <li>Don’t include sensitive health or payment information.</li>
-                  </ul>
-                </div>
-              </aside>
+              </div>
             </div>
           </div>
+        </div>
+        </section>
+
+        {/* Gradient Divider */}
+        <div className="my-12" aria-hidden="true">
+          <div className="h-[2px] w-full bg-gradient-to-r from-purple-300 via-blue-300 to-pink-300 opacity-70" />
+          <div className="mt-4 h-4 w-full rounded-full bg-gradient-to-r from-purple-100 via-blue-100 to-pink-100 opacity-90 shadow-sm" />
+        </div>
+
+        {/* Section B: NBCard Profile & Contact Capture */}
+        <section aria-labelledby="nbcard-profile-heading" className="mt-4">
+          <div className="text-center mb-6">
+            <h2 id="nbcard-profile-heading" className="text-3xl font-bold text-gray-800 mb-2">NBCard Profile</h2>
+            <p className="text-gray-600">Manage your profile, share your card, and capture contacts.</p>
+          </div>
+
+        {/* Profile Selector */}
+        {profiles.length > 1 && (
+          <div className="mb-6 flex justify-center">
+            <div className="relative">
+              <button
+                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                className="bg-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all flex items-center gap-2 font-semibold text-gray-700"
+              >
+                <FaUsers className="text-purple-600" />
+                {currentProfile?.fullName ?? "Select Profile"}
+                <FaChevronDown className={`transition-transform ${showProfileDropdown ? "rotate-180" : ""}`} />
+              </button>
+              {showProfileDropdown && (
+                <div className="absolute top-full mt-2 bg-white rounded-lg shadow-xl py-2 min-w-full z-10">
+                  {profiles.map((profile, index) => (
+                    <button
+                      key={profile.id}
+                      onClick={() => {
+                        setCurrentProfileIndex(index);
+                        setShowProfileDropdown(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 hover:bg-purple-50 transition-colors ${
+                        index === currentProfileIndex ? "bg-purple-100 font-semibold" : ""
+                      }`}
+                    >
+                      {profile.fullName}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Left Column - Profile Card */}
+          <div>
+            {/* Profile Card with Capture Wrapper */}
+            <div className="mb-6">
+              <div
+                id="profile-card-capture"
+                className="cursor-pointer text-left w-full"
+                role="button"
+                tabIndex={0}
+                aria-label="Edit profile"
+                onClick={handleEditProfile}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleEditProfile();
+                  }
+                }}
+              >
+                <ProfileCard profile={currentProfile} showEditButton onPhotoClick={(e) => {
+                  e?.stopPropagation();
+                  handleEditProfile();
+                }} />
+              </div>
+            </div>
+            <p className="text-center text-sm text-gray-600 mb-4">
+              Click on the card to edit your profile
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3">
+              <button
+                onClick={handleEditProfile}
+                className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold"
+              >
+                <FaEdit /> Edit Profile
+              </button>
+              <button
+                onClick={handleCreateNewProfile}
+                className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold"
+              >
+                <FaPlus /> New Profile
+              </button>
+              <button
+                onClick={() => {
+                  const el = document.getElementById("share-your-profile");
+                  el?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  toast.message("Share Your Profile", { description: "Choose a share option on the right." });
+                }}
+                className="flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold"
+              >
+                Share Your Profile
+              </button>
+            </div>
+          </div>
+
+          {/* Right Column - Share Buttons */}
+          <div className="bg-white rounded-2xl shadow-xl p-6">
+            <div id="share-your-profile">
+              <ShareButtons
+                profile={currentProfile}
+                profiles={profiles}
+                contacts={contacts}
+                onSetProfiles={setProfiles}
+                onSetContacts={setContacts}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Contact Capture Section */}
+        <div className="mb-8">
+          <ContactCapture contacts={contacts} onUpsert={handleUpsertContact} onDelete={handleDeleteContact} />
+        </div>
+
+        {/* PWA Install Section */}
+        <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl shadow-xl p-6">
+          <div className="text-center mb-4">
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">Install as App</h3>
+            <p className="text-gray-600">
+              Add NBCard to your home screen for quick access and offline functionality.
+            </p>
+          </div>
+
+          {/* Install Button */}
+          {showInstallButton && (
+            <div className="mb-4">
+              <button
+                onClick={handleInstallClick}
+                className="w-full max-w-md mx-auto flex items-center justify-center gap-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-4 rounded-xl hover:shadow-lg transition-all font-bold text-lg"
+              >
+                <FaDownload className="text-2xl" />
+                Install NBCard App Now
+              </button>
+            </div>
+          )}
+
+          {/* Manual Install Instructions */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div className="bg-white rounded-lg p-4">
+              <h4 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
+                <span className="bg-gray-800 text-white px-2 py-1 rounded text-xs">iOS</span>
+                iPhone & iPad
+              </h4>
+              <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+                <li>Open this page in Safari</li>
+                <li>Tap the share button (square with arrow)</li>
+                <li>Scroll and tap "Add to Home Screen"</li>
+                <li>Tap "Add" to confirm</li>
+              </ol>
+            </div>
+            <div className="bg-white rounded-lg p-4">
+              <h4 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
+                <span className="bg-green-600 text-white px-2 py-1 rounded text-xs">Android</span>
+                Chrome Browser
+              </h4>
+              <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+                <li>Tap the menu button (three dots)</li>
+                <li>Select "Add to Home screen" or "Install app"</li>
+                <li>Tap "Install" or "Add"</li>
+                <li>Find the app on your home screen</li>
+              </ol>
+            </div>
+          </div>
+        </div>
         </section>
       </div>
-    </main>
+
+      {/* Profile Manager Modal */}
+      {showProfileManager && editingProfile && (
+        <ProfileManager
+          profile={editingProfile}
+          onSave={handleSaveProfile}
+          onDelete={!isNewProfile ? handleDeleteProfile : undefined}
+          onClose={() => {
+            setShowProfileManager(false);
+            setEditingProfile(null);
+            setIsNewProfile(false);
+          }}
+          isNew={isNewProfile}
+        />
+      )}
+    </div>
   );
 }
