@@ -203,7 +203,14 @@ function getSmtpConfig() {
 
 export const authOptions: NextAuthOptions = {
   adapter: authPrismaAdapter(),
-  secret: process.env.NEXTAUTH_SECRET,
+  secret:
+    process.env.NEXTAUTH_SECRET ||
+    process.env.AUTH_SECRET ||
+    (process.env.CI
+      ? 'ci-nextauth-secret'
+      : process.env.NODE_ENV !== 'production'
+        ? 'dev-nextauth-secret'
+        : undefined),
   debug:
     process.env.NEXTAUTH_DEBUG === 'true'
       ? true

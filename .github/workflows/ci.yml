@@ -43,7 +43,7 @@ jobs:
       - name: Build production bundle
         run: yarn build
         env:
-          NEXT_PUBLIC_SITE_URL: https://www.neurobreath.co.uk
+          NEXT_PUBLIC_SITE_URL: https://neurobreath.co.uk
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/neurobreath?schema=public
 
       - name: Upload build artifacts

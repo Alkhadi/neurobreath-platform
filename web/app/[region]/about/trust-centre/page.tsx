@@ -4,17 +4,38 @@ import { notFound } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { getRegionFromKey, getRegionKey } from '@/lib/region/region';
-
-export const metadata: Metadata = {
-  title: 'Trust Centre | NeuroBreath',
-  description: 'How NeuroBreath handles privacy, evidence, and safety. Educational information only.',
-  robots: { index: true, follow: true },
-};
+import { getRegionAlternates, getRegionFromKey, getRegionKey } from '@/lib/region/region';
+import { generateCanonicalUrl } from '@/lib/seo/site-seo';
+import { generatePageMetadata } from '@/lib/seo/metadata';
 
 type PageProps = {
   params: Promise<{ region: string }>;
 };
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const resolved = await params;
+  const region = getRegionFromKey(resolved.region);
+  const regionKey = getRegionKey(region);
+  const path = `/${regionKey}/about/trust-centre`;
+  const alternates = getRegionAlternates('/about/trust-centre');
+
+  const baseMetadata = generatePageMetadata({
+    title: 'Trust Centre',
+    description: 'How NeuroBreath handles privacy, evidence, and safety. Educational information only.',
+    path,
+  });
+
+  return {
+    ...baseMetadata,
+    alternates: {
+      canonical: generateCanonicalUrl(path),
+      languages: {
+        'en-GB': generateCanonicalUrl(alternates['en-GB']),
+        'en-US': generateCanonicalUrl(alternates['en-US']),
+      },
+    },
+  };
+}
 
 export default async function TrustCentrePage({ params }: PageProps) {
   const resolved = await params;

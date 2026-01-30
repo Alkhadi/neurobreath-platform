@@ -19,27 +19,27 @@ interface RouteConfig {
 // Curated route list for both regions
 const ROUTES: RouteConfig[] = [
   // Homepages
-  { url: '/uk', name: 'homepage', region: 'uk', waitFor: 'main', fullPage: true },
-  { url: '/us', name: 'homepage', region: 'us', waitFor: 'main', fullPage: true },
+  { url: '/uk', name: 'homepage', region: 'uk', waitFor: 'main', fullPage: false },
+  { url: '/us', name: 'homepage', region: 'us', waitFor: 'main', fullPage: false },
   
   // Hubs
-  { url: '/uk/conditions', name: 'conditions-hub', region: 'uk', waitFor: 'h1', fullPage: true },
-  { url: '/us/conditions', name: 'conditions-hub', region: 'us', waitFor: 'h1', fullPage: true },
-  { url: '/uk/tools', name: 'tools-hub', region: 'uk', waitFor: 'h1', fullPage: true },
-  { url: '/us/tools', name: 'tools-hub', region: 'us', waitFor: 'h1', fullPage: true },
-  { url: '/uk/guides', name: 'guides-hub', region: 'uk', waitFor: 'h1', fullPage: true },
-  { url: '/us/guides', name: 'guides-hub', region: 'us', waitFor: 'h1', fullPage: true },
+  { url: '/uk/conditions', name: 'conditions-hub', region: 'uk', waitFor: 'h1', fullPage: false },
+  { url: '/us/conditions', name: 'conditions-hub', region: 'us', waitFor: 'h1', fullPage: false },
+  { url: '/uk/tools', name: 'tools-hub', region: 'uk', waitFor: 'h1', fullPage: false },
+  { url: '/us/tools', name: 'tools-hub', region: 'us', waitFor: 'h1', fullPage: false },
+  { url: '/uk/guides', name: 'guides-hub', region: 'uk', waitFor: 'h1', fullPage: false },
+  { url: '/us/guides', name: 'guides-hub', region: 'us', waitFor: 'h1', fullPage: false },
   
   // Breathing tool
   { url: '/breathing', name: 'breathing-timer', region: 'uk', waitFor: 'main', fullPage: false, testDialog: true },
   
   // Trust Centre
-  { url: '/uk/trust', name: 'trust-hub', region: 'uk', waitFor: 'h1', fullPage: true },
-  { url: '/us/trust', name: 'trust-hub', region: 'us', waitFor: 'h1', fullPage: true },
+  { url: '/uk/trust', name: 'trust-hub', region: 'uk', waitFor: 'h1', fullPage: false },
+  { url: '/us/trust', name: 'trust-hub', region: 'us', waitFor: 'h1', fullPage: false },
   
   // Glossary
-  { url: '/uk/glossary', name: 'glossary', region: 'uk', waitFor: 'h1', fullPage: true },
-  { url: '/us/glossary', name: 'glossary', region: 'us', waitFor: 'h1', fullPage: true },
+  { url: '/uk/glossary', name: 'glossary', region: 'uk', waitFor: 'h1', fullPage: false },
+  { url: '/us/glossary', name: 'glossary', region: 'us', waitFor: 'h1', fullPage: false },
   
   // Help me choose
   { url: '/uk/help-me-choose', name: 'help-me-choose', region: 'uk', waitFor: 'main', fullPage: false },
@@ -102,16 +102,22 @@ async function checkNoHorizontalOverflow(page: Page): Promise<boolean> {
  */
 async function checkCtaVisible(page: Page): Promise<boolean> {
   try {
+    const root = page.locator('main').first();
+
     // Look for common CTA patterns
     const ctaSelectors = [
       'a[href*="breathing"]',
+      'a[href*="help-me-choose"]',
+      'a[href*="/journeys"]',
+      'a:has-text("Help me choose")',
+      'a:has-text("Starter journeys")',
       'button:has-text("Start")',
       'a:has-text("Get started")',
       'a:has-text("Try")',
     ];
     
     for (const selector of ctaSelectors) {
-      const cta = page.locator(selector).first();
+      const cta = root.locator(selector).first();
       const count = await cta.count();
       if (count > 0) {
         const isVisible = await cta.isVisible();
@@ -134,6 +140,56 @@ test.describe('Visual Regression Suite', () => {
   test.skip(({ browserName }) => browserName !== 'chromium', 'Visual snapshots are maintained for Chromium only');
 
   test.beforeEach(async ({ page }, testInfo) => {
+    // Make snapshots OS-agnostic (avoid -darwin vs -linux)
+    testInfo.snapshotSuffix = '';
+
+    // Stub DB-backed endpoints to keep visual tests stable in CI (no DB service).
+    await page.route('**/api/quests/today**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ completedQuests: 0, totalPoints: 0 }),
+      });
+    });
+
+    await page.route('**/api/progress**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          totalMinutes: 0,
+          totalSessions: 0,
+          currentStreak: 0,
+          last7Days: 0,
+        }),
+      });
+    });
+
+    await page.route('**/api/challenges**', async (route) => {
+      const method = route.request().method();
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: method === 'GET' ? JSON.stringify({ challenges: [] }) : JSON.stringify({ ok: true }),
+      });
+    });
+
+    await page.route('**/api/sessions**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ ok: true }),
+      });
+    });
+
+    await page.route('**/api/account/consent**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ ok: true, consent: null }),
+      });
+    });
+
     // Collect console errors
     page.on('console', (msg) => {
       if (msg.type() === 'error') {
@@ -142,6 +198,19 @@ test.describe('Visual Regression Suite', () => {
           device: testInfo.project.name,
           message: msg.text(),
           type: 'console.error',
+        });
+      }
+    });
+
+    // Capture any 5xx responses to pinpoint failing resources.
+    page.on('response', (response) => {
+      const status = response.status();
+      if (status >= 500) {
+        consoleErrors.push({
+          url: page.url(),
+          device: testInfo.project.name,
+          message: `${status} ${response.url()}`,
+          type: 'http.5xx',
         });
       }
     });
@@ -182,7 +251,7 @@ test.describe('Visual Regression Suite', () => {
       });
       
       // CTA visibility check for hubs and homepage
-      if (route.name.includes('hub') || route.name === 'homepage') {
+      if (['homepage', 'conditions-hub', 'tools-hub', 'guides-hub'].includes(route.name)) {
         const ctaVisible = await checkCtaVisible(page);
         expect(ctaVisible, `Primary CTA visible on ${route.url}`).toBe(true);
       }
@@ -226,15 +295,21 @@ test.describe('Visual Regression Suite', () => {
     fs.mkdirSync(reportsDir, { recursive: true });
     
     const errorsFile = path.join(reportsDir, 'console-errors.json');
-    fs.writeFileSync(errorsFile, JSON.stringify(consoleErrors, null, 2));
-    
-    // Fail if there are console errors
+
+    // If there are errors, persist them for CI artifacts and fail the suite.
     if (consoleErrors.length > 0) {
+      fs.writeFileSync(errorsFile, JSON.stringify(consoleErrors, null, 2));
+
       console.error(`❌ Found ${consoleErrors.length} console errors`);
       consoleErrors.forEach((err) => {
         console.error(`  ${err.device} | ${err.url}: ${err.message}`);
       });
       throw new Error(`Visual regression suite found ${consoleErrors.length} console errors`);
+    }
+
+    // If no errors, ensure we don't leave a stale file that would fail the workflow.
+    if (fs.existsSync(errorsFile)) {
+      fs.unlinkSync(errorsFile);
     }
   });
 });

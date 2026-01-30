@@ -9,10 +9,6 @@ if (!process.env.NEXTAUTH_URL) {
 	process.env.NEXTAUTH_URL = 'http://localhost:3000';
 }
 
-if (!process.env.NEXTAUTH_SECRET && process.env.AUTH_SECRET) {
-	process.env.NEXTAUTH_SECRET = process.env.AUTH_SECRET;
-}
-
 const handler = NextAuth(authOptions);
 
 type NextAuthRouteContext = {
