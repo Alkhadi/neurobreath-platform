@@ -236,6 +236,11 @@ export default function ContactPage() {
 
     const formData = new FormData(form);
 
+    // Use non-obvious honeypot field names to reduce accidental autofill by browsers/password managers.
+    // These are still sent to the API as `company` and `website`.
+    const honeypotCompany = String(formData.get("company_confirm") ?? "");
+    const honeypotWebsite = String(formData.get("website_confirm") ?? "");
+
     const data = {
       name: String(formData.get("name") ?? ""),
       email: String(formData.get("email") ?? ""),
@@ -245,8 +250,8 @@ export default function ContactPage() {
       phone: String(formData.get("phone") ?? ""),
 
       // Honeypot (bots fill it)
-      company: String(formData.get("company") ?? ""),
-      website: String(formData.get("website") ?? ""),
+      company: honeypotCompany,
+      website: honeypotWebsite,
 
       turnstileToken,
     };
@@ -350,10 +355,13 @@ export default function ContactPage() {
                 <label htmlFor="company">Company</label>
                 <input
                   id="company"
-                  name="company"
+                  name="company_confirm"
                   type="text"
                   tabIndex={-1}
                   autoComplete="off"
+                  data-1p-ignore="true"
+                  data-lp-ignore="true"
+                  data-bwignore="true"
                   aria-hidden="true"
                 />
               </div>
@@ -361,10 +369,13 @@ export default function ContactPage() {
                 <label htmlFor="website">Website</label>
                 <input
                   id="website"
-                  name="website"
+                  name="website_confirm"
                   type="text"
                   tabIndex={-1}
                   autoComplete="off"
+                  data-1p-ignore="true"
+                  data-lp-ignore="true"
+                  data-bwignore="true"
                   aria-hidden="true"
                 />
               </div>
