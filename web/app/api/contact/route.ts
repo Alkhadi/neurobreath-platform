@@ -142,6 +142,13 @@ export function GET() {
       route: "/api/contact",
       methods: ["POST"],
       note: "Send a POST request to submit the contact form.",
+      env: {
+        hasResendApiKey: !!process.env.RESEND_API_KEY,
+        hasTurnstileSecretKey: !!process.env.TURNSTILE_SECRET_KEY,
+        hasTurnstileSiteKey: !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
+        hasContactTo: !!process.env.CONTACT_TO,
+        hasContactFrom: !!process.env.CONTACT_FROM,
+      },
       ts: Date.now(),
     },
     {
@@ -233,7 +240,7 @@ export async function POST(req: Request) {
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const to = "admin@neurobreath.co.uk";
+    const to = process.env.CONTACT_TO || "info@neurobreath.co.uk";
     const from = process.env.CONTACT_FROM || "NeuroBreath Support <onboarding@resend.dev>";
 
     // 1) Send to your support inbox
