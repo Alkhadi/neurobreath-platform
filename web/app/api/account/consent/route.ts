@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { NextRequest } from 'next/server';
+import { Prisma } from '@prisma/client';
 
 import { prisma, isDbDown, getDbDownReason, markDbDown } from '@/lib/db';
 import { getAuthedUserId } from '@/lib/auth/require-auth';
@@ -28,10 +29,11 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const user = await prisma.authUser.findUnique({
+    const user = (await prisma.authUser.findUnique({
       where: { id: auth.userId },
-      select: { consentState: true, consentUpdatedAt: true },
-    });
+      // Type assertion keeps this route stable even if an editor has stale Prisma types.
+      select: { consentState: true, consentUpdatedAt: true } as Prisma.AuthUserSelect,
+    })) as { consentState: unknown; consentUpdatedAt: Date | null } | null;
 
     return Response.json({ ok: true, consent: user?.consentState ?? null, updatedAt: user?.consentUpdatedAt ?? null });
   } catch (error) {
@@ -68,12 +70,14 @@ export async function POST(request: NextRequest) {
       timestamp: parsed.data.timestamp ?? Date.now(),
     };
 
+    const data = {
+      consentState: state as Prisma.InputJsonValue,
+      consentUpdatedAt: new Date(),
+    } as Prisma.AuthUserUpdateInput;
+
     await prisma.authUser.update({
       where: { id: auth.userId },
-      data: {
-        consentState: state,
-        consentUpdatedAt: new Date(),
-      },
+      data,
     });
 
     return Response.json({ ok: true });

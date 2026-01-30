@@ -45,6 +45,10 @@ web/reports
 web/test-results
 web/playwright-report
 
+# Playwright artifacts (sometimes generated at repo root)
+test-results
+playwright-report
+
 # Keep baselines committed
 !web/perf/baseline/
 !web/tests/visual/__screenshots__/
