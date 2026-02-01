@@ -4,6 +4,8 @@ import { getRegionAlternates, getRegionFromKey, getRegionKey } from '@/lib/regio
 import { generateCanonicalUrl } from '@/lib/seo/site-seo';
 import { generatePageMetadata } from '@/lib/seo/metadata';
 
+import styles from './trust-contact-iphone.module.css';
+
 interface RegionPageProps {
   params: Promise<{ region: string }>;
 }
@@ -35,5 +37,16 @@ export async function generateMetadata({ params }: RegionPageProps): Promise<Met
 
 export default async function RegionTrustContact({ params }: RegionPageProps) {
   const resolvedParams = await params;
-  return <TrustContactPage region={getRegionFromKey(resolvedParams.region)} />;
+  return (
+    <div className={styles.wallpaper}>
+      <div className={styles.center}>
+        <div className={styles.deviceFrame}>
+          <div className={styles.notch} aria-hidden="true" />
+          <div className={styles.deviceScroll}>
+            <TrustContactPage region={getRegionFromKey(resolvedParams.region)} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

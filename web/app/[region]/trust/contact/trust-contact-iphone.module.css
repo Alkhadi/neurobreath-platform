@@ -1,0 +1,154 @@
+.wallpaper {
+  min-height: 100svh;
+  padding: calc(16px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right))
+    calc(16px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left));
+
+  /* Original iOS-inspired wallpaper (no assets) */
+  background:
+    radial-gradient(1100px 700px at 18% 12%, rgba(99, 102, 241, 0.48) 0%, rgba(99, 102, 241, 0) 60%),
+    radial-gradient(900px 600px at 82% 22%, rgba(236, 72, 153, 0.38) 0%, rgba(236, 72, 153, 0) 55%),
+    radial-gradient(780px 540px at 60% 88%, rgba(16, 185, 129, 0.30) 0%, rgba(16, 185, 129, 0) 62%),
+    linear-gradient(135deg, rgba(2, 6, 23, 0.98) 0%, rgba(8, 12, 28, 0.96) 45%, rgba(2, 6, 23, 0.98) 100%);
+
+  /* Subtle vignette + noise-like sheen */
+  position: relative;
+  overflow: hidden;
+}
+
+.wallpaper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(1200px 900px at 50% 40%, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 60%),
+    radial-gradient(1400px 1000px at 50% 55%, rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0) 55%);
+  pointer-events: none;
+}
+
+.center {
+  position: relative;
+  display: flex;
+  min-height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.deviceFrame {
+  width: min(92vw, 460px);
+  height: min(calc(100svh - 36px - env(safe-area-inset-top) - env(safe-area-inset-bottom)), 860px);
+
+  border-radius: 48px;
+  overflow: hidden;
+
+  /* iOS-like “device” edge */
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.04)) padding-box,
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.06)) border-box;
+  border: 1px solid transparent;
+
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.55),
+    0 8px 24px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+
+  position: relative;
+}
+
+.notch {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 148px;
+  height: 34px;
+  border-radius: 999px;
+
+  background: rgba(2, 6, 23, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+
+  z-index: 2;
+  pointer-events: none;
+}
+
+.deviceScroll {
+  height: 100%;
+  overflow: auto;
+
+  /* Inner “screen” wash */
+  background:
+    radial-gradient(1200px 820px at 20% 10%, rgba(99, 102, 241, 0.18), rgba(99, 102, 241, 0) 60%),
+    radial-gradient(900px 680px at 85% 20%, rgba(236, 72, 153, 0.14), rgba(236, 72, 153, 0) 55%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.72) 0%, rgba(2, 6, 23, 0.85) 100%);
+
+  padding: 52px 14px 18px;
+}
+
+/* Override TrustPageShell’s default background so our device screen controls it */
+.deviceScroll :global(main) {
+  min-height: 0;
+  background: transparent;
+}
+
+/* Glass surface for the Trust content container */
+.deviceScroll :global(main > div) {
+  width: 100%;
+  max-width: none;
+
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 28px;
+
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+
+  padding: 18px;
+}
+
+/* Typography polish (iOS-ish) */
+.deviceScroll :global(h1) {
+  letter-spacing: -0.02em;
+}
+
+.deviceScroll :global(h2) {
+  letter-spacing: -0.01em;
+}
+
+/* “Card” sections inside Trust pages become soft glass blocks */
+.deviceScroll :global(main section > section) {
+  border-radius: 20px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+/* Links look brighter on dark glass */
+.deviceScroll :global(a) {
+  color: rgba(199, 210, 254, 0.98);
+}
+
+.deviceScroll :global(a:hover) {
+  color: rgba(224, 231, 255, 1);
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .wallpaper {
+    scroll-behavior: auto;
+  }
+}
+
+@media (min-width: 768px) {
+  .deviceScroll {
+    padding: 56px 16px 22px;
+  }
+}

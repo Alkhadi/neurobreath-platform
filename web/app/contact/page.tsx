@@ -280,13 +280,43 @@ export default function ContactPage() {
           <p className="text-gray-600 text-lg">Have questions? We'd love to hear from you!</p>
         </div>
 
-        {/* Section A: Main Contact Page */}
-        <section aria-label="Contact Us" className="mb-12">
-        <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 mb-8">
+        <div className="w-full flex justify-center px-3 sm:px-6">
+          <div className="relative w-full max-w-[1040px] rounded-[2.75rem] bg-gradient-to-b from-zinc-900/90 to-black/90 border border-white/15 shadow-[0_50px_140px_rgba(0,0,0,0.45)] ring-1 ring-black/30 overflow-hidden">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(1000px_circle_at_20%_10%,rgba(255,255,255,0.12),transparent_40%),radial-gradient(1200px_circle_at_80%_15%,rgba(255,255,255,0.10),transparent_45%)] opacity-70"
+            />
+
+            <div
+              aria-hidden="true"
+              className="absolute left-1/2 top-4 -translate-x-1/2 h-3.5 w-24 rounded-full bg-black/70 border border-white/10 shadow-[0_10px_24px_rgba(0,0,0,0.50)]"
+            />
+
+            <div aria-hidden="true" className="hidden md:block absolute left-0 top-20 h-20 w-1.5 rounded-r bg-white/10" />
+            <div aria-hidden="true" className="hidden md:block absolute right-0 top-28 h-24 w-1.5 rounded-l bg-white/10" />
+
+            <div className="relative m-3 sm:m-4 md:m-5 rounded-[2.25rem] overflow-hidden border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_18%_10%,rgba(168,85,247,0.34),transparent_55%),radial-gradient(900px_circle_at_85%_20%,rgba(59,130,246,0.28),transparent_52%),radial-gradient(1000px_circle_at_55%_95%,rgba(236,72,153,0.18),transparent_58%),linear-gradient(180deg,rgba(245,245,250,0.55),rgba(245,245,250,0.38))]"
+              />
+
+              <div
+                aria-hidden="true"
+                className="absolute -inset-24 rotate-[-10deg] bg-gradient-to-r from-white/18 via-white/0 to-white/0 blur-2xl"
+              />
+
+              <div className="relative p-4 sm:p-6 md:p-8 lg:p-10">
+                {/* Section A: Main Contact Page */}
+                <section aria-label="Contact Us" className="mb-0">
+                <div className="rounded-2xl p-4 sm:p-6 md:p-8 mb-8 bg-white/72 dark:bg-zinc-950/55 backdrop-blur-2xl border border-white/40 dark:border-white/12 shadow-[0_26px_80px_rgba(0,0,0,0.22)] ring-1 ring-black/10 dark:ring-white/10">
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Contact Form */}
-            <form onSubmit={handleContactFormSubmit} className="space-y-4">
+            <form
+              onSubmit={handleContactFormSubmit}
+              className="space-y-4 [&_input::placeholder]:text-gray-500 [&_textarea::placeholder]:text-gray-500 dark:[&_input::placeholder]:text-gray-300 dark:[&_textarea::placeholder]:text-gray-300"
+            >
               {/* Honeypot field: bots often fill it, humans never see it */}
               <div className={styles.honeypot} aria-hidden="true">
                 <input
@@ -317,7 +347,7 @@ export default function ContactPage() {
                 />
               </div>
               <div>
-                <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="name" className="block text-sm font-semibold text-white mb-2">
                   Full Name *
                 </label>
                 <input
@@ -333,7 +363,7 @@ export default function ContactPage() {
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="email" className="block text-sm font-semibold text-white mb-2">
                   Email Address *
                 </label>
                 <input
@@ -349,7 +379,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="organization" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="organization" className="block text-sm font-semibold text-white mb-2">
                   Organisation (optional)
                 </label>
                 <input
@@ -364,7 +394,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="phone" className="block text-sm font-semibold text-white mb-2">
                   Phone (optional)
                 </label>
                 <input
@@ -379,7 +409,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="subject" className="block text-sm font-semibold text-white mb-2">
                   Subject *
                 </label>
                 <input
@@ -395,7 +425,7 @@ export default function ContactPage() {
                 />
               </div>
               <div>
-                <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="message" className="block text-sm font-semibold text-white mb-2">
                   Message *
                 </label>
                 <textarea
@@ -433,7 +463,7 @@ export default function ContactPage() {
                     <p className="text-sm text-red-600">{contactSubmitStatus.message}</p>
                   ) : null}
                   {contactSubmitStatus.state === "success" && contactSubmitStatus.message ? (
-                    <p className="text-sm text-green-700">{contactSubmitStatus.message}</p>
+                    <p className="text-sm text-white">{contactSubmitStatus.message}</p>
                   ) : null}
                 </div>
               </div>
@@ -474,9 +504,6 @@ export default function ContactPage() {
                         <a href="mailto:info@neurobreath.co.uk" className="text-purple-600 hover:text-purple-700">
                           info@neurobreath.co.uk
                         </a>
-                        <a href="mailto:support@nbcard.app" className="text-purple-600 hover:text-purple-700">
-                          support@nbcard.app
-                        </a>
                       </div>
                     </div>
                   </div>
@@ -509,7 +536,11 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
-        </section>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Gradient Divider */}
         <div className="my-12" aria-hidden="true">
