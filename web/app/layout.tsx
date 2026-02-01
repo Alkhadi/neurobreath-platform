@@ -18,6 +18,7 @@ import { SITE_CONFIG, generateCanonicalUrl } from '@/lib/seo/site-seo';
 import { getRouteMetadata, getRouteSeoConfig } from '@/lib/seo/route-metadata';
 import { getLocaleForRegion, getRegionFromPath } from '@/lib/region/region';
 import { ServiceWorkerRegistrar } from '@/components/pwa/ServiceWorkerRegistrar';
+import { IosInstallBanner } from '@/components/pwa/IosInstallBanner';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -80,6 +81,7 @@ export default async function RootLayout({
             <BreathingSessionProvider>
               <div className="relative flex min-h-screen flex-col">
                 <SiteHeader />
+                <IosInstallBanner />
                 <main className="flex-1">{children}</main>
                 <SiteFooter />
               </div>

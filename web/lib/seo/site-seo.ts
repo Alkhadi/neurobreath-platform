@@ -90,6 +90,7 @@ export const ROUTE_CONFIG = {
   // Public indexable routes
   indexable: [
     '/',
+    '/install',
     '/about',
     '/about-us',
     '/adhd',

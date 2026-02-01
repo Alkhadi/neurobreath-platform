@@ -5,9 +5,11 @@ import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ChevronDown, Menu, X, LogIn, User } from 'lucide-react'
+import { ChevronDown, Menu, X, LogIn, User, Share2 } from 'lucide-react'
 import { getSession, signOut } from 'next-auth/react'
 import { SITE_CONFIG } from '../lib/seo/site-seo'
+import { ShareButton } from '@/components/share/ShareButton'
+import { InstallButton } from '@/components/pwa/InstallButton'
 
 const REGION_COOKIE = 'nb_region'
 
@@ -404,6 +406,7 @@ export function SiteHeader() {
             <Link href="/downloads" onClick={closeMegaMenu}>📥 Downloadable Resources</Link>
             <Link href="/resources" onClick={closeMegaMenu}>📚 Resource Library</Link>
             <Link href={`${regionPrefix}/resources/nb-card`} onClick={closeMegaMenu}>💳 NB-Card</Link>
+            <Link href="/install" onClick={closeMegaMenu}>📲 Install / Share</Link>
           </div>
           <div className="nb-mega-menu-section">
             <h4 className="nb-mega-menu-heading">About</h4>
@@ -429,6 +432,20 @@ export function SiteHeader() {
       <Link href="/settings" className="nb-nav-link" onClick={closeMegaMenu}>
         ⚙️ Settings
       </Link>
+
+      {/* Share / Install */}
+      <ShareButton
+        variant="ghost"
+        size="sm"
+        className="nb-nav-link"
+      >
+        <>
+          <Share2 size={18} />
+          Share
+        </>
+      </ShareButton>
+
+      <InstallButton variant="ghost" size="sm" className="nb-nav-link" label="Install" />
 
       {/* Authentication */}
       {userEmail ? (

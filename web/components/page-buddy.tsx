@@ -11,7 +11,7 @@ import {
   Bot, Send, Volume2, VolumeX, Sparkles, 
   MessageCircle, Map, ChevronRight,
   Brain, Heart, Home, Download, Minimize2, Maximize2,
-  RotateCcw, Copy, Check, ExternalLink, StopCircle
+  RotateCcw, Copy, Check, ExternalLink, StopCircle, Share2
 } from 'lucide-react';
 import { getPageConfig, platformInfo, type PageBuddyConfig } from '@/lib/page-buddy-configs';
 import { loadPreferences } from '@/lib/ai/core/userPreferences';
@@ -20,6 +20,8 @@ import { useSpeechSynthesis } from '@/hooks/use-speech-synthesis';
 import { BuddyErrorBoundary } from '@/components/buddy/error-boundary';
 import { SafeIcon } from '@/components/buddy/safe-icon';
 import { BuddyAnswerCard } from '@/components/buddy/answer-card';
+import { ShareButton } from '@/components/share/ShareButton';
+import { InstallButton } from '@/components/pwa/InstallButton';
 import type { BuddyAskResponse } from '@/lib/buddy/server/types';
 import { getBuddyIntentIdByLabel } from '@/lib/assistant/intents';
 import { AnchoredPageTour, type AnchoredTourStep, type TourPlacement } from '@/components/tour/anchored-page-tour';
@@ -1660,6 +1662,23 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
                   </span>
                 </>
               )}
+            </div>
+
+            <div className="mt-2 flex items-center justify-center gap-2">
+              <ShareButton variant="outline" size="sm" className="h-7 px-2 text-[10px] sm:text-xs">
+                <>
+                  <Share2 className="h-3.5 w-3.5 mr-1" />
+                  Share
+                </>
+              </ShareButton>
+
+              <InstallButton
+                variant="outline"
+                size="sm"
+                className="h-7 px-2 text-[10px] sm:text-xs"
+                label="Install"
+                showFallbackLink
+              />
             </div>
           </div>
         </DialogContent>
