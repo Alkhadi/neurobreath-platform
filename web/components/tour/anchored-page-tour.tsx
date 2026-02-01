@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ChevronLeft, ChevronRight, Square, Volume2, X } from 'lucide-react';
@@ -58,6 +59,7 @@ export function AnchoredPageTour({
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const [popoverPos, setPopoverPos] = useState<{ top: number; left: number } | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
 
   const current = steps[stepIndex];
 
@@ -76,6 +78,10 @@ export function AnchoredPageTour({
   }, []);
 
   useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    if (open) setIsComplete(false);
+  }, [open]);
 
   const stopSpeech = useCallback(() => {
     if (typeof window === 'undefined') return;
@@ -362,7 +368,7 @@ export function AnchoredPageTour({
   return createPortal(
     <div className="fixed inset-0 z-[80]">
       <div className="sr-only" aria-live="polite" aria-atomic="true">
-        {`Step ${idx}/${total}: ${current.title}`}
+        {isComplete ? 'Tour completed.' : `Step ${idx}/${total}: ${current.title}`}
       </div>
 
       {hasTarget ? (
@@ -426,12 +432,26 @@ export function AnchoredPageTour({
         </div>
 
         <div className="mt-3 text-sm text-muted-foreground">
-          {`I've scanned this page and found ${total} sections to explore.`}
+          {isComplete
+            ? 'You’ve completed the tour.'
+            : `I've scanned this page and found ${total} sections to explore.`}
         </div>
 
         <div className="mt-3">
-          <div className="text-xs text-muted-foreground">{`Step ${idx}/${total}`}</div>
-          <div className="mt-1 text-base font-semibold leading-snug">{current.title}</div>
+          {isComplete ? (
+            <>
+              <div className="text-xs text-muted-foreground">Tour completed</div>
+              <div className="mt-1 text-base font-semibold leading-snug">You're all set.</div>
+              <div className="mt-2 text-sm text-muted-foreground">
+                If you want to get going fast, use Quick Start.
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="text-xs text-muted-foreground">{`Step ${idx}/${total}`}</div>
+              <div className="mt-1 text-base font-semibold leading-snug">{current.title}</div>
+            </>
+          )}
         </div>
 
         <div className="mt-4 flex items-center gap-2">
@@ -464,35 +484,49 @@ export function AnchoredPageTour({
         </div>
 
         <div className="mt-4 flex items-center justify-between gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => onStepChange(Math.max(stepIndex - 1, 0))}
-            disabled={stepIndex === 0}
-            className="gap-1"
-          >
-            <ChevronLeft className="h-4 w-4" />
-            Prev
-          </Button>
+          {isComplete ? (
+            <Button
+              type="button"
+              size="sm"
+              className="w-full"
+              asChild
+              onClick={() => stopSpeech()}
+            >
+              <Link href="/get-started">click me to for a quick start</Link>
+            </Button>
+          ) : (
+            <>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => onStepChange(Math.max(stepIndex - 1, 0))}
+                disabled={stepIndex === 0}
+                className="gap-1"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Prev
+              </Button>
 
-          <Button
-            type="button"
-            size="sm"
-            onClick={() => {
-              if (stepIndex >= total - 1) {
-                stopSpeech();
-                onClose();
-                return;
-              }
-              stopSpeech();
-              onStepChange(stepIndex + 1);
-            }}
-            className="gap-1"
-          >
-            {stepIndex >= total - 1 ? 'Finish' : 'Next'}
-            <ChevronRight className="h-4 w-4" />
-          </Button>
+              <Button
+                type="button"
+                size="sm"
+                onClick={() => {
+                  if (stepIndex >= total - 1) {
+                    stopSpeech();
+                    setIsComplete(true);
+                    return;
+                  }
+                  stopSpeech();
+                  onStepChange(stepIndex + 1);
+                }}
+                className="gap-1"
+              >
+                {stepIndex >= total - 1 ? 'Finish' : 'Next'}
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </div>,
