@@ -13,11 +13,11 @@ import type {
   BuddyTimingsMs,
 } from './types';
 import { extractTopicCandidates, normalizeQuery } from './text';
-import { fetchMedlinePlus } from './medlineplus';
 import { fetchPubMed } from './pubmed';
 import { fetchResolvedNhsPage, resolveNhsTopic } from './nhs';
 import { searchInternalKb, type InternalCoverage, isValidInternalRoute } from './internalKb';
 import { validateExternalUrl } from './linkValidation';
+import { buildInternalFirstBuddyResponse, buildRelatedOnNeuroBreathSection, sanitizeBuddyResponse } from '@/lib/assistant/answerEngine';
 
 function truncate(text: string, max = 1200) {
   if (text.length <= max) return text;
@@ -281,7 +281,7 @@ function snapshotSection(snapshot: BuddyUserSnapshot): { heading: string; text: 
 
 export async function buddyAsk(
   req: NextRequest,
-  payload: { question: string; pathname?: string; jurisdiction?: 'UK' | 'US' | 'EU'; userSnapshot?: BuddyUserSnapshot },
+  payload: { question: string; intentId?: string; pathname?: string; jurisdiction?: 'UK' | 'US' | 'EU'; userSnapshot?: BuddyUserSnapshot },
   opts?: { requestId?: string }
 ): Promise<BuddyAskResponse> {
   const tTotal0 = performance.now();
@@ -299,6 +299,7 @@ export async function buddyAsk(
   const pathname = payload.pathname || '/';
   const jurisdiction: 'UK' | 'US' | 'EU' = payload.jurisdiction || 'UK';
   const userSnapshot = payload.userSnapshot;
+  const intentId = payload.intentId;
 
   const question = sanitizeInput(payload.question.trim());
   const topic = topicLabel(question);
@@ -451,34 +452,6 @@ export async function buddyAsk(
         telemetry.warnings.push('Some sources could not be verified, so they were excluded.');
       }
     }
-
-    // MedlinePlus fallback
-    if (!externalAdded) {
-      const tFetch0 = performance.now();
-      const medline = await fetchMedlinePlus(primaryTopic, ipKey);
-      telemetry.timingsMs.t_externalFetch_ms = (telemetry.timingsMs.t_externalFetch_ms || 0) + (performance.now() - tFetch0);
-      telemetry.cache.externalFetch = medline.cache === 'hit' ? 'hit' : (telemetry.cache.externalFetch || 'miss');
-
-      if (medline.result?.summary && medline.result?.url) {
-        const c = await addExternalCitation({
-          provider: 'MedlinePlus',
-          title: medline.result.title,
-          url: medline.result.url,
-        }, telemetry);
-
-        if (c) {
-          citations.push(c);
-          usedExternal = true;
-          externalAdded = true;
-          answerSections.unshift({
-            heading: 'Verified external overview',
-            text: truncate(stripMarkdown(medline.result.summary), 800),
-          });
-        }
-      } else {
-        telemetry.warnings.push('Some sources could not be verified, so they were excluded.');
-      }
-    }
   }
 
   // 4) Optional research citations (never replaces patient guidance)
@@ -510,19 +483,54 @@ export async function buddyAsk(
     }
   }
 
-  // 5) Verified-data unavailable: be specific and actionable.
+  // 5) Always add deterministic internal links (never vague).
+  const relatedSection = await buildRelatedOnNeuroBreathSection({
+    question,
+    intentId,
+    pathname,
+    jurisdiction,
+  });
+  answerSections.push(relatedSection);
+
+  // If internal coverage is none and we couldn't add verified external evidence, return an internal-first fallback
+  // that always includes relevant NeuroBreath links.
   if (internal.coverage === 'none' && !externalAdded) {
-    answerSections.unshift({
-      heading: 'Verified data unavailable',
-      text:
-        `No internal NeuroBreath module currently covers ${topic} in detail, and I couldn’t retrieve a verified external page at the moment. I won’t provide unverified links.`,
+    const fallback = await buildInternalFirstBuddyResponse({
+      question,
+      intentId,
+      pathname,
+      jurisdiction,
+      safetyLevel,
     });
-    answerSections.push({
-      heading: 'What you can do next',
-      text:
-        'If this is about symptoms or safety concerns, consider speaking with a clinician. If you’re in the UK and need urgent advice, call NHS 111; for emergencies call 999.\n\nSuggested search terms: “' +
-        `${topic} NHS”, “${topic} symptoms”, “${topic} treatment options”.`,
-    });
+
+    const safeFallback: BuddyAskResponse = {
+      answer: {
+        ...fallback.answer,
+        safety: {
+          level: safetyLevel,
+          message: buildUkSignposting(safetyLevel) || stripMarkdown(safetyCheck.signposting || ''),
+        },
+      },
+      citations: fallback.citations,
+      meta: {
+        ...fallback.meta,
+        usedInternal: fallback.citations.length > 0,
+        usedExternal: false,
+        requestId: telemetry.requestId,
+        intentClass: telemetry.intentClass,
+        timingsMs: { ...telemetry.timingsMs, t_total_ms: Math.round(performance.now() - tTotal0) },
+        cache: telemetry.cache,
+        verifiedLinks: {
+          totalLinks: fallback.citations.length,
+          validLinks: fallback.citations.length,
+          removedLinks: 0,
+        },
+        warnings: telemetry.warnings.length ? telemetry.warnings : undefined,
+        dev: process.env.NODE_ENV !== 'production' ? { matchedTopic: telemetry.devMatchedTopic } : undefined,
+      },
+    };
+
+    return sanitizeBuddyResponse(safeFallback);
   }
 
   // Consolidate warnings (avoid duplicates)
@@ -538,7 +546,7 @@ export async function buddyAsk(
     new Set<BuddyCitationProvider>(citations.map((c) => c.provider))
   );
 
-  return {
+  const response: BuddyAskResponse = {
     answer: {
       title: blueprint.title,
       summary: blueprint.summary,
@@ -563,4 +571,6 @@ export async function buddyAsk(
       dev: process.env.NODE_ENV !== 'production' ? { matchedTopic: telemetry.devMatchedTopic } : undefined,
     },
   };
+
+  return sanitizeBuddyResponse(response);
 }

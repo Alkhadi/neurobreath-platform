@@ -279,9 +279,9 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
           lastReviewed: '2024-01-01',
         },
         {
-          provider: 'MedlinePlus',
-          title: 'MedlinePlus - Breathing',
-          url: 'https://medlineplus.gov/',
+          provider: 'PubMed',
+          title: 'PubMed - Breathing (research index)',
+          url: 'https://pubmed.ncbi.nlm.nih.gov/',
         },
         {
           provider: 'NeuroBreath',
@@ -293,7 +293,7 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
         usedInternal: true,
         usedExternal: true,
         internalCoverage: 'partial',
-        usedProviders: ['NeuroBreath', 'NHS', 'MedlinePlus'],
+        usedProviders: ['NeuroBreath', 'NHS', 'PubMed'],
         verifiedLinks: { totalLinks: 3, validLinks: 3, removedLinks: 0 },
       },
     });
@@ -475,7 +475,7 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
     await expect(dialog).toContainText('INTEGRATION_TEST_MARKER', { timeout: 10000 });
     console.log('✓ Answer text with marker is visible');
 
-    await expect(dialog.locator('[data-buddy-coverage-label]')).toContainText('Internal: None');
+    await expect(dialog.locator('[data-buddy-coverage-label]')).toContainText('Internal: Limited');
     await expect(dialog.locator('[data-buddy-verified-links]')).toContainText('Verified links: 1/1');
 
     const sourcesTrigger = dialog.getByRole('button', { name: /Evidence sources/i });
@@ -488,6 +488,30 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
 
     // Take final screenshot
     await page.screenshot({ path: 'test-results/buddy-integration.png', fullPage: true });
+  });
+    
+  test('Buddy API: no vague fallbacks + always includes internal links for quick intents', async ({ request }) => {
+    const res = await request.post('/api/buddy/ask', {
+      data: {
+        question: 'Tell me about PTSD',
+        intentId: 'ptsd_support',
+        pathname: '/uk',
+        jurisdiction: 'UK',
+      },
+    });
+
+    expect(res.ok()).toBeTruthy();
+    const json = (await res.json()) as any;
+
+    const textBlob = JSON.stringify(json);
+    expect(textBlob).not.toMatch(/Internal:\s*None/i);
+    expect(textBlob).not.toMatch(/Verified data unavailable/i);
+    expect(textBlob).not.toMatch(/retrieve a verified external page/i);
+    expect(textBlob).not.toMatch(/provide unverified links/i);
+
+    const citations = Array.isArray(json?.citations) ? json.citations : [];
+    const internalCitations = citations.filter((c: any) => typeof c?.url === 'string' && c.url.startsWith('/'));
+    expect(internalCitations.length).toBeGreaterThanOrEqual(3);
   });
 
   test('TEST 6: Source Coverage reflects internal vs external providers', async ({ page }) => {
@@ -530,24 +554,24 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
           lastReviewed: '2024-01-01',
         },
         {
-          provider: 'MedlinePlus',
-          title: 'MedlinePlus - Post-Traumatic Stress Disorder',
-          url: 'https://medlineplus.gov/posttraumaticstressdisorder.html',
+          provider: 'PubMed',
+          title: 'PubMed - PTSD overview',
+          url: 'https://pubmed.ncbi.nlm.nih.gov/28974862/',
         },
       ],
       meta: {
         usedInternal: false,
         usedExternal: true,
         internalCoverage: 'none',
-        usedProviders: ['NHS', 'MedlinePlus'],
+        usedProviders: ['NHS', 'PubMed'],
         verifiedLinks: { totalLinks: 2, validLinks: 2, removedLinks: 0 },
       },
     });
     await sendMessageAndWaitForBuddyApi(page, 'Explain PTSD');
 
-    await expect(dialog.locator('[data-buddy-coverage-label]')).toContainText('Internal: None');
+    await expect(dialog.locator('[data-buddy-coverage-label]')).toContainText('Internal: Limited');
     await expect(dialog.locator('[data-buddy-source-coverage]')).toContainText('NHS');
-    await expect(dialog.locator('[data-buddy-source-coverage]')).toContainText('MedlinePlus');
+    await expect(dialog.locator('[data-buddy-source-coverage]')).toContainText('PubMed');
     await expect(dialog.locator('[data-buddy-verified-links]')).toContainText('Verified links: 2/2');
 
     // Verify the citation list count matches valid links.
@@ -618,10 +642,16 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
       await expect(dialog.getByRole('button', { name: /Evidence sources/i })).toBeVisible({ timeout: 5000 });
       
       // Screenshot for visual regression
-      await page.screenshot({ 
-        path: `test-results/buddy-${viewport.name}-${viewport.width}x${viewport.height}.png`, 
-        fullPage: true 
-      });
+      try {
+        await page.screenshot({
+          path: `test-results/buddy-${viewport.name}-${viewport.width}x${viewport.height}.png`,
+          fullPage: true,
+          timeout: 15_000,
+        });
+      } catch (error) {
+        // Screenshot capture can hang on font loading in some environments; don't fail stability checks.
+        console.warn('⚠️ Buddy screenshot skipped:', error);
+      }
       
       console.log(`✓ Buddy dialog stable on ${viewport.name} (${viewport.width}x${viewport.height})`);
     });

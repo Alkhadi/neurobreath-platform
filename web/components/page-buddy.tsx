@@ -21,6 +21,7 @@ import { BuddyErrorBoundary } from '@/components/buddy/error-boundary';
 import { SafeIcon } from '@/components/buddy/safe-icon';
 import { BuddyAnswerCard } from '@/components/buddy/answer-card';
 import type { BuddyAskResponse } from '@/lib/buddy/server/types';
+import { getBuddyIntentIdByLabel } from '@/lib/assistant/intents';
 
 interface Message {
   id: string;
@@ -735,7 +736,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   }, [pageContent, scrollToSection]);
   
   // Generate AI response
-  const generateResponse = useCallback(async (userMessage: string): Promise<Message> => {
+  const generateResponse = useCallback(async (userMessage: string, intentId?: string): Promise<Message> => {
     const q = userMessage.toLowerCase();
     const isNavigationIntent =
       q.includes('tour') ||
@@ -765,12 +766,12 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     try {
       const controller = new AbortController();
       const timeoutId = window.setTimeout(() => controller.abort(), 30000);
-
       const response = await fetch('/api/buddy/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           question: userMessage,
+          intentId,
           pathname,
           jurisdiction: prefs.regional.jurisdiction,
           userSnapshot,
@@ -833,7 +834,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
 
   
   // Unified send pipeline for typed sends + quick questions.
-  const sendMessage = useCallback(async (text?: string, origin: 'typed' | 'quick' | 'system' = 'typed'): Promise<void> => {
+  const sendMessage = useCallback(async (text?: string, origin: 'typed' | 'quick' | 'system' = 'typed', intentId?: string): Promise<void> => {
     const raw = (typeof text === 'string' ? text : input).trim();
     if (!raw || isLoading) return;
 
@@ -862,7 +863,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     queueMicrotask(() => inputRef.current?.focus());
 
     try {
-      const assistantMessage = await generateResponse(raw);
+      const assistantMessage = await generateResponse(raw, intentId);
       setMessages((prev) => [...prev, assistantMessage]);
 
       if (autoSpeak && assistantMessage.content) {
@@ -1362,6 +1363,8 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
                     e.stopPropagation();
                     setInput(question);
                     void sendMessage(question, 'quick');
+                                      const id = getBuddyIntentIdByLabel(question);
+                                      void sendMessage(question, 'quick', id);
                   }}
                   disabled={isLoading}
                 >

@@ -71,9 +71,7 @@ export function getNHSLinks(question: string, topic?: string): EvidenceSource[] 
 
 export function getNHSCrisisLinks(): EvidenceSource[] {
   return [
-    { title: 'NHS: Getting urgent help for mental health', url: 'https://www.nhs.uk/mental-health/feelings-symptoms-behaviours/behaviours/help-for-suicidal-thoughts/', kind: 'NHS' },
-    { title: 'Samaritans (24/7)', url: 'https://www.samaritans.org/', kind: 'other' },
-    { title: '988 Suicide & Crisis Lifeline (US)', url: 'https://988lifeline.org/', kind: 'other' }
+    { title: 'NHS: Getting urgent help for mental health', url: 'https://www.nhs.uk/mental-health/feelings-symptoms-behaviours/behaviours/help-for-suicidal-thoughts/', kind: 'NHS' }
   ]
 }
 

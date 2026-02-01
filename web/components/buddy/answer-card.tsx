@@ -18,8 +18,8 @@ function providerBadge(provider: BuddyCitation['provider']): { label: string; va
   switch (provider) {
     case 'NHS':
       return { label: 'NHS', variant: 'secondary' };
-    case 'MedlinePlus':
-      return { label: 'MedlinePlus', variant: 'outline' };
+    case 'NICE':
+      return { label: 'NICE', variant: 'outline' };
     case 'PubMed':
       return { label: 'PubMed', variant: 'outline' };
     case 'NeuroBreath':
@@ -41,7 +41,7 @@ function coverageBadge(coverage: BuddyAskResponse['meta']['internalCoverage']): 
       return { label: 'Internal: Partial', variant: 'outline' };
     case 'none':
     default:
-      return { label: 'Internal: None', variant: 'outline' };
+      return { label: 'Internal: Limited', variant: 'outline' };
   }
 }
 

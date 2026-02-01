@@ -1,6 +1,6 @@
 export type BuddySafetyLevel = 'none' | 'caution' | 'urgent' | 'emergency';
 
-export type BuddyCitationProvider = 'NeuroBreath' | 'NHS' | 'MedlinePlus' | 'PubMed';
+export type BuddyCitationProvider = 'NeuroBreath' | 'NHS' | 'NICE' | 'PubMed';
 
 export type BuddyIntentClass = 'navigation' | 'tool_help' | 'general';
 

@@ -35,17 +35,50 @@ function selectVoice(settings: TTSSettings): SpeechSynthesisVoice | null {
   
   if (voices.length === 0) return null;
 
+  const isUKEnglish = (v: SpeechSynthesisVoice) =>
+    v.lang?.toLowerCase().startsWith('en-gb') || v.lang?.toLowerCase().startsWith('en-uk');
+
+  const looksFemale = (v: SpeechSynthesisVoice) => {
+    const name = (v.name || '').toLowerCase();
+    // Web Speech API does not expose gender; best-effort heuristics.
+    return [
+      'female',
+      'google uk english female',
+      // Common female voice names across platforms/browsers.
+      'serena',
+      'kate',
+      'susan',
+      'victoria',
+      'fiona',
+      'moira',
+      'tessa',
+      'samantha',
+      'ava',
+      'zoe',
+    ].some((hint) => name.includes(hint));
+  };
+
   // If specific voice requested
   if (settings.voice && settings.voice !== 'system') {
+    // Special selector: best available UK English female voice.
+    if (settings.voice === 'auto-uk-female') {
+      const preferred = voices.find((v) => isUKEnglish(v) && looksFemale(v));
+      if (preferred) return preferred;
+
+      const fallbackUK = voices.find((v) => isUKEnglish(v));
+      if (fallbackUK) return fallbackUK;
+    }
+
     const match = voices.find((v) => v.name === settings.voice);
     if (match) return match;
   }
 
   // Prefer UK voice if requested
   if (settings.preferUKVoice) {
-    const ukVoice = voices.find(
-      (v) => v.lang.startsWith('en-GB') || v.lang.startsWith('en-UK')
-    );
+    const ukFemale = voices.find((v) => isUKEnglish(v) && looksFemale(v));
+    if (ukFemale) return ukFemale;
+
+    const ukVoice = voices.find((v) => isUKEnglish(v));
     if (ukVoice) return ukVoice;
   }
 

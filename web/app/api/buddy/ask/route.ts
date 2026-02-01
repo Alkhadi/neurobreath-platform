@@ -30,6 +30,7 @@ function logJson(level: LogLevel, payload: Record<string, unknown>) {
 
 interface RequestPayload {
   question?: string;
+  intentId?: string;
   pathname?: string;
   locale?: string;
   // Optional, non-identifying client-side snapshot for personalization
@@ -110,6 +111,7 @@ export async function POST(req: NextRequest) {
       req,
       {
         question: raw,
+        intentId: typeof body?.intentId === 'string' ? body.intentId : undefined,
         pathname: body?.pathname,
         jurisdiction: body?.jurisdiction,
         userSnapshot: sanitizeUserSnapshot(body?.userSnapshot),

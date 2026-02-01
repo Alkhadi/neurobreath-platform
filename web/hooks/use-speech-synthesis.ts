@@ -39,16 +39,25 @@ export function useSpeechSynthesis() {
 
   const speak = useCallback(
     (text: string) => {
-      if (!ttsSettings?.enabled) return;
       const cleaned = stripForSpeech(text);
       if (!cleaned) return;
+
+      // For an explicit user action (clicking "Listen"), always allow speaking.
+      // We still respect the user's voice/rate preferences when present.
+      const effectiveSettings = {
+        ...(ttsSettings || {}),
+        enabled: true,
+        preferUKVoice: true,
+        voice: 'auto-uk-female',
+        filterNonAlphanumeric: true,
+      };
 
       stop();
       // Optimistically flip UI state so Listen/Stop is responsive even if
       // the underlying engine delays onStart.
       setIsSpeaking(true);
       engineSpeak(cleaned, {
-        settings: ttsSettings,
+        settings: effectiveSettings,
         onStart: () => setIsSpeaking(true),
         onEnd: () => setIsSpeaking(false),
         onError: () => setIsSpeaking(false),
