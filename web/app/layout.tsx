@@ -17,6 +17,7 @@ import { generateOrganizationSchema, generateWebSiteSchema, generateWebPageSchem
 import { SITE_CONFIG, generateCanonicalUrl } from '@/lib/seo/site-seo';
 import { getRouteMetadata, getRouteSeoConfig } from '@/lib/seo/route-metadata';
 import { getLocaleForRegion, getRegionFromPath } from '@/lib/region/region';
+import { ServiceWorkerRegistrar } from '@/components/pwa/ServiceWorkerRegistrar';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -89,6 +90,7 @@ export default async function RootLayout({
           </UserPreferencesProvider>
           <Toaster position="top-right" />
           <SpeedInsights />
+          <ServiceWorkerRegistrar />
         </ThemeProvider>
       </body>
     </html>

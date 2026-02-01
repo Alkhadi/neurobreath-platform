@@ -12,7 +12,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: SITE_CONFIG.siteName,
     short_name: SITE_CONFIG.siteName,
     description: SITE_CONFIG.brandDescription,
-    start_url: '/',
+    start_url: '/uk',
     display: 'standalone',
     background_color: '#1a0033',
     theme_color: SITE_CONFIG.themeColor,

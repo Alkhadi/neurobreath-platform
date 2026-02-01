@@ -3,7 +3,21 @@ import { NextResponse } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
 const REGION_COOKIE = 'nb_region'
-const EXCLUDED_PREFIXES = ['/api', '/_next', '/favicon', '/robots', '/sitemap', '/assets', '/images']
+const EXCLUDED_PREFIXES = [
+  '/api',
+  '/_next',
+  '/assets',
+  '/images',
+  '/icons',
+  // Root static files that must never be locale-redirected.
+  '/favicon',
+  '/robots',
+  '/sitemap',
+  '/manifest.webmanifest',
+  '/sw.js',
+  '/icon-',
+  '/apple-icon',
+]
 const REGION_LOCALISED_PREFIXES = [
   '/',
   '/trust',
