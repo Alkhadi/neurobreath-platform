@@ -13,6 +13,7 @@ export interface AnchoredTourStep {
   tourId: string;
   selector: string;
   title: string;
+  tips?: string[];
   order: number;
   placement: TourPlacement;
 }
@@ -23,6 +24,7 @@ interface AnchoredPageTourProps {
   stepIndex: number;
   heading: string;
   subheading?: string;
+  introLine?: string;
   onStepChange: (nextIndex: number) => void;
   onClose: () => void;
 }
@@ -44,6 +46,7 @@ export function AnchoredPageTour({
   stepIndex,
   heading,
   subheading,
+  introLine,
   onStepChange,
   onClose,
 }: AnchoredPageTourProps) {
@@ -369,6 +372,7 @@ export function AnchoredPageTour({
 
   const total = steps.length;
   const idx = stepIndex + 1;
+  const tips = current.tips ?? [];
 
   const hasTarget = Boolean(targetRect);
 
@@ -444,6 +448,10 @@ export function AnchoredPageTour({
             : `I've scanned this page and found ${total} sections to explore.`}
         </div>
 
+        {!isComplete && introLine ? (
+          <div className="mt-2 text-sm text-muted-foreground">{introLine}</div>
+        ) : null}
+
         <div className="mt-3">
           {isComplete ? (
             <>
@@ -457,6 +465,13 @@ export function AnchoredPageTour({
             <>
               <div className="text-xs text-muted-foreground">{`Step ${idx}/${total}`}</div>
               <div className="mt-1 text-base font-semibold leading-snug">{current.title}</div>
+              {tips.length > 0 ? (
+                <ul className="mt-2 space-y-1 text-sm text-muted-foreground list-disc pl-4">
+                  {tips.map((tip) => (
+                    <li key={tip}>{tip}</li>
+                  ))}
+                </ul>
+              ) : null}
             </>
           )}
         </div>

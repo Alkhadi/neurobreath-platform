@@ -82,6 +82,39 @@ PageBuddy automatically detects the current page and adapts its:
 - 💡 Context-sensitive tips
 - ✨ Interactive highlights
 
+#### Curated (stable) tour anchors
+
+PageBuddy can auto-scan any page, but **curated tours** are more predictable and can be ordered precisely.
+
+Add these attributes to a stable wrapper element (usually a `section` / `div`) you want to highlight:
+
+```tsx
+<section
+  data-tour="nb:<pageKey>:<sectionKey>"
+  data-tour-title="What the user sees as the step title"
+  data-tour-order="1"
+  data-tour-placement="auto" // optional: auto | right | left | bottom
+  data-tour-tips={
+    "Tip 1|Tip 2|Tip 3" // optional (also supports newlines)
+  }
+>
+  ...
+</section>
+```
+
+**Notes:**
+- `data-tour` must be globally unique on the page. Use a clear `sectionKey` like `hero`, `evidence`, `next-steps`.
+- If `data-tour-tips` is omitted, the tour shows safe default tips.
+- If at least 2 curated anchors exist for a pageKey, PageBuddy will prefer them over auto-scan.
+
+#### What is `pageKey`?
+
+The default mapping is deterministic:
+- Region routes: `/<region>/<a>/<b>` → `<region>-<a>-<b>` (e.g. `/uk/about/trust-centre` → `uk-about-trust-centre`)
+- Non-region routes: `/<a>/<b>` → `<a>-<b>` (e.g. `/conditions/autism-parent` → `conditions-autism-parent`)
+
+Some legacy pages keep a stable, explicit key (e.g. `uk-home`, `autism-hub`, `contact`) so existing anchors continue to work.
+
 ### **4. Smart Context Detection**
 ```typescript
 const config = getPageConfig(pathname); // Automatically adapts to current page
@@ -370,9 +403,9 @@ Step-by-step guided tour:
    ```
 
 2. **Visit any page:**
-   - http://localhost:3010/
-   - http://localhost:3010/adhd
-   - http://localhost:3010/autism
+  <http://localhost:3010/>
+  <http://localhost:3010/adhd>
+  <http://localhost:3010/autism>
 
 3. **Click chat bubble** (bottom-right corner)
 
@@ -442,4 +475,4 @@ Just ask! The system is modular and easy to extend. 🎨
 **Integration:** ✅ Complete  
 **API:** ✅ Configured  
 **Pages Covered:** ✅ 11+ (with fallback for all others)
-
+<!-- spacer -->

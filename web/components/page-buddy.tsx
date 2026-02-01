@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -71,18 +71,66 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   
   const config = getPageConfig(pathname);
 
-  const getPageKeyForTour = useCallback((path: string) => {
-    const normalized = path.split('?')[0]?.replace(/\/+$/, '') || '/';
-    if (normalized === '/uk') return 'uk-home';
-    if (normalized === '/us') return 'us-home';
-    if (normalized === '/autism') return 'autism-hub';
-    if (normalized === '/conditions/autism-parent') return 'conditions-autism-parent';
-    if (normalized === '/contact') return 'contact';
-    return null;
+  const normalizePathname = useCallback((path: string) => {
+    const base = path.split('?')[0] || '/';
+    const trimmed = base.replace(/\/+$/, '') || '/';
+    return trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
   }, []);
+
+  const getPageKeyForTour = useCallback(
+    (path: string) => {
+      const normalized = normalizePathname(path);
+
+      // Preserve known stable keys already used by data-tour anchors.
+      if (normalized === '/uk') return 'uk-home';
+      if (normalized === '/us') return 'us-home';
+      if (normalized === '/autism') return 'autism-hub';
+      if (normalized === '/conditions/autism-parent') return 'conditions-autism-parent';
+      if (normalized === '/contact') return 'contact';
+
+      const parts = normalized.split('/').filter(Boolean);
+      if (parts.length === 0) return 'root';
+
+      const [first] = parts;
+      const isRegion = first === 'uk' || first === 'us';
+      const regionPrefix = isRegion ? first : null;
+      const rest = isRegion ? parts.slice(1) : parts;
+
+      if (regionPrefix && rest.length === 0) return `${regionPrefix}-home`;
+      const slug = rest.join('-') || 'root';
+      return regionPrefix ? `${regionPrefix}-${slug}` : slug;
+    },
+    [normalizePathname]
+  );
+
+  const getTourIntroLine = useCallback(
+    (path: string) => {
+      const normalized = normalizePathname(path);
+      const parts = normalized.split('/').filter(Boolean);
+      const region = parts[0] === 'uk' || parts[0] === 'us' ? parts[0] : null;
+      const rest = region ? parts.slice(1) : parts;
+      const top = rest[0] || '';
+
+      if (top === 'conditions') return 'Condition pages: overview, evidence, skills, and next steps.';
+      if (top === 'guides') return 'Guides: skim the key sections, then pick one action to try today.';
+      if (top === 'tools') return 'Tools: try a quick exercise, then save what helps.';
+      if (top === 'progress') return 'Progress: review what’s working and adjust your plan.';
+      if (top === 'my-plan') return 'My Plan: save skills, schedule routines, and track journeys.';
+      if (top === 'settings') return 'Settings: update preferences and accessibility options.';
+      if (top === 'get-started') return 'Get started: a quick path to your first helpful routine.';
+      if (top === 'help-me-choose') return 'Help me choose: answer a few prompts for a tailored path.';
+      if (normalized === '/contact') return 'Contact: send a message and find help resources.';
+
+      return 'A quick tour of the key sections on this page.';
+    },
+    [normalizePathname]
+  );
+
+  const tourIntroLine = useMemo(() => getTourIntroLine(pathname), [getTourIntroLine, pathname]);
 
   const discoverTourSteps = useCallback((pageKey: string): AnchoredTourStep[] => {
     if (typeof window === 'undefined') return [];
+    const MAX_STEPS = 25;
     const nodes = Array.from(document.querySelectorAll(`[data-tour^="nb:${pageKey}:"]`));
     const escape = (value: string) => {
       const css = (globalThis as unknown as { CSS?: { escape?: (v: string) => string } }).CSS;
@@ -90,8 +138,26 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       return value.replace(/"/g, '\\"');
     };
 
-    const parsed = nodes
-      .map((node, domIndex) => {
+    const parseTips = (node: HTMLElement) => {
+      const raw = node.getAttribute('data-tour-tips')?.trim();
+      if (!raw) return [];
+      const parts = raw
+        .split(/\n|\|/g)
+        .map((s) => s.trim())
+        .filter(Boolean);
+      return parts.slice(0, 4);
+    };
+
+    const defaultTips = (title: string) => {
+      const clean = title.trim();
+      return [
+        clean ? `Look for one small action in “${clean}”.` : 'Look for one small action you can try.',
+        'If this feels like too much, just skim and move on.',
+      ];
+    };
+
+    const explicit = nodes
+      .map((node, domIndex): { domIndex: number; step: AnchoredTourStep } | null => {
         if (!(node instanceof HTMLElement)) return null;
         if (node.getClientRects().length === 0) return null;
 
@@ -103,24 +169,105 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
         const title = node.getAttribute('data-tour-title')?.trim() || 'Section';
         const placementRaw = (node.getAttribute('data-tour-placement')?.trim() || 'auto') as TourPlacement;
         const placement: TourPlacement = ['auto', 'right', 'left', 'bottom'].includes(placementRaw) ? placementRaw : 'auto';
+        const tips = parseTips(node);
 
-        return {
-          domIndex,
-          step: {
-            tourId,
-            selector: `[data-tour="${escape(tourId)}"]`,
-            title,
-            order: Number.isFinite(order) ? order : 999,
-            placement,
-          },
+        const step: AnchoredTourStep = {
+          tourId,
+          selector: `[data-tour="${escape(tourId)}"]`,
+          title,
+          tips: tips.length > 0 ? tips : defaultTips(title),
+          order: Number.isFinite(order) ? order : 999,
+          placement,
         };
-      })
-      .filter((v): v is { domIndex: number; step: AnchoredTourStep } => Boolean(v));
 
-    return parsed
+        return { domIndex, step };
+      })
+      .filter((v): v is { domIndex: number; step: AnchoredTourStep } => v !== null);
+
+    const explicitSteps = explicit
       .sort((a, b) => a.step.order - b.step.order || a.domIndex - b.domIndex)
-      .map((v) => v.step);
+      .map((v) => v.step)
+      .slice(0, MAX_STEPS);
+
+    // If we have a solid explicit tour, prefer it.
+    if (explicitSteps.length >= 2) return explicitSteps;
+
+    // Auto-scan fallback: discover meaningful sections and assign stable runtime IDs.
+    const main = document.querySelector('main') || document.body;
+    const candidates = Array.from(
+      main.querySelectorAll('section, [role="region"], [aria-labelledby], article')
+    ).filter((el): el is HTMLElement => el instanceof HTMLElement);
+
+    const explicitRoots = new globalThis.Set<HTMLElement>(nodes.filter((n): n is HTMLElement => n instanceof HTMLElement));
+    const isInsideExplicit = (el: HTMLElement) => {
+      for (const root of explicitRoots) {
+        if (root !== el && root.contains(el)) return true;
+      }
+      return false;
+    };
+
+    const getTitleFromElement = (el: HTMLElement) => {
+      const fromAttr = el.getAttribute('data-tour-title')?.trim();
+      if (fromAttr) return fromAttr;
+      const aria = el.getAttribute('aria-label')?.trim();
+      if (aria) return aria;
+      const heading = el.querySelector('h1, h2, h3');
+      const headingText = heading?.textContent?.trim();
+      if (headingText) return headingText;
+      const id = el.id?.trim();
+      if (id) return id.replace(/[-_]/g, ' ');
+      return 'Section';
+    };
+
+    const isVisible = (el: HTMLElement) => {
+      if (el.getAttribute('aria-hidden') === 'true') return false;
+      if (el.closest('[aria-hidden="true"]')) return false;
+      if (el.classList.contains('sr-only')) return false;
+      return el.getClientRects().length > 0;
+    };
+
+    const isActionable = (el: HTMLElement) => Boolean(el.querySelector('a[href], button, input, textarea, select'));
+    const hasMeaningfulText = (el: HTMLElement) => (el.textContent || '').replace(/\s+/g, ' ').trim().length >= 40;
+
+    const autoSteps: AnchoredTourStep[] = [];
+    let autoIndex = 0;
+    for (const el of candidates) {
+      if (autoSteps.length + explicitSteps.length >= MAX_STEPS) break;
+      if (!isVisible(el)) continue;
+      if (el.matches('nav, footer, header')) continue;
+      if (el.closest('nav, footer, header')) continue;
+      if (isInsideExplicit(el)) continue;
+      if (el.hasAttribute('data-tour')) continue;
+      if (!hasMeaningfulText(el) && !isActionable(el)) continue;
+
+      const eidExisting = el.getAttribute('data-nb-tour-eid')?.trim();
+      const eid = eidExisting || `${pageKey}:${autoIndex}`;
+      if (!eidExisting) el.setAttribute('data-nb-tour-eid', eid);
+
+      const title = getTitleFromElement(el);
+      const tipsAttr = parseTips(el);
+      autoSteps.push({
+        tourId: `nb:${pageKey}:auto:${eid}`,
+        selector: `[data-nb-tour-eid="${escape(eid)}"]`,
+        title,
+        tips: tipsAttr.length > 0 ? tipsAttr : defaultTips(title),
+        order: 5000 + autoIndex,
+        placement: 'auto',
+      });
+      autoIndex += 1;
+    }
+
+    return [...explicitSteps, ...autoSteps].slice(0, MAX_STEPS);
   }, []);
+
+  // If the route changes mid-tour, re-scan and reset safely.
+  useEffect(() => {
+    if (!showTour) return;
+    const pageKey = getPageKeyForTour(pathname);
+    const discovered = discoverTourSteps(pageKey);
+    setTourSteps(discovered);
+    setCurrentTourStep(0);
+  }, [discoverTourSteps, getPageKeyForTour, pathname, showTour]);
 
   const buildUserSnapshot = useCallback(() => {
     if (typeof window === 'undefined') return undefined;
@@ -971,24 +1118,13 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     }
     
     const pageKey = getPageKeyForTour(pathname);
-    if (!pageKey) {
-      const msg: Message = {
-        id: `tour-unsupported-${Date.now()}`,
-        role: 'assistant',
-        content: 'I can\'t start a guided tour on this route yet. This tour system uses stable data-tour anchors (e.g. nb:<pageKey>:<sectionKey>).',
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, msg]);
-      if (autoSpeak) speak(msg.content);
-      return;
-    }
-
     const discovered = discoverTourSteps(pageKey);
     if (discovered.length === 0) {
       const msg: Message = {
         id: `tour-none-${Date.now()}`,
         role: 'assistant',
-        content: `I looked for tour anchors on this page but couldn't find any. (Expected elements like data-tour="nb:${pageKey}:...".)`,
+        content:
+          "I couldn't find any tour-worthy sections on this page yet. If you want a curated tour, add stable anchors like data-tour=\"nb:<pageKey>:<sectionKey>\" (plus data-tour-title / data-tour-order).",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, msg]);
@@ -1041,6 +1177,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
         stepIndex={Math.min(currentTourStep, Math.max(0, tourSteps.length - 1))}
         heading="NeuroBreath Buddy"
         subheading={`${config.pageName} Guide`}
+        introLine={tourIntroLine}
         onStepChange={(nextIndex) => {
           if (nextIndex < 0 || nextIndex >= tourSteps.length) return;
           setCurrentTourStep(nextIndex);
