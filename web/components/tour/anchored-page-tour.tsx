@@ -77,6 +77,13 @@ export function AnchoredPageTour({
     return 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
   }, []);
 
+  const helpMeChooseHref = useMemo(() => {
+    if (typeof window === 'undefined') return '/uk/help-me-choose';
+    const path = window.location?.pathname ?? '';
+    if (path.startsWith('/us')) return '/us/help-me-choose';
+    return '/uk/help-me-choose';
+  }, []);
+
   useEffect(() => setMounted(true), []);
 
   useEffect(() => {
@@ -492,7 +499,7 @@ export function AnchoredPageTour({
               asChild
               onClick={() => stopSpeech()}
             >
-              <Link href="/get-started">click me to for a quick start</Link>
+              <Link href={helpMeChooseHref}>click me to for a quick start</Link>
             </Button>
           ) : (
             <>
