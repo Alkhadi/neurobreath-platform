@@ -4,18 +4,10 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Profile, Contact, defaultProfile } from "@/lib/utils";
 import { loadNbcardLocalState, saveNbcardLocalState } from "./lib/nbcard-storage";
 import styles from "./contact.module.css";
-import { ProfileCard } from "./components/profile-card";
 import { ProfileManager } from "./components/profile-manager";
-import { ContactCapture } from "./components/contact-capture";
-import { ShareButtons } from "./components/share-buttons";
 import { TurnstileWidget } from "@/components/security/turnstile-widget";
-import { FaEdit, FaPlus, FaUsers, FaChevronDown, FaEnvelope, FaPhone, FaMapMarkerAlt, FaDownload } from "react-icons/fa";
+import { FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
 import { toast } from "sonner";
-
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
-}
 
 const SOCIAL_PLACEHOLDER_VALUES = new Set([
   "https://instagram.com/username",
@@ -58,16 +50,13 @@ export default function ContactPage() {
   const [showProfileManager, setShowProfileManager] = useState(false);
   const [editingProfile, setEditingProfile] = useState<Profile | null>(null);
   const [isNewProfile, setIsNewProfile] = useState(false);
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [showInstallButton, setShowInstallButton] = useState(false);
   const [contactSubmitStatus, setContactSubmitStatus] = useState<
     { state: "idle" | "submitting" | "success" | "error"; message?: string }
   >({ state: "idle" });
   const [turnstileToken, setTurnstileToken] = useState<string>("");
   const [turnstileResetKey, setTurnstileResetKey] = useState(0);
 
-  // Load NBCard state + set up PWA install prompt
+  // Load NBCard state
   useEffect(() => {
     let cancelled = false;
     setMounted(true);
@@ -101,18 +90,8 @@ export default function ContactPage() {
       }
     })().catch((e) => console.error("Failed to load NBCard state", e));
 
-    // PWA Install Prompt
-    const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-      setShowInstallButton(true);
-    };
-
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-
     return () => {
       cancelled = true;
-      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     };
   }, []);
 
@@ -149,65 +128,6 @@ export default function ContactPage() {
       setCurrentProfileIndex(0);
       setShowProfileManager(false);
     }
-  };
-
-  const handleCreateNewProfile = () => {
-    setEditingProfile({
-      id: "",
-      fullName: "",
-      jobTitle: "",
-      phone: "",
-      email: "",
-      profileDescription: "",
-      businessDescription: "",
-      gradient: "linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)",
-      socialMedia: {},
-    });
-    setIsNewProfile(true);
-    setShowProfileManager(true);
-  };
-
-  const handleEditProfile = () => {
-    setEditingProfile(currentProfile);
-    setIsNewProfile(false);
-    setShowProfileManager(true);
-  };
-
-  const handleUpsertContact = (contact: Contact) => {
-    setContacts((prev) => {
-      const idx = prev.findIndex((c) => c.id === contact.id);
-      if (idx >= 0) {
-        const next = [...prev];
-        next[idx] = contact;
-        return next;
-      }
-      return [...prev, contact];
-    });
-  };
-
-  const handleDeleteContact = (id: string) => {
-    if (confirm("Are you sure you want to delete this contact?")) {
-      setContacts(contacts.filter((c) => c.id !== id));
-    }
-  };
-
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) {
-      toast.message("Install prompt not available", {
-        description: "Please use your browser's menu to install the app.",
-      });
-      return;
-    }
-
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    
-    if (outcome === "accepted") {
-      console.log("User accepted the install prompt");
-    }
-    
-    setDeferredPrompt(null);
-    setShowInstallButton(false);
   };
 
   const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
@@ -355,18 +275,14 @@ export default function ContactPage() {
         {/* Page Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 mb-3">
-            NBCard - Digital Business Card
+            Contact Us
           </h1>
-          <p className="text-gray-600 text-lg">Create, manage, and share your professional profile</p>
+          <p className="text-gray-600 text-lg">Have questions? We'd love to hear from you!</p>
         </div>
 
         {/* Section A: Main Contact Page */}
         <section aria-label="Contact Us" className="mb-12">
         <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 mb-8">
-          <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">Contact Us</h2>
-            <p className="text-gray-600">Have questions? We'd love to hear from you!</p>
-          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Contact Form */}
@@ -601,174 +517,6 @@ export default function ContactPage() {
           <div className="mt-4 h-4 w-full rounded-full bg-gradient-to-r from-purple-100 via-blue-100 to-pink-100 opacity-90 shadow-sm" />
         </div>
 
-        {/* Section B: NBCard Profile & Contact Capture */}
-        <section aria-labelledby="nbcard-profile-heading" className="mt-4">
-          <div className="text-center mb-6">
-            <h2 id="nbcard-profile-heading" className="text-3xl font-bold text-gray-800 mb-2">NBCard Profile</h2>
-            <p className="text-gray-600">Manage your profile, share your card, and capture contacts.</p>
-          </div>
-
-        {/* Profile Selector */}
-        {profiles.length > 1 && (
-          <div className="mb-6 flex justify-center">
-            <div className="relative">
-              <button
-                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                className="bg-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all flex items-center gap-2 font-semibold text-gray-700"
-              >
-                <FaUsers className="text-purple-600" />
-                {currentProfile?.fullName ?? "Select Profile"}
-                <FaChevronDown className={`transition-transform ${showProfileDropdown ? "rotate-180" : ""}`} />
-              </button>
-              {showProfileDropdown && (
-                <div className="absolute top-full mt-2 bg-white rounded-lg shadow-xl py-2 min-w-full z-10">
-                  {profiles.map((profile, index) => (
-                    <button
-                      key={profile.id}
-                      onClick={() => {
-                        setCurrentProfileIndex(index);
-                        setShowProfileDropdown(false);
-                      }}
-                      className={`w-full text-left px-4 py-2 hover:bg-purple-50 transition-colors ${
-                        index === currentProfileIndex ? "bg-purple-100 font-semibold" : ""
-                      }`}
-                    >
-                      {profile.fullName}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Left Column - Profile Card */}
-          <div>
-            {/* Profile Card with Capture Wrapper */}
-            <div className="mb-6">
-              <div
-                id="profile-card-capture"
-                className="cursor-pointer text-left w-full"
-                role="button"
-                tabIndex={0}
-                aria-label="Edit profile"
-                onClick={handleEditProfile}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleEditProfile();
-                  }
-                }}
-              >
-                <ProfileCard profile={currentProfile} showEditButton onPhotoClick={(e) => {
-                  e?.stopPropagation();
-                  handleEditProfile();
-                }} />
-              </div>
-            </div>
-            <p className="text-center text-sm text-gray-600 mb-4">
-              Click on the card to edit your profile
-            </p>
-
-            {/* Action Buttons */}
-            <div className="flex gap-3">
-              <button
-                onClick={handleEditProfile}
-                className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold"
-              >
-                <FaEdit /> Edit Profile
-              </button>
-              <button
-                onClick={handleCreateNewProfile}
-                className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold"
-              >
-                <FaPlus /> New Profile
-              </button>
-              <button
-                onClick={() => {
-                  const el = document.getElementById("share-your-profile");
-                  el?.scrollIntoView({ behavior: "smooth", block: "start" });
-                  toast.message("Share Your Profile", { description: "Choose a share option on the right." });
-                }}
-                className="flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold"
-              >
-                Share Your Profile
-              </button>
-            </div>
-          </div>
-
-          {/* Right Column - Share Buttons */}
-          <div className="bg-white rounded-2xl shadow-xl p-6">
-            <div id="share-your-profile">
-              <ShareButtons
-                profile={currentProfile}
-                profiles={profiles}
-                contacts={contacts}
-                onSetProfiles={setProfiles}
-                onSetContacts={setContacts}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Contact Capture Section */}
-        <div className="mb-8">
-          <ContactCapture contacts={contacts} onUpsert={handleUpsertContact} onDelete={handleDeleteContact} />
-        </div>
-
-        {/* PWA Install Section */}
-        <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl shadow-xl p-6">
-          <div className="text-center mb-4">
-            <h3 className="text-2xl font-bold text-gray-800 mb-2">Install as App</h3>
-            <p className="text-gray-600">
-              Add NBCard to your home screen for quick access and offline functionality.
-            </p>
-          </div>
-
-          {/* Install Button */}
-          {showInstallButton && (
-            <div className="mb-4">
-              <button
-                onClick={handleInstallClick}
-                className="w-full max-w-md mx-auto flex items-center justify-center gap-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-4 rounded-xl hover:shadow-lg transition-all font-bold text-lg"
-              >
-                <FaDownload className="text-2xl" />
-                Install NBCard App Now
-              </button>
-            </div>
-          )}
-
-          {/* Manual Install Instructions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <div className="bg-white rounded-lg p-4">
-              <h4 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
-                <span className="bg-gray-800 text-white px-2 py-1 rounded text-xs">iOS</span>
-                iPhone & iPad
-              </h4>
-              <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
-                <li>Open this page in Safari</li>
-                <li>Tap the share button (square with arrow)</li>
-                <li>Scroll and tap "Add to Home Screen"</li>
-                <li>Tap "Add" to confirm</li>
-              </ol>
-            </div>
-            <div className="bg-white rounded-lg p-4">
-              <h4 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
-                <span className="bg-green-600 text-white px-2 py-1 rounded text-xs">Android</span>
-                Chrome Browser
-              </h4>
-              <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
-                <li>Tap the menu button (three dots)</li>
-                <li>Select "Add to Home screen" or "Install app"</li>
-                <li>Tap "Install" or "Add"</li>
-                <li>Find the app on your home screen</li>
-              </ol>
-            </div>
-          </div>
-        </div>
-        </section>
       </div>
 
       {/* Profile Manager Modal */}
