@@ -238,8 +238,8 @@ export default function ContactPage() {
 
     // Use non-obvious honeypot field names to reduce accidental autofill by browsers/password managers.
     // These are still sent to the API as `company` and `website`.
-    const honeypotCompany = String(formData.get("company_confirm") ?? "");
-    const honeypotWebsite = String(formData.get("website_confirm") ?? "");
+    const honeypotCompany = String(formData.get("nb_hp_company") ?? "");
+    const honeypotWebsite = String(formData.get("nb_hp_website") ?? "");
 
     const data = {
       name: String(formData.get("name") ?? ""),
@@ -351,32 +351,32 @@ export default function ContactPage() {
             {/* Contact Form */}
             <form onSubmit={handleContactFormSubmit} className="space-y-4">
               {/* Honeypot field: bots often fill it, humans never see it */}
-              <div className={styles.honeypot}>
-                <label htmlFor="company">Company</label>
+              <div className={styles.honeypot} aria-hidden="true">
                 <input
-                  id="company"
-                  name="company_confirm"
+                  id="nb_hp_company"
+                  name="nb_hp_company"
                   type="text"
                   tabIndex={-1}
-                  autoComplete="off"
+                  autoComplete="new-password"
+                  inputMode="none"
+                  spellCheck={false}
                   data-1p-ignore="true"
                   data-lp-ignore="true"
                   data-bwignore="true"
-                  aria-hidden="true"
                 />
               </div>
-              <div className={styles.honeypot}>
-                <label htmlFor="website">Website</label>
+              <div className={styles.honeypot} aria-hidden="true">
                 <input
-                  id="website"
-                  name="website_confirm"
+                  id="nb_hp_website"
+                  name="nb_hp_website"
                   type="text"
                   tabIndex={-1}
-                  autoComplete="off"
+                  autoComplete="new-password"
+                  inputMode="none"
+                  spellCheck={false}
                   data-1p-ignore="true"
                   data-lp-ignore="true"
                   data-bwignore="true"
-                  aria-hidden="true"
                 />
               </div>
               <div>

@@ -26,6 +26,55 @@ function stripNewlines(value: string) {
   return value.replace(/[\r\n]+/g, " ").trim();
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === "object" && !Array.isArray(value);
+}
+
+async function readRequestBody(req: Request): Promise<Record<string, unknown> | null> {
+  const contentType = (req.headers.get("content-type") ?? "").toLowerCase();
+
+  if (contentType.includes("application/json")) {
+    const json = (await req.json().catch(() => null)) as unknown;
+    return isRecord(json) ? json : null;
+  }
+
+  // Handles both multipart/form-data and application/x-www-form-urlencoded.
+  const form = await req.formData().catch(() => null);
+  if (!form) return null;
+
+  const obj: Record<string, unknown> = {};
+  for (const [key, value] of form.entries()) {
+    obj[key] = typeof value === "string" ? value : "";
+  }
+  return obj;
+}
+
+function pickString(raw: Record<string, unknown>, keys: string[]) {
+  for (const key of keys) {
+    const v = raw[key];
+    if (typeof v === "string") return v;
+  }
+  return "";
+}
+
+function normalizeContactPayload(raw: Record<string, unknown>) {
+  return {
+    name: pickString(raw, ["name", "fullName", "fullname"]),
+    email: pickString(raw, ["email", "from"]),
+    subject: pickString(raw, ["subject", "topic"]),
+    message: pickString(raw, ["message", "content", "body"]),
+    organization: pickString(raw, ["organization", "organisation", "org"]),
+    phone: pickString(raw, ["phone", "tel", "telephone"]),
+
+    // Honeypots: accept both current and older client field names.
+    company: pickString(raw, ["company", "company_confirm", "nb_hp_company"]),
+    website: pickString(raw, ["website", "website_confirm", "nb_hp_website"]),
+
+    // Turnstile: accept common field names.
+    turnstileToken: pickString(raw, ["turnstileToken", "cf-turnstile-response", "turnstile_token"]),
+  };
+}
+
 function formatYmd(date: Date) {
   const y = String(date.getFullYear());
   const m = String(date.getMonth() + 1).padStart(2, "0");
@@ -74,7 +123,13 @@ function rateLimit(ip: string) {
 const Schema = z.object({
   name: z.preprocess((v) => stripNewlines(String(v ?? "")), z.string().min(1).max(80)),
   email: z.preprocess((v) => stripNewlines(String(v ?? "")), z.string().email().max(254)),
-  subject: z.preprocess((v) => stripNewlines(String(v ?? "")), z.string().min(1).max(120)),
+  subject: z.preprocess(
+    (v) => {
+      const s = stripNewlines(String(v ?? ""));
+      return s.length > 0 ? s : "General enquiry";
+    },
+    z.string().min(1).max(120)
+  ),
   message: z.preprocess((v) => String(v ?? "").trim(), z.string().min(5).max(4000)),
 
   // Optional metadata
@@ -177,17 +232,40 @@ export async function POST(req: Request) {
       );
     }
 
-    const body: unknown = await req.json().catch(() => null);
+    const raw = await readRequestBody(req);
+    if (!raw) {
+      return Response.json(
+        {
+          ok: false,
+          error: "Invalid form data",
+          ...(process.env.NODE_ENV !== "production"
+            ? { dev: { hint: "Empty or unreadable request body", contentType: req.headers.get("content-type") } }
+            : {}),
+        },
+        { status: 400, headers: { "Cache-Control": "no-store" } }
+      );
+    }
+
+    const body = normalizeContactPayload(raw);
     const parsed = Schema.safeParse(body);
     if (!parsed.success) {
-      return Response.json({ ok: false, error: "Invalid form data" }, { status: 400 });
+      return Response.json(
+        {
+          ok: false,
+          error: "Invalid form data",
+          ...(process.env.NODE_ENV !== "production"
+            ? { fieldErrors: parsed.error.flatten().fieldErrors, receivedKeys: Object.keys(raw) }
+            : {}),
+        },
+        { status: 400, headers: { "Cache-Control": "no-store" } }
+      );
     }
 
     const { name, email, subject, message, organization, phone, company, website, turnstileToken } = parsed.data;
 
     // Honeypot: reject if filled
     if ((company && company.trim().length > 0) || (website && website.trim().length > 0)) {
-      return Response.json({ ok: false, error: "Invalid form data" }, { status: 400 });
+      return Response.json({ ok: false, error: "Invalid form data" }, { status: 400, headers: { "Cache-Control": "no-store" } });
     }
 
     // Turnstile validation (strict anti-spam)
@@ -196,7 +274,7 @@ export async function POST(req: Request) {
       if (turnstile.error === "Missing TURNSTILE_SECRET_KEY") {
         return Response.json(
           { ok: false, error: "Spam protection is not configured yet. Please try again later." },
-          { status: 500 }
+          { status: 500, headers: { "Cache-Control": "no-store" } }
         );
       }
       
@@ -215,12 +293,15 @@ export async function POST(req: Request) {
       console.warn("Turnstile verification error:", { errorStr, ip });
       return Response.json(
         { ok: false, error: userMessage },
-        { status: 400 }
+        { status: 400, headers: { "Cache-Control": "no-store" } }
       );
     }
 
     if (!process.env.RESEND_API_KEY) {
-      return Response.json({ ok: false, error: "Server email is not configured" }, { status: 500 });
+      return Response.json(
+        { ok: false, error: "Server email is not configured" },
+        { status: 500, headers: { "Cache-Control": "no-store" } }
+      );
     }
 
     // Check if we're in development mode and SKIP_EMAIL_SEND is set
