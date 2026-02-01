@@ -67,7 +67,8 @@ function normalizeContactPayload(raw: Record<string, unknown>) {
     phone: pickString(raw, ["phone", "tel", "telephone"]),
 
     // Honeypots: accept both current and older client field names.
-    company: pickString(raw, ["company", "company_confirm", "nb_hp_company"]),
+    // Back-compat: some older clients used `website` as the honeypot field.
+    company: pickString(raw, ["company", "company_confirm", "nb_hp_company", "website", "website_confirm", "nb_hp_website"]),
     website: pickString(raw, ["website", "website_confirm", "nb_hp_website"]),
 
     // Turnstile: accept common field names.
@@ -122,7 +123,7 @@ function rateLimit(ip: string) {
 
 const Schema = z.object({
   name: z.preprocess((v) => stripNewlines(String(v ?? "")), z.string().min(1).max(80)),
-  email: z.preprocess((v) => stripNewlines(String(v ?? "")), z.string().email().max(254)),
+  email: z.preprocess((v) => stripNewlines(String(v ?? "")).toLowerCase(), z.string().email().max(254)),
   subject: z.preprocess(
     (v) => {
       const s = stripNewlines(String(v ?? ""));
@@ -227,7 +228,7 @@ export async function POST(req: Request) {
         { ok: false, error: "Too many requests. Please try again shortly." },
         {
           status: 429,
-          headers: { "Retry-After": String(retryAfterSeconds) },
+          headers: { "Retry-After": String(retryAfterSeconds), "Cache-Control": "no-store" },
         }
       );
     }
@@ -238,9 +239,7 @@ export async function POST(req: Request) {
         {
           ok: false,
           error: "Invalid form data",
-          ...(process.env.NODE_ENV !== "production"
-            ? { dev: { hint: "Empty or unreadable request body", contentType: req.headers.get("content-type") } }
-            : {}),
+          issues: { _form: ["Empty or unreadable request body."] },
         },
         { status: 400, headers: { "Cache-Control": "no-store" } }
       );
@@ -253,9 +252,7 @@ export async function POST(req: Request) {
         {
           ok: false,
           error: "Invalid form data",
-          ...(process.env.NODE_ENV !== "production"
-            ? { fieldErrors: parsed.error.flatten().fieldErrors, receivedKeys: Object.keys(raw) }
-            : {}),
+          issues: parsed.error.flatten().fieldErrors,
         },
         { status: 400, headers: { "Cache-Control": "no-store" } }
       );
@@ -265,7 +262,10 @@ export async function POST(req: Request) {
 
     // Honeypot: reject if filled
     if ((company && company.trim().length > 0) || (website && website.trim().length > 0)) {
-      return Response.json({ ok: false, error: "Invalid form data" }, { status: 400, headers: { "Cache-Control": "no-store" } });
+      return Response.json(
+        { ok: false, error: "Invalid form data", issues: { company: ["Spam detected."] } },
+        { status: 400, headers: { "Cache-Control": "no-store" } }
+      );
     }
 
     // Turnstile validation (strict anti-spam)
@@ -316,7 +316,10 @@ export async function POST(req: Request) {
         phone,
         message: message.substring(0, 100),
       });
-      return Response.json({ ok: true, dev: true, ticketId, adminEmailId: "dev" });
+      return Response.json(
+        { ok: true, message: "Message sent successfully.", dev: true, ticketId, adminEmailId: "dev" },
+        { headers: { "Cache-Control": "no-store" } }
+      );
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
@@ -371,7 +374,7 @@ export async function POST(req: Request) {
           ok: false, 
           error: userMessage
         }, 
-        { status: 500 }
+        { status: 500, headers: { "Cache-Control": "no-store" } }
       );
     }
 
@@ -475,13 +478,17 @@ export async function POST(req: Request) {
       });
     }
 
-    return Response.json({
-      ok: true,
-      ticketId,
-      adminEmailId,
-      autoReplyEmailId,
-      ...(autoReplyWarning ? { autoReplyWarning: true } : {}),
-    });
+    return Response.json(
+      {
+        ok: true,
+        message: "Message sent successfully.",
+        ticketId,
+        adminEmailId,
+        autoReplyEmailId,
+        ...(autoReplyWarning ? { autoReplyWarning: true } : {}),
+      },
+      { headers: { "Cache-Control": "no-store" } }
+    );
   } catch (err) {
     console.error("Contact form error:", err);
     
@@ -506,7 +513,7 @@ export async function POST(req: Request) {
         ok: false, 
         error: userMessage 
       }, 
-      { status: 500 }
+      { status: 500, headers: { "Cache-Control": "no-store" } }
     );
   }
 }

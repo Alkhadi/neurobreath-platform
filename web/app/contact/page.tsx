@@ -270,6 +270,26 @@ export default function ContactPage() {
         json && typeof json === "object" && "error" in json
           ? String((json as { error?: unknown }).error ?? "")
           : "";
+
+      const maybeIssues =
+        json && typeof json === "object" && json !== null && "issues" in json
+          ? (json as { issues?: unknown }).issues
+          : undefined;
+
+      const issuesMessage = (() => {
+        if (!maybeIssues || typeof maybeIssues !== "object" || maybeIssues === null) return "";
+
+        const entries = Object.entries(maybeIssues as Record<string, unknown>)
+          .map(([field, messages]) => {
+            if (!Array.isArray(messages)) return null;
+            const first = messages.find((m) => typeof m === "string" && m.trim().length > 0);
+            if (typeof first !== "string") return null;
+            return field === "_form" ? first : `${field}: ${first}`;
+          })
+          .filter((v): v is string => typeof v === "string" && v.length > 0);
+
+        return entries.length > 0 ? entries.join("\n") : "";
+      })();
       const isDev = json && typeof json === "object" && "dev" in json;
       const okFlag =
         json && typeof json === "object" && "ok" in json
@@ -284,6 +304,7 @@ export default function ContactPage() {
           state: "error",
           message:
             maybeError ||
+            issuesMessage ||
             (vercelId ? `${statusHint}. Reference: ${vercelId}` : `${statusHint}. Please try again.`),
         });
         return;
