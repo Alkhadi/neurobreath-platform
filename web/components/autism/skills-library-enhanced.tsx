@@ -150,7 +150,12 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
   return (
     <div className="w-full">
       {/* Search and Filters */}
-        <div className="mb-8 space-y-4">
+        <div
+          className="mb-8 space-y-4"
+          data-tour="nb:autism-hub:skills-filters"
+          data-tour-order="10"
+          data-tour-title="Skills filters & sorting"
+        >
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
@@ -210,7 +215,12 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
         </div>
 
         {/* Skills Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            data-tour="nb:autism-hub:skills-results"
+            data-tour-order="11"
+            data-tour-title="Skills results list"
+          >
           {filteredSkills.map(skill => {
             const mastery = progress?.skillMastery?.[skill.id];
             const isFavorite = progress?.favoriteSkills?.includes(skill.id) || false;

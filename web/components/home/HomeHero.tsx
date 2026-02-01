@@ -16,10 +16,18 @@ interface HomeHeroProps {
 
 export function HomeHero({ region, copy, recommendations }: HomeHeroProps) {
 	const regionKey = getRegionKey(region);
+	const pageKey = `${regionKey}-home`;
 	const heroBackgroundSrc = '/images/home/home-section-bg.png';
 
 	return (
-		<section aria-label="NeuroBreath homepage hero" data-testid="home-hero" className="relative overflow-hidden">
+		<section
+			aria-label="NeuroBreath homepage hero"
+			data-testid="home-hero"
+			data-tour={`nb:${pageKey}:hero`}
+			data-tour-order="1"
+			data-tour-title="Calm, focus, and routines"
+			className="relative overflow-hidden"
+		>
 			<Image
 				src={heroBackgroundSrc}
 				alt=""
@@ -118,7 +126,12 @@ export function HomeHero({ region, copy, recommendations }: HomeHeroProps) {
 								</div>
 							</div>
 
-							<div className="lg:col-span-5">
+							<div
+								className="lg:col-span-5"
+								data-tour={`nb:${pageKey}:quick-selector`}
+								data-tour-order="3"
+								data-tour-title="Quick selector"
+							>
 								<QuickSelector regionKey={regionKey} copy={copy} recommendations={recommendations} />
 							</div>
 						</div>

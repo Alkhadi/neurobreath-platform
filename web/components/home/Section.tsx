@@ -11,6 +11,11 @@ interface HomeSectionProps {
   tone?: 'default' | 'muted' | 'surface';
   withDivider?: boolean;
 
+  tourId?: string;
+  tourOrder?: number;
+  tourTitle?: string;
+  tourPlacement?: 'auto' | 'right' | 'left' | 'bottom';
+
   /**
    * When provided, renders a full-bleed background image behind the section.
    * The background spans the viewport width; the content remains constrained.
@@ -34,6 +39,10 @@ export function HomeSection({
   backgroundImageSrc,
   backgroundOverlayClassName,
   testId,
+  tourId,
+  tourOrder,
+  tourTitle,
+  tourPlacement,
 }: HomeSectionProps) {
   const toneClass =
     tone === 'muted'
@@ -66,6 +75,10 @@ export function HomeSection({
     <section
       id={id}
       data-testid={testId}
+      data-tour={tourId}
+      data-tour-order={typeof tourOrder === 'number' ? String(tourOrder) : undefined}
+      data-tour-title={tourTitle}
+      data-tour-placement={tourPlacement}
       className={`relative py-12 sm:py-16 ${separatorClass} ${toneClass} ${withDivider ? 'border-t border-border/60' : ''} ${hasFullBleedBackground ? 'overflow-hidden' : ''}`}
     >
       {hasFullBleedBackground ? (

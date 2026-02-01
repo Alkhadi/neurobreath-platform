@@ -308,7 +308,13 @@ export default function ContactPage() {
 
               <div className="relative p-4 sm:p-6 md:p-8 lg:p-10">
                 {/* Section A: Main Contact Page */}
-                <section aria-label="Contact Us" className="mb-0">
+                <section
+                  aria-label="Contact Us"
+                  className="mb-0"
+                  data-tour="nb:contact:contact-form"
+                  data-tour-order="1"
+                  data-tour-title="Contact form"
+                >
                 <div className="rounded-2xl p-4 sm:p-6 md:p-8 mb-8 bg-white/72 dark:bg-zinc-950/55 backdrop-blur-2xl border border-white/40 dark:border-white/12 shadow-[0_26px_80px_rgba(0,0,0,0.22)] ring-1 ring-black/10 dark:ring-white/10">
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -536,6 +542,25 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
+                </section>
+
+                <section
+                  aria-label="Trust and safety"
+                  className="mt-6"
+                  data-tour="nb:contact:trust-safety"
+                  data-tour-order="2"
+                  data-tour-title="Trust & safety"
+                  data-tour-placement="bottom"
+                >
+                  <div className="rounded-2xl p-4 sm:p-6 bg-white/60 dark:bg-zinc-950/45 backdrop-blur border border-white/30 dark:border-white/10 shadow-[0_18px_60px_rgba(0,0,0,0.18)]">
+                    <h2 className="text-lg font-semibold text-white">Before you send</h2>
+                    <p className="mt-2 text-sm text-white/90">
+                      We only use this form to respond to your message. Educational information only — not medical advice.
+                    </p>
+                    <p className="mt-2 text-sm text-white/80">
+                      If you or someone else is in immediate danger or needs urgent help, contact your local emergency services.
+                    </p>
+                  </div>
                 </section>
               </div>
             </div>

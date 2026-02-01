@@ -22,6 +22,7 @@ import { SafeIcon } from '@/components/buddy/safe-icon';
 import { BuddyAnswerCard } from '@/components/buddy/answer-card';
 import type { BuddyAskResponse } from '@/lib/buddy/server/types';
 import { getBuddyIntentIdByLabel } from '@/lib/assistant/intents';
+import { AnchoredPageTour, type AnchoredTourStep, type TourPlacement } from '@/components/tour/anchored-page-tour';
 
 interface Message {
   id: string;
@@ -49,6 +50,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   const { speak, stop, isSpeaking } = useSpeechSynthesis();
   const [showTour, setShowTour] = useState(false);
   const [currentTourStep, setCurrentTourStep] = useState(0);
+  const [tourSteps, setTourSteps] = useState<AnchoredTourStep[]>([]);
   const [mounted, setMounted] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
@@ -68,6 +70,57 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   const lastInitializedPathRef = useRef<string | null>(null);
   
   const config = getPageConfig(pathname);
+
+  const getPageKeyForTour = useCallback((path: string) => {
+    const normalized = path.split('?')[0]?.replace(/\/+$/, '') || '/';
+    if (normalized === '/uk') return 'uk-home';
+    if (normalized === '/us') return 'us-home';
+    if (normalized === '/autism') return 'autism-hub';
+    if (normalized === '/conditions/autism-parent') return 'conditions-autism-parent';
+    if (normalized === '/contact') return 'contact';
+    return null;
+  }, []);
+
+  const discoverTourSteps = useCallback((pageKey: string): AnchoredTourStep[] => {
+    if (typeof window === 'undefined') return [];
+    const nodes = Array.from(document.querySelectorAll(`[data-tour^="nb:${pageKey}:"]`));
+    const escape = (value: string) => {
+      const css = (globalThis as unknown as { CSS?: { escape?: (v: string) => string } }).CSS;
+      if (css && typeof css.escape === 'function') return css.escape(value);
+      return value.replace(/"/g, '\\"');
+    };
+
+    const parsed = nodes
+      .map((node, domIndex) => {
+        if (!(node instanceof HTMLElement)) return null;
+        if (node.getClientRects().length === 0) return null;
+
+        const tourId = node.getAttribute('data-tour')?.trim() || '';
+        if (!tourId) return null;
+
+        const orderRaw = node.getAttribute('data-tour-order');
+        const order = orderRaw ? Number(orderRaw) : 999;
+        const title = node.getAttribute('data-tour-title')?.trim() || 'Section';
+        const placementRaw = (node.getAttribute('data-tour-placement')?.trim() || 'auto') as TourPlacement;
+        const placement: TourPlacement = ['auto', 'right', 'left', 'bottom'].includes(placementRaw) ? placementRaw : 'auto';
+
+        return {
+          domIndex,
+          step: {
+            tourId,
+            selector: `[data-tour="${escape(tourId)}"]`,
+            title,
+            order: Number.isFinite(order) ? order : 999,
+            placement,
+          },
+        };
+      })
+      .filter((v): v is { domIndex: number; step: AnchoredTourStep } => Boolean(v));
+
+    return parsed
+      .sort((a, b) => a.step.order - b.step.order || a.domIndex - b.domIndex)
+      .map((v) => v.step);
+  }, []);
 
   const buildUserSnapshot = useCallback(() => {
     if (typeof window === 'undefined') return undefined;
@@ -319,6 +372,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       setMessages([welcomeMessage]);
       setCurrentTourStep(0);
       setShowTour(false);
+      setTourSteps([]);
       return;
     }
 
@@ -916,84 +970,87 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       return;
     }
     
-    // Use detected sections if available, otherwise fall back to config
-    const sectionsToTour = pageContent.sections.length > 0 
-      ? pageContent.sections.map(s => ({
-          id: s.id,
-          name: s.name,
-          description: `Navigate and explore the ${s.name} section`,
-          tips: [`Look for interactive elements in this section`, `This content is tailored to ${config.audiences.join(', ')}`]
-        }))
-      : config.sections;
-    
+    const pageKey = getPageKeyForTour(pathname);
+    if (!pageKey) {
+      const msg: Message = {
+        id: `tour-unsupported-${Date.now()}`,
+        role: 'assistant',
+        content: 'I can\'t start a guided tour on this route yet. This tour system uses stable data-tour anchors (e.g. nb:<pageKey>:<sectionKey>).',
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, msg]);
+      if (autoSpeak) speak(msg.content);
+      return;
+    }
+
+    const discovered = discoverTourSteps(pageKey);
+    if (discovered.length === 0) {
+      const msg: Message = {
+        id: `tour-none-${Date.now()}`,
+        role: 'assistant',
+        content: `I looked for tour anchors on this page but couldn't find any. (Expected elements like data-tour="nb:${pageKey}:...".)`,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, msg]);
+      if (autoSpeak) speak(msg.content);
+      return;
+    }
+
+    setTourSteps(discovered);
     setShowTour(true);
     setCurrentTourStep(0);
-    
-    const firstSection = sectionsToTour[0];
-    if (firstSection && pageContent.sections.length > 0) {
-      setTimeout(() => scrollToSection(firstSection.id), 500);
-    }
-    
+    setIsOpen(false);
+
+    const first = discovered[0];
     const tourIntro: Message = {
       id: `tour-start-${Date.now()}`,
       role: 'assistant',
-      content: `🎯 **Live Page Tour Started!**\n\nI've scanned this page and found ${sectionsToTour.length} sections to explore.\n\n**Step 1/${sectionsToTour.length}: ${firstSection?.name}**\n${firstSection?.description}\n\n💡 **Tips:**\n${firstSection?.tips.map((t: string) => `• ${t}`).join('\n')}\n\n**Note:** I'm scrolling to each section as we go!`,
-      timestamp: new Date()
+      content: `🎯 **Live Page Tour Started!**\n\nI've scanned this page and found ${discovered.length} sections to explore.\n\n**Step 1/${discovered.length}: ${first?.title}**\n\n**Note:** I’ll keep the page visible and anchor the tour panel to each section as we go.`,
+      timestamp: new Date(),
     };
-    setMessages(prev => [...prev, tourIntro]);
-    if (autoSpeak) {
-      speak(tourIntro.content);
-    }
+    setMessages((prev) => [...prev, tourIntro]);
+    if (autoSpeak) speak(tourIntro.content);
   };
   
   const nextTourStep = () => {
-    const sectionsToTour = pageContent.sections.length > 0 
-      ? pageContent.sections.map(s => ({
-          id: s.id,
-          name: s.name,
-          description: `Explore the ${s.name} section and its features`,
-          tips: [`This section is specifically designed for ${config.pageName}`, `Interact with the elements you find here`]
-        }))
-      : config.sections;
-      
     const nextStep = currentTourStep + 1;
-    if (nextStep >= sectionsToTour.length) {
+    if (nextStep >= tourSteps.length) {
       setShowTour(false);
+      setCurrentTourStep(0);
+      setTourSteps([]);
+
       const tourEnd: Message = {
         id: `tour-end-${Date.now()}`,
         role: 'assistant',
-        content: `🎉 **Live Tour Complete!**\n\nYou've explored all ${sectionsToTour.length} sections of ${config.pageName}!\n\n**What I detected on this page:**\n${pageContent.features.length > 0 ? `• Features: ${pageContent.features.join(', ')}\n` : ''}• Sections: ${sectionsToTour.length}\n• Interactive elements: ${pageContent.buttons.length}\n\n**Next steps:**\n• Try out a feature that interests you\n• Ask me about specific sections\n• I'm here whenever you need help! 🤝`,
-        timestamp: new Date()
+        content: `🎉 **Live Tour Complete!**\n\nYou've explored all ${tourSteps.length} sections of ${config.pageName}!`,
+        timestamp: new Date(),
       };
-      setMessages(prev => [...prev, tourEnd]);
-      if (autoSpeak) {
-        speak(tourEnd.content);
-      }
+      setMessages((prev) => [...prev, tourEnd]);
+      if (autoSpeak) speak(tourEnd.content);
       return;
     }
-    
+
     setCurrentTourStep(nextStep);
-    const section = sectionsToTour[nextStep];
-    
-    // Scroll to the actual section if it exists
-    if (pageContent.sections.length > 0 && section.id) {
-      setTimeout(() => scrollToSection(section.id), 500);
-    }
-    
-    const tourStep: Message = {
-      id: `tour-step-${nextStep}-${Date.now()}`,
-      role: 'assistant',
-      content: `**Step ${nextStep + 1}/${sectionsToTour.length}: ${section.name}**\n\n${section.description}\n\n💡 **Tips:**\n${section.tips.map((t: string) => `• ${t}`).join('\n')}`,
-      timestamp: new Date()
-    };
-    setMessages(prev => [...prev, tourStep]);
-    if (autoSpeak) {
-      speak(tourStep.content);
-    }
   };
   
   return (
     <>
+      <AnchoredPageTour
+        open={showTour}
+        steps={tourSteps}
+        stepIndex={Math.min(currentTourStep, Math.max(0, tourSteps.length - 1))}
+        heading="NeuroBreath Buddy"
+        subheading={`${config.pageName} Guide`}
+        onStepChange={(nextIndex) => {
+          if (nextIndex < 0 || nextIndex >= tourSteps.length) return;
+          setCurrentTourStep(nextIndex);
+        }}
+        onClose={() => {
+          setShowTour(false);
+          setCurrentTourStep(0);
+          setTourSteps([]);
+        }}
+      />
       {/* Floating trigger button */}
       <div className={cn("fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[60]", isOpen && "hidden")}>
         <Button
@@ -1319,7 +1376,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
                     className="gap-2 text-xs sm:text-sm touch-manipulation active:scale-95 transition-transform"
                     size="sm"
                   >
-                    {currentTourStep + 1 >= config.sections.length ? 'Finish Tour' : 'Next Section'}
+                    {currentTourStep + 1 >= tourSteps.length ? 'Finish Tour' : 'Next Section'}
                     <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </Button>
                 </div>

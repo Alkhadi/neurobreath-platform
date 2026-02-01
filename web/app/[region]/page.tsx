@@ -52,6 +52,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 	const resolved = await params;
 	const region = getRegionFromKey(resolved.region);
 	const regionKey = getRegionKey(region);
+	const tourPageKey = `${regionKey}-home`;
 	const copy = getLocaleCopy(region);
 
 	if (!['uk', 'us'].includes(regionKey)) return notFound();
@@ -285,6 +286,9 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 
 			<HomeSection
 				id="next-best-step"
+				tourId={`nb:${tourPageKey}:next-step`}
+				tourOrder={2}
+				tourTitle="Get your next best step"
 				eyebrow="Get your next best step"
 				title="Clear next actions — without medical claims"
 				subtitle="Use Help me choose for a quick plan, or pick a starting path that combines tools and guides."
@@ -297,6 +301,9 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 
 			<HomeSection
 				id="start-here"
+				tourId={`nb:${tourPageKey}:start-60s`}
+				tourOrder={4}
+				tourTitle="Start here in 60 seconds"
 				eyebrow="Start here"
 				title={copy.sections.startHere.title}
 				subtitle={copy.sections.startHere.subtitle}
@@ -331,6 +338,9 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 
 			<HomeSection
 				id="conditions"
+				tourId={`nb:${tourPageKey}:conditions`}
+				tourOrder={5}
+				tourTitle="Conditions we cover"
 				eyebrow="Coverage"
 				title={copy.sections.conditions.title}
 				subtitle={copy.sections.conditions.subtitle}
@@ -354,6 +364,9 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 
 			<HomeSection
 				id="tools"
+				tourId={`nb:${tourPageKey}:tools`}
+				tourOrder={6}
+				tourTitle="Tools you can try today"
 				eyebrow="Try today"
 				title={copy.sections.tools.title}
 				subtitle={copy.sections.tools.subtitle}
@@ -372,6 +385,9 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 
 			<HomeSection
 				id="guides"
+				tourId={`nb:${tourPageKey}:guides`}
+				tourOrder={7}
+				tourTitle="Guides (organised by topic)"
 				eyebrow="Guides"
 				title={copy.sections.guides.title}
 				subtitle={copy.sections.guides.subtitle}

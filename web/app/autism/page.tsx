@@ -76,13 +76,24 @@ export default function AutismHubPage() {
       </a>
 
       {/* Hero Section */}
-      <section className="py-6 sm:py-8 scroll-mt-20">
+      <section
+        className="py-6 sm:py-8 scroll-mt-20"
+        data-tour="nb:autism-hub:hero"
+        data-tour-order="1"
+        data-tour-title="Autism Hub overview"
+      >
         <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
-          <PageHeader 
-            title="Autism Hub" 
-            description="Evidence-based autism support with tools, strategies, and resources for all ages. Built with guidance from NHS, NICE, CDC, and peer-reviewed research."
-            showMetadata
-          />
+          <div
+            data-tour="nb:autism-hub:evidence-status"
+            data-tour-order="2"
+            data-tour-title="Evidence-based content panel"
+          >
+            <PageHeader 
+              title="Autism Hub" 
+              description="Evidence-based autism support with tools, strategies, and resources for all ages. Built with guidance from NHS, NICE, CDC, and peer-reviewed research."
+              showMetadata
+            />
+          </div>
 
           {/* Quick Actions */}
           <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 mt-6">
@@ -140,14 +151,26 @@ export default function AutismHubPage() {
       </section>
 
       {/* How to Use - Introductory Section */}
-      <section id="main-content" className="w-full py-12 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
+      <section
+        id="main-content"
+        className="w-full py-12 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950"
+        data-tour="nb:autism-hub:how-to-use"
+        data-tour-order="3"
+        data-tour-title="How to use this page"
+      >
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <HowToUse />
         </div>
       </section>
 
       {/* Evidence Hub - Research Section */}
-      <section id="evidence" className="w-full py-16 md:py-20 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-indigo-950/30 dark:via-purple-950/30 dark:to-pink-950/30 scroll-mt-20">
+      <section
+        id="evidence"
+        className="w-full py-16 md:py-20 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-indigo-950/30 dark:via-purple-950/30 dark:to-pink-950/30 scroll-mt-20"
+        data-tour="nb:autism-hub:evidence-hub"
+        data-tour-order="4"
+        data-tour-title="Evidence Hub"
+      >
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -162,7 +185,13 @@ export default function AutismHubPage() {
       </section>
 
       {/* Progress Dashboard - Full Width Background */}
-      <section id="progress" className="w-full py-16 md:py-20 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/30 dark:via-blue-950/30 dark:to-indigo-950/30 scroll-mt-20">
+      <section
+        id="progress"
+        className="w-full py-16 md:py-20 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/30 dark:via-blue-950/30 dark:to-indigo-950/30 scroll-mt-20"
+        data-tour="nb:autism-hub:progress"
+        data-tour-order="8"
+        data-tour-title="Track your progress"
+      >
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -177,7 +206,13 @@ export default function AutismHubPage() {
       </section>
 
       {/* Skills Library - Clean White Background */}
-      <section id="skills" className="w-full py-16 md:py-20 bg-white dark:bg-gray-900 scroll-mt-20">
+      <section
+        id="skills"
+        className="w-full py-16 md:py-20 bg-white dark:bg-gray-900 scroll-mt-20"
+        data-tour="nb:autism-hub:skills-library"
+        data-tour-order="9"
+        data-tour-title="Skills Library"
+      >
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -192,7 +227,13 @@ export default function AutismHubPage() {
       </section>
 
       {/* Calm Toolkit - Soothing Gradient */}
-      <section id="toolkit" className="w-full py-16 md:py-20 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950/30 dark:via-purple-950/30 dark:to-pink-950/30 scroll-mt-20">
+      <section
+        id="toolkit"
+        className="w-full py-16 md:py-20 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950/30 dark:via-purple-950/30 dark:to-pink-950/30 scroll-mt-20"
+        data-tour="nb:autism-hub:calm-toolkit"
+        data-tour-order="12"
+        data-tour-title="Calm Toolkit module"
+      >
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -207,7 +248,13 @@ export default function AutismHubPage() {
       </section>
 
       {/* Daily Quests - Gamified Section */}
-      <section id="quests" className="w-full py-16 md:py-20 bg-white dark:bg-gray-900 scroll-mt-20">
+      <section
+        id="quests"
+        className="w-full py-16 md:py-20 bg-white dark:bg-gray-900 scroll-mt-20"
+        data-tour="nb:autism-hub:quests"
+        data-tour-order="13"
+        data-tour-title="Quests module"
+      >
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -222,7 +269,13 @@ export default function AutismHubPage() {
       </section>
 
       {/* Education Pathways - Learning Section */}
-      <section id="pathways" className="w-full py-16 md:py-20 bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 dark:from-green-950/30 dark:via-blue-950/30 dark:to-purple-950/30 scroll-mt-20">
+      <section
+        id="pathways"
+        className="w-full py-16 md:py-20 bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 dark:from-green-950/30 dark:via-blue-950/30 dark:to-purple-950/30 scroll-mt-20"
+        data-tour="nb:autism-hub:pathways"
+        data-tour-order="14"
+        data-tour-title="Pathways module"
+      >
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -267,7 +320,13 @@ export default function AutismHubPage() {
       </section>
 
       {/* AI Chat Hub - Interactive Support */}
-      <section id="ai-chat" className="w-full py-16 md:py-20 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/30 dark:via-blue-950/30 dark:to-indigo-950/30 scroll-mt-20">
+      <section
+        id="ai-chat"
+        className="w-full py-16 md:py-20 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/30 dark:via-blue-950/30 dark:to-indigo-950/30 scroll-mt-20"
+        data-tour="nb:autism-hub:ai-chat"
+        data-tour-order="15"
+        data-tour-title="AI chat support (educational)"
+      >
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -297,7 +356,13 @@ export default function AutismHubPage() {
       </section>
 
       {/* Crisis Support - Emergency Resources */}
-      <section id="crisis" className="w-full py-16 md:py-20 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 dark:from-red-950/30 dark:via-orange-950/30 dark:to-yellow-950/30 scroll-mt-20 border-t-4 border-red-500 dark:border-red-600">
+      <section
+        id="crisis"
+        className="w-full py-16 md:py-20 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 dark:from-red-950/30 dark:via-orange-950/30 dark:to-yellow-950/30 scroll-mt-20 border-t-4 border-red-500 dark:border-red-600"
+        data-tour="nb:autism-hub:crisis"
+        data-tour-order="16"
+        data-tour-title="Crisis / urgent help signposting"
+      >
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full mb-4">
@@ -314,7 +379,12 @@ export default function AutismHubPage() {
         </div>
       </section>
 
-      <section className="py-12 bg-slate-50 dark:bg-slate-900">
+      <section
+        className="py-12 bg-slate-50 dark:bg-slate-900"
+        data-tour="nb:autism-hub:trust-footer"
+        data-tour-order="17"
+        data-tour-title="Trust, safety & footer"
+      >
         <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <CredibilityFooter editorial={editorial} region={region} />
         </div>

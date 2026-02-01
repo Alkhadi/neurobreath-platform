@@ -170,9 +170,23 @@ export function EvidenceHub() {
       <CardContent>
         <Tabs value={selectedCountry} onValueChange={(val) => setSelectedCountry(val as 'uk' | 'us' | 'eu')}>
           <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="uk">UK</TabsTrigger>
+            <TabsTrigger
+              value="uk"
+              data-tour="nb:autism-hub:resources-uk"
+              data-tour-order="5"
+              data-tour-title="UK resources (NICE/NHS/SEND etc.)"
+            >
+              UK
+            </TabsTrigger>
             <TabsTrigger value="us">US</TabsTrigger>
-            <TabsTrigger value="eu">EU/International</TabsTrigger>
+            <TabsTrigger
+              value="eu"
+              data-tour="nb:autism-hub:resources-international"
+              data-tour-order="6"
+              data-tour-title="International resources"
+            >
+              EU/International
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="uk" className="space-y-4">
@@ -195,7 +209,13 @@ export function EvidenceHub() {
         </Tabs>
 
         {/* PubMed Placeholder for Phase 2 */}
-        <div className="mt-6 p-4 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
+        <div
+          className="mt-6 p-4 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg"
+          data-tour="nb:autism-hub:pubmed-coming-soon"
+          data-tour-order="7"
+          data-tour-title="PubMed research (coming soon)"
+          data-tour-placement="bottom"
+        >
           <div className="flex items-center gap-2 mb-2">
             <FileText className="h-5 w-5 text-gray-500" />
             <h3 className="font-semibold text-gray-700 dark:text-gray-300">PubMed Research (Coming Soon)</h3>
