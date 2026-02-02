@@ -44,8 +44,7 @@ export function SiteFooter() {
     <footer className="site-footer" id="siteFooter" role="contentinfo">
       {/* Footer navigation - Full Width */}
       <div className="ft-nav-wrapper">
-        <div className="ft-nav-inner">
-          {/* Brand + Support in Navigation Area */}
+        <div className="ft-nav-inner ft-top">
           <div className="ft-nav-brand">
             <Link
               className="ft-logo"
@@ -64,11 +63,18 @@ export function SiteFooter() {
               </span>
               <span className="sr-only">NeuroBreath Home</span>
             </Link>
+          </div>
+
+          <div className="ft-utils">
             <Link href="/support-us" className="btn" aria-label="Support NeuroBreath">
               <span aria-hidden="true">☕</span> Support Us
             </Link>
+            <div>
+              <RegionSwitcher />
+            </div>
           </div>
-          <nav className="ft-nav" aria-label="Footer navigation">
+
+          <nav className="ft-nav ft-nav--stack" aria-label="Footer navigation">
             <details className="ft-group">
               <summary>
                 <span>Conditions</span>
@@ -76,28 +82,28 @@ export function SiteFooter() {
               </summary>
               <div className="links">
                 <p>
-                  <Link href="/conditions/autism">Autism</Link> ·{' '}
-                  <Link href="/conditions/autism-parent">Autism Parent</Link> ·{' '}
-                  <Link href="/conditions/autism-teacher">Autism Teacher</Link> ·{' '}
+                  <Link href="/conditions/autism">Autism</Link> •{' '}
+                  <Link href="/conditions/autism-parent">Autism Parent</Link> •{' '}
+                  <Link href="/conditions/autism-teacher">Autism Teacher</Link> •{' '}
                   <Link href="/conditions/autism-carer">Autism Carers</Link>
                 </p>
                 <p>
-                  <Link href="/adhd">ADHD</Link> ·{' '}
-                  <Link href="/conditions/adhd-parent">ADHD Parent</Link> ·{' '}
-                  <Link href="/conditions/adhd-teacher">ADHD Teacher</Link> ·{' '}
+                  <Link href="/adhd">ADHD</Link> •{' '}
+                  <Link href="/conditions/adhd-parent">ADHD Parent</Link> •{' '}
+                  <Link href="/conditions/adhd-teacher">ADHD Teacher</Link> •{' '}
                   <Link href="/conditions/adhd-carer">ADHD Carers</Link>
                 </p>
                 <p>
-                  <Link href="/conditions/dyslexia">Dyslexia Hub</Link> ·{' '}
-                  <Link href="/conditions/dyslexia-parent">Dyslexia Parent</Link> ·{' '}
-                  <Link href="/conditions/dyslexia-teacher">Dyslexia Teacher</Link> ·{' '}
-                  <Link href="/conditions/dyslexia-carer">Dyslexia Carers</Link> ·{' '}
+                  <Link href="/conditions/dyslexia">Dyslexia Hub</Link> •{' '}
+                  <Link href="/conditions/dyslexia-parent">Dyslexia Parent</Link> •{' '}
+                  <Link href="/conditions/dyslexia-teacher">Dyslexia Teacher</Link> •{' '}
+                  <Link href="/conditions/dyslexia-carer">Dyslexia Carers</Link> •{' '}
                   <Link href="/dyslexia-reading-training">Dyslexia Training</Link>
                 </p>
                 <p>
-                  <Link href="/conditions/anxiety">Anxiety</Link> ·{' '}
-                  <Link href="/conditions/depression">Depression</Link> ·{' '}
-                  <Link href="/stress">Stress</Link> ·{' '}
+                  <Link href="/conditions/anxiety">Anxiety</Link> •{' '}
+                  <Link href="/conditions/depression">Depression</Link> •{' '}
+                  <Link href="/stress">Stress</Link> •{' '}
                   <Link href="/sleep">Sleep</Link>
                 </p>
               </div>
@@ -109,14 +115,14 @@ export function SiteFooter() {
               </summary>
               <div className="links">
                 <p>
-                  <Link href="/breathing/breath">Breath (how-to)</Link> ·{' '}
-                  <Link href="/breathing/focus">Focus</Link> ·{' '}
+                  <Link href="/breathing/breath">Breath (how-to)</Link> •{' '}
+                  <Link href="/breathing/focus">Focus</Link> •{' '}
                   <Link href="/breathing/mindfulness">Mindfulness</Link>
                 </p>
                 <p>
-                  <Link href="/techniques/sos">60-second Reset</Link> ·{' '}
-                  <Link href="/techniques/box-breathing">Box Breathing</Link> ·{' '}
-                  <Link href="/techniques/4-7-8">4-7-8 Breathing</Link> ·{' '}
+                  <Link href="/techniques/sos">60-second Reset</Link> •{' '}
+                  <Link href="/techniques/box-breathing">Box Breathing</Link> •{' '}
+                  <Link href="/techniques/4-7-8">4-7-8 Breathing</Link> •{' '}
                   <Link href="/techniques/coherent">Coherent 5-5</Link>
                 </p>
               </div>
@@ -125,12 +131,12 @@ export function SiteFooter() {
               <summary>Toolkits <span aria-hidden="true">▾</span></summary>
               <div className="links">
                 <p>
-                  <Link href="/tools/sleep-tools">Sleep Tools</Link> ·{' '}
-                  <Link href="/tools/breath-tools">Breath Tools</Link> ·{' '}
-                  <Link href="/tools/mood-tools">Mood Tools</Link> ·{' '}
-                  <Link href="/tools/adhd-tools">ADHD Tools</Link> ·{' '}
-                  <Link href="/tools/autism-tools">Autism Tools</Link> ·{' '}
-                  <Link href="/tools/anxiety-tools">Anxiety Tools</Link> ·{' '}
+                  <Link href="/tools/sleep-tools">Sleep Tools</Link> •{' '}
+                  <Link href="/tools/breath-tools">Breath Tools</Link> •{' '}
+                  <Link href="/tools/mood-tools">Mood Tools</Link> •{' '}
+                  <Link href="/tools/adhd-tools">ADHD Tools</Link> •{' '}
+                  <Link href="/tools/autism-tools">Autism Tools</Link> •{' '}
+                  <Link href="/tools/anxiety-tools">Anxiety Tools</Link> •{' '}
                   <Link href="/tools/stress-tools">Stress Tools</Link>
                 </p>
               </div>
@@ -142,13 +148,13 @@ export function SiteFooter() {
               </summary>
               <div className="links">
                 <p>
-                  <Link href="/conditions/anxiety">Stress &amp; General Anxiety</Link> ·{' '}
-                  <Link href="/conditions/anxiety">Panic Symptoms</Link> ·{' '}
+                  <Link href="/conditions/anxiety">Stress &amp; General Anxiety</Link> •{' '}
+                  <Link href="/conditions/anxiety">Panic Symptoms</Link> •{' '}
                   <Link href="/sleep">Sleep-Onset Insomnia</Link>
                 </p>
                 <p>
-                  <Link href="/conditions/anxiety">Focus &amp; Test Anxiety</Link> ·{' '}
-                  <Link href="/conditions/anxiety">PTSD Regulation*</Link> ·{' '}
+                  <Link href="/conditions/anxiety">Focus &amp; Test Anxiety</Link> •{' '}
+                  <Link href="/conditions/anxiety">PTSD Regulation*</Link> •{' '}
                   <Link href="/conditions/low-mood-burnout">Low Mood &amp; Burnout</Link>
                 </p>
               </div>
@@ -157,8 +163,8 @@ export function SiteFooter() {
               <summary>About <span aria-hidden="true">▾</span></summary>
               <div className="links">
                 <p>
-                  <Link href={`${regionPrefix}/about`}>About</Link> ·{' '}
-                  <Link href="/support-us">Support Us</Link> ·{' '}
+                  <Link href={`${regionPrefix}/about`}>About</Link> •{' '}
+                  <Link href="/support-us">Support Us</Link> •{' '}
                   <Link href="/contact">Contact</Link>
                 </p>
               </div>
@@ -167,13 +173,13 @@ export function SiteFooter() {
               <summary>Trust &amp; Safety <span aria-hidden="true">▾</span></summary>
               <div className="links">
                 <p>
-                  <Link href={`${regionPrefix}/trust`}>Trust Centre</Link> ·{' '}
-                  <Link href={`${regionPrefix}/legal/disclaimer`}>Disclaimer</Link> ·{' '}
+                  <Link href={`${regionPrefix}/trust`}>Trust Centre</Link> •{' '}
+                  <Link href={`${regionPrefix}/legal/disclaimer`}>Disclaimer</Link> •{' '}
                   <Link href={`${regionPrefix}/trust/evidence-policy`}>Evidence Policy</Link>
                 </p>
                 <p>
-                  <Link href={`${regionPrefix}/legal/accessibility`}>Accessibility</Link> ·{' '}
-                  <Link href={`${regionPrefix}/trust/editorial-standards`}>Editorial standards</Link> ·{' '}
+                  <Link href={`${regionPrefix}/legal/accessibility`}>Accessibility</Link> •{' '}
+                  <Link href={`${regionPrefix}/trust/editorial-standards`}>Editorial standards</Link> •{' '}
                   <Link href={`${regionPrefix}/trust/contact`}>Report a concern</Link>
                 </p>
               </div>
@@ -182,8 +188,8 @@ export function SiteFooter() {
               <summary>Legal <span aria-hidden="true">▾</span></summary>
               <div className="links">
                 <p>
-                  <Link href={`${regionPrefix}/legal/privacy`}>Privacy Policy</Link> ·{' '}
-                  <Link href={`${regionPrefix}/legal/terms`}>Terms of Service</Link> ·{' '}
+                  <Link href={`${regionPrefix}/legal/privacy`}>Privacy Policy</Link> •{' '}
+                  <Link href={`${regionPrefix}/legal/terms`}>Terms of Service</Link> •{' '}
                   <Link href={`${regionPrefix}/legal/cookies`}>Cookie Policy</Link>
                 </p>
                 <p>
@@ -192,7 +198,7 @@ export function SiteFooter() {
                   ) : (
                     <Link href={`${regionPrefix}/legal/privacy-rights`}>Your Privacy Rights</Link>
                   )}
-                  {' '}· <button type="button" className="text-blue-600 dark:text-blue-400 hover:underline" onClick={() => {
+                  {' '}• <button type="button" className="text-blue-600 dark:text-blue-400 hover:underline" onClick={() => {
                     if (typeof window !== 'undefined') {
                       const win = window as CookieSettingsWindow;
                       win.__openCookieSettings?.();
@@ -212,13 +218,10 @@ export function SiteFooter() {
               <strong>Educational information only.</strong> Not medical advice. NeuroBreath is a free resource. ©{' '}
               <time dateTime={currentYear.toString()} id="yearFooter">{currentYear}</time> NeuroBreath. All rights reserved.
             </p>
-            <div className="mt-3">
-              <RegionSwitcher />
-            </div>
           </div>
-          <button 
-            type="button" 
-            className="btn back-to-top-btn" 
+          <button
+            type="button"
+            className="btn back-to-top-btn"
             onClick={scrollToTop}
             aria-label="Scroll back to top of page"
             title="Back to top"
