@@ -20,14 +20,16 @@ function copyText(text: string) {
 
 type InstructionMode = 'ios' | 'desktop'
 
+const NB_CARD_CANONICAL_PATH = '/resources/nb-card'
+
 export function NBCardInstallCTA() {
   const { isIOS, isSafari, isStandalone, canPromptInstall, installState, triggerInstall } = useNbcardInstall()
   const [open, setOpen] = useState(false)
   const [mode, setMode] = useState<InstructionMode>('desktop')
 
-  const pageUrl = useMemo(() => {
+  const canonicalUrl = useMemo(() => {
     if (typeof window === 'undefined') return ''
-    return window.location.href
+    return new URL(NB_CARD_CANONICAL_PATH, window.location.origin).toString()
   }, [])
 
   const primaryLabel = isStandalone ? 'Open NB-Card' : 'Download & Install NB-Card'
@@ -83,8 +85,8 @@ export function NBCardInstallCTA() {
         <div className="flex flex-col md:flex-row md:items-center gap-6">
           <div className="flex items-center gap-4">
             <Image
-              src="/icons/neurobreath-logo-square-192.png"
-              alt="NeuroBreath"
+              src="/icons/nbcard/icon-192.png"
+              alt="NB-Card"
               width={56}
               height={56}
               className="rounded-xl"
@@ -141,7 +143,7 @@ export function NBCardInstallCTA() {
             <div className="space-y-4">
               <div className="rounded-xl bg-purple-50 border border-purple-100 p-4">
                 <ol className="text-sm text-gray-700 space-y-2 list-decimal list-inside">
-                  <li>Open this page in <span className="font-semibold">Safari</span>.</li>
+                  <li>Open NB-Card in <span className="font-semibold">Safari</span>.</li>
                   <li>Tap the <span className="font-semibold">Share</span> button (square with an arrow).</li>
                   <li>Scroll and tap <span className="font-semibold">Add to Home Screen</span>.</li>
                   <li>Tap <span className="font-semibold">Add</span>.</li>
@@ -150,13 +152,13 @@ export function NBCardInstallCTA() {
               <div className="flex items-center justify-between gap-3 rounded-xl bg-white border border-gray-200 p-3">
                 <div className="min-w-0">
                   <div className="text-xs text-gray-500">NB-Card link</div>
-                  <div className="text-sm text-gray-800 truncate">{pageUrl || '/resources/nb-card'}</div>
+                  <div className="text-sm text-gray-800 truncate">{canonicalUrl || NB_CARD_CANONICAL_PATH}</div>
                 </div>
                 <button
                   type="button"
                   onClick={async () => {
                     try {
-                      await copyText(pageUrl || '/resources/nb-card')
+                      await copyText(canonicalUrl || NB_CARD_CANONICAL_PATH)
                       toast.success('Copied link')
                     } catch {
                       toast.message('Copy not available', { description: 'Please copy the URL from the address bar.' })

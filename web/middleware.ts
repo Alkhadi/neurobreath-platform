@@ -9,15 +9,20 @@ const EXCLUDED_PREFIXES = [
   '/assets',
   '/images',
   '/icons',
+  '/nbcard-sw.js',
   // Root static files that must never be locale-redirected.
   '/favicon',
   '/robots',
   '/sitemap',
   '/manifest.webmanifest',
   '/sw.js',
+  '/nbcard-sw',
   '/icon-',
   '/apple-icon',
 ]
+
+// NOTE: `/resources/*` is intentionally excluded from locale canonicalisation.
+// NB-Card must remain a single canonical app under `/resources/nb-card`.
 const REGION_LOCALISED_PREFIXES = [
   '/',
   '/trust',
@@ -86,6 +91,16 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = '/layout.css'
     return NextResponse.rewrite(url)
+  }
+
+  // Canonicalize region-prefixed NB-Card routes to the single installable app URL.
+  // This must run before the locale routing redirect to avoid scope/identity capture.
+  if (/^\/(uk|us)\/resources\/nb-card(\/|$)/.test(pathname)) {
+    const remainder = pathname.replace(/^\/(uk|us)\/resources\/nb-card/, '')
+    const canonicalPath = `/resources/nb-card${remainder}`
+    const url = request.nextUrl.clone()
+    url.pathname = canonicalPath
+    return NextResponse.redirect(url, 307)
   }
 
   if (!isExcluded(pathname) && !pathname.startsWith('/uk') && !pathname.startsWith('/us')) {

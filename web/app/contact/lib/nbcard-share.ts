@@ -7,8 +7,8 @@ export type ShareFile = {
 };
 
 export function getProfileShareUrl(profileId: string): string {
-  if (typeof window === 'undefined') return `/contact?profile=${encodeURIComponent(profileId)}`;
-  const url = new URL('/contact', window.location.origin);
+  if (typeof window === 'undefined') return `/resources/nb-card?profile=${encodeURIComponent(profileId)}`;
+  const url = new URL('/resources/nb-card', window.location.origin);
   url.searchParams.set('profile', profileId);
   return url.toString();
 }

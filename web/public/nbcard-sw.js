@@ -1,16 +1,12 @@
 /* eslint-disable no-restricted-globals */
 
 // Bump this to force clients to drop old cached /contact assets.
-const CACHE_NAME = 'nbcard-v4';
+const CACHE_NAME = 'nbcard-v5';
 const CORE_URLS = [
   '/contact',
   '/resources/nb-card',
-  '/uk/resources/nb-card',
-  '/us/resources/nb-card',
   '/manifest.json',
   '/resources/nb-card/manifest.webmanifest',
-  '/uk/resources/nb-card/manifest.webmanifest',
-  '/us/resources/nb-card/manifest.webmanifest',
 ];
 
 self.addEventListener('install', (event) => {
@@ -54,16 +50,8 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       (async () => {
         const url = new URL(req.url);
-        const isUkNbCard = url.pathname.startsWith('/uk/resources/nb-card');
-        const isUsNbCard = url.pathname.startsWith('/us/resources/nb-card');
         const isGlobalNbCard = url.pathname.startsWith('/resources/nb-card');
-        const fallbackPath = isUkNbCard
-          ? '/uk/resources/nb-card'
-          : isUsNbCard
-            ? '/us/resources/nb-card'
-            : isGlobalNbCard
-              ? '/resources/nb-card'
-              : '/contact';
+        const fallbackPath = isGlobalNbCard ? '/resources/nb-card' : '/contact';
         try {
           const res = await fetch(req);
           const cache = await caches.open(CACHE_NAME);

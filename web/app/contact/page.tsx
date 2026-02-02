@@ -68,7 +68,7 @@ export default function ContactPage() {
       setProfiles(sanitizedProfiles);
       setContacts(state.contacts);
 
-      // Support deep-linking to a specific profile via /contact?profile=<id>
+      // Support deep-linking to a specific profile via /resources/nb-card?profile=<id>
       try {
         const params = new URLSearchParams(window.location.search);
         const profileId = params.get("profile");
@@ -83,7 +83,8 @@ export default function ContactPage() {
       // Register NBCard service worker (offline-ready for /contact)
       try {
         if ("serviceWorker" in navigator) {
-          await navigator.serviceWorker.register("/nbcard-sw.js");
+          // Keep NB-Card SW strictly scoped so it cannot control the full site origin.
+          await navigator.serviceWorker.register("/nbcard-sw.js", { scope: "/resources/nb-card/" });
         }
       } catch {
         // Don't block page; SW is best-effort

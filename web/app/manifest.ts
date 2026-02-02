@@ -7,8 +7,11 @@
 import { MetadataRoute } from 'next';
 import { SITE_CONFIG } from '@/lib/seo/site-seo';
 
-export default function manifest(): MetadataRoute.Manifest {
+type ManifestWithId = MetadataRoute.Manifest & { id: string };
+
+export default function manifest(): ManifestWithId {
   return {
+    id: '/',
     name: SITE_CONFIG.siteName,
     short_name: SITE_CONFIG.siteName,
     description: SITE_CONFIG.brandDescription,
@@ -18,16 +21,6 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: SITE_CONFIG.themeColor,
     orientation: 'portrait-primary',
     icons: [
-      {
-        src: '/favicon.ico',
-        sizes: 'any',
-        type: 'image/x-icon',
-      },
-      {
-        src: '/favicon.svg',
-        sizes: 'any',
-        type: 'image/svg+xml',
-      },
       {
         src: '/icons/neurobreath/icon-192.png',
         sizes: '192x192',

@@ -1,12 +1,15 @@
 import type { MetadataRoute } from "next";
 
-export default function manifest(): MetadataRoute.Manifest {
+type ManifestWithId = MetadataRoute.Manifest & { id: string };
+
+export default function manifest(): ManifestWithId {
   return {
+    id: "/resources/nb-card",
     name: "NB-Card",
     short_name: "NB-Card",
     description: "NB-Card — Digital Business Card. Local-first profiles and contact capture.",
-    start_url: "/us/resources/nb-card",
-    scope: "/us/resources/nb-card",
+    start_url: "/resources/nb-card",
+    scope: "/resources/nb-card/",
     display: "standalone",
     background_color: "#f5f3ff",
     theme_color: "#7c3aed",

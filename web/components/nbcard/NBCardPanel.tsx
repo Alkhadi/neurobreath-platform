@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -93,7 +93,8 @@ export function NBCardPanel() {
       // Register NBCard service worker (offline-friendly)
       try {
         if ("serviceWorker" in navigator) {
-          await navigator.serviceWorker.register("/nbcard-sw.js");
+          // Keep NB-Card SW strictly scoped so it cannot control the full site origin.
+          await navigator.serviceWorker.register("/nbcard-sw.js", { scope: "/resources/nb-card/" });
         }
       } catch {
         // Don't block page; SW is best-effort
@@ -343,7 +344,7 @@ export function NBCardPanel() {
               iPhone & iPad
             </h4>
             <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
-              <li>Open this page in Safari</li>
+              <li>Open NB-Card in Safari</li>
               <li>Tap the share button (square with arrow)</li>
               <li>Scroll and tap "Add to Home Screen"</li>
               <li>Tap "Add" to confirm</li>
