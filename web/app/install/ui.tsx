@@ -27,6 +27,9 @@ import {
 const FALLBACK_APP_URL = 'https://neurobreath.co.uk/uk'
 const FALLBACK_INSTALL_URL = 'https://neurobreath.co.uk/install'
 
+const APP_LINK_CTA_CLASS =
+  'gap-2 bg-[#064774] text-white hover:bg-[#053a61] hover:text-white focus-visible:ring-[#064774]'
+
 const QRCodeSVG = dynamic(() => import('qrcode.react').then((m) => m.QRCodeSVG), { ssr: false })
 
 function detectPlatformLabel(): 'iOS' | 'Android' | 'Desktop' {
@@ -244,10 +247,10 @@ export function InstallPageClient() {
 
           <Button
             type="button"
-            variant="outline"
+            variant="default"
             size="sm"
             onClick={() => shareOrCopy({ url: appUrl, title: 'NeuroBreath app link' })}
-            className="gap-2"
+            className={APP_LINK_CTA_CLASS}
             aria-label="Share NeuroBreath app link"
           >
             <Share2 className="h-4 w-4" />
@@ -255,10 +258,10 @@ export function InstallPageClient() {
           </Button>
           <Button
             type="button"
-            variant="outline"
+            variant="default"
             size="sm"
             onClick={() => copyOnly({ url: appUrl, label: 'App link copied' })}
-            className="gap-2"
+            className={APP_LINK_CTA_CLASS}
             aria-label="Copy NeuroBreath app link"
           >
             <Copy className="h-4 w-4" />
@@ -399,20 +402,20 @@ export function InstallPageClient() {
             <div className="flex flex-wrap gap-2">
               <Button
                 type="button"
-                variant="outline"
+                variant="default"
                 size="sm"
                 onClick={() => shareOrCopy({ url: appUrl, title: 'NeuroBreath app link' })}
-                className="gap-2"
+                className={APP_LINK_CTA_CLASS}
               >
                 <Share2 className="h-4 w-4" />
                 Share app link
               </Button>
               <Button
                 type="button"
-                variant="outline"
+                variant="default"
                 size="sm"
                 onClick={() => copyOnly({ url: appUrl, label: 'App link copied' })}
-                className="gap-2"
+                className={APP_LINK_CTA_CLASS}
               >
                 <Copy className="h-4 w-4" />
                 Copy app link
@@ -539,20 +542,20 @@ export function InstallPageClient() {
             <div className="flex flex-wrap gap-2">
               <Button
                 type="button"
-                variant="outline"
+                variant="default"
                 size="sm"
                 onClick={() => shareOrCopy({ url: appUrl, title: 'NeuroBreath app link' })}
-                className="gap-2"
+                className={APP_LINK_CTA_CLASS}
               >
                 <Share2 className="h-4 w-4" />
                 Share app link
               </Button>
               <Button
                 type="button"
-                variant="outline"
+                variant="default"
                 size="sm"
                 onClick={() => copyOnly({ url: appUrl, label: 'App link copied' })}
-                className="gap-2"
+                className={APP_LINK_CTA_CLASS}
               >
                 <Copy className="h-4 w-4" />
                 Copy app link
