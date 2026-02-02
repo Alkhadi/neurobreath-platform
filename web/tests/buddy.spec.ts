@@ -501,7 +501,7 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
     });
 
     expect(res.ok()).toBeTruthy();
-    const json = (await res.json()) as any;
+    const json = (await res.json()) as unknown;
 
     const textBlob = JSON.stringify(json);
     expect(textBlob).not.toMatch(/Internal:\s*None/i);
@@ -509,8 +509,18 @@ test.describe('NeuroBreath Buddy DOM Audit', () => {
     expect(textBlob).not.toMatch(/retrieve a verified external page/i);
     expect(textBlob).not.toMatch(/provide unverified links/i);
 
-    const citations = Array.isArray(json?.citations) ? json.citations : [];
-    const internalCitations = citations.filter((c: any) => typeof c?.url === 'string' && c.url.startsWith('/'));
+    const citations = (() => {
+      if (!json || typeof json !== 'object') return [];
+      if (!('citations' in json)) return [];
+      const maybeCitations = (json as { citations?: unknown }).citations;
+      return Array.isArray(maybeCitations) ? maybeCitations : [];
+    })();
+
+    const internalCitations = citations.filter((citation) => {
+      if (!citation || typeof citation !== 'object') return false;
+      const url = (citation as { url?: unknown }).url;
+      return typeof url === 'string' && url.startsWith('/');
+    });
     expect(internalCitations.length).toBeGreaterThanOrEqual(3);
   });
 
@@ -720,8 +730,12 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
     let requestCount = 0;
     await page.route(BUDDY_API_ROUTE, async (route) => {
       const request = route.request();
-      const payload = request.postDataJSON?.() as any;
-      if (request.method() === 'POST' && typeof payload?.question === 'string' && payload.question.includes('Line 1')) {
+      const payload = request.postDataJSON?.() as unknown;
+      const question =
+        payload && typeof payload === 'object' && 'question' in payload
+          ? (payload as { question?: unknown }).question
+          : undefined;
+      if (request.method() === 'POST' && typeof question === 'string' && question.includes('Line 1')) {
         requestCount += 1;
       }
       await route.fulfill({
@@ -769,10 +783,14 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
     let callCount = 0;
     await page.route(BUDDY_API_ROUTE, async (route) => {
       const request = route.request();
-      const payload = request.postDataJSON?.() as any;
+      const payload = request.postDataJSON?.() as unknown;
+      const question =
+        payload && typeof payload === 'object' && 'question' in payload
+          ? (payload as { question?: unknown }).question
+          : undefined;
 
       // Only drive the error/retry flow for the explicit test question.
-      if (request.method() !== 'POST' || payload?.question !== 'Trigger an error') {
+      if (request.method() !== 'POST' || question !== 'Trigger an error') {
         await route.fulfill({
           status: 200,
           contentType: 'application/json',

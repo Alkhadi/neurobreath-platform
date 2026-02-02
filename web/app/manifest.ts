@@ -53,7 +53,7 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: 'maskable',
       },
       {
-        src: '/apple-icon.png',
+        src: '/icons/neurobreath/apple-icon.png',
         sizes: '180x180',
         type: 'image/png',
       },
