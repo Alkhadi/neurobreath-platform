@@ -64,7 +64,7 @@ All content is grounded in:
 | **AI Integration** | Abacus.AI API (GPT-4, Claude) | `lib/page-buddy-configs.ts` |
 | **File Storage** | AWS S3 (optional, for audio recordings) | `lib/aws-config.ts` |
 | **Deployment** | Docker Compose (local dev) | `compose.yml` |
-| **Package Manager** | npm/yarn | `package-lock.json`, `yarn.lock` |
+| **Package Manager** | Yarn (workspace standard) | `yarn.lock` |
 
 ---
 
@@ -197,6 +197,21 @@ Response (JSON or SSR HTML)
    npm run dev
    # Server starts at http://localhost:3000
    ```
+
+---
+
+## Analytics & Performance
+
+- **Vercel Analytics + Speed Insights** are mounted via the root layout in [app/layout.tsx](app/layout.tsx#L1) and rendered by [components/analytics/VercelWebAnalytics.tsx](components/analytics/VercelWebAnalytics.tsx#L1).
+- They are **consent-gated**: both load only when the user has saved consent with `analytics: true` (see `nb_consent` cookie / `nb_consent_prefs` localStorage).
+
+**Verify in production (Vercel):**
+- Vercel Dashboard → Project → **Analytics** (Web Analytics)
+- Vercel Dashboard → Project → **Speed Insights**
+
+**Verify in-browser:**
+- Open DevTools → Application → Cookies/Local Storage and confirm consent has `analytics: true`.
+- Open DevTools → Network and look for Vercel analytics/insights requests after a navigation.
 
 6. **Verify setup**:
    - Open `http://localhost:3000`

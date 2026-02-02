@@ -15,7 +15,9 @@ Phase 4 completes the NeuroBreath platform with intelligent features that enhanc
 - **Progress Visualizations**: Charts, stats, and activity trends
 - **Enhanced My Plan Dashboard**: Central hub integrating all Phase 4 features
 
-All Phase 4 features are privacy-first, storing data locally in localStorage with no external tracking.
+All Phase 4 features are privacy-first, storing data locally in localStorage with **no external tracking by default**.
+
+> Note: The platform may also use optional Vercel telemetry (Web Analytics / Speed Insights) for performance/usage insights, but it is **consent-gated** and **off by default** until users opt in.
 
 ---
 
@@ -174,7 +176,7 @@ All Phase 4 features are privacy-first, storing data locally in localStorage wit
 - All data stored client-side only
 - No external API calls
 - No tracking cookies
-- No third-party analytics
+- No third-party analytics by default (optional consent-gated telemetry may be enabled)
 - User can clear all data anytime
 
 ### 2. Recommendation Engine

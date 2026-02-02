@@ -35,24 +35,26 @@
 
 **FOUND: Privacy-First Local Analytics Only**
 
+> **Update (2026-02-02):** The platform also includes optional **Vercel Web Analytics** and **Vercel Speed Insights**, which are **only enabled after explicit analytics consent** (`analytics: true`). They are off by default.
+
 The platform implements a **completely privacy-focused analytics system** with:
-- **NO external tracking services** (no Google Analytics, PostHog, Plausible, Mixpanel, Hotjar, Facebook Pixel, TikTok Pixel, Clarity, or Segment)
+- **No third-party advertising** and **no third-party analytics by default**
 - Local-only analytics via `/web/lib/analytics/engine.ts`:
   - Uses localStorage only (`ANALYTICS_STORAGE_KEY`)
   - All data stays on user's device
-  - No data sent to external servers
+  - No data sent to external servers (for the local analytics engine)
   - No cookies created for tracking
-- **Comment in code confirms:** "Privacy-focused client-side analytics storage using localStorage. No external tracking, all data stays on user's device."
+- **Comment in code confirms local-only intent** (refers to the local analytics engine).
 
 **localStorage Usage Identified:**
 1. Analytics: `/web/lib/analytics/engine.ts` + `/web/lib/analytics/events.ts`
 2. Guest progress tracking: `/web/lib/guest-progress.ts` (`GUEST_PROGRESS_KEY`)
 3. Device profile/onboarding: `/web/lib/onboarding/deviceProfileStore.ts`
 
-**NO TRACKING COOKIES FOUND.**
+**No first-party tracking cookies are implemented by NeuroBreath.**
 
-**Verdict:** The platform currently has **NO non-essential tracking** that requires consent gating. However, we will still implement the consent system to:
-- Be future-proof if analytics are added later
+**Verdict:** By default, the platform has **no non-essential tracking active**. Optional third-party telemetry (Vercel Analytics/Speed Insights) is consent-gated and only enabled after users opt in. We still implement the consent system to:
+- Be future-proof as telemetry tooling evolves
 - Demonstrate compliance best practices
 - Allow user control over functional localStorage usage
 

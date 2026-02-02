@@ -2,7 +2,7 @@ import './globals.css';
 import '../styles/print.css';
 import { headers } from 'next/headers';
 import type { Metadata, Viewport } from 'next';
-import { SpeedInsights } from '@vercel/speed-insights/next';
+import { VercelWebAnalytics } from '@/components/analytics/VercelWebAnalytics';
 import { ThemeProvider } from '@/components/theme-provider';
 import { BreathingSessionProvider } from '@/contexts/BreathingSessionContext';
 import { UserPreferencesProvider } from '@/components/user-preferences/UserPreferencesProvider';
@@ -91,7 +91,7 @@ export default async function RootLayout({
             </BreathingSessionProvider>
           </UserPreferencesProvider>
           <Toaster position="top-right" />
-          <SpeedInsights />
+          <VercelWebAnalytics />
           <ServiceWorkerRegistrar />
         </ThemeProvider>
       </body>

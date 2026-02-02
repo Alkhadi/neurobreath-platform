@@ -10,15 +10,11 @@ export function CookieConsentBanner() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    // Debug logging to help troubleshoot
-    console.log('[CookieConsentBanner] hasSavedConsent:', hasSavedConsent);
-    
     // Show banner only if consent not yet saved
     if (!hasSavedConsent && !isSyncingFromAccount) {
       // Delay slightly for better UX (avoid flash on page load)
       const timer = setTimeout(() => {
         setIsVisible(true);
-        console.log('[CookieConsentBanner] Banner now visible');
       }, 500);
       return () => clearTimeout(timer);
     }
@@ -61,7 +57,8 @@ export function CookieConsentBanner() {
               </h2>
               <p id="cookie-banner-description" className="text-sm text-slate-700 dark:text-slate-300">
                 We use cookies and local storage to provide essential functionality and, with your consent, to enhance your experience. 
-                We do not use third-party tracking or advertising. You can manage your preferences at any time.
+                We do not use third-party advertising. Optional analytics (e.g. Vercel Analytics) are only enabled if you consent.
+                You can manage your preferences at any time.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">

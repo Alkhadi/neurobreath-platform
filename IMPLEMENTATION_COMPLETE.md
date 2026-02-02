@@ -307,7 +307,7 @@ neurobreath-platform/
 
 - Guest data: Local only
 - Auth data: Encrypted in transit (HTTPS)
-- No third-party tracking
+- No third-party tracking by default (optional consent-gated analytics)
 - GDPR compliant
 
 ### API Security
