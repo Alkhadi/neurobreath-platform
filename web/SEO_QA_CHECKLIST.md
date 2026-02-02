@@ -99,6 +99,7 @@ Use this checklist to systematically verify SEO implementation across the NeuroB
 - [ ] Apple touch icon present (check on mobile device)
 - [ ] 192x192 icon present (PWA)
 - [ ] 512x512 icon present (PWA)
+- [ ] Maskable icons present (PWA) — 192x192 + 512x512 with `purpose: "maskable"`
 
 ---
 
