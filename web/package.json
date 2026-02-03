@@ -16,7 +16,7 @@
     "brand:icons:poster": "../.venv/bin/python scripts/generate-brand-icons.py --source public/brand-source.png --auto-crop-mark",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typecheck": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\" && tsc --noEmit",
+    "typecheck": "yarn prisma generate && node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\" && tsc --noEmit",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",

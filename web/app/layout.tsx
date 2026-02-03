@@ -5,6 +5,7 @@ import type { Metadata, Viewport } from 'next';
 import { VercelWebAnalytics } from '@/components/analytics/VercelWebAnalytics';
 import { ThemeProvider } from '@/components/theme-provider';
 import { BreathingSessionProvider } from '@/contexts/BreathingSessionContext';
+import { UniversalProgressProvider } from '@/contexts/UniversalProgressContext';
 import { UserPreferencesProvider } from '@/components/user-preferences/UserPreferencesProvider';
 import { PageBuddy } from '@/components/page-buddy';
 import { SiteHeader } from '@/components/site-header';
@@ -78,17 +79,19 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <UserPreferencesProvider>
-            <BreathingSessionProvider>
-              <div className="relative flex min-h-screen flex-col">
-                <SiteHeader />
-                <IosInstallBanner />
-                <main className="flex-1">{children}</main>
-                <SiteFooter />
-              </div>
-              {!disablePageBuddy && <PageBuddy />}
-              <CookieConsentBanner />
-              <CookieSettingsButton />
-            </BreathingSessionProvider>
+            <UniversalProgressProvider>
+              <BreathingSessionProvider>
+                <div className="relative flex min-h-screen flex-col">
+                  <SiteHeader />
+                  <IosInstallBanner />
+                  <main className="flex-1">{children}</main>
+                  <SiteFooter />
+                </div>
+                {!disablePageBuddy && <PageBuddy />}
+                <CookieConsentBanner />
+                <CookieSettingsButton />
+              </BreathingSessionProvider>
+            </UniversalProgressProvider>
           </UserPreferencesProvider>
           <Toaster position="top-right" />
           <VercelWebAnalytics />

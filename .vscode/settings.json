@@ -1,6 +1,8 @@
 {
   "files.associations": {
-    "**/.github/workflows/deploy-vercel.yml": "yaml"
+    "**/.github/workflows/deploy-vercel.yml": "yaml",
+    "**/web/prisma/migrations/**/migration.sql": "plaintext",
+    "**/prisma/migrations/**/migration.sql": "plaintext"
   },
   "markdownlint.config": {
     "default": true,

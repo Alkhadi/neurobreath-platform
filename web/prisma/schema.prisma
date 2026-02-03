@@ -1,7 +1,6 @@
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native"]
-  output        = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -469,6 +468,9 @@ model AuthUser {
   consentState        Json?
   consentUpdatedAt    DateTime?
 
+  // Universal progress tracking consent marker (one-time prompt)
+  progressConsentAt   DateTime?
+
   // Optional link into the existing “deviceId” ecosystem
   primaryDeviceId    String?
 
@@ -481,8 +483,40 @@ model AuthUser {
   rateLimits         AuthRateLimit[]
   accounts           Account[]
   sessions           AuthSession[]
+  universalProgressEvents UniversalProgressEvent[]
 
   @@index([primaryDeviceId])
+}
+
+// ============================================================================
+// UNIVERSAL PROGRESS TRACKING (USER + DEVICE)
+// ============================================================================
+
+model UniversalProgressEvent {
+  id              String   @id @default(cuid())
+
+  // Identity
+  userId          String?
+  user            AuthUser? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deviceId        String?
+
+  // Activity
+  activityType    String
+  activityId      String
+  completedAt     DateTime @default(now())
+
+  // Optional metadata
+  score           Int?
+  durationSeconds Int?
+  data            Json?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+
+  @@unique([userId, activityType, activityId])
+  @@unique([deviceId, activityType, activityId])
+  @@index([userId, activityType])
+  @@index([deviceId, activityType])
 }
 
 model AuthPasswordResetToken {

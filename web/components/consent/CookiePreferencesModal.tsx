@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from "next/link";
 import { useConsent } from '@/lib/consent/useConsent';
 import { LEGAL_CONFIG } from '@/lib/legal/legalConfig';
+import { useUniversalProgress } from '@/contexts/UniversalProgressContext';
 
 interface CookiePreferencesModalProps {
   onClose: () => void;
@@ -11,6 +12,7 @@ interface CookiePreferencesModalProps {
 
 export function CookiePreferencesModal({ onClose }: CookiePreferencesModalProps) {
   const { consent, updateConsent } = useConsent();
+  const { resetProgress } = useUniversalProgress();
   const [functional, setFunctional] = useState(consent.functional);
   const [analytics, setAnalytics] = useState(consent.analytics);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -86,6 +88,38 @@ export function CookiePreferencesModal({ onClose }: CookiePreferencesModalProps)
             We use cookies and local storage to provide a great experience. You can choose which categories to enable. 
             Changes take effect immediately.
           </p>
+
+          {/* Progress controls */}
+          <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100 mb-1">Progress</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  If you enable Functional storage, we can save completed activities on this device. If you're signed in, we can also
+                  store progress in your account so it’s available across devices.
+                </p>
+                <p className="text-xs text-slate-500 dark:text-slate-500 mt-2">
+                  You can delete your progress at any time.
+                </p>
+              </div>
+              <div className="flex flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={() => resetProgress()}
+                  className="px-4 py-2 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400"
+                >
+                  Reset progress
+                </button>
+                <button
+                  type="button"
+                  onClick={() => resetProgress({ withdrawConsent: true })}
+                  className="px-4 py-2 text-red-700 dark:text-red-300 border border-red-300 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-950 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  Withdraw consent
+                </button>
+              </div>
+            </div>
+          </div>
 
           {/* Essential */}
           <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4">

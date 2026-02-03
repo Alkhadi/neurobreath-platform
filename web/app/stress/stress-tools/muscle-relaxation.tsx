@@ -5,6 +5,8 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Dumbbell, Play, Pause, SkipForward, CheckCircle2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useUniversalProgress } from '@/contexts/UniversalProgressContext'
+import { getContentIdentity } from '@/lib/progress/contentIdentity'
 
 const bodyParts = [
   { name: 'Hands', instruction: 'Make a fist with both hands. Squeeze tightly for 5 seconds, then release and relax for 10 seconds.' },
@@ -21,11 +23,15 @@ const bodyParts = [
 ]
 
 export function MuscleRelaxation() {
+  const { isComplete, markComplete } = useUniversalProgress()
   const [isActive, setIsActive] = useState(false)
   const [currentPart, setCurrentPart] = useState(0)
   const [phase, setPhase] = useState<'tense' | 'release'>('tense')
   const [countdown, setCountdown] = useState(5)
   const [completed, setCompleted] = useState(false)
+
+  const identity = getContentIdentity({ activityType: 'technique', slug: 'stress:muscle_relaxation' })
+  const completedPersisted = isComplete(identity.activityType, identity.activityId)
 
   useEffect(() => {
     if (!isActive) return
@@ -54,6 +60,11 @@ export function MuscleRelaxation() {
 
     return () => clearInterval(timer)
   }, [isActive, phase, currentPart])
+
+  useEffect(() => {
+    if (!completed) return
+    void markComplete(identity.activityType, identity.activityId)
+  }, [completed, identity.activityId, identity.activityType, markComplete])
 
   const handleStart = () => {
     setIsActive(true)
@@ -108,9 +119,19 @@ export function MuscleRelaxation() {
 
   return (
     <Card className="p-6">
-      <div className="flex items-center gap-2 mb-6">
-        <Dumbbell className="h-6 w-6 text-teal-600" />
-        <h3 className="text-xl font-semibold">Progressive Muscle Relaxation</h3>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-2">
+          <Dumbbell className="h-6 w-6 text-teal-600" />
+          <h3 className="text-xl font-semibold">Progressive Muscle Relaxation</h3>
+        </div>
+        {completedPersisted && (
+          <span
+            data-testid="nb-universal-progress-completed-badge"
+            className="inline-flex items-center gap-2 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-full px-3 py-1"
+          >
+            <CheckCircle2 className="h-4 w-4" /> Completed
+          </span>
+        )}
       </div>
 
       {!isActive ? (

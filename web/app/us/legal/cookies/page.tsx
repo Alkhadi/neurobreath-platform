@@ -96,7 +96,11 @@ export default function UKCookiesPage() {
         </p>
         <p><strong>Examples:</strong></p>
         <ul>
-          <li><strong>nb_guest_progress</strong> (localStorage) — Saves your breathing session history, streaks, and badges locally</li>
+          <li><strong>nb_progress_v1</strong> (localStorage) — Saves completed activities (e.g. techniques, lessons, quizzes) on this device</li>
+          <li><strong>nb_progress_consent</strong> (Cookie, HttpOnly) — Records whether you have opted in to progress saving/backups</li>
+          <li><strong>nb_device_id</strong> (Cookie, HttpOnly) — Random device identifier created only after you opt in (used for guest backups and later merge)</li>
+          <li><strong>nb_guest_progress</strong> (localStorage) — Saves breathing session history, streaks, and badges locally (legacy)
+          </li>
           <li><strong>nb_device_profiles</strong> (localStorage) — Stores onboarding profiles and device-specific preferences</li>
           <li><strong>nb_voice_prefs</strong> (localStorage) — Remembers your text-to-speech voice and speed preferences</li>
           <li><strong>nb_analytics_local</strong> (localStorage) — Privacy-focused local analytics (does NOT send data to servers)</li>
@@ -106,8 +110,9 @@ export default function UKCookiesPage() {
           service functionality.
         </p>
         <p>
-          <strong>Retention:</strong> localStorage data persists until you clear your browser data or delete your account. It does not 
-          expire automatically.
+          <strong>Retention:</strong> localStorage data persists until you clear your browser data or use our reset controls. 
+          If you opt in to server backup (via progress consent), we retain pseudonymous guest progress only as long as needed to provide the feature
+          and may periodically purge stale guest device data.
         </p>
 
         <h3>3.3 Analytics (Optional — Currently Not Used)</h3>
