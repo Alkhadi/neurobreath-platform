@@ -45,7 +45,7 @@ export default async function HelpMeChoosePage({ params }: HelpMeChoosePageProps
   if (!['uk', 'us'].includes(regionKey)) return notFound();
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
       <div className="mx-auto w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1100px] py-12 space-y-10">
         <header className="space-y-4">
           <p className="text-sm uppercase tracking-wide text-slate-500">Help me choose</p>
@@ -106,6 +106,6 @@ export default async function HelpMeChoosePage({ params }: HelpMeChoosePageProps
 
         <TrustPanel region={region} title="Trust panel" />
       </div>
-    </main>
+    </div>
   );
 }

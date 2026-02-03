@@ -4,9 +4,15 @@ import { BreathingExercise } from '@/components/BreathingExercise'
 import { breathingTechniques } from '@/lib/breathing-data'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 
 export default function CoherentBreathingPage() {
+  const searchParams = useSearchParams()
+  const minutesParam = searchParams.get('minutes')
+  const minutes = minutesParam ? Number(minutesParam) : NaN
+  const initialDurationSeconds = Number.isFinite(minutes) && minutes > 0 ? minutes * 60 : undefined
+
   const technique = breathingTechniques['coherent-55']
 
   return (
@@ -23,7 +29,7 @@ export default function CoherentBreathingPage() {
             <p className="text-lg text-gray-600">{technique?.description ?? ''}</p>
           </div>
 
-          <BreathingExercise initialPattern="coherent" />
+          <BreathingExercise initialPattern="coherent" initialDurationSeconds={initialDurationSeconds} />
         </div>
 
         {/* Benefits */}

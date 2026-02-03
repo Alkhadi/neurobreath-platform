@@ -2,6 +2,91 @@ import fs from 'fs/promises';
 import path from 'path';
 import sanitizeHtml from 'sanitize-html';
 
+const LEGACY_PAGE_ROUTE_MAP: Record<string, string> = {
+  // Tools
+  'adhd-tools': '/tools/adhd-tools',
+  'anxiety-tools': '/tools/anxiety-tools',
+  'autism-tools': '/tools/autism-tools',
+  'breath-tools': '/tools/breath-tools',
+  'depression-tools': '/tools/depression-tools',
+  'mood-tools': '/tools/mood-tools',
+  'sleep-tools': '/tools/sleep-tools',
+  'stress-tools': '/tools/stress-tools',
+  // Focus training legacy filename
+  'focus': '/tools/focus-training',
+  // Breathing technique legacy filenames
+  'coherent-5-5': '/techniques/coherent',
+  'box-breathing': '/techniques/box-breathing',
+  'sos-60': '/techniques/sos',
+  // Downloads
+  'downloads': '/downloads',
+};
+
+function splitHref(href: string) {
+  const match = href.match(/^([^?#]+)(\?[^#]*)?(#.*)?$/);
+  return {
+    path: match?.[1] ?? href,
+    query: match?.[2] ?? '',
+    hash: match?.[3] ?? '',
+  };
+}
+
+function isLikelyLegacyAssetPath(assetPath: string) {
+  const p = assetPath.replace(/^\.\//, '');
+  if (p.startsWith('assets/') || p.startsWith('images/') || p.startsWith('img/') || p.startsWith('css/') || p.startsWith('js/') || p.startsWith('fonts/')) {
+    return true;
+  }
+
+  return /\.(?:css|js|mjs|png|jpg|jpeg|gif|webp|svg|ico|woff2?|ttf|eot|mp3|mp4|webm|pdf)(?:\?|#|$)/i.test(p);
+}
+
+function rewriteLegacyHref(rawHref: string) {
+  const href = String(rawHref || '').trim();
+  if (!href) return href;
+
+  if (href.startsWith('/legacy-assets/')) {
+    const { path: pathPart, query, hash } = splitHref(href);
+    const cleanPath = pathPart.replace(/^\/legacy-assets\//, '');
+
+    // Only rewrite simple legacy page-like paths, not nested asset folders.
+    if (!cleanPath.includes('/')) {
+      const base = cleanPath.endsWith('.html') ? cleanPath.slice(0, -'.html'.length) : cleanPath;
+      const mapped = LEGACY_PAGE_ROUTE_MAP[base];
+      if (mapped) return `${mapped}${query}${hash}`;
+    }
+  }
+
+  const lower = href.toLowerCase();
+  if (
+    lower.startsWith('http://') ||
+    lower.startsWith('https://') ||
+    lower.startsWith('mailto:') ||
+    lower.startsWith('tel:') ||
+    href.startsWith('#') ||
+    href.startsWith('/') ||
+    href.startsWith('./') ||
+    href.startsWith('../')
+  ) {
+    return href;
+  }
+
+  const { path: pathPart, query, hash } = splitHref(href);
+  const cleanPath = pathPart.replace(/^\.\//, '');
+
+  // Only rewrite simple page-like hrefs (no slashes), so we don't break real assets.
+  if (cleanPath.includes('/')) return href;
+
+  const base = cleanPath.endsWith('.html') ? cleanPath.slice(0, -'.html'.length) : cleanPath;
+  const mapped = LEGACY_PAGE_ROUTE_MAP[base];
+  if (mapped) return `${mapped}${query}${hash}`;
+
+  if (cleanPath.endsWith('.html')) {
+    return `/${base}${query}${hash}`;
+  }
+
+  return href;
+}
+
 /**
  * Fixes accessibility issues in HTML by adding missing IDs and associating labels
  * @param html - HTML string to fix
@@ -180,30 +265,26 @@ export async function loadLegacyHtml(filename: string): Promise<string> {
       .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '')
       .replace(/<!-- Footer Start -->[\s\S]*?<!-- Footer End -->/gi, '');
 
-    // Rewrite internal HTML links: something.html -> /something
-    processedHtml = processedHtml.replace(
-      /href=["']([^"']*\.html)["']/gi,
-      (match, href) => {
-        // Skip external links and anchors
-        if (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('#')) {
-          return match;
-        }
-        // Remove .html extension and ensure leading slash
-        const cleanPath = href.replace(/\.html$/, '').replace(/^\.\//, '/');
-        return `href="${cleanPath}"`;
-      }
-    );
+    // Rewrite internal links to modern Next.js routes (and handle legacy .html links with query strings).
+    processedHtml = processedHtml.replace(/href=["']([^"']+)["']/gi, (match, href) => {
+      const rewritten = rewriteLegacyHref(href);
+      return rewritten === href ? match : `href="${rewritten}"`;
+    });
 
-    // Rewrite asset paths to point to /legacy-assets/
-    // Matches: src="assets/...", src="images/...", href="css/...", src="js/...", etc.
+    // RootLayout already provides a single page landmark (<main>). Legacy HTML pages often include their own <main>,
+    // which creates invalid nested landmarks. Rewrite legacy <main> tags to <div>.
+    processedHtml = processedHtml.replace(/<main\b/gi, '<div').replace(/<\/main>/gi, '</div>');
+
+    // Rewrite *asset* paths to point to /legacy-assets/ (avoid rewriting page links).
     processedHtml = processedHtml.replace(
       /(src|href)=["'](?!http|https|\/\/|#|data:)([^"']*)["']/gi,
       (match, attr, assetPath) => {
-        // Skip already processed paths
-        if (assetPath.startsWith('/legacy-assets/') || assetPath.startsWith('/')) {
+        if (assetPath.startsWith('/legacy-assets/') || assetPath.startsWith('/')) return match;
+
+        if (!isLikelyLegacyAssetPath(assetPath)) {
           return match;
         }
-        // Add /legacy-assets/ prefix
+
         const cleanPath = assetPath.replace(/^\.\//, '');
         return `${attr}="/legacy-assets/${cleanPath}"`;
       }

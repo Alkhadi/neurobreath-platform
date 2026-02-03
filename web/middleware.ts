@@ -56,6 +56,37 @@ const detectRegion = (request: NextRequest): 'uk' | 'us' => {
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
+  // Redirect known legacy page links that were historically served under `/legacy-assets/`.
+  // Important: do NOT touch real legacy static assets under `/legacy-assets/assets/*`.
+  if (pathname.startsWith('/legacy-assets/') && !pathname.startsWith('/legacy-assets/assets/')) {
+    const url = request.nextUrl.clone()
+
+    const legacyPage = pathname.replace(/^\/legacy-assets\//, '')
+    const normalized = legacyPage.replace(/\.html$/i, '')
+
+    const legacyMap: Record<string, string> = {
+      'adhd-tools': '/tools/adhd-tools',
+      'anxiety-tools': '/tools/anxiety-tools',
+      'autism-tools': '/tools/autism-tools',
+      'breath-tools': '/tools/breath-tools',
+      'depression-tools': '/tools/depression-tools',
+      'mood-tools': '/tools/mood-tools',
+      'sleep-tools': '/tools/sleep-tools',
+      'stress-tools': '/tools/stress-tools',
+      'focus': '/tools/focus-training',
+      'coherent-5-5': '/techniques/coherent',
+      'box-breathing': '/techniques/box-breathing',
+      'sos-60': '/techniques/sos',
+      'downloads': '/downloads',
+    }
+
+    const target = legacyMap[normalized]
+    if (target) {
+      url.pathname = target
+      return NextResponse.redirect(url, 308)
+    }
+  }
+
   // Optional auth protection (keep the rest of the site public)
   if (AUTH_PROTECTED_PATHS.some(p => pathname === p || pathname.startsWith(`${p}/`))) {
     const secret = process.env.NEXTAUTH_SECRET

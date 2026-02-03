@@ -32,9 +32,15 @@ type VoiceMode = 'audio' | 'tts' | 'off';
 
 interface BreathingExerciseProps {
   initialPattern?: BreathingPattern;
+  initialDurationSeconds?: number;
 }
 
-export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseProps) {
+export function BreathingExercise({ initialPattern = 'box', initialDurationSeconds }: BreathingExerciseProps) {
+  const safeInitialDuration =
+    Number.isFinite(initialDurationSeconds) && (initialDurationSeconds ?? 0) > 0
+      ? Math.min(60 * 60, Math.max(60, Math.round(initialDurationSeconds as number)))
+      : 60;
+
   const [pattern, setPattern] = useState<BreathingPattern>(initialPattern);
   const [isActive, setIsActive] = useState(false);
   const [phase, setPhase] = useState(0);
@@ -44,7 +50,7 @@ export function BreathingExercise({ initialPattern = 'box' }: BreathingExerciseP
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [voiceMode, setVoiceMode] = useState<VoiceMode>('audio'); // audio, tts, or off
   const [ambientSound, setAmbientSound] = useState('none');
-  const [targetDuration, setTargetDuration] = useState(60);
+  const [targetDuration, setTargetDuration] = useState(safeInitialDuration);
   const [showDrivingWarning, setShowDrivingWarning] = useState(true);
   const [breathCount, setBreathCount] = useState(0);
   

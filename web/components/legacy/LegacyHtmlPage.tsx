@@ -24,7 +24,7 @@ export default async function LegacyHtmlPage({
     const html = await loadLegacyHtml(source);
 
     return (
-      <main className="legacy-html-page">
+      <div className="legacy-html-page">
         {/* Render the sanitized legacy HTML */}
         <div dangerouslySetInnerHTML={{ __html: html }} />
 
@@ -40,7 +40,7 @@ export default async function LegacyHtmlPage({
             Legacy: {source}
           </div>
         )}
-      </main>
+      </div>
     );
   } catch (error) {
     console.error(`Failed to render legacy page: ${source}`, error);
