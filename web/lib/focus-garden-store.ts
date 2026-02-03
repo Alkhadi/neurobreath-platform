@@ -4,6 +4,126 @@
 
 const STORAGE_KEY = 'nb:focus-garden:v2:progress';
 
+const LONDON_TIMEZONE = 'Europe/London';
+
+export function getLondonDateKey(date: Date = new Date()): string {
+  const dtf = new Intl.DateTimeFormat('en-GB', {
+    timeZone: LONDON_TIMEZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+  const parts = dtf.formatToParts(date);
+  const year = parts.find(p => p.type === 'year')?.value;
+  const month = parts.find(p => p.type === 'month')?.value;
+  const day = parts.find(p => p.type === 'day')?.value;
+  if (!year || !month || !day) return new Date().toISOString().split('T')[0];
+  return `${year}-${month}-${day}`;
+}
+
+function parseDateKey(dateKey: string): { year: number; month: number; day: number } | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) return null;
+  const [year, month, day] = dateKey.split('-').map(n => Number(n));
+  if (!year || !month || !day) return null;
+  return { year, month, day };
+}
+
+function addDaysToDateKey(dateKey: string, days: number): string {
+  const parsed = parseDateKey(dateKey);
+  if (!parsed) return dateKey;
+  const utc = new Date(Date.UTC(parsed.year, parsed.month - 1, parsed.day + days));
+  return `${utc.getUTCFullYear()}-${String(utc.getUTCMonth() + 1).padStart(2, '0')}-${String(utc.getUTCDate()).padStart(2, '0')}`;
+}
+
+function getYesterdayDateKey(todayKey: string): string {
+  return addDaysToDateKey(todayKey, -1);
+}
+
+function getLondonHourMinute(date: Date = new Date()): { hour: number; minute: number } {
+  const dtf = new Intl.DateTimeFormat('en-GB', {
+    timeZone: LONDON_TIMEZONE,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
+  const parts = dtf.formatToParts(date);
+  const hour = Number(parts.find(p => p.type === 'hour')?.value ?? '0');
+  const minute = Number(parts.find(p => p.type === 'minute')?.value ?? '0');
+  return { hour, minute };
+}
+
+function isDateKey(value: string): boolean {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value);
+}
+
+function toLondonDateKey(value: string | null): string | null {
+  if (!value) return null;
+  if (isDateKey(value)) return value;
+  try {
+    return getLondonDateKey(new Date(value));
+  } catch {
+    return null;
+  }
+}
+
+function normalizeDailyRecord(input: unknown): DailyRecord | null {
+  if (!input || typeof input !== 'object') return null;
+  const maybe = input as { status?: unknown; at?: unknown };
+  const status = maybe.status;
+  if (status !== 'watered' && status !== 'missed' && status !== 'frozen') return null;
+  const at = typeof maybe.at === 'string' ? maybe.at : undefined;
+  return { status, at };
+}
+
+function normalizeDailyRecords(input: unknown): Record<string, DailyRecord> {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) return {};
+
+  const result: Record<string, DailyRecord> = {};
+  for (const [rawKey, rawValue] of Object.entries(input as Record<string, unknown>)) {
+    const dateKey = toLondonDateKey(rawKey);
+    if (!dateKey) continue;
+
+    const record = normalizeDailyRecord(rawValue);
+    if (!record) continue;
+    result[dateKey] = record;
+  }
+  return result;
+}
+
+function diffDays(fromDateKey: string, toDateKey: string): number {
+  const fromParsed = parseDateKey(fromDateKey);
+  const toParsed = parseDateKey(toDateKey);
+  if (!fromParsed || !toParsed) return 0;
+  const fromUTC = Date.UTC(fromParsed.year, fromParsed.month - 1, fromParsed.day);
+  const toUTC = Date.UTC(toParsed.year, toParsed.month - 1, toParsed.day);
+  return Math.round((toUTC - fromUTC) / (1000 * 60 * 60 * 24));
+}
+
+function stageFromCycle(cycleConsecutiveWatered: number): 'seed' | 'sprout' | 'bud' | 'bloom' {
+  if (cycleConsecutiveWatered >= 4) return 'bloom';
+  if (cycleConsecutiveWatered >= 2) return 'bud';
+  if (cycleConsecutiveWatered >= 1) return 'sprout';
+  return 'seed';
+}
+
+function normalizeCategory(input: unknown): GardenCategory {
+  const raw = String(input ?? '').trim();
+  if (raw === 'Health') return 'Health';
+  if (raw === 'Mindfulness') return 'Mindfulness';
+  if (raw === 'Learning') return 'Learning';
+  if (raw === 'Productivity') return 'Productivity';
+  if (raw === 'Self-Care' || raw === 'Self Care') return 'Self-Care';
+  return 'Productivity';
+}
+
+function getUnlockedPlotCount(level: number): number {
+  if (level >= 8) return 5;
+  if (level >= 6) return 4;
+  if (level >= 4) return 3;
+  if (level >= 2) return 2;
+  return 1;
+}
+
 // ========== TYPES ==========
 
 export type CompanionType = 'fox' | 'cat' | 'dog' | 'robot' | 'fairy';
@@ -17,12 +137,38 @@ export type CompanionMood =
   | 'encouraging' // During a session
   | 'proud'; // After harvest/achievement
 
+export type GardenCategory = 'Health' | 'Mindfulness' | 'Learning' | 'Productivity' | 'Self-Care';
+
+export interface DailyRecord {
+  status: 'watered' | 'missed' | 'frozen';
+  at?: string; // ISO timestamp
+}
+
 export interface FocusGardenPlant {
   id: string;
+  // Legacy identifiers (kept for backward compatibility)
   taskId: string;
-  stage: 'seed' | 'sprout' | 'bud' | 'bloom';
-  waterCount: number;
   layer: string;
+
+  // Habit seed details
+  title: string;
+  category: GardenCategory;
+  cue: string;
+  reminderTime?: string;
+
+  // Growth & streak
+  stage: 'seed' | 'sprout' | 'bud' | 'bloom';
+  cycleConsecutiveWatered: number; // consecutive *watered* days in current cycle (0-4)
+  currentStreak: number;
+  bestStreak: number;
+  lastWateredDateKey: string | null; // Europe/London day key
+  bloomsHarvested: number;
+
+  // Daily records (Europe/London day key)
+  daily: Record<string, DailyRecord>;
+
+  // Legacy (may exist in older saves)
+  waterCount?: number;
   plantedAt: string;
   harvestedAt?: string;
 }
@@ -58,6 +204,7 @@ export interface MultiDayQuest {
   xpReward: number;
   badgeReward?: string;
   plantReward?: string;
+  freezeReward?: number;
   isActive: boolean;
   category: 'focus' | 'breathing' | 'mindfulness' | 'habit';
 }
@@ -81,7 +228,7 @@ export interface FocusGardenBadge {
   earnedAt: string | null;
   category: 'streak' | 'time' | 'growth' | 'resilience' | 'mastery' | 'special';
   requirement: {
-    type: 'streak' | 'sessions' | 'time' | 'plants' | 'harvests' | 'level' | 'quest' | 'comeback' | 'time-of-day';
+    type: 'streak' | 'sessions' | 'time' | 'plants' | 'harvests' | 'level' | 'quest' | 'comeback' | 'time-of-day' | 'categories' | 'freeze-used';
     count?: number;
     timeRange?: { start: number; end: number }; // Hours for time-of-day badges
   };
@@ -111,6 +258,7 @@ export interface FocusGardenProgress {
   // Garden state
   garden: FocusGardenPlant[];
   gardenLevel: number;
+  lastCheckedDate: string | null; // Europe/London day key
 
   // Streak system
   streak: StreakData;
@@ -146,563 +294,423 @@ export interface SessionRecord {
   plantId?: string;
 }
 
+function normalizePlant(input: unknown): FocusGardenPlant {
+  const p = (input ?? {}) as Partial<FocusGardenPlant> & Record<string, unknown>;
+  const nowIso = new Date().toISOString();
+
+  const category = normalizeCategory(p.category ?? p.layer);
+
+  const cycleRaw = p.cycleConsecutiveWatered;
+  const cycleConsecutiveWatered =
+    typeof cycleRaw === 'number'
+      ? Math.max(0, Math.min(4, cycleRaw))
+      : typeof p.waterCount === 'number'
+          ? Math.max(0, Math.min(4, p.waterCount))
+          : 0;
+
+  const stage =
+    p.stage === 'seed' || p.stage === 'sprout' || p.stage === 'bud' || p.stage === 'bloom'
+      ? p.stage
+      : stageFromCycle(cycleConsecutiveWatered);
+
+  const daily = normalizeDailyRecords(p.daily);
+
+  return {
+    id: typeof p.id === 'string' ? p.id : `plant-${Date.now()}`,
+    taskId: typeof p.taskId === 'string' ? p.taskId : '',
+    layer: typeof p.layer === 'string' ? p.layer : category,
+    title: typeof p.title === 'string' && p.title.trim() ? p.title.trim() : (typeof p.taskId === 'string' && p.taskId ? p.taskId : 'New seed'),
+    category,
+    cue: typeof p.cue === 'string' ? p.cue : '',
+    reminderTime: typeof p.reminderTime === 'string' && p.reminderTime ? p.reminderTime : undefined,
+    stage,
+    cycleConsecutiveWatered,
+    currentStreak: typeof p.currentStreak === 'number' ? Math.max(0, p.currentStreak) : 0,
+    bestStreak: typeof p.bestStreak === 'number' ? Math.max(0, p.bestStreak) : 0,
+    lastWateredDateKey: toLondonDateKey(p.lastWateredDateKey ?? null),
+    bloomsHarvested: typeof p.bloomsHarvested === 'number' ? Math.max(0, p.bloomsHarvested) : 0,
+    daily,
+    waterCount: typeof p.waterCount === 'number' ? p.waterCount : undefined,
+    plantedAt: typeof p.plantedAt === 'string' ? p.plantedAt : nowIso,
+    harvestedAt: typeof p.harvestedAt === 'string' ? p.harvestedAt : undefined
+  };
+}
+
+function applyDailyRollover(progress: FocusGardenProgress, todayKey: string): void {
+  const lastCheckedKey = toLondonDateKey(progress.lastCheckedDate) ?? todayKey;
+  if (lastCheckedKey === todayKey) return;
+
+  // If lastCheckedKey is in the future (clock skew), just snap to today.
+  if (diffDays(lastCheckedKey, todayKey) < 0) {
+    progress.lastCheckedDate = todayKey;
+    return;
+  }
+
+  // Backfill days between last checked and today (excluding today).
+  let cursor = addDaysToDateKey(lastCheckedKey, 1);
+  const streakProtected = new Set(progress.streak.streakProtectedDates ?? []);
+
+  while (cursor !== todayKey) {
+    const dayStatus: DailyRecord['status'] = streakProtected.has(cursor) ? 'frozen' : 'missed';
+
+    for (const plant of progress.garden) {
+      const plantedKey = toLondonDateKey(plant.plantedAt) ?? cursor;
+      if (diffDays(plantedKey, cursor) < 0) continue;
+      if (plant.daily[cursor]) continue;
+      plant.daily[cursor] = { status: dayStatus };
+    }
+
+    cursor = addDaysToDateKey(cursor, 1);
+  }
+
+  progress.lastCheckedDate = todayKey;
+}
+
+function normalizeProgress(input: FocusGardenProgress): FocusGardenProgress {
+  const progress = input;
+  const todayKey = getLondonDateKey();
+
+  progress.lastCheckedDate = toLondonDateKey(progress.lastCheckedDate) ?? todayKey;
+  progress.streak.lastActivityDate = toLondonDateKey(progress.streak.lastActivityDate);
+
+  // Spec: start 1, max 2
+  progress.streak.maxStreakFreezes = 2;
+  progress.streak.streakFreezes = Math.max(0, Math.min(progress.streak.streakFreezes ?? 0, progress.streak.maxStreakFreezes));
+  progress.streak.freezesUsedDates = (progress.streak.freezesUsedDates ?? []).map(d => toLondonDateKey(d)).filter(Boolean) as string[];
+  progress.streak.streakProtectedDates = (progress.streak.streakProtectedDates ?? []).map(d => toLondonDateKey(d)).filter(Boolean) as string[];
+
+  progress.garden = (progress.garden ?? []).map(p => normalizePlant(p));
+
+  applyDailyRollover(progress, todayKey);
+
+  const calculated = calculateGardenLevel(progress.totalXP ?? 0).level;
+  progress.gardenLevel = calculated;
+  progress.level = calculated;
+
+  const plotCap = getUnlockedPlotCount(progress.gardenLevel);
+  if (progress.garden.length > plotCap) {
+    progress.garden = progress.garden.slice(0, plotCap);
+  }
+
+  return progress;
+}
+
 // ========== CONSTANTS ==========
 
 export const GARDEN_LEVELS: GardenLevel[] = [
   {
     level: 1,
     name: 'Bare Plot',
-    description: 'A fresh plot of soil, ready for your first seeds',
+    description: 'A fresh plot of soil, ready for your first seed',
     xpRequired: 0,
-    unlockedFeatures: ['basic-plants'],
+    unlockedFeatures: ['1 plot'],
     gardenTheme: 'plot'
   },
   {
     level: 2,
-    name: 'Budding Garden',
-    description: 'Small sprouts emerge as your practice grows',
-    xpRequired: 200,
-    unlockedFeatures: ['basic-plants', 'garden-border'],
+    name: 'Sprout Patch',
+    description: 'You’re building a routine that can grow',
+    xpRequired: 150,
+    unlockedFeatures: ['2 plots'],
     gardenTheme: 'small-garden'
   },
   {
     level: 3,
-    name: 'Growing Garden',
-    description: 'A proper garden taking shape with varied plants',
-    xpRequired: 500,
-    unlockedFeatures: ['basic-plants', 'garden-border', 'decorations'],
+    name: 'Garden Bed',
+    description: 'Consistency is taking root',
+    xpRequired: 350,
+    unlockedFeatures: ['2 plots', 'decor'],
     gardenTheme: 'garden'
   },
   {
     level: 4,
-    name: 'Flourishing Garden',
-    description: 'A lush, thriving garden full of life',
-    xpRequired: 1000,
-    unlockedFeatures: ['basic-plants', 'garden-border', 'decorations', 'rare-plants'],
+    name: 'Bloom Lane',
+    description: 'More space for gentle habits',
+    xpRequired: 650,
+    unlockedFeatures: ['3 plots'],
     gardenTheme: 'lush-garden'
   },
   {
     level: 5,
-    name: 'Paradise Garden',
-    description: 'A magnificent garden paradise, testament to your dedication',
-    xpRequired: 2000,
-    unlockedFeatures: ['basic-plants', 'garden-border', 'decorations', 'rare-plants', 'special-effects'],
+    name: 'Canopy Grove',
+    description: 'Your garden is becoming a system',
+    xpRequired: 1000,
+    unlockedFeatures: ['3 plots', 'decor+'],
+    gardenTheme: 'paradise'
+  },
+  {
+    level: 6,
+    name: 'Greenhouse',
+    description: 'You cultivate consistency with gentleness and honesty',
+    xpRequired: 1350,
+    unlockedFeatures: ['4 plots'],
+    gardenTheme: 'paradise'
+  },
+  {
+    level: 7,
+    name: 'Bloomstead',
+    description: 'Your garden supports ambitious goals in small steps',
+    xpRequired: 1750,
+    unlockedFeatures: ['4 plots', 'decor++'],
+    gardenTheme: 'paradise'
+  },
+  {
+    level: 8,
+    name: 'Harvest Haven',
+    description: 'A thriving garden built through repeatable routines',
+    xpRequired: 2250,
+    unlockedFeatures: ['5 plots'],
     gardenTheme: 'paradise'
   }
 ];
 
 export const FOCUS_GARDEN_BADGES: FocusGardenBadge[] = [
-  // Streak badges
-  {
-    id: 'first-streak',
-    name: 'First Steps',
-    description: 'Complete your first focus session',
-    icon: '🌱',
-    color: '#4CAF50',
-    earnedAt: null,
-    category: 'streak',
-    requirement: { type: 'sessions', count: 1 }
-  },
-  {
-    id: 'three-day-focus',
-    name: '3-Day Focus',
-    description: 'Maintain a 3-day focus streak',
-    icon: '🔥',
-    color: '#FF5722',
-    earnedAt: null,
-    category: 'streak',
-    requirement: { type: 'streak', count: 3 }
-  },
-  {
-    id: 'week-warrior',
-    name: 'Week Warrior',
-    description: 'Maintain a 7-day focus streak',
-    icon: '⚔️',
-    color: '#9C27B0',
-    earnedAt: null,
-    category: 'streak',
-    requirement: { type: 'streak', count: 7 }
-  },
-  {
-    id: 'fortnight-focus',
-    name: 'Fortnight Focus',
-    description: 'Maintain a 14-day focus streak',
-    icon: '🏆',
-    color: '#FFD700',
-    earnedAt: null,
-    category: 'streak',
-    requirement: { type: 'streak', count: 14 }
-  },
-  {
-    id: 'monthly-master',
-    name: 'Monthly Master',
-    description: 'Maintain a 30-day focus streak',
-    icon: '👑',
-    color: '#E91E63',
-    earnedAt: null,
-    category: 'streak',
-    requirement: { type: 'streak', count: 30 }
-  },
-
-  // Time-of-day badges
-  {
-    id: 'early-bird',
-    name: 'Early Bird',
-    description: 'Complete 5 sessions before 9am',
-    icon: '🌅',
-    color: '#FF9800',
-    earnedAt: null,
-    category: 'time',
-    requirement: { type: 'time-of-day', count: 5, timeRange: { start: 5, end: 9 } }
-  },
-  {
-    id: 'night-owl',
-    name: 'Night Owl',
-    description: 'Complete 5 sessions after 9pm',
-    icon: '🦉',
-    color: '#3F51B5',
-    earnedAt: null,
-    category: 'time',
-    requirement: { type: 'time-of-day', count: 5, timeRange: { start: 21, end: 24 } }
-  },
-
-  // Growth badges
   {
     id: 'first-bloom',
     name: 'First Bloom',
-    description: 'Grow your first plant to full bloom',
+    description: 'Harvest your first bloom',
     icon: '🌸',
-    color: '#E91E63',
+    color: '#9C27B0',
     earnedAt: null,
     category: 'growth',
     requirement: { type: 'harvests', count: 1 }
   },
   {
-    id: 'garden-starter',
-    name: 'Garden Starter',
-    description: 'Harvest 5 fully bloomed plants',
-    icon: '🌻',
-    color: '#FFC107',
+    id: 'harvest-3',
+    name: 'Harvest Hand',
+    description: 'Harvest 3 blooms',
+    icon: '🧺',
+    color: '#4CAF50',
     earnedAt: null,
     category: 'growth',
-    requirement: { type: 'harvests', count: 5 }
+    requirement: { type: 'harvests', count: 3 }
   },
   {
-    id: 'master-gardener',
-    name: 'Master Gardener',
-    description: 'Harvest 25 fully bloomed plants',
-    icon: '🌺',
-    color: '#9C27B0',
+    id: 'harvest-10',
+    name: 'Seasoned Harvester',
+    description: 'Harvest 10 blooms',
+    icon: '🍯',
+    color: '#FF9800',
     earnedAt: null,
     category: 'growth',
-    requirement: { type: 'harvests', count: 25 }
+    requirement: { type: 'harvests', count: 10 }
   },
   {
-    id: 'garden-guru',
-    name: 'Garden Guru',
-    description: 'Harvest 100 fully bloomed plants',
-    icon: '🏵️',
-    color: '#FFD700',
+    id: 'seven-day-streak',
+    name: '7-Day Streak',
+    description: 'Maintain a 7-day garden streak',
+    icon: '🔥',
+    color: '#FF5722',
     earnedAt: null,
-    category: 'growth',
-    requirement: { type: 'harvests', count: 100 }
+    category: 'streak',
+    requirement: { type: 'streak', count: 7 }
   },
-
-  // Resilience badges
   {
-    id: 'resilience',
-    name: 'Resilience',
-    description: 'Return after a streak break and start again',
-    icon: '💪',
-    color: '#2196F3',
+    id: 'fourteen-day-streak',
+    name: '14-Day Streak',
+    description: 'Maintain a 14-day garden streak',
+    icon: '🏮',
+    color: '#FF7043',
     earnedAt: null,
-    category: 'resilience',
-    requirement: { type: 'comeback', count: 1 }
+    category: 'streak',
+    requirement: { type: 'streak', count: 14 }
   },
   {
-    id: 'bounce-back',
-    name: 'Bounce Back',
-    description: 'Return after a streak break 3 times',
-    icon: '🦋',
-    color: '#00BCD4',
-    earnedAt: null,
-    category: 'resilience',
-    requirement: { type: 'comeback', count: 3 }
-  },
-  {
-    id: 'unstoppable',
-    name: 'Unstoppable',
-    description: 'Return after a streak break 5 times - nothing stops you!',
-    icon: '🔮',
-    color: '#673AB7',
-    earnedAt: null,
-    category: 'resilience',
-    requirement: { type: 'comeback', count: 5 }
-  },
-
-  // Mastery badges
-  {
-    id: 'deep-breather',
-    name: 'Deep Breather',
-    description: 'Complete 10 breathing exercises',
-    icon: '🌬️',
-    color: '#00BCD4',
-    earnedAt: null,
-    category: 'mastery',
-    requirement: { type: 'sessions', count: 10 }
-  },
-  {
-    id: 'focus-apprentice',
-    name: 'Focus Apprentice',
-    description: 'Accumulate 60 minutes of focus time',
-    icon: '📚',
-    color: '#795548',
-    earnedAt: null,
-    category: 'mastery',
-    requirement: { type: 'time', count: 60 }
-  },
-  {
-    id: 'focus-master',
-    name: 'Focus Master',
-    description: 'Accumulate 500 minutes of focus time',
-    icon: '🎓',
-    color: '#607D8B',
-    earnedAt: null,
-    category: 'mastery',
-    requirement: { type: 'time', count: 500 }
-  },
-
-  // Level badges
-  {
-    id: 'garden-level-2',
-    name: 'Budding Gardener',
+    id: 'level-2',
+    name: 'Second Plot',
     description: 'Reach Garden Level 2',
-    icon: '🌿',
-    color: '#8BC34A',
+    icon: '🪴',
+    color: '#2E7D32',
     earnedAt: null,
-    category: 'special',
+    category: 'mastery',
     requirement: { type: 'level', count: 2 }
   },
   {
-    id: 'garden-level-3',
-    name: 'Skilled Gardener',
-    description: 'Reach Garden Level 3',
-    icon: '🌳',
-    color: '#4CAF50',
+    id: 'level-8',
+    name: 'Garden Architect',
+    description: 'Reach Garden Level 8',
+    icon: '🏛️',
+    color: '#3F51B5',
     earnedAt: null,
-    category: 'special',
-    requirement: { type: 'level', count: 3 }
+    category: 'mastery',
+    requirement: { type: 'level', count: 8 }
   },
   {
-    id: 'garden-level-4',
-    name: 'Expert Gardener',
-    description: 'Reach Garden Level 4',
-    icon: '🌴',
-    color: '#388E3C',
+    id: 'balanced-garden',
+    name: 'Balanced Garden',
+    description: 'Plant seeds across all 5 categories',
+    icon: '🌈',
+    color: '#E91E63',
     earnedAt: null,
     category: 'special',
-    requirement: { type: 'level', count: 4 }
+    requirement: { type: 'categories', count: 5 }
   },
   {
-    id: 'garden-level-5',
-    name: 'Legendary Gardener',
-    description: 'Reach Garden Level 5 - Paradise!',
-    icon: '🏝️',
-    color: '#FFD700',
+    id: 'frost-guard',
+    name: 'Frost Guard',
+    description: 'Protect a missed day with Frost Guard',
+    icon: '❄️',
+    color: '#00BCD4',
     earnedAt: null,
-    category: 'special',
-    requirement: { type: 'level', count: 5 }
-  },
-
-  // Quest badges
-  {
-    id: 'quest-complete',
-    name: 'Quest Complete',
-    description: 'Complete your first multi-day quest',
-    icon: '📜',
-    color: '#FF9800',
-    earnedAt: null,
-    category: 'special',
-    requirement: { type: 'quest', count: 1 }
+    category: 'resilience',
+    requirement: { type: 'freeze-used', count: 1 }
   },
   {
-    id: 'quest-master',
-    name: 'Quest Master',
-    description: 'Complete 5 multi-day quests',
-    icon: '🗺️',
-    color: '#F44336',
+    id: 'comeback-bloom',
+    name: 'Comeback Bloom',
+    description: 'Return after a break and harvest again',
+    icon: '🌷',
+    color: '#8BC34A',
     earnedAt: null,
-    category: 'special',
-    requirement: { type: 'quest', count: 5 }
+    category: 'resilience',
+    requirement: { type: 'comeback', count: 1 }
   }
 ];
 
 export const MULTI_DAY_QUESTS: MultiDayQuest[] = [
   {
-    id: '7-day-focus-challenge',
-    title: '7-Day Focus Challenge',
-    description: 'Build a strong foundation for focus through a week of guided practice',
-    narrative: 'Begin your journey to mastery. Each day brings a new challenge to strengthen your focus and grow your garden.',
+    id: 'roots-week',
+    title: 'Roots Week',
+    description: 'Build a 7-day foundation with gentle consistency',
+    narrative: 'Strong roots come from small, repeatable actions you can do even on hard days.',
     days: [
-      {
-        day: 1,
-        title: 'Plant Your First Seed',
-        description: 'Every great garden starts with a single seed',
-        task: 'Plant and water one task in your Focus Garden',
-        completed: false,
-        completedAt: null,
-        xpReward: 20
-      },
-      {
-        day: 2,
-        title: 'Nurture Growth',
-        description: 'Consistent care helps your garden flourish',
-        task: 'Water 2 plants to help them grow',
-        completed: false,
-        completedAt: null,
-        xpReward: 25
-      },
-      {
-        day: 3,
-        title: 'Expand Your Garden',
-        description: 'A diverse garden is a resilient garden',
-        task: 'Plant a task from a different category',
-        completed: false,
-        completedAt: null,
-        xpReward: 30
-      },
-      {
-        day: 4,
-        title: 'Deep Roots',
-        description: 'Strong roots lead to beautiful blooms',
-        task: 'Complete a 5-minute breathing exercise',
-        completed: false,
-        completedAt: null,
-        xpReward: 35
-      },
-      {
-        day: 5,
-        title: 'First Harvest',
-        description: 'Reap the rewards of your dedication',
-        task: 'Harvest your first fully bloomed plant',
-        completed: false,
-        completedAt: null,
-        xpReward: 40
-      },
-      {
-        day: 6,
-        title: 'Growing Strong',
-        description: 'Your garden thrives with consistent attention',
-        task: 'Complete 3 focus tasks in one day',
-        completed: false,
-        completedAt: null,
-        xpReward: 45
-      },
-      {
-        day: 7,
-        title: 'Garden Celebration',
-        description: 'Celebrate a week of growth and focus',
-        task: 'Have 3 or more plants growing simultaneously',
-        completed: false,
-        completedAt: null,
-        xpReward: 50
-      }
-    ],
-    currentDay: 0,
-    startedAt: null,
-    completedAt: null,
-    xpReward: 200,
-    badgeReward: 'quest-complete',
-    plantReward: 'golden-flower',
-    isActive: false,
-    category: 'focus'
-  },
-  {
-    id: 'calm-mind-journey',
-    title: 'Calm Mind Journey',
-    description: 'Master the art of calm through breathing and mindfulness',
-    narrative: 'A peaceful mind is a focused mind. This journey will teach you the foundations of calm.',
-    days: [
-      {
-        day: 1,
-        title: 'First Breath',
-        description: 'Begin with the basics of breathing',
-        task: 'Complete a box breathing exercise',
-        completed: false,
-        completedAt: null,
-        xpReward: 25
-      },
-      {
-        day: 2,
-        title: 'Morning Calm',
-        description: 'Start your day with intention',
-        task: 'Complete a breathing exercise before 10am',
-        completed: false,
-        completedAt: null,
-        xpReward: 30
-      },
-      {
-        day: 3,
-        title: 'Zone Awareness',
-        description: 'Learn to recognize your emotional state',
-        task: 'Complete a Zone Check-In task',
-        completed: false,
-        completedAt: null,
-        xpReward: 30
-      },
-      {
-        day: 4,
-        title: 'Calm Tools',
-        description: 'Discover what helps you find calm',
-        task: 'Use a Calm Tool task to regulate',
-        completed: false,
-        completedAt: null,
-        xpReward: 35
-      },
-      {
-        day: 5,
-        title: 'Mindful Moment',
-        description: 'Practice presence and awareness',
-        task: 'Complete a mindfulness exercise',
-        completed: false,
-        completedAt: null,
-        xpReward: 40
-      }
+      { day: 1, title: 'Plant One Seed', description: 'Start small and specific', task: 'Plant one seed with a clear cue (when/where/how)', completed: false, completedAt: null, xpReward: 25 },
+      { day: 2, title: 'Water Once', description: 'One meaningful action', task: 'Water a seed (once today)', completed: false, completedAt: null, xpReward: 20 },
+      { day: 3, title: 'Make It Easier', description: 'Reduce friction', task: 'Update a cue to be simpler or more realistic', completed: false, completedAt: null, xpReward: 20 },
+      { day: 4, title: 'Breathe & Reset', description: 'Support your nervous system', task: 'Complete a short breathing session', completed: false, completedAt: null, xpReward: 25 },
+      { day: 5, title: 'Keep the Chain', description: 'Consistency over intensity', task: 'Water a seed again today', completed: false, completedAt: null, xpReward: 20 },
+      { day: 6, title: 'Notice the Win', description: 'Name the benefit', task: 'Write one sentence: “This helps because ___.”', completed: false, completedAt: null, xpReward: 20 },
+      { day: 7, title: 'Celebrate', description: 'Mark the week', task: 'Harvest if a bloom is ready, or water once and celebrate progress', completed: false, completedAt: null, xpReward: 30 }
     ],
     currentDay: 0,
     startedAt: null,
     completedAt: null,
     xpReward: 150,
-    badgeReward: 'deep-breather',
-    isActive: false,
-    category: 'breathing'
-  },
-  {
-    id: 'structure-builder',
-    title: 'Structure Builder',
-    description: 'Create routines that support your success',
-    narrative: 'Structure is the foundation of achievement. Build systems that work for you.',
-    days: [
-      {
-        day: 1,
-        title: 'Morning Foundation',
-        description: 'Start with a morning routine',
-        task: 'Complete a Morning Routine task',
-        completed: false,
-        completedAt: null,
-        xpReward: 25
-      },
-      {
-        day: 2,
-        title: 'Visual Planning',
-        description: 'See your day laid out before you',
-        task: 'Follow your Visual Schedule',
-        completed: false,
-        completedAt: null,
-        xpReward: 25
-      },
-      {
-        day: 3,
-        title: 'Transition Mastery',
-        description: 'Smooth transitions lead to better flow',
-        task: 'Use a Transition Timer for activity changes',
-        completed: false,
-        completedAt: null,
-        xpReward: 30
-      },
-      {
-        day: 4,
-        title: 'Break It Down',
-        description: 'Big tasks become manageable with small steps',
-        task: 'Complete a Task Breakdown exercise',
-        completed: false,
-        completedAt: null,
-        xpReward: 35
-      },
-      {
-        day: 5,
-        title: 'Chain Reaction',
-        description: 'Link your routines into a powerful chain',
-        task: 'Complete a full Routine Chain',
-        completed: false,
-        completedAt: null,
-        xpReward: 40
-      },
-      {
-        day: 6,
-        title: 'Week in View',
-        description: 'Plan for long-term success',
-        task: 'Create and follow a Weekly Planner',
-        completed: false,
-        completedAt: null,
-        xpReward: 45
-      }
-    ],
-    currentDay: 0,
-    startedAt: null,
-    completedAt: null,
-    xpReward: 175,
-    plantReward: 'structured-tree',
     isActive: false,
     category: 'habit'
   },
   {
-    id: 'communication-quest',
-    title: 'Communication Quest',
-    description: 'Build confidence in expressing yourself',
-    narrative: 'Your voice matters. Learn to communicate your needs and connect with others.',
+    id: 'calm-mind-5',
+    title: 'Calm Mind (5 Days)',
+    description: 'Use breath as a reliable reset',
+    narrative: 'A calmer baseline makes focus easier to access. Practice a little each day.',
     days: [
-      {
-        day: 1,
-        title: 'Reach Out',
-        description: 'Practice asking for what you need',
-        task: 'Complete an Ask for Help task',
-        completed: false,
-        completedAt: null,
-        xpReward: 25
-      },
-      {
-        day: 2,
-        title: 'Hello World',
-        description: 'Small greetings make big connections',
-        task: 'Practice a Greeting',
-        completed: false,
-        completedAt: null,
-        xpReward: 25
-      },
-      {
-        day: 3,
-        title: 'Express Yourself',
-        description: 'Let others know how you feel',
-        task: 'Express a Feeling to someone',
-        completed: false,
-        completedAt: null,
-        xpReward: 30
-      },
-      {
-        day: 4,
-        title: 'Back and Forth',
-        description: 'Conversations are a two-way street',
-        task: 'Practice Conversation Turns',
-        completed: false,
-        completedAt: null,
-        xpReward: 35
-      },
-      {
-        day: 5,
-        title: 'Story Time',
-        description: 'Learn through social narratives',
-        task: 'Read and practice a Social Story',
-        completed: false,
-        completedAt: null,
-        xpReward: 40
-      }
+      { day: 1, title: 'First Breath', description: 'Start here', task: 'Do a 2–5 minute breathing session', completed: false, completedAt: null, xpReward: 25 },
+      { day: 2, title: 'Same Time', description: 'Make it predictable', task: 'Do a breathing session around the same time as yesterday', completed: false, completedAt: null, xpReward: 25 },
+      { day: 3, title: 'After Stress', description: 'Use it when it matters', task: 'Do a breathing session after a stress cue', completed: false, completedAt: null, xpReward: 30 },
+      { day: 4, title: 'Before a Task', description: 'Prime your attention', task: 'Do a breathing session before a focus task', completed: false, completedAt: null, xpReward: 30 },
+      { day: 5, title: 'Keep the Habit', description: 'Lock it in', task: 'Do a breathing session and note one benefit', completed: false, completedAt: null, xpReward: 35 }
     ],
     currentDay: 0,
     startedAt: null,
     completedAt: null,
-    xpReward: 150,
-    badgeReward: 'communicator',
+    xpReward: 120,
+    isActive: false,
+    category: 'breathing'
+  },
+  {
+    id: 'two-plot-unlock',
+    title: 'Unlock a Second Plot',
+    description: 'Grow into a second habit lane',
+    narrative: 'You don’t need more motivation — you need a second gentle option.',
+    days: [
+      { day: 1, title: 'Pick a Category', description: 'Choose what matters most', task: 'Plant a seed in a new category', completed: false, completedAt: null, xpReward: 25 },
+      { day: 2, title: 'Water Today', description: 'Keep it alive', task: 'Water a seed (once)', completed: false, completedAt: null, xpReward: 20 },
+      { day: 3, title: 'Protect Consistency', description: 'Learn Frost Guard', task: 'Check Frost Guard and decide when you’d use it', completed: false, completedAt: null, xpReward: 25 }
+    ],
+    currentDay: 0,
+    startedAt: null,
+    completedAt: null,
+    xpReward: 80,
+    freezeReward: 1,
+    isActive: false,
+    category: 'habit'
+  },
+  {
+    id: 'learning-lane-4',
+    title: 'Learning Lane (4 Days)',
+    description: 'Turn learning into a tiny daily lane',
+    narrative: 'Learning grows best with repetition. Keep it tiny and frequent.',
+    days: [
+      { day: 1, title: 'Choose a Topic', description: 'One small topic', task: 'Plant a Learning seed with a clear cue', completed: false, completedAt: null, xpReward: 25 },
+      { day: 2, title: '5 Minutes', description: 'Tiny on purpose', task: 'Do 5 minutes of your learning action', completed: false, completedAt: null, xpReward: 20 },
+      { day: 3, title: 'Make a Note', description: 'Capture the win', task: 'Write one sentence summary', completed: false, completedAt: null, xpReward: 20 },
+      { day: 4, title: 'Repeat', description: 'Repetition is progress', task: 'Water the Learning seed today', completed: false, completedAt: null, xpReward: 25 }
+    ],
+    currentDay: 0,
+    startedAt: null,
+    completedAt: null,
+    xpReward: 90,
+    isActive: false,
+    category: 'habit'
+  },
+  {
+    id: 'mindful-moment-4',
+    title: 'Mindful Moment (4 Days)',
+    description: 'Practice noticing without fixing',
+    narrative: 'Mindfulness is not perfection — it’s returning gently, again and again.',
+    days: [
+      { day: 1, title: 'One Minute', description: 'Start extremely small', task: 'Do a 1-minute mindful check-in', completed: false, completedAt: null, xpReward: 20 },
+      { day: 2, title: 'Body Scan', description: 'Notice sensations', task: 'Do a short body scan', completed: false, completedAt: null, xpReward: 25 },
+      { day: 3, title: 'Name It', description: 'Label helps', task: 'Name your current emotion (no judgment)', completed: false, completedAt: null, xpReward: 25 },
+      { day: 4, title: 'Return', description: 'Build the return reflex', task: 'Do another mindful check-in', completed: false, completedAt: null, xpReward: 25 }
+    ],
+    currentDay: 0,
+    startedAt: null,
+    completedAt: null,
+    xpReward: 80,
+    isActive: false,
+    category: 'mindfulness'
+  },
+  {
+    id: 'self-care-buffer-3',
+    title: 'Self-Care Buffer (3 Days)',
+    description: 'Build a small buffer against overload',
+    narrative: 'A little self-care can prevent a big crash. Keep it realistic.',
+    days: [
+      { day: 1, title: 'Pick One Buffer', description: 'One tiny buffer action', task: 'Plant a Self-Care seed with a cue', completed: false, completedAt: null, xpReward: 25 },
+      { day: 2, title: 'Do It Tiny', description: 'Minimum viable self-care', task: 'Do the action for 2 minutes', completed: false, completedAt: null, xpReward: 20 },
+      { day: 3, title: 'Repeat', description: 'Repeat builds trust', task: 'Water the Self-Care seed today', completed: false, completedAt: null, xpReward: 25 }
+    ],
+    currentDay: 0,
+    startedAt: null,
+    completedAt: null,
+    xpReward: 70,
+    isActive: false,
+    category: 'habit'
+  },
+  {
+    id: 'productivity-gentle-4',
+    title: 'Gentle Productivity (4 Days)',
+    description: 'Make progress without the crash',
+    narrative: 'A good system makes doing easier than not doing. Keep it gentle.',
+    days: [
+      { day: 1, title: 'Define Done', description: 'Make success clear', task: 'Plant a Productivity seed with a measurable target', completed: false, completedAt: null, xpReward: 25 },
+      { day: 2, title: 'Start Line', description: 'Begin the action', task: 'Do the first 2 minutes', completed: false, completedAt: null, xpReward: 20 },
+      { day: 3, title: 'Reduce Friction', description: 'Prepare your environment', task: 'Set up your workspace / materials', completed: false, completedAt: null, xpReward: 20 },
+      { day: 4, title: 'Repeat', description: 'Consistency wins', task: 'Water the Productivity seed today', completed: false, completedAt: null, xpReward: 25 }
+    ],
+    currentDay: 0,
+    startedAt: null,
+    completedAt: null,
+    xpReward: 90,
+    isActive: false,
+    category: 'focus'
+  },
+  {
+    id: 'health-hydration-3',
+    title: 'Health: Hydration (3 Days)',
+    description: 'Anchor a simple health habit',
+    narrative: 'Small health habits support your attention and mood. Pick something realistic.',
+    days: [
+      { day: 1, title: 'Pick the Habit', description: 'One small health action', task: 'Plant a Health seed with a cue', completed: false, completedAt: null, xpReward: 25 },
+      { day: 2, title: 'Do It', description: 'Follow the cue once', task: 'Do the health action once today', completed: false, completedAt: null, xpReward: 20 },
+      { day: 3, title: 'Repeat', description: 'Make it a pattern', task: 'Water the Health seed today', completed: false, completedAt: null, xpReward: 25 }
+    ],
+    currentDay: 0,
+    startedAt: null,
+    completedAt: null,
+    xpReward: 70,
     isActive: false,
     category: 'habit'
   }
@@ -720,12 +728,13 @@ function getDefaultProgress(): FocusGardenProgress {
     totalHarvests: 0,
     garden: [],
     gardenLevel: 1,
+    lastCheckedDate: null,
     streak: {
       currentStreak: 0,
       longestStreak: 0,
       lastActivityDate: null,
-      streakFreezes: 2, // Start with 2 streak freezes
-      maxStreakFreezes: 3,
+      streakFreezes: 1, // Start with 1 Frost Guard
+      maxStreakFreezes: 2,
       freezesUsedDates: [],
       streakProtectedDates: []
     },
@@ -778,26 +787,22 @@ function setStorage<T>(key: string, value: T): void {
 
 function isToday(dateString: string | null): boolean {
   if (!dateString) return false;
-  const today = new Date().toISOString().split('T')[0];
-  return dateString.split('T')[0] === today;
-}
-
-function isYesterday(dateString: string | null): boolean {
-  if (!dateString) return false;
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayStr = yesterday.toISOString().split('T')[0];
-  return dateString.split('T')[0] === yesterdayStr;
+  const todayKey = getLondonDateKey();
+  const asKey = toLondonDateKey(dateString);
+  return asKey === todayKey;
 }
 
 function getCurrentHour(): number {
-  return new Date().getHours();
+  return getLondonHourMinute().hour;
 }
 
 // ========== PUBLIC API ==========
 
 export function loadFocusGardenProgress(): FocusGardenProgress {
-  return getStorage(STORAGE_KEY, getDefaultProgress());
+  const raw = getStorage(STORAGE_KEY, getDefaultProgress());
+  const normalized = normalizeProgress(raw);
+  setStorage(STORAGE_KEY, normalized);
+  return normalized;
 }
 
 export function saveFocusGardenProgress(progress: FocusGardenProgress): void {
@@ -846,7 +851,9 @@ export interface StreakUpdateResult {
 
 export function updateStreak(): StreakUpdateResult {
   const progress = loadFocusGardenProgress();
-  const today = new Date().toISOString().split('T')[0];
+  const todayKey = getLondonDateKey();
+  const yesterdayKey = getYesterdayDateKey(todayKey);
+  const lastActivityKey = toLondonDateKey(progress.streak.lastActivityDate);
 
   const result: StreakUpdateResult = {
     streakMaintained: false,
@@ -857,27 +864,24 @@ export function updateStreak(): StreakUpdateResult {
   };
 
   // If already logged activity today, streak continues
-  if (isToday(progress.streak.lastActivityDate)) {
+  if (lastActivityKey && lastActivityKey === todayKey) {
     result.streakMaintained = true;
     return result;
   }
 
   // If activity was yesterday, increment streak
-  if (isYesterday(progress.streak.lastActivityDate)) {
+  if (lastActivityKey && lastActivityKey === yesterdayKey) {
     progress.streak.currentStreak += 1;
     result.streakMaintained = true;
     result.newStreak = progress.streak.currentStreak;
-  } else if (progress.streak.lastActivityDate) {
-    // More than one day gap - check for streak freeze
-    const daysSinceActivity = Math.floor(
-      (new Date(today).getTime() - new Date(progress.streak.lastActivityDate).getTime()) / (1000 * 60 * 60 * 24)
-    );
+  } else if (lastActivityKey) {
+    const daysSinceActivity = diffDays(lastActivityKey, todayKey);
 
-    // If only 2 days gap and we have streak freezes, use one
+    // If exactly one missed day (gap of 2), auto-use Frost Guard if available
     if (daysSinceActivity === 2 && progress.streak.streakFreezes > 0) {
       progress.streak.streakFreezes -= 1;
-      progress.streak.freezesUsedDates.push(today);
-      progress.streak.streakProtectedDates.push(progress.streak.lastActivityDate);
+      progress.streak.freezesUsedDates.push(yesterdayKey);
+      progress.streak.streakProtectedDates.push(yesterdayKey);
       progress.streak.currentStreak += 1;
       result.freezeUsed = true;
       result.streakMaintained = true;
@@ -903,7 +907,7 @@ export function updateStreak(): StreakUpdateResult {
 
   // Update longest streak
   progress.streak.longestStreak = Math.max(progress.streak.longestStreak, progress.streak.currentStreak);
-  progress.streak.lastActivityDate = new Date().toISOString();
+  progress.streak.lastActivityDate = todayKey;
 
   saveFocusGardenProgress(progress);
   return result;
@@ -990,10 +994,61 @@ export function logSession(
 
   if (leveledUp) {
     progress.gardenLevel = newLevel.level;
+    progress.level = newLevel.level;
   }
 
   // Update streak
-  const streakResult = updateStreak();
+  const streakResult = (() => {
+    const todayKey = getLondonDateKey();
+    const yesterdayKey = getYesterdayDateKey(todayKey);
+    const lastActivityKey = toLondonDateKey(progress.streak.lastActivityDate);
+
+    const result: StreakUpdateResult = {
+      streakMaintained: false,
+      streakBroken: false,
+      freezeUsed: false,
+      newStreak: progress.streak.currentStreak,
+      isComeback: false
+    };
+
+    if (lastActivityKey && lastActivityKey === todayKey) {
+      result.streakMaintained = true;
+      return result;
+    }
+
+    if (lastActivityKey && lastActivityKey === yesterdayKey) {
+      progress.streak.currentStreak += 1;
+      result.streakMaintained = true;
+      result.newStreak = progress.streak.currentStreak;
+    } else if (lastActivityKey) {
+      const daysSinceActivity = diffDays(lastActivityKey, todayKey);
+      if (daysSinceActivity === 2 && progress.streak.streakFreezes > 0) {
+        progress.streak.streakFreezes -= 1;
+        progress.streak.freezesUsedDates.push(yesterdayKey);
+        progress.streak.streakProtectedDates.push(yesterdayKey);
+        progress.streak.currentStreak += 1;
+        result.freezeUsed = true;
+        result.streakMaintained = true;
+        result.newStreak = progress.streak.currentStreak;
+      } else {
+        const hadStreak = progress.streak.currentStreak > 0;
+        progress.streak.currentStreak = 1;
+        result.streakBroken = true;
+        result.newStreak = 1;
+        if (hadStreak) {
+          progress.comebackCount += 1;
+          result.isComeback = true;
+        }
+      }
+    } else {
+      progress.streak.currentStreak = 1;
+      result.newStreak = 1;
+    }
+
+    progress.streak.longestStreak = Math.max(progress.streak.longestStreak, progress.streak.currentStreak);
+    progress.streak.lastActivityDate = todayKey;
+    return result;
+  })();
 
   // Check for badges
   const badgesEarned = checkAndAwardBadges(progress);
@@ -1057,6 +1112,14 @@ function checkAndAwardBadges(progress: FocusGardenProgress): string[] {
             earned = progress.nightOwlSessions >= (badge.requirement.count || 0);
           }
         }
+        break;
+      case 'categories': {
+        const unique = new Set(progress.garden.map(p => normalizeCategory(p.category ?? p.layer)));
+        earned = unique.size >= (badge.requirement.count || 0);
+        break;
+      }
+      case 'freeze-used':
+        earned = (progress.streak.freezesUsedDates?.length ?? 0) >= (badge.requirement.count || 0);
         break;
     }
 
@@ -1145,6 +1208,14 @@ export function completeQuestDay(questId: string, dayNumber: number): { success:
       progress.earnedBadges.push(quest.badgeReward);
     }
 
+    // Award Frost Guard if specified
+    if (quest.freezeReward && quest.freezeReward > 0) {
+      progress.streak.streakFreezes = Math.min(
+        progress.streak.streakFreezes + quest.freezeReward,
+        progress.streak.maxStreakFreezes
+      );
+    }
+
     // Remove from active quests
     progress.activeQuests = progress.activeQuests.filter(q => q.id !== questId);
   } else {
@@ -1214,24 +1285,47 @@ export function getActiveQuests(): MultiDayQuest[] {
 // ========== PLANT MANAGEMENT ==========
 
 export function plantTask(taskId: string, layer: string): FocusGardenPlant {
+  // Backward-compatible wrapper
+  const planted = plantSeed({
+    title: taskId,
+    category: normalizeCategory(layer),
+    cue: 'When/where/how: __'
+  });
+  return planted ?? normalizePlant({ id: `plant-${Date.now()}`, taskId, layer, plantedAt: new Date().toISOString() });
+}
+
+export function plantSeed(input: { title: string; category: GardenCategory; cue: string; reminderTime?: string }): FocusGardenPlant | null {
   const progress = loadFocusGardenProgress();
+  const plotCap = getUnlockedPlotCount(progress.gardenLevel);
+  if (progress.garden.length >= plotCap) return null;
+
+  const nowIso = new Date().toISOString();
+  const title = input.title.trim();
+  const cue = input.cue.trim();
+  const category = normalizeCategory(input.category);
+  const reminderTime = input.reminderTime?.trim() ? input.reminderTime.trim() : undefined;
 
   const newPlant: FocusGardenPlant = {
-    id: `plant-${Date.now()}`,
-    taskId,
+    id: `plant-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    taskId: `seed:${Date.now()}`,
+    layer: category,
+    title,
+    category,
+    cue,
+    reminderTime,
     stage: 'seed',
-    waterCount: 0,
-    layer,
-    plantedAt: new Date().toISOString()
+    cycleConsecutiveWatered: 0,
+    currentStreak: 0,
+    bestStreak: 0,
+    lastWateredDateKey: null,
+    bloomsHarvested: 0,
+    daily: {},
+    plantedAt: nowIso
   };
 
   progress.garden.push(newPlant);
   progress.totalPlantsGrown += 1;
   saveFocusGardenProgress(progress);
-
-  // Log as a session
-  logSession(1, 'task', newPlant.id);
-
   return newPlant;
 }
 
@@ -1243,17 +1337,33 @@ export function waterPlant(plantId: string): { plant: FocusGardenPlant | null; x
     return { plant: null, xpEarned: 0, bloomed: false };
   }
 
-  plant.waterCount += 1;
+  const todayKey = getLondonDateKey();
+  if (plant.daily[todayKey]?.status === 'watered') {
+    return { plant, xpEarned: 0, bloomed: false };
+  }
 
-  // Advance growth stage
-  if (plant.waterCount === 1) plant.stage = 'sprout';
-  else if (plant.waterCount === 2) plant.stage = 'bud';
-  else if (plant.waterCount >= 3) plant.stage = 'bloom';
+  const nowIso = new Date().toISOString();
+  plant.daily[todayKey] = { status: 'watered', at: nowIso };
+
+  const yesterdayKey = getYesterdayDateKey(todayKey);
+  const wateredYesterday = plant.daily[yesterdayKey]?.status === 'watered';
+  plant.cycleConsecutiveWatered = wateredYesterday ? Math.min(4, plant.cycleConsecutiveWatered + 1) : 1;
+  plant.stage = stageFromCycle(plant.cycleConsecutiveWatered);
+  plant.lastWateredDateKey = todayKey;
+
+  plant.currentStreak = wateredYesterday ? plant.currentStreak + 1 : 1;
+  plant.bestStreak = Math.max(plant.bestStreak, plant.currentStreak);
+  plant.waterCount = plant.cycleConsecutiveWatered;
 
   const bloomed = plant.stage === 'bloom';
-  const xpEarned = 10 + (bloomed ? 15 : 0); // Bonus XP for bloom
+  const xpEarned = 10 + (bloomed ? 15 : 0);
 
   progress.totalXP += xpEarned;
+  const newLevel = calculateGardenLevel(progress.totalXP);
+  progress.gardenLevel = newLevel.level;
+  progress.level = newLevel.level;
+
+  checkAndAwardBadges(progress);
   saveFocusGardenProgress(progress);
 
   return { plant, xpEarned, bloomed };
@@ -1268,15 +1378,23 @@ export function harvestPlant(plantId: string): { success: boolean; xpEarned: num
     return { success: false, xpEarned: 0 };
   }
 
-  // Remove plant and award XP
-  progress.garden.splice(plantIndex, 1);
+  // Harvest awards XP and resets cycle; the plant persists
   progress.totalHarvests += 1;
   const xpEarned = 50;
   progress.totalXP += xpEarned;
 
+  plant.bloomsHarvested += 1;
+  plant.harvestedAt = new Date().toISOString();
+  plant.stage = 'seed';
+  plant.cycleConsecutiveWatered = 0;
+  plant.currentStreak = 0;
+  plant.lastWateredDateKey = null;
+  plant.waterCount = 0;
+
   // Update garden level
   const newLevel = calculateGardenLevel(progress.totalXP);
   progress.gardenLevel = newLevel.level;
+  progress.level = newLevel.level;
 
   // Check for badges
   checkAndAwardBadges(progress);
@@ -1311,16 +1429,16 @@ export function migrateOldProgress(): void {
 
       // Migrate garden
       if (parsed.garden) {
-        newProgress.garden = parsed.garden.map((p: FocusGardenPlant) => ({
-          ...p,
-          plantedAt: p.plantedAt || new Date().toISOString()
-        }));
+        newProgress.garden = (parsed.garden as unknown[]).map(p => normalizePlant(p));
       }
 
       // Migrate XP and level
       if (parsed.xp) {
         newProgress.totalXP = parsed.xp + ((parsed.level || 1) - 1) * 100;
       }
+
+      newProgress.gardenLevel = calculateGardenLevel(newProgress.totalXP).level;
+      newProgress.level = newProgress.gardenLevel;
 
       saveFocusGardenProgress(newProgress);
       console.log('[Focus Garden] Migrated from old storage format');
