@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 interface ProgressConsentModalProps {
   open: boolean;
   title: string;
-  description: string;
+  body: React.ReactNode;
   onAccept: () => void;
   onDecline: () => void;
   onClose: () => void;
@@ -14,7 +14,7 @@ interface ProgressConsentModalProps {
 export function ProgressConsentModal({
   open,
   title,
-  description,
+  body,
   onAccept,
   onDecline,
   onClose,
@@ -66,16 +66,8 @@ export function ProgressConsentModal({
         </div>
 
         <div className="px-6 py-4 space-y-3">
-          <p id="nb-progress-consent-desc" className="text-sm text-slate-700 dark:text-slate-300">
-            {description}
-          </p>
-          <div className="text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded p-3">
-            <p className="font-medium mb-1">What we store</p>
-            <ul className="list-disc pl-4 space-y-1">
-              <li>Completed activities (e.g. techniques, lessons, quizzes)</li>
-              <li>Optional details (e.g. duration, score) when relevant</li>
-            </ul>
-            <p className="mt-2">You can delete this at any time in Cookie settings.</p>
+          <div id="nb-progress-consent-desc" className="text-sm text-slate-700 dark:text-slate-300 space-y-2">
+            {body}
           </div>
         </div>
 
@@ -85,14 +77,14 @@ export function ProgressConsentModal({
             onClick={onDecline}
             className="px-4 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400"
           >
-            Not now
+            Continue without saving
           </button>
           <button
             type="button"
             onClick={onAccept}
             className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-            Enable progress saving
+            Enable saving
           </button>
         </div>
       </div>

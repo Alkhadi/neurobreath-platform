@@ -31,6 +31,28 @@
     "MD040": false,
     "MD041": false,
     "MD050": false
+  },
+  "files.exclude": {
+    "**/.next/**": true,
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/out/**": true,
+    "**/coverage/**": true,
+    "**/playwright-report/**": true,
+    "**/test-results/**": true,
+    "**/.turbo/**": true,
+    "**/.vercel/**": true
+  },
+  "search.exclude": {
+    "**/.next/**": true,
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/out/**": true,
+    "**/coverage/**": true,
+    "**/playwright-report/**": true,
+    "**/test-results/**": true,
+    "**/.turbo/**": true,
+    "**/.vercel/**": true
   }
 }
 

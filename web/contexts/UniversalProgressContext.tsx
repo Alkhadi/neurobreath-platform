@@ -22,9 +22,11 @@ interface UniversalProgressContextValue {
   markComplete: (activityType: UniversalProgressActivityType, activityId: string, meta?: UniversalProgressMeta) => Promise<void>
   resetProgress: (opts?: { withdrawConsent?: boolean }) => Promise<void>
   getCompletedIds: (activityType: UniversalProgressActivityType) => string[]
+  openSavingConsent: () => void
 }
 
 const STORAGE_KEY = 'nb_progress_v1'
+const SESSION_DECLINED_KEY = 'nb_progress_saving_declined'
 
 const UniversalProgressContext = createContext<UniversalProgressContextValue | undefined>(undefined)
 
@@ -43,65 +45,114 @@ function normaliseStore(input: unknown): UniversalProgressStore {
 }
 
 export function UniversalProgressProvider({ children }: { children: React.ReactNode }) {
-  const { consent, hasSavedConsent, updateConsent } = useConsent()
-  const persistenceEnabled = !!consent.functional
+  const { consent, updateConsent } = useConsent()
+  const functionalEnabled = !!consent.functional
+
+  const [serverProgressConsent, setServerProgressConsent] = useState<{ value: '1' | '0' | null; granted: boolean }>(() => {
+    if (typeof window === 'undefined') return { value: null, granted: false }
+    try {
+      const declined = window.sessionStorage.getItem(SESSION_DECLINED_KEY) === '1'
+      return { value: declined ? '0' : null, granted: false }
+    } catch {
+      return { value: null, granted: false }
+    }
+  })
+
+  const savingEnabled = functionalEnabled && serverProgressConsent.granted
 
   const [store, setStore] = useState<UniversalProgressStore>(() => {
     if (typeof window === 'undefined') return {}
-    if (!persistenceEnabled) return {}
+    if (!savingEnabled) return {}
     return normaliseStore(safeParse<UniversalProgressStore>(localStorage.getItem(STORAGE_KEY)))
   })
 
-  const serverConsentInitialisedRef = useRef(false)
   const mergeAttemptedRef = useRef(false)
 
   const [consentModalOpen, setConsentModalOpen] = useState(false)
+  const [declinedThisSession, setDeclinedThisSession] = useState(() => {
+    if (typeof window === 'undefined') return false
+    try {
+      return window.sessionStorage.getItem(SESSION_DECLINED_KEY) === '1'
+    } catch {
+      return false
+    }
+  })
+  const declinedThisSessionRef = useRef(declinedThisSession)
+  const savingOffNoticeShownRef = useRef(false)
+
+  const lastEventRef = useRef<{
+    activityType: UniversalProgressActivityType
+    activityId: string
+    meta?: UniversalProgressMeta
+  } | null>(null)
+
   const pendingEventRef = useRef<{
     activityType: UniversalProgressActivityType
     activityId: string
     meta?: UniversalProgressMeta
   } | null>(null)
-  const modalCopyRef = useRef<{ title: string; description: string }>({
+
+  const modalCopyRef = useRef<{ title: string; body: React.ReactNode }>({
     title: 'Save your progress?',
-    description:
-      "We can save your progress on this device (and back it up on our servers) if you give permission. If you decline, your progress won't be saved after you close this tab.",
+    body: (
+      <>
+        <p>If you enable this, NeuroBreath will save your completed lessons and exercises on this device.</p>
+        <p>If you later create an account or sign in, we can move this progress into your account.</p>
+        <p>You can reset or delete saved progress at any time.</p>
+      </>
+    ),
   })
 
-  // If consent becomes enabled later, hydrate from localStorage.
+  // Fetch server-side progress-consent state (does not create identifiers).
+  useEffect(() => {
+    let cancelled = false
+
+    ;(async () => {
+      const res = await fetch('/api/progress', { method: 'GET' }).catch(() => null)
+      if (!res || !res.ok) return
+
+      const data = (await res.json().catch(() => null)) as
+        | { ok?: boolean; consent?: { value?: '1' | '0' | null; granted?: boolean } }
+        | null
+
+      if (cancelled) return
+      const value = data?.ok ? (data?.consent?.value ?? null) : null
+      const granted = data?.ok ? data?.consent?.granted === true : false
+      setServerProgressConsent({ value, granted })
+    })().catch(() => null)
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
+    declinedThisSessionRef.current = declinedThisSession
+  }, [declinedThisSession])
+
+  // If saving becomes enabled later, hydrate from localStorage.
   useEffect(() => {
     if (typeof window === 'undefined') return
-    if (!persistenceEnabled) return
+    if (!savingEnabled) return
 
     const next = normaliseStore(safeParse<UniversalProgressStore>(localStorage.getItem(STORAGE_KEY)))
     setStore((prev) => ({ ...next, ...prev }))
-  }, [persistenceEnabled])
+  }, [savingEnabled])
 
-  // Persist to localStorage only when functional consent is enabled.
+  // Persist to localStorage only when saving is enabled.
   useEffect(() => {
     if (typeof window === 'undefined') return
-    if (!persistenceEnabled) return
+    if (!savingEnabled) return
 
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(store))
     } catch {
       // ignore storage failures
     }
-  }, [store, persistenceEnabled])
-
-  const ensureServerConsent = useCallback(async () => {
-    if (!persistenceEnabled) return
-    if (serverConsentInitialisedRef.current) return
-    serverConsentInitialisedRef.current = true
-
-    await fetch('/api/progress/consent', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ enabled: true }),
-    }).catch(() => null)
-  }, [persistenceEnabled])
+  }, [store, savingEnabled])
 
   const refreshFromServer = useCallback(async () => {
-    if (!persistenceEnabled) return
+    if (!savingEnabled) return
 
     const res = await fetch('/api/progress', { method: 'GET' }).catch(() => null)
     if (!res || !res.ok) return
@@ -123,22 +174,21 @@ export function UniversalProgressProvider({ children }: { children: React.ReactN
       }
       return next
     })
-  }, [persistenceEnabled])
+  }, [savingEnabled])
 
   // Best-effort merge after login: call once per page load when consent is enabled.
   useEffect(() => {
-    if (!persistenceEnabled) return
+    if (!savingEnabled) return
     if (mergeAttemptedRef.current) return
     mergeAttemptedRef.current = true
 
     ;(async () => {
-      await ensureServerConsent()
       const mergeRes = await fetch('/api/progress/merge', { method: 'POST' }).catch(() => null)
       if (mergeRes && mergeRes.ok) {
         await refreshFromServer()
       }
     })().catch(() => null)
-  }, [persistenceEnabled, ensureServerConsent, refreshFromServer])
+  }, [refreshFromServer, savingEnabled])
 
   const isComplete = useCallback(
     (activityType: UniversalProgressActivityType, activityId: string) => {
@@ -161,24 +211,63 @@ export function UniversalProgressProvider({ children }: { children: React.ReactN
         activityId: string
         meta?: UniversalProgressMeta
       },
-      copy?: { title?: string; description?: string }
+      copy?: { title?: string; body?: React.ReactNode }
     ) => {
       pendingEventRef.current = event
       modalCopyRef.current = {
         title: copy?.title || 'Save your progress?',
-        description:
-          copy?.description ||
-          "We can save your progress on this device (and back it up on our servers) if you give permission. If you decline, your progress won't be saved after you close this tab.",
+        body:
+          copy?.body || (
+            <>
+              <p>If you enable this, NeuroBreath will save your completed lessons and exercises on this device.</p>
+              <p>If you later create an account or sign in, we can move this progress into your account.</p>
+              <p>You can reset or delete saved progress at any time.</p>
+            </>
+          ),
       }
       setConsentModalOpen(true)
     },
     []
   )
 
+  const openConsentModal = useCallback((copy?: { title?: string; body?: React.ReactNode }) => {
+    pendingEventRef.current = null
+    modalCopyRef.current = {
+      title: copy?.title || 'Save your progress?',
+      body:
+        copy?.body || (
+          <>
+            <p>If you enable this, NeuroBreath will save your completed lessons and exercises on this device.</p>
+            <p>If you later create an account or sign in, we can move this progress into your account.</p>
+            <p>You can reset or delete saved progress at any time.</p>
+          </>
+        ),
+    }
+    setConsentModalOpen(true)
+  }, [])
+
+  const showSavingOffNotice = useCallback(() => {
+    if (savingOffNoticeShownRef.current) return
+    savingOffNoticeShownRef.current = true
+
+    toast.message('Progress is not being saved on this device.', {
+      description: 'You can enable saving at any time.',
+      action: {
+        label: 'Enable saving',
+        onClick: () => {
+          const last = lastEventRef.current
+          if (last) {
+            openConsentModalFor(last)
+            return
+          }
+          openConsentModal()
+        },
+      },
+    })
+  }, [openConsentModal, openConsentModalFor])
+
   const persistEventToServer = useCallback(
     async (activityType: UniversalProgressActivityType, activityId: string, meta?: UniversalProgressMeta) => {
-      await ensureServerConsent()
-
       const payload = {
         activityType,
         activityId,
@@ -197,23 +286,17 @@ export function UniversalProgressProvider({ children }: { children: React.ReactN
       if (!res) return
 
       if (res.status === 403) {
-        // Logged-in: explicit progress consent marker missing.
-        openConsentModalFor(
-          { activityType, activityId, meta },
-          {
-            title: 'Save progress to your account?',
-            description:
-              'If you consent, we will store your completed activities in your account so they are available across devices. You can delete this at any time in Cookie settings.',
-          }
-        )
+        openConsentModalFor({ activityType, activityId, meta })
         return
       }
     },
-    [ensureServerConsent, openConsentModalFor]
+    [openConsentModalFor]
   )
 
   const markComplete = useCallback(
     async (activityType: UniversalProgressActivityType, activityId: string, meta?: UniversalProgressMeta) => {
+      lastEventRef.current = { activityType, activityId, meta }
+
       // Always update UI state immediately.
       setStore((prev) => {
         const next: UniversalProgressStore = { ...prev }
@@ -226,21 +309,20 @@ export function UniversalProgressProvider({ children }: { children: React.ReactN
         return next
       })
 
-      if (!persistenceEnabled) {
-        if (!hasSavedConsent) {
+      if (!savingEnabled) {
+        const previouslyDeclined = serverProgressConsent.value === '0'
+        if (!previouslyDeclined && !declinedThisSessionRef.current) {
           openConsentModalFor({ activityType, activityId, meta })
           return
         }
 
-        toast.message('Progress not saved', {
-          description: 'Enable Functional storage in Cookie settings to save your progress.',
-        })
+        showSavingOffNotice()
         return
       }
 
       await persistEventToServer(activityType, activityId, meta)
     },
-    [hasSavedConsent, openConsentModalFor, persistEventToServer, persistenceEnabled]
+    [openConsentModalFor, persistEventToServer, savingEnabled, serverProgressConsent.value, showSavingOffNotice]
   )
 
   const resetProgress = useCallback(
@@ -262,16 +344,33 @@ export function UniversalProgressProvider({ children }: { children: React.ReactN
       }).catch(() => null)
 
       if (opts?.withdrawConsent) {
-        updateConsent({ essential: true, functional: false, analytics: consent.analytics })
+        setServerProgressConsent({ value: '0', granted: false })
+        declinedThisSessionRef.current = true
+        setDeclinedThisSession(true)
+
+        try {
+          window.sessionStorage.setItem(SESSION_DECLINED_KEY, '1')
+        } catch {
+          // ignore
+        }
       }
 
       toast.success('Progress cleared')
     },
-    [consent.analytics, updateConsent]
+    []
   )
 
   const onAcceptConsent = useCallback(async () => {
     setConsentModalOpen(false)
+    declinedThisSessionRef.current = false
+    setDeclinedThisSession(false)
+    savingOffNoticeShownRef.current = false
+
+    try {
+      window.sessionStorage.removeItem(SESSION_DECLINED_KEY)
+    } catch {
+      // ignore
+    }
 
     updateConsent({ essential: true, functional: true, analytics: consent.analytics })
 
@@ -280,6 +379,8 @@ export function UniversalProgressProvider({ children }: { children: React.ReactN
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ enabled: true }),
     }).catch(() => null)
+
+    setServerProgressConsent({ value: '1', granted: true })
 
     const pending = pendingEventRef.current
     pendingEventRef.current = null
@@ -290,8 +391,22 @@ export function UniversalProgressProvider({ children }: { children: React.ReactN
 
   const onDeclineConsent = useCallback(async () => {
     setConsentModalOpen(false)
+    declinedThisSessionRef.current = true
+    setDeclinedThisSession(true)
 
-    updateConsent({ essential: true, functional: false, analytics: consent.analytics })
+    try {
+      window.sessionStorage.setItem(SESSION_DECLINED_KEY, '1')
+    } catch {
+      // ignore
+    }
+
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem(STORAGE_KEY)
+      } catch {
+        // ignore
+      }
+    }
 
     await fetch('/api/progress/consent', {
       method: 'POST',
@@ -299,12 +414,26 @@ export function UniversalProgressProvider({ children }: { children: React.ReactN
       body: JSON.stringify({ enabled: false }),
     }).catch(() => null)
 
-    pendingEventRef.current = null
+    setServerProgressConsent({ value: '0', granted: false })
 
-    toast.message('Progress will not be saved', {
-      description: 'You can enable this later in Cookie settings.',
-    })
-  }, [consent.analytics, updateConsent])
+    pendingEventRef.current = null
+    showSavingOffNotice()
+  }, [showSavingOffNotice])
+
+  const onCloseConsentModal = useCallback(() => {
+    // Treat dismiss as a one-session decline: don't re-prompt repeatedly.
+    setConsentModalOpen(false)
+    declinedThisSessionRef.current = true
+    setDeclinedThisSession(true)
+
+    try {
+      window.sessionStorage.setItem(SESSION_DECLINED_KEY, '1')
+    } catch {
+      // ignore
+    }
+    pendingEventRef.current = null
+    showSavingOffNotice()
+  }, [showSavingOffNotice])
 
   const value = useMemo<UniversalProgressContextValue>(
     () => ({
@@ -312,8 +441,9 @@ export function UniversalProgressProvider({ children }: { children: React.ReactN
       markComplete,
       resetProgress,
       getCompletedIds,
+      openSavingConsent: () => openConsentModal(),
     }),
-    [getCompletedIds, isComplete, markComplete, resetProgress]
+    [getCompletedIds, isComplete, markComplete, openConsentModal, resetProgress]
   )
 
   return (
@@ -322,10 +452,10 @@ export function UniversalProgressProvider({ children }: { children: React.ReactN
       <ProgressConsentModal
         open={consentModalOpen}
         title={modalCopyRef.current.title}
-        description={modalCopyRef.current.description}
+        body={modalCopyRef.current.body}
         onAccept={onAcceptConsent}
         onDecline={onDeclineConsent}
-        onClose={() => setConsentModalOpen(false)}
+        onClose={onCloseConsentModal}
       />
     </UniversalProgressContext.Provider>
   )

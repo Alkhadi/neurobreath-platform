@@ -531,6 +531,18 @@ export function TrustPrivacyPage({ region }: { region?: Region } = {}) {
       </section>
 
       <section className="space-y-3">
+        <h2 className="text-lg font-semibold text-slate-900">Progress saving (optional)</h2>
+        <p className="text-sm text-slate-600">
+          If you choose to enable progress saving, we store completion markers for lessons and exercises (and, where relevant, timestamps and quiz scores).
+        </p>
+        <ul className="list-disc pl-5 text-sm text-slate-600 space-y-2">
+          <li><strong>Guests:</strong> progress is saved on this device only, and requires your consent.</li>
+          <li><strong>Accounts:</strong> if you create an account or sign in, we can store progress in your account so it can be available across devices.</li>
+          <li>You can reset saved progress or withdraw consent at any time in Settings.</li>
+        </ul>
+      </section>
+
+      <section className="space-y-3">
         <h2 className="text-lg font-semibold text-slate-900">How we use it</h2>
         <ul className="list-disc pl-5 text-sm text-slate-600 space-y-2">
           <li>To deliver requested features and personalised routines.</li>

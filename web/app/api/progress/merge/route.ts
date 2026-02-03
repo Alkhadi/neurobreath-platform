@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 
 import { prisma, isDbDown, getDbDownReason, markDbDown } from '@/lib/db'
 import { getAuthedUserId } from '@/lib/auth/require-auth'
-import { getDeviceIdFromRequest, NB_DEVICE_ID_COOKIE } from '../_progressCookies'
+import { getDeviceIdFromRequest, getProgressConsentFromRequest, NB_DEVICE_ID_COOKIE } from '../_progressCookies'
 
 type DeviceRow = {
   activityType: string
@@ -39,6 +39,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, message: auth.message }, { status: auth.status })
   }
 
+  const consent = getProgressConsentFromRequest(request)
+  if (consent !== '1') {
+    return NextResponse.json({ ok: true, merged: 0, clearedDevice: false })
+  }
+
+  const user = await prisma.authUser
+    .findUnique({ where: { id: auth.userId }, select: { progressConsentAt: true } })
+    .catch(() => null)
+  if (!user?.progressConsentAt) {
+    return NextResponse.json({ ok: true, merged: 0, clearedDevice: false })
+  }
+
   const deviceId = getDeviceIdFromRequest(request)
   if (!deviceId) {
     return NextResponse.json({ ok: true, merged: 0, clearedDevice: false })
@@ -60,17 +72,7 @@ export async function POST(request: NextRequest) {
     })
 
     if (deviceRows.length === 0) {
-      const res = NextResponse.json({ ok: true, merged: 0, clearedDevice: true })
-      res.cookies.set({
-        name: NB_DEVICE_ID_COOKIE,
-        value: '',
-        path: '/',
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        maxAge: 0,
-      })
-      return res
+      return NextResponse.json({ ok: true, merged: 0, clearedDevice: false })
     }
 
     let merged = 0

@@ -36,19 +36,23 @@ export async function POST(request: NextRequest) {
   // Always set the server-side consent cookie (used by /api/progress for guest backups).
   setProgressConsentCookie(res, parsed.data.enabled ? '1' : '0')
 
-  // If enabling for a guest, ensure a pseudonymous HttpOnly device ID cookie exists.
+  const auth = await getAuthedUserId(request)
+
+  // Device ID cookie rules: create only for guests (never for authenticated users).
   if (parsed.data.enabled) {
-    const deviceId = getDeviceIdFromRequest(request)
-    if (!deviceId) {
-      res.cookies.set({
-        name: NB_DEVICE_ID_COOKIE,
-        value: generateUuid(),
-        path: '/',
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        maxAge: 60 * 60 * 24 * 365,
-      })
+    if (!auth.ok) {
+      const deviceId = getDeviceIdFromRequest(request)
+      if (!deviceId) {
+        res.cookies.set({
+          name: NB_DEVICE_ID_COOKIE,
+          value: generateUuid(),
+          path: '/',
+          sameSite: 'lax',
+          secure: process.env.NODE_ENV === 'production',
+          httpOnly: true,
+          maxAge: 60 * 60 * 24 * 365,
+        })
+      }
     }
   } else {
     // If disabling, clear the device cookie too.
@@ -63,18 +67,14 @@ export async function POST(request: NextRequest) {
     })
   }
 
-  // Best-effort: if the user is authenticated, persist the one-time consent marker to the account.
-  if (!parsed.data.enabled) return res
-
   if (isDbDown()) return res
 
-  const auth = await getAuthedUserId(request)
   if (!auth.ok) return res
 
   try {
     await prisma.authUser.update({
       where: { id: auth.userId },
-      data: { progressConsentAt: new Date() } as Prisma.AuthUserUpdateInput,
+      data: { progressConsentAt: parsed.data.enabled ? new Date() : null } as Prisma.AuthUserUpdateInput,
     })
   } catch (error) {
     markDbDown(error)

@@ -36,7 +36,7 @@ export function clearProgressCookies(res: NextResponse) {
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    maxAge: 0,
+    maxAge: 60 * 60 * 24 * 365,
   });
 
   res.cookies.set({

@@ -4,6 +4,28 @@
     "**/web/prisma/migrations/**/migration.sql": "plaintext",
     "**/prisma/migrations/**/migration.sql": "plaintext"
   },
+  "files.exclude": {
+    "**/.next/**": true,
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/out/**": true,
+    "**/coverage/**": true,
+    "**/playwright-report/**": true,
+    "**/test-results/**": true,
+    "**/.turbo/**": true,
+    "**/.vercel/**": true
+  },
+  "search.exclude": {
+    "**/.next/**": true,
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/out/**": true,
+    "**/coverage/**": true,
+    "**/playwright-report/**": true,
+    "**/test-results/**": true,
+    "**/.turbo/**": true,
+    "**/.vercel/**": true
+  },
   "markdownlint.config": {
     "default": true,
     "MD013": false,

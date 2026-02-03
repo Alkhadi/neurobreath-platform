@@ -5,6 +5,7 @@ import { getToken } from 'next-auth/jwt'
 import { getDbDownReason, isDbDown, markDbDown, prisma } from '@/lib/db'
 import {
   NB_DEVICE_ID_COOKIE,
+  clearProgressCookies,
   getDeviceIdFromRequest,
   getProgressConsentFromRequest,
 } from './_progressCookies'
@@ -42,25 +43,45 @@ function generateUuid(): string {
 }
 
 export async function GET(request: NextRequest) {
+  const deviceIdParam = request?.nextUrl?.searchParams?.get('deviceId')
+
+  // If the DB is down, preserve legacy device-totals behaviour, but keep the
+  // universal-progress contract stable (200 + empty progress + consent state).
   if (isDbDown()) {
+    if (deviceIdParam) {
+      return NextResponse.json({
+        totalSessions: 0,
+        totalMinutes: 0,
+        totalBreaths: 0,
+        currentStreak: 0,
+        longestStreak: 0,
+        dbUnavailable: true,
+        dbUnavailableReason: getDbDownReason(),
+      })
+    }
+
+    const userId = await getOptionalUserId(request)
+    const consent = getProgressConsentFromRequest(request)
+
     return NextResponse.json({
-      totalSessions: 0,
-      totalMinutes: 0,
-      totalBreaths: 0,
-      currentStreak: 0,
-      longestStreak: 0,
+      ok: true,
+      identity: { kind: userId ? 'user' : 'guest' },
+      consent: { granted: userId ? false : consent === '1', required: true, value: consent },
+      byType: {},
       dbUnavailable: true,
-      dbUnavailableReason: getDbDownReason()
+      dbUnavailableReason: getDbDownReason(),
     })
   }
-
-  const deviceIdParam = request?.nextUrl?.searchParams?.get('deviceId')
 
   try {
     // ---------------------------------------------------------------------
     // Back-compat: device totals for existing callers
     // ---------------------------------------------------------------------
     if (deviceIdParam) {
+      const cookieDeviceId = getDeviceIdFromRequest(request)
+      if (!cookieDeviceId || cookieDeviceId !== deviceIdParam) {
+        return jsonError(403, 'FORBIDDEN', 'Device identifier mismatch')
+      }
       const progress = await prisma.progress.findUnique({
         where: { deviceId: deviceIdParam }
       })
@@ -90,8 +111,15 @@ export async function GET(request: NextRequest) {
         select: { progressConsentAt: true },
       })
 
-      if (!user?.progressConsentAt || consent === '0') {
-        return jsonError(403, 'CONSENT_REQUIRED', 'Progress saving is disabled until you consent.')
+      const accountGranted = !!user?.progressConsentAt
+      const consentGranted = accountGranted && consent === '1'
+      if (!consentGranted) {
+        return NextResponse.json({
+          ok: true,
+          identity: { kind: 'user' },
+          consent: { granted: false, required: true, value: consent, accountGranted },
+          byType: {},
+        })
       }
 
       const rows = await prisma.universalProgressEvent.findMany({
@@ -105,16 +133,31 @@ export async function GET(request: NextRequest) {
         byType[row.activityType]?.push(row.activityId)
       }
 
-      return NextResponse.json({ ok: true, identity: { kind: 'user' }, byType })
+      return NextResponse.json({
+        ok: true,
+        identity: { kind: 'user' },
+        consent: { granted: true, required: true, value: consent, accountGranted },
+        byType,
+      })
     }
 
     if (consent !== '1') {
-      return jsonError(403, 'CONSENT_REQUIRED', 'Progress saving is disabled until you consent.')
+      return NextResponse.json({
+        ok: true,
+        identity: { kind: 'guest' },
+        consent: { granted: false, required: true, value: consent },
+        byType: {},
+      })
     }
 
     const deviceId = getDeviceIdFromRequest(request)
     if (!deviceId) {
-      return NextResponse.json({ ok: true, identity: { kind: 'device' }, byType: {} })
+      return NextResponse.json({
+        ok: true,
+        identity: { kind: 'guest' },
+        consent: { granted: true, required: true, value: consent },
+        byType: {},
+      })
     }
 
     const rows = await prisma.universalProgressEvent.findMany({
@@ -128,9 +171,32 @@ export async function GET(request: NextRequest) {
       byType[row.activityType]?.push(row.activityId)
     }
 
-    return NextResponse.json({ ok: true, identity: { kind: 'device' }, byType })
+    return NextResponse.json({
+      ok: true,
+      identity: { kind: 'guest' },
+      consent: { granted: true, required: true, value: consent },
+      byType,
+    })
   } catch (error) {
+    // If universal progress tables are missing (e.g. local/dev without migrations),
+    // keep a stable 200 response so the client can still manage consent + local state.
+    const err = error as { code?: string } | null
+    if (err?.code === 'P2021') {
+      const userId = await getOptionalUserId(request)
+      const consent = getProgressConsentFromRequest(request)
+
+      return NextResponse.json({
+        ok: true,
+        identity: { kind: userId ? 'user' : 'guest' },
+        consent: { granted: userId ? false : consent === '1', required: true, value: consent },
+        byType: {},
+        dbUnavailable: true,
+        dbUnavailableReason: 'Missing database table',
+      })
+    }
+
     console.error('[Progress API] Failed to fetch progress:', error)
+
     markDbDown(error)
 
     // Legacy callers expect a stable 200 response with fallback totals.
@@ -147,15 +213,14 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    return NextResponse.json(
-      {
-        ok: false,
-        message: 'Failed to load progress',
-        dbUnavailable: isDbDown(),
-        dbUnavailableReason: getDbDownReason() || 'Database error',
-      },
-      { status: 500 }
-    )
+    return NextResponse.json({
+      ok: true,
+      identity: { kind: 'guest' },
+      consent: { granted: false, required: true, value: getProgressConsentFromRequest(request) },
+      byType: {},
+      dbUnavailable: true,
+      dbUnavailableReason: getDbDownReason() || 'Database error',
+    })
   }
 }
 
@@ -182,7 +247,7 @@ export async function POST(request: NextRequest) {
         select: { progressConsentAt: true },
       })
 
-      if (!user?.progressConsentAt || consent === '0') {
+      if (!user?.progressConsentAt || consent !== '1') {
         return jsonError(403, 'CONSENT_REQUIRED', 'Progress saving is disabled until you consent.')
       }
 
@@ -293,20 +358,16 @@ export async function DELETE(request: NextRequest) {
   const userId = await getOptionalUserId(request)
 
   try {
-    const res = NextResponse.json({ ok: true })
+    const res = NextResponse.json({
+      ok: true,
+      clearLocalStorageKeys: withdraw ? ['nb_progress_v1'] : [],
+    })
 
     if (userId) {
       await prisma.universalProgressEvent.deleteMany({ where: { userId } })
       if (withdraw) {
-        res.cookies.set({
-          name: 'nb_progress_consent',
-          value: '0',
-          path: '/',
-          sameSite: 'lax',
-          secure: process.env.NODE_ENV === 'production',
-          httpOnly: true,
-          maxAge: 60 * 60 * 24 * 365,
-        })
+        await prisma.authUser.update({ where: { id: userId }, data: { progressConsentAt: null } }).catch(() => null)
+        clearProgressCookies(res)
       }
       return res
     }
@@ -317,24 +378,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     if (withdraw) {
-      res.cookies.set({
-        name: 'nb_progress_consent',
-        value: '0',
-        path: '/',
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        maxAge: 0,
-      })
-      res.cookies.set({
-        name: NB_DEVICE_ID_COOKIE,
-        value: '',
-        path: '/',
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        maxAge: 0,
-      })
+      clearProgressCookies(res)
     }
 
     return res

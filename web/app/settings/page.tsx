@@ -5,6 +5,8 @@ import { Download, Upload, RotateCcw, Settings as SettingsIcon, Accessibility, V
 import { useUserPreferencesState, useExportPreferences, useImportPreferences, useResetPreferences } from '@/lib/user-preferences/useUserPreferences';
 import { useGuestPreferences } from '@/lib/user-preferences/useGuestPreferences';
 import { useTTSPreferences } from '@/lib/user-preferences/useTTSPreferences';
+import { useConsent } from '@/lib/consent/useConsent';
+import { useUniversalProgress } from '@/contexts/UniversalProgressContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -21,6 +23,9 @@ export default function SettingsPage() {
   const exportPreferences = useExportPreferences();
   const importPreferences = useImportPreferences();
   const resetPreferences = useResetPreferences();
+
+  const { consent } = useConsent();
+  const { resetProgress, openSavingConsent } = useUniversalProgress();
 
   const {
     setRegionPreference,
@@ -159,6 +164,44 @@ export default function SettingsPage() {
 
         {/* Guest Profile Tab */}
         <TabsContent value="profile" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Progress</CardTitle>
+              <CardDescription>Control whether completed activities are saved on this device</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <p className="font-medium">Saving: {consent.functional ? 'On' : 'Off'}</p>
+                  <p className="text-sm text-muted-foreground">
+                    When saving is off, progress updates will not persist after you reload.
+                  </p>
+                </div>
+                {!consent.functional ? (
+                  <Button onClick={openSavingConsent}>
+                    Enable saving
+                  </Button>
+                ) : null}
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => resetProgress()}
+                >
+                  Reset saved progress
+                </Button>
+                <Button
+                  variant="outline"
+                  className="text-destructive hover:bg-destructive/10"
+                  onClick={() => resetProgress({ withdrawConsent: true })}
+                >
+                  Withdraw consent
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Region & Language</CardTitle>
