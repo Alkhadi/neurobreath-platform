@@ -26,5 +26,9 @@
     "web/PERFORMANCE_BUDGETS.md",
     "web/PERF_AUTOPLAN.md",
     "web/QA_PERF_IMPLEMENTATION_SUMMARY.md"
-  ]
+  ],
+
+  // Prisma migrations are Postgres SQL, not T-SQL.
+  // Disable MSSQL extension error checking to avoid false-positive squiggles.
+  "mssql.intelliSense.enableErrorChecking": false
 }
