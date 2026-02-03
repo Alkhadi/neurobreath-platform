@@ -28,9 +28,10 @@ import {
   calculateGardenLevel,
   getGardenLevelProgress,
   logSession,
-  plantTask as storePlantTask,
+  plantSeed as storePlantSeed,
   waterPlant as storeWaterPlant,
   harvestPlant as storeHarvestPlant,
+  getLondonDateKey,
   migrateOldProgress,
   interactWithCompanion,
   updateCompanionMood,
@@ -47,6 +48,7 @@ import {
   getActiveQuests,
   getBadgeInfo,
   type FocusGardenProgress,
+  type GardenCategory,
   type MultiDayQuest
 } from '@/lib/focus-garden-store'
 
@@ -660,7 +662,7 @@ const PLANT_STAGES = {
   seed: { emoji: '🌱', name: 'Seed', water: 0, color: 'text-amber-600' },
   sprout: { emoji: '🌿', name: 'Sprout', water: 1, color: 'text-green-500' },
   bud: { emoji: '🌷', name: 'Bud', water: 2, color: 'text-pink-500' },
-  bloom: { emoji: '🌸', name: 'Bloom', water: 3, color: 'text-purple-500' }
+  bloom: { emoji: '🌸', name: 'Bloom', water: 4, color: 'text-purple-500' }
 }
 
 // Garden level themes with visual styling
@@ -697,91 +699,82 @@ const GARDEN_THEMES = {
   }
 }
 
-// Enhanced task layers with modern styling
-const TASK_LAYERS = {
-  structure: {
-    name: 'Structure',
-    icon: '📋',
+const GARDEN_CATEGORIES: Record<
+  GardenCategory,
+  {
+    name: string
+    icon: string
+    gradient: string
+    bgGradient: string
+    borderColor: string
+    hoverBorder: string
+    iconBg: string
+    suggestions: Array<{ title: string; cue: string }>
+  }
+> = {
+  Health: {
+    name: 'Health',
+    icon: '💪',
     gradient: 'from-emerald-500 to-teal-600',
     bgGradient: 'from-emerald-50 to-teal-50',
     borderColor: 'border-emerald-200',
     hoverBorder: 'hover:border-emerald-400',
     iconBg: 'bg-emerald-100',
-    tasks: [
-      { id: 'morning-routine', title: 'Morning Routine', description: 'Complete your morning steps', icon: '🌅', xp: 10 },
-      { id: 'visual-schedule', title: 'Visual Schedule', description: 'Follow your visual schedule today', icon: '📅', xp: 10 },
-      { id: 'transition-timer', title: 'Transition Timer', description: 'Use a timer for activity changes', icon: '⏰', xp: 15 },
-      { id: 'task-breakdown', title: 'Task Breakdown', description: 'Break a big task into small steps', icon: '🧩', xp: 20 },
-      { id: 'routine-chain', title: 'Routine Chain', description: 'Complete a full routine chain', icon: '🔗', xp: 25 },
-      { id: 'weekly-planner', title: 'Weekly Planner', description: 'Plan and follow your whole week', icon: '📘', xp: 30 }
+    suggestions: [
+      { title: 'Hydrate', cue: 'After brushing teeth, drink a glass of water in the kitchen' },
+      { title: '10-minute walk', cue: 'After lunch, walk around the block for 10 minutes' }
     ]
   },
-  communication: {
-    name: 'Communication',
-    icon: '💬',
-    gradient: 'from-blue-500 to-indigo-600',
-    bgGradient: 'from-blue-50 to-indigo-50',
-    borderColor: 'border-blue-200',
-    hoverBorder: 'hover:border-blue-400',
-    iconBg: 'bg-blue-100',
-    tasks: [
-      { id: 'request-help', title: 'Ask for Help', description: 'Use words or symbols to ask for help', icon: '🙋', xp: 10 },
-      { id: 'greet-someone', title: 'Greeting Practice', description: 'Say hello to someone new', icon: '👋', xp: 10 },
-      { id: 'express-feeling', title: 'Express a Feeling', description: 'Tell someone how you feel', icon: '💗', xp: 15 },
-      { id: 'conversation-turn', title: 'Conversation Turns', description: 'Take turns in a conversation', icon: '🔄', xp: 20 },
-      { id: 'social-story', title: 'Social Story', description: 'Read and practice a social story', icon: '📖', xp: 25 },
-      { id: 'complex-request', title: 'Complex Request', description: 'Make a detailed request with reasons', icon: '💎', xp: 30 }
-    ]
-  },
-  zones: {
-    name: 'Zones',
-    icon: '🌈',
-    gradient: 'from-purple-500 to-pink-600',
-    bgGradient: 'from-purple-50 to-pink-50',
-    borderColor: 'border-purple-200',
-    hoverBorder: 'hover:border-purple-400',
-    iconBg: 'bg-purple-100',
-    tasks: [
-      { id: 'zone-check', title: 'Zone Check-In', description: 'Identify your current zone', icon: '🎯', xp: 10 },
-      { id: 'calm-tool', title: 'Use a Calm Tool', description: 'Use a tool to get to green zone', icon: '🧘', xp: 15 },
-      { id: 'energy-boost', title: 'Energy Boost', description: 'Use a tool to increase energy', icon: '⚡', xp: 15 },
-      { id: 'zone-tracking', title: 'Zone Tracking', description: 'Track your zones for a whole day', icon: '📊', xp: 20 },
-      { id: 'zone-prevention', title: 'Zone Prevention', description: 'Notice warning signs before leaving green', icon: '🚦', xp: 25 },
-      { id: 'zone-mastery', title: 'Zone Mastery', description: 'Stay in green zone during a challenge', icon: '🏆', xp: 30 }
-    ]
-  },
-  selfMgmt: {
-    name: 'Self-Management',
-    icon: '🧭',
-    gradient: 'from-amber-500 to-orange-600',
-    bgGradient: 'from-amber-50 to-orange-50',
-    borderColor: 'border-amber-200',
-    hoverBorder: 'hover:border-amber-400',
-    iconBg: 'bg-amber-100',
-    tasks: [
-      { id: 'set-goal', title: 'Set a Small Goal', description: 'Set and complete a small goal', icon: '🎯', xp: 10 },
-      { id: 'problem-solve', title: 'Problem Solving', description: 'Use steps to solve a problem', icon: '🔧', xp: 15 },
-      { id: 'take-break', title: 'Planned Break', description: 'Take a break when you need it', icon: '☕', xp: 10 },
-      { id: 'stress-log', title: 'Stress Log', description: 'Notice and record stress triggers', icon: '📝', xp: 20 },
-      { id: 'coping-plan', title: 'Coping Plan', description: 'Create and use a coping plan', icon: '🗺️', xp: 25 },
-      { id: 'independent-day', title: 'Independent Day', description: 'Manage your whole day independently', icon: '🌟', xp: 30 }
-    ]
-  },
-  mindfulness: {
-    name: 'Mindfulness & Calm',
-    icon: '🦋',
+  Mindfulness: {
+    name: 'Mindfulness',
+    icon: '🧘',
     gradient: 'from-pink-500 to-rose-600',
     bgGradient: 'from-pink-50 to-rose-50',
     borderColor: 'border-pink-200',
     hoverBorder: 'hover:border-pink-400',
     iconBg: 'bg-pink-100',
-    tasks: [
-      { id: 'brave-step', title: 'Brave Step', description: 'Take one small brave step', icon: '👣', xp: 10 },
-      { id: 'worry-time', title: 'Worry Time', description: 'Use scheduled worry time', icon: '⏳', xp: 15 },
-      { id: 'calm-breathing', title: 'Calm Breathing', description: 'Practice calming breaths', icon: '🌬️', xp: 15 },
-      { id: 'mindful-moment', title: 'Mindful Moment', description: 'Take 5 minutes for mindfulness', icon: '🧘', xp: 20 },
-      { id: 'gratitude-practice', title: 'Gratitude Practice', description: 'Note 3 things you are grateful for', icon: '🙏', xp: 20 },
-      { id: 'body-scan', title: 'Body Scan', description: 'Complete a body scan meditation', icon: '✨', xp: 25 }
+    suggestions: [
+      { title: '1-minute check-in', cue: 'When I sit down to work, I will do 3 slow breaths' },
+      { title: 'Body scan', cue: 'Before bed, I will scan shoulders/jaw and relax them' }
+    ]
+  },
+  Learning: {
+    name: 'Learning',
+    icon: '📚',
+    gradient: 'from-blue-500 to-indigo-600',
+    bgGradient: 'from-blue-50 to-indigo-50',
+    borderColor: 'border-blue-200',
+    hoverBorder: 'hover:border-blue-400',
+    iconBg: 'bg-blue-100',
+    suggestions: [
+      { title: '5 minutes of reading', cue: 'After breakfast, read 2 pages on the sofa' },
+      { title: 'Language flashcards', cue: 'After coffee, do 10 flashcards at my desk' }
+    ]
+  },
+  Productivity: {
+    name: 'Productivity',
+    icon: '✅',
+    gradient: 'from-purple-500 to-pink-600',
+    bgGradient: 'from-purple-50 to-pink-50',
+    borderColor: 'border-purple-200',
+    hoverBorder: 'hover:border-purple-400',
+    iconBg: 'bg-purple-100',
+    suggestions: [
+      { title: 'Start line (2 minutes)', cue: 'At 9:00 at my desk, I will open the doc and write 1 sentence' },
+      { title: 'Inbox sweep', cue: 'After lunch, process 5 emails for 5 minutes' }
+    ]
+  },
+  'Self-Care': {
+    name: 'Self-Care',
+    icon: '🌿',
+    gradient: 'from-amber-500 to-orange-600',
+    bgGradient: 'from-amber-50 to-orange-50',
+    borderColor: 'border-amber-200',
+    hoverBorder: 'hover:border-amber-400',
+    iconBg: 'bg-amber-100',
+    suggestions: [
+      { title: 'Mini tidy', cue: 'When I finish dinner, I will tidy for 2 minutes' },
+      { title: 'Stretch', cue: 'After a meeting, I will stretch neck/shoulders for 30 seconds' }
     ]
   }
 }
@@ -791,7 +784,10 @@ type ActiveTab = 'garden' | 'quests' | 'badges'
 
 export default function FocusGardenPage() {
   const [progress, setProgress] = useState<FocusGardenProgress | null>(null)
-  const [selectedLayer, setSelectedLayer] = useState<string>('structure')
+  const [selectedCategory, setSelectedCategory] = useState<GardenCategory>('Productivity')
+  const [seedTitle, setSeedTitle] = useState('')
+  const [seedCue, setSeedCue] = useState('')
+  const [seedReminderTime, setSeedReminderTime] = useState<string>('')
   const [activeTab, setActiveTab] = useState<ActiveTab>('garden')
   const [showTutorial, setShowTutorial] = useState(false)
   const [showCelebration, setShowCelebration] = useState(false)
@@ -904,16 +900,33 @@ export default function FocusGardenPage() {
     }
   }, [progress])
 
-  const handlePlantTask = useCallback((taskId: string, layer: string) => {
+  const handlePlantSeed = useCallback(() => {
     const before = progress
-    storePlantTask(taskId, layer)
+    const title = seedTitle.trim()
+    const cue = seedCue.trim()
+    const reminderTime = seedReminderTime.trim() || undefined
+
+    if (!title || !cue) {
+      celebrate('📝 Add a seed name and a cue (when/where/how).', '📝')
+      return
+    }
+
+    const planted = storePlantSeed({ title, category: selectedCategory, cue, reminderTime })
+    if (!planted) {
+      celebrate('🔒 Plot locked. Level up to unlock more plots.', '🔒')
+      return
+    }
+
     const after = loadFocusGardenProgress()
     refreshProgress()
-    celebrate('🌱 Task planted! Water it to help it grow.', '🌱')
+    setSeedTitle('')
+    setSeedCue('')
+    setSeedReminderTime('')
+    celebrate('🌱 Seed planted! Water once per London day.', '🌱')
     setCompanionContext('session-start')
     updateCompanionMood('encouraging')
     void applySensoryRewards(before, after, 'minor')
-  }, [applySensoryRewards, celebrate, progress, refreshProgress])
+  }, [applySensoryRewards, celebrate, progress, refreshProgress, seedCue, seedReminderTime, seedTitle, selectedCategory])
 
   const handleWaterPlant = useCallback((plantId: string) => {
     const before = progress
@@ -1008,16 +1021,17 @@ export default function FocusGardenPage() {
   const currentGardenLevel = calculateGardenLevel(progress.totalXP)
   const levelProgress = getGardenLevelProgress(progress.totalXP)
   const gardenTheme = GARDEN_THEMES[currentGardenLevel.gardenTheme] || GARDEN_THEMES['plot']
-  const currentLayer = TASK_LAYERS[selectedLayer as keyof typeof TASK_LAYERS]
-
-  const isTaskPlanted = (taskId: string) => {
-    return progress.garden.some(p => p.taskId === taskId)
-  }
-
-  const getTaskInfo = (taskId: string, layerKey: string) => {
-    const layer = TASK_LAYERS[layerKey as keyof typeof TASK_LAYERS]
-    return layer?.tasks.find(t => t.id === taskId)
-  }
+  const todayKey = getLondonDateKey()
+  const yesterdayKey = getLondonDateKey(new Date(Date.now() - 24 * 60 * 60 * 1000))
+  const unlockedPlots = (() => {
+    const level = currentGardenLevel.level
+    if (level >= 8) return 5
+    if (level >= 6) return 4
+    if (level >= 4) return 3
+    if (level >= 2) return 2
+    return 1
+  })()
+  const plotUnlockLevels = [1, 2, 4, 6, 8] as const
 
   return (
     <div className={cn("min-h-screen bg-gradient-to-br", gardenTheme.bgGradient)}>
@@ -1051,11 +1065,11 @@ export default function FocusGardenPage() {
                 <ol className="space-y-3">
                   <li className="flex gap-3">
                     <span className="font-bold text-blue-600 min-w-[24px]">1.</span>
-                    <span><strong>Choose a task</strong> from five categories and plant it in your garden</span>
+                    <span><strong>Plant a seed</strong> in one of five categories with a clear cue (when/where/how)</span>
                   </li>
                   <li className="flex gap-3">
                     <span className="font-bold text-blue-600 min-w-[24px]">2.</span>
-                    <span><strong>Water daily</strong> by completing tasks - watch plants grow through 4 stages!</span>
+                    <span><strong>Water once per London day</strong> — watch seeds grow through 4 stages!</span>
                   </li>
                   <li className="flex gap-3">
                     <span className="font-bold text-blue-600 min-w-[24px]">3.</span>
@@ -1478,42 +1492,43 @@ export default function FocusGardenPage() {
         {/* Garden Tab Content */}
         {activeTab === 'garden' && (
           <div className="space-y-8">
-            {/* Task Categories */}
+            {/* Seed Categories */}
             <div className="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-2xl border-2 border-slate-200 p-7 overflow-hidden">
               <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-slate-200">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center text-2xl shadow-lg">
-                    📚
+                    🌿
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-slate-900">Task Categories</h2>
-                    <p className="text-xs text-slate-600">Choose your focus area</p>
+                    <h2 className="text-2xl font-bold text-slate-900">Seed Categories</h2>
+                    <p className="text-xs text-slate-600">Pick the lane you want to grow</p>
                   </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-                {Object.entries(TASK_LAYERS).map(([key, layer]) => {
-                  const isSelected = selectedLayer === key
+                {(Object.keys(GARDEN_CATEGORIES) as GardenCategory[]).map((key) => {
+                  const category = GARDEN_CATEGORIES[key]
+                  const isSelected = selectedCategory === key
                   return (
                     <button
                       key={key}
-                      onClick={() => setSelectedLayer(key)}
+                      onClick={() => setSelectedCategory(key)}
                       className={cn(
                         "w-full text-left p-4 rounded-2xl border-2 transition-all duration-300 group relative overflow-hidden",
                         isSelected
-                          ? `bg-gradient-to-r ${layer.bgGradient} ${layer.borderColor} shadow-lg scale-[1.03] ring-2 ring-offset-2 ${layer.borderColor.replace('border', 'ring')}`
-                          : `bg-white border-slate-200 hover:bg-gradient-to-r ${layer.bgGradient} hover:border-slate-300 hover:shadow-md hover:scale-[1.01]`
+                          ? `bg-gradient-to-r ${category.bgGradient} ${category.borderColor} shadow-lg scale-[1.03] ring-2 ring-offset-2 ${category.borderColor.replace('border', 'ring')}`
+                          : `bg-white border-slate-200 hover:bg-gradient-to-r ${category.bgGradient} hover:border-slate-300 hover:shadow-md hover:scale-[1.01]`
                       )}
                     >
                       <div className="flex items-center gap-3 relative z-10">
                         <div className={cn(
                           "w-14 h-14 rounded-xl flex items-center justify-center text-3xl transition-all duration-300 shadow-md",
                           isSelected
-                            ? `${layer.iconBg} transform scale-110 rotate-3`
+                            ? `${category.iconBg} transform scale-110 rotate-3`
                             : 'bg-slate-100 group-hover:scale-110 group-hover:-rotate-3'
                         )}>
-                          {layer.icon}
+                          {category.icon}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
@@ -1521,7 +1536,7 @@ export default function FocusGardenPage() {
                               "font-bold text-sm transition-colors",
                               isSelected ? "text-slate-900" : "text-slate-700 group-hover:text-slate-900"
                             )}>
-                              {layer.name}
+                              {category.name}
                             </span>
                             {isSelected && (
                               <div className="w-2 h-2 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 animate-pulse" />
@@ -1533,7 +1548,7 @@ export default function FocusGardenPage() {
                               ? "bg-white/80 text-slate-700"
                               : "bg-slate-200 text-slate-600 group-hover:bg-white/60"
                           )}>
-                            {layer.tasks.length} tasks
+                            {category.suggestions.length} ideas
                           </span>
                         </div>
                       </div>
@@ -1541,79 +1556,90 @@ export default function FocusGardenPage() {
                   )
                 })}
               </div>
+
+              <div className="mt-5 text-xs text-slate-600 bg-white/70 border border-slate-200 rounded-2xl p-4">
+                <strong className="text-slate-800">Saved on this device.</strong> Sync to an account is not available yet (coming soon).
+              </div>
             </div>
 
-            {/* Available Tasks */}
+            {/* Plant a Seed */}
             <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
               <div className="flex items-center gap-3 mb-6">
                 <div className={cn(
                   "w-14 h-14 rounded-2xl flex items-center justify-center text-3xl",
-                  currentLayer.iconBg
+                  GARDEN_CATEGORIES[selectedCategory].iconBg
                 )}>
-                  {currentLayer.icon}
+                  {GARDEN_CATEGORIES[selectedCategory].icon}
                 </div>
                 <div>
-                  <h2 className="text-3xl font-bold text-slate-900">{currentLayer.name} Tasks</h2>
-                  <p className="text-slate-600">Choose tasks to plant and nurture in your garden</p>
+                  <h2 className="text-3xl font-bold text-slate-900">Plant a {GARDEN_CATEGORIES[selectedCategory].name} Seed</h2>
+                  <p className="text-slate-600">Make it specific: when / where / how</p>
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
-                {currentLayer.tasks.map(task => {
-                  const isPlanted = isTaskPlanted(task.id)
-                  return (
-                    <div
-                      key={task.id}
-                      className={cn(
-                        "group p-6 rounded-2xl border-2 transition-all duration-200",
-                        isPlanted
-                          ? 'bg-slate-50 border-slate-300'
-                          : `bg-gradient-to-br ${currentLayer.bgGradient} ${currentLayer.borderColor} ${currentLayer.hoverBorder} hover:shadow-lg hover:scale-[1.02]`
-                      )}
-                    >
-                      <div className="flex items-start gap-3 mb-4">
-                        <div className={cn(
-                          "w-14 h-14 rounded-xl flex items-center justify-center text-3xl transition-transform group-hover:scale-110",
-                          isPlanted ? 'bg-slate-200' : 'bg-white/80 shadow-sm'
-                        )}>
-                          {task.icon}
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-bold text-slate-900 mb-1">{task.title}</h3>
-                          <p className="text-sm text-slate-600 leading-relaxed">{task.description}</p>
-                        </div>
-                      </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <label htmlFor="seed-title" className="text-sm font-semibold text-slate-800">Seed name</label>
+                  <input
+                    id="seed-title"
+                    value={seedTitle}
+                    onChange={(e) => setSeedTitle(e.target.value)}
+                    placeholder="e.g., Start line (2 minutes)"
+                    className="w-full h-11 px-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-300"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="seed-reminder" className="text-sm font-semibold text-slate-800">Optional reminder</label>
+                  <input
+                    id="seed-reminder"
+                    type="time"
+                    value={seedReminderTime}
+                    onChange={(e) => setSeedReminderTime(e.target.value)}
+                    className="w-full h-11 px-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-300"
+                  />
+                  <p className="text-xs text-slate-500">Stored as a preference (no notifications yet).</p>
+                </div>
+                <div className="md:col-span-2 space-y-2">
+                  <label htmlFor="seed-cue" className="text-sm font-semibold text-slate-800">Cue (implementation intention)</label>
+                  <textarea
+                    id="seed-cue"
+                    value={seedCue}
+                    onChange={(e) => setSeedCue(e.target.value)}
+                    placeholder="When [situation], I will [action] at/in [place] for [tiny duration]."
+                    className="w-full min-h-[90px] p-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-300"
+                  />
+                </div>
+              </div>
 
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-xs font-semibold text-slate-600 bg-white/60 px-2 py-1 rounded-full">
-                          +{task.xp} XP per water
-                        </span>
-                      </div>
+              <div className="mt-5 flex flex-wrap gap-2">
+                {GARDEN_CATEGORIES[selectedCategory].suggestions.map((s) => (
+                  <button
+                    key={s.title}
+                    onClick={() => {
+                      setSeedTitle(s.title)
+                      setSeedCue(s.cue)
+                    }}
+                    className="text-xs px-3 py-2 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100"
+                  >
+                    Use “{s.title}”
+                  </button>
+                ))}
+              </div>
 
-                      <Button
-                        onClick={() => handlePlantTask(task.id, selectedLayer)}
-                        disabled={isPlanted}
-                        size="lg"
-                        className={cn(
-                          "w-full",
-                          isPlanted
-                            ? 'bg-slate-300 text-slate-600 cursor-not-allowed'
-                            : `bg-gradient-to-r ${currentLayer.gradient} text-white hover:shadow-lg`
-                        )}
-                      >
-                        {isPlanted ? (
-                          <>
-                            <Check className="w-4 h-4 mr-2" /> Already Planted
-                          </>
-                        ) : (
-                          <>
-                            <Sprout className="w-4 h-4 mr-2" /> Plant Task
-                          </>
-                        )}
-                      </Button>
-                    </div>
-                  )
-                })}
+              <div className="mt-6 flex items-center justify-between">
+                <div className="text-xs text-slate-600">
+                  Plots unlocked: <strong className="text-slate-900">{unlockedPlots}/5</strong>
+                </div>
+                <Button
+                  onClick={handlePlantSeed}
+                  size="lg"
+                  className={cn(
+                    "bg-gradient-to-r text-white",
+                    GARDEN_CATEGORIES[selectedCategory].gradient
+                  )}
+                >
+                  <Sprout className="w-4 h-4 mr-2" /> Plant Seed
+                </Button>
               </div>
             </div>
 
@@ -1655,20 +1681,61 @@ export default function FocusGardenPage() {
                   </Button>
                 </div>
               ) : (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                  {progress.garden.map(plant => {
-                    const task = getTaskInfo(plant.taskId, plant.layer)
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
+                  {Array.from({ length: 5 }).map((_, i) => {
+                    const requiredLevel = plotUnlockLevels[i]
+                    const isUnlocked = currentGardenLevel.level >= requiredLevel
+                    const plant = isUnlocked ? (progress.garden[i] ?? null) : null
+
+                    if (!isUnlocked) {
+                      return (
+                        <div
+                          key={`plot-${i}`}
+                          className="p-6 rounded-2xl border-2 bg-white/60 border-slate-200 text-center"
+                        >
+                          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-200 flex items-center justify-center">
+                            <Lock className="w-8 h-8 text-slate-500" />
+                          </div>
+                          <h4 className="font-bold text-slate-900 mb-1">Locked Plot</h4>
+                          <p className="text-sm text-slate-600">Unlock at Level {requiredLevel}</p>
+                        </div>
+                      )
+                    }
+
+                    if (!plant) {
+                      return (
+                        <div
+                          key={`plot-${i}`}
+                          className="p-6 rounded-2xl border-2 bg-white/70 border-slate-200 text-center"
+                        >
+                          <div className="text-6xl mb-3">🟫</div>
+                          <h4 className="font-bold text-slate-900 mb-2">Empty Plot</h4>
+                          <p className="text-sm text-slate-600 mb-4">Plant a seed above to start growing.</p>
+                          <Button
+                            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                            variant="outline"
+                            size="sm"
+                          >
+                            <Sprout className="w-4 h-4 mr-2" /> Plant a Seed
+                          </Button>
+                        </div>
+                      )
+                    }
+
                     const stageInfo = PLANT_STAGES[plant.stage]
-                    const canWater = plant.stage !== 'bloom'
+                    const categoryInfo = GARDEN_CATEGORIES[plant.category]
+                    const wateredToday = plant.daily?.[todayKey]?.status === 'watered'
+                    const yesterdayStatus = plant.daily?.[yesterdayKey]?.status
+                    const canWater = plant.stage !== 'bloom' && !wateredToday
                     const canHarvest = plant.stage === 'bloom'
-                    const layerInfo = TASK_LAYERS[plant.layer as keyof typeof TASK_LAYERS]
+                    const progressDays = plant.cycleConsecutiveWatered ?? 0
 
                     return (
                       <div
                         key={plant.id}
                         className={cn(
                           "group p-6 rounded-2xl border-2 bg-white/80 transition-all duration-200 hover:shadow-xl hover:scale-[1.02]",
-                          layerInfo?.borderColor || 'border-slate-200'
+                          categoryInfo.borderColor
                         )}
                       >
                         <div className="text-center mb-4">
@@ -1686,29 +1753,51 @@ export default function FocusGardenPage() {
                         </div>
 
                         <h4 className="font-bold text-slate-900 text-center mb-1 text-sm">
-                          {task?.title || 'Unknown Task'}
+                          {plant.title}
                         </h4>
-                        <p className="text-xs text-slate-600 text-center mb-4">
-                          {layerInfo?.name || 'Unknown'}
+                        <p className="text-xs text-slate-600 text-center mb-2">
+                          {categoryInfo.name}
+                          {plant.reminderTime ? ` • ${plant.reminderTime}` : ''}
                         </p>
+                        {plant.cue && (
+                          <p className="text-xs text-slate-600 text-center mb-4 line-clamp-2">{plant.cue}</p>
+                        )}
 
                         <div className="space-y-2">
-                          {canWater && (
+                          {!canHarvest && (
                             <Button
                               onClick={() => handleWaterPlant(plant.id)}
                               size="sm"
-                              className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                              disabled={!canWater}
+                              className={cn(
+                                "w-full",
+                                canWater
+                                  ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                                  : 'bg-slate-200 text-slate-500 cursor-not-allowed'
+                              )}
                             >
-                              💧 Water ({plant.waterCount}/3)
+                              {wateredToday ? `✅ Watered today (${progressDays}/4)` : `💧 Water (${progressDays}/4)`}
                             </Button>
                           )}
+
+                          {yesterdayStatus === 'missed' && (
+                            <div className="text-center text-[11px] text-slate-600">
+                              Yesterday: missed (gentle reset)
+                            </div>
+                          )}
+                          {yesterdayStatus === 'frozen' && (
+                            <div className="text-center text-[11px] text-cyan-700">
+                              Yesterday: Frost Guard protected ❄️
+                            </div>
+                          )}
+
                           {canHarvest && (
                             <Button
                               onClick={() => handleHarvestPlant(plant.id)}
                               size="sm"
                               className={cn(
                                 "w-full text-white",
-                                layerInfo ? `bg-gradient-to-r ${layerInfo.gradient} hover:shadow-lg` : 'bg-purple-500'
+                                `bg-gradient-to-r ${categoryInfo.gradient} hover:shadow-lg`
                               )}
                             >
                               <Sparkles className="w-4 h-4 mr-1" />
@@ -1717,20 +1806,24 @@ export default function FocusGardenPage() {
                           )}
                         </div>
 
-                        {/* Progress Dots */}
+                        {/* Progress Dots (4-day cycle) */}
                         <div className="flex justify-center gap-2 mt-4">
-                          {[0, 1, 2, 3].map(i => (
+                          {[1, 2, 3, 4].map((d) => (
                             <div
-                              key={i}
+                              key={d}
                               className={cn(
                                 "w-2 h-2 rounded-full transition-all",
-                                i < plant.waterCount + 1
-                                  ? 'bg-blue-500 scale-125'
-                                  : 'bg-slate-300'
+                                progressDays >= d ? 'bg-blue-500 scale-125' : 'bg-slate-300'
                               )}
                             />
                           ))}
                         </div>
+
+                        {plant.bloomsHarvested > 0 && (
+                          <p className="mt-3 text-center text-xs text-slate-500">
+                            Blooms harvested: <strong className="text-slate-700">{plant.bloomsHarvested}</strong>
+                          </p>
+                        )}
                       </div>
                     )
                   })}

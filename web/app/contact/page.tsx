@@ -281,33 +281,33 @@ export default function ContactPage() {
           <p className="text-gray-600 text-lg">Have questions? We'd love to hear from you!</p>
         </div>
 
-        <div className="w-full flex justify-center px-3 sm:px-6">
-          <div className="relative w-full max-w-[1040px] rounded-[2.75rem] bg-gradient-to-b from-zinc-900/90 to-black/90 border border-white/15 shadow-[0_50px_140px_rgba(0,0,0,0.45)] ring-1 ring-black/30 overflow-hidden">
+        <div className="w-full px-0 xl:flex xl:justify-center xl:px-4">
+          <div className="relative w-full max-w-none rounded-none bg-transparent border-0 shadow-none ring-0 overflow-visible xl:max-w-[1040px] xl:rounded-[2.75rem] xl:bg-gradient-to-b xl:from-zinc-900/90 xl:to-black/90 xl:border xl:border-white/15 xl:shadow-[0_50px_140px_rgba(0,0,0,0.45)] xl:ring-1 xl:ring-black/30 xl:overflow-hidden">
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-[radial-gradient(1000px_circle_at_20%_10%,rgba(255,255,255,0.12),transparent_40%),radial-gradient(1200px_circle_at_80%_15%,rgba(255,255,255,0.10),transparent_45%)] opacity-70"
+              className="hidden xl:block pointer-events-none absolute inset-0 bg-[radial-gradient(1000px_circle_at_20%_10%,rgba(255,255,255,0.12),transparent_40%),radial-gradient(1200px_circle_at_80%_15%,rgba(255,255,255,0.10),transparent_45%)] opacity-70"
             />
 
             <div
               aria-hidden="true"
-              className="absolute left-1/2 top-4 -translate-x-1/2 h-3.5 w-24 rounded-full bg-black/70 border border-white/10 shadow-[0_10px_24px_rgba(0,0,0,0.50)]"
+              className="hidden xl:block absolute left-1/2 top-4 -translate-x-1/2 h-3.5 w-24 rounded-full bg-black/70 border border-white/10 shadow-[0_10px_24px_rgba(0,0,0,0.50)]"
             />
 
-            <div aria-hidden="true" className="hidden md:block absolute left-0 top-20 h-20 w-1.5 rounded-r bg-white/10" />
-            <div aria-hidden="true" className="hidden md:block absolute right-0 top-28 h-24 w-1.5 rounded-l bg-white/10" />
+            <div aria-hidden="true" className="hidden xl:block absolute left-0 top-20 h-20 w-1.5 rounded-r bg-white/10" />
+            <div aria-hidden="true" className="hidden xl:block absolute right-0 top-28 h-24 w-1.5 rounded-l bg-white/10" />
 
-            <div className="relative m-3 sm:m-4 md:m-5 rounded-[2.25rem] overflow-hidden border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+            <div className="relative m-0 rounded-none overflow-visible border-0 shadow-none xl:m-3 xl:sm:m-4 xl:md:m-5 xl:rounded-[2.25rem] xl:overflow-hidden xl:border xl:border-white/10 xl:shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
               <div
                 aria-hidden="true"
-                className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_18%_10%,rgba(168,85,247,0.34),transparent_55%),radial-gradient(900px_circle_at_85%_20%,rgba(59,130,246,0.28),transparent_52%),radial-gradient(1000px_circle_at_55%_95%,rgba(236,72,153,0.18),transparent_58%),linear-gradient(180deg,rgba(245,245,250,0.55),rgba(245,245,250,0.38))]"
+                className="hidden xl:block absolute inset-0 bg-[radial-gradient(1200px_circle_at_18%_10%,rgba(168,85,247,0.34),transparent_55%),radial-gradient(900px_circle_at_85%_20%,rgba(59,130,246,0.28),transparent_52%),radial-gradient(1000px_circle_at_55%_95%,rgba(236,72,153,0.18),transparent_58%),linear-gradient(180deg,rgba(245,245,250,0.55),rgba(245,245,250,0.38))]"
               />
 
               <div
                 aria-hidden="true"
-                className="absolute -inset-24 rotate-[-10deg] bg-gradient-to-r from-white/18 via-white/0 to-white/0 blur-2xl"
+                className="hidden xl:block absolute -inset-24 rotate-[-10deg] bg-gradient-to-r from-white/18 via-white/0 to-white/0 blur-2xl"
               />
 
-              <div className="relative p-4 sm:p-6 md:p-8 lg:p-10">
+              <div className="relative p-0 xl:p-4 xl:sm:p-6 xl:md:p-8 xl:lg:p-10">
                 {/* Section A: Main Contact Page */}
                 <section
                   aria-label="Contact Us"
@@ -316,7 +316,7 @@ export default function ContactPage() {
                   data-tour-order="1"
                   data-tour-title="Contact form"
                 >
-                <div className="rounded-2xl p-4 sm:p-6 md:p-8 mb-8 bg-white/72 dark:bg-zinc-950/55 backdrop-blur-2xl border border-white/40 dark:border-white/12 shadow-[0_26px_80px_rgba(0,0,0,0.22)] ring-1 ring-black/10 dark:ring-white/10">
+                <div className="rounded-2xl p-4 sm:p-6 md:p-8 mb-8 bg-white shadow-xl xl:bg-white/72 xl:dark:bg-zinc-950/55 xl:backdrop-blur-2xl xl:border xl:border-white/40 xl:dark:border-white/12 xl:shadow-[0_26px_80px_rgba(0,0,0,0.22)] xl:ring-1 xl:ring-black/10 xl:dark:ring-white/10">
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Contact Form */}
@@ -354,7 +354,7 @@ export default function ContactPage() {
                 />
               </div>
               <div>
-                <label htmlFor="name" className="block text-sm font-semibold text-white mb-2">
+                <label htmlFor="name" className="block text-sm font-semibold text-gray-900 xl:text-white mb-2">
                   Full Name *
                 </label>
                 <input
@@ -370,7 +370,7 @@ export default function ContactPage() {
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-white mb-2">
+                <label htmlFor="email" className="block text-sm font-semibold text-gray-900 xl:text-white mb-2">
                   Email Address *
                 </label>
                 <input
@@ -386,7 +386,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="organization" className="block text-sm font-semibold text-white mb-2">
+                <label htmlFor="organization" className="block text-sm font-semibold text-gray-900 xl:text-white mb-2">
                   Organisation (optional)
                 </label>
                 <input
@@ -401,7 +401,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-sm font-semibold text-white mb-2">
+                <label htmlFor="phone" className="block text-sm font-semibold text-gray-900 xl:text-white mb-2">
                   Phone (optional)
                 </label>
                 <input
@@ -416,7 +416,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="subject" className="block text-sm font-semibold text-white mb-2">
+                <label htmlFor="subject" className="block text-sm font-semibold text-gray-900 xl:text-white mb-2">
                   Subject *
                 </label>
                 <input
@@ -432,7 +432,7 @@ export default function ContactPage() {
                 />
               </div>
               <div>
-                <label htmlFor="message" className="block text-sm font-semibold text-white mb-2">
+                <label htmlFor="message" className="block text-sm font-semibold text-gray-900 xl:text-white mb-2">
                   Message *
                 </label>
                 <textarea
@@ -470,7 +470,7 @@ export default function ContactPage() {
                     <p className="text-sm text-red-600">{contactSubmitStatus.message}</p>
                   ) : null}
                   {contactSubmitStatus.state === "success" && contactSubmitStatus.message ? (
-                    <p className="text-sm text-white">{contactSubmitStatus.message}</p>
+                    <p className="text-sm text-green-700 xl:text-white">{contactSubmitStatus.message}</p>
                   ) : null}
                 </div>
               </div>
@@ -554,11 +554,11 @@ export default function ContactPage() {
                   data-tour-placement="bottom"
                 >
                   <div className="rounded-2xl p-4 sm:p-6 bg-white/60 dark:bg-zinc-950/45 backdrop-blur border border-white/30 dark:border-white/10 shadow-[0_18px_60px_rgba(0,0,0,0.18)]">
-                    <h2 className="text-lg font-semibold text-white">Before you send</h2>
-                    <p className="mt-2 text-sm text-white/90">
+                    <h2 className="text-lg font-semibold text-gray-900 xl:text-white">Before you send</h2>
+                    <p className="mt-2 text-sm text-gray-700 xl:text-white/90">
                       We only use this form to respond to your message. Educational information only — not medical advice.
                     </p>
-                    <p className="mt-2 text-sm text-white/80">
+                    <p className="mt-2 text-sm text-gray-700 xl:text-white/80">
                       If you or someone else is in immediate danger or needs urgent help, contact your local emergency services.
                     </p>
                   </div>
