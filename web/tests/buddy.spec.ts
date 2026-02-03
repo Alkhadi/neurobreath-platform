@@ -98,9 +98,51 @@ async function openBuddyDialog(page: Page) {
   // (analytics, prefetches), which makes this flaky across browsers/viewports.
   await page.waitForLoadState('domcontentloaded');
   
-  // Find and click the buddy trigger button using aria-label
-  const buddyTrigger = page.locator('button[aria-label*="Open NeuroBreath Buddy"]');
-  await expect(buddyTrigger).toBeVisible({ timeout: 10000 });
+  const collectBuddyTriggerDiagnostics = async () => {
+    const url = page.url();
+    const viewport = page.viewportSize();
+
+    const ariaLabels = await page
+      .locator('button[aria-label]')
+      .evaluateAll((els) =>
+        els
+          .map((el) => el.getAttribute('aria-label'))
+          .filter((v): v is string => typeof v === 'string' && v.trim().length > 0)
+      );
+
+    const buddyishLabels = ariaLabels
+      .filter((label) => /buddy|assistant|cmd\+k|\u2318k/i.test(label))
+      .slice(0, 20);
+
+    const dialogCount = await page.locator('div[role="dialog"]').count();
+
+    return {
+      url,
+      viewport,
+      dialogCount,
+      buddyishLabels,
+      totalAriaLabeledButtons: ariaLabels.length,
+    };
+  };
+
+  // Find and click the buddy trigger button using a robust accessible selector.
+  // Prefer aria-label contains, but also fall back to role+name for stability.
+  const buddyTrigger = page
+    .locator('button[aria-label*="Open NeuroBreath Buddy"]')
+    .or(page.getByRole('button', { name: /Open NeuroBreath Buddy/i }));
+
+  try {
+    await expect(buddyTrigger).toBeVisible({ timeout: 10000 });
+  } catch (err) {
+    const diag = await collectBuddyTriggerDiagnostics().catch(() => null);
+    throw new Error(
+      `Buddy trigger not visible/found within timeout. ` +
+        `This often indicates tests are pointed at the wrong/stale server (e.g. PW_REUSE_SERVER), ` +
+        `or the trigger's accessible name changed.\n` +
+        `Diagnostics: ${diag ? JSON.stringify(diag, null, 2) : 'unavailable'}\n` +
+        `Original error: ${(err as Error)?.message ?? String(err)}`
+    );
+  }
 
   // Wait for dialog to open. In dev-mode, the trigger can be server-rendered
   // before hydration wires up click handlers. Retry a couple times to avoid
