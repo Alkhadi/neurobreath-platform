@@ -56,6 +56,14 @@ const detectRegion = (request: NextRequest): 'uk' | 'us' => {
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
+  // Canonicalize condition detail pages: they are global routes (no region prefix).
+  // Prevent 404s like `/uk/conditions/autism` by redirecting to `/conditions/autism`.
+  if (/^\/(uk|us)\/conditions\/.+/.test(pathname)) {
+    const url = request.nextUrl.clone()
+    url.pathname = pathname.replace(/^\/(uk|us)/, '')
+    return NextResponse.redirect(url, 308)
+  }
+
   // Redirect known legacy page links that were historically served under `/legacy-assets/`.
   // Important: do NOT touch real legacy static assets under `/legacy-assets/assets/*`.
   if (pathname.startsWith('/legacy-assets/') && !pathname.startsWith('/legacy-assets/assets/')) {
@@ -89,10 +97,11 @@ export async function middleware(request: NextRequest) {
 
   // Optional auth protection (keep the rest of the site public)
   if (AUTH_PROTECTED_PATHS.some(p => pathname === p || pathname.startsWith(`${p}/`))) {
+    const loginPath = pathname.startsWith('/us') ? '/us/login' : '/uk/login'
     const secret = process.env.NEXTAUTH_SECRET
     if (!secret) {
       const url = request.nextUrl.clone()
-      url.pathname = '/uk/login'
+      url.pathname = loginPath
       url.searchParams.set('error', 'AUTH_CONFIG')
       return NextResponse.redirect(url)
     }
@@ -100,7 +109,7 @@ export async function middleware(request: NextRequest) {
     const token = await getToken({ req: request, secret })
     if (!token) {
       const url = request.nextUrl.clone()
-      url.pathname = '/uk/login'
+      url.pathname = loginPath
       url.searchParams.set('callbackUrl', pathname)
       return NextResponse.redirect(url)
     }
@@ -135,7 +144,10 @@ export async function middleware(request: NextRequest) {
   }
 
   if (!isExcluded(pathname) && !pathname.startsWith('/uk') && !pathname.startsWith('/us')) {
-    const shouldLocalize = REGION_LOCALISED_PREFIXES.some(prefix => pathname === prefix || pathname.startsWith(`${prefix}/`))
+    const isConditionDetail = pathname.startsWith('/conditions/')
+    const shouldLocalize =
+      !isConditionDetail &&
+      REGION_LOCALISED_PREFIXES.some(prefix => pathname === prefix || pathname.startsWith(`${prefix}/`))
     if (shouldLocalize) {
       const region = detectRegion(request)
       const redirectUrl = request.nextUrl.clone()

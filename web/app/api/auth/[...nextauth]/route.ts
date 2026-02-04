@@ -2,12 +2,28 @@ import NextAuth from 'next-auth';
 import type { NextRequest } from 'next/server';
 
 import { authOptions } from '@/lib/auth/nextauth';
+import { SITE_CONFIG } from '@/lib/seo/site-seo';
 import { checkRateLimit, recordFailedAttempt } from '@/lib/auth/rate-limit';
 
 export const runtime = 'nodejs';
 
-if (!process.env.NEXTAUTH_URL) {
-	process.env.NEXTAUTH_URL = 'http://localhost:3000';
+function ensureNextAuthUrl(req: NextRequest) {
+	if (process.env.NEXTAUTH_URL) return;
+
+	// In local/dev environments, fall back to request origin.
+	if (process.env.NODE_ENV !== 'production') {
+		process.env.NEXTAUTH_URL = req.nextUrl.origin;
+		return;
+	}
+
+	// In production, prefer the canonical public base to avoid leaking preview URLs in magic links.
+	if (process.env.VERCEL_ENV === 'production' && SITE_CONFIG.canonicalBase) {
+		process.env.NEXTAUTH_URL = SITE_CONFIG.canonicalBase;
+		return;
+	}
+
+	// Preview/staging: use the request origin.
+	process.env.NEXTAUTH_URL = req.nextUrl.origin;
 }
 
 const handler = NextAuth(authOptions);
@@ -48,6 +64,13 @@ function withUpdatedCookieMaxAge(setCookie: string, maxAgeSeconds: number): stri
 	return updated;
 }
 
+function withCookiePath(setCookie: string, path: string): string {
+	if (/;\s*Path=/i.test(setCookie)) {
+		return setCookie.replace(/;\s*Path=[^;]*/i, `; Path=${path}`);
+	}
+	return `${setCookie}; Path=${path}`;
+}
+
 function rewriteSessionCookieMaxAge(res: Response, maxAgeSeconds: number): Response {
 	const cookies = getSetCookieHeaders(res);
 	if (cookies.length === 0) return res;
@@ -62,7 +85,7 @@ function rewriteSessionCookieMaxAge(res: Response, maxAgeSeconds: number): Respo
 
 		headers.append(
 			'set-cookie',
-			isSessionCookie ? withUpdatedCookieMaxAge(cookie, maxAgeSeconds) : cookie
+			isSessionCookie ? withCookiePath(withUpdatedCookieMaxAge(cookie, maxAgeSeconds), '/') : cookie
 		);
 	}
 
@@ -74,10 +97,12 @@ function rewriteSessionCookieMaxAge(res: Response, maxAgeSeconds: number): Respo
 }
 
 export async function GET(req: NextRequest, context: NextAuthRouteContext) {
+	ensureNextAuthUrl(req);
 	return routeHandler(req, context);
 }
 
 export async function POST(req: NextRequest, context: NextAuthRouteContext) {
+	ensureNextAuthUrl(req);
 	const url = new URL(req.url);
 	const isCredentialsCallback = url.pathname.endsWith('/callback/credentials');
 	const isEmailSignin = url.pathname.endsWith('/signin/email');

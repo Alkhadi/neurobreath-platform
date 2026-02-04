@@ -227,10 +227,10 @@ export const authOptions: NextAuthOptions = {
     maxAge: 24 * 60 * 60, // 24 hours default
   },
   pages: {
-    signIn: '/uk/login', // Default to UK, will be overridden by callbackUrl region
-    error: '/uk/login',
-    verifyRequest: '/uk/login?verify=sent',
-    newUser: '/uk/register',
+    signIn: '/login',
+    error: '/login',
+    verifyRequest: '/login?verify=sent',
+    newUser: '/register',
   },
   providers: [
     // Credentials provider (email + password + optional 2FA)

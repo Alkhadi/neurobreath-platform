@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getProviders, signIn } from 'next-auth/react';
+import { getProviders, getSession, signIn } from 'next-auth/react';
 import type { ClientSafeProvider } from 'next-auth/react';
 import Cookies from 'js-cookie';
 import {
@@ -166,6 +166,24 @@ export default function UsLoginPage() {
     getProviders().then(setAvailableProviders);
   }, []);
 
+  const persistTrustedDeviceToken = useCallback(async () => {
+    try {
+      const session = await getSession();
+      const token = (session as unknown as { deviceToken?: string } | null)?.deviceToken;
+      if (!token) return;
+
+      Cookies.set('nb_device_token', token, {
+        expires: 30,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        path: '/',
+      });
+      setDeviceToken(token);
+    } catch {
+      // ignore
+    }
+  }, []);
+
   useEffect(() => {
     if (!registered) return;
     setMessage({ type: 'success', text: 'Account created. You can now sign in.' });
@@ -289,9 +307,8 @@ export default function UsLoginPage() {
 
       // Success - clear attempts and redirect
       clearStoredAttempts();
-      // Store device token if trust device was enabled
-      if (trustDevice && res?.url) {
-        // Token should be in session, client will get it after redirect
+      if (trustDevice) {
+        await persistTrustedDeviceToken();
       }
       router.push(callbackUrl);
     } catch {
@@ -344,6 +361,9 @@ export default function UsLoginPage() {
       }
 
       clearStoredAttempts();
+      if (trustDevice) {
+        await persistTrustedDeviceToken();
+      }
       router.push(callbackUrl);
     } catch {
       setMessage({ type: 'error', text: 'Sign in failed. Please try again.' });
