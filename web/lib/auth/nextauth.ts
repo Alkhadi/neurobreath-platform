@@ -11,7 +11,7 @@ import { prisma } from '@/lib/db';
 import { verifyPassword } from '@/lib/auth/password';
 import { decryptTotpSecret } from '@/lib/auth/totp';
 import { verifyTrustedDevice, createTrustedDevice } from '@/lib/auth/trusted-device';
-import { clearRateLimitOnSuccess } from '@/lib/auth/rate-limit';
+import { checkRateLimit, clearRateLimitOnSuccess, recordFailedAttempt } from '@/lib/auth/rate-limit';
 
 type AdapterUser = {
   id: string;
@@ -180,6 +180,11 @@ function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();
 }
 
+function toRequestLike(req: unknown): Request {
+  const headers = (req as { headers?: HeadersInit } | null)?.headers ?? {};
+  return new Request('http://localhost', { headers });
+}
+
 function getSmtpConfig() {
   const host = process.env.SMTP_HOST || process.env.EMAIL_SERVER_HOST;
   const port = parseInt(process.env.SMTP_PORT || process.env.EMAIL_SERVER_PORT || '465', 10);
@@ -253,14 +258,22 @@ export const authOptions: NextAuthOptions = {
         }
 
         const email = normalizeEmail(emailRaw);
+
+        const rate = await checkRateLimit(toRequestLike(_req), email, 'login');
+        if (!rate.allowed) {
+          throw new Error('RATE_LIMITED');
+        }
+
         const user = await prisma.authUser.findUnique({ where: { email } });
         
         if (!user) {
+          await recordFailedAttempt(toRequestLike(_req), email, 'login');
           throw new Error('INVALID_CREDENTIALS');
         }
 
         const ok = await verifyPassword(password, user.passwordHash);
         if (!ok) {
+          await recordFailedAttempt(toRequestLike(_req), email, 'login');
           throw new Error('INVALID_CREDENTIALS');
         }
 
@@ -296,6 +309,7 @@ export const authOptions: NextAuthOptions = {
           const otpOk = !!(result as { valid?: boolean }).valid;
           
           if (!otpOk) {
+            await recordFailedAttempt(toRequestLike(_req), email, 'login');
             throw new Error('INVALID_OTP');
           }
 
@@ -427,9 +441,8 @@ export const authOptions: NextAuthOptions = {
   
   events: {
     async signIn({ user, isNewUser }) {
-      if (isNewUser) {
-        console.log(`New user signed in: ${user.email}`);
-      }
+      void user
+      void isNewUser
     },
   },
 };

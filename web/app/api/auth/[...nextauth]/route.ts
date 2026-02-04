@@ -2,6 +2,7 @@ import NextAuth from 'next-auth';
 import type { NextRequest } from 'next/server';
 
 import { authOptions } from '@/lib/auth/nextauth';
+import { checkRateLimit, recordFailedAttempt } from '@/lib/auth/rate-limit';
 
 export const runtime = 'nodejs';
 
@@ -79,6 +80,36 @@ export async function GET(req: NextRequest, context: NextAuthRouteContext) {
 export async function POST(req: NextRequest, context: NextAuthRouteContext) {
 	const url = new URL(req.url);
 	const isCredentialsCallback = url.pathname.endsWith('/callback/credentials');
+	const isEmailSignin = url.pathname.endsWith('/signin/email');
+
+	if (isEmailSignin) {
+		const form = await req.clone().formData().catch(() => null);
+		const emailRaw = (form?.get('email') ?? '') as string;
+		const email = typeof emailRaw === 'string' ? emailRaw.trim().toLowerCase() : '';
+
+		if (email) {
+			const rate = await checkRateLimit(req, email, 'magic_link');
+			if (!rate.allowed) {
+				return Response.json(
+					{
+						error: 'RATE_LIMITED',
+						ok: false,
+						status: 429,
+						url: null,
+					},
+					{
+						status: 200,
+						headers: {
+							'cache-control': 'no-store',
+						},
+					}
+				);
+			}
+
+			// Record the request to enforce cooldown.
+			await recordFailedAttempt(req, email, 'magic_link');
+		}
+	}
 
 	let rememberMe = false;
 	if (isCredentialsCallback) {

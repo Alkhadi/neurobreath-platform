@@ -1,5 +1,7 @@
 import { prisma } from '@/lib/db';
 
+type AttemptType = 'login' | 'password_reset' | 'register' | 'magic_link';
+
 type AuthRateLimitRecord = {
   id: string;
   attemptCount: number;
@@ -22,6 +24,8 @@ function authRateLimitDelegate(): AuthRateLimitDelegate {
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
 
+const MAGIC_LINK_COOLDOWN_MS = 60 * 1000; // 60 seconds
+
 export interface RateLimitResult {
   allowed: boolean;
   remaining: number;
@@ -42,7 +46,7 @@ function getClientIp(req: Request): string {
 export async function checkRateLimit(
   req: Request,
   email: string,
-  attemptType: 'login' | 'password_reset' | 'register' = 'login'
+  attemptType: AttemptType = 'login'
 ): Promise<RateLimitResult> {
   const ipAddress = getClientIp(req);
   const normalizedEmail = email.trim().toLowerCase();
@@ -59,6 +63,18 @@ export async function checkRateLimit(
     });
 
     if (emailRecord) {
+      if (attemptType === 'magic_link') {
+        if (emailRecord.lockedUntil && emailRecord.lockedUntil > new Date()) {
+          return {
+            allowed: false,
+            remaining: 0,
+            lockedUntil: emailRecord.lockedUntil,
+            message: 'Please wait a moment before requesting another sign-in link.',
+          };
+        }
+        return { allowed: true, remaining: 1, lockedUntil: null };
+      }
+
       // If locked, check if still locked
       if (emailRecord.lockedUntil && emailRecord.lockedUntil > new Date()) {
         return {
@@ -126,6 +142,18 @@ export async function checkRateLimit(
       },
     });
 
+    if (attemptType === 'magic_link') {
+      if (ipRecord?.lockedUntil && ipRecord.lockedUntil > new Date()) {
+        return {
+          allowed: false,
+          remaining: 0,
+          lockedUntil: ipRecord.lockedUntil,
+          message: 'Please wait a moment before requesting another sign-in link.',
+        };
+      }
+      return { allowed: true, remaining: 1, lockedUntil: null };
+    }
+
     if (ipRecord?.lockedUntil && ipRecord.lockedUntil > new Date()) {
       return {
         allowed: false,
@@ -145,10 +173,12 @@ export async function checkRateLimit(
 export async function recordFailedAttempt(
   req: Request,
   email: string,
-  attemptType: 'login' | 'password_reset' | 'register' = 'login'
+  attemptType: AttemptType = 'login'
 ): Promise<void> {
   const ipAddress = getClientIp(req);
   const normalizedEmail = email.trim().toLowerCase();
+
+  const magicLockedUntil = attemptType === 'magic_link' ? new Date(Date.now() + MAGIC_LINK_COOLDOWN_MS) : null;
 
   try {
     // Record by email
@@ -167,6 +197,7 @@ export async function recordFailedAttempt(
         data: {
           attemptCount: { increment: 1 },
           lastAttemptAt: new Date(),
+          ...(attemptType === 'magic_link' ? { lockedUntil: magicLockedUntil } : null),
         },
       });
     } else {
@@ -178,6 +209,7 @@ export async function recordFailedAttempt(
           ipAddress,
           firstAttemptAt: new Date(),
           lastAttemptAt: new Date(),
+          ...(attemptType === 'magic_link' ? { lockedUntil: magicLockedUntil } : null),
         },
       });
     }
@@ -198,6 +230,7 @@ export async function recordFailedAttempt(
         data: {
           attemptCount: { increment: 1 },
           lastAttemptAt: new Date(),
+          ...(attemptType === 'magic_link' ? { lockedUntil: magicLockedUntil } : null),
         },
       });
     } else {
@@ -208,6 +241,7 @@ export async function recordFailedAttempt(
           attemptCount: 1,
           firstAttemptAt: new Date(),
           lastAttemptAt: new Date(),
+          ...(attemptType === 'magic_link' ? { lockedUntil: magicLockedUntil } : null),
         },
       });
     }
@@ -218,7 +252,7 @@ export async function recordFailedAttempt(
 
 export async function clearRateLimitOnSuccess(
   email: string,
-  attemptType: 'login' | 'password_reset' | 'register' = 'login'
+  attemptType: AttemptType = 'login'
 ): Promise<void> {
   const normalizedEmail = email.trim().toLowerCase();
   try {

@@ -134,6 +134,7 @@ export default function UsLoginPage() {
   const [magicLinkLoading, setMagicLinkLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'error' | 'success' | 'info'; text: string } | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [capsLockOn, setCapsLockOn] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [trustDevice, setTrustDevice] = useState(false);
   const [loginAttempts, setLoginAttempts] = useState(0);
@@ -204,6 +205,7 @@ export default function UsLoginPage() {
 
   const errorBanner = useMemo(() => {
     if (error === 'AUTH_CONFIG') return 'Login is not configured yet. Please try again later.';
+    if (error === 'RATE_LIMITED') return 'Too many attempts. Please wait a moment and try again.';
     if (error === 'OAuthAccountNotLinked') return 'This email is already linked to a different sign-in method.';
     if (error === 'AccessDenied') return 'Access denied. Please contact support if you believe this is an error.';
     if (error === 'OAuthSignin') return 'Error connecting to sign-in provider. Please try again.';
@@ -245,13 +247,15 @@ export default function UsLoginPage() {
     e.preventDefault();
     if (isLocked) return;
 
+    const normalizedEmail = email.trim().toLowerCase();
+
     setMessage(null);
     setLoading(true);
 
     try {
       const res = await signIn('credentials', {
         redirect: false,
-        email,
+        email: normalizedEmail,
         password,
         trustDevice: trustDevice ? 'true' : 'false',
         rememberMe: rememberMe ? 'true' : 'false',
@@ -264,6 +268,11 @@ export default function UsLoginPage() {
           type: 'info',
           text: 'Two-factor authentication is enabled. Enter your code to continue.',
         });
+        return;
+      }
+
+      if (res?.error === 'RATE_LIMITED') {
+        setMessage({ type: 'error', text: 'Too many attempts. Please wait a moment and try again.' });
         return;
       }
 
@@ -300,10 +309,12 @@ export default function UsLoginPage() {
     setMessage(null);
     setLoading(true);
 
+    const normalizedEmail = email.trim().toLowerCase();
+
     try {
       const res = await signIn('credentials', {
         redirect: false,
-        email,
+        email: normalizedEmail,
         password,
         token: otp,
         trustDevice: trustDevice ? 'true' : 'false',
@@ -314,6 +325,11 @@ export default function UsLoginPage() {
       if (res?.error === 'INVALID_OTP') {
         setMessage({ type: 'error', text: 'Invalid code. Please check and try again.' });
         setOtp('');
+        return;
+      }
+
+      if (res?.error === 'RATE_LIMITED') {
+        setMessage({ type: 'error', text: 'Too many attempts. Please wait a moment and try again.' });
         return;
       }
 
@@ -352,6 +368,8 @@ export default function UsLoginPage() {
       return;
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
+
     setMagicLinkLoading(true);
     setMessage(null);
 
@@ -362,15 +380,19 @@ export default function UsLoginPage() {
         setMagicLinkLoading(false);
         return;
       }
-      const res = await signIn('email', { email, callbackUrl, redirect: false });
+      const res = await signIn('email', { email: normalizedEmail, callbackUrl, redirect: false });
       if (res?.error) {
+        if (res.error === 'RATE_LIMITED') {
+          setMessage({ type: 'error', text: 'Please wait a minute before requesting another link.' });
+          return;
+        }
         setMessage({ type: 'error', text: 'Failed to send sign-in link. Please try again.' });
         return;
       }
       setStep('magic-link-sent');
       setMessage({
         type: 'success',
-        text: `We've sent a sign-in link to ${email}. Check your inbox.`,
+        text: `We've sent a sign-in link to ${normalizedEmail}. Check your inbox.`,
       });
     } catch {
       setMessage({ type: 'error', text: 'Failed to send magic link. Please try again.' });
@@ -397,7 +419,8 @@ export default function UsLoginPage() {
             </div>
             <CardTitle className="text-2xl text-center">Welcome back</CardTitle>
             <CardDescription className="text-center">
-              Sign in to your NeuroBreath account
+              Sign in to your NeuroBreath account.
+              <span className="mt-1 block text-xs text-muted-foreground">Signing in syncs your progress across devices.</span>
             </CardDescription>
           </CardHeader>
 
@@ -538,9 +561,11 @@ export default function UsLoginPage() {
                         id="email"
                         type="email"
                         autoComplete="email"
+                        autoCapitalize="none"
                         placeholder="name@example.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        onBlur={() => setEmail((v) => v.trim().toLowerCase())}
                         required
                         disabled={loading || isLocked}
                         className="pl-10"
@@ -553,7 +578,7 @@ export default function UsLoginPage() {
                     <div className="flex items-center justify-between">
                       <Label htmlFor="password">Password</Label>
                       <Link
-                        href="/uk/password-reset"
+                        href="/us/password-reset"
                         className="text-xs text-muted-foreground hover:text-primary transition-colors"
                         tabIndex={-1}
                       >
@@ -568,6 +593,7 @@ export default function UsLoginPage() {
                         placeholder="Enter your password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        onKeyUp={(e) => setCapsLockOn(e.getModifierState('CapsLock'))}
                         required
                         disabled={loading || isLocked}
                         className="pl-10 pr-10"
@@ -577,12 +603,12 @@ export default function UsLoginPage() {
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                        tabIndex={-1}
                         aria-label={showPassword ? 'Hide password' : 'Show password'}
                       >
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
                     </div>
+                    {capsLockOn ? <p className="text-xs text-muted-foreground">Caps Lock is on.</p> : null}
                   </div>
 
                   <div className="space-y-3">

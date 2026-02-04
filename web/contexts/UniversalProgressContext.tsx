@@ -2,6 +2,7 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { getSession } from 'next-auth/react'
 
 import { useConsent } from '@/lib/consent/useConsent'
 import { ProgressConsentModal } from '@/components/progress/ProgressConsentModal'
@@ -183,6 +184,9 @@ export function UniversalProgressProvider({ children }: { children: React.ReactN
     mergeAttemptedRef.current = true
 
     ;(async () => {
+      const session = await getSession().catch(() => null)
+      if (!session) return
+
       const mergeRes = await fetch('/api/progress/merge', { method: 'POST' }).catch(() => null)
       if (mergeRes && mergeRes.ok) {
         await refreshFromServer()

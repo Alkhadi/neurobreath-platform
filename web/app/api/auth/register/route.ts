@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 
 import { prisma, isDbDown, getDbDownReason, markDbDown, getDatabaseUrl } from '@/lib/db';
 import { hashPassword } from '@/lib/auth/password';
+import { checkRateLimit, clearRateLimitOnSuccess, recordFailedAttempt } from '@/lib/auth/rate-limit';
 import { verifyTurnstile } from '@/lib/security/turnstile';
 
 export const runtime = 'nodejs';
@@ -33,6 +34,26 @@ export async function POST(req: Request) {
 
     const { email, password, confirmPassword, name, primaryDeviceId, turnstileToken } = parsed.data;
 
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const rate = await checkRateLimit(req, normalizedEmail, 'register');
+    if (!rate.allowed) {
+      return Response.json({ ok: false, message: 'Please try again later.' }, { status: 429 });
+    }
+
+    if (!/\d/.test(password)) {
+      return Response.json(
+        {
+          ok: false,
+          message: 'Password must be at least 8 characters and include at least one number.',
+          fieldErrors: {
+            password: 'Use 8+ characters and include at least one number.',
+          },
+        },
+        { status: 400 }
+      );
+    }
+
     if (password !== confirmPassword) {
       return Response.json(
         { ok: false, message: 'Passwords do not match', fieldErrors: { confirmPassword: 'Passwords do not match' } },
@@ -59,12 +80,11 @@ export async function POST(req: Request) {
       }
     }
 
-    const normalizedEmail = email.trim().toLowerCase();
-
     const existing = await prisma.authUser.findUnique({ where: { email: normalizedEmail } });
     if (existing) {
+      await recordFailedAttempt(req, normalizedEmail, 'register');
       return Response.json(
-        { ok: false, message: 'An account with this email already exists. Please sign in.' },
+        { ok: false, message: 'Unable to create account. If you already have an account, try signing in.' },
         { status: 409 }
       );
     }
@@ -82,13 +102,16 @@ export async function POST(req: Request) {
       });
     } catch (err) {
       if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+        await recordFailedAttempt(req, normalizedEmail, 'register');
         return Response.json(
-          { ok: false, message: 'An account with this email already exists. Please sign in.' },
+          { ok: false, message: 'Unable to create account. If you already have an account, try signing in.' },
           { status: 409 }
         );
       }
       throw err;
     }
+
+    await clearRateLimitOnSuccess(normalizedEmail, 'register');
 
     return Response.json({ ok: true, message: 'Account created. You can now sign in.' });
   } catch (error) {
