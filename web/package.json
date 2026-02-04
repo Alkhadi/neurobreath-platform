@@ -30,6 +30,8 @@
     "perf:compare": "tsx scripts/perf/compare-to-baseline.mjs",
     "perf:autoplan": "tsx scripts/perf/generate-autoplan.mjs",
     "prisma:generate": "prisma generate",
+    "db:migrate:status": "prisma migrate status --schema prisma/schema.prisma",
+    "db:migrate:deploy": "prisma migrate deploy --schema prisma/schema.prisma",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
     "db:up": "docker compose up -d",
