@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { getSession } from 'next-auth/react';
 import { getConsent, hasConsent, saveConsent, type ConsentState } from '@/lib/consent/consentStore';
 
 /**
@@ -17,9 +18,7 @@ export function useConsent() {
     // Update state on mount (SSR hydration)
     const currentConsent = getConsent();
     const hasExistingConsent = hasConsent();
-    
-    console.log('[useConsent] Initial state:', { hasExistingConsent, currentConsent });
-    
+
     setConsent(currentConsent);
     setHasSavedConsent(hasExistingConsent);
 
@@ -43,6 +42,9 @@ export function useConsent() {
     let active = true;
 
     (async () => {
+      const session = await getSession().catch(() => null);
+      if (!session) return;
+
       const localHas = hasConsent();
 
       // If the device already has consent, push it up to the account (best-effort; will no-op for anonymous users).
@@ -98,16 +100,21 @@ export function useConsent() {
     setHasSavedConsent(true);
 
     const next = getConsent();
-    fetch('/api/account/consent', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        functional: next.functional,
-        analytics: next.analytics,
-        version: next.version,
-        timestamp: next.timestamp,
-      }),
-    }).catch(() => null);
+    getSession()
+      .then((session) => {
+        if (!session) return;
+        return fetch('/api/account/consent', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            functional: next.functional,
+            analytics: next.analytics,
+            version: next.version,
+            timestamp: next.timestamp,
+          }),
+        }).catch(() => null);
+      })
+      .catch(() => null);
   };
 
   return {

@@ -3,7 +3,7 @@ import { Prisma } from '@prisma/client';
 
 import { prisma, isDbDown, getDbDownReason, markDbDown, getDatabaseUrl } from '@/lib/db';
 import { hashPassword } from '@/lib/auth/password';
-import { checkRateLimit, clearRateLimitOnSuccess, recordFailedAttempt } from '@/lib/auth/rate-limit';
+import { checkRateLimit, clearRateLimitOnSuccess, getRetryAfterSeconds, recordFailedAttempt } from '@/lib/auth/rate-limit';
 import { verifyTurnstile } from '@/lib/security/turnstile';
 
 export const runtime = 'nodejs';
@@ -38,7 +38,17 @@ export async function POST(req: Request) {
 
     const rate = await checkRateLimit(req, normalizedEmail, 'register');
     if (!rate.allowed) {
-      return Response.json({ ok: false, message: 'Please try again later.' }, { status: 429 });
+      const retryAfter = getRetryAfterSeconds(rate);
+      return Response.json(
+        { ok: false, message: 'Please try again later.' },
+        {
+          status: 429,
+          headers: {
+            'cache-control': 'no-store',
+            ...(retryAfter ? { 'Retry-After': String(retryAfter) } : null),
+          },
+        }
+      );
     }
 
     if (!/\d/.test(password)) {

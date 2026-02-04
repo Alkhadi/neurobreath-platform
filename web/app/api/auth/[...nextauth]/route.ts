@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 
 import { authOptions } from '@/lib/auth/nextauth';
 import { SITE_CONFIG } from '@/lib/seo/site-seo';
-import { checkRateLimit, recordFailedAttempt } from '@/lib/auth/rate-limit';
+import { checkRateLimit, getRetryAfterSeconds, recordFailedAttempt } from '@/lib/auth/rate-limit';
 
 export const runtime = 'nodejs';
 
@@ -115,6 +115,7 @@ export async function POST(req: NextRequest, context: NextAuthRouteContext) {
 		if (email) {
 			const rate = await checkRateLimit(req, email, 'magic_link');
 			if (!rate.allowed) {
+				const retryAfter = getRetryAfterSeconds(rate);
 				return Response.json(
 					{
 						error: 'RATE_LIMITED',
@@ -126,6 +127,7 @@ export async function POST(req: NextRequest, context: NextAuthRouteContext) {
 						status: 200,
 						headers: {
 							'cache-control': 'no-store',
+							...(retryAfter ? { 'Retry-After': String(retryAfter) } : null),
 						},
 					}
 				);

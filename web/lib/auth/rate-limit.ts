@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db';
+import { createHmac } from 'crypto';
 
 type AttemptType = 'login' | 'password_reset' | 'register' | 'magic_link';
 
@@ -21,10 +22,14 @@ function authRateLimitDelegate(): AuthRateLimitDelegate {
   return delegate as AuthRateLimitDelegate;
 }
 
-const MAX_LOGIN_ATTEMPTS = 5;
-const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
-
 const MAGIC_LINK_COOLDOWN_MS = 60 * 1000; // 60 seconds
+
+const RATE_LIMITS: Record<AttemptType, { maxAttempts: number; windowMs: number; lockMs: number }> = {
+  login: { maxAttempts: 5, windowMs: 60 * 60 * 1000, lockMs: 15 * 60 * 1000 },
+  register: { maxAttempts: 5, windowMs: 15 * 60 * 1000, lockMs: 15 * 60 * 1000 },
+  password_reset: { maxAttempts: 5, windowMs: 15 * 60 * 1000, lockMs: 15 * 60 * 1000 },
+  magic_link: { maxAttempts: 3, windowMs: 10 * 60 * 1000, lockMs: 10 * 60 * 1000 },
+};
 
 export interface RateLimitResult {
   allowed: boolean;
@@ -43,93 +48,97 @@ function getClientIp(req: Request): string {
   return 'unknown';
 }
 
+function getRateLimitSalt(): string {
+  return process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || 'dev-nextauth-secret';
+}
+
+function hashKey(value: string): string {
+  const normalized = value.trim().toLowerCase();
+  return createHmac('sha256', getRateLimitSalt()).update(normalized).digest('hex');
+}
+
+function secondsUntil(date: Date): number {
+  const diffMs = date.getTime() - Date.now();
+  return Math.max(1, Math.ceil(diffMs / 1000));
+}
+
+async function resetWindow(id: string) {
+  await authRateLimitDelegate().update({
+    where: { id },
+    data: {
+      attemptCount: 0,
+      lockedUntil: null,
+      firstAttemptAt: new Date(),
+      lastAttemptAt: new Date(),
+    },
+  });
+}
+
+async function enforceLimit(record: AuthRateLimitRecord, attemptType: AttemptType): Promise<RateLimitResult> {
+  const policy = RATE_LIMITS[attemptType];
+  const now = new Date();
+
+  if (record.lockedUntil && record.lockedUntil > now) {
+    return {
+      allowed: false,
+      remaining: 0,
+      lockedUntil: record.lockedUntil,
+      message:
+        attemptType === 'magic_link'
+          ? 'Please wait a moment before requesting another sign-in link.'
+          : 'Too many attempts. Please try again shortly.',
+    };
+  }
+
+  const timeSinceLastAttempt = Date.now() - record.lastAttemptAt.getTime();
+  if (timeSinceLastAttempt > policy.windowMs) {
+    await resetWindow(record.id);
+    return { allowed: true, remaining: policy.maxAttempts, lockedUntil: null };
+  }
+
+  const remaining = policy.maxAttempts - record.attemptCount;
+  if (remaining <= 0) {
+    const lockoutUntil = new Date(Date.now() + policy.lockMs);
+    await authRateLimitDelegate().update({
+      where: { id: record.id },
+      data: { lockedUntil: lockoutUntil },
+    });
+
+    return {
+      allowed: false,
+      remaining: 0,
+      lockedUntil: lockoutUntil,
+      message:
+        attemptType === 'magic_link'
+          ? 'Please wait a moment before requesting another sign-in link.'
+          : 'Too many attempts. Please try again shortly.',
+    };
+  }
+
+  return { allowed: true, remaining, lockedUntil: null };
+}
+
 export async function checkRateLimit(
   req: Request,
   email: string,
   attemptType: AttemptType = 'login'
 ): Promise<RateLimitResult> {
-  const ipAddress = getClientIp(req);
-  const normalizedEmail = email.trim().toLowerCase();
+  const ipAddress = hashKey(getClientIp(req));
+  const emailKey = hashKey(email);
 
   try {
     // Check by email first
     const emailRecord = await authRateLimitDelegate().findUnique({
       where: {
         email_attemptType: {
-          email: normalizedEmail,
+          email: emailKey,
           attemptType,
         },
       },
     });
 
     if (emailRecord) {
-      if (attemptType === 'magic_link') {
-        if (emailRecord.lockedUntil && emailRecord.lockedUntil > new Date()) {
-          return {
-            allowed: false,
-            remaining: 0,
-            lockedUntil: emailRecord.lockedUntil,
-            message: 'Please wait a moment before requesting another sign-in link.',
-          };
-        }
-        return { allowed: true, remaining: 1, lockedUntil: null };
-      }
-
-      // If locked, check if still locked
-      if (emailRecord.lockedUntil && emailRecord.lockedUntil > new Date()) {
-        return {
-          allowed: false,
-          remaining: 0,
-          lockedUntil: emailRecord.lockedUntil,
-          message: `Too many attempts. Please try again after ${emailRecord.lockedUntil.toLocaleString()}.`,
-        };
-      }
-
-      // If lockout expired, reset
-      if (emailRecord.lockedUntil && emailRecord.lockedUntil <= new Date()) {
-        await authRateLimitDelegate().update({
-          where: { id: emailRecord.id },
-          data: {
-            attemptCount: 0,
-            lockedUntil: null,
-            firstAttemptAt: new Date(),
-            lastAttemptAt: new Date(),
-          },
-        });
-        return { allowed: true, remaining: MAX_LOGIN_ATTEMPTS, lockedUntil: null };
-      }
-
-      // Check if sliding window expired (reset after 1 hour of no attempts)
-      const timeSinceLastAttempt = Date.now() - emailRecord.lastAttemptAt.getTime();
-      if (timeSinceLastAttempt > 60 * 60 * 1000) {
-        await authRateLimitDelegate().update({
-          where: { id: emailRecord.id },
-          data: {
-            attemptCount: 0,
-            firstAttemptAt: new Date(),
-            lastAttemptAt: new Date(),
-          },
-        });
-        return { allowed: true, remaining: MAX_LOGIN_ATTEMPTS, lockedUntil: null };
-      }
-
-      // Check remaining attempts
-      const remaining = MAX_LOGIN_ATTEMPTS - emailRecord.attemptCount;
-      if (remaining <= 0) {
-        const lockoutUntil = new Date(Date.now() + LOCKOUT_DURATION_MS);
-        await authRateLimitDelegate().update({
-          where: { id: emailRecord.id },
-          data: { lockedUntil: lockoutUntil },
-        });
-        return {
-          allowed: false,
-          remaining: 0,
-          lockedUntil: lockoutUntil,
-          message: 'Too many failed attempts. Please try again in 15 minutes.',
-        };
-      }
-
-      return { allowed: true, remaining, lockedUntil: null };
+      return await enforceLimit(emailRecord, attemptType);
     }
 
     // Also check by IP (secondary defense)
@@ -142,31 +151,27 @@ export async function checkRateLimit(
       },
     });
 
-    if (attemptType === 'magic_link') {
-      if (ipRecord?.lockedUntil && ipRecord.lockedUntil > new Date()) {
+    if (ipRecord) {
+      const result = await enforceLimit(ipRecord, attemptType);
+      if (!result.allowed) {
+        // Prefer generic messaging for network-based lockouts.
         return {
-          allowed: false,
-          remaining: 0,
-          lockedUntil: ipRecord.lockedUntil,
-          message: 'Please wait a moment before requesting another sign-in link.',
+          ...result,
+          message:
+            attemptType === 'magic_link'
+              ? 'Please wait a moment before requesting another sign-in link.'
+              : 'Too many attempts from this network. Please try again later.',
         };
       }
-      return { allowed: true, remaining: 1, lockedUntil: null };
+      return result;
     }
 
-    if (ipRecord?.lockedUntil && ipRecord.lockedUntil > new Date()) {
-      return {
-        allowed: false,
-        remaining: 0,
-        lockedUntil: ipRecord.lockedUntil,
-        message: 'Too many attempts from this network. Please try again later.',
-      };
-    }
-
-    return { allowed: true, remaining: MAX_LOGIN_ATTEMPTS, lockedUntil: null };
+    const policy = RATE_LIMITS[attemptType];
+    return { allowed: true, remaining: policy.maxAttempts, lockedUntil: null };
   } catch {
     // If DB fails, allow but warn
-    return { allowed: true, remaining: MAX_LOGIN_ATTEMPTS, lockedUntil: null };
+    const policy = RATE_LIMITS[attemptType];
+    return { allowed: true, remaining: policy.maxAttempts, lockedUntil: null };
   }
 }
 
@@ -175,41 +180,54 @@ export async function recordFailedAttempt(
   email: string,
   attemptType: AttemptType = 'login'
 ): Promise<void> {
-  const ipAddress = getClientIp(req);
-  const normalizedEmail = email.trim().toLowerCase();
+  const ipAddress = hashKey(getClientIp(req));
+  const emailKey = hashKey(email);
 
-  const magicLockedUntil = attemptType === 'magic_link' ? new Date(Date.now() + MAGIC_LINK_COOLDOWN_MS) : null;
+  const policy = RATE_LIMITS[attemptType];
+  const magicCooldownUntil = attemptType === 'magic_link' ? new Date(Date.now() + MAGIC_LINK_COOLDOWN_MS) : null;
 
   try {
     // Record by email
     const existingEmail = await authRateLimitDelegate().findUnique({
       where: {
         email_attemptType: {
-          email: normalizedEmail,
+          email: emailKey,
           attemptType,
         },
       },
     });
 
     if (existingEmail) {
+      const nextLockedUntil =
+        attemptType === 'magic_link'
+          ? (() => {
+              const windowLock = new Date(Date.now() + policy.lockMs);
+              const shouldWindowLock = existingEmail.attemptCount + 1 >= policy.maxAttempts;
+              const candidate = shouldWindowLock ? windowLock : (magicCooldownUntil as Date);
+              if (!candidate) return existingEmail.lockedUntil;
+              if (!existingEmail.lockedUntil) return candidate;
+              return existingEmail.lockedUntil > candidate ? existingEmail.lockedUntil : candidate;
+            })()
+          : existingEmail.lockedUntil;
+
       await authRateLimitDelegate().update({
         where: { id: existingEmail.id },
         data: {
           attemptCount: { increment: 1 },
           lastAttemptAt: new Date(),
-          ...(attemptType === 'magic_link' ? { lockedUntil: magicLockedUntil } : null),
+          ...(attemptType === 'magic_link' ? { lockedUntil: nextLockedUntil } : null),
         },
       });
     } else {
       await authRateLimitDelegate().create({
         data: {
-          email: normalizedEmail,
+          email: emailKey,
           attemptType,
           attemptCount: 1,
           ipAddress,
           firstAttemptAt: new Date(),
           lastAttemptAt: new Date(),
-          ...(attemptType === 'magic_link' ? { lockedUntil: magicLockedUntil } : null),
+          ...(attemptType === 'magic_link' ? { lockedUntil: magicCooldownUntil } : null),
         },
       });
     }
@@ -225,12 +243,24 @@ export async function recordFailedAttempt(
     });
 
     if (existingIp) {
+      const nextLockedUntil =
+        attemptType === 'magic_link'
+          ? (() => {
+              const windowLock = new Date(Date.now() + policy.lockMs);
+              const shouldWindowLock = existingIp.attemptCount + 1 >= policy.maxAttempts;
+              const candidate = shouldWindowLock ? windowLock : (magicCooldownUntil as Date);
+              if (!candidate) return existingIp.lockedUntil;
+              if (!existingIp.lockedUntil) return candidate;
+              return existingIp.lockedUntil > candidate ? existingIp.lockedUntil : candidate;
+            })()
+          : existingIp.lockedUntil;
+
       await authRateLimitDelegate().update({
         where: { id: existingIp.id },
         data: {
           attemptCount: { increment: 1 },
           lastAttemptAt: new Date(),
-          ...(attemptType === 'magic_link' ? { lockedUntil: magicLockedUntil } : null),
+          ...(attemptType === 'magic_link' ? { lockedUntil: nextLockedUntil } : null),
         },
       });
     } else {
@@ -241,7 +271,7 @@ export async function recordFailedAttempt(
           attemptCount: 1,
           firstAttemptAt: new Date(),
           lastAttemptAt: new Date(),
-          ...(attemptType === 'magic_link' ? { lockedUntil: magicLockedUntil } : null),
+          ...(attemptType === 'magic_link' ? { lockedUntil: magicCooldownUntil } : null),
         },
       });
     }
@@ -254,15 +284,20 @@ export async function clearRateLimitOnSuccess(
   email: string,
   attemptType: AttemptType = 'login'
 ): Promise<void> {
-  const normalizedEmail = email.trim().toLowerCase();
+  const emailKey = hashKey(email);
   try {
     await authRateLimitDelegate().deleteMany({
       where: {
-        email: normalizedEmail,
+        email: emailKey,
         attemptType,
       },
     });
   } catch {
     // Fail silently
   }
+}
+
+export function getRetryAfterSeconds(result: RateLimitResult): number | null {
+  if (!result.lockedUntil) return null;
+  return secondsUntil(result.lockedUntil);
 }
