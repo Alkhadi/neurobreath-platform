@@ -485,12 +485,14 @@
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   }
 
+  /* Global responsive guardrails - prevent horizontal overflow */
   html {
     font-family: var(--font-sans);
     font-size: 16.64px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    overflow-x: hidden;
   }
 
   body {
@@ -498,6 +500,13 @@
     font-weight: 400;
     line-height: 1.6;
     letter-spacing: -0.011em;
+    overflow-x: hidden;
+    min-width: 0;
+  }
+
+  /* Ensure main containers can shrink */
+  main {
+    min-width: 0;
   }
 
   /* Headings - ChatGPT-style hierarchy (+4% increase) */
