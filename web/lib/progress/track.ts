@@ -199,7 +199,7 @@ export async function trackProgress(input: TrackProgressInput): Promise<void> {
       if (typeof BroadcastChannel !== 'undefined') {
         try {
           const realtimeChannel = new BroadcastChannel('nb_progress')
-          realtimeChannel.postMessage({ type: 'progress:event', timestamp: Date.now() })
+          realtimeChannel.postMessage({ type: 'event_recorded', timestamp: Date.now() })
           realtimeChannel.close()
         } catch {
           // BroadcastChannel not supported
