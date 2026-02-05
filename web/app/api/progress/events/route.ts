@@ -7,6 +7,7 @@ import { prisma } from '@/lib/db'
 type ProgressPrismaClient = {
   progressEvent: {
     create: (args: unknown) => Promise<unknown>
+    deleteMany: (args: unknown) => Promise<{ count: number }>
   }
   userDevice: {
     upsert: (args: unknown) => Promise<unknown>
@@ -37,6 +38,24 @@ const ALLOWED_TYPES = [
 ] as const
 
 type AllowedType = (typeof ALLOWED_TYPES)[number]
+
+type ClearFilter = 'all' | 'breathing' | 'lesson' | 'quiz' | 'focus_garden'
+
+function typesForClearFilter(filter: ClearFilter): string[] {
+  switch (filter) {
+    case 'breathing':
+      return ['breathing_completed', 'meditation_completed']
+    case 'lesson':
+      return ['lesson_completed']
+    case 'quiz':
+      return ['quiz_completed']
+    case 'focus_garden':
+      return ['focus_garden_completed']
+    case 'all':
+    default:
+      return [...ALLOWED_TYPES]
+  }
+}
 
 function jsonError(status: number, code: string, message: string) {
   return NextResponse.json({ ok: false, code, message }, { status })
@@ -69,6 +88,10 @@ function pickDeviceId(request: NextRequest): { deviceId: string; wasSet: boolean
   const existing = request.cookies.get(DEVICE_ID_COOKIE)?.value
   if (existing) return { deviceId: existing, wasSet: false }
   return { deviceId: generateUuid(), wasSet: true }
+}
+
+function getExistingDeviceId(request: NextRequest): string | null {
+  return request.cookies.get(DEVICE_ID_COOKIE)?.value ?? null
 }
 
 function assertNoUnknownTopLevelKeys(body: Record<string, unknown>) {
@@ -336,5 +359,40 @@ export async function POST(request: NextRequest) {
 
     console.error('[Progress Events] Failed to record event:', error)
     return jsonError(500, 'SERVER_ERROR', 'Failed to record event')
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const filterRaw = request.nextUrl.searchParams.get('filter')
+  const filter = (filterRaw || 'all') as ClearFilter
+  if (!['all', 'breathing', 'lesson', 'quiz', 'focus_garden'].includes(filter)) {
+    return jsonError(400, 'BAD_FILTER', 'Unknown filter')
+  }
+
+  const requestedSubjectId = request.nextUrl.searchParams.get('subjectId')
+  const subjectResult = await normalizeSubjectIdForWrite(request, requestedSubjectId ?? 'me')
+  if ('error' in subjectResult) return subjectResult.error
+  const { subjectId } = subjectResult
+
+  const userId = await getOptionalUserId(request)
+  const existingDeviceId = getExistingDeviceId(request)
+
+  // Nothing to clear for anonymous visitors without a known device id.
+  if (!userId && !existingDeviceId) {
+    return NextResponse.json({ ok: true, deleted: 0 })
+  }
+
+  const types = typesForClearFilter(filter)
+
+  try {
+    const where = userId
+      ? { userId, subjectId, type: { in: types } }
+      : { userId: null, subjectId: null, deviceId: existingDeviceId as string, type: { in: types } }
+
+    const result = await progressPrisma.progressEvent.deleteMany({ where })
+    return NextResponse.json({ ok: true, deleted: result.count })
+  } catch (error) {
+    console.error('[Progress Events] Failed to clear events:', error)
+    return jsonError(500, 'SERVER_ERROR', 'Failed to clear events')
   }
 }

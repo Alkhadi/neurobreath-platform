@@ -16,7 +16,7 @@ import {
 import {
   ArrowLeft, Sprout, Trophy, TrendingUp, Star, Sparkles, Info,
   Flame, Shield, Gift, ScrollText, ChevronRight, Lock, Check,
-  Snowflake, Award, Clock, Music, Vibrate
+  Snowflake, Award, Clock, Music, Vibrate, RotateCcw
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Companion, CompactCompanion, CompanionInSession } from '@/components/focus/companion'
@@ -48,6 +48,7 @@ import {
   getAvailableQuests,
   getActiveQuests,
   getBadgeInfo,
+  resetFocusGardenProgressWithOptions,
   type FocusGardenProgress,
   type GardenCategory,
   type MultiDayQuest
@@ -805,6 +806,7 @@ export default function FocusGardenPage() {
   const [companionContext, setCompanionContext] = useState<
     'greeting' | 'session-start' | 'session-end' | 'harvest' | 'streak' | 'idle' | 'comeback' | 'breathing' | 'level-up' | 'quest-complete'
   >('greeting')
+  const [resettingProgress, setResettingProgress] = useState(false)
 
   // Load progress on mount
   useEffect(() => {
@@ -849,6 +851,34 @@ export default function FocusGardenPage() {
     setShowCelebration(true)
     setTimeout(() => setShowCelebration(false), 3000)
   }, [])
+
+  const resetAllProgress = useCallback(async () => {
+    if (typeof window === 'undefined') return
+
+    const ok = window.confirm(
+      'Reset all Focus Garden progress? This clears your garden and deletes tracked Focus Garden activity. This cannot be undone.',
+    )
+    if (!ok) return
+
+    setResettingProgress(true)
+    try {
+      const res = await fetch(
+        `/api/progress/events?filter=focus_garden&subjectId=me`,
+        { method: 'DELETE' },
+      )
+      const json = (await res.json().catch(() => null)) as { ok?: boolean } | null
+      if (!res.ok || !json || json.ok !== true) {
+        celebrate('⚠️ Could not clear tracked activity. Try again.', '⚠️')
+        return
+      }
+
+      resetFocusGardenProgressWithOptions({ confirm: false, reload: true })
+    } catch {
+      celebrate('⚠️ Could not clear tracked activity. Try again.', '⚠️')
+    } finally {
+      setResettingProgress(false)
+    }
+  }, [celebrate])
 
   const applySensoryRewards = useCallback(
     async (before: FocusGardenProgress | null, after: FocusGardenProgress, hint?: 'minor' | 'major') => {
@@ -1395,6 +1425,15 @@ export default function FocusGardenPage() {
                 >
                   <Info className="w-4 h-4 mr-2" />
                   How it Works
+                </Button>
+                <Button
+                  onClick={resetAllProgress}
+                  disabled={resettingProgress}
+                  variant="outline"
+                  className="bg-white/10 border-white/30 text-white hover:bg-white/20 backdrop-blur-sm"
+                >
+                  <RotateCcw className="w-4 h-4 mr-2" />
+                  {resettingProgress ? 'Resetting…' : 'Reset Progress'}
                 </Button>
               </div>
             </div>

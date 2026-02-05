@@ -1435,6 +1435,27 @@ export function resetFocusGardenProgress(): void {
   }
 }
 
+export function resetFocusGardenProgressWithOptions(options?: {
+  confirm?: boolean
+  reload?: boolean
+}): boolean {
+  if (typeof window === 'undefined') return false
+
+  const shouldConfirm = options?.confirm ?? true
+  const shouldReload = options?.reload ?? true
+
+  if (shouldConfirm) {
+    const ok = window.confirm(
+      'Are you sure you want to reset all Focus Garden progress? This cannot be undone.',
+    )
+    if (!ok) return false
+  }
+
+  window.localStorage.removeItem(STORAGE_KEY)
+  if (shouldReload) window.location.reload()
+  return true
+}
+
 // Migrate from old storage format if needed
 export function migrateOldProgress(): void {
   if (typeof window === 'undefined') return;

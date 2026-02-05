@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Sprout } from 'lucide-react'
+import { ArrowLeft, RotateCcw, Sprout } from 'lucide-react'
 import styles from './focus-garden.module.css'
 
 // Plant stages
@@ -82,6 +82,16 @@ export default function FocusGardenPage() {
   const [xp, setXp] = useState(0)
   const [level, setLevel] = useState(1)
   const [showTutorial, setShowTutorial] = useState(false)
+
+  const resetGarden = () => {
+    const ok = window.confirm('Reset your Focus Garden? This cannot be undone.')
+    if (!ok) return
+    localStorage.removeItem('autism-focus-garden')
+    setGarden([])
+    setXp(0)
+    setLevel(1)
+    setShowTutorial(true)
+  }
 
   // Load from localStorage
   useEffect(() => {
@@ -180,9 +190,14 @@ export default function FocusGardenPage() {
                 A calming, supportive space for neurodivergent individuals to grow focus through gentle plant-based tasks.
               </p>
             </div>
-            <Button onClick={() => setShowTutorial(true)} variant="outline">
-              How it Works
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button onClick={() => setShowTutorial(true)} variant="outline">
+                How it Works
+              </Button>
+              <Button onClick={resetGarden} variant="outline" className="gap-2">
+                <RotateCcw className="w-4 h-4" /> Reset
+              </Button>
+            </div>
           </div>
 
           {/* Progress Bar */}

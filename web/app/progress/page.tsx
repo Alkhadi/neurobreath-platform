@@ -1,6 +1,5 @@
 
 'use client'
-
 import { useCallback, useEffect, useMemo, useState, type ComponentType } from 'react'
 import {
   Activity,
@@ -13,7 +12,9 @@ import {
   HelpCircle,
   Leaf,
   RefreshCw,
+  RotateCcw,
   Target,
+  Trash2,
   Wind,
   X,
 } from 'lucide-react'
@@ -310,6 +311,8 @@ export default function ProgressPage() {
   const [autoRefresh, setAutoRefresh] = useState(true)
   const [activityFilter, setActivityFilter] = useState<ActivityFilter>('all')
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [clearingActivity, setClearingActivity] = useState(false)
+  const [clearActivityNotice, setClearActivityNotice] = useState<string | null>(null)
 
   // Goals
   const [goals, setGoals] = useState<Goals>(DEFAULT_GOALS)
@@ -608,6 +611,56 @@ export default function ProgressPage() {
     },
     [],
   )
+
+  const resetActivityView = useCallback(() => {
+    setActivityFilter('all')
+    setSelectedDate(null)
+  }, [])
+
+  const clearActivity = useCallback(async () => {
+    const label =
+      activityFilter === 'all'
+        ? 'all activity'
+        : activityFilter === 'breathing'
+          ? 'Breathing activity'
+          : activityFilter === 'lesson'
+            ? 'Lesson activity'
+            : activityFilter === 'quiz'
+              ? 'Quiz activity'
+              : 'Focus Garden activity'
+
+    const subjectLabel =
+      data?.subject.id === 'me'
+        ? 'you'
+        : data?.subject.displayName
+          ? data.subject.displayName
+          : 'this learner'
+
+    const confirmText = `Clear ${label} for ${subjectLabel}? This deletes tracked activity records and cannot be undone.`
+    if (typeof window !== 'undefined' && !window.confirm(confirmText)) return
+
+    setClearingActivity(true)
+    setClearActivityNotice(null)
+    try {
+      const res = await fetch(
+        `/api/progress/events?filter=${encodeURIComponent(activityFilter)}&subjectId=${encodeURIComponent(activeSubjectId)}`,
+        { method: 'DELETE' },
+      )
+      const json = (await res.json().catch(() => null)) as { ok?: boolean; deleted?: number } | null
+      if (!res.ok || !json || json.ok !== true) {
+        setClearActivityNotice('Could not clear activity right now.')
+        return
+      }
+
+      const deletedCount = typeof json.deleted === 'number' ? json.deleted : 0
+      setClearActivityNotice(deletedCount > 0 ? `Cleared ${deletedCount} item(s).` : 'Nothing to clear.')
+      setReloadKey((k) => k + 1)
+    } catch {
+      setClearActivityNotice('Could not clear activity right now.')
+    } finally {
+      setClearingActivity(false)
+    }
+  }, [activityFilter, activeSubjectId, data?.subject.displayName, data?.subject.id])
 
   // ── Render ───────────────────────────────────────────────────────────────────
 
@@ -1109,8 +1162,31 @@ export default function ProgressPage() {
         <div className="bg-white rounded-xl p-8 shadow-lg mb-8 mt-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Recent Activity</h2>
-            <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-gray-400" />
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={resetActivityView}
+                className="gap-2"
+                aria-label="Reset recent activity view"
+              >
+                <RotateCcw className="w-4 h-4" /> Reset
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={clearActivity}
+                disabled={clearingActivity || loading}
+                className="gap-2"
+                aria-label="Clear tracked activity"
+              >
+                <Trash2 className="w-4 h-4" />
+                {clearingActivity ? 'Clearing…' : 'Clear'}
+              </Button>
+
+              <Filter className="w-4 h-4 text-gray-400 ml-1" aria-hidden="true" />
               <div className="flex gap-2">
                 {(['all', 'breathing', 'lesson', 'quiz', 'focus_garden'] as const).map(
                   (filter) => (
@@ -1140,6 +1216,16 @@ export default function ProgressPage() {
             </div>
           </div>
 
+          {clearActivityNotice && (
+            <div
+              className="mb-4 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700"
+              role="status"
+              aria-live="polite"
+            >
+              {clearActivityNotice}
+            </div>
+          )}
+
           {!loading && filteredRecent.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-500 mb-2">
@@ -1165,7 +1251,7 @@ export default function ProgressPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {(loading ? Array.from({ length: 6 }) : filteredRecent).map((item, idx) => {
+              {(loading ? Array.from({ length: 6 }) : filteredRecent.slice(0, 6)).map((item, idx) => {
                 if (loading) {
                   return (
                     <div key={idx} className="p-4 bg-gray-50 rounded-lg">
@@ -1179,7 +1265,6 @@ export default function ProgressPage() {
                 const eventInfo = mapEvent(e.type, e.metadata)
                 const meta = e.metadata
 
-                // Build detail parts (technique, pattern, duration)
                 const detailParts: string[] = []
                 if (e.type === 'breathing_completed' && meta) {
                   if (typeof meta.pattern === 'string') detailParts.push(meta.pattern)
@@ -1206,9 +1291,7 @@ export default function ProgressPage() {
                         <eventInfo.icon className="w-4 h-4 mt-0.5 text-gray-500" />
                         <div className="flex-1">
                           <p className="font-medium text-gray-900">{eventInfo.label}</p>
-                          {detailText && (
-                            <p className="text-xs text-gray-500">{detailText}</p>
-                          )}
+                          {detailText && <p className="text-xs text-gray-500">{detailText}</p>}
                           <p className="text-sm text-gray-500">{formatWhen(e.occurredAt)}</p>
                         </div>
                       </div>
@@ -1228,6 +1311,66 @@ export default function ProgressPage() {
                   </div>
                 )
               })}
+
+              {!loading && filteredRecent.length > 6 && (
+                <details className="rounded-lg border border-gray-200 bg-white">
+                  <summary className="cursor-pointer select-none px-4 py-3 text-sm font-medium text-purple-700 hover:text-purple-800">
+                    Show {filteredRecent.length - 6} more
+                  </summary>
+                  <div className="space-y-4 px-4 pb-4">
+                    {filteredRecent.slice(6).map((e, idx) => {
+                      const eventInfo = mapEvent(e.type, e.metadata)
+                      const meta = e.metadata
+
+                      const detailParts: string[] = []
+                      if (e.type === 'breathing_completed' && meta) {
+                        if (typeof meta.pattern === 'string') detailParts.push(meta.pattern)
+                      }
+                      if (e.minutes) {
+                        detailParts.push(`${e.minutes} min`)
+                      } else if (typeof meta?.durationSeconds === 'number') {
+                        const sec = meta.durationSeconds as number
+                        detailParts.push(sec >= 60 ? `${Math.round(sec / 60)} min` : `${sec}s`)
+                      }
+                      if (e.type !== 'breathing_completed' && meta) {
+                        const slug = typeof meta.slug === 'string' ? meta.slug : null
+                        if (slug && !eventInfo.label.includes(slug)) detailParts.push(slug)
+                      }
+                      const detailText = detailParts.join(' \u00b7 ')
+
+                      return (
+                        <div
+                          key={`${e.occurredAt}_more_${idx}`}
+                          className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                        >
+                          <div className="flex items-center justify-between gap-4">
+                            <div className="flex-1 flex items-start gap-2">
+                              <eventInfo.icon className="w-4 h-4 mt-0.5 text-gray-500" />
+                              <div className="flex-1">
+                                <p className="font-medium text-gray-900">{eventInfo.label}</p>
+                                {detailText && <p className="text-xs text-gray-500">{detailText}</p>}
+                                <p className="text-sm text-gray-500">{formatWhen(e.occurredAt)}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Badge variant="secondary" className="text-xs">
+                                {categoryBadgeLabel(eventInfo.category)}
+                              </Badge>
+                              {e.path && (
+                                <Button asChild size="sm" variant="ghost" className="h-8 px-2">
+                                  <Link href={e.path}>
+                                    Resume <ExternalLink className="w-3 h-3 ml-1" />
+                                  </Link>
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </details>
+              )}
             </div>
           )}
         </div>
