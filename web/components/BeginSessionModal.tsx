@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { X, Play, Pause, Square, Volume2, Music } from 'lucide-react'
 import { getTechniqueById } from '@/lib/breathing-data'
 import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS'
+import { trackProgress } from '@/lib/progress/track'
 
 interface BeginSessionModalProps {
   isOpen: boolean
@@ -420,6 +421,19 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
           setIsPlaying(false)
           setPhase('ready')
           speak('Session complete')
+          
+          // Track progress
+          const durationSeconds = Math.round((totalTime || 60) / 1)
+          void trackProgress({
+            type: 'breathing_completed',
+            metadata: {
+              techniqueId: selectedTechnique || 'unknown',
+              durationSeconds,
+              category: 'breathing',
+            },
+            path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+          })
+          
           return 0
         }
         return prev - 1

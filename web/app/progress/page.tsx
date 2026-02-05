@@ -5,6 +5,7 @@ import { Activity, Clock, Flame, RefreshCw, Target } from 'lucide-react'
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
+import { ProgressCalendar } from '@/components/progress/ProgressCalendar'
 
 type RangeKey = '7d' | '30d' | '90d'
 
@@ -174,8 +175,16 @@ export default function ProgressPage() {
 
     void run()
 
+    // Real-time polling: refresh every 30 seconds
+    const interval = setInterval(() => {
+      if (!cancelled) {
+        void run()
+      }
+    }, 30_000)
+
     return () => {
       cancelled = true
+      clearInterval(interval)
     }
   }, [activeSubjectId, range, reloadKey])
 
@@ -377,7 +386,19 @@ export default function ProgressPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-8 shadow-lg mb-8">
+        {/* Calendar View */}
+        {!loading && data?.dailySeries && (
+          <ProgressCalendar
+            dailySeries={data.dailySeries}
+            range={range}
+            onDateClick={(date) => {
+              console.log('Clicked date:', date)
+              // Could show day detail modal in future
+            }}
+          />
+        )}
+
+        <div className="bg-white rounded-xl p-8 shadow-lg mb-8 mt-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Activity</h2>
 
           {!loading && data?.empty ? (
