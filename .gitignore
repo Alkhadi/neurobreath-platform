@@ -49,6 +49,10 @@ web/playwright-report
 test-results
 playwright-report
 
+# macOS system files
+.DS_Store
+**/.DS_Store
+
 # Keep baselines committed
 !web/perf/baseline/
 !web/tests/visual/__screenshots__/
