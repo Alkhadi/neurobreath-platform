@@ -486,6 +486,7 @@ model AuthUser {
   universalProgressEvents UniversalProgressEvent[]
   progressEvents          ProgressEvent[]
   userDevices             UserDevice[]
+  subjectAccesses         SubjectAccess[]
 
   @@index([primaryDeviceId])
 }
@@ -493,6 +494,41 @@ model AuthUser {
 // ============================================================================
 // APPEND-ONLY PROGRESS EVENT STREAM (DEVICE + USER)
 // ============================================================================
+
+// ============================================================================
+// SUBJECT PROFILES (LEARNERS) + ACCESS CONTROL
+// ============================================================================
+
+model SubjectProfile {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  kind            String   @default("learner")
+  displayName     String
+  createdByUserId String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+  archivedAt      DateTime?
+
+  accesses        SubjectAccess[]
+
+  @@index([createdByUserId, createdAt])
+  @@index([archivedAt])
+}
+
+model SubjectAccess {
+  id        String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  subjectId String        @db.Uuid
+  subject   SubjectProfile @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  userId    String
+  user      AuthUser      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  role      String
+  canWrite  Boolean       @default(true)
+  createdAt DateTime      @default(now())
+
+  @@unique([subjectId, userId])
+  @@index([userId, subjectId])
+}
 
 model ProgressEvent {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
