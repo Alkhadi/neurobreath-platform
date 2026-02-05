@@ -175,16 +175,39 @@ export default function ProgressPage() {
 
     void run()
 
-    // Real-time polling: refresh every 30 seconds
+    // BroadcastChannel for real-time cross-tab updates
+    let channel: BroadcastChannel | null = null
+    if (typeof BroadcastChannel !== 'undefined') {
+      try {
+        channel = new BroadcastChannel('nb_progress_channel')
+        channel.onmessage = (event) => {
+          if (event.data?.type === 'progress:event') {
+            // Another tab recorded progress - refresh immediately
+            if (!cancelled) void run()
+          }
+        }
+      } catch {
+        // BroadcastChannel not supported - no problem
+      }
+    }
+
+    // Polling fallback: refresh every 60 seconds (for cross-device updates)
     const interval = setInterval(() => {
       if (!cancelled) {
         void run()
       }
-    }, 30_000)
+    }, 60_000)
 
     return () => {
       cancelled = true
       clearInterval(interval)
+      if (channel) {
+        try {
+          channel.close()
+        } catch {
+          // ignore
+        }
+      }
     }
   }, [activeSubjectId, range, reloadKey])
 
