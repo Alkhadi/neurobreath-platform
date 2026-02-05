@@ -17,13 +17,21 @@ type ProgressPrismaClient = {
 
 const progressPrisma = prisma as unknown as ProgressPrismaClient
 
+type SubjectAccessPrismaClient = {
+  subjectAccess: {
+    findFirst: (args: unknown) => Promise<{ subject: { displayName: string } } | null>
+  }
+}
+
+const subjectAccessPrisma = prisma as unknown as SubjectAccessPrismaClient
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 const DEVICE_ID_COOKIE = 'nb_device_id'
 
 type RangeKey = '7d' | '30d' | '90d'
-type SubjectKey = 'self'
+type SubjectPublicId = 'me' | string
 
 const COMPLETION_TYPES = new Set([
   'breathing_completed',
@@ -31,8 +39,6 @@ const COMPLETION_TYPES = new Set([
   'meditation_completed',
   'quiz_completed',
   'focus_garden_completed',
-  'challenge_completed',
-  'quest_completed',
 ])
 
 function jsonError(status: number, code: string, message: string) {
@@ -53,10 +59,8 @@ function parseRange(value: string | null): RangeKey {
   return '30d'
 }
 
-function parseSubject(value: string | null): SubjectKey {
-  // Future parent/teacher phase: support subject=<childProfileId> once authorization exists.
-  if (value === 'self') return 'self'
-  return 'self'
+function isUuid(value: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)
 }
 
 function startOfUtcDay(date: Date): Date {
@@ -108,20 +112,69 @@ function computeStreak(dayKeys: string[], todayKey: string): { current: number; 
   return { current, best }
 }
 
+function labelForEventType(type: string): string {
+  switch (type) {
+    case 'breathing_completed':
+      return 'Breathing session completed'
+    case 'lesson_completed':
+      return 'Lesson completed'
+    case 'quiz_completed':
+      return 'Quiz completed'
+    case 'focus_garden_completed':
+      return 'Focus Garden action'
+    case 'meditation_completed':
+      return 'Meditation completed'
+    default:
+      return type.replace(/_/g, ' ')
+  }
+}
+
+function computeMinutesBreathing(metadata: unknown): number | null {
+  const m = metadata as Record<string, unknown> | null
+  const durationSeconds = typeof m?.durationSeconds === 'number' ? (m.durationSeconds as number) : null
+  if (durationSeconds && Number.isFinite(durationSeconds) && durationSeconds > 0) {
+    return Math.round(durationSeconds / 60)
+  }
+  const minutes = typeof m?.minutes === 'number' ? (m.minutes as number) : null
+  if (minutes && Number.isFinite(minutes) && minutes > 0) return Math.round(minutes)
+  return null
+}
+
 export async function GET(request: NextRequest) {
   const range = parseRange(request.nextUrl.searchParams.get('range'))
-  const requestedSubject = parseSubject(request.nextUrl.searchParams.get('subject'))
+  const rawSubjectId = request.nextUrl.searchParams.get('subjectId')
   const deviceId = request.cookies.get(DEVICE_ID_COOKIE)?.value || null
   const userId = await getOptionalUserId(request)
 
-  // SECURITY: for now we only support subject=self, and only for signed-in users.
-  const subject: SubjectKey = userId ? requestedSubject : 'self'
+  const identity = userId ? { kind: 'user' as const } : { kind: 'guest' as const }
+
+  let requestedSubjectId: SubjectPublicId = 'me'
+  if (!userId) {
+    requestedSubjectId = 'me'
+  } else {
+    if (!rawSubjectId || rawSubjectId === 'me') {
+      requestedSubjectId = 'me'
+    } else if (isUuid(rawSubjectId)) {
+      requestedSubjectId = rawSubjectId
+    } else {
+      return jsonError(400, 'BAD_SUBJECT', 'Invalid subject')
+    }
+  }
+
+  // Guests: force subjectId = null ("Me")
+  const publicSubjectId: SubjectPublicId = userId ? requestedSubjectId : 'me'
+  const dbSubjectId: string | null = !userId
+    ? null
+    : publicSubjectId === 'me'
+      ? null
+      : publicSubjectId
 
   if (!deviceId && !userId) {
     return NextResponse.json({
       ok: true,
-      identity: { kind: 'guest' },
+      identity,
       range,
+      subject: { id: 'me', displayName: 'Me' },
       totals: {
         totalEvents: 0,
         breathingSessions: 0,
@@ -143,6 +196,25 @@ export async function GET(request: NextRequest) {
 
   try {
     let deviceIds: string[] = []
+
+    let subjectDisplayName = 'Me'
+    if (userId && publicSubjectId !== 'me') {
+      const access = await subjectAccessPrisma.subjectAccess.findFirst({
+        where: {
+          userId,
+          subjectId: publicSubjectId,
+          subject: { archivedAt: null },
+        },
+        select: {
+          subject: { select: { displayName: true } },
+        },
+      })
+
+      if (!access) {
+        return jsonError(403, 'FORBIDDEN', 'Not authorized for subject')
+      }
+      subjectDisplayName = access.subject.displayName
+    }
 
     if (userId) {
       // ensure this device is linked for merge semantics
@@ -172,24 +244,32 @@ export async function GET(request: NextRequest) {
       return jsonError(500, 'IDENTITY_ERROR', 'Missing identity')
     }
 
-    const where = userId
+    const where = !userId
       ? {
           occurredAt: { gte: startUtc },
-          OR: [
-            // subject=self (current model)
-            ...(subject === 'self' ? [{ subjectId: userId }] : []),
-
-            // legacy signed-in events created before subjectId existed
-            { userId, subjectId: null },
-
-            // merge guest events from linked devices (avoid leaking other users' signed-in events)
-            { deviceId: { in: deviceIds }, userId: null },
-          ],
-        }
-      : {
-          occurredAt: { gte: startUtc },
           deviceId: deviceIds[0],
+          userId: null,
+          subjectId: null,
         }
+      : publicSubjectId === 'me'
+        ? {
+            occurredAt: { gte: startUtc },
+            OR: [
+              // "Me" events (new model)
+              { userId, subjectId: null },
+
+              // legacy "Me" events (old model: subjectId=userId)
+              { userId, subjectId: userId },
+
+              // merge guest events from linked devices (avoid leaking other users' signed-in events)
+              { deviceId: { in: deviceIds }, userId: null, subjectId: null },
+            ],
+          }
+        : {
+            occurredAt: { gte: startUtc },
+            userId,
+            subjectId: dbSubjectId,
+          }
 
     const events = await progressPrisma.progressEvent.findMany({
       where,
@@ -223,12 +303,8 @@ export async function GET(request: NextRequest) {
 
       if (e.type === 'breathing_completed') {
         totals.breathingSessions += 1
-        const durationSeconds =
-          typeof (e.metadata as Record<string, unknown> | null)?.durationSeconds === 'number'
-            ? ((e.metadata as Record<string, unknown>).durationSeconds as number)
-            : null
-        if (durationSeconds && Number.isFinite(durationSeconds)) {
-          const minutes = Math.round(durationSeconds / 60)
+        const minutes = computeMinutesBreathing(e.metadata)
+        if (minutes) {
           totals.minutesBreathing += minutes
           slot.minutesBreathing += minutes
         }
@@ -265,17 +341,21 @@ export async function GET(request: NextRequest) {
       metadata: e.metadata,
     }))
 
-    const identity = userId ? { kind: 'user' as const } : { kind: 'guest' as const }
-
     return NextResponse.json({
       ok: true,
       identity,
       range,
-      subject,
+      subject: { id: publicSubjectId, displayName: subjectDisplayName },
       totals,
       streak: { currentStreakDays: streak.current, bestStreakDays: streak.best },
       dailySeries,
-      recent,
+      recent: recent.map((e) => ({
+        occurredAt: e.occurredAt,
+        type: e.type,
+        label: labelForEventType(e.type),
+        minutes: e.type === 'breathing_completed' ? computeMinutesBreathing(e.metadata) ?? undefined : undefined,
+        path: e.path,
+      })),
       empty: events.length === 0,
     })
   } catch (error) {

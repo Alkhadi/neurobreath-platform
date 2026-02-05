@@ -13,7 +13,14 @@ type ProgressPrismaClient = {
   }
 }
 
+type SubjectAccessPrismaClient = {
+  subjectAccess: {
+    findFirst: (args: unknown) => Promise<{ id: string } | null>
+  }
+}
+
 const progressPrisma = prisma as unknown as ProgressPrismaClient
+const subjectAccessPrisma = prisma as unknown as SubjectAccessPrismaClient
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -27,10 +34,6 @@ const ALLOWED_TYPES = [
   'meditation_completed',
   'quiz_completed',
   'focus_garden_completed',
-  'challenge_completed',
-  'quest_completed',
-  'streak_milestone',
-  'achievement_unlocked',
 ] as const
 
 type AllowedType = (typeof ALLOWED_TYPES)[number]
@@ -56,6 +59,10 @@ async function getOptionalUserId(req: NextRequest): Promise<string | null> {
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return !!value && typeof value === 'object' && !Array.isArray(value)
+}
+
+function isUuid(value: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)
 }
 
 function pickDeviceId(request: NextRequest): { deviceId: string; wasSet: boolean } {
@@ -84,10 +91,6 @@ function validateMetadata(
     meditation_completed: new Set(['durationSeconds', 'minutes']),
     quiz_completed: new Set(['quizId', 'score', 'maxScore', 'topic']),
     focus_garden_completed: new Set(['plantId', 'taskId', 'category', 'xpEarned', 'bloomed', 'action']),
-    challenge_completed: new Set(['challengeId', 'challengeKey', 'category']),
-    quest_completed: new Set(['questId', 'dayNumber', 'xpEarned']),
-    streak_milestone: new Set(['days']),
-    achievement_unlocked: new Set(['achievementId', 'name']),
   }
 
   const allowedKeys = allowedByType[type]
@@ -112,6 +115,46 @@ function validateMetadata(
   return out
 }
 
+async function normalizeSubjectIdForWrite(
+  request: NextRequest,
+  requestedSubjectId: unknown,
+): Promise<{ subjectId: string | null; subject: { id: 'me' | string } } | { error: NextResponse }> {
+  const userId = await getOptionalUserId(request)
+
+  // Guests: force subjectId = null regardless of input
+  if (!userId) {
+    return { subjectId: null, subject: { id: 'me' } }
+  }
+
+  if (requestedSubjectId === undefined || requestedSubjectId === null || requestedSubjectId === '' || requestedSubjectId === 'me') {
+    return { subjectId: null, subject: { id: 'me' } }
+  }
+
+  if (typeof requestedSubjectId !== 'string' || requestedSubjectId.length > 200) {
+    return { error: jsonError(400, 'BAD_SUBJECT', 'Invalid subject') }
+  }
+
+  if (!isUuid(requestedSubjectId)) {
+    return { error: jsonError(400, 'BAD_SUBJECT', 'Invalid subject') }
+  }
+
+  const access = await subjectAccessPrisma.subjectAccess.findFirst({
+    where: {
+      userId,
+      subjectId: requestedSubjectId,
+      canWrite: true,
+      subject: { archivedAt: null },
+    },
+    select: { id: true },
+  })
+
+  if (!access) {
+    return { error: jsonError(403, 'FORBIDDEN', 'Not authorized for subject') }
+  }
+
+  return { subjectId: requestedSubjectId, subject: { id: requestedSubjectId } }
+}
+
 export async function POST(request: NextRequest) {
   const contentLength = request.headers.get('content-length')
   if (contentLength && Number(contentLength) > 8_192) {
@@ -134,28 +177,24 @@ export async function POST(request: NextRequest) {
       return jsonError(400, 'BAD_PATH', 'Invalid path')
     }
 
-    const requestedSubjectId = rawBody.subjectId
-    if (
-      requestedSubjectId !== undefined &&
-      (typeof requestedSubjectId !== 'string' || requestedSubjectId.length > 200)
-    ) {
-      return jsonError(400, 'BAD_SUBJECT', 'Invalid subject')
-    }
+    const subjectResult = await normalizeSubjectIdForWrite(request, rawBody.subjectId)
+    if ('error' in subjectResult) return subjectResult.error
+    const { subjectId } = subjectResult
 
     const metadata: Prisma.InputJsonValue = validateMetadata(
       type as AllowedType,
       rawBody.metadata,
     ) as Prisma.InputJsonValue
 
+    if (rawBody.metadata !== undefined) {
+      const bytes = Buffer.byteLength(JSON.stringify(metadata ?? {}), 'utf8')
+      if (bytes > 8_192) {
+        return jsonError(413, 'PAYLOAD_TOO_LARGE', 'Metadata too large')
+      }
+    }
+
     const { deviceId, wasSet } = pickDeviceId(request)
     const userId = await getOptionalUserId(request)
-
-    // SECURITY (future parent/teacher phase): do not allow arbitrary subject ids.
-    // Today:
-    // - guests => subjectId is always null
-    // - signed-in => subjectId is forced to the signed-in user id ("self")
-    // Later: add SubjectProfile + SubjectAccess tables and allow subjectId only when authorized.
-    const subjectId = userId ? userId : null
 
     await progressPrisma.progressEvent.create({
       data: {

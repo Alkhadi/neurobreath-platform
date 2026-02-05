@@ -13,18 +13,20 @@ export type TrackProgressInput = {
   type: ProgressEventType
   metadata?: Record<string, unknown>
   path?: string
-  subjectId?: string
 }
 
 export async function trackProgress(input: TrackProgressInput): Promise<void> {
   try {
     if (typeof window === 'undefined') return
 
+    const stored = window.localStorage?.getItem('nb_active_subject')
+    const activeSubjectId = typeof stored === 'string' && stored.trim() ? stored.trim() : 'me'
+
     const body = {
       type: input.type,
       ...(input.path ? { path: input.path } : {}),
       ...(input.metadata ? { metadata: input.metadata } : {}),
-      ...(input.subjectId ? { subjectId: input.subjectId } : {}),
+      subjectId: activeSubjectId,
     }
 
     await fetch('/api/progress/events', {

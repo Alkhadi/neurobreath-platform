@@ -12,6 +12,7 @@ type SummaryResponse = {
   ok: true
   identity: { kind: 'guest' | 'user' }
   range: RangeKey
+  subject: { id: 'me' | string; displayName: string }
   totals: {
     totalEvents: number
     breathingSessions: number
@@ -22,8 +23,42 @@ type SummaryResponse = {
   }
   streak: { currentStreakDays: number; bestStreakDays: number }
   dailySeries: Array<{ date: string; count: number; minutesBreathing?: number }>
-  recent: Array<{ id: string; occurredAt: string; type: string; path?: string | null; metadata: unknown }>
+  recent: Array<{ occurredAt: string; type: string; label: string; minutes?: number; path?: string | null }>
   empty: boolean
+}
+
+type SubjectListItem = {
+  id: string
+  kind: string
+  displayName: string
+  role?: string
+  canWrite?: boolean
+}
+
+type SubjectsResponse =
+  | { ok: true; subjects: SubjectListItem[] }
+  | { ok: false; code?: string; message?: string }
+
+type CreateSubjectResponse =
+  | { ok: true; subject: SubjectListItem }
+  | { ok: false; code?: string; message?: string }
+
+function safeGetActiveSubjectId(): string {
+  try {
+    const v = window.localStorage?.getItem('nb_active_subject')
+    if (typeof v === 'string' && v.trim()) return v.trim()
+  } catch {
+    // ignore
+  }
+  return 'me'
+}
+
+function safeSetActiveSubjectId(subjectId: string) {
+  try {
+    window.localStorage?.setItem('nb_active_subject', subjectId)
+  } catch {
+    // ignore
+  }
 }
 
 function labelForEventType(type: string): string {
@@ -61,6 +96,10 @@ function formatWhen(iso: string): string {
 
 export default function ProgressPage() {
   const [range, setRange] = useState<RangeKey>('30d')
+  const [subjects, setSubjects] = useState<SubjectListItem[]>([])
+  const [activeSubjectId, setActiveSubjectId] = useState<string>('me')
+  const [newLearnerName, setNewLearnerName] = useState('')
+  const [creatingLearner, setCreatingLearner] = useState(false)
   const [data, setData] = useState<SummaryResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -73,7 +112,48 @@ export default function ProgressPage() {
       setLoading(true)
       setError(null)
       try {
-        const res = await fetch(`/api/progress/summary?range=${range}&subject=self`, { cache: 'no-store' })
+        const res = await fetch('/api/subjects', { cache: 'no-store' })
+        if (!res.ok) return
+        const json = (await res.json()) as SubjectsResponse
+        if (!('ok' in json) || json.ok !== true) return
+
+        const list = json.subjects
+        const wanted = safeGetActiveSubjectId()
+        const inList = list.some((s) => s.id === wanted)
+        const activeId = inList ? wanted : 'me'
+        safeSetActiveSubjectId(activeId)
+        if (cancelled) return
+
+        setSubjects(list)
+        setActiveSubjectId(activeId)
+      } catch {
+        if (!cancelled) {
+          setSubjects([{ id: 'me', kind: 'self', displayName: 'Me' }])
+          setActiveSubjectId('me')
+          setError('Could not load subjects right now.')
+        }
+      } finally {
+        // leave loading state to the summary fetch
+      }
+    }
+
+    void run()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
+    let cancelled = false
+
+    const run = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const res = await fetch(
+          `/api/progress/summary?range=${range}&subjectId=${encodeURIComponent(activeSubjectId)}`,
+          { cache: 'no-store' },
+        )
         if (!res.ok) {
           setError('Could not load progress right now.')
           return
@@ -93,10 +173,11 @@ export default function ProgressPage() {
     }
 
     void run()
+
     return () => {
       cancelled = true
     }
-  }, [range, reloadKey])
+  }, [activeSubjectId, range, reloadKey])
 
   const totals = data?.totals
   const streak = data?.streak
@@ -115,6 +196,29 @@ export default function ProgressPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-3 mb-8">
+          <div className="flex items-center gap-2">
+            <label htmlFor="learner" className="text-sm font-medium text-gray-700">
+              Learner
+            </label>
+            <select
+              id="learner"
+              value={activeSubjectId}
+              onChange={(e) => {
+                const next = e.target.value
+                setActiveSubjectId(next)
+                safeSetActiveSubjectId(next)
+              }}
+              className="h-10 rounded-md border border-gray-200 bg-white px-3 text-sm shadow-sm"
+              disabled={loading && subjects.length === 0}
+            >
+              {(subjects.length ? subjects : [{ id: 'me', kind: 'self', displayName: 'Me' }]).map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.displayName}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="inline-flex rounded-lg bg-white p-1 shadow">
             {(['7d', '30d', '90d'] as const).map((key) => (
               <button
@@ -146,6 +250,63 @@ export default function ProgressPage() {
             </div>
           )}
         </div>
+
+        {data?.identity?.kind === 'user' && (
+          <div className="bg-white rounded-xl p-6 shadow-lg mb-8">
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">Add a learner</h2>
+            <form
+              className="flex flex-wrap gap-3 items-center"
+              onSubmit={async (e) => {
+                e.preventDefault()
+                const name = newLearnerName.trim()
+                if (!name) return
+
+                setCreatingLearner(true)
+                try {
+                  const res = await fetch('/api/subjects', {
+                    method: 'POST',
+                    headers: { 'content-type': 'application/json' },
+                    body: JSON.stringify({ displayName: name }),
+                  })
+                  const json = (await res.json().catch(() => null)) as CreateSubjectResponse | null
+                  if (!res.ok || !json || !('ok' in json) || json.ok !== true) {
+                    setError('Could not create learner right now.')
+                    return
+                  }
+
+                  // Refresh subjects list and select new learner
+                  const subjectsRes = await fetch('/api/subjects', { cache: 'no-store' })
+                  const subjectsJson = (await subjectsRes.json().catch(() => null)) as SubjectsResponse | null
+                  if (subjectsRes.ok && subjectsJson && ('ok' in subjectsJson) && subjectsJson.ok === true) {
+                    setSubjects(subjectsJson.subjects)
+                  }
+
+                  setNewLearnerName('')
+                  setActiveSubjectId(json.subject.id)
+                  safeSetActiveSubjectId(json.subject.id)
+                  setReloadKey((k) => k + 1)
+                } catch {
+                  setError('Could not create learner right now.')
+                } finally {
+                  setCreatingLearner(false)
+                }
+              }}
+            >
+              <input
+                type="text"
+                value={newLearnerName}
+                onChange={(e) => setNewLearnerName(e.target.value)}
+                placeholder="e.g. Sam"
+                maxLength={80}
+                className="h-10 w-64 max-w-full rounded-md border border-gray-200 bg-white px-3 text-sm shadow-sm"
+                disabled={creatingLearner}
+              />
+              <Button type="submit" disabled={creatingLearner || !newLearnerName.trim()}>
+                {creatingLearner ? 'Creating…' : 'Add learner'}
+              </Button>
+            </form>
+          </div>
+        )}
 
         {error && (
           <div className="bg-white rounded-xl p-6 shadow-lg mb-8">
@@ -245,10 +406,10 @@ export default function ProgressPage() {
 
                 const e = item as SummaryResponse['recent'][number]
                 return (
-                  <div key={e.id} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <div key={`${e.occurredAt}_${idx}`} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                     <div className="flex items-center justify-between gap-4">
                       <div>
-                        <p className="font-medium text-gray-900">{labelForEventType(e.type)}</p>
+                        <p className="font-medium text-gray-900">{e.label || labelForEventType(e.type)}</p>
                         <p className="text-sm text-gray-500">{formatWhen(e.occurredAt)}</p>
                       </div>
                       {e.type === 'breathing_completed' && (
