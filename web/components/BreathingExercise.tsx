@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
+import { trackProgress } from '@/lib/progress/track';
 import { 
   useBreathingAudio, 
   BREATHING_PATTERNS, 
@@ -53,6 +54,15 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
   const [targetDuration, setTargetDuration] = useState(safeInitialDuration);
   const [showDrivingWarning, setShowDrivingWarning] = useState(true);
   const [breathCount, setBreathCount] = useState(0);
+  const didTrackRef = useRef(false);
+
+  const isSos = pattern === 'sos';
+
+  useEffect(() => {
+    if (isSos && targetDuration !== 60) {
+      setTargetDuration(60);
+    }
+  }, [isSos, targetDuration]);
   
   // Audio hooks
   const { speak, cancel } = useSpeechSynthesis();
@@ -157,6 +167,25 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
             speak('Session complete. Well done.');
           }
           stopInstructions();
+          if (!didTrackRef.current) {
+            didTrackRef.current = true;
+            const inhaleSeconds = currentPattern.phases.find(p => p.name.toLowerCase().includes('inhale'))?.duration;
+            const exhaleSeconds = currentPattern.phases.find(p => p.name.toLowerCase().includes('exhale'))?.duration;
+            const patternDurations = currentPattern.phases.map(p => p.duration).join('-');
+            void trackProgress({
+              type: 'breathing_completed',
+              metadata: {
+                techniqueId: pattern,
+                durationSeconds: newTime,
+                cycles: cycles,
+                pattern: patternDurations,
+                inhaleSeconds,
+                exhaleSeconds,
+                category: 'breathing',
+              },
+              path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+            });
+          }
           // Save the completed session
           setTimeout(() => {
             if (newTime >= 30 && breathCount > 0) {
@@ -199,6 +228,12 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
 
     return () => clearInterval(timer);
   }, [isActive, countdown, phase, pattern, targetDuration, voiceMode, speak, stopInstructions, ambientSound, breathCount, cycles]);
+
+  useEffect(() => {
+    if (isActive && totalTime === 0) {
+      didTrackRef.current = false;
+    }
+  }, [isActive, totalTime]);
 
   // Ambient sound management with enhanced quality
   useEffect(() => {
@@ -297,6 +332,7 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
     setCycles(0);
     setTotalTime(0);
     setBreathCount(0);
+    didTrackRef.current = false;
     cancel();
     stopInstructions();
   };
@@ -388,6 +424,7 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
   const currentPhaseLabel = currentPattern.phases[phase]?.name || 'Ready';
   const remainingTime = targetDuration - totalTime;
   const progressPercentage = (totalTime / targetDuration) * 100;
+  const durationOptions = isSos ? TIME_OPTIONS.filter((option) => option.value === 60) : TIME_OPTIONS;
 
   // Fullscreen View
   if (isFullscreen) {
@@ -592,10 +629,11 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
             Session Duration
           </label>
           <div className="flex gap-2 flex-wrap">
-            {TIME_OPTIONS.map((option) => (
+            {durationOptions.map((option) => (
               <button
                 key={option.value}
                 onClick={() => setTargetDuration(option.value)}
+                disabled={isSos && option.value !== 60}
                 className={cn(
                   'px-4 py-2 rounded-lg text-sm font-medium transition-all',
                   targetDuration === option.value
