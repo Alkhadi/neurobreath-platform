@@ -211,7 +211,7 @@ e8d9fc2 Fix responsive Tesla nav test and stabilize SEO readiness checks
 ## PR #7 Overview
 
 **Title:** Learner profiles + subject-scoped progress  
-**URL:** https://github.com/Alkhadi/neurobreath-platform/pull/7
+**URL:** <https://github.com/Alkhadi/neurobreath-platform/pull/7>
 
 **What:**
 - Adds learner/child profiles (SubjectProfile) + access control (SubjectAccess)
