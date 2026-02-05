@@ -143,6 +143,30 @@ test.describe('Visual Regression Suite', () => {
     // Make snapshots OS-agnostic (avoid -darwin vs -linux)
     testInfo.snapshotSuffix = '';
 
+    // Hide the consent modal to keep page snapshots stable.
+    // Visual diffs should focus on the route content/layout, not on the global consent UI.
+    await page.addInitScript(() => {
+      const consentState = {
+        essential: true,
+        functional: false,
+        analytics: false,
+        timestamp: 1700000000000,
+        version: '1.0',
+      };
+
+      try {
+        localStorage.setItem('nb_consent_prefs', JSON.stringify(consentState));
+      } catch {
+        // ignore
+      }
+
+      try {
+        document.cookie = `nb_consent=${encodeURIComponent(JSON.stringify(consentState))}; path=/; SameSite=Lax`;
+      } catch {
+        // ignore
+      }
+    });
+
     // Stub DB-backed endpoints to keep visual tests stable in CI (no DB service).
     await page.route('**/api/quests/today**', async (route) => {
       await route.fulfill({
