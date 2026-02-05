@@ -13,6 +13,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 import { trackProgress } from '@/lib/progress/track';
+import { getBreathingSnapshotAtElapsedMs } from '@/lib/breathing/engineSnapshot';
 import { 
   useBreathingAudio, 
   BREATHING_PATTERNS, 
@@ -55,6 +56,7 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
   const [showDrivingWarning, setShowDrivingWarning] = useState(true);
   const [breathCount, setBreathCount] = useState(0);
   const didTrackRef = useRef(false);
+  const totalTimeRef = useRef(0);
 
   const isSos = pattern === 'sos';
 
@@ -135,105 +137,115 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
     if (!isActive) return;
 
     const currentPattern = BREATHING_PATTERNS[pattern];
-    const phaseTime = currentPattern.phases[phase].duration;
 
-    if (countdown === 0) {
-      setCountdown(phaseTime);
-    }
+    const syncFromElapsedSeconds = (elapsedSeconds: number) => {
+      const snapshot = getBreathingSnapshotAtElapsedMs({
+        phases: currentPattern.phases.map((p) => ({ name: p.name, durationSeconds: p.duration })),
+        elapsedMs: elapsedSeconds * 1000,
+        totalMs: targetDuration * 1000,
+      });
 
-    const timer = setInterval(() => {
-      setCountdown((c) => {
-        if (c <= 1) {
-          setPhase((p) => {
-            const nextPhase = (p + 1) % currentPattern.phases.length;
-            if (nextPhase === 0) {
-              setCycles((cy) => cy + 1);
-              // Count breaths (one complete cycle)
-              setBreathCount((bc) => bc + 1);
-            }
-            return nextPhase;
+      setPhase(snapshot.phaseIndex);
+      setCountdown(Math.max(0, Math.ceil(snapshot.phaseMsRemaining / 1000)));
+      setCycles(snapshot.cyclesCompleted);
+      setBreathCount(snapshot.cyclesCompleted);
+
+      return snapshot;
+    };
+
+    // Ensure UI is synced immediately on start/resume.
+    syncFromElapsedSeconds(totalTimeRef.current);
+
+    const timer = window.setInterval(() => {
+      const newTime = totalTimeRef.current + 1;
+      totalTimeRef.current = newTime;
+      setTotalTime(newTime);
+      const snapshot = syncFromElapsedSeconds(newTime);
+
+      if (newTime >= targetDuration) {
+        window.clearInterval(timer);
+        setIsActive(false);
+
+        if (voiceMode !== 'off') {
+          speak('Session complete. Well done.');
+        }
+
+        stopInstructions();
+
+        if (!didTrackRef.current) {
+          didTrackRef.current = true;
+
+          const inhaleSeconds = currentPattern.phases.find((p) => p.name.toLowerCase().includes('inhale'))?.duration;
+          const exhaleSeconds = currentPattern.phases.find((p) => p.name.toLowerCase().includes('exhale'))?.duration;
+          const patternDurations = currentPattern.phases.map((p) => p.duration).join('-');
+          const completedCycles = snapshot?.cyclesCompleted ?? 0;
+
+          void trackProgress({
+            type: 'breathing_completed',
+            metadata: {
+              techniqueId: pattern,
+              durationSeconds: newTime,
+              cycles: completedCycles,
+              pattern: patternDurations,
+              inhaleSeconds,
+              exhaleSeconds,
+              category: 'breathing',
+            },
+            path: typeof window !== 'undefined' ? window.location.pathname : undefined,
           });
-          return currentPattern.phases[(phase + 1) % currentPattern.phases.length].duration;
         }
-        return c - 1;
-      });
-      
-      setTotalTime((t) => {
-        const newTime = t + 1;
-        // Auto-stop when target duration reached
-        if (newTime >= targetDuration) {
-          setIsActive(false);
-          if (voiceMode !== 'off') {
-            speak('Session complete. Well done.');
-          }
-          stopInstructions();
-          if (!didTrackRef.current) {
-            didTrackRef.current = true;
-            const inhaleSeconds = currentPattern.phases.find(p => p.name.toLowerCase().includes('inhale'))?.duration;
-            const exhaleSeconds = currentPattern.phases.find(p => p.name.toLowerCase().includes('exhale'))?.duration;
-            const patternDurations = currentPattern.phases.map(p => p.duration).join('-');
-            void trackProgress({
-              type: 'breathing_completed',
-              metadata: {
-                techniqueId: pattern,
-                durationSeconds: newTime,
-                cycles: cycles,
-                pattern: patternDurations,
-                inhaleSeconds,
-                exhaleSeconds,
-                category: 'breathing',
-              },
-              path: typeof window !== 'undefined' ? window.location.pathname : undefined,
-            });
-          }
-          // Save the completed session
-          setTimeout(() => {
-            if (newTime >= 30 && breathCount > 0) {
-              try {
-                const session = {
-                  pattern: pattern,
-                  patternName: BREATHING_PATTERNS[pattern].name,
-                  duration: newTime,
-                  breaths: breathCount,
-                  cycles: cycles,
-                  timestamp: new Date().toISOString(),
-                  voiceMode: voiceMode,
-                  ambientSound: ambientSound,
-                  completed: true,
-                };
-                
-                const existingSessions = localStorage.getItem('nb_breathing_sessions');
-                const sessions = existingSessions ? JSON.parse(existingSessions) : [];
-                sessions.push(session);
-                if (sessions.length > 100) sessions.shift();
-                localStorage.setItem('nb_breathing_sessions', JSON.stringify(sessions));
-                
-                // Update stats
-                const stats = {
-                  totalSessions: sessions.length,
-                  totalBreaths: sessions.reduce((sum: number, s: { breaths: number }) => sum + s.breaths, 0),
-                  totalMinutes: Math.floor(sessions.reduce((sum: number, s: { duration: number }) => sum + s.duration, 0) / 60),
-                  lastSession: new Date().toISOString(),
-                };
-                localStorage.setItem('nb_breathing_stats', JSON.stringify(stats));
-              } catch (e) {
-                console.error('Failed to save session:', e);
-              }
+
+        // Save the completed session
+        setTimeout(() => {
+          const completedCycles = snapshot?.cyclesCompleted ?? 0;
+          if (newTime >= 30 && completedCycles > 0) {
+            try {
+              const session = {
+                pattern: pattern,
+                patternName: BREATHING_PATTERNS[pattern].name,
+                duration: newTime,
+                breaths: completedCycles,
+                cycles: completedCycles,
+                timestamp: new Date().toISOString(),
+                voiceMode: voiceMode,
+                ambientSound: ambientSound,
+                completed: true,
+              };
+
+              const existingSessions = localStorage.getItem('nb_breathing_sessions');
+              const sessions = existingSessions ? JSON.parse(existingSessions) : [];
+              sessions.push(session);
+              if (sessions.length > 100) sessions.shift();
+              localStorage.setItem('nb_breathing_sessions', JSON.stringify(sessions));
+
+              // Update stats
+              const stats = {
+                totalSessions: sessions.length,
+                totalBreaths: sessions.reduce((sum: number, s: { breaths: number }) => sum + s.breaths, 0),
+                totalMinutes: Math.floor(sessions.reduce((sum: number, s: { duration: number }) => sum + s.duration, 0) / 60),
+                lastSession: new Date().toISOString(),
+              };
+              localStorage.setItem('nb_breathing_stats', JSON.stringify(stats));
+            } catch (e) {
+              console.error('Failed to save session:', e);
             }
-          }, 100);
-        }
-        return newTime;
-      });
+          }
+        }, 100);
+      }
     }, 1000);
 
-    return () => clearInterval(timer);
-  }, [isActive, countdown, phase, pattern, targetDuration, voiceMode, speak, stopInstructions, ambientSound, breathCount, cycles]);
+    return () => window.clearInterval(timer);
+  }, [isActive, pattern, targetDuration, voiceMode, speak, stopInstructions, ambientSound]);
 
   useEffect(() => {
     if (isActive && totalTime === 0) {
       didTrackRef.current = false;
     }
   }, [isActive, totalTime]);
+
+  useEffect(() => {
+    totalTimeRef.current = totalTime;
+  }, [totalTime]);
 
   // Ambient sound management with enhanced quality
   useEffect(() => {
@@ -331,6 +343,7 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
     setCountdown(0);
     setCycles(0);
     setTotalTime(0);
+    totalTimeRef.current = 0;
     setBreathCount(0);
     didTrackRef.current = false;
     cancel();
