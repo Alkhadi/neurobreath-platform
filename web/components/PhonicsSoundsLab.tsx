@@ -171,8 +171,54 @@ export function PhonicsSoundsLab() {
   
   // Refs
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const playPromiseRef = useRef<Promise<void> | null>(null);
   const countdownRef = useRef<NodeJS.Timeout | null>(null);
   const manualStopAtRef = useRef<number | null>(null);
+
+  const isAbortError = (err: unknown) =>
+    !!err && typeof err === 'object' && 'name' in err && (err as { name?: unknown }).name === 'AbortError';
+
+  const safePlay = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const playPromise = audio.play();
+    playPromiseRef.current = playPromise;
+
+    playPromise
+      .catch((err) => {
+        if (isAbortError(err)) return;
+        console.error('Play failed:', err);
+      })
+      .finally(() => {
+        if (playPromiseRef.current === playPromise) {
+          playPromiseRef.current = null;
+        }
+      });
+  }, []);
+
+  const safePause = useCallback(async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const playPromise = playPromiseRef.current;
+    if (playPromise) {
+      try {
+        await Promise.race([
+          playPromise.catch(() => {}),
+          new Promise<void>((resolve) => setTimeout(resolve, 250))
+        ]);
+      } catch {
+        // ignore
+      }
+    }
+
+    try {
+      audio.pause();
+    } catch {
+      // ignore
+    }
+  }, []);
   
   const currentLetter = ALPHABET[Math.min(currentIndex, ALPHABET.length - 1)];
   const currentData = PHONICS_LETTER_DATA[currentLetter] || { word: "", emoji: "" };
@@ -184,12 +230,57 @@ export function PhonicsSoundsLab() {
     
     return () => {
       if (audioRef.current) {
-        audioRef.current.pause();
+        void safePause();
       }
     };
-  }, []);
+  }, [safePause]);
 
   // Handle audio time updates - main synchronization logic
+  const triggerMilestone = useCallback((milestone: typeof MILESTONES[0]) => {
+    if (!audioRef.current) return;
+
+    // Pause audio immediately
+    void safePause();
+    setIsPlaying(false);
+
+    // Mark this milestone as triggered
+    setTriggeredMilestones(prev => new Set([...prev, milestone.triggerLetter]));
+
+    // Show milestone celebration
+    setCurrentMilestone(milestone);
+    setCountdown(milestone.seconds);
+    setShowMilestone(true);
+
+    // Fire confetti with milestone-specific colors
+    const colors = MILESTONE_COLORS[milestone.id]?.confetti || ["#FFD700"];
+    confetti({
+      particleCount: 200,
+      spread: 100,
+      origin: { y: 0.35 },
+      colors: colors
+    });
+
+    // Additional confetti bursts
+    setTimeout(() => {
+      confetti({
+        particleCount: 100,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: colors
+      });
+    }, 250);
+    setTimeout(() => {
+      confetti({
+        particleCount: 100,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: colors
+      });
+    }, 400);
+  }, [safePause]);
+
   const handleTimeUpdate = useCallback(() => {
     if (!audioRef.current || showMilestone) return;
     
@@ -199,7 +290,7 @@ export function PhonicsSoundsLab() {
     // and avoid triggering milestone/letter-sync logic during this micro-play.
     if (manualStopAtRef.current != null) {
       if (t >= manualStopAtRef.current) {
-        audioRef.current.pause();
+        void safePause();
         setIsPlaying(false);
         manualStopAtRef.current = null;
       }
@@ -228,52 +319,7 @@ export function PhonicsSoundsLab() {
         triggerMilestone(milestone);
       }
     }
-  }, [showMilestone, currentIndex, triggeredMilestones]);
-
-  const triggerMilestone = (milestone: typeof MILESTONES[0]) => {
-    if (!audioRef.current) return;
-    
-    // Pause audio immediately
-    audioRef.current.pause();
-    setIsPlaying(false);
-    
-    // Mark this milestone as triggered
-    setTriggeredMilestones(prev => new Set([...prev, milestone.triggerLetter]));
-    
-    // Show milestone celebration
-    setCurrentMilestone(milestone);
-    setCountdown(milestone.seconds);
-    setShowMilestone(true);
-    
-    // Fire confetti with milestone-specific colors
-    const colors = MILESTONE_COLORS[milestone.id]?.confetti || ["#FFD700"];
-    confetti({
-      particleCount: 200,
-      spread: 100,
-      origin: { y: 0.35 },
-      colors: colors
-    });
-    
-    // Additional confetti bursts
-    setTimeout(() => {
-      confetti({
-        particleCount: 100,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: colors
-      });
-    }, 250);
-    setTimeout(() => {
-      confetti({
-        particleCount: 100,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: colors
-      });
-    }, 400);
-  };
+  }, [showMilestone, currentIndex, triggeredMilestones, safePause, triggerMilestone]);
 
   // Audio event listeners
   useEffect(() => {
@@ -308,7 +354,7 @@ export function PhonicsSoundsLab() {
       audio.removeEventListener('timeupdate', handleTimeUpdate);
       audio.removeEventListener('ended', handleEnded);
     };
-  }, [handleTimeUpdate, triggeredMilestones, showCertificate]);
+  }, [handleTimeUpdate, triggeredMilestones, showCertificate, triggerMilestone]);
 
   // Countdown timer for milestones
   useEffect(() => {
@@ -340,7 +386,7 @@ export function PhonicsSoundsLab() {
     
     audioRef.current.currentTime = 0;
     audioRef.current.muted = isMuted;
-    audioRef.current.play().catch(console.error);
+    safePlay();
     setIsPlaying(true);
     setCurrentIndex(0);
     setCompletedLetters(new Set());
@@ -355,10 +401,10 @@ export function PhonicsSoundsLab() {
   const handlePause = () => {
     if (!audioRef.current) return;
     if (isPlaying) {
-      audioRef.current.pause();
+      void safePause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play().catch(console.error);
+      safePlay();
       setIsPlaying(true);
     }
   };
@@ -386,7 +432,7 @@ export function PhonicsSoundsLab() {
       const nextTiming = DOROTHY_LETTER_TIMINGS.find(t => t.letter === currentMilestone.nextLetter);
       if (nextTiming) {
         audioRef.current.currentTime = nextTiming.start - LETTER_CALL_HEADROOM;
-        audioRef.current.play().catch(console.error);
+        safePlay();
         setIsPlaying(true);
       }
     }
@@ -420,7 +466,7 @@ export function PhonicsSoundsLab() {
       const seekTime = Math.max(0, phonemeWindow.start - 0.03);
       audioRef.current.currentTime = seekTime;
       audioRef.current.muted = isMuted;
-      audioRef.current.play().catch(err => console.error('Play failed:', err));
+      safePlay();
       setIsPlaying(true);
       return;
     }
@@ -429,7 +475,7 @@ export function PhonicsSoundsLab() {
     const seekTime = Math.max(0, timing.start - LETTER_CALL_HEADROOM);
     audioRef.current.currentTime = seekTime;
     audioRef.current.muted = isMuted;
-    audioRef.current.play().catch(err => console.error('Play failed:', err));
+    safePlay();
     setIsPlaying(true);
   };
 
@@ -438,7 +484,7 @@ export function PhonicsSoundsLab() {
   };
 
   const handleClose = () => {
-    if (audioRef.current) audioRef.current.pause();
+    void safePause();
     setIsOpen(false);
     setIsPlaying(false);
     setShowMilestone(false);

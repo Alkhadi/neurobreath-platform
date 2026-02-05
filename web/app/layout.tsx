@@ -20,6 +20,7 @@ import { getRouteMetadata, getRouteSeoConfig } from '@/lib/seo/route-metadata';
 import { getLocaleForRegion, getRegionFromPath } from '@/lib/region/region';
 import { ServiceWorkerRegistrar } from '@/components/pwa/ServiceWorkerRegistrar';
 import { IosInstallBanner } from '@/components/pwa/IosInstallBanner';
+import { ConsoleErrorFilter } from '@/components/dev/ConsoleErrorFilter';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -78,6 +79,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <ConsoleErrorFilter />
           <UserPreferencesProvider>
             <UniversalProgressProvider>
               <BreathingSessionProvider>
