@@ -838,13 +838,15 @@ export default function ProgressPage() {
                 )}
               </div>
               <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all duration-500 ${
+                <progress
+                  value={pct(todayMetrics.breathingMinutes, goals.dailyBreathingMinutes)}
+                  max={100}
+                  aria-label="Daily breathing goal progress"
+                  className={`h-2 w-full rounded-full [&::-webkit-progress-bar]:bg-gray-100 [&::-webkit-progress-value]:transition-all [&::-webkit-progress-value]:duration-500 [&::-moz-progress-bar]:transition-all [&::-moz-progress-bar]:duration-500 ${
                     todayMetrics.breathingMinutes >= goals.dailyBreathingMinutes
-                      ? 'bg-green-500'
-                      : 'bg-purple-500'
+                      ? '[&::-webkit-progress-value]:bg-green-500 [&::-moz-progress-bar]:bg-green-500'
+                      : '[&::-webkit-progress-value]:bg-purple-500 [&::-moz-progress-bar]:bg-purple-500'
                   }`}
-                  style={{ width: `${pct(todayMetrics.breathingMinutes, goals.dailyBreathingMinutes)}%` }}
                 />
               </div>
             </div>
@@ -875,13 +877,15 @@ export default function ProgressPage() {
                 )}
               </div>
               <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all duration-500 ${
+                <progress
+                  value={pct(todayMetrics.completions, goals.dailyCompletions)}
+                  max={100}
+                  aria-label="Daily completions goal progress"
+                  className={`h-2 w-full rounded-full [&::-webkit-progress-bar]:bg-gray-100 [&::-webkit-progress-value]:transition-all [&::-webkit-progress-value]:duration-500 [&::-moz-progress-bar]:transition-all [&::-moz-progress-bar]:duration-500 ${
                     todayMetrics.completions >= goals.dailyCompletions
-                      ? 'bg-green-500'
-                      : 'bg-purple-500'
+                      ? '[&::-webkit-progress-value]:bg-green-500 [&::-moz-progress-bar]:bg-green-500'
+                      : '[&::-webkit-progress-value]:bg-purple-500 [&::-moz-progress-bar]:bg-purple-500'
                   }`}
-                  style={{ width: `${pct(todayMetrics.completions, goals.dailyCompletions)}%` }}
                 />
               </div>
             </div>
@@ -913,13 +917,15 @@ export default function ProgressPage() {
                 )}
               </div>
               <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all duration-500 ${
+                <progress
+                  value={pct(weeklyBreathingMinutes, goals.weeklyBreathingMinutes)}
+                  max={100}
+                  aria-label="Weekly breathing goal progress"
+                  className={`h-2 w-full rounded-full [&::-webkit-progress-bar]:bg-gray-100 [&::-webkit-progress-value]:transition-all [&::-webkit-progress-value]:duration-500 [&::-moz-progress-bar]:transition-all [&::-moz-progress-bar]:duration-500 ${
                     weeklyBreathingMinutes >= goals.weeklyBreathingMinutes
-                      ? 'bg-green-500'
-                      : 'bg-purple-500'
+                      ? '[&::-webkit-progress-value]:bg-green-500 [&::-moz-progress-bar]:bg-green-500'
+                      : '[&::-webkit-progress-value]:bg-purple-500 [&::-moz-progress-bar]:bg-purple-500'
                   }`}
-                  style={{ width: `${pct(weeklyBreathingMinutes, goals.weeklyBreathingMinutes)}%` }}
                 />
               </div>
             </div>
