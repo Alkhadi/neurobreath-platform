@@ -57,25 +57,41 @@ export function RegionSwitcher() {
   const ukPath = isRegionScoped ? `/uk${basePath === '/' ? '' : basePath}` : basePath;
   const usPath = isRegionScoped ? `/us${basePath === '/' ? '' : basePath}` : basePath;
 
+  const pillBaseClassName = [
+    'rounded-full px-2 py-1 transition-colors',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+    'focus-visible:ring-offset-2 focus-visible:ring-offset-white',
+    'dark:focus-visible:ring-offset-slate-950',
+  ].join(' ');
+  const pillSelectedClassName = 'bg-slate-900 text-white dark:bg-slate-50 dark:text-slate-900';
+  const pillUnselectedClassName =
+    'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800/70';
+
   return (
-    <div className="flex items-center gap-2 text-xs text-slate-600">
-      <span className="font-semibold text-slate-700">Region</span>
-      <Link
-        href={ukPath}
-        onClick={() => setRegionCookie('uk')}
-        className={`rounded-full px-2 py-1 ${currentRegion === 'uk' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}
-        aria-label="Switch to United Kingdom content"
-      >
-        UK
-      </Link>
-      <Link
-        href={usPath}
-        onClick={() => setRegionCookie('us')}
-        className={`rounded-full px-2 py-1 ${currentRegion === 'us' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}
-        aria-label="Switch to United States content"
-      >
-        US
-      </Link>
+    <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+      <span className="font-semibold text-slate-700 dark:text-slate-200">Region</span>
+      <div className="flex items-center rounded-full border border-slate-200 bg-white/70 p-0.5 shadow-sm dark:border-slate-700 dark:bg-slate-900/40">
+        <Link
+          href={ukPath}
+          onClick={() => setRegionCookie('uk')}
+          className={`${pillBaseClassName} ${
+            currentRegion === 'uk' ? pillSelectedClassName : pillUnselectedClassName
+          }`}
+          aria-label="Switch to United Kingdom content"
+        >
+          UK
+        </Link>
+        <Link
+          href={usPath}
+          onClick={() => setRegionCookie('us')}
+          className={`${pillBaseClassName} ${
+            currentRegion === 'us' ? pillSelectedClassName : pillUnselectedClassName
+          }`}
+          aria-label="Switch to United States content"
+        >
+          US
+        </Link>
+      </div>
     </div>
   );
 }

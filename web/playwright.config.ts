@@ -44,7 +44,10 @@ export default defineConfig({
 
   webServer: {
     command: 'yarn dev:e2e',
-    url: 'http://localhost:3000',
+    // Use a non-localised endpoint for readiness checks.
+    // The homepage redirects to /uk or /us via middleware, which can cause
+    // noisy startup logs during Playwright's server polling.
+    url: 'http://localhost:3000/robots.txt',
     // Default to NOT reusing an existing server.
     // Reuse can accidentally point tests at a stale/incorrect process already on :3000.
     // Opt-in via env var if you know what you're doing.
