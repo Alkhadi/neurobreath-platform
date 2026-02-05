@@ -181,17 +181,20 @@ export default function ProgressPage() {
 
     void run()
 
-    // Real-time updates via BroadcastChannel
-    let channel: BroadcastChannel | null = null
+    // Real-time updates via BroadcastChannel (new + legacy)
+    const channels: BroadcastChannel[] = []
     if (typeof BroadcastChannel !== 'undefined') {
       try {
-        channel = new BroadcastChannel('nb_progress')
-        channel.onmessage = (event) => {
-          if (event.data?.type === 'progress:event' && autoRefresh) {
-            // Another tab or this tab recorded progress - refresh immediately
-            if (!cancelled) void run()
+        ;['nb_progress', 'nb_progress_channel'].forEach((name) => {
+          const channel = new BroadcastChannel(name)
+          channel.onmessage = (event) => {
+            if (event.data?.type === 'progress:event' && autoRefresh) {
+              // Another tab or this tab recorded progress - refresh immediately
+              if (!cancelled) void run()
+            }
           }
-        }
+          channels.push(channel)
+        })
       } catch {
         // BroadcastChannel not supported - no problem
       }
@@ -218,13 +221,13 @@ export default function ProgressPage() {
     return () => {
       cancelled = true
       if (interval) clearInterval(interval)
-      if (channel) {
+      channels.forEach((channel) => {
         try {
           channel.close()
         } catch {
           // ignore
         }
-      }
+      })
       if (typeof window !== 'undefined') {
         window.removeEventListener('nb_progress_event_recorded', handleProgressEvent)
       }

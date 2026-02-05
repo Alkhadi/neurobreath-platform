@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import styles from './PhonicsSoundsLab.module.css';
 import { Input } from '@/components/ui/input';
 import { 
   Play, 
@@ -118,6 +119,24 @@ const MILESTONE_COLORS: Record<string, {
     gradient: "from-purple-400 to-indigo-500"
   }
 };
+
+const MILESTONE_CLOCK_CLASSES: Record<string, { border: string; text: string }> = {
+  bronze: { border: 'border-[#fbbf77]', text: 'text-[#fbbf77]' },
+  silver: { border: 'border-[#e5e7eb]', text: 'text-[#e5e7eb]' },
+  gold: { border: 'border-[#facc15]', text: 'text-[#facc15]' },
+  platinum: { border: 'border-[#a5b4fc]', text: 'text-[#a5b4fc]' },
+};
+
+function getMilestoneClockClasses(id: string): { border: string; text: string } {
+  return MILESTONE_CLOCK_CLASSES[id] ?? { border: 'border-slate-300', text: 'text-slate-200' };
+}
+
+function getProgressWidthClass(progress: number): string {
+  const clamped = Math.max(0, Math.min(100, Math.round(progress)));
+  const stepped = Math.round(clamped / 5) * 5;
+  const key = `progressWidth${stepped}` as keyof typeof styles;
+  return (styles[key] as string) ?? styles.progressWidth0;
+}
 
 const HEAD_VARIANTS = [
   { name: "sunrise", gradient: "from-amber-500 to-orange-600" },
@@ -503,6 +522,8 @@ export function PhonicsSoundsLab() {
   const progress = audioRef.current?.duration 
     ? (elapsedTime / audioRef.current.duration) * 100 
     : (currentIndex / ALPHABET.length) * 100;
+  const progressWidthClass = getProgressWidthClass(progress);
+  const clockClasses = currentMilestone ? getMilestoneClockClasses(currentMilestone.id) : getMilestoneClockClasses('');
 
   const getHeadGradient = () => HEAD_VARIANTS[headVariant].gradient;
 
@@ -701,9 +722,11 @@ export function PhonicsSoundsLab() {
                   <div className="mb-3 sm:mb-4 md:mb-6">
                     <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
                       <div className="flex-1 h-2 sm:h-2.5 md:h-3 rounded-full bg-slate-700 overflow-hidden">
-                        <div 
-                          className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-300"
-                          style={{ width: `${progress}%` }}
+                        <div
+                          className={cn(
+                            "h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-300",
+                            progressWidthClass
+                          )}
                         />
                       </div>
                       <span className="text-[10px] sm:text-xs md:text-sm text-slate-300 font-mono min-w-[40px] sm:min-w-[50px]">{formatTime(elapsedTime)}</span>
@@ -857,8 +880,10 @@ export function PhonicsSoundsLab() {
                     {/* Countdown Clock */}
                     <div className="flex flex-col items-center mx-auto md:mx-0">
                       <div
-                        className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full flex items-center justify-center border-4 bg-slate-900/60 shadow-xl"
-                        style={{ borderColor: MILESTONE_COLORS[currentMilestone.id]?.clock }}
+                        className={cn(
+                          "relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full flex items-center justify-center border-4 bg-slate-900/60 shadow-xl",
+                          clockClasses.border
+                        )}
                       >
                         {/* Circular progress */}
                         <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
@@ -876,16 +901,15 @@ export function PhonicsSoundsLab() {
                             cy="50"
                             r="45"
                             fill="none"
-                            stroke={MILESTONE_COLORS[currentMilestone.id]?.clock}
+                            stroke="currentColor"
                             strokeWidth="4"
                             strokeLinecap="round"
                             strokeDasharray={`${(countdown / currentMilestone.seconds) * 283} 283`}
-                            className="transition-all duration-1000"
+                            className={cn("transition-all duration-1000", clockClasses.text)}
                           />
                         </svg>
                         <span 
-                          className="text-2xl sm:text-3xl md:text-4xl font-bold z-10"
-                          style={{ color: MILESTONE_COLORS[currentMilestone.id]?.clock }}
+                          className={cn("text-2xl sm:text-3xl md:text-4xl font-bold z-10", clockClasses.text)}
                         >
                           {countdown}
                         </span>

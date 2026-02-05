@@ -37,7 +37,21 @@ export default function BreathingOrbit({ technique, onSessionComplete }: Breathi
   const pausedTimeRef = useRef<number>(0)
 
   const phases = useMemo(() => technique?.phases ?? [], [technique])
-  const currentPhase = phases?.[currentPhaseIndex]
+  const safePhases = useMemo(() => {
+    const filtered = phases.filter((phase) => (phase?.duration ?? 0) > 0)
+    if (filtered.length > 0) return filtered
+    return [
+      { name: 'Inhale', duration: 4, color: '#60B5FF' },
+      { name: 'Exhale', duration: 6, color: '#FF9898' },
+    ]
+  }, [phases])
+  const currentPhase = safePhases?.[currentPhaseIndex]
+
+  useEffect(() => {
+    if (currentPhaseIndex >= safePhases.length) {
+      setCurrentPhaseIndex(0)
+    }
+  }, [currentPhaseIndex, safePhases.length])
 
   useEffect(() => {
     if (!isPlaying || isPaused) {
@@ -58,7 +72,7 @@ export default function BreathingOrbit({ technique, onSessionComplete }: Breathi
       setPhaseProgress(progress)
 
       if (elapsed >= currentPhaseDuration) {
-        const nextIndex = (currentPhaseIndex + 1) % phases.length
+        const nextIndex = (currentPhaseIndex + 1) % safePhases.length
         setCurrentPhaseIndex(nextIndex)
         startTimeRef.current = currentTime
         pausedTimeRef.current = 0
@@ -79,7 +93,7 @@ export default function BreathingOrbit({ technique, onSessionComplete }: Breathi
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, [isPlaying, isPaused, currentPhaseIndex, phases, currentPhase])
+  }, [isPlaying, isPaused, currentPhaseIndex, safePhases, currentPhase])
 
   const handleStart = () => {
     setIsPlaying(true)
@@ -164,7 +178,7 @@ export default function BreathingOrbit({ technique, onSessionComplete }: Breathi
 
       {/* Phase Labels */}
       <div className="flex justify-around mb-6 text-sm">
-        {phases?.map((phase, idx) => (
+        {safePhases?.map((phase, idx) => (
           <div
             key={idx}
             className={`flex items-center gap-1 transition-opacity ${

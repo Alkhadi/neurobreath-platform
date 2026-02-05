@@ -324,6 +324,12 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
     }
   }, [isOpen])
 
+  useEffect(() => {
+    if (selectedTechnique === 'sos' && selectedDuration !== 1) {
+      setSelectedDuration(1)
+    }
+  }, [selectedTechnique, selectedDuration])
+
   if (!isOpen) return null
 
   // Calculate progress percentage
@@ -414,7 +420,8 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
   const handleStartBreathing = () => {
     setIsTestingAmbience(false) // Stop preview when starting session
     didTrackRef.current = false // Reset tracking guard
-    const totalSeconds = selectedDuration * 60
+    const isSos = selectedTechnique === 'sos' || getTechniqueById(selectedTechnique)?.id === 'sos'
+    const totalSeconds = isSos ? 60 : selectedDuration * 60
     setTotalTime(totalSeconds)
     setTimeRemaining(totalSeconds)
     setView('session')
@@ -459,6 +466,9 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
             const durationSeconds = Math.round((totalTime || 60))
             const cycleDuration = technique ? calculateTotalCycleDuration(technique) : 10
             const cycles = cycleDuration > 0 ? Math.floor(durationSeconds / cycleDuration) : 6
+
+            const inhaleSeconds = technique?.phases.find(p => p.name.toLowerCase().includes('inhale'))?.duration
+            const exhaleSeconds = technique?.phases.find(p => p.name.toLowerCase().includes('exhale'))?.duration
             
             // Build pattern string from phases
             const patternParts = technique?.phases.map(p => p.duration.toString()) ?? []
@@ -471,6 +481,8 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
                 durationSeconds,
                 cycles,
                 pattern,
+                inhaleSeconds,
+                exhaleSeconds,
                 category: 'breathing',
               },
               path: typeof window !== 'undefined' ? window.location.pathname : undefined,
@@ -633,6 +645,7 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
                   <button
                     key={min}
                     onClick={() => setSelectedDuration(min)}
+                    disabled={selectedTechnique === 'sos' && min !== 1}
                     className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all ${
                       selectedDuration === min
                         ? 'bg-blue-50 border-blue-400 text-blue-900'

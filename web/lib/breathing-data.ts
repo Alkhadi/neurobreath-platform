@@ -18,6 +18,13 @@ export interface BreathingTechnique {
   category: string
 }
 
+const TECHNIQUE_ALIASES: Record<string, string> = {
+  'box-4444': 'box-breathing',
+  'four-7-8': '4-7-8',
+  'coherent-55': 'coherent',
+  'sos-1m': 'sos',
+}
+
 /**
  * Normalizes a technique to ensure valid phase durations
  * Prevents broken animations and "inhale-only" bugs
@@ -218,7 +225,8 @@ export const breathingTechniques: Record<string, BreathingTechnique> = {
 }
 
 export function getTechniqueById(id: string): BreathingTechnique | undefined {
-  const technique = breathingTechniques[id]
+  const resolvedId = TECHNIQUE_ALIASES[id] ?? id
+  const technique = breathingTechniques[resolvedId] ?? breathingTechniques[id]
   return technique ? normalizeTechnique(technique) : undefined
 }
 
