@@ -18,6 +18,33 @@ export interface BreathingTechnique {
   category: string
 }
 
+/**
+ * Normalizes a technique to ensure valid phase durations
+ * Prevents broken animations and "inhale-only" bugs
+ */
+function normalizeTechnique(technique: BreathingTechnique): BreathingTechnique {
+  const phases = technique.phases.map(phase => ({
+    ...phase,
+    duration: Math.max(phase.duration, phase.name.toLowerCase().includes('hold') ? 0 : 1)
+  }))
+  
+  const totalCycleSeconds = phases.reduce((sum, p) => sum + p.duration, 0)
+  
+  // Ensure minimum cycle duration
+  if (totalCycleSeconds < 2) {
+    console.warn(`Technique ${technique.id} has invalid cycle duration, using fallback`)
+    return {
+      ...technique,
+      phases: [
+        { name: 'Inhale', duration: 4, color: '#60B5FF' },
+        { name: 'Exhale', duration: 6, color: '#FF9898' }
+      ]
+    }
+  }
+  
+  return { ...technique, phases }
+}
+
 export const breathingTechniques: Record<string, BreathingTechnique> = {
   'box-breathing': {
     id: 'box-breathing',
@@ -191,7 +218,8 @@ export const breathingTechniques: Record<string, BreathingTechnique> = {
 }
 
 export function getTechniqueById(id: string): BreathingTechnique | undefined {
-  return breathingTechniques[id]
+  const technique = breathingTechniques[id]
+  return technique ? normalizeTechnique(technique) : undefined
 }
 
 export function calculateTotalCycleDuration(technique: BreathingTechnique): number {

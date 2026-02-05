@@ -180,7 +180,7 @@ export async function trackProgress(input: TrackProgressInput): Promise<void> {
     }).catch(() => null)
 
     if (res?.ok) {
-      // Success - broadcast to other tabs
+      // Success - broadcast to other tabs (existing channel)
       const channel = getBroadcastChannel()
       if (channel) {
         try {
@@ -193,6 +193,26 @@ export async function trackProgress(input: TrackProgressInput): Promise<void> {
         } catch {
           // ignore
         }
+      }
+      
+      // Also emit on dedicated real-time channel
+      if (typeof BroadcastChannel !== 'undefined') {
+        try {
+          const realtimeChannel = new BroadcastChannel('nb_progress')
+          realtimeChannel.postMessage({ type: 'progress:event', timestamp: Date.now() })
+          realtimeChannel.close()
+        } catch {
+          // BroadcastChannel not supported
+        }
+      }
+      
+      // Emit window event as fallback
+      try {
+        window.dispatchEvent(new CustomEvent('nb_progress_event_recorded', { 
+          detail: { type: input.type, timestamp: Date.now() } 
+        }))
+      } catch {
+        // ignore
       }
     } else {
       // Failed - queue for retry

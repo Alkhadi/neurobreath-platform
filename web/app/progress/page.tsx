@@ -181,20 +181,28 @@ export default function ProgressPage() {
 
     void run()
 
-    // BroadcastChannel for real-time cross-tab updates
+    // Real-time updates via BroadcastChannel
     let channel: BroadcastChannel | null = null
     if (typeof BroadcastChannel !== 'undefined') {
       try {
-        channel = new BroadcastChannel('nb_progress_channel')
+        channel = new BroadcastChannel('nb_progress')
         channel.onmessage = (event) => {
           if (event.data?.type === 'progress:event' && autoRefresh) {
-            // Another tab recorded progress - refresh immediately
+            // Another tab or this tab recorded progress - refresh immediately
             if (!cancelled) void run()
           }
         }
       } catch {
         // BroadcastChannel not supported - no problem
       }
+    }
+    
+    // Also listen for window events as fallback
+    const handleProgressEvent = () => {
+      if (!cancelled && autoRefresh) void run()
+    }
+    if (typeof window !== 'undefined') {
+      window.addEventListener('nb_progress_event_recorded', handleProgressEvent)
     }
 
     // Polling fallback: refresh every 60 seconds (for cross-device updates)
@@ -216,6 +224,9 @@ export default function ProgressPage() {
         } catch {
           // ignore
         }
+      }
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('nb_progress_event_recorded', handleProgressEvent)
       }
     }
   }, [activeSubjectId, range, reloadKey, autoRefresh])

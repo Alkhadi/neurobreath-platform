@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { X, Play, Pause, Square, Volume2, Music } from 'lucide-react'
-import { getTechniqueById } from '@/lib/breathing-data'
+import { getTechniqueById, calculateTotalCycleDuration } from '@/lib/breathing-data'
 import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS'
 import { trackProgress } from '@/lib/progress/track'
 
@@ -286,6 +286,7 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
   const ambientSoundRef = useRef<AmbientSoundGenerator | null>(null)
+  const didTrackRef = useRef<boolean>(false)
 
   // Initialize ambient sound generator
   useEffect(() => {
@@ -412,6 +413,7 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
 
   const handleStartBreathing = () => {
     setIsTestingAmbience(false) // Stop preview when starting session
+    didTrackRef.current = false // Reset tracking guard
     const totalSeconds = selectedDuration * 60
     setTotalTime(totalSeconds)
     setTimeRemaining(totalSeconds)
@@ -450,17 +452,30 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
           setPhase('ready')
           speak('Session complete')
           
-          // Track progress
-          const durationSeconds = Math.round((totalTime || 60) / 1)
-          void trackProgress({
-            type: 'breathing_completed',
-            metadata: {
-              techniqueId: selectedTechnique || 'unknown',
-              durationSeconds,
-              category: 'breathing',
-            },
-            path: typeof window !== 'undefined' ? window.location.pathname : undefined,
-          })
+          // Track progress - guard against double-fire
+          if (!didTrackRef.current) {
+            didTrackRef.current = true
+            const technique = getTechniqueById(selectedTechnique)
+            const durationSeconds = Math.round((totalTime || 60))
+            const cycleDuration = technique ? calculateTotalCycleDuration(technique) : 10
+            const cycles = cycleDuration > 0 ? Math.floor(durationSeconds / cycleDuration) : 6
+            
+            // Build pattern string from phases
+            const patternParts = technique?.phases.map(p => p.duration.toString()) ?? []
+            const pattern = patternParts.join('-')
+            
+            void trackProgress({
+              type: 'breathing_completed',
+              metadata: {
+                techniqueId: technique?.id || selectedTechnique || 'unknown',
+                durationSeconds,
+                cycles,
+                pattern,
+                category: 'breathing',
+              },
+              path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+            })
+          }
           
           return 0
         }
