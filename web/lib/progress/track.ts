@@ -29,6 +29,50 @@ const QUEUE_KEY = 'nb_progress_queue_v1'
 const MAX_QUEUE_SIZE = 200
 const FLUSH_INITIALIZED_KEY = 'nb_progress_flush_init'
 
+function emitProgressRecorded(detail: {
+  subjectId: string
+  eventType?: ProgressEventType
+}): void {
+  if (typeof window === 'undefined') return
+
+  // Broadcast to other tabs (legacy/shared channel)
+  const channel = getBroadcastChannel()
+  if (channel) {
+    try {
+      channel.postMessage({
+        type: 'progress:event',
+        subjectId: detail.subjectId,
+        eventType: detail.eventType,
+        ts: Date.now(),
+      })
+    } catch {
+      // ignore
+    }
+  }
+
+  // Dedicated real-time channel (spec)
+  if (typeof BroadcastChannel !== 'undefined') {
+    try {
+      const realtimeChannel = new BroadcastChannel('nb_progress')
+      realtimeChannel.postMessage({ type: 'event_recorded', timestamp: Date.now() })
+      realtimeChannel.close()
+    } catch {
+      // BroadcastChannel not supported
+    }
+  }
+
+  // CustomEvent fallback
+  try {
+    window.dispatchEvent(
+      new CustomEvent('nb_progress_event_recorded', {
+        detail: { type: detail.eventType, timestamp: Date.now() },
+      }),
+    )
+  } catch {
+    // ignore
+  }
+}
+
 let broadcastChannel: BroadcastChannel | null = null
 function getBroadcastChannel(): BroadcastChannel | null {
   if (typeof window === 'undefined' || typeof BroadcastChannel === 'undefined') return null
@@ -90,20 +134,7 @@ async function flushQueue(): Promise<void> {
         return
       }
 
-      // Broadcast success
-      const channel = getBroadcastChannel()
-      if (channel) {
-        try {
-          channel.postMessage({
-            type: 'progress:event',
-            subjectId: event.body.subjectId,
-            eventType: event.body.type,
-            ts: Date.now(),
-          })
-        } catch {
-          // ignore
-        }
-      }
+      emitProgressRecorded({ subjectId: event.body.subjectId, eventType: event.body.type })
     } catch {
       // Network error - stop and keep remaining events
       setQueue(queue.slice(i))
@@ -180,40 +211,7 @@ export async function trackProgress(input: TrackProgressInput): Promise<void> {
     }).catch(() => null)
 
     if (res?.ok) {
-      // Success - broadcast to other tabs (existing channel)
-      const channel = getBroadcastChannel()
-      if (channel) {
-        try {
-          channel.postMessage({
-            type: 'progress:event',
-            subjectId: activeSubjectId,
-            eventType: input.type,
-            ts: Date.now(),
-          })
-        } catch {
-          // ignore
-        }
-      }
-      
-      // Also emit on dedicated real-time channel
-      if (typeof BroadcastChannel !== 'undefined') {
-        try {
-          const realtimeChannel = new BroadcastChannel('nb_progress')
-          realtimeChannel.postMessage({ type: 'event_recorded', timestamp: Date.now() })
-          realtimeChannel.close()
-        } catch {
-          // BroadcastChannel not supported
-        }
-      }
-      
-      // Emit window event as fallback
-      try {
-        window.dispatchEvent(new CustomEvent('nb_progress_event_recorded', { 
-          detail: { type: input.type, timestamp: Date.now() } 
-        }))
-      } catch {
-        // ignore
-      }
+      emitProgressRecorded({ subjectId: activeSubjectId, eventType: input.type })
     } else {
       // Failed - queue for retry
       enqueueEvent(body)

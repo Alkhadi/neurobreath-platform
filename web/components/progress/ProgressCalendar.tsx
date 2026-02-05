@@ -13,11 +13,13 @@ interface ProgressCalendarProps {
   range: '7d' | '30d' | '90d'
   onDateClick?: (date: string) => void
   streakThresholdMinutes?: number
+  qualifiedByDate?: Record<string, boolean>
 }
 
 export function ProgressCalendar({
   dailySeries,
   onDateClick,
+  qualifiedByDate,
   streakThresholdMinutes = 1,
 }: ProgressCalendarProps) {
   const [currentMonth, setCurrentMonth] = React.useState(() => new Date())
@@ -84,9 +86,11 @@ export function ProgressCalendar({
 
   const getActivityLevel = (activity: ActivityDay | undefined): string => {
     if (!activity) return 'bg-gray-100'
-    return effectiveViewMode === 'minutes'
-      ? getIntensityByMinutes(activity.minutesBreathing ?? 0)
-      : getIntensityByEvents(activity.count)
+    if (effectiveViewMode === 'events') return getIntensityByEvents(activity.count)
+
+    // Minutes view: prefer minutes when provided; otherwise fall back to events intensity.
+    if (typeof activity.minutesBreathing !== 'number') return getIntensityByEvents(activity.count)
+    return getIntensityByMinutes(activity.minutesBreathing)
   }
 
   const formatDateKey = (date: Date): string => {
@@ -152,7 +156,7 @@ export function ProgressCalendar({
           const activity = activityMap.get(dateStr)
           const count = activity?.count ?? 0
           const minutes = activity?.minutesBreathing ?? 0
-          const qualified = minutes >= streakThresholdMinutes
+          const qualified = qualifiedByDate?.[dateStr] ?? minutes >= streakThresholdMinutes
           const level = getActivityLevel(activity)
           const isDark = level === 'bg-green-600' || level === 'bg-green-800'
 

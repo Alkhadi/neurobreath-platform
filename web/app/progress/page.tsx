@@ -1,7 +1,22 @@
+
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Activity, Clock, Flame, RefreshCw, Target, Filter, X, ExternalLink } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState, type ComponentType } from 'react'
+import {
+  Activity,
+  Award,
+  BookOpen,
+  Clock,
+  ExternalLink,
+  Filter,
+  Flame,
+  HelpCircle,
+  Leaf,
+  RefreshCw,
+  Target,
+  Wind,
+  X,
+} from 'lucide-react'
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
@@ -106,17 +121,40 @@ type EventCategory = 'breathing' | 'learning' | 'focus_garden' | 'achievement' |
 type EventInfo = {
   label: string
   category: EventCategory
+  icon: ComponentType<{ className?: string }>
   countsTowardStreak: boolean
   countsTowardCompletions: boolean
+}
+
+function techniqueNameFromMetadata(metadata?: Record<string, unknown>): string | null {
+  const explicit = typeof metadata?.techniqueName === 'string' ? metadata.techniqueName : null
+  if (explicit) return explicit
+
+  const techniqueId = typeof metadata?.techniqueId === 'string' ? metadata.techniqueId : null
+  if (!techniqueId) return null
+
+  const key = techniqueId.trim().toLowerCase()
+  const lookup: Record<string, string> = {
+    coherent: 'Coherent breathing',
+    'coherent-5-5': 'Coherent breathing',
+    box: 'Box breathing',
+    'box-breathing': 'Box breathing',
+    '4-7-8': '4-7-8 breathing',
+    '4-7-8-breathing': '4-7-8 breathing',
+    sos: 'SOS breathing',
+    'sos-60': 'SOS breathing',
+  }
+  return lookup[key] ?? techniqueId
 }
 
 function mapEvent(type: string, metadata?: Record<string, unknown>): EventInfo {
   switch (type) {
     case 'breathing_completed': {
-      const name = typeof metadata?.techniqueName === 'string' ? metadata.techniqueName : null
+      const name = techniqueNameFromMetadata(metadata)
       return {
         label: name ? `${name} session` : 'Breathing session completed',
         category: 'breathing',
+        icon: Wind,
         countsTowardStreak: true,
         countsTowardCompletions: false,
       }
@@ -125,6 +163,7 @@ function mapEvent(type: string, metadata?: Record<string, unknown>): EventInfo {
       return {
         label: 'Meditation completed',
         category: 'breathing',
+        icon: Wind,
         countsTowardStreak: true,
         countsTowardCompletions: false,
       }
@@ -133,6 +172,7 @@ function mapEvent(type: string, metadata?: Record<string, unknown>): EventInfo {
       return {
         label: title ? `Lesson: ${title}` : 'Lesson completed',
         category: 'learning',
+        icon: BookOpen,
         countsTowardStreak: false,
         countsTowardCompletions: true,
       }
@@ -142,6 +182,7 @@ function mapEvent(type: string, metadata?: Record<string, unknown>): EventInfo {
       return {
         label: title ? `Quiz: ${title}` : 'Quiz completed',
         category: 'learning',
+        icon: HelpCircle,
         countsTowardStreak: false,
         countsTowardCompletions: true,
       }
@@ -150,6 +191,7 @@ function mapEvent(type: string, metadata?: Record<string, unknown>): EventInfo {
       return {
         label: 'Focus Garden action',
         category: 'focus_garden',
+        icon: Leaf,
         countsTowardStreak: false,
         countsTowardCompletions: true,
       }
@@ -157,6 +199,7 @@ function mapEvent(type: string, metadata?: Record<string, unknown>): EventInfo {
       return {
         label: 'Challenge completed',
         category: 'achievement',
+        icon: Award,
         countsTowardStreak: false,
         countsTowardCompletions: true,
       }
@@ -164,6 +207,7 @@ function mapEvent(type: string, metadata?: Record<string, unknown>): EventInfo {
       return {
         label: 'Quest progress',
         category: 'focus_garden',
+        icon: Leaf,
         countsTowardStreak: false,
         countsTowardCompletions: true,
       }
@@ -171,6 +215,7 @@ function mapEvent(type: string, metadata?: Record<string, unknown>): EventInfo {
       return {
         label: 'Streak milestone',
         category: 'achievement',
+        icon: Award,
         countsTowardStreak: false,
         countsTowardCompletions: false,
       }
@@ -178,6 +223,7 @@ function mapEvent(type: string, metadata?: Record<string, unknown>): EventInfo {
       return {
         label: 'Achievement unlocked',
         category: 'achievement',
+        icon: Award,
         countsTowardStreak: false,
         countsTowardCompletions: false,
       }
@@ -185,6 +231,7 @@ function mapEvent(type: string, metadata?: Record<string, unknown>): EventInfo {
       return {
         label: 'Activity completed',
         category: 'other',
+        icon: Activity,
         countsTowardStreak: false,
         countsTowardCompletions: false,
       }
@@ -462,8 +509,37 @@ export default function ProgressPage() {
   // Streak qualification for today
   const streakQualifiedToday = useMemo(() => {
     const todayDay = dailySeries.find((d) => d.date === todayStr)
-    return (todayDay?.minutesBreathing ?? 0) >= 1
-  }, [dailySeries, todayStr])
+    if ((todayDay?.minutesBreathing ?? 0) >= 1) return true
+
+    // Fallback: if minutes series is missing, infer from recent breathing events.
+    return recent.some((e) => {
+      if (getLocalDateStr(new Date(e.occurredAt)) !== todayStr) return false
+      if (e.type !== 'breathing_completed' && e.type !== 'meditation_completed') return false
+      if (typeof e.minutes === 'number' && e.minutes >= 1) return true
+      const dur = (e.metadata as Record<string, unknown> | undefined)?.durationSeconds
+      return typeof dur === 'number' && dur >= 60
+    })
+  }, [dailySeries, recent, todayStr])
+
+  const qualifiedByDate = useMemo(() => {
+    const out: Record<string, boolean> = {}
+    for (const day of dailySeries) {
+      out[day.date] = (day.minutesBreathing ?? 0) >= 1
+    }
+    for (const e of recent) {
+      if (e.type !== 'breathing_completed' && e.type !== 'meditation_completed') continue
+      const dateKey = getLocalDateStr(new Date(e.occurredAt))
+      if (out[dateKey]) continue
+
+      if (typeof e.minutes === 'number' && e.minutes >= 1) {
+        out[dateKey] = true
+        continue
+      }
+      const dur = (e.metadata as Record<string, unknown> | undefined)?.durationSeconds
+      if (typeof dur === 'number' && dur >= 60) out[dateKey] = true
+    }
+    return out
+  }, [dailySeries, recent])
 
   // Filter recent activity
   const filteredRecent = useMemo(() => {
@@ -504,6 +580,8 @@ export default function ProgressPage() {
   // "Updated at" text
   const lastUpdatedText = useMemo(() => {
     if (!lastUpdated) return ''
+    const deltaMs = Date.now() - lastUpdated.getTime()
+    if (deltaMs >= 0 && deltaMs < 15_000) return 'Updated just now'
     return `Updated ${lastUpdated.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`
   }, [lastUpdated])
 
@@ -938,6 +1016,7 @@ export default function ProgressPage() {
             <ProgressCalendar
               dailySeries={data.dailySeries}
               range={range}
+              qualifiedByDate={qualifiedByDate}
               onDateClick={(date) => setSelectedDate(date)}
             />
             {stats && (
@@ -993,9 +1072,12 @@ export default function ProgressPage() {
                       key={idx}
                       className="p-3 bg-gray-50 rounded-lg flex items-center justify-between"
                     >
-                      <div>
-                        <p className="font-medium text-gray-900 text-sm">{info.label}</p>
-                        <p className="text-xs text-gray-500">{formatWhen(e.occurredAt)}</p>
+                      <div className="flex items-start gap-2">
+                        <info.icon className="w-4 h-4 mt-0.5 text-gray-500" />
+                        <div>
+                          <p className="font-medium text-gray-900 text-sm">{info.label}</p>
+                          <p className="text-xs text-gray-500">{formatWhen(e.occurredAt)}</p>
+                        </div>
                       </div>
                       {e.path && (
                         <Button asChild size="sm" variant="outline">
@@ -1109,12 +1191,15 @@ export default function ProgressPage() {
                     className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                   >
                     <div className="flex items-center justify-between gap-4">
-                      <div className="flex-1">
-                        <p className="font-medium text-gray-900">{eventInfo.label}</p>
-                        {detailText && (
-                          <p className="text-xs text-gray-500">{detailText}</p>
-                        )}
-                        <p className="text-sm text-gray-500">{formatWhen(e.occurredAt)}</p>
+                      <div className="flex-1 flex items-start gap-2">
+                        <eventInfo.icon className="w-4 h-4 mt-0.5 text-gray-500" />
+                        <div className="flex-1">
+                          <p className="font-medium text-gray-900">{eventInfo.label}</p>
+                          {detailText && (
+                            <p className="text-xs text-gray-500">{detailText}</p>
+                          )}
+                          <p className="text-sm text-gray-500">{formatWhen(e.occurredAt)}</p>
+                        </div>
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge variant="secondary" className="text-xs">
