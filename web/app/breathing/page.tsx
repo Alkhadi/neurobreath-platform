@@ -46,18 +46,18 @@ export default function BreathingExercisesPage() {
               showMetadata
             />
             <div className="flex flex-wrap justify-center gap-4 mt-6">
-              <a href="#exercises">
-                <Button size="lg" className="px-8">
+              <Button asChild size="lg" className="px-8">
+                <a href="#exercises">
                   <Play className="mr-2 h-5 w-5" />
                   Start Practicing
-                </Button>
-              </a>
-              <a href="#benefits">
-                <Button size="lg" variant="outline" className="px-8">
+                </a>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="px-8">
+                <a href="#benefits">
                   <BookOpen className="mr-2 h-5 w-5" />
                   Learn More
-                </Button>
-              </a>
+                </a>
+              </Button>
             </div>
           </div>
 
@@ -116,12 +116,12 @@ export default function BreathingExercisesPage() {
                 <li>• Breathe out: 4 seconds</li>
                 <li>• Hold: 4 seconds</li>
               </ul>
-              <Link href="/techniques/box-breathing">
-                <Button className="w-full">
+              <Button asChild className="w-full">
+                <Link href="/techniques/box-breathing">
                   <Play className="mr-2 h-4 w-4" />
                   Try Box Breathing
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </Card>
 
             {/* 4-7-8 Breathing */}
@@ -142,12 +142,12 @@ export default function BreathingExercisesPage() {
                 <li>• Breathe out: 8 seconds</li>
                 <li>• Repeat 4 times</li>
               </ul>
-              <Link href="/techniques/4-7-8">
-                <Button className="w-full">
+              <Button asChild className="w-full">
+                <Link href="/techniques/4-7-8">
                   <Play className="mr-2 h-4 w-4" />
                   Try 4-7-8 Breathing
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </Card>
 
             {/* Coherent Breathing */}
@@ -168,12 +168,12 @@ export default function BreathingExercisesPage() {
                 <li>• Maintain steady rhythm</li>
                 <li>• Practice 5-20 minutes</li>
               </ul>
-              <Link href="/techniques/coherent">
-                <Button className="w-full">
+              <Button asChild className="w-full">
+                <Link href="/techniques/coherent">
                   <Play className="mr-2 h-4 w-4" />
                   Try Coherent Breathing
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </Card>
 
             {/* SOS Breathing */}
@@ -194,12 +194,12 @@ export default function BreathingExercisesPage() {
                 <li>• Portable and discreet</li>
                 <li>• No preparation needed</li>
               </ul>
-              <Link href="/techniques/sos">
-                <Button className="w-full">
+              <Button asChild className="w-full">
+                <Link href="/techniques/sos">
                   <Play className="mr-2 h-4 w-4" />
                   Try SOS Breathing
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </Card>
 
             {/* Belly Breathing */}
@@ -220,12 +220,12 @@ export default function BreathingExercisesPage() {
                 <li>• Belly deflates on exhale</li>
                 <li>• Slow, natural rhythm</li>
               </ul>
-              <Link href="/breathing/breath">
-                <Button className="w-full">
+              <Button asChild className="w-full">
+                <Link href="/breathing/breath">
                   <Play className="mr-2 h-4 w-4" />
                   Try Belly Breathing
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </Card>
 
             {/* Focus Breathing */}
@@ -246,12 +246,12 @@ export default function BreathingExercisesPage() {
                 <li>• ADHD-friendly pace</li>
                 <li>• Visual anchors</li>
               </ul>
-              <Link href="/breathing/focus">
-                <Button className="w-full">
+              <Button asChild className="w-full">
+                <Link href="/breathing/focus">
                   <Play className="mr-2 h-4 w-4" />
                   Try Focus Breathing
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </Card>
           </div>
         </div>
@@ -424,11 +424,9 @@ export default function BreathingExercisesPage() {
               <Download className="mr-2 h-5 w-5" />
               Breathing Cards (PDF)
             </Button>
-            <Link href="/downloads">
-              <Button size="lg" variant="outline">
-                View All Downloads
-              </Button>
-            </Link>
+            <Button asChild size="lg" variant="outline">
+              <Link href="/downloads">View All Downloads</Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -444,11 +442,9 @@ export default function BreathingExercisesPage() {
               <p className="text-sm text-muted-foreground mb-4">
                 Comprehensive anxiety management with CBT tools, grounding exercises, and mood tracking
               </p>
-              <Link href="/anxiety">
-                <Button variant="outline" className="w-full">
-                  Explore Anxiety Tools
-                </Button>
-              </Link>
+              <Button asChild variant="outline" className="w-full">
+                <Link href="/anxiety">Explore Anxiety Tools</Link>
+              </Button>
             </Card>
 
             <Card className="p-6">
@@ -457,11 +453,9 @@ export default function BreathingExercisesPage() {
               <p className="text-sm text-muted-foreground mb-4">
                 Stress reduction techniques, relaxation games, and progress tracking tools
               </p>
-              <Link href="/tools/stress-tools">
-                <Button variant="outline" className="w-full">
-                  Stress Tools
-                </Button>
-              </Link>
+              <Button asChild variant="outline" className="w-full">
+                <Link href="/tools/stress-tools">Stress Tools</Link>
+              </Button>
             </Card>
 
             <Card className="p-6">
@@ -470,11 +464,9 @@ export default function BreathingExercisesPage() {
               <p className="text-sm text-muted-foreground mb-4">
                 Breathing exercises for classroom use, teacher guides, and student resources
               </p>
-              <Link href="/schools">
-                <Button variant="outline" className="w-full">
-                  For Educators
-                </Button>
-              </Link>
+              <Button asChild variant="outline" className="w-full">
+                <Link href="/schools">For Educators</Link>
+              </Button>
             </Card>
           </div>
         </div>

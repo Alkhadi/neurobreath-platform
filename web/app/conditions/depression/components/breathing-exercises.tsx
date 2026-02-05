@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Wind, Play, Pause, RotateCcw, Activity } from 'lucide-react';
+import { getBreathingSnapshotAtElapsedMs } from '@/lib/breathing/engineSnapshot';
 
 type Exercise = {
   id: string;
@@ -68,6 +69,7 @@ export function BreathingExercises() {
   const [sessionTime, setSessionTime] = useState(0);
   const [stats, setStats] = useState({ sessions: 0, totalMinutes: 0, lastUsed: '' });
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const elapsedSecondsRef = useRef(0);
 
   // Load stats from localStorage
   useEffect(() => {
@@ -94,34 +96,45 @@ export function BreathingExercises() {
 
   // Timer logic
   useEffect(() => {
-    if (isActive) {
-      timerRef.current = setInterval(() => {
-        setTimeInPhase((prev) => {
-          const currentPattern = selectedExercise?.pattern?.[currentPhase];
-          const phaseDuration = currentPattern?.duration ?? 0;
-          
-          if (prev >= phaseDuration - 1) {
-            // Move to next phase
-            const nextPhase = (currentPhase + 1) % (selectedExercise?.pattern?.length ?? 1);
-            setCurrentPhase(nextPhase);
-            return 0;
-          }
-          return prev + 1;
-        });
-        setSessionTime((prev) => prev + 1);
-      }, 1000);
-    } else {
-      if (timerRef?.current) {
-        clearInterval(timerRef.current);
-      }
+    if (!isActive) {
+      if (timerRef.current) clearInterval(timerRef.current);
+      return;
     }
 
-    return () => {
-      if (timerRef?.current) {
-        clearInterval(timerRef.current);
-      }
+    const phaseDefs = (selectedExercise?.pattern ?? []).map((p) => ({
+      name: p.phase,
+      durationSeconds: p.duration,
+    }));
+
+    const syncFromElapsedSeconds = (elapsedSeconds: number) => {
+      const snapshot = getBreathingSnapshotAtElapsedMs({
+        phases: phaseDefs,
+        elapsedMs: elapsedSeconds * 1000,
+        totalMs: undefined,
+      });
+
+      setCurrentPhase(snapshot.phaseIndex);
+
+      const remainingSeconds = Math.max(0, Math.ceil(snapshot.phaseMsRemaining / 1000));
+      const phaseDurationSeconds = selectedExercise?.pattern?.[snapshot.phaseIndex]?.duration ?? 0;
+      setTimeInPhase(Math.max(0, phaseDurationSeconds - remainingSeconds));
+
+      return snapshot;
     };
-  }, [isActive, currentPhase, selectedExercise]);
+
+    syncFromElapsedSeconds(elapsedSecondsRef.current);
+
+    timerRef.current = setInterval(() => {
+      const newTime = elapsedSecondsRef.current + 1;
+      elapsedSecondsRef.current = newTime;
+      setSessionTime(newTime);
+      syncFromElapsedSeconds(newTime);
+    }, 1000);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [isActive, selectedExercise]);
 
   const handleStart = () => {
     setIsActive(true);
@@ -145,6 +158,7 @@ export function BreathingExercises() {
     setCurrentPhase(0);
     setTimeInPhase(0);
     setSessionTime(0);
+    elapsedSecondsRef.current = 0;
   };
 
   const currentPattern = selectedExercise?.pattern?.[currentPhase];

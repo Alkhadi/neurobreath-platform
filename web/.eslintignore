@@ -15,3 +15,7 @@ next.config.js
 
 # Scripts
 scripts/
+
+# Test / tooling artifacts
+reports/
+test-results/

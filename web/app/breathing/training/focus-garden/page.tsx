@@ -22,6 +22,7 @@ import { cn } from '@/lib/utils'
 import { Companion, CompactCompanion, CompanionInSession } from '@/components/focus/companion'
 import { CompanionCustomizationModal } from '@/components/focus/companion-customization-modal'
 import { getUnlockableAccessories } from '@/lib/focus/companion-data'
+import { trackProgress } from '@/lib/progress/track'
 import {
   loadFocusGardenProgress,
   saveFocusGardenProgress,
@@ -939,11 +940,31 @@ export default function FocusGardenPage() {
       setCompanionContext('harvest')
       updateCompanionMood('excited')
       void applySensoryRewards(before, after, 'major')
+      void trackProgress({
+        type: 'focus_garden_completed',
+        metadata: {
+          action: 'bloomed',
+          plantId,
+          xpEarned: result.xpEarned,
+          category: 'focus-garden',
+        },
+        path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+      })
     } else if (result.xpEarned > 0) {
       celebrate(`💧 Plant watered! +${result.xpEarned} XP`, '💧')
       setCompanionContext('session-end')
       updateCompanionMood('proud')
       void applySensoryRewards(before, after, 'minor')
+      void trackProgress({
+        type: 'focus_garden_completed',
+        metadata: {
+          action: 'watered',
+          plantId,
+          xpEarned: result.xpEarned,
+          category: 'focus-garden',
+        },
+        path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+      })
     }
   }, [applySensoryRewards, celebrate, progress, refreshProgress])
 
@@ -957,6 +978,16 @@ export default function FocusGardenPage() {
       setCompanionContext('harvest')
       updateCompanionMood('excited')
       void applySensoryRewards(before, after, 'major')
+      void trackProgress({
+        type: 'focus_garden_completed',
+        metadata: {
+          action: 'harvested',
+          plantId,
+          xpEarned: result.xpEarned,
+          category: 'focus-garden',
+        },
+        path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+      })
     }
   }, [applySensoryRewards, celebrate, progress, refreshProgress])
 
@@ -998,11 +1029,31 @@ export default function FocusGardenPage() {
         setCompanionContext('quest-complete')
         updateCompanionMood('excited')
         void applySensoryRewards(before, after, 'major')
+        void trackProgress({
+          type: 'quest_completed',
+          metadata: {
+            questId,
+            dayNumber: day,
+            xpEarned: result.xpEarned,
+            category: 'focus-garden',
+          },
+          path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+        })
       } else {
         celebrate(`✅ Day ${day} complete! +${result.xpEarned} XP`, '✅')
         setCompanionContext('session-end')
         updateCompanionMood('proud')
         void applySensoryRewards(before, after, 'minor')
+        void trackProgress({
+          type: 'quest_completed',
+          metadata: {
+            questId,
+            dayNumber: day,
+            xpEarned: result.xpEarned,
+            category: 'focus-garden',
+          },
+          path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+        })
       }
     }
   }, [applySensoryRewards, celebrate, progress, refreshProgress])

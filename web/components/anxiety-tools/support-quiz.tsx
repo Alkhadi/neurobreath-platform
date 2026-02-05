@@ -9,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Brain, Award, CheckCircle2, XCircle, RefreshCw } from "lucide-react"
 import { useLocalStorage } from "@/hooks/use-local-storage"
+import { trackProgress } from "@/lib/progress/track"
 
 interface Question {
   id: string
@@ -206,6 +207,19 @@ export function SupportQuiz() {
         completedDate: new Date().toISOString()
       }
       setQuizResults([...quizResults, result])
+      
+      // Track progress
+      void trackProgress({
+        type: 'quiz_completed',
+        metadata: {
+          quizId: result.quizId,
+          score,
+          maxScore: currentQuiz.length,
+          topic: 'anxiety-support',
+          category: 'anxiety',
+        },
+        path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+      })
     }
   }
 

@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card'
 import { useLocalStorage } from '@/hooks/use-local-storage'
 import { useAchievements } from '@/hooks/use-achievements'
 import { BreathingSession } from '@/lib/types'
+import { getBreathingSnapshotAtElapsedMs } from '@/lib/breathing/engineSnapshot'
 import { toast } from 'sonner'
 
 type BreathingType = 'box' | '4-7-8' | 'coherent' | 'sos-60'
@@ -76,40 +77,49 @@ export function BreathingSuite() {
   const [sessions, setSessions] = useLocalStorage<BreathingSession[]>('neurobreath_breathing', [])
   const { progress, setProgress } = useAchievements()
   const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const sessionTimeRef = useRef(0)
 
   const technique = TECHNIQUES.find(t => t?.id === selectedTechnique) ?? TECHNIQUES[0]
   const currentPhase = technique?.phases?.[currentPhaseIndex] ?? technique?.phases?.[0]
 
   useEffect(() => {
-    if (isPlaying) {
-      timerRef.current = setInterval(() => {
-        setSessionTime(prev => prev + 1)
-        setPhaseTimeLeft(prev => {
-          if (prev <= 1) {
-            const nextIndex = (currentPhaseIndex + 1) % (technique?.phases?.length ?? 1)
-            setCurrentPhaseIndex(nextIndex)
-            if (nextIndex === 0) {
-              setBreathCount(prev => prev + 1)
-            }
-            return technique?.phases?.[nextIndex]?.duration ?? 4
-          }
-          return prev - 1
-        })
-      }, 1000)
-    } else {
+    if (!isPlaying) {
       if (timerRef.current) clearInterval(timerRef.current)
+      return
     }
+
+    const syncFromElapsedSeconds = (elapsedSeconds: number) => {
+      const snapshot = getBreathingSnapshotAtElapsedMs({
+        phases: (technique?.phases ?? []).map((p) => ({ name: p.name, durationSeconds: p.duration })),
+        elapsedMs: elapsedSeconds * 1000,
+        totalMs: undefined,
+      })
+
+      setCurrentPhaseIndex(snapshot.phaseIndex)
+      setPhaseTimeLeft(Math.max(0, Math.ceil(snapshot.phaseMsRemaining / 1000)))
+      setBreathCount(snapshot.cyclesCompleted)
+
+      return snapshot
+    }
+
+    // Ensure UI is synced immediately on start/resume.
+    syncFromElapsedSeconds(sessionTimeRef.current)
+
+    timerRef.current = setInterval(() => {
+      const newTime = sessionTimeRef.current + 1
+      sessionTimeRef.current = newTime
+      setSessionTime(newTime)
+      syncFromElapsedSeconds(newTime)
+    }, 1000)
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
     }
-  }, [isPlaying, currentPhaseIndex, technique])
+  }, [isPlaying, technique])
 
   useEffect(() => {
-    if (isPlaying && phaseTimeLeft === 0) {
-      setPhaseTimeLeft(currentPhase?.duration ?? 4)
-    }
-  }, [currentPhase, isPlaying, phaseTimeLeft])
+    sessionTimeRef.current = sessionTime
+  }, [sessionTime])
 
   const handleStart = () => {
     setIsPlaying(true)
@@ -161,6 +171,7 @@ export function BreathingSuite() {
     setCurrentPhaseIndex(0)
     setPhaseTimeLeft(0)
     setSessionTime(0)
+    sessionTimeRef.current = 0
     setBreathCount(0)
   }
 

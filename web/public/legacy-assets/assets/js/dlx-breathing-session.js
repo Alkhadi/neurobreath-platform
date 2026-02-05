@@ -778,7 +778,7 @@
     try {
       if (audio){
         audio.currentTime = 0;
-        void audio.play();
+        audio.play().catch(() => {});
       }
     } catch {
       /* ignore */
@@ -944,7 +944,7 @@
     const audio = getCueAudio(gender, key);
     try {
       audio.currentTime = 0;
-      void audio.play();
+      audio.play().catch(() => {});
     } catch {
       /* ignore */
     }
@@ -975,7 +975,7 @@
       try {
         audio.currentTime = 0;
         audio.onended = () => playNext(i + 1);
-        void audio.play();
+        audio.play().catch(() => {});
       } catch {
         /* ignore */
       }

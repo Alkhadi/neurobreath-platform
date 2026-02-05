@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { X, Play, Pause, Square, Volume2, Music } from 'lucide-react'
-import { getTechniqueById } from '@/lib/breathing-data'
+import { getTechniqueById, calculateTotalCycleDuration } from '@/lib/breathing-data'
 import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS'
+import { trackProgress } from '@/lib/progress/track'
 
 interface BeginSessionModalProps {
   isOpen: boolean
@@ -21,6 +22,8 @@ class AmbientSoundGenerator {
   private oscillators: OscillatorNode[] = []
   private noiseNode: AudioBufferSourceNode | null = null
   private isPlaying = false
+  private isTransitioning = false
+  private currentType: AmbienceType = 'none'
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -78,13 +81,23 @@ class AmbientSoundGenerator {
   play(type: AmbienceType) {
     if (!this.audioContext || type === 'none') return
     
+    // Prevent rapid transitions
+    if (this.isTransitioning || (this.isPlaying && this.currentType === type)) return
+    
+    this.isTransitioning = true
     this.stop()
     this.isPlaying = true
+    this.currentType = type
 
     // Resume audio context if suspended
     if (this.audioContext.state === 'suspended') {
-      this.audioContext.resume()
+      void this.audioContext.resume()
     }
+    
+    // Small delay to prevent race condition
+    setTimeout(() => {
+      this.isTransitioning = false
+    }, 100)
 
     switch (type) {
       case 'cosmic': {
@@ -223,7 +236,10 @@ class AmbientSoundGenerator {
   }
 
   stop() {
+    if (!this.isPlaying && this.oscillators.length === 0) return
+    
     this.isPlaying = false
+    this.currentType = 'none'
     this.oscillators.forEach(osc => {
       try { osc.stop() } catch {}
     })
@@ -270,6 +286,7 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
   const ambientSoundRef = useRef<AmbientSoundGenerator | null>(null)
+  const didTrackRef = useRef<boolean>(false)
 
   // Initialize ambient sound generator
   useEffect(() => {
@@ -306,6 +323,12 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
       if (ambientSoundRef.current) ambientSoundRef.current.stop()
     }
   }, [isOpen])
+
+  useEffect(() => {
+    if (selectedTechnique === 'sos' && selectedDuration !== 1) {
+      setSelectedDuration(1)
+    }
+  }, [selectedTechnique, selectedDuration])
 
   if (!isOpen) return null
 
@@ -356,12 +379,25 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
     const cleanText = sanitizeForTTS(text)
     if (!cleanText) return
 
-    window.speechSynthesis.cancel()
-    const utterance = new SpeechSynthesisUtterance(cleanText)
-    utterance.rate = 0.9
-    utterance.pitch = 1.0
-    window.speechSynthesis.speak(utterance)
-    utteranceRef.current = utterance
+    // Cancel any existing speech
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel()
+    }
+    
+    // Small delay to prevent race condition
+    setTimeout(() => {
+      const utterance = new SpeechSynthesisUtterance(cleanText)
+      utterance.rate = 0.9
+      utterance.pitch = 1.0
+      
+      // Handle errors gracefully
+      utterance.onerror = (event) => {
+        console.warn('Speech synthesis error:', event.error)
+      }
+      
+      window.speechSynthesis.speak(utterance)
+      utteranceRef.current = utterance
+    }, 50)
   }
 
   const readInstructions = () => {
@@ -383,7 +419,9 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
 
   const handleStartBreathing = () => {
     setIsTestingAmbience(false) // Stop preview when starting session
-    const totalSeconds = selectedDuration * 60
+    didTrackRef.current = false // Reset tracking guard
+    const isSos = selectedTechnique === 'sos' || getTechniqueById(selectedTechnique)?.id === 'sos'
+    const totalSeconds = isSos ? 60 : selectedDuration * 60
     setTotalTime(totalSeconds)
     setTimeRemaining(totalSeconds)
     setView('session')
@@ -420,6 +458,37 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
           setIsPlaying(false)
           setPhase('ready')
           speak('Session complete')
+          
+          // Track progress - guard against double-fire
+          if (!didTrackRef.current) {
+            didTrackRef.current = true
+            const technique = getTechniqueById(selectedTechnique)
+            const durationSeconds = Math.round((totalTime || 60))
+            const cycleDuration = technique ? calculateTotalCycleDuration(technique) : 10
+            const cycles = cycleDuration > 0 ? Math.floor(durationSeconds / cycleDuration) : 6
+
+            const inhaleSeconds = technique?.phases.find(p => p.name.toLowerCase().includes('inhale'))?.duration
+            const exhaleSeconds = technique?.phases.find(p => p.name.toLowerCase().includes('exhale'))?.duration
+            
+            // Build pattern string from phases
+            const patternParts = technique?.phases.map(p => p.duration.toString()) ?? []
+            const pattern = patternParts.join('-')
+            
+            void trackProgress({
+              type: 'breathing_completed',
+              metadata: {
+                techniqueId: technique?.id || selectedTechnique || 'unknown',
+                durationSeconds,
+                cycles,
+                pattern,
+                inhaleSeconds,
+                exhaleSeconds,
+                category: 'breathing',
+              },
+              path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+            })
+          }
+          
           return 0
         }
         return prev - 1
@@ -576,6 +645,7 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
                   <button
                     key={min}
                     onClick={() => setSelectedDuration(min)}
+                    disabled={selectedTechnique === 'sos' && min !== 1}
                     className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all ${
                       selectedDuration === min
                         ? 'bg-blue-50 border-blue-400 text-blue-900'
