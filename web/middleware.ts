@@ -66,6 +66,9 @@ function ensureDeviceIdCookie(request: NextRequest, response: NextResponse) {
   const existing = request.cookies.get(DEVICE_ID_COOKIE)?.value
   if (existing) return
 
+  const hostname = request.nextUrl.hostname
+  const isProductionDomain = hostname.endsWith('neurobreath.co.uk')
+  
   response.cookies.set({
     name: DEVICE_ID_COOKIE,
     value: generateUuid(),
@@ -74,6 +77,8 @@ function ensureDeviceIdCookie(request: NextRequest, response: NextResponse) {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     maxAge: DEVICE_ID_MAX_AGE_SECONDS,
+    // Share cookie across apex and www in production only
+    ...(isProductionDomain ? { domain: '.neurobreath.co.uk' } : {}),
   })
 }
 
