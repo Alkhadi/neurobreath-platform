@@ -22,6 +22,8 @@ class AmbientSoundGenerator {
   private oscillators: OscillatorNode[] = []
   private noiseNode: AudioBufferSourceNode | null = null
   private isPlaying = false
+  private isTransitioning = false
+  private currentType: AmbienceType = 'none'
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -79,13 +81,23 @@ class AmbientSoundGenerator {
   play(type: AmbienceType) {
     if (!this.audioContext || type === 'none') return
     
+    // Prevent rapid transitions
+    if (this.isTransitioning || (this.isPlaying && this.currentType === type)) return
+    
+    this.isTransitioning = true
     this.stop()
     this.isPlaying = true
+    this.currentType = type
 
     // Resume audio context if suspended
     if (this.audioContext.state === 'suspended') {
-      this.audioContext.resume()
+      void this.audioContext.resume()
     }
+    
+    // Small delay to prevent race condition
+    setTimeout(() => {
+      this.isTransitioning = false
+    }, 100)
 
     switch (type) {
       case 'cosmic': {
@@ -224,7 +236,10 @@ class AmbientSoundGenerator {
   }
 
   stop() {
+    if (!this.isPlaying && this.oscillators.length === 0) return
+    
     this.isPlaying = false
+    this.currentType = 'none'
     this.oscillators.forEach(osc => {
       try { osc.stop() } catch {}
     })
@@ -357,12 +372,25 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
     const cleanText = sanitizeForTTS(text)
     if (!cleanText) return
 
-    window.speechSynthesis.cancel()
-    const utterance = new SpeechSynthesisUtterance(cleanText)
-    utterance.rate = 0.9
-    utterance.pitch = 1.0
-    window.speechSynthesis.speak(utterance)
-    utteranceRef.current = utterance
+    // Cancel any existing speech
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel()
+    }
+    
+    // Small delay to prevent race condition
+    setTimeout(() => {
+      const utterance = new SpeechSynthesisUtterance(cleanText)
+      utterance.rate = 0.9
+      utterance.pitch = 1.0
+      
+      // Handle errors gracefully
+      utterance.onerror = (event) => {
+        console.warn('Speech synthesis error:', event.error)
+      }
+      
+      window.speechSynthesis.speak(utterance)
+      utteranceRef.current = utterance
+    }, 50)
   }
 
   const readInstructions = () => {
