@@ -41,7 +41,7 @@ function getPhaseAtWithinCycleMs(phases: BreathingPhaseDef[], withinCycleMs: num
 export function getBreathingSnapshotAtElapsedMs(args: {
   phases: BreathingPhaseDef[];
   elapsedMs: number;
-  totalMs: number;
+  totalMs?: number;
 }): BreathingSnapshot {
   const phases = args.phases;
   if (!Array.isArray(phases) || phases.length === 0) {
@@ -55,20 +55,22 @@ export function getBreathingSnapshotAtElapsedMs(args: {
     };
   }
 
-  const totalMs = Math.max(0, Math.floor(args.totalMs));
   const elapsedMs = Math.max(0, Math.floor(args.elapsedMs));
-  const clampedElapsedMs = Math.min(elapsedMs, totalMs);
+
+  const hasFiniteTotalMs = Number.isFinite(args.totalMs) && (args.totalMs as number) >= 0;
+  const totalMs = hasFiniteTotalMs ? Math.max(0, Math.floor(args.totalMs as number)) : Number.POSITIVE_INFINITY;
+  const clampedElapsedMs = hasFiniteTotalMs ? Math.min(elapsedMs, totalMs) : elapsedMs;
 
   const cycleMs = getCycleDurationMs(phases);
   const safeCycleMs = cycleMs > 0 ? cycleMs : 1;
 
-  const isComplete = elapsedMs >= totalMs;
+  const isComplete = hasFiniteTotalMs ? elapsedMs >= totalMs : false;
   const cyclesCompleted = Math.floor(clampedElapsedMs / safeCycleMs);
   const withinCycleMs = safeCycleMs === 0 ? 0 : clampedElapsedMs % safeCycleMs;
 
   const { phaseIndex, phaseMsRemaining } = getPhaseAtWithinCycleMs(phases, withinCycleMs);
 
-  const progress = totalMs === 0 ? 100 : (clampedElapsedMs / totalMs) * 100;
+  const progress = hasFiniteTotalMs ? (totalMs === 0 ? 100 : (clampedElapsedMs / totalMs) * 100) : 0;
 
   return {
     phaseIndex,

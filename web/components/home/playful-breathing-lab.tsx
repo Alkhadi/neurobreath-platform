@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, TrendingUp, Palette, Shuffle, Play, ChevronUp, BookOpen, Car, Briefcase, FileText, Volume2, VolumeX } from "lucide-react";
 import Link from "next/link";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
+import { getBreathingSnapshotAtElapsedMs } from "@/lib/breathing/engineSnapshot";
 
 interface BreathLadderRung {
   level: number;
@@ -41,9 +42,10 @@ export default function PlayfulBreathingLab() {
   const [currentRung, setCurrentRung] = useState(0);
   const [isClimbing, setIsClimbing] = useState(false);
   const [breathPhase, setBreathPhase] = useState<"inhale" | "hold" | "exhale" | "rest">("inhale");
-  const [, setPhaseTimer] = useState(0);
   const [cyclesCompleted, setCyclesCompleted] = useState(0);
   const [voiceCoachEnabled, setVoiceCoachEnabled] = useState(true);
+  const ladderElapsedMsRef = useRef(0);
+  const ladderLastPhaseRef = useRef<"inhale" | "hold" | "exhale" | "rest">("inhale");
   
   // Voice synthesis hook
   const { speak, cancel } = useSpeechSynthesis();
@@ -76,42 +78,48 @@ export default function PlayfulBreathingLab() {
     if (!isClimbing) return;
     
     const rung = LADDER_RUNGS[currentRung];
-    const phaseDurations = {
-      inhale: rung.inhale,
-      hold: rung.hold,
-      exhale: rung.exhale,
-      rest: rung.rest,
-    };
-    
-    const timer = setInterval(() => {
-      setPhaseTimer(prev => {
-        const nextTime = prev + 0.1;
-        const currentPhaseDuration = phaseDurations[breathPhase];
-        
-        if (nextTime >= currentPhaseDuration) {
-          // Move to next phase and announce with voice coach
-          if (breathPhase === "inhale") {
-            setBreathPhase("hold");
-            if (voiceCoachEnabled) speak("Hold");
-          } else if (breathPhase === "hold") {
-            setBreathPhase("exhale");
-            if (voiceCoachEnabled) speak("Exhale");
-          } else if (breathPhase === "exhale") {
-            setBreathPhase("rest");
-            if (voiceCoachEnabled) speak("Hold");  // Use "Hold" for rest phase for consistency
-          } else {
-            setBreathPhase("inhale");
-            setCyclesCompleted(prev => prev + 1);
-            if (voiceCoachEnabled) speak("Inhale");
-          }
-          return 0;
-        }
-        return nextTime;
+
+    const phaseDefs = [
+      { name: "inhale", durationSeconds: rung.inhale },
+      { name: "hold", durationSeconds: rung.hold },
+      { name: "exhale", durationSeconds: rung.exhale },
+      { name: "rest", durationSeconds: rung.rest },
+    ].filter((p) => p.durationSeconds > 0);
+
+    const syncFromElapsedMs = (elapsedMs: number) => {
+      const snapshot = getBreathingSnapshotAtElapsedMs({
+        phases: phaseDefs,
+        elapsedMs,
+        totalMs: undefined,
       });
+
+      const nextPhase = snapshot.phaseName as typeof breathPhase;
+      setBreathPhase(nextPhase);
+      setCyclesCompleted(snapshot.cyclesCompleted);
+
+      const prevPhase = ladderLastPhaseRef.current;
+      if (nextPhase !== prevPhase) {
+        ladderLastPhaseRef.current = nextPhase;
+        if (voiceCoachEnabled) {
+          if (nextPhase === "inhale") speak("Inhale");
+          else if (nextPhase === "hold") speak("Hold");
+          else if (nextPhase === "exhale") speak("Exhale");
+          else speak("Hold");
+        }
+      }
+
+      return snapshot;
+    };
+
+    syncFromElapsedMs(ladderElapsedMsRef.current);
+
+    const timer = setInterval(() => {
+      ladderElapsedMsRef.current += 100;
+      syncFromElapsedMs(ladderElapsedMsRef.current);
     }, 100);
     
     return () => clearInterval(timer);
-  }, [isClimbing, breathPhase, currentRung, voiceCoachEnabled, speak]);
+  }, [isClimbing, currentRung, voiceCoachEnabled, speak]);
   
   // Colour Path Logic
   useEffect(() => {
@@ -132,8 +140,9 @@ export default function PlayfulBreathingLab() {
   const startLadderClimb = () => {
     setIsClimbing(true);
     setBreathPhase("inhale");
-    setPhaseTimer(0);
     setCyclesCompleted(0);
+    ladderElapsedMsRef.current = 0;
+    ladderLastPhaseRef.current = "inhale";
   };
   
   const stopLadderClimb = () => {
@@ -150,8 +159,9 @@ export default function PlayfulBreathingLab() {
     if (currentRung < LADDER_RUNGS.length - 1) {
       setCurrentRung(prev => prev + 1);
       setCyclesCompleted(0);
-      setPhaseTimer(0);
       setBreathPhase("inhale");
+      ladderElapsedMsRef.current = 0;
+      ladderLastPhaseRef.current = "inhale";
     }
   };
   

@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Language } from '../types';
 import { trackToolUsage } from '../utils/localStorage';
 import { cn } from '@/lib/utils';
+import { getBreathingSnapshotAtElapsedMs } from '@/lib/breathing/engineSnapshot';
 
 interface InteractiveToolsProps {
   language: Language;
@@ -115,38 +116,47 @@ const BreathingExercise: React.FC<{ language: Language; onClose: () => void }> =
   const [count, setCount] = useState(4);
   const [isActive, setIsActive] = useState(false);
   const [completedCycles, setCompletedCycles] = useState(0);
+  const elapsedSecondsRef = useRef(0);
 
   useEffect(() => {
     if (!isActive) return;
 
-    const interval = setInterval(() => {
-      setCount((prev) => {
-        if (prev > 1) return prev - 1;
+    const phaseDefs = [
+      { name: 'inhale', durationSeconds: 4 },
+      { name: 'hold', durationSeconds: 7 },
+      { name: 'exhale', durationSeconds: 8 },
+      { name: 'pause', durationSeconds: 2 },
+    ];
 
-        switch (phase) {
-          case 'inhale':
-            setPhase('hold');
-            return 7;
-          case 'hold':
-            setPhase('exhale');
-            return 8;
-          case 'exhale':
-            setPhase('pause');
-            setCompletedCycles((c) => c + 1);
-            return 2;
-          case 'pause':
-            setPhase('inhale');
-            return 4;
-        }
+    const syncFromElapsedSeconds = (elapsedSeconds: number) => {
+      const snapshot = getBreathingSnapshotAtElapsedMs({
+        phases: phaseDefs,
+        elapsedMs: elapsedSeconds * 1000,
+        totalMs: undefined,
       });
+
+      setPhase(snapshot.phaseName as typeof phase);
+      setCount(Math.max(0, Math.ceil(snapshot.phaseMsRemaining / 1000)));
+      setCompletedCycles(snapshot.cyclesCompleted);
+
+      return snapshot;
+    };
+
+    syncFromElapsedSeconds(elapsedSecondsRef.current);
+
+    const interval = setInterval(() => {
+      elapsedSecondsRef.current += 1;
+      syncFromElapsedSeconds(elapsedSecondsRef.current);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isActive, phase]);
+  }, [isActive]);
 
   const handleStart = () => {
     setIsActive(true);
     setPhase('inhale');
+    setCompletedCycles(0);
+    elapsedSecondsRef.current = 0;
     setCount(4);
   };
 
