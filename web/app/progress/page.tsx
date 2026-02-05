@@ -432,6 +432,16 @@ export default function ProgressPage() {
       window.addEventListener('nb_progress_event_recorded', handleProgressEvent)
     }
 
+    // localStorage ping listener (cross-tab signal)
+    const handleStorageEvent = (event: StorageEvent) => {
+      if (event.key === 'nb_progress_ping' && autoRefresh) {
+        if (!cancelled) debouncedRun()
+      }
+    }
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', handleStorageEvent)
+    }
+
     // Polling fallback: refresh every 60 seconds
     let interval: NodeJS.Timeout | null = null
     if (autoRefresh) {
@@ -453,6 +463,7 @@ export default function ProgressPage() {
       })
       if (typeof window !== 'undefined') {
         window.removeEventListener('nb_progress_event_recorded', handleProgressEvent)
+        window.removeEventListener('storage', handleStorageEvent)
       }
     }
   }, [activeSubjectId, range, reloadKey, autoRefresh])

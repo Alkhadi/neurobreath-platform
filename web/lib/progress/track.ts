@@ -61,6 +61,13 @@ function emitProgressRecorded(detail: {
     }
   }
 
+  // localStorage ping for cross-tab signal (works even when BroadcastChannel doesn't)
+  try {
+    window.localStorage?.setItem('nb_progress_ping', String(Date.now()))
+  } catch {
+    // ignore
+  }
+
   // CustomEvent fallback
   try {
     window.dispatchEvent(
