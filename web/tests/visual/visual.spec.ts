@@ -340,6 +340,8 @@ test.describe('Visual Regression Suite', () => {
 
 // Single H1 check
 test.describe('Accessibility Smoke Checks', () => {
+  test.skip(({ browserName }) => browserName !== 'chromium', 'Run smoke checks on Chromium only (avoids WebKit-only mobile project in CI)');
+
   const checkRoutes = [
     '/uk',
     '/uk/conditions',
