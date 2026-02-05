@@ -195,6 +195,11 @@ export async function trackProgress(input: TrackProgressInput): Promise<void> {
   try {
     if (typeof window === 'undefined') return
 
+    // DEV: Log tracking attempt
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[trackProgress] Attempting to track:', input)
+    }
+
     // Initialize flush triggers on first call
     initFlushTriggers()
 
@@ -208,6 +213,11 @@ export async function trackProgress(input: TrackProgressInput): Promise<void> {
       subjectId: activeSubjectId,
     }
 
+    // DEV: Log request body
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[trackProgress] POST body:', JSON.stringify(body, null, 2))
+    }
+
     // Try immediate POST
     const res = await fetch('/api/progress/events', {
       method: 'POST',
@@ -215,15 +225,46 @@ export async function trackProgress(input: TrackProgressInput): Promise<void> {
       body: JSON.stringify(body),
       keepalive: true,
       credentials: 'include',
-    }).catch(() => null)
+      cache: 'no-store',
+    }).catch((err) => {
+      // DEV: Log fetch error
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[trackProgress] Fetch error:', err)
+      }
+      return null
+    })
+
+    // DEV: Log response
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[trackProgress] Response status:', res?.status)
+      if (res && !res.ok) {
+        res.clone().json().then((data) => {
+          console.error('[trackProgress] Error response:', data)
+        }).catch(() => {
+          console.error('[trackProgress] Failed to parse error response')
+        })
+      }
+    }
 
     if (res?.ok) {
       emitProgressRecorded({ subjectId: activeSubjectId, eventType: input.type })
+      // DEV: Log success
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[trackProgress] ✅ Event recorded successfully')
+      }
     } else {
       // Failed - queue for retry
       enqueueEvent(body)
+      // DEV: Log queuing
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[trackProgress] ⚠️  Event queued for retry')
+      }
     }
-  } catch {
+  } catch (err) {
+    // DEV: Log catch error
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[trackProgress] Exception:', err)
+    }
     // Network error - queue event
     try {
       if (typeof window !== 'undefined') {

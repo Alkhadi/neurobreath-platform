@@ -86,10 +86,19 @@ function validateMetadata(
   if (!isPlainObject(metadata)) throw new Error('BAD_METADATA')
 
   const allowedByType: Record<AllowedType, Set<string>> = {
-    breathing_completed: new Set(['techniqueId', 'durationSeconds', 'rating', 'category']),
-    lesson_completed: new Set(['lessonId', 'durationSeconds', 'minutes']),
+    breathing_completed: new Set([
+      'techniqueId',
+      'durationSeconds',
+      'rating',
+      'category',
+      'cycles',
+      'pattern',
+      'inhaleSeconds',
+      'exhaleSeconds',
+    ]),
+    lesson_completed: new Set(['lessonId', 'durationSeconds', 'minutes', 'title']),
     meditation_completed: new Set(['durationSeconds', 'minutes']),
-    quiz_completed: new Set(['quizId', 'score', 'maxScore', 'topic']),
+    quiz_completed: new Set(['quizId', 'score', 'maxScore', 'topic', 'title']),
     focus_garden_completed: new Set(['plantId', 'taskId', 'category', 'xpEarned', 'bloomed', 'action']),
   }
 
@@ -156,12 +165,23 @@ async function normalizeSubjectIdForWrite(
 }
 
 export async function POST(request: NextRequest) {
+  // DEV: Log incoming request
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[API /api/progress/events] POST received')
+  }
+
   const contentLength = request.headers.get('content-length')
   if (contentLength && Number(contentLength) > 8_192) {
     return jsonError(413, 'PAYLOAD_TOO_LARGE', 'Payload too large')
   }
 
   const rawBody: unknown = await request.json().catch(() => null)
+  
+  // DEV: Log parsed body
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[API /api/progress/events] Body:', JSON.stringify(rawBody, null, 2))
+  }
+
   if (!isPlainObject(rawBody)) return jsonError(400, 'BAD_REQUEST', 'Invalid JSON body')
 
   try {
@@ -169,6 +189,7 @@ export async function POST(request: NextRequest) {
 
     const type = rawBody.type
     if (typeof type !== 'string' || !ALLOWED_TYPES.includes(type as AllowedType)) {
+      console.error('[API /api/progress/events] Invalid type:', type)
       return jsonError(400, 'BAD_TYPE', 'Unknown event type')
     }
 
@@ -196,6 +217,17 @@ export async function POST(request: NextRequest) {
     const { deviceId, wasSet } = pickDeviceId(request)
     const userId = await getOptionalUserId(request)
 
+    // DEV: Log before DB insert
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[API /api/progress/events] Creating event:', {
+        type,
+        deviceId,
+        userId,
+        subjectId,
+        path,
+      })
+    }
+
     await progressPrisma.progressEvent.create({
       data: {
         type,
@@ -206,6 +238,11 @@ export async function POST(request: NextRequest) {
         metadata,
       },
     })
+
+    // DEV: Log success
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[API /api/progress/events] ✅ Event created successfully')
+    }
 
     if (userId) {
       await progressPrisma.userDevice.upsert({
