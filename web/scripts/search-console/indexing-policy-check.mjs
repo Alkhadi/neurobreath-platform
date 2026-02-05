@@ -7,82 +7,32 @@ const projectRoot = path.resolve(__dirname, '../..');
 
 const baseUrl = process.env.SEO_BASE_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
-const INDEXABLE_PILLARS = new Set([
-  '/',
-  '/conditions',
-  '/adhd',
-  '/autism',
-  '/anxiety',
-  '/dyslexia-reading-training',
-  '/sleep',
-  '/stress',
-  '/breathing',
-]);
-
-const INDEXABLE_INFO = new Set([
-  '/about',
-  '/about-us',
-  '/contact',
-  '/resources',
-  '/get-started',
-  '/schools',
-  '/support-us',
-  '/teacher-quick-pack',
-]);
-
-const INDEXABLE_TRUST_PREFIXES = ['/trust'];
-const INDEXABLE_GUIDE_PREFIXES = ['/guides'];
-const BLOG_PREFIXES = ['/blog'];
-
-const INDEXABLE_TOOL_ALLOWLIST = new Set([
-  '/tools',
-  '/tools/adhd-tools',
-  '/tools/autism-tools',
-  '/tools/anxiety-tools',
-  '/tools/depression-tools',
-  '/tools/sleep-tools',
-  '/tools/stress-tools',
-  '/tools/breath-tools',
-  '/breathing',
-  '/breathing/breath',
-  '/breathing/focus',
-  '/breathing/mindfulness',
-  '/breathing/techniques/sos-60',
-  '/breathing/training/focus-garden',
-  '/techniques/4-7-8',
-  '/techniques/box-breathing',
-  '/techniques/coherent',
-  '/techniques/sos',
-]);
-
-const UTILITY_PREFIXES = [
+// This check is meant to prevent *non-indexable utility pages* from leaking into sitemaps.
+// It should not require a brittle allowlist of every legitimate content route.
+const NON_INDEXABLE_PREFIXES = [
   '/api',
   '/parent',
   '/progress',
   '/send-report',
   '/teacher',
   '/login',
+  '/register',
+  '/my-account',
+  '/change-password',
+  '/password-reset',
   '/_next',
   '/admin',
   '/auth',
   '/rewards',
-  '/downloads',
+  '/demo',
 ];
 
 const stripLocale = pathname => pathname.replace(/^\/(uk|us)(?=\/|$)/, '') || '/';
 
 function isIndexable(pathname) {
   const cleaned = stripLocale(pathname);
-  if (UTILITY_PREFIXES.some(prefix => cleaned === prefix || cleaned.startsWith(`${prefix}/`))) return false;
-  if (INDEXABLE_TRUST_PREFIXES.some(prefix => cleaned === prefix || cleaned.startsWith(`${prefix}/`))) return true;
-  if (INDEXABLE_GUIDE_PREFIXES.some(prefix => cleaned === prefix || cleaned.startsWith(`${prefix}/`))) return true;
-  if (BLOG_PREFIXES.some(prefix => cleaned === prefix || cleaned.startsWith(`${prefix}/`))) return true;
-  if (INDEXABLE_PILLARS.has(cleaned)) return true;
-  if (INDEXABLE_INFO.has(cleaned)) return true;
-  if (cleaned.startsWith('/tools') || cleaned.startsWith('/breathing') || cleaned.startsWith('/techniques')) {
-    return INDEXABLE_TOOL_ALLOWLIST.has(cleaned);
-  }
-  return false;
+  if (NON_INDEXABLE_PREFIXES.some(prefix => cleaned === prefix || cleaned.startsWith(`${prefix}/`))) return false;
+  return true;
 }
 
 const ukResponse = await fetchText(`${baseUrl}/sitemap-uk.xml`);
