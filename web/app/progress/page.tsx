@@ -1,95 +1,173 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { Activity, Flame, Target, Clock } from 'lucide-react'
-import { getDeviceId } from '@/lib/device-id'
+import { useEffect, useMemo, useState } from 'react'
+import { Activity, Clock, Flame, RefreshCw, Target } from 'lucide-react'
 import Link from 'next/link'
+
 import { Button } from '@/components/ui/button'
 
-interface ProgressData {
-  totalSessions: number
-  totalMinutes: number
-  totalBreaths: number
-  currentStreak: number
-  longestStreak: number
+type RangeKey = '7d' | '30d' | '90d'
+
+type SummaryResponse = {
+  ok: true
+  identity: { kind: 'guest' | 'user' }
+  range: RangeKey
+  totals: {
+    totalEvents: number
+    breathingSessions: number
+    minutesBreathing: number
+    lessonsCompleted: number
+    quizzesCompleted: number
+    focusGardenCompletions: number
+  }
+  streak: { currentStreakDays: number; bestStreakDays: number }
+  dailySeries: Array<{ date: string; count: number; minutesBreathing?: number }>
+  recent: Array<{ id: string; occurredAt: string; type: string; path?: string | null; metadata: unknown }>
+  empty: boolean
 }
 
-interface Session {
-  id: string
-  technique: string
-  label: string
-  minutes: number
-  breaths: number
-  completedAt: string
-  category?: string
+function labelForEventType(type: string): string {
+  switch (type) {
+    case 'breathing_completed':
+      return 'Breathing session completed'
+    case 'lesson_completed':
+      return 'Lesson completed'
+    case 'quiz_completed':
+      return 'Quiz completed'
+    case 'focus_garden_completed':
+      return 'Focus Garden action'
+    case 'challenge_completed':
+      return 'Challenge completed'
+    case 'quest_completed':
+      return 'Quest progress'
+    case 'meditation_completed':
+      return 'Meditation completed'
+    default:
+      return type.replace(/_/g, ' ')
+  }
+}
+
+function formatWhen(iso: string): string {
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return ''
+  return d.toLocaleString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
 }
 
 export default function ProgressPage() {
-  const [progress, setProgress] = useState<ProgressData>({
-    totalSessions: 0,
-    totalMinutes: 0,
-    totalBreaths: 0,
-    currentStreak: 0,
-    longestStreak: 0
-  })
-  const [sessions, setSessions] = useState<Session[]>([])
+  const [range, setRange] = useState<RangeKey>('30d')
+  const [data, setData] = useState<SummaryResponse | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [reloadKey, setReloadKey] = useState(0)
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const deviceId = getDeviceId()
-        
-        // Fetch progress
-        const progressRes = await fetch(`/api/progress?deviceId=${deviceId}`)
-        if (progressRes?.ok) {
-          const data = await progressRes.json()
-          setProgress(data)
-        }
+    let cancelled = false
 
-        // Fetch sessions
-        const sessionsRes = await fetch(`/api/sessions?deviceId=${deviceId}`)
-        if (sessionsRes?.ok) {
-          const data = await sessionsRes.json()
-          setSessions(data?.sessions ?? [])
+    const run = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const res = await fetch(`/api/progress/summary?range=${range}&subject=self`, { cache: 'no-store' })
+        if (!res.ok) {
+          setError('Could not load progress right now.')
+          return
         }
-      } catch (error) {
-        console.error('Failed to fetch progress:', error)
+        const json = (await res.json()) as SummaryResponse | { ok: false }
+        if (cancelled) return
+        if (!('ok' in json) || json.ok !== true) {
+          setError('Could not load progress right now.')
+          return
+        }
+        setData(json)
+      } catch {
+        if (!cancelled) setError('Could not load progress right now.')
       } finally {
-        setLoading(false)
+        if (!cancelled) setLoading(false)
       }
     }
 
-    fetchData()
-  }, [])
+    void run()
+    return () => {
+      cancelled = true
+    }
+  }, [range, reloadKey])
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Loading progress...</p>
-      </div>
-    )
-  }
+  const totals = data?.totals
+  const streak = data?.streak
+
+  const completionCount = useMemo(() => {
+    if (!totals) return 0
+    return (totals.lessonsCompleted ?? 0) + (totals.quizzesCompleted ?? 0) + (totals.focusGardenCompletions ?? 0)
+  }, [totals])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 py-12">
+    <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 py-12">
       <div className="container max-w-6xl mx-auto px-4">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">📊 Progress Dashboard</h1>
-          <p className="text-lg text-gray-600">Track your breathing journey and celebrate your consistency.</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">📊 Progress</h1>
+          <p className="text-lg text-gray-600">See your recent activity and streaks.</p>
         </div>
 
-        {/* Stats Grid */}
+        <div className="flex flex-wrap items-center gap-3 mb-8">
+          <div className="inline-flex rounded-lg bg-white p-1 shadow">
+            {(['7d', '30d', '90d'] as const).map((key) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setRange(key)}
+                className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  range === key ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                {key === '7d' ? '7 days' : key === '90d' ? '90 days' : '30 days'}
+              </button>
+            ))}
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setReloadKey((k) => k + 1)}
+            disabled={loading}
+            className="gap-2"
+          >
+            <RefreshCw className="w-4 h-4" /> Refresh
+          </Button>
+
+          {data?.identity?.kind === 'guest' && (
+            <div className="text-sm text-gray-600">
+              <span className="font-medium">Tip:</span> <Link className="underline" href="/login">Sign in</Link> to sync across devices.
+            </div>
+          )}
+        </div>
+
+        {error && (
+          <div className="bg-white rounded-xl p-6 shadow-lg mb-8">
+            <p className="text-gray-700 mb-4">{error}</p>
+            <Button onClick={() => setReloadKey((k) => k + 1)} variant="outline">Try again</Button>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <div className="bg-white rounded-xl p-6 shadow-lg">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
                 <Activity className="w-5 h-5 text-purple-600" />
               </div>
-              <h3 className="font-semibold text-gray-900">Total Sessions</h3>
+              <h3 className="font-semibold text-gray-900">Breathing Sessions</h3>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{progress?.totalSessions ?? 0}</p>
-            <p className="text-sm text-gray-500 mt-1">Completed sessions</p>
+            {loading ? (
+              <div className="h-9 w-16 bg-gray-100 rounded animate-pulse" />
+            ) : (
+              <p className="text-3xl font-bold text-gray-900">{totals?.breathingSessions ?? 0}</p>
+            )}
+            <p className="text-sm text-gray-500 mt-1">Completed</p>
           </div>
 
           <div className="bg-white rounded-xl p-6 shadow-lg">
@@ -97,9 +175,13 @@ export default function ProgressPage() {
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                 <Clock className="w-5 h-5 text-blue-600" />
               </div>
-              <h3 className="font-semibold text-gray-900">Total Minutes</h3>
+              <h3 className="font-semibold text-gray-900">Breathing Minutes</h3>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{progress?.totalMinutes ?? 0}</p>
+            {loading ? (
+              <div className="h-9 w-16 bg-gray-100 rounded animate-pulse" />
+            ) : (
+              <p className="text-3xl font-bold text-gray-900">{totals?.minutesBreathing ?? 0}</p>
+            )}
             <p className="text-sm text-gray-500 mt-1">Time practiced</p>
           </div>
 
@@ -110,7 +192,11 @@ export default function ProgressPage() {
               </div>
               <h3 className="font-semibold text-gray-900">Current Streak</h3>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{progress?.currentStreak ?? 0}</p>
+            {loading ? (
+              <div className="h-9 w-16 bg-gray-100 rounded animate-pulse" />
+            ) : (
+              <p className="text-3xl font-bold text-gray-900">{streak?.currentStreakDays ?? 0}</p>
+            )}
             <p className="text-sm text-gray-500 mt-1">Days in a row</p>
           </div>
 
@@ -119,70 +205,71 @@ export default function ProgressPage() {
               <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                 <Target className="w-5 h-5 text-green-600" />
               </div>
-              <h3 className="font-semibold text-gray-900">Longest Streak</h3>
+              <h3 className="font-semibold text-gray-900">Completions</h3>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{progress?.longestStreak ?? 0}</p>
-            <p className="text-sm text-gray-500 mt-1">Best streak</p>
+            {loading ? (
+              <div className="h-9 w-16 bg-gray-100 rounded animate-pulse" />
+            ) : (
+              <p className="text-3xl font-bold text-gray-900">{completionCount}</p>
+            )}
+            <p className="text-sm text-gray-500 mt-1">Lessons • quizzes • Focus Garden</p>
           </div>
         </div>
 
-        {/* Recent Sessions */}
         <div className="bg-white rounded-xl p-8 shadow-lg mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Sessions</h2>
-          {sessions?.length === 0 ? (
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Activity</h2>
+
+          {!loading && data?.empty ? (
             <div className="text-center py-12">
-              <p className="text-gray-500 mb-4">No sessions logged yet.</p>
-              <Button asChild>
-                <Link href="/">Start Your First Session</Link>
-              </Button>
+              <p className="text-gray-500 mb-4">No activity yet for this range.</p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Button asChild>
+                  <Link href="/tools/breath-tools">Start a breathing session</Link>
+                </Button>
+                <Button asChild variant="outline">
+                  <Link href="/breathing/training/focus-garden">Try Focus Garden</Link>
+                </Button>
+              </div>
             </div>
           ) : (
             <div className="space-y-4">
-              {sessions?.slice(0, 10)?.map((session) => (
-                <div
-                  key={session?.id}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <div className="flex-1">
-                    <h3 className="font-medium text-gray-900">{session?.label ?? 'Session'}</h3>
-                    <p className="text-sm text-gray-500">
-                      {new Date(session?.completedAt ?? '').toLocaleDateString('en-GB', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-6 text-sm">
-                    <div className="text-right">
-                      <p className="font-medium text-gray-900">{session?.minutes ?? 0} min</p>
-                      <p className="text-gray-500">Duration</p>
+              {(loading ? Array.from({ length: 6 }) : (data?.recent ?? [])).map((item, idx) => {
+                if (loading) {
+                  return (
+                    <div key={idx} className="p-4 bg-gray-50 rounded-lg">
+                      <div className="h-4 w-56 bg-gray-100 rounded animate-pulse mb-2" />
+                      <div className="h-3 w-40 bg-gray-100 rounded animate-pulse" />
                     </div>
-                    <div className="text-right">
-                      <p className="font-medium text-gray-900">{session?.breaths ?? 0}</p>
-                      <p className="text-gray-500">Breaths</p>
+                  )
+                }
+
+                const e = item as SummaryResponse['recent'][number]
+                return (
+                  <div key={e.id} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="font-medium text-gray-900">{labelForEventType(e.type)}</p>
+                        <p className="text-sm text-gray-500">{formatWhen(e.occurredAt)}</p>
+                      </div>
+                      {e.type === 'breathing_completed' && (
+                        <span className="text-xs font-medium text-purple-700 bg-purple-100 px-3 py-1 rounded-full">
+                          Breathing
+                        </span>
+                      )}
                     </div>
-                    {session?.category && (
-                      <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
-                        {session.category}
-                      </span>
-                    )}
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>
 
-        {/* Actions */}
         <div className="flex justify-center gap-4">
           <Button asChild size="lg" className="bg-purple-600 hover:bg-purple-700">
             <Link href="/">Continue Practice</Link>
           </Button>
           <Button asChild size="lg" variant="outline">
-            <Link href="/rewards">View Rewards & Badges</Link>
+            <Link href="/settings">Progress Settings</Link>
           </Button>
         </div>
       </div>

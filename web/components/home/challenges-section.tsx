@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { getDeviceId } from '@/lib/device-id'
+import { trackProgress } from '@/lib/progress/track'
 import { challengeDefinitions } from '@/lib/challenge-definitions'
 import { toast } from 'sonner'
 import ChallengeTutorial from './challenge-tutorial'
@@ -143,6 +144,16 @@ export default function ChallengesSection() {
         })
       })
 
+      void trackProgress({
+        type: 'breathing_completed',
+        metadata: {
+          techniqueId: def?.recommendedTechnique ?? 'box-4444',
+          durationSeconds: Math.max(0, Math.round((def?.minutes ?? 3) * 60)),
+          category: def?.category ?? 'calm',
+        },
+        path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+      })
+
       // Update challenge
       const response = await fetch('/api/challenges', {
         method: 'POST',
@@ -157,6 +168,12 @@ export default function ChallengesSection() {
       })
 
       if (response?.ok) {
+        void trackProgress({
+          type: 'challenge_completed',
+          metadata: { challengeKey, category: def?.category ?? 'calm' },
+          path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+        })
+
         toast.success('✅ Challenge progress updated!')
         fetchChallenges()
       }

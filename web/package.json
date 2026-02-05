@@ -62,6 +62,7 @@
     "audit:conversion-trust": "tsx scripts/audits/conversion-trust-audit.ts",
     "audit:growth-hubs": "tsx scripts/growth/hub-audit.ts",
     "audit:quality-gates": "tsx scripts/audits/quality-gates.ts",
+    "progress:sanity": "tsx scripts/progress-sanity.ts",
     "printables:validate": "tsx scripts/printables/validate.mjs",
     "glossary:validate": "tsx scripts/glossary/validate.mjs",
     "editorial:validate": "node scripts/editorial/validate.mjs",

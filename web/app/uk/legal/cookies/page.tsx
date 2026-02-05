@@ -98,7 +98,7 @@ export default function UKCookiesPage() {
         <ul>
           <li><strong>nb_progress_v1</strong> (localStorage) — Saves completed activities (e.g. techniques, lessons, quizzes) on this device</li>
           <li><strong>nb_progress_consent</strong> (Cookie, HttpOnly) — Records whether you have opted in to progress saving/backups</li>
-          <li><strong>nb_device_id</strong> (Cookie, HttpOnly) — Random device identifier created only after you opt in (used for guest backups and later merge)</li>
+          <li><strong>nb_device_id</strong> (Cookie, HttpOnly) — Random device identifier used to remember progress on this device (and to merge progress when you sign in)</li>
           <li><strong>nb_guest_progress</strong> (localStorage) — Saves breathing session history, streaks, and badges locally (legacy)
           </li>
           <li><strong>nb_device_profiles</strong> (localStorage) — Stores onboarding profiles and device-specific preferences</li>

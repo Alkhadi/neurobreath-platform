@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { ArrowLeft, ChevronUp } from 'lucide-react'
 import { toast } from 'sonner'
 import { getDeviceId } from '@/lib/device-id'
+import { trackProgress } from '@/lib/progress/track'
 
 const rungs = [
   { level: 1, pattern: '3-3-3-3', duration: 12 },
@@ -37,6 +38,12 @@ export default function BreathLadderPage() {
           rounds: 0,
           category: 'calm'
         })
+      })
+
+      void trackProgress({
+        type: 'breathing_completed',
+        metadata: { techniqueId: 'ladder', durationSeconds: 120, category: 'calm' },
+        path: typeof window !== 'undefined' ? window.location.pathname : undefined,
       })
 
       setCompletedRungs(prev => [...prev, currentRung])

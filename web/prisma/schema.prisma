@@ -484,8 +484,47 @@ model AuthUser {
   accounts           Account[]
   sessions           AuthSession[]
   universalProgressEvents UniversalProgressEvent[]
+  progressEvents          ProgressEvent[]
+  userDevices             UserDevice[]
 
   @@index([primaryDeviceId])
+}
+
+// ============================================================================
+// APPEND-ONLY PROGRESS EVENT STREAM (DEVICE + USER)
+// ============================================================================
+
+model ProgressEvent {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  occurredAt DateTime @default(now())
+  type       String
+
+  userId   String?
+  user     AuthUser? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deviceId String
+
+  // Future-proofing: parent/teacher views can later write events for a subject profile
+  // (e.g. child learner). For now, the API forces subjectId to the signed-in user id
+  // ("self") or null for anonymous events.
+  subjectId String?
+
+  path     String?
+  metadata Json
+
+  @@index([userId, occurredAt])
+  @@index([deviceId, occurredAt])
+  @@index([subjectId, occurredAt])
+  @@index([type, occurredAt])
+}
+
+model UserDevice {
+  deviceId    String   @id
+  userId      String
+  user        AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstSeenAt DateTime @default(now())
+  lastSeenAt  DateTime @default(now())
+
+  @@index([userId, lastSeenAt])
 }
 
 // ============================================================================

@@ -6,6 +6,7 @@ import { Volume2, VolumeX, Play, Pause, RotateCcw, Square, Settings, Music, Head
 import { calculateRoundsForMinutes, getTechniqueById } from '@/lib/breathing-data'
 import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS'
 import { getDeviceId } from '@/lib/device-id'
+import { trackProgress } from '@/lib/progress/track'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import BreathingSession from './breathing-session'
@@ -269,6 +270,17 @@ export default function DailyPracticePlayer() {
             category: selectedTechnique?.category ?? 'calm'
           })
         })
+
+        void trackProgress({
+          type: 'breathing_completed',
+          metadata: {
+            techniqueId: technique,
+            durationSeconds: Math.max(0, Math.round(minutes * 60)),
+            category: selectedTechnique?.category ?? 'calm',
+          },
+          path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+        })
+
         toast.success('✅ Session completed and logged!')
       } catch (error) {
         console.error('Failed to log session:', error)

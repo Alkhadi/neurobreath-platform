@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { getSession } from 'next-auth/react'
 
 import { useConsent } from '@/lib/consent/useConsent'
+import { trackProgress } from '@/lib/progress/track'
 import { ProgressConsentModal } from '@/components/progress/ProgressConsentModal'
 
 export type UniversalProgressActivityType = 'lesson' | 'module' | 'session' | 'quiz' | 'challenge' | 'technique'
@@ -292,6 +293,40 @@ export function UniversalProgressProvider({ children }: { children: React.ReactN
       if (res.status === 403) {
         openConsentModalFor({ activityType, activityId, meta })
         return
+      }
+
+      if (res.ok) {
+        const path = typeof window !== 'undefined' ? window.location.pathname : undefined
+        if (activityType === 'lesson') {
+          void trackProgress({
+            type: 'lesson_completed',
+            metadata: {
+              lessonId: activityId,
+              ...(typeof meta?.durationSeconds === 'number' ? { durationSeconds: meta.durationSeconds } : {}),
+            },
+            path,
+          })
+        } else if (activityType === 'quiz') {
+          void trackProgress({
+            type: 'quiz_completed',
+            metadata: {
+              quizId: activityId,
+              ...(typeof meta?.score === 'number' ? { score: meta.score } : {}),
+            },
+            path,
+          })
+        } else if (activityType === 'challenge') {
+          void trackProgress({ type: 'challenge_completed', metadata: { challengeId: activityId }, path })
+        } else if (activityType === 'technique') {
+          void trackProgress({
+            type: 'breathing_completed',
+            metadata: {
+              techniqueId: activityId,
+              ...(typeof meta?.durationSeconds === 'number' ? { durationSeconds: meta.durationSeconds } : {}),
+            },
+            path,
+          })
+        }
       }
     },
     [openConsentModalFor]

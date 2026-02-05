@@ -77,7 +77,7 @@ test.describe('Universal progress (guest)', () => {
     await page.getByRole('button', { name: 'Continue without saving' }).click()
     await expect(page.getByRole('heading', { name: 'Save your progress?' })).toHaveCount(0)
 
-    await expect.poll(async () => await hasCookie(page, 'nb_device_id')).toBeFalsy()
+    await expect.poll(async () => await hasCookie(page, 'nb_device_id')).toBeTruthy()
 
     await page.reload()
     await completeMuscleRelaxationViaSkips(page)
@@ -114,7 +114,7 @@ test.describe('Universal progress (guest)', () => {
     await expect(page.getByRole('heading', { name: 'Save your progress?' })).toBeVisible()
     await page.getByRole('button', { name: 'Continue without saving' }).click()
 
-    await expect.poll(async () => await hasCookie(page, 'nb_device_id')).toBeFalsy()
+    await expect.poll(async () => await hasCookie(page, 'nb_device_id')).toBeTruthy()
 
     await page.reload()
     await completeMuscleRelaxationViaSkips(page)

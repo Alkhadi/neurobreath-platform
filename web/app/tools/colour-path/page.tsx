@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { ArrowLeft, Play, Pause, Square } from 'lucide-react'
 import { toast } from 'sonner'
 import { getDeviceId } from '@/lib/device-id'
+import { trackProgress } from '@/lib/progress/track'
 
 const phases = [
   { name: 'Inhale', duration: 4, color: '#60B5FF' },
@@ -59,6 +60,17 @@ export default function ColourPathPage() {
             category: 'calm'
           })
         })
+
+        void trackProgress({
+          type: 'breathing_completed',
+          metadata: {
+            techniqueId: 'colourPath',
+            durationSeconds: Math.max(0, Math.round(breathCount * 16)),
+            category: 'calm',
+          },
+          path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+        })
+
         toast.success('✅ Session logged successfully!')
       } catch (error) {
         console.error('Failed to log session:', error)

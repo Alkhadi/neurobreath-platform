@@ -2,6 +2,8 @@
 // Centralized state management for Focus Garden gamification features
 // Including: Streak Freezes, Garden Levels, Multi-day Quests, Enhanced Badges, Virtual Companion
 
+import { trackProgress } from '@/lib/progress/track'
+
 const STORAGE_KEY = 'nb:focus-garden:v2:progress';
 
 const LONDON_TIMEZONE = 'Europe/London';
@@ -1225,6 +1227,12 @@ export function completeQuestDay(questId: string, dayNumber: number): { success:
 
   saveFocusGardenProgress(progress);
 
+  void trackProgress({
+    type: 'quest_completed',
+    metadata: { questId, dayNumber, xpEarned: day.xpReward + (questCompleted ? quest.xpReward : 0) },
+    path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+  });
+
   return {
     success: true,
     questCompleted,
@@ -1366,6 +1374,12 @@ export function waterPlant(plantId: string): { plant: FocusGardenPlant | null; x
   checkAndAwardBadges(progress);
   saveFocusGardenProgress(progress);
 
+  void trackProgress({
+    type: 'focus_garden_completed',
+    metadata: { action: 'water', plantId, category: plant.category, xpEarned, bloomed },
+    path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+  });
+
   return { plant, xpEarned, bloomed };
 }
 
@@ -1400,6 +1414,12 @@ export function harvestPlant(plantId: string): { success: boolean; xpEarned: num
   checkAndAwardBadges(progress);
 
   saveFocusGardenProgress(progress);
+
+  void trackProgress({
+    type: 'focus_garden_completed',
+    metadata: { action: 'harvest', plantId, category: plant.category, xpEarned },
+    path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+  });
 
   return { success: true, xpEarned };
 }

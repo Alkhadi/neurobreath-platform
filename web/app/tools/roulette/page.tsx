@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { ArrowLeft, Shuffle } from 'lucide-react'
 import { toast } from 'sonner'
 import { getDeviceId } from '@/lib/device-id'
+import { trackProgress } from '@/lib/progress/track'
 import { breathingTechniques } from '@/lib/breathing-data'
 
 const techniques = Object.values(breathingTechniques)
@@ -43,6 +44,17 @@ export default function RoulettePage() {
           category: 'transition'
         })
       })
+
+      void trackProgress({
+        type: 'breathing_completed',
+        metadata: {
+          techniqueId: selectedTechnique.id,
+          durationSeconds: 60,
+          category: 'transition',
+        },
+        path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+      })
+
       toast.success('✅ Reset logged successfully!')
     } catch (error) {
       console.error('Failed to log session:', error)
