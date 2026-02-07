@@ -535,7 +535,6 @@
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   }
 
-  /* Global responsive guardrails - prevent horizontal overflow */
   html {
     font-family: var(--font-sans);
     /* Target ranges: mobile ~16.5–17px, tablet 17–18px, desktop 18px */
@@ -543,7 +542,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    overflow-x: hidden;
   }
 
   body {
@@ -551,37 +549,6 @@
     font-weight: 400;
     line-height: 1.6;
     letter-spacing: -0.011em;
-    min-width: 0;
-  }
-
-  /* Content overflow safety (prevents accidental page-level horizontal scroll)
-     - Media should never exceed container width
-     - Long URLs / unbroken strings should wrap
-     - Preformatted blocks and tables should scroll within themselves
-  */
-  :where(img, video, canvas, svg, iframe) {
-    max-width: 100%;
-  }
-
-  :where(pre) {
-    max-width: 100%;
-    overflow-x: auto;
-  }
-
-  :where(a, code) {
-    overflow-wrap: anywhere;
-    word-break: break-word;
-  }
-
-  :where(.prose table) {
-    display: block;
-    max-width: 100%;
-    overflow-x: auto;
-  }
-
-  /* Ensure main containers can shrink */
-  main {
-    min-width: 0;
   }
 
   /* Headings - ChatGPT-style hierarchy (+4% increase) */
