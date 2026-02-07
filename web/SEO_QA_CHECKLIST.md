@@ -8,6 +8,134 @@ Use this checklist to systematically verify SEO implementation across the NeuroB
 
 ---
 
+## ✅ Post-Deployment Verification (Production)
+
+Use this section after deploying to confirm (a) crawlers can discover + index NeuroBreath, (b) mobile usability isn’t blocking ranking, and (c) technical SEO signals are clean.
+
+### 1) Confirm crawl entry points (must-pass)
+
+- [ ] <https://neurobreath.co.uk/robots.txt> loads (200) and does not block important routes
+- [ ] <https://neurobreath.co.uk/sitemap.xml> loads (200)
+- [ ] If sitemap is an index: it references the locale sitemaps:
+	- [ ] <https://neurobreath.co.uk/sitemap-uk.xml>
+	- [ ] <https://neurobreath.co.uk/sitemap-us.xml>
+- [ ] Sitemap URLs are canonical (no localhost / preview domains)
+- [ ] Sample sitemap URLs return 200 when opened
+
+Quick terminal checks:
+
+```bash
+curl -sSI https://neurobreath.co.uk/robots.txt | tr -d '\r' | egrep -i 'HTTP/|content-type'
+curl -sS  https://neurobreath.co.uk/robots.txt | sed -n '1,120p'
+
+curl -sSI https://neurobreath.co.uk/sitemap.xml | tr -d '\r' | egrep -i 'HTTP/|content-type'
+curl -sS  https://neurobreath.co.uk/sitemap.xml | sed -n '1,40p'
+```
+
+### 2) Verify viewport + mobile rendering (Fold issues often start here)
+
+- [ ] On Samsung Fold 5 (cover + unfolded): Chrome “Desktop site” is OFF
+- [ ] Page does not look zoomed-out / tiny text
+- [ ] No horizontal scroll on key pages
+
+Technical confirmation (desktop DevTools):
+
+- [ ] `<meta name="viewport" content="width=device-width, initial-scale=1">` (or App Router `viewport` config) is present
+- [ ] Handset breakpoints behave like phone under 768px, and 640–767px stays single-column
+
+### 3) Verify canonical + indexing headers on key pages
+
+Check these pages at minimum:
+
+- [ ] Home: <https://neurobreath.co.uk/>
+- [ ] UK home: <https://neurobreath.co.uk/uk>
+- [ ] Conditions overview: <https://neurobreath.co.uk/uk/conditions>
+- [ ] Autism hub: <https://neurobreath.co.uk/autism>
+- [ ] ADHD hub: <https://neurobreath.co.uk/adhd>
+- [ ] Dyslexia reading training: <https://neurobreath.co.uk/dyslexia-reading-training>
+- [ ] Anxiety tools: <https://neurobreath.co.uk/tools/anxiety-tools>
+- [ ] Stress tools: <https://neurobreath.co.uk/tools/stress-tools>
+- [ ] Sleep: <https://neurobreath.co.uk/sleep>
+- [ ] Depression guide: <https://neurobreath.co.uk/conditions/depression>
+
+Pass criteria:
+
+- [ ] HTTP 200
+- [ ] No `x-robots-tag: noindex`
+- [ ] Canonical points to the correct final URL (not staging)
+
+Quick header checks:
+
+```bash
+curl -sSI https://neurobreath.co.uk/ | tr -d '\r' | egrep -i 'HTTP/|x-robots-tag|location|cache-control|content-type'
+curl -sSI https://neurobreath.co.uk/uk/conditions | tr -d '\r' | egrep -i 'HTTP/|x-robots-tag|location|cache-control|content-type'
+```
+
+### 4) Google Search Console (recommended)
+
+- [ ] Add property (domain property if you control DNS)
+- [ ] Verify ownership
+- [ ] Submit sitemap URL(s)
+- [ ] URL Inspection → “Test live URL” → request indexing for top pages
+
+### 5) Fix internal 404s (silent visibility killer)
+
+Before deploy (local automated gate):
+
+- [ ] Run `cd web && yarn links:verify` (writes `reports/links-verification.json`)
+
+After deploy (spot-check in prod):
+
+- [ ] Conditions overview pages do not surface links that 404
+- [ ] Footer/nav links all return 200
+
+### 6) Mobile usability checks (ranking + retention)
+
+Test key pages at widths:
+
+- [ ] 360–390px (small phones)
+- [ ] 640–767px (large phones)
+- [ ] 768px+ (tablet baseline)
+
+Pass criteria:
+
+- [ ] No horizontal scroll
+- [ ] Text readable without zoom
+- [ ] Tap targets not too small
+- [ ] Single-column where required
+
+### 7) Core Web Vitals validation
+
+- [ ] Google PageSpeed Insights (mobile) on key pages
+- [ ] Chrome Lighthouse (mobile profile)
+
+Pass criteria:
+
+- [ ] No severe LCP/INP/CLS regressions, especially on mobile
+- [ ] Fonts don’t cause noticeable layout shifts
+
+### 8) Structured data validation
+
+- [ ] Run Google Rich Results Test: <https://search.google.com/test/rich-results>
+- [ ] Organization + WebSite schema present
+- [ ] Breadcrumb schema present on hubs/guides where expected
+
+Pass criteria:
+
+- [ ] No critical structured data errors
+- [ ] Schema matches real content (no overclaims)
+
+### 9) Titles + descriptions are unique and intent-focused
+
+- [ ] Each major page has a distinct `<title>`
+- [ ] Meta descriptions are unique (not boilerplate everywhere)
+- [ ] One clear H1 aligned to page intent
+
+### 10) Expand beyond Google (optional)
+
+- [ ] Register with Bing Webmaster Tools
+- [ ] Submit sitemap there as well
+
 ## 🌐 Technical Endpoints
 
 ### Sitemap.xml
