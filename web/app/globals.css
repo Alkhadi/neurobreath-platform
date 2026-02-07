@@ -526,6 +526,22 @@
  
 @layer base {
   html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    font-weight: 400;
+  }
+
+  /* Mobile-only: +40% text size (16px → 22.4px base) using clamp */
+  @media (max-width: 767px) {
+    html {
+      font-size: clamp(22.4px, 6.5vw, 24px);
+    }
+    body {
+      line-height: 1.6;
+    }
   }
 
   /* Override Tailwind's vendor-prefixed properties with standard versions */
@@ -623,6 +639,34 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Mobile-only: Force all multi-column grids to single column (<768px) */
+@layer utilities {
+  @media (max-width: 767px) {
+    .grid[class*="grid-cols-2"],
+    .grid[class*="grid-cols-3"],
+    .grid[class*="grid-cols-4"] {
+      grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    }
+
+    /* Prevent horizontal scroll on mobile */
+    * {
+      min-width: 0;
+    }
+
+    /* Ensure text wraps properly */
+    p, span, div, li, td, th {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    /* Ensure media doesn't overflow */
+    img, video, canvas, svg {
+      max-width: 100%;
+      height: auto;
+    }
   }
 }
 @layer components {
