@@ -50,6 +50,8 @@ export function UniversalProgressProvider({ children }: { children: React.ReactN
   const { consent, updateConsent } = useConsent()
   const functionalEnabled = !!consent.functional
 
+  const storeRef = useRef<UniversalProgressStore>({})
+
   const [serverProgressConsent, setServerProgressConsent] = useState<{ value: '1' | '0' | null; granted: boolean }>(() => {
     if (typeof window === 'undefined') return { value: null, granted: false }
     try {
@@ -67,6 +69,10 @@ export function UniversalProgressProvider({ children }: { children: React.ReactN
     if (!savingEnabled) return {}
     return normaliseStore(safeParse<UniversalProgressStore>(localStorage.getItem(STORAGE_KEY)))
   })
+
+  useEffect(() => {
+    storeRef.current = store
+  }, [store])
 
   const mergeAttemptedRef = useRef(false)
 
@@ -420,6 +426,16 @@ export function UniversalProgressProvider({ children }: { children: React.ReactN
     }).catch(() => null)
 
     setServerProgressConsent({ value: '1', granted: true })
+
+    // Ensure progress is immediately persisted for the current page load,
+    // so a fast reload still shows completed state.
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(storeRef.current))
+      } catch {
+        // ignore
+      }
+    }
 
     const pending = pendingEventRef.current
     pendingEventRef.current = null

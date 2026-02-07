@@ -32,7 +32,7 @@ export default function ProgressCard({ statItems }: ProgressCardProps) {
       aria-label="Your breathing practice progress"
     >
       <h3 className="font-semibold text-gray-900 mb-6 text-center">Your Progress</h3>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {statItems.map((item, index) => (
           <StatItem
             key={index}

@@ -39,7 +39,7 @@ export default function SourcesSection() {
           </p>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
             {FEATURED_RESOURCES.map(resource => (
               <a
                 key={resource.url}
@@ -74,7 +74,7 @@ export default function SourcesSection() {
 
           <div className="mt-6 pt-6 border-t">
             <h3 className="font-semibold mb-3 text-sm">External Links</h3>
-            <div className="grid sm:grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <a
                 href="https://www.nice.org.uk/guidance/ng87"
                 target="_blank"

@@ -61,6 +61,31 @@
   background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--primary) / 0.7));
 }
 
+/* Preset fills (no inline styles) */
+.nb-progress--focus::-webkit-progress-value {
+  background: linear-gradient(to right, #22c55e, #059669);
+}
+
+.nb-progress--focus::-moz-progress-bar {
+  background: linear-gradient(to right, #22c55e, #059669);
+}
+
+.nb-progress--short::-webkit-progress-value {
+  background: linear-gradient(to right, #3b82f6, #0891b2);
+}
+
+.nb-progress--short::-moz-progress-bar {
+  background: linear-gradient(to right, #3b82f6, #0891b2);
+}
+
+.nb-progress--long::-webkit-progress-value {
+  background: linear-gradient(to right, #a855f7, #db2777);
+}
+
+.nb-progress--long::-moz-progress-bar {
+  background: linear-gradient(to right, #a855f7, #db2777);
+}
+
 /* =========================================================================
    COMPANION BREATHING TRANSITION DURATIONS (NO INLINE STYLES)
    ========================================================================= */
@@ -472,6 +497,25 @@
     max-width: none !important;
     width: 100% !important;
   }
+
+  /* Mobile readability guardrails:
+     - Ensure Tailwind `text-xs` and explicit pixel text sizes are not tiny on phones.
+     - Only applies on small screens to avoid unintended desktop UI changes.
+  */
+  @media (max-width: 640px) {
+    .text-xs {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+
+    .text-\[12px\],
+    .text-\[11px\],
+    .text-\[10px\],
+    .text-\[9px\] {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+  }
 }
  
 @layer base {
@@ -488,7 +532,8 @@
   /* Global responsive guardrails - prevent horizontal overflow */
   html {
     font-family: var(--font-sans);
-    font-size: 16.64px;
+    /* Target ranges: mobile ~16.5–17px, tablet 17–18px, desktop 18px */
+    font-size: clamp(16.5px, 16px + 0.25vw, 18px);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -500,8 +545,32 @@
     font-weight: 400;
     line-height: 1.6;
     letter-spacing: -0.011em;
-    overflow-x: hidden;
     min-width: 0;
+  }
+
+  /* Content overflow safety (prevents accidental page-level horizontal scroll)
+     - Media should never exceed container width
+     - Long URLs / unbroken strings should wrap
+     - Preformatted blocks and tables should scroll within themselves
+  */
+  :where(img, video, canvas, svg, iframe) {
+    max-width: 100%;
+  }
+
+  :where(pre) {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  :where(a, code) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  :where(.prose table) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
   }
 
   /* Ensure main containers can shrink */
