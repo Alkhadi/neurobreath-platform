@@ -31,6 +31,18 @@ export async function generateMetadata({ params }: RegionConditionsProps): Promi
     description:
       'Educational support across neurodivergent conditions and related support areas, with practical tools and guides.',
     path,
+    keywords: [
+      'neurodiversity conditions support',
+      'autism support resources UK',
+      'ADHD focus tools breathing',
+      'dyslexia reading training tools',
+      'anxiety toolkit breathing exercises',
+      'stress management breathing tools',
+      'sleep support tools insomnia',
+      'depression support guide breathing',
+      'teacher parent carer support autism',
+      'SEN SEND wellbeing resources',
+    ],
   });
 
   return {

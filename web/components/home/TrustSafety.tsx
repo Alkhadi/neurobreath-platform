@@ -27,7 +27,7 @@ export function TrustSafety({
 	return (
 		<div className="grid gap-6 lg:grid-cols-12">
 			<div className="lg:col-span-7">
-				<div className="grid gap-4 sm:grid-cols-2">
+				<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 					{cards.map(card => (
 						<Card key={card.title} className="rounded-2xl border-border/60 bg-card shadow-sm">
 							<CardContent className="p-6">

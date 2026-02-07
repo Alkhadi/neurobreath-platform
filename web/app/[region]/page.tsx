@@ -34,6 +34,18 @@ export async function generateMetadata({ params }: RegionHomePageProps): Promise
 		title: SITE_CONFIG.defaultTitle,
 		description: copy.metaDescription,
 		path,
+		keywords: [
+			'neurodiversity breathing tools',
+			'breathing exercises for anxiety UK',
+			'focus training breathing techniques',
+			'autism ADHD dyslexia support hub',
+			'calm down breathing 60 seconds',
+			'mindfulness breathing app free',
+			'nervous system regulation exercises',
+			'stress relief breathing techniques',
+			'sleep breathing for insomnia',
+			'neurodiversity wellbeing tools',
+		],
 	});
 
 	return {
