@@ -129,7 +129,7 @@ export default function StressPage() {
 
           <Tabs defaultValue="breathing" className="w-full">
             <div className="overflow-x-auto pb-4">
-              <TabsList className="inline-flex w-auto min-w-full justify-start">
+              <TabsList className="inline-flex w-auto min-w-full justify-start gap-2 flex-wrap">
                 <TabsTrigger value="breathing" className="flex-shrink-0">
                   <Zap className="h-4 w-4 mr-2" />
                   Breathing
