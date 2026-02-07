@@ -17,8 +17,8 @@ Use this section after deploying to confirm (a) crawlers can discover + index Ne
 - [ ] <https://neurobreath.co.uk/robots.txt> loads (200) and does not block important routes
 - [ ] <https://neurobreath.co.uk/sitemap.xml> loads (200)
 - [ ] If sitemap is an index: it references the locale sitemaps:
-	- [ ] <https://neurobreath.co.uk/sitemap-uk.xml>
-	- [ ] <https://neurobreath.co.uk/sitemap-us.xml>
+  - [ ] <https://neurobreath.co.uk/sitemap-uk.xml>
+  - [ ] <https://neurobreath.co.uk/sitemap-us.xml>
 - [ ] Sitemap URLs are canonical (no localhost / preview domains)
 - [ ] Sample sitemap URLs return 200 when opened
 
