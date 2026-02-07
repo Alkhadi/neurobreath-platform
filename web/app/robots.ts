@@ -23,8 +23,6 @@ export default function robots(): MetadataRoute.Robots {
           '/send-report/',
           '/settings',
           '/my-plan',
-          '/_next/',
-          '/static/',
         ],
       },
       // Allow Google to crawl everything except private areas
