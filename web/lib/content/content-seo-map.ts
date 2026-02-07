@@ -488,6 +488,74 @@ export const PILLARS: Pillar[] = [
           { question: 'Where can I find more resources?', answer: 'Use school support pages and evidence-based resources.' },
         ],
       },
+      {
+        slug: 'focus-test-anxiety',
+        title: 'Focus & test anxiety support',
+        description: 'Practical strategies for managing focus and anxiety during tests and exams.',
+        h1: 'Focus and test anxiety: what helps',
+        intro: [
+          'Test anxiety combines worry, physical tension, and focus challenges.',
+          'This guide offers practical steps for before, during, and after tests.',
+        ],
+        sections: [
+          {
+            heading: 'What test anxiety feels like',
+            body: [
+              'Worry about performance, fear of failure, or going blank.',
+              'Physical symptoms: racing heart, sweating, nausea, or muscle tension.',
+              'Difficulty concentrating, reading questions, or recalling information.',
+            ],
+          },
+          {
+            heading: 'Before the test',
+            body: [
+              'Use short study sprints (15-20 mins) with breaks to avoid burnout.',
+              'Practice breathing exercises daily to build a calm routine.',
+              'Sleep well the night before and eat a steady meal.',
+              'Prepare materials in advance to reduce morning stress.',
+            ],
+          },
+          {
+            heading: 'During the test',
+            body: [
+              'Start with slow breathing: breathe out for 6 counts, repeat 3 times.',
+              'Read instructions carefully and mark questions you know first.',
+              'If panic rises, pause, breathe, and return when steadier.',
+              'Use grounding: press feet to floor, notice your surroundings.',
+            ],
+          },
+          {
+            heading: 'After the test',
+            body: [
+              'Acknowledge the effort, regardless of outcome.',
+              'Use a short reset routine: breathe, move, and drink water.',
+              'Avoid dwelling on mistakes; focus on recovery and next steps.',
+            ],
+          },
+          {
+            heading: 'When to seek help',
+            body: [
+              'If test anxiety is severe or avoiding exams entirely.',
+              'Contact your school, college, or GP for assessment and support options.',
+              'Reasonable adjustments (extra time, breaks) may be available.',
+            ],
+          },
+          {
+            heading: 'Sources',
+            body: [
+              'NHS: Exam stress guidance (www.nhs.uk)',
+              'YoungMinds: Exam stress support (www.youngminds.org.uk)',
+            ],
+          },
+        ],
+        tryNow: tools.focusTraining,
+        siblingSlugs: ['adhd-focus-basics', 'focus-sprints', 'distraction-reset'],
+        miniFaqs: [
+          { question: 'Is test anxiety normal?', answer: 'Yes, many people experience it. Support can help.' },
+          { question: 'Can breathing help during a test?', answer: 'Yes, slow breathing can reduce physical arousal and improve focus.' },
+          { question: 'Should I ask for accommodations?', answer: 'Yes, if anxiety significantly affects performance.' },
+        ],
+      },
     ],
     faqs: [
       { question: 'Do I need a diagnosis to use these guides?', answer: 'No. The guidance is educational and can help many people.' },
@@ -715,6 +783,183 @@ export const PILLARS: Pillar[] = [
           { question: 'Is this a diagnosis?', answer: 'No. It is general guidance only.' },
           { question: 'What if I am unsure?', answer: 'It is okay to ask your GP for advice.' },
           { question: 'Can I use tools while waiting for support?', answer: 'Yes, gentle self-help can be useful alongside professional care.' },
+        ],
+      },
+      {
+        slug: 'stress-general-anxiety',
+        title: 'Stress & general anxiety support',
+        description: 'Evidence-based guidance for managing everyday stress and general anxiety.',
+        h1: 'Managing stress and general anxiety',
+        intro: [
+          'Stress and generalised anxiety are common experiences that can affect daily life.',
+          'This guide offers practical steps for regulation, not diagnosis or medical advice.',
+        ],
+        sections: [
+          {
+            heading: 'What it is',
+            body: [
+              'General anxiety involves persistent worry that feels hard to control.',
+              'Physical signs may include restlessness, tension, fatigue, or difficulty sleeping.',
+              'Stress is the body\'s response to demands; it becomes problematic when chronic.',
+            ],
+          },
+          {
+            heading: 'Common signs',
+            body: [
+              'Feeling on edge, muscle tension, racing thoughts, or difficulty relaxing.',
+              'Avoiding situations, changes in sleep or appetite, or irritability.',
+              'Physical sensations like headaches, rapid heartbeat, or shallow breathing.',
+            ],
+          },
+          {
+            heading: 'What can help right now',
+            body: [
+              'Use slow breathing exercises to reduce physical tension.',
+              'Try the 5-4-3-2-1 grounding technique to bring attention to the present.',
+              'Take short breaks for movement or a change of environment.',
+              'Write down worries to externalise them and reduce mental loops.',
+            ],
+          },
+          {
+            heading: 'When to seek help',
+            body: [
+              'If anxiety is persistent, severe, or affecting daily functioning.',
+              'When self-help strategies are not enough or symptoms worsen.',
+              'Contact your GP for professional assessment and support options.',
+            ],
+          },
+          {
+            heading: 'Sources',
+            body: [
+              'NHS: Generalised anxiety disorder in adults (www.nhs.uk/mental-health/conditions/generalised-anxiety-disorder)',
+              'NICE: Generalised anxiety disorder and panic disorder in adults (www.nice.org.uk)',
+            ],
+          },
+        ],
+        tryNow: tools.stressTools,
+        siblingSlugs: ['panic-symptoms', 'breathing-for-anxiety', 'stress-reset-routine'],
+        miniFaqs: [
+          { question: 'Is this medical advice?', answer: 'No. This is educational information only.' },
+          { question: 'Can breathing really help anxiety?', answer: 'Controlled breathing can reduce physical arousal and support calm.' },
+          { question: 'When should I see a GP?', answer: 'If anxiety is persistent or interfering with daily life.' },
+        ],
+      },
+      {
+        slug: 'panic-symptoms',
+        title: 'Understanding panic symptoms',
+        description: 'What panic symptoms feel like and practical steps for immediate support.',
+        h1: 'Recognising and responding to panic symptoms',
+        intro: [
+          'Panic symptoms can feel intense and frightening but are not dangerous.',
+          'This guide helps you recognise panic and offers immediate grounding steps.',
+        ],
+        sections: [
+          {
+            heading: 'What panic symptoms feel like',
+            body: [
+              'Rapid heartbeat, sweating, trembling, shortness of breath, or chest tightness.',
+              'Feelings of choking, nausea, dizziness, or feeling detached from reality.',
+              'Fear of losing control, passing out, or that something terrible is happening.',
+            ],
+          },
+          {
+            heading: 'Common signs',
+            body: [
+              'Symptoms peak quickly, often within minutes.',
+              'Physical sensations can mimic serious medical conditions but are not harmful.',
+              'Panic can occur unexpectedly or in response to specific triggers.',
+            ],
+          },
+          {
+            heading: 'What can help right now',
+            body: [
+              'Slow your exhale: breathe out gently for 6-8 counts.',
+              'Ground yourself: name 5 things you see, 4 you can touch.',
+              'Remind yourself: "This is panic. It will pass. I am not in danger."',
+              'Sit or stand in a steady position and sip water when able.',
+            ],
+          },
+          {
+            heading: 'When to seek help',
+            body: [
+              'If panic attacks are frequent or affecting your quality of life.',
+              'If you avoid situations or activities because of panic.',
+              'If you are unsure whether symptoms are panic or a medical issue, seek assessment.',
+            ],
+          },
+          {
+            heading: 'Sources',
+            body: [
+              'NHS: Panic disorder (www.nhs.uk/mental-health/conditions/panic-disorder)',
+              'NICE: Generalised anxiety disorder and panic disorder in adults (www.nice.org.uk)',
+            ],
+          },
+        ],
+        tryNow: { href: '/breathing/techniques/sos-60', label: 'Try SOS 60-second breathing' },
+        siblingSlugs: ['stress-general-anxiety', 'panic-what-to-do-first', 'grounding-5-4-3-2-1'],
+        miniFaqs: [
+          { question: 'Are panic symptoms dangerous?', answer: 'Panic feels intense but is not medically dangerous.' },
+          { question: 'How long do panic symptoms last?', answer: 'Symptoms typically peak within minutes and then subside.' },
+          { question: 'Should I go to A&E?', answer: 'If unsure or experiencing chest pain, seek medical assessment.' },
+        ],
+      },
+      {
+        slug: 'ptsd-regulation',
+        title: 'PTSD regulation support',
+        description: 'Grounding and regulation strategies for post-traumatic stress responses.',
+        h1: 'Regulation support for PTSD and trauma responses',
+        intro: [
+          'Post-traumatic stress can cause overwhelming emotions and physical responses.',
+          'This guide offers grounding strategies, not trauma therapy or medical advice.',
+        ],
+        sections: [
+          {
+            heading: 'What PTSD involves',
+            body: [
+              'PTSD is a response to traumatic events that can include flashbacks, nightmares, and hypervigilance.',
+              'Emotional regulation, sleep, and concentration may be affected.',
+              'Professional support is important for trauma recovery.',
+            ],
+          },
+          {
+            heading: 'Common responses',
+            body: [
+              'Re-experiencing trauma through intrusive memories or flashbacks.',
+              'Avoidance of reminders, emotional numbing, or feeling detached.',
+              'Hyperarousal: feeling on edge, easily startled, difficulty sleeping.',
+            ],
+          },
+          {
+            heading: 'Regulation strategies to try now',
+            body: [
+              'Grounding: use 5-4-3-2-1 sensory grounding to return to the present.',
+              'Slow breathing: focus on gentle, steady exhales to calm the nervous system.',
+              'Safe space: identify a physical or mental space that feels secure.',
+              'Movement: gentle stretching or walking can help release stored tension.',
+            ],
+          },
+          {
+            heading: 'When to seek help',
+            body: [
+              'PTSD requires professional trauma-informed support.',
+              'Contact your GP or mental health service for assessment and therapy options.',
+              'In crisis, contact NHS 111, Samaritans (116 123), or emergency services.',
+            ],
+          },
+          {
+            heading: 'Sources',
+            body: [
+              'NHS: Post-traumatic stress disorder (www.nhs.uk/mental-health/conditions/post-traumatic-stress-disorder-ptsd)',
+              'NICE: Post-traumatic stress disorder (www.nice.org.uk)',
+            ],
+          },
+        ],
+        tryNow: tools.stressTools,
+        siblingSlugs: ['grounding-5-4-3-2-1', 'breathing-for-anxiety', 'when-to-seek-support-uk'],
+        miniFaqs: [
+          { question: 'Can self-help replace trauma therapy?', answer: 'No. Professional trauma therapy is essential for PTSD recovery.' },
+          { question: 'Are grounding techniques safe for trauma?', answer: 'Generally yes, but professional guidance is important.' },
+          { question: 'What if I feel unsafe?', answer: 'Contact emergency services or crisis support immediately.' },
         ],
       },
     ],

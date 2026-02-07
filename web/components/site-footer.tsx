@@ -157,13 +157,13 @@ export function SiteFooter() {
                     </summary>
                     <div className="links">
                       <p>
-                        <Link href="/conditions/anxiety">Stress &amp; General Anxiety</Link> •{' '}
-                        <Link href="/conditions/anxiety">Panic Symptoms</Link> •{' '}
+                        <Link href="/guides/anxiety-stress/stress-general-anxiety">Stress &amp; General Anxiety</Link> •{' '}
+                        <Link href="/guides/anxiety-stress/panic-symptoms">Panic Symptoms</Link> •{' '}
                         <Link href="/sleep">Sleep-Onset Insomnia</Link>
                       </p>
                       <p>
-                        <Link href="/conditions/anxiety">Focus &amp; Test Anxiety</Link> •{' '}
-                        <Link href="/conditions/anxiety">PTSD Regulation*</Link> •{' '}
+                        <Link href="/guides/focus-adhd/focus-test-anxiety">Focus &amp; Test Anxiety</Link> •{' '}
+                        <Link href="/guides/anxiety-stress/ptsd-regulation">PTSD Regulation</Link> •{' '}
                         <Link href="/conditions/low-mood-burnout">Low Mood &amp; Burnout</Link>
                       </p>
                     </div>
