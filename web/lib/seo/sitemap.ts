@@ -50,6 +50,15 @@ export async function buildLocaleSitemap(locale: LocaleKey) {
     }));
   });
 
+  // If a locale-prefixed variant exists (via /[region]/* routes), prefer listing
+  // the locale URL in sitemaps and avoid listing the non-locale URL which
+  // commonly redirects (e.g. /about -> /uk/about).
+  const localePreferredPaths = new Set<string>();
+  for (const route of indexableRoutes) {
+    if (!route.hasRegionParam) continue;
+    localePreferredPaths.add(stripLocale(route.path));
+  }
+
   const entries: SitemapUrlEntry[] = [];
   const seen = new Set<string>();
 
@@ -58,7 +67,8 @@ export async function buildLocaleSitemap(locale: LocaleKey) {
     if (cleaned.includes(':')) continue;
     if (isGlobalExcluded(cleaned)) continue;
 
-    const targetPath = route.hasRegionParam ? withLocale(cleaned, locale) : cleaned;
+    const preferLocale = route.hasRegionParam || localePreferredPaths.has(cleaned);
+    const targetPath = preferLocale ? withLocale(cleaned, locale) : cleaned;
     if (!isSitemapAllowed(targetPath)) continue;
     if (seen.has(targetPath)) continue;
 
