@@ -35,6 +35,7 @@ export interface Profile {
   businessDescription: string;
   photoUrl?: string;
   backgroundUrl?: string;
+  frameUrl?: string;
   gradient: string;
   socialMedia: {
     instagram?: string;

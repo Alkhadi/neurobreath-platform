@@ -80,11 +80,24 @@ async function captureProfileCardPng(): Promise<Blob> {
   const target = document.getElementById("profile-card-capture");
   if (!target) throw new Error("Profile card element not found");
 
+  // Wait for fonts to load
+  await document.fonts.ready;
+
+  // Wait for all images inside card to decode
+  const images = target.querySelectorAll<HTMLImageElement>("img");
+  await Promise.all(
+    Array.from(images).map((img) => {
+      if (img.decode) return img.decode().catch(() => {});
+      return Promise.resolve();
+    })
+  );
+
   const canvas = await html2canvas(target, {
     scale: 2,
     backgroundColor: null,
     useCORS: true,
     logging: false,
+    allowTaint: false,
   });
 
   return await new Promise<Blob>((resolve, reject) => {
@@ -103,57 +116,135 @@ async function createSimplePdf(profile: Profile, shareUrl: string, qrDataUrl?: s
   const font = await doc.embedFont(StandardFonts.Helvetica);
   const fontBold = await doc.embedFont(StandardFonts.HelveticaBold);
 
-  page.drawText(profile.fullName || "NBCard", {
+  // Capture card as PNG and embed it
+  let cardImageHeight = 0;
+  let cardY = height - 80;
+  try {
+    const cardPngBlob = await captureProfileCardPng();
+    const cardPngBytes = await cardPngBlob.arrayBuffer();
+    const cardImage = await doc.embedPng(cardPngBytes);
+    const cardAspect = cardImage.width / cardImage.height;
+    const cardPdfWidth = Math.min(width - 96, 400);
+    cardImageHeight = cardPdfWidth / cardAspect;
+    const cardX = (width - cardPdfWidth) / 2;
+    cardY = height - 80 - cardImageHeight;
+
+    page.drawImage(cardImage, {
+      x: cardX,
+      y: cardY,
+      width: cardPdfWidth,
+      height: cardImageHeight,
+    });
+  } catch (err) {
+    console.error("Failed to embed card image in PDF:", err);
+    // Fallback: text-only
+    page.drawText(profile.fullName || "NBCard", {
+      x: 48,
+      y: height - 80,
+      size: 22,
+      font: fontBold,
+      color: rgb(0.12, 0.12, 0.14),
+    });
+  }
+
+  let y = cardY - 30;
+
+  // Add clickable contact info below card
+  page.drawText("Contact Information:", {
     x: 48,
-    y: height - 80,
-    size: 22,
+    y,
+    size: 14,
     font: fontBold,
     color: rgb(0.12, 0.12, 0.14),
   });
+  y -= 20;
 
-  const lines: string[] = [];
-  if (profile.jobTitle) lines.push(profile.jobTitle);
-  if (profile.email) lines.push(profile.email);
-  if (profile.phone) lines.push(profile.phone);
-
-  let y = height - 120;
-  for (const line of lines) {
-    page.drawText(line, {
+  if (profile.phone) {
+    const phoneText = `📞 ${profile.phone}`;
+    page.drawText(phoneText, {
       x: 48,
       y,
-      size: 12,
+      size: 11,
       font,
-      color: rgb(0.20, 0.20, 0.23),
+      color: rgb(0.23, 0.36, 0.95),
+    });
+    // Add clickable link using pdf-lib's link API
+    const phoneUri = `tel:${profile.phone.replace(/\s/g, "")}`;
+    page.drawRectangle({
+      x: 48,
+      y: y - 4,
+      width: font.widthOfTextAtSize(phoneText, 11),
+      height: 14,
+      opacity: 0,
+      borderColor: rgb(0, 0, 0),
+      borderWidth: 0,
+    });
+    // Use the annotation dictionary approach
+    try {
+      const annots = page.node.Annots();
+      if (annots) {
+        const linkDict = doc.context.obj({
+          Type: 'Annot',
+          Subtype: 'Link',
+          Rect: [48, y - 4, 48 + font.widthOfTextAtSize(phoneText, 11), y + 10],
+          Border: [0, 0, 0],
+          A: {
+            S: 'URI',
+            URI: phoneUri,
+          },
+        });
+        annots.push(doc.context.register(linkDict));
+      }
+    } catch {
+      // Annotation API not available, continue without links
+    }
+    y -= 18;
+  }
+
+  if (profile.email) {
+    const emailText = `📧 ${profile.email}`;
+    page.drawText(emailText, {
+      x: 48,
+      y,
+      size: 11,
+      font,
+      color: rgb(0.23, 0.36, 0.95),
     });
     y -= 18;
   }
 
+  y -= 10;
   page.drawText("Profile link:", {
     x: 48,
-    y: y - 6,
+    y,
     size: 11,
     font: fontBold,
     color: rgb(0.20, 0.20, 0.23),
   });
+  y -= 18;
 
   page.drawText(shareUrl, {
     x: 48,
-    y: y - 24,
-    size: 11,
+    y,
+    size: 10,
     font,
     color: rgb(0.23, 0.36, 0.95),
   });
 
   if (qrDataUrl) {
-    const qrBytes = await fetch(qrDataUrl).then((r) => r.arrayBuffer());
-    const qrImage = await doc.embedPng(qrBytes);
-    const qrSize = 160;
-    page.drawImage(qrImage, {
-      x: width - 48 - qrSize,
-      y: height - 140 - qrSize,
-      width: qrSize,
-      height: qrSize,
-    });
+    try {
+      const qrBytes = await fetch(qrDataUrl).then((r) => r.arrayBuffer());
+      const qrImage = await doc.embedPng(qrBytes);
+      const qrSize = 120;
+      page.drawImage(qrImage, {
+        x: width - 48 - qrSize,
+        y: Math.max(60, cardY - cardImageHeight - 20),
+        width: qrSize,
+        height: qrSize,
+      });
+    } catch {
+      // QR embedding failed, continue without it
+    }
   }
 
   page.drawText("Generated by NBCard", {

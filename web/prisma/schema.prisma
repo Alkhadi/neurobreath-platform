@@ -92,6 +92,18 @@ model VoicePreference {
 // READING ASSESSMENT MODELS
 // ============================================================================
 
+model NbCardFrame {
+  id          String   @id @default(cuid())
+  name        String
+  category    String   // ADDRESS | BANK | BUSINESS
+  imageUrl    String
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  @@index([category, isActive, sortOrder])
+}
+
 model ReadingPassage {
   id              String   @id @default(cuid())
   title           String

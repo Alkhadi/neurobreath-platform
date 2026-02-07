@@ -4,7 +4,10 @@ import { useState, useRef } from "react";
 import { toast } from "sonner";
 import { Profile } from "@/lib/utils";
 import { GradientSelector } from "./gradient-selector";
+import { FrameChooser } from "./frame-chooser";
 import { FaSave, FaTimes, FaTrash } from "react-icons/fa";
+
+type FrameCategory = "ADDRESS" | "BANK" | "BUSINESS";
 
 interface ProfileManagerProps {
   profile: Profile;
@@ -17,6 +20,8 @@ interface ProfileManagerProps {
 export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = false }: ProfileManagerProps) {
   const [editedProfile, setEditedProfile] = useState<Profile>(profile);
   const [uploading, setUploading] = useState(false);
+  const [showFrameChooser, setShowFrameChooser] = useState(false);
+  const [selectedFrameCategory, setSelectedFrameCategory] = useState<FrameCategory>("ADDRESS");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const backgroundInputRef = useRef<HTMLInputElement>(null);
 
@@ -115,7 +120,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
   };
 
   const handleClearBackground = () => {
-    setEditedProfile({ ...editedProfile, backgroundUrl: undefined });
+    setEditedProfile({ ...editedProfile, backgroundUrl: undefined, frameUrl: undefined });
   };
 
   const handleBackgroundUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -226,6 +231,59 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
             <label htmlFor="profile-background" className="block text-sm font-semibold text-gray-700 mb-2">
               Card Background (optional)
             </label>
+
+            {/* Professional Frames Section */}
+            <div className="mb-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
+              <h4 className="text-sm font-bold text-gray-800 mb-2">Professional frames made for you</h4>
+              <p className="text-xs text-gray-600 mb-3">
+                Choose a frame style for how you want your profile presented: Address details, Bank details, or Business profile.
+              </p>
+              
+              <div className="flex flex-wrap gap-2 mb-3">
+                <button
+                  type="button"
+                  onClick={() => setSelectedFrameCategory("ADDRESS")}
+                  className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                    selectedFrameCategory === "ADDRESS"
+                      ? "bg-purple-600 text-white"
+                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  }`}
+                >
+                  Address details
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedFrameCategory("BANK")}
+                  className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                    selectedFrameCategory === "BANK"
+                      ? "bg-purple-600 text-white"
+                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  }`}
+                >
+                  Bank details
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedFrameCategory("BUSINESS")}
+                  className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                    selectedFrameCategory === "BUSINESS"
+                      ? "bg-purple-600 text-white"
+                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  }`}
+                >
+                  Business profile
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowFrameChooser(true)}
+                className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold"
+              >
+                Browse Professional Frames
+              </button>
+            </div>
+
             <input
               ref={backgroundInputRef}
               id="profile-background"
@@ -243,11 +301,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
               >
                 {uploading
                   ? "Uploading..."
-                  : editedProfile.backgroundUrl
+                  : editedProfile.backgroundUrl || editedProfile.frameUrl
                   ? "Change Background Image"
                   : "Upload Background Image"}
               </button>
-              {editedProfile.backgroundUrl && (
+              {(editedProfile.backgroundUrl || editedProfile.frameUrl) && (
                 <button
                   type="button"
                   onClick={handleClearBackground}
@@ -427,6 +485,18 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
           </div>
         </form>
       </div>
+
+      {/* Frame Chooser Modal */}
+      {showFrameChooser && (
+        <FrameChooser
+          category={selectedFrameCategory}
+          onSelect={(frameUrl) => {
+            setEditedProfile({ ...editedProfile, frameUrl, backgroundUrl: undefined });
+            setShowFrameChooser(false);
+          }}
+          onClose={() => setShowFrameChooser(false)}
+        />
+      )}
     </div>
   );
 }

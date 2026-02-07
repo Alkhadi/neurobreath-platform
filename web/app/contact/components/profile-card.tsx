@@ -27,7 +27,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false }: P
     gradientClassMap[profile?.gradient ?? ""] ??
     gradientClassMap[defaultGradient];
 
-  const hasBackgroundImage = Boolean(profile?.backgroundUrl);
+  const hasBackgroundImage = Boolean(profile?.backgroundUrl || profile?.frameUrl);
 
   const socialMediaLinks = [
     { icon: FaInstagram, url: profile?.socialMedia?.instagram, color: "#E1306C" },
@@ -49,7 +49,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false }: P
       {hasBackgroundImage && (
         <div className="absolute inset-0 -z-10">
           <Image
-            src={profile.backgroundUrl ?? ""}
+            src={(profile?.frameUrl || profile?.backgroundUrl) ?? ""}
             alt="Card background"
             fill
             className="object-cover"
@@ -123,11 +123,19 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false }: P
 
         {/* Contact Info */}
         <div className="space-y-3 mb-6">
-          <a href={`tel:${profile?.phone ?? ""}`} className="flex items-center gap-3 hover:bg-white/10 p-2 rounded-lg transition-colors">
+          <a
+            href={`tel:${profile?.phone ?? ""}`}
+            data-pdf-link={`tel:${profile?.phone ?? ""}`}
+            className="flex items-center gap-3 hover:bg-white/10 p-2 rounded-lg transition-colors"
+          >
             <FaPhone className="text-xl" />
             <span className="text-lg">{profile?.phone ?? "Phone"}</span>
           </a>
-          <a href={`mailto:${profile?.email ?? ""}`} className="flex items-center gap-3 hover:bg-white/10 p-2 rounded-lg transition-colors">
+          <a
+            href={`mailto:${profile?.email ?? ""}`}
+            data-pdf-link={`mailto:${profile?.email ?? ""}`}
+            className="flex items-center gap-3 hover:bg-white/10 p-2 rounded-lg transition-colors"
+          >
             <FaEnvelope className="text-xl" />
             <span className="text-lg">{profile?.email ?? "Email"}</span>
           </a>
@@ -142,6 +150,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false }: P
               <a
                 key={index}
                 href={social.url}
+                data-pdf-link={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-white/20 text-white backdrop-blur-md p-3 rounded-full hover:bg-white/30 transition-all hover:scale-110"
