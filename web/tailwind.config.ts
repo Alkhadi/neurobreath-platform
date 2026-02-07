@@ -36,16 +36,16 @@ const config: Config = {
         ],
       },
       fontSize: {
-        // ChatGPT-style responsive type scale (+4% increase)
-        'xs': ['0.845rem', { lineHeight: '1.5', letterSpacing: '0.01em' }],
-        'sm': ['0.91rem', { lineHeight: '1.5' }],
-        'base': ['1.04rem', { lineHeight: '1.6' }],
-        'lg': ['1.17rem', { lineHeight: '1.6' }],
-        'xl': ['1.3rem', { lineHeight: '1.5' }],
-        '2xl': ['1.56rem', { lineHeight: '1.4' }],
-        '3xl': ['1.95rem', { lineHeight: '1.3' }],
-        '4xl': ['2.34rem', { lineHeight: '1.2' }],
-        '5xl': ['3.12rem', { lineHeight: '1.1' }],
+        // ChatGPT-style responsive type scale
+        'xs': ['0.8125rem', { lineHeight: '1.5', letterSpacing: '0.01em' }],
+        'sm': ['0.875rem', { lineHeight: '1.5' }],
+        'base': ['1rem', { lineHeight: '1.6' }],
+        'lg': ['1.125rem', { lineHeight: '1.6' }],
+        'xl': ['1.25rem', { lineHeight: '1.5' }],
+        '2xl': ['1.5rem', { lineHeight: '1.4' }],
+        '3xl': ['1.875rem', { lineHeight: '1.3' }],
+        '4xl': ['2.25rem', { lineHeight: '1.2' }],
+        '5xl': ['3rem', { lineHeight: '1.1' }],
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
