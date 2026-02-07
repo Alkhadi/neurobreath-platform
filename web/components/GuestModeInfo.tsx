@@ -89,7 +89,7 @@ export function GuestModeInfo({ onClose }: GuestModeInfoProps) {
           {progress && progress.totalSessions > 0 && (
             <div className="p-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-lg border border-primary/10">
               <h3 className="font-semibold text-sm mb-3">Your Guest Progress:</h3>
-              <div className="grid grid-cols-3 gap-3 text-center">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
                 <div>
                   <div className="text-2xl font-bold text-primary">{progress.totalSessions}</div>
                   <div className="text-xs text-muted-foreground">Sessions</div>

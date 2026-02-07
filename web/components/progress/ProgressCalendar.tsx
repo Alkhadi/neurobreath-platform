@@ -191,8 +191,8 @@ export function ProgressCalendar({
 
               {/* Enhanced tooltip */}
               {day.isCurrentMonth && count > 0 && (
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10 whitespace-nowrap pointer-events-none">
-                  <div className="bg-gray-900 text-white text-xs rounded-lg px-3 py-2 shadow-lg">
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10 pointer-events-none">
+                  <div className="bg-gray-900 text-white text-xs rounded-lg px-3 py-2 shadow-lg max-w-[min(18rem,calc(100vw-2rem))] whitespace-normal break-words text-center">
                     <div className="font-medium mb-1">
                       {day.date.toLocaleDateString('en-GB', {
                         day: 'numeric',

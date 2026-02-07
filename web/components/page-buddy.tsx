@@ -1209,7 +1209,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
           aria-label="Open NeuroBreath Buddy assistant (Cmd+K)"
         >
           <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-          <span className="absolute -top-8 right-0 bg-popover text-popover-foreground text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md hidden sm:block pointer-events-none">
+          <span className="absolute -top-8 right-0 bg-popover text-popover-foreground text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity shadow-md hidden sm:block pointer-events-none max-w-[min(16rem,calc(100vw-2rem))] whitespace-normal break-words text-right">
             Press ⌘K
           </span>
         </Button>

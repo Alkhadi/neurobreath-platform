@@ -1441,7 +1441,7 @@ export default function FocusGardenPage() {
 
           {/* Stats Dashboard */}
           <div className="p-8 bg-gradient-to-br from-slate-50 to-blue-50">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 mb-6">
               {/* Garden Level */}
               <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
                 <div className="flex items-center gap-2 mb-2">
@@ -2114,7 +2114,7 @@ export default function FocusGardenPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                   {progress.earnedBadges.map(badgeId => {
                     const badge = getBadgeInfo(badgeId)
                     if (!badge) return null
@@ -2171,7 +2171,7 @@ export default function FocusGardenPage() {
                       <h3 className="font-bold text-lg text-slate-900">{categoryNames[category].name}</h3>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                       {categoryBadges.map(badge => {
                         const isEarned = progress.earnedBadges.includes(badge.id)
                         return (

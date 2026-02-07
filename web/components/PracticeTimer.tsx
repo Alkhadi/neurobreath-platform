@@ -7,9 +7,9 @@ import { Play, Pause, RotateCcw, Timer } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const TIMER_PRESETS = [
-  { label: 'Focus', time: 25 * 60, color: 'from-green-500 to-emerald-600' },
-  { label: 'Short', time: 5 * 60, color: 'from-blue-500 to-cyan-600' },
-  { label: 'Long', time: 50 * 60, color: 'from-purple-500 to-pink-600' },
+  { label: 'Focus', time: 25 * 60, progressClassName: 'nb-progress--focus' },
+  { label: 'Short', time: 5 * 60, progressClassName: 'nb-progress--short' },
+  { label: 'Long', time: 50 * 60, progressClassName: 'nb-progress--long' },
 ];
 
 export function PracticeTimer() {
@@ -59,7 +59,8 @@ export function PracticeTimer() {
     setIsActive(false);
   };
 
-  const progress = ((TIMER_PRESETS[selectedPreset].time - timeLeft) / TIMER_PRESETS[selectedPreset].time) * 100;
+  const totalSeconds = TIMER_PRESETS[selectedPreset].time;
+  const elapsedSeconds = totalSeconds - timeLeft;
 
   return (
     <Card>
@@ -92,12 +93,12 @@ export function PracticeTimer() {
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-          <div
-            className={cn('h-full transition-all duration-1000 bg-gradient-to-r', TIMER_PRESETS[selectedPreset].color)}
-            style={{ width: `${progress}%` }}
-          />
-        </div>
+        <progress
+          className={cn('nb-progress', TIMER_PRESETS[selectedPreset].progressClassName)}
+          value={elapsedSeconds}
+          max={totalSeconds}
+          aria-label="Timer progress"
+        />
 
         {/* Controls */}
         <div className="flex gap-2 justify-center">
@@ -115,7 +116,7 @@ export function PracticeTimer() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t">
           <div className="text-center">
             <div className="text-2xl font-bold">{sessions}</div>
             <p className="text-xs text-muted-foreground">Sessions</p>

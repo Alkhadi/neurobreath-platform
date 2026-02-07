@@ -218,7 +218,7 @@ export function Companion({
 
       {/* Companion Info Tooltip on Hover */}
       <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-        <div className="bg-slate-900 text-white text-xs px-3 py-2 rounded-lg shadow-xl whitespace-nowrap">
+        <div className="bg-slate-900 text-white text-xs px-3 py-2 rounded-lg shadow-xl max-w-[min(18rem,calc(100vw-2rem))] whitespace-normal break-words text-center">
           <div className="font-bold">{companion.name || companionProfile.name}</div>
           <div className="text-slate-300 text-[10px]">Level {companion.level}</div>
         </div>
@@ -340,7 +340,7 @@ export function CompactCompanion({ companion, onClick }: CompactCompanionProps) 
 
       {/* Hover tooltip */}
       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-        <div className="bg-slate-900 text-white text-xs px-2 py-1 rounded shadow-xl whitespace-nowrap">
+        <div className="bg-slate-900 text-white text-xs px-2 py-1 rounded shadow-xl max-w-[min(18rem,calc(100vw-2rem))] whitespace-normal break-words text-center">
           {companion.name || companionProfile.name}
         </div>
       </div>

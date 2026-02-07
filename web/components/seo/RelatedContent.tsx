@@ -44,7 +44,7 @@ export function RelatedContent({ title = 'Related content', items, className }: 
                   ) : null}
                 </div>
                 {item.typeBadge ? (
-                  <Badge variant="secondary" className="whitespace-nowrap">
+                  <Badge variant="secondary" className="whitespace-normal sm:whitespace-nowrap">
                     {item.typeBadge}
                   </Badge>
                 ) : null}

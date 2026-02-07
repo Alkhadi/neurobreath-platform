@@ -191,7 +191,7 @@ export function AssessmentHistory() {
               </div>
 
               {/* Metrics Grid */}
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 <div className="bg-gray-50 dark:bg-gray-900/30 rounded p-2">
                   <p className="text-xs text-muted-foreground font-semibold">Score</p>
                   <p className="text-lg font-bold">
