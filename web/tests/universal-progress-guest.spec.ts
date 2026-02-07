@@ -43,21 +43,36 @@ async function hasCookie(page: import('@playwright/test').Page, name: string) {
 
 async function ensureMuscleRelaxationPanelOpen(page: import('@playwright/test').Page) {
   const pmrTab = page.getByRole('tab', { name: /muscle relaxation/i })
+  const panel = page.getByRole('tabpanel', { name: /muscle relaxation/i })
   const beginSession = page.getByRole('button', { name: /begin session/i })
 
   await page.locator('#interactive-tools').scrollIntoViewIfNeeded().catch(() => null)
   await settlePage(page)
+
+  await expect(pmrTab).toBeVisible()
+  await expect(pmrTab).toBeEnabled()
 
   // Radix Tabs can focus a tab without switching panels during hydration,
   // especially in Firefox/WebKit. Use the panel content as the readiness signal.
   await expect
     .poll(async () => {
       if (await beginSession.isVisible().catch(() => false)) return true
+      if (await panel.isVisible().catch(() => false)) return true
       await pmrTab.scrollIntoViewIfNeeded().catch(() => null)
-      await pmrTab.click()
-      await page.waitForTimeout(50)
-      return await beginSession.isVisible().catch(() => false)
-    }, { timeout: 10_000 })
+
+      // Prefer a force-click because the trigger can be partially obscured in the
+      // horizontally-scrollable list, and Firefox can otherwise focus without activating.
+      await pmrTab.click({ force: true })
+      await pmrTab.focus().catch(() => null)
+
+      // Some Radix/React hydration races leave the tab focused but not selected.
+      // Keyboard activation often succeeds where click only moves focus.
+      await page.keyboard.press('Enter').catch(() => null)
+      await page.keyboard.press('Space').catch(() => null)
+
+      await page.waitForTimeout(75)
+      return (await beginSession.isVisible().catch(() => false)) || (await panel.isVisible().catch(() => false))
+    }, { timeout: 15_000 })
     .toBeTruthy()
 }
 
