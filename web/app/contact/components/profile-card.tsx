@@ -3,6 +3,7 @@
 import { Profile, cn } from "@/lib/utils";
 import { FaInstagram, FaFacebook, FaTiktok, FaLinkedin, FaTwitter, FaGlobe, FaPhone, FaEnvelope, FaHome } from "react-icons/fa";
 import { useEffect, useState } from "react";
+import { getSession } from "next-auth/react";
 import { resolveAssetUrl } from "../lib/nbcard-assets";
 import { CaptureImage } from "./capture-image";
 import styles from "./profile-card.module.css";
@@ -15,10 +16,29 @@ interface ProfileCardProps {
 }
 
 export function ProfileCard({ profile, onPhotoClick, showEditButton = false, userEmail }: ProfileCardProps) {
+  const [sessionEmail, setSessionEmail] = useState<string | null>(null);
   const [resolvedBackgroundUrl, setResolvedBackgroundUrl] = useState<string | null>(null);
   const [resolvedPhotoUrl, setResolvedPhotoUrl] = useState<string | null>(null);
   const [backgroundRevoke, setBackgroundRevoke] = useState<(() => void) | null>(null);
   const [photoRevoke, setPhotoRevoke] = useState<(() => void) | null>(null);
+
+  const assetNamespace = userEmail ?? sessionEmail ?? undefined;
+
+  useEffect(() => {
+    let cancelled = false;
+    getSession()
+      .then((s) => {
+        if (cancelled) return;
+        const email = (s?.user?.email ?? "").toString().trim().toLowerCase();
+        setSessionEmail(email && email.includes("@") ? email : null);
+      })
+      .catch(() => {
+        // ignore
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Resolve background URL (frameUrl or backgroundUrl)
   useEffect(() => {
@@ -36,7 +56,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
       return;
     }
     
-    resolveAssetUrl(backgroundSource, userEmail)
+    resolveAssetUrl(backgroundSource, assetNamespace)
       .then((result) => {
         if (result) {
           setResolvedBackgroundUrl(result.src);
@@ -58,7 +78,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile?.frameUrl, profile?.backgroundUrl, userEmail]);
+  }, [profile?.frameUrl, profile?.backgroundUrl, assetNamespace]);
 
   // Resolve photo URL
   useEffect(() => {
@@ -75,7 +95,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
       return;
     }
     
-    resolveAssetUrl(profile.photoUrl, userEmail)
+    resolveAssetUrl(profile.photoUrl, assetNamespace)
       .then((result) => {
         if (result) {
           setResolvedPhotoUrl(result.src);
@@ -97,7 +117,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile?.photoUrl, userEmail]);
+  }, [profile?.photoUrl, assetNamespace]);
   const gradientClassMap: Record<string, string> = {
     "linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)": "bg-gradient-to-br from-purple-600 to-blue-500",
     "linear-gradient(135deg, #667eea 0%, #764ba2 100%)": "bg-gradient-to-br from-indigo-500 to-purple-600",
@@ -140,7 +160,6 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
             className="w-full h-full object-cover"
             style={{ objectFit: "cover", objectPosition: "center" }}
           />
-          <div className="absolute inset-0 bg-black/30" aria-hidden="true" />
         </div>
       )}
 
@@ -197,9 +216,11 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
 
         {/* Name & Title */}
         <h2 className={cn("text-3xl font-bold text-center mb-2", styles.signatureFont)}>
-          {profile?.fullName ?? "Name"}
+          <span data-pdf-text={profile?.fullName ?? ""}>{profile?.fullName ?? "Name"}</span>
         </h2>
-        <p className="text-lg text-center mb-6 opacity-90">{profile?.jobTitle ?? "Job Title"}</p>
+        <p className="text-lg text-center mb-6 opacity-90">
+          <span data-pdf-text={profile?.jobTitle ?? ""}>{profile?.jobTitle ?? "Job Title"}</span>
+        </p>
 
         {/* Contact Info */}
         <div className="space-y-3 mb-6">
@@ -209,7 +230,9 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
             className="flex items-center gap-3 hover:bg-white/10 p-2 rounded-lg transition-colors"
           >
             <FaPhone className="text-xl" />
-            <span className="text-lg">{profile?.phone ?? "Phone"}</span>
+            <span className="text-lg" data-pdf-text={profile?.phone ?? ""}>
+              {profile?.phone ?? "Phone"}
+            </span>
           </a>
           <a
             href={`mailto:${profile?.email ?? ""}`}
@@ -217,7 +240,9 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
             className="flex items-center gap-3 hover:bg-white/10 p-2 rounded-lg transition-colors"
           >
             <FaEnvelope className="text-xl" />
-            <span className="text-lg">{profile?.email ?? "Email"}</span>
+            <span className="text-lg" data-pdf-text={profile?.email ?? ""}>
+              {profile?.email ?? "Email"}
+            </span>
           </a>
           {profile?.address && (
             <div className="flex items-center gap-3 p-2">
@@ -245,7 +270,9 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
               className="flex items-center gap-3 hover:bg-white/10 p-2 rounded-lg transition-colors"
             >
               <FaGlobe className="text-xl" />
-              <span className="text-lg break-all">{profile.website}</span>
+              <span className="text-lg break-all" data-pdf-text={profile.website}>
+                {profile.website}
+              </span>
             </a>
           )}
         </div>
@@ -290,14 +317,21 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
           <div className="mt-6 bg-white/10 backdrop-blur-md p-4 rounded-lg">
             <h3 className="font-semibold mb-3 text-base">Address</h3>
             <div className="text-sm space-y-1">
-              {profile.addressCard.addressLine1 && <p>{profile.addressCard.addressLine1}</p>}
-              {profile.addressCard.addressLine2 && <p>{profile.addressCard.addressLine2}</p>}
-              {profile.addressCard.city && profile.addressCard.postcode && (
-                <p>{profile.addressCard.city}, {profile.addressCard.postcode}</p>
+              {profile.addressCard.recipientName && (
+                <p className="font-semibold" data-pdf-text={profile.addressCard.recipientName}>
+                  {profile.addressCard.recipientName}
+                </p>
               )}
-              {profile.addressCard.country && <p>{profile.addressCard.country}</p>}
+              {profile.addressCard.addressLine1 && <p data-pdf-text={profile.addressCard.addressLine1}>{profile.addressCard.addressLine1}</p>}
+              {profile.addressCard.addressLine2 && <p data-pdf-text={profile.addressCard.addressLine2}>{profile.addressCard.addressLine2}</p>}
+              {profile.addressCard.city && profile.addressCard.postcode && (
+                <p data-pdf-text={`${profile.addressCard.city}, ${profile.addressCard.postcode}`}>{profile.addressCard.city}, {profile.addressCard.postcode}</p>
+              )}
+              {profile.addressCard.country && <p data-pdf-text={profile.addressCard.country}>{profile.addressCard.country}</p>}
               {profile.addressCard.directionsNote && (
-                <p className="mt-2 text-xs opacity-75 italic">{profile.addressCard.directionsNote}</p>
+                <p className="mt-2 text-xs opacity-75 italic" data-pdf-text={profile.addressCard.directionsNote}>
+                  {profile.addressCard.directionsNote}
+                </p>
               )}
               {(profile.addressCard.addressLine1 || profile.addressCard.mapQueryOverride) && (
                 <div className="mt-3 pt-3 border-t border-white/20">
@@ -335,6 +369,31 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
                   </a>
                 </div>
               )}
+
+              {(profile.addressCard.phoneLabel || profile.addressCard.emailLabel) && (profile.phone || profile.email) ? (
+                <div className="mt-3 pt-3 border-t border-white/20 space-y-2">
+                  {profile.phone ? (
+                    <a
+                      href={`tel:${profile.phone}`}
+                      data-pdf-link={`tel:${profile.phone}`}
+                      className="inline-flex items-center gap-2 text-sm underline hover:opacity-80 transition-opacity"
+                    >
+                      <span className="opacity-80">{profile.addressCard.phoneLabel || "Call"}:</span>
+                      <span data-pdf-text={profile.phone}>{profile.phone}</span>
+                    </a>
+                  ) : null}
+                  {profile.email ? (
+                    <a
+                      href={`mailto:${profile.email}`}
+                      data-pdf-link={`mailto:${profile.email}`}
+                      className="block text-sm underline hover:opacity-80 transition-opacity"
+                    >
+                      <span className="opacity-80">{profile.addressCard.emailLabel || "Email"}:</span>{" "}
+                      <span data-pdf-text={profile.email}>{profile.email}</span>
+                    </a>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
           </div>
         )}
@@ -344,25 +403,45 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
             <h3 className="font-semibold mb-3 text-base">Bank Details</h3>
             <div className="text-sm space-y-2">
               {profile.bankCard.bankName && (
-                <p><span className="opacity-75">Bank:</span> {profile.bankCard.bankName}</p>
+                <p>
+                  <span className="opacity-75">Bank:</span>{" "}
+                  <span data-pdf-text={profile.bankCard.bankName}>{profile.bankCard.bankName}</span>
+                </p>
               )}
               {profile.bankCard.accountName && (
-                <p><span className="opacity-75">Account Name:</span> {profile.bankCard.accountName}</p>
+                <p>
+                  <span className="opacity-75">Account Name:</span>{" "}
+                  <span data-pdf-text={profile.bankCard.accountName}>{profile.bankCard.accountName}</span>
+                </p>
               )}
               {profile.bankCard.sortCode && (
-                <p><span className="opacity-75">Sort Code:</span> {profile.bankCard.sortCode}</p>
+                <p>
+                  <span className="opacity-75">Sort Code:</span>{" "}
+                  <span data-pdf-text={profile.bankCard.sortCode}>{profile.bankCard.sortCode}</span>
+                </p>
               )}
               {profile.bankCard.accountNumber && (
-                <p><span className="opacity-75">Account Number:</span> {profile.bankCard.accountNumber}</p>
+                <p>
+                  <span className="opacity-75">Account Number:</span>{" "}
+                  <span data-pdf-text={profile.bankCard.accountNumber}>{profile.bankCard.accountNumber}</span>
+                </p>
               )}
               {profile.bankCard.iban && (
-                <p><span className="opacity-75">IBAN:</span> {profile.bankCard.iban}</p>
+                <p>
+                  <span className="opacity-75">IBAN:</span>{" "}
+                  <span data-pdf-text={profile.bankCard.iban}>{profile.bankCard.iban}</span>
+                </p>
               )}
               {profile.bankCard.swiftBic && (
-                <p><span className="opacity-75">SWIFT/BIC:</span> {profile.bankCard.swiftBic}</p>
+                <p>
+                  <span className="opacity-75">SWIFT/BIC:</span>{" "}
+                  <span data-pdf-text={profile.bankCard.swiftBic}>{profile.bankCard.swiftBic}</span>
+                </p>
               )}
               {profile.bankCard.referenceNote && (
-                <p className="mt-2 text-xs opacity-75 italic">{profile.bankCard.referenceNote}</p>
+                <p className="mt-2 text-xs opacity-75 italic" data-pdf-text={profile.bankCard.referenceNote}>
+                  {profile.bankCard.referenceNote}
+                </p>
               )}
               {profile.bankCard.paymentLink && (
                 <div className="mt-3 pt-3 border-t border-white/20">
@@ -386,10 +465,19 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
             <h3 className="font-semibold mb-3 text-base">Business</h3>
             <div className="text-sm space-y-2">
               {profile.businessCard.companyName && (
-                <p className="font-semibold text-base">{profile.businessCard.companyName}</p>
+                <p className="font-semibold text-base" data-pdf-text={profile.businessCard.companyName}>
+                  {profile.businessCard.companyName}
+                </p>
+              )}
+              {profile.businessCard.tagline && (
+                <p className="opacity-90 italic" data-pdf-text={profile.businessCard.tagline}>
+                  {profile.businessCard.tagline}
+                </p>
               )}
               {profile.businessCard.services && (
-                <p className="opacity-90">{profile.businessCard.services}</p>
+                <p className="opacity-90" data-pdf-text={profile.businessCard.services}>
+                  {profile.businessCard.services}
+                </p>
               )}
               {profile.businessCard.websiteUrl && (
                 <p>
@@ -401,18 +489,27 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
                     rel="noopener noreferrer"
                     className="underline hover:opacity-80 transition-opacity"
                   >
-                    {profile.businessCard.websiteUrl}
+                    <span data-pdf-text={profile.businessCard.websiteUrl}>{profile.businessCard.websiteUrl}</span>
                   </a>
                 </p>
               )}
               {profile.businessCard.hours && (
-                <p><span className="opacity-75">Hours:</span> {profile.businessCard.hours}</p>
+                <p>
+                  <span className="opacity-75">Hours:</span>{" "}
+                  <span data-pdf-text={profile.businessCard.hours}>{profile.businessCard.hours}</span>
+                </p>
               )}
               {profile.businessCard.locationNote && (
-                <p><span className="opacity-75">Location:</span> {profile.businessCard.locationNote}</p>
+                <p>
+                  <span className="opacity-75">Location:</span>{" "}
+                  <span data-pdf-text={profile.businessCard.locationNote}>{profile.businessCard.locationNote}</span>
+                </p>
               )}
               {profile.businessCard.vatOrRegNo && (
-                <p className="text-xs opacity-75">VAT/Reg: {profile.businessCard.vatOrRegNo}</p>
+                <p className="text-xs opacity-75">
+                  VAT/Reg:{" "}
+                  <span data-pdf-text={profile.businessCard.vatOrRegNo}>{profile.businessCard.vatOrRegNo}</span>
+                </p>
               )}
               {profile.businessCard.bookingLink && (
                 <div className="mt-3 pt-3 border-t border-white/20">

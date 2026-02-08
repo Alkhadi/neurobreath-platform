@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { getSession } from "next-auth/react";
 import { toast } from "sonner";
 import { Profile } from "@/lib/utils";
 import { GradientSelector } from "./gradient-selector";
@@ -30,11 +31,14 @@ interface ProfileManagerProps {
 
 export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = false, userEmail }: ProfileManagerProps) {
   const [editedProfile, setEditedProfile] = useState<Profile>(profile);
+  const [sessionEmail, setSessionEmail] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [showFrameChooser, setShowFrameChooser] = useState(false);
-  const [selectedFrameCategory, setSelectedFrameCategory] = useState<FrameCategory>(
-    profile.cardCategory || "ADDRESS"
-  );
+  const initialFrameCategory: FrameCategory =
+    profile.cardCategory === "BANK" || profile.cardCategory === "BUSINESS" || profile.cardCategory === "ADDRESS"
+      ? profile.cardCategory
+      : "ADDRESS";
+  const [selectedFrameCategory, setSelectedFrameCategory] = useState<FrameCategory>(initialFrameCategory);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const backgroundInputRef = useRef<HTMLInputElement>(null);
@@ -42,7 +46,24 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
   const hasRestoredDraftRef = useRef(false);
   const didInitRef = useRef(false);
 
-  const namespace = getNbcardStorageNamespace({ userEmail, profileEmail: profile.email });
+  useEffect(() => {
+    let cancelled = false;
+    getSession()
+      .then((s) => {
+        if (cancelled) return;
+        const email = (s?.user?.email ?? "").toString().trim().toLowerCase();
+        setSessionEmail(email && email.includes("@") ? email : null);
+      })
+      .catch(() => {
+        // ignore
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const effectiveUserEmail = sessionEmail ?? userEmail;
+  const namespace = getNbcardStorageNamespace({ userEmail: effectiveUserEmail, profileEmail: profile.email });
 
   // Restore locally persisted draft (so autosave doesn't need to call onSave / close modal)
   useEffect(() => {
@@ -106,7 +127,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
     try {
       // Store in IndexedDB as local asset
       const assetKey = generateAssetKey("avatar");
-      const localUrl = await storeAsset(file, assetKey, userEmail);
+      const localUrl = await storeAsset(file, assetKey, effectiveUserEmail);
 
       setEditedProfile({ ...editedProfile, photoUrl: localUrl });
       toast.success("Photo uploaded and stored locally");
@@ -132,7 +153,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
     try {
       // Store in IndexedDB as local asset
       const assetKey = generateAssetKey("bg");
-      const localUrl = await storeAsset(file, assetKey, userEmail);
+      const localUrl = await storeAsset(file, assetKey, effectiveUserEmail);
 
       setEditedProfile({ ...editedProfile, backgroundUrl: localUrl, frameUrl: undefined });
       toast.success("Background uploaded and stored locally");

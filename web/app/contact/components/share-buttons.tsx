@@ -7,6 +7,7 @@ import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import Image from "next/image";
+import { getSession } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +28,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import type { Contact, Profile } from "@/lib/utils";
+import { getOrCreateNbcardDeviceId } from "@/lib/utils";
+
+import { GradientSelector } from "./gradient-selector";
+import { FrameChooser } from "./frame-chooser";
+import { storeAsset, generateAssetKey } from "../lib/nbcard-assets";
 
 import {
   type SavedCardCategory,
@@ -34,7 +40,6 @@ import {
   deleteSavedCard,
   generateProfileId,
   getCategoryFromProfile,
-  getNbcardStorageNamespace,
   loadActiveSavedCardIds,
   loadSavedCards,
   normalizeProfileForCategory,
@@ -391,10 +396,111 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   const [isQrVcard, setIsQrVcard] = React.useState(false);
   const [busyKey, setBusyKey] = React.useState<string | null>(null);
 
-  const namespace = React.useMemo(
-    () => getNbcardStorageNamespace({ profileEmail: profile.email }),
-    [profile.email]
-  );
+  const [sessionEmail, setSessionEmail] = React.useState<string | null>(null);
+  const [storageNamespace, setStorageNamespace] = React.useState<string>(() => {
+    // Default to guest namespace immediately; upgrade to email namespace once session loads.
+    const deviceId = getOrCreateNbcardDeviceId();
+    return `device:${deviceId}`;
+  });
+
+  // Focus editor (tabbed categories)
+  const [activeEditorTab, setActiveEditorTab] = React.useState<SavedCardCategory>(() => getCategoryFromProfile(profile));
+  const [isEditorOpen, setIsEditorOpen] = React.useState(false);
+  const [editorProfile, setEditorProfile] = React.useState<Profile>(profile);
+  const [saveStatus, setSaveStatus] = React.useState<"idle" | "saving" | "saved">("idle");
+  const persistTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [uploading, setUploading] = React.useState(false);
+  const photoInputRef = React.useRef<HTMLInputElement>(null);
+  const backgroundInputRef = React.useRef<HTMLInputElement>(null);
+  const [showFrameChooser, setShowFrameChooser] = React.useState(false);
+  const [selectedFrameCategory, setSelectedFrameCategory] = React.useState<"ADDRESS" | "BANK" | "BUSINESS">("ADDRESS");
+
+  const NAMESPACED_STATE_KEY_PREFIX = "nbcard:namespacedState:v1:";
+
+  React.useEffect(() => {
+    let cancelled = false;
+    getSession()
+      .then((s) => {
+        if (cancelled) return;
+        const email = (s?.user?.email ?? "").toString().trim().toLowerCase();
+        const normalized = email && email.includes("@") ? email : "";
+        setSessionEmail(normalized || null);
+
+        const deviceId = getOrCreateNbcardDeviceId();
+        const ns = normalized ? `email:${normalized}` : `device:${deviceId}`;
+        setStorageNamespace(ns);
+      })
+      .catch(() => {
+        // ignore; remain in device namespace
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Best-effort restore of namespaced NBCard state into the active store on mount/namespace change.
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    try {
+      const raw = window.localStorage.getItem(`${NAMESPACED_STATE_KEY_PREFIX}${storageNamespace}`);
+      if (!raw) return;
+
+      const parsed = JSON.parse(raw) as unknown;
+      if (!parsed || typeof parsed !== "object") return;
+
+      const state = parsed as { schemaVersion?: number; profiles?: Profile[]; contacts?: Contact[]; updatedAt?: string };
+      if (!Array.isArray(state.profiles) || state.profiles.length === 0) return;
+
+      onSetProfiles(state.profiles);
+      onSetContacts(Array.isArray(state.contacts) ? state.contacts : []);
+
+      // Keep the underlying IndexedDB/localStorage keys in sync with the active namespace.
+      void importNbcardLocalState({
+        schemaVersion: 1,
+        profiles: state.profiles,
+        contacts: Array.isArray(state.contacts) ? state.contacts : [],
+        updatedAt: typeof state.updatedAt === "string" && state.updatedAt ? state.updatedAt : new Date().toISOString(),
+      });
+    } catch {
+      // ignore corrupted cache
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storageNamespace]);
+
+  // Debounced persistence of the active NBCard state into the current namespace.
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!storageNamespace) return;
+
+    if (persistTimerRef.current) clearTimeout(persistTimerRef.current);
+    setSaveStatus("saving");
+
+    persistTimerRef.current = setTimeout(() => {
+      try {
+        window.localStorage.setItem(
+          `${NAMESPACED_STATE_KEY_PREFIX}${storageNamespace}`,
+          JSON.stringify({
+            schemaVersion: 1,
+            profiles,
+            contacts,
+            updatedAt: new Date().toISOString(),
+          })
+        );
+        setSaveStatus("saved");
+        setTimeout(() => setSaveStatus("idle"), 2000);
+      } catch {
+        setSaveStatus("idle");
+      }
+    }, 650);
+
+    return () => {
+      if (persistTimerRef.current) clearTimeout(persistTimerRef.current);
+    };
+  }, [contacts, profiles, storageNamespace]);
+
+  const namespace = storageNamespace;
 
   const [savedCards, setSavedCards] = React.useState<SavedCardRecord[]>([]);
   const [activeSavedIds, setActiveSavedIds] = React.useState<Partial<Record<SavedCardCategory, string>>>({});
@@ -650,6 +756,15 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
     [savedCards, savedCategory]
   );
 
+  // Keep the editor draft in sync with the currently active profile.
+  React.useEffect(() => {
+    if (!isEditorOpen) {
+      setEditorProfile(profile);
+      setActiveEditorTab(getCategoryFromProfile(profile));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile.id, isEditorOpen]);
+
   function updateActiveProfileSlot(nextProfile: Profile) {
     const idx = profiles.findIndex((p) => p.id === profile.id);
     if (idx < 0) {
@@ -659,6 +774,140 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
     const next = [...profiles];
     next[idx] = nextProfile;
     onSetProfiles(next);
+  }
+
+  function withEditorDefaults(base: Profile, tab: SavedCardCategory): Profile {
+    if (tab === "PROFILE") {
+      return {
+        ...base,
+        cardCategory: "PROFILE",
+        socialMedia: base.socialMedia ?? {},
+      };
+    }
+
+    if (tab === "ADDRESS") {
+      return {
+        ...base,
+        cardCategory: "ADDRESS",
+        socialMedia: base.socialMedia ?? {},
+        addressCard: {
+          mapLinkLabel: "Click Here",
+          phoneLabel: "Call",
+          emailLabel: "Email",
+          ...(base.addressCard ?? {}),
+        },
+      };
+    }
+
+    if (tab === "BANK") {
+      return {
+        ...base,
+        cardCategory: "BANK",
+        socialMedia: base.socialMedia ?? {},
+        bankCard: {
+          paymentLinkLabel: "Send Money",
+          ...(base.bankCard ?? {}),
+        },
+      };
+    }
+
+    return {
+      ...base,
+      cardCategory: "BUSINESS",
+      socialMedia: base.socialMedia ?? {},
+      businessCard: {
+        bookingLinkLabel: "Book Now",
+        ...(base.businessCard ?? {}),
+      },
+    };
+  }
+
+  function openFocusedEditor(tab: SavedCardCategory) {
+    setSavedCategory(tab);
+    setActiveEditorTab(tab);
+
+    const nextProfile = withEditorDefaults(profile, tab);
+    setEditorProfile(nextProfile);
+    updateActiveProfileSlot(nextProfile);
+    setIsEditorOpen(true);
+  }
+
+  async function handleEditorPhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File size must be less than 10MB");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const assetKey = generateAssetKey("avatar");
+      const localUrl = await storeAsset(file, assetKey, sessionEmail ?? undefined);
+      const next = { ...editorProfile, photoUrl: localUrl };
+      setEditorProfile(next);
+      updateActiveProfileSlot(next);
+      toast.success("Photo uploaded and stored locally");
+    } catch (err) {
+      console.error("Upload error:", err);
+      toast.error("Failed to upload photo");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  async function handleEditorBackgroundUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File size must be less than 10MB");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const assetKey = generateAssetKey("bg");
+      const localUrl = await storeAsset(file, assetKey, sessionEmail ?? undefined);
+      const next = { ...editorProfile, backgroundUrl: localUrl, frameUrl: undefined };
+      setEditorProfile(next);
+      updateActiveProfileSlot(next);
+      toast.success("Background uploaded and stored locally");
+    } catch (err) {
+      console.error("Upload error:", err);
+      toast.error("Failed to upload background");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  function handleEditorClearBackground() {
+    const next = { ...editorProfile, backgroundUrl: undefined, frameUrl: undefined };
+    setEditorProfile(next);
+    updateActiveProfileSlot(next);
+  }
+
+  function flushNamespacedStateNow() {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(
+        `${NAMESPACED_STATE_KEY_PREFIX}${storageNamespace}`,
+        JSON.stringify({
+          schemaVersion: 1,
+          profiles,
+          contacts,
+          updatedAt: new Date().toISOString(),
+        })
+      );
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus("idle"), 2000);
+      toast.success("Saved");
+    } catch {
+      toast.error("Failed to save");
+    }
   }
 
   function handleLoadSavedCard(cardId: string) {
@@ -873,8 +1122,8 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
               key={c.key}
               type="button"
               size="sm"
-              variant={savedCategory === c.key ? "default" : "outline"}
-              onClick={() => setSavedCategory(c.key)}
+              variant={activeEditorTab === c.key ? "default" : "outline"}
+              onClick={() => openFocusedEditor(c.key)}
               disabled={!!busyKey}
             >
               {c.label}
@@ -955,6 +1204,951 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           })}
         </div>
       </div>
+
+      <Dialog open={isEditorOpen} onOpenChange={setIsEditorOpen}>
+        <DialogContent className="sm:max-w-2xl" aria-describedby="nbcard-editor-desc">
+          <DialogHeader>
+            <DialogTitle>
+              {activeEditorTab === "PROFILE"
+                ? "Edit Profile"
+                : activeEditorTab === "ADDRESS"
+                ? "Edit Address Card"
+                : activeEditorTab === "BANK"
+                ? "Edit Bank Card"
+                : "Edit Business Card"}
+            </DialogTitle>
+            <DialogDescription id="nbcard-editor-desc">
+              Changes update the live card instantly and autosave on this device.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="max-h-[70vh] overflow-y-auto pr-1">
+            {saveStatus === "saving" ? <div className="text-xs text-muted-foreground italic">Saving…</div> : null}
+            {saveStatus === "saved" ? <div className="text-xs text-green-600 font-semibold">✓ Saved</div> : null}
+
+            {activeEditorTab === "PROFILE" ? (
+              <div className="mt-4 space-y-6">
+                <GradientSelector
+                  selectedGradient={editorProfile.gradient}
+                  onSelect={(gradient) => {
+                    const next = { ...editorProfile, gradient };
+                    setEditorProfile(next);
+                    updateActiveProfileSlot(next);
+                  }}
+                  onClearBackground={editorProfile.backgroundUrl ? handleEditorClearBackground : undefined}
+                />
+
+                <div>
+                  <label htmlFor="nbcard-editor-bg" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Card Background (optional)
+                  </label>
+
+                  <div className="mb-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                    <h4 className="text-sm font-bold text-gray-800 mb-2">Professional frames made for you</h4>
+                    <p className="text-xs text-gray-600 mb-3">
+                      Choose a frame style for how you want your profile presented.
+                    </p>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedFrameCategory("ADDRESS")}
+                        className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                          selectedFrameCategory === "ADDRESS"
+                            ? "bg-purple-600 text-white"
+                            : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                        }`}
+                      >
+                        Address details
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedFrameCategory("BANK")}
+                        className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                          selectedFrameCategory === "BANK"
+                            ? "bg-purple-600 text-white"
+                            : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                        }`}
+                      >
+                        Bank details
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedFrameCategory("BUSINESS")}
+                        className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                          selectedFrameCategory === "BUSINESS"
+                            ? "bg-purple-600 text-white"
+                            : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                        }`}
+                      >
+                        Business profile
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowFrameChooser(true)}
+                      className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold"
+                      disabled={uploading}
+                    >
+                      Browse Professional Frames
+                    </button>
+                  </div>
+
+                  <input
+                    ref={backgroundInputRef}
+                    id="nbcard-editor-bg"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleEditorBackgroundUpload}
+                    className="hidden"
+                  />
+
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={() => backgroundInputRef.current?.click()}
+                      disabled={uploading}
+                      className="flex-1 px-4 py-3 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                    >
+                      {uploading
+                        ? "Uploading…"
+                        : editorProfile.backgroundUrl || editorProfile.frameUrl
+                        ? "Change Background Image"
+                        : "Upload Background Image"}
+                    </button>
+
+                    {(editorProfile.backgroundUrl || editorProfile.frameUrl) && (
+                      <button
+                        type="button"
+                        onClick={handleEditorClearBackground}
+                        className="px-4 py-3 border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                      >
+                        Use Gradient
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="nbcard-editor-photo" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Profile Photo
+                  </label>
+                  <input
+                    ref={photoInputRef}
+                    id="nbcard-editor-photo"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleEditorPhotoUpload}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => photoInputRef.current?.click()}
+                    disabled={uploading}
+                    className="w-full px-4 py-3 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                  >
+                    {uploading ? "Uploading…" : editorProfile.photoUrl ? "Change Photo" : "Upload Photo"}
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="nbcard-editor-fullName" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Full Name *
+                    </label>
+                    <input
+                      id="nbcard-editor-fullName"
+                      type="text"
+                      required
+                      autoFocus
+                      value={editorProfile.fullName}
+                      onChange={(e) => {
+                        const next = { ...editorProfile, fullName: e.target.value };
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-jobTitle" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Job Title *
+                    </label>
+                    <input
+                      id="nbcard-editor-jobTitle"
+                      type="text"
+                      required
+                      value={editorProfile.jobTitle}
+                      onChange={(e) => {
+                        const next = { ...editorProfile, jobTitle: e.target.value };
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-phone" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Phone
+                    </label>
+                    <input
+                      id="nbcard-editor-phone"
+                      type="tel"
+                      value={editorProfile.phone}
+                      onChange={(e) => {
+                        const next = { ...editorProfile, phone: e.target.value };
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-email" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Email
+                    </label>
+                    <input
+                      id="nbcard-editor-email"
+                      type="email"
+                      value={editorProfile.email}
+                      onChange={(e) => {
+                        const next = { ...editorProfile, email: e.target.value };
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label htmlFor="nbcard-editor-website" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Website
+                    </label>
+                    <input
+                      id="nbcard-editor-website"
+                      type="url"
+                      value={editorProfile.website ?? ""}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const next = {
+                          ...editorProfile,
+                          website: value,
+                          socialMedia: { ...(editorProfile.socialMedia ?? {}), website: value },
+                        };
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      placeholder="https://example.com"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="nbcard-editor-profileDescription" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Profile Description ({(editorProfile.profileDescription ?? "").length}/50)
+                  </label>
+                  <input
+                    id="nbcard-editor-profileDescription"
+                    type="text"
+                    maxLength={50}
+                    value={editorProfile.profileDescription}
+                    onChange={(e) => {
+                      const next = { ...editorProfile, profileDescription: e.target.value };
+                      setEditorProfile(next);
+                      updateActiveProfileSlot(next);
+                    }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-bold text-gray-800 mb-3">Social Links</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {([
+                      { key: "instagram", label: "Instagram", placeholder: "https://instagram.com/yourname" },
+                      { key: "facebook", label: "Facebook", placeholder: "https://facebook.com/yourname" },
+                      { key: "tiktok", label: "TikTok", placeholder: "https://tiktok.com/@yourname" },
+                      { key: "linkedin", label: "LinkedIn", placeholder: "https://linkedin.com/in/yourname" },
+                      { key: "twitter", label: "X (Twitter)", placeholder: "https://x.com/yourname" },
+                    ] as const).map(({ key, label, placeholder }) => (
+                      <div key={key}>
+                        <label htmlFor={`nbcard-editor-social-${key}`} className="block text-sm font-semibold text-gray-700 mb-2">
+                          {label}
+                        </label>
+                        <input
+                          id={`nbcard-editor-social-${key}`}
+                          type="url"
+                          value={editorProfile.socialMedia?.[key] ?? ""}
+                          onChange={(e) => {
+                            const next = {
+                              ...editorProfile,
+                              socialMedia: { ...(editorProfile.socialMedia ?? {}), [key]: e.target.value },
+                            };
+                            setEditorProfile(next);
+                            updateActiveProfileSlot(next);
+                          }}
+                          placeholder={placeholder}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            {activeEditorTab === "ADDRESS" ? (
+              <div className="mt-4 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="nbcard-editor-recipient" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Recipient Name (optional)
+                    </label>
+                    <input
+                      id="nbcard-editor-recipient"
+                      type="text"
+                      autoFocus
+                      value={editorProfile.addressCard?.recipientName ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          {
+                            ...editorProfile,
+                            addressCard: { ...(editorProfile.addressCard ?? {}), recipientName: e.target.value },
+                          },
+                          "ADDRESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-mapLabel" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Map Link Label
+                    </label>
+                    <input
+                      id="nbcard-editor-mapLabel"
+                      type="text"
+                      value={editorProfile.addressCard?.mapLinkLabel ?? "Click Here"}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          {
+                            ...editorProfile,
+                            addressCard: { ...(editorProfile.addressCard ?? {}), mapLinkLabel: e.target.value },
+                          },
+                          "ADDRESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="nbcard-editor-address1" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Address Line 1
+                    </label>
+                    <input
+                      id="nbcard-editor-address1"
+                      type="text"
+                      value={editorProfile.addressCard?.addressLine1 ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          {
+                            ...editorProfile,
+                            addressCard: { ...(editorProfile.addressCard ?? {}), addressLine1: e.target.value },
+                          },
+                          "ADDRESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-address2" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Address Line 2
+                    </label>
+                    <input
+                      id="nbcard-editor-address2"
+                      type="text"
+                      value={editorProfile.addressCard?.addressLine2 ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          {
+                            ...editorProfile,
+                            addressCard: { ...(editorProfile.addressCard ?? {}), addressLine2: e.target.value },
+                          },
+                          "ADDRESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-city" className="block text-sm font-semibold text-gray-700 mb-2">
+                      City
+                    </label>
+                    <input
+                      id="nbcard-editor-city"
+                      type="text"
+                      value={editorProfile.addressCard?.city ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          {
+                            ...editorProfile,
+                            addressCard: { ...(editorProfile.addressCard ?? {}), city: e.target.value },
+                          },
+                          "ADDRESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-postcode" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Postcode
+                    </label>
+                    <input
+                      id="nbcard-editor-postcode"
+                      type="text"
+                      value={editorProfile.addressCard?.postcode ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          {
+                            ...editorProfile,
+                            addressCard: { ...(editorProfile.addressCard ?? {}), postcode: e.target.value },
+                          },
+                          "ADDRESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label htmlFor="nbcard-editor-country" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Country
+                    </label>
+                    <input
+                      id="nbcard-editor-country"
+                      type="text"
+                      value={editorProfile.addressCard?.country ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          {
+                            ...editorProfile,
+                            addressCard: { ...(editorProfile.addressCard ?? {}), country: e.target.value },
+                          },
+                          "ADDRESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="nbcard-editor-directions" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Directions Note (optional, short)
+                  </label>
+                  <input
+                    id="nbcard-editor-directions"
+                    type="text"
+                    maxLength={60}
+                    value={editorProfile.addressCard?.directionsNote ?? ""}
+                    onChange={(e) => {
+                      const next = withEditorDefaults(
+                        {
+                          ...editorProfile,
+                          addressCard: { ...(editorProfile.addressCard ?? {}), directionsNote: e.target.value },
+                        },
+                        "ADDRESS"
+                      );
+                      setEditorProfile(next);
+                      updateActiveProfileSlot(next);
+                    }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="nbcard-editor-mapOverride" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Map Query Override (optional)
+                  </label>
+                  <input
+                    id="nbcard-editor-mapOverride"
+                    type="text"
+                    value={editorProfile.addressCard?.mapQueryOverride ?? ""}
+                    onChange={(e) => {
+                      const next = withEditorDefaults(
+                        {
+                          ...editorProfile,
+                          addressCard: { ...(editorProfile.addressCard ?? {}), mapQueryOverride: e.target.value },
+                        },
+                        "ADDRESS"
+                      );
+                      setEditorProfile(next);
+                      updateActiveProfileSlot(next);
+                    }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="nbcard-editor-phoneLabel" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Phone Label
+                    </label>
+                    <input
+                      id="nbcard-editor-phoneLabel"
+                      type="text"
+                      value={editorProfile.addressCard?.phoneLabel ?? "Call"}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          {
+                            ...editorProfile,
+                            addressCard: { ...(editorProfile.addressCard ?? {}), phoneLabel: e.target.value },
+                          },
+                          "ADDRESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-emailLabel" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Email Label
+                    </label>
+                    <input
+                      id="nbcard-editor-emailLabel"
+                      type="text"
+                      value={editorProfile.addressCard?.emailLabel ?? "Email"}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          {
+                            ...editorProfile,
+                            addressCard: { ...(editorProfile.addressCard ?? {}), emailLabel: e.target.value },
+                          },
+                          "ADDRESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            {activeEditorTab === "BANK" ? (
+              <div className="mt-4 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="nbcard-editor-bank-accountName" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Account Name
+                    </label>
+                    <input
+                      id="nbcard-editor-bank-accountName"
+                      type="text"
+                      autoFocus
+                      value={editorProfile.bankCard?.accountName ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, bankCard: { ...(editorProfile.bankCard ?? {}), accountName: e.target.value } },
+                          "BANK"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-bank-bankName" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Bank Name
+                    </label>
+                    <input
+                      id="nbcard-editor-bank-bankName"
+                      type="text"
+                      value={editorProfile.bankCard?.bankName ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, bankCard: { ...(editorProfile.bankCard ?? {}), bankName: e.target.value } },
+                          "BANK"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-bank-sortCode" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Sort Code
+                    </label>
+                    <input
+                      id="nbcard-editor-bank-sortCode"
+                      type="text"
+                      value={editorProfile.bankCard?.sortCode ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, bankCard: { ...(editorProfile.bankCard ?? {}), sortCode: e.target.value } },
+                          "BANK"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-bank-accountNumber" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Account Number
+                    </label>
+                    <input
+                      id="nbcard-editor-bank-accountNumber"
+                      type="text"
+                      value={editorProfile.bankCard?.accountNumber ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, bankCard: { ...(editorProfile.bankCard ?? {}), accountNumber: e.target.value } },
+                          "BANK"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-bank-iban" className="block text-sm font-semibold text-gray-700 mb-2">
+                      IBAN (optional)
+                    </label>
+                    <input
+                      id="nbcard-editor-bank-iban"
+                      type="text"
+                      value={editorProfile.bankCard?.iban ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, bankCard: { ...(editorProfile.bankCard ?? {}), iban: e.target.value } },
+                          "BANK"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-bank-swift" className="block text-sm font-semibold text-gray-700 mb-2">
+                      SWIFT/BIC (optional)
+                    </label>
+                    <input
+                      id="nbcard-editor-bank-swift"
+                      type="text"
+                      value={editorProfile.bankCard?.swiftBic ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, bankCard: { ...(editorProfile.bankCard ?? {}), swiftBic: e.target.value } },
+                          "BANK"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="nbcard-editor-bank-paymentLink" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Payment Link (optional)
+                    </label>
+                    <input
+                      id="nbcard-editor-bank-paymentLink"
+                      type="url"
+                      value={editorProfile.bankCard?.paymentLink ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, bankCard: { ...(editorProfile.bankCard ?? {}), paymentLink: e.target.value } },
+                          "BANK"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-bank-paymentLabel" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Payment Link Label
+                    </label>
+                    <input
+                      id="nbcard-editor-bank-paymentLabel"
+                      type="text"
+                      value={editorProfile.bankCard?.paymentLinkLabel ?? "Send Money"}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, bankCard: { ...(editorProfile.bankCard ?? {}), paymentLinkLabel: e.target.value } },
+                          "BANK"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="nbcard-editor-bank-reference" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Reference Note (optional, short)
+                  </label>
+                  <input
+                    id="nbcard-editor-bank-reference"
+                    type="text"
+                    maxLength={60}
+                    value={editorProfile.bankCard?.referenceNote ?? ""}
+                    onChange={(e) => {
+                      const next = withEditorDefaults(
+                        { ...editorProfile, bankCard: { ...(editorProfile.bankCard ?? {}), referenceNote: e.target.value } },
+                        "BANK"
+                      );
+                      setEditorProfile(next);
+                      updateActiveProfileSlot(next);
+                    }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            ) : null}
+
+            {activeEditorTab === "BUSINESS" ? (
+              <div className="mt-4 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="nbcard-editor-business-company" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Company Name
+                    </label>
+                    <input
+                      id="nbcard-editor-business-company"
+                      type="text"
+                      autoFocus
+                      value={editorProfile.businessCard?.companyName ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, businessCard: { ...(editorProfile.businessCard ?? {}), companyName: e.target.value } },
+                          "BUSINESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-business-tagline" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Tagline (optional, short)
+                    </label>
+                    <input
+                      id="nbcard-editor-business-tagline"
+                      type="text"
+                      maxLength={60}
+                      value={editorProfile.businessCard?.tagline ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, businessCard: { ...(editorProfile.businessCard ?? {}), tagline: e.target.value } },
+                          "BUSINESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label htmlFor="nbcard-editor-business-services" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Services (short, max 80)
+                    </label>
+                    <input
+                      id="nbcard-editor-business-services"
+                      type="text"
+                      maxLength={80}
+                      value={editorProfile.businessCard?.services ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, businessCard: { ...(editorProfile.businessCard ?? {}), services: e.target.value } },
+                          "BUSINESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-business-website" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Website URL
+                    </label>
+                    <input
+                      id="nbcard-editor-business-website"
+                      type="url"
+                      value={editorProfile.businessCard?.websiteUrl ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, businessCard: { ...(editorProfile.businessCard ?? {}), websiteUrl: e.target.value } },
+                          "BUSINESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-business-location" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Location Note (optional)
+                    </label>
+                    <input
+                      id="nbcard-editor-business-location"
+                      type="text"
+                      maxLength={60}
+                      value={editorProfile.businessCard?.locationNote ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, businessCard: { ...(editorProfile.businessCard ?? {}), locationNote: e.target.value } },
+                          "BUSINESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-business-hours" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Hours (optional)
+                    </label>
+                    <input
+                      id="nbcard-editor-business-hours"
+                      type="text"
+                      maxLength={60}
+                      value={editorProfile.businessCard?.hours ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, businessCard: { ...(editorProfile.businessCard ?? {}), hours: e.target.value } },
+                          "BUSINESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-business-vat" className="block text-sm font-semibold text-gray-700 mb-2">
+                      VAT/Reg No (optional)
+                    </label>
+                    <input
+                      id="nbcard-editor-business-vat"
+                      type="text"
+                      value={editorProfile.businessCard?.vatOrRegNo ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, businessCard: { ...(editorProfile.businessCard ?? {}), vatOrRegNo: e.target.value } },
+                          "BUSINESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="nbcard-editor-business-booking" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Booking Link (optional)
+                    </label>
+                    <input
+                      id="nbcard-editor-business-booking"
+                      type="url"
+                      value={editorProfile.businessCard?.bookingLink ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, businessCard: { ...(editorProfile.businessCard ?? {}), bookingLink: e.target.value } },
+                          "BUSINESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-business-bookingLabel" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Booking Link Label
+                    </label>
+                    <input
+                      id="nbcard-editor-business-bookingLabel"
+                      type="text"
+                      value={editorProfile.businessCard?.bookingLinkLabel ?? "Book Now"}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, businessCard: { ...(editorProfile.businessCard ?? {}), bookingLinkLabel: e.target.value } },
+                          "BUSINESS"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          <DialogFooter>
+            <Button type="button" variant="secondary" onClick={flushNamespacedStateNow}>
+              Save
+            </Button>
+            <Button type="button" variant="outline" onClick={() => setIsEditorOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {showFrameChooser ? (
+        <FrameChooser
+          category={selectedFrameCategory}
+          onSelect={(frameUrl) => {
+            const next = { ...editorProfile, frameUrl, backgroundUrl: undefined };
+            setEditorProfile(next);
+            updateActiveProfileSlot(next);
+            setShowFrameChooser(false);
+          }}
+          onClose={() => setShowFrameChooser(false)}
+        />
+      ) : null}
 
       <Dialog open={isQrOpen} onOpenChange={setIsQrOpen}>
         <DialogContent className="sm:max-w-md">

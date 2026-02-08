@@ -48,14 +48,16 @@ export interface Profile {
     tiktok?: string;
     linkedin?: string;
     twitter?: string;
+    website?: string;
     youtube?: string;
     snapchat?: string;
     pinterest?: string;
     whatsapp?: string;
   };
   // Category-specific fields (NB-Card enhancement)
-  cardCategory?: "ADDRESS" | "BANK" | "BUSINESS";
+  cardCategory?: "PROFILE" | "ADDRESS" | "BANK" | "BUSINESS";
   addressCard?: {
+    recipientName?: string;
     addressLine1?: string;
     addressLine2?: string;
     city?: string;
@@ -64,6 +66,8 @@ export interface Profile {
     directionsNote?: string;
     mapLinkLabel?: string;
     mapQueryOverride?: string;
+    phoneLabel?: string;
+    emailLabel?: string;
   };
   bankCard?: {
     accountName?: string;
@@ -78,6 +82,7 @@ export interface Profile {
   };
   businessCard?: {
     companyName?: string;
+    tagline?: string;
     services?: string;
     websiteUrl?: string;
     locationNote?: string;
@@ -86,6 +91,23 @@ export interface Profile {
     bookingLinkLabel?: string;
     vatOrRegNo?: string;
   };
+}
+
+// NB-Card guest namespace: shared with `web/app/contact/lib/nbcard-assets.ts`
+const NBCARD_DEVICE_ID_KEY = "nbcard-device-id";
+
+export function getOrCreateNbcardDeviceId(): string {
+  if (typeof window === "undefined") return "default";
+  let deviceId = window.localStorage.getItem(NBCARD_DEVICE_ID_KEY);
+  if (deviceId) return deviceId;
+
+  const uuid =
+    typeof window.crypto?.randomUUID === "function"
+      ? window.crypto.randomUUID()
+      : `device-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+  deviceId = `device-${uuid}`;
+  window.localStorage.setItem(NBCARD_DEVICE_ID_KEY, deviceId);
+  return deviceId;
 }
 
 export interface Contact {
