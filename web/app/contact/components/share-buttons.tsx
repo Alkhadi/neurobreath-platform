@@ -702,7 +702,10 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
     setSavedCards(nextCards);
     setActiveSavedCardId(namespace, savedCategory, id);
     setActiveSavedIds((prev) => ({ ...prev, [savedCategory]: id }));
-    toast.success("Saved new card");
+
+    // Load immediately so the user can edit/share this exact snapshot.
+    updateActiveProfileSlot(nextProfile);
+    toast.success("Saved & loaded");
   }
 
   function handleUpdateSelected() {

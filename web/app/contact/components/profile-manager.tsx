@@ -11,7 +11,10 @@ import {
   clearProfileDraft,
   getNbcardStorageNamespace,
   loadProfileDraft,
+  loadSavedCards,
+  normalizeProfileForCategory,
   saveProfileDraft,
+  upsertSavedCard,
 } from "@/lib/nbcard-saved-cards";
 
 type FrameCategory = "ADDRESS" | "BANK" | "BUSINESS";
@@ -150,6 +153,26 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
     if (profile.id) {
       clearProfileDraft(namespace, profile.id);
     }
+
+    // If this profile corresponds to a Saved Card, persist it back automatically.
+    // This makes Saved Cards fully editable via the existing modal.
+    try {
+      const saved = loadSavedCards(namespace);
+      const existing = saved.find((c) => c.id === editedProfile.id);
+      if (existing) {
+        upsertSavedCard(namespace, {
+          ...existing,
+          category: existing.category,
+          name: existing.name,
+          createdAt: existing.createdAt,
+          updatedAt: existing.updatedAt,
+          profile: normalizeProfileForCategory(editedProfile, existing.category),
+        });
+      }
+    } catch {
+      // Best-effort; still allow primary save.
+    }
+
     onSave(editedProfile);
   };
 
