@@ -6,6 +6,7 @@ import { Profile } from "@/lib/utils";
 import { GradientSelector } from "./gradient-selector";
 import { FrameChooser } from "./frame-chooser";
 import { FaSave, FaTimes, FaTrash } from "react-icons/fa";
+import { saveUserAsset } from "@/app/uk/resources/nb-card/_assetResolver";
 
 type FrameCategory = "ADDRESS" | "BANK" | "BUSINESS";
 
@@ -45,7 +46,17 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
     setUploading(true);
 
     try {
-      // Get presigned URL
+      // LIVE EDIT: Try local storage first (instant, offline-safe)
+      try {
+        const localUrl = await saveUserAsset(file);
+        setEditedProfile({ ...editedProfile, photoUrl: localUrl });
+        toast.success("Photo stored locally (device)");
+        return; // Skip cloud upload
+      } catch (localErr) {
+        console.warn("Local storage failed, trying cloud:", localErr);
+      }
+
+      // Fallback to cloud upload
       const presignedRes = await fetch("/api/upload/presigned", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -100,10 +111,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
       const { fileUrl } = await completeRes.json();
 
       setEditedProfile({ ...editedProfile, photoUrl: fileUrl });
+      toast.success("Photo uploaded to cloud");
     } catch (error) {
       console.error("Upload error:", error);
 
-      // Fallback: store locally as data URL so avatar still updates on this device.
+      // Final fallback: store locally as data URL so avatar still updates on this device.
       try {
         const dataUrl = await toDataUrl(file);
         setEditedProfile({ ...editedProfile, photoUrl: dataUrl });
@@ -135,6 +147,17 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
     setUploading(true);
 
     try {
+      // LIVE EDIT: Try local storage first (instant, offline-safe)
+      try {
+        const localUrl = await saveUserAsset(file);
+        setEditedProfile({ ...editedProfile, backgroundUrl: localUrl });
+        toast.success("Background stored locally (device)");
+        return; // Skip cloud upload
+      } catch (localErr) {
+        console.warn("Local storage failed, trying cloud:", localErr);
+      }
+
+      // Fallback to cloud upload
       const presignedRes = await fetch("/api/upload/presigned", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -186,6 +209,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
       const { fileUrl } = await completeRes.json();
 
       setEditedProfile({ ...editedProfile, backgroundUrl: fileUrl });
+      toast.success("Background uploaded to cloud");
     } catch (error) {
       console.error("Background upload error:", error);
       try {

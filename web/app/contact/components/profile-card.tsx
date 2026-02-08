@@ -3,6 +3,9 @@
 import { Profile, cn } from "@/lib/utils";
 import { FaInstagram, FaFacebook, FaTiktok, FaLinkedin, FaTwitter, FaGlobe, FaPhone, FaEnvelope, FaHome } from "react-icons/fa";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { CaptureImage } from "@/app/uk/resources/nb-card/_captureImage";
+import { resolveAssetUrl, revokeAssetUrl } from "@/app/uk/resources/nb-card/_assetResolver";
 import styles from "./profile-card.module.css";
 
 interface ProfileCardProps {
@@ -12,6 +15,52 @@ interface ProfileCardProps {
 }
 
 export function ProfileCard({ profile, onPhotoClick, showEditButton = false }: ProfileCardProps) {
+  // State for resolved asset URLs (for capture subtree rendering)
+  const [resolvedBackground, setResolvedBackground] = useState<{ src: string; revoke?: () => void } | null>(null);
+  const [resolvedAvatar, setResolvedAvatar] = useState<{ src: string; revoke?: () => void } | null>(null);
+
+  // Resolve asset URLs on mount and when profile changes
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      // Resolve new URLs
+      const [bg, av] = await Promise.all([
+        resolveAssetUrl(profile?.frameUrl || profile?.backgroundUrl),
+        resolveAssetUrl(profile?.photoUrl),
+      ]);
+
+      if (!cancelled) {
+        // Clean up previous URLs before setting new ones
+        setResolvedBackground((prev) => {
+          revokeAssetUrl(prev);
+          return bg;
+        });
+        setResolvedAvatar((prev) => {
+          revokeAssetUrl(prev);
+          return av;
+        });
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [profile?.frameUrl, profile?.backgroundUrl, profile?.photoUrl]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      setResolvedBackground((prev) => {
+        revokeAssetUrl(prev);
+        return null;
+      });
+      setResolvedAvatar((prev) => {
+        revokeAssetUrl(prev);
+        return null;
+      });
+    };
+  }, []);
   const gradientClassMap: Record<string, string> = {
     "linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)": "bg-gradient-to-br from-purple-600 to-blue-500",
     "linear-gradient(135deg, #667eea 0%, #764ba2 100%)": "bg-gradient-to-br from-indigo-500 to-purple-600",
@@ -45,26 +94,34 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false }: P
         hasBackgroundImage && "bg-gray-900"
       )}
     >
-      {hasBackgroundImage && (
+      {/* BACKGROUND: Use CaptureImage inside capture subtree for capture-safe rendering */}
+      {hasBackgroundImage && resolvedBackground?.src && (
         <div className="absolute inset-0 -z-10">
-          <Image
-            src={(profile?.frameUrl || profile?.backgroundUrl) ?? ""}
+          <CaptureImage
+            src={resolvedBackground.src}
             alt="Card background"
-            fill
-            className="object-cover"
-            unoptimized
-            sizes="100vw"
+            className="w-full h-full"
+            objectFit="cover"
+            objectPosition="center"
           />
           <div className="absolute inset-0 bg-black/30" aria-hidden="true" />
         </div>
       )}
 
       <div className="p-8 text-white relative">
-        {/* Profile Photo */}
+        {/* Profile Photo: Use CaptureImage inside capture subtree */}
         <div className="flex justify-center mb-6">
           <div className="relative group">
             <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-white">
-              {profile?.photoUrl ? (
+              {resolvedAvatar?.src ? (
+                <CaptureImage
+                  src={resolvedAvatar.src}
+                  alt={profile?.fullName ?? "Profile"}
+                  className="w-full h-full"
+                  objectFit="cover"
+                  objectPosition="center"
+                />
+              ) : profile?.photoUrl ? (
                 <div className="relative w-full h-full">
                   <Image
                     src={profile.photoUrl}

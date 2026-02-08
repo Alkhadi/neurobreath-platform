@@ -92,6 +92,10 @@ async function captureProfileCardPng(): Promise<Blob> {
     })
   );
 
+  // CRITICAL: Wait 2 animation frames for layout flush after user edits background/avatar
+  // This ensures html2canvas captures the final rendered state
+  await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+
   const canvas = await html2canvas(target, {
     scale: 2,
     backgroundColor: null,
