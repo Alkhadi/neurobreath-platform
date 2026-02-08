@@ -304,12 +304,60 @@ function renderShareText(profile: Profile, shareUrl: string): string {
     socials.forEach(s => lines.push(s));
   }
   
-  // Bank details
+  // Bank details (legacy fields)
   if (profile.bankSortCode || profile.bankAccountNumber) {
     lines.push(""); // blank line
     lines.push("Bank Details:");
     if (profile.bankSortCode) lines.push(`Sort Code: ${profile.bankSortCode}`);
     if (profile.bankAccountNumber) lines.push(`Account: ${profile.bankAccountNumber}`);
+  }
+
+  // Category-specific details
+  if (profile.cardCategory === "ADDRESS" && profile.addressCard) {
+    lines.push("");
+    lines.push("📍 Address:");
+    if (profile.addressCard.addressLine1) lines.push(profile.addressCard.addressLine1);
+    if (profile.addressCard.addressLine2) lines.push(profile.addressCard.addressLine2);
+    const cityLine = [profile.addressCard.city, profile.addressCard.postcode].filter(Boolean).join(", ");
+    if (cityLine) lines.push(cityLine);
+    if (profile.addressCard.country) lines.push(profile.addressCard.country);
+    if (profile.addressCard.directionsNote) lines.push(`Note: ${profile.addressCard.directionsNote}`);
+    const mapQuery = profile.addressCard.mapQueryOverride || 
+      [profile.addressCard.addressLine1, profile.addressCard.addressLine2, profile.addressCard.city, profile.addressCard.postcode, profile.addressCard.country]
+        .filter(Boolean).join(", ");
+    if (mapQuery) {
+      const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
+      lines.push(`${profile.addressCard.mapLinkLabel || "Click Here"}: ${mapsLink}`);
+    }
+  }
+
+  if (profile.cardCategory === "BANK" && profile.bankCard) {
+    lines.push("");
+    lines.push("💳 Bank Details:");
+    if (profile.bankCard.bankName) lines.push(`Bank: ${profile.bankCard.bankName}`);
+    if (profile.bankCard.accountName) lines.push(`Account Name: ${profile.bankCard.accountName}`);
+    if (profile.bankCard.sortCode) lines.push(`Sort Code: ${profile.bankCard.sortCode}`);
+    if (profile.bankCard.accountNumber) lines.push(`Account Number: ${profile.bankCard.accountNumber}`);
+    if (profile.bankCard.iban) lines.push(`IBAN: ${profile.bankCard.iban}`);
+    if (profile.bankCard.swiftBic) lines.push(`SWIFT/BIC: ${profile.bankCard.swiftBic}`);
+    if (profile.bankCard.referenceNote) lines.push(`Note: ${profile.bankCard.referenceNote}`);
+    if (profile.bankCard.paymentLink) {
+      lines.push(`${profile.bankCard.paymentLinkLabel || "Send Money"}: ${profile.bankCard.paymentLink}`);
+    }
+  }
+
+  if (profile.cardCategory === "BUSINESS" && profile.businessCard) {
+    lines.push("");
+    lines.push("💼 Business:");
+    if (profile.businessCard.companyName) lines.push(`Company: ${profile.businessCard.companyName}`);
+    if (profile.businessCard.services) lines.push(`Services: ${profile.businessCard.services}`);
+    if (profile.businessCard.websiteUrl) lines.push(`Website: ${profile.businessCard.websiteUrl}`);
+    if (profile.businessCard.hours) lines.push(`Hours: ${profile.businessCard.hours}`);
+    if (profile.businessCard.locationNote) lines.push(`Location: ${profile.businessCard.locationNote}`);
+    if (profile.businessCard.vatOrRegNo) lines.push(`VAT/Reg: ${profile.businessCard.vatOrRegNo}`);
+    if (profile.businessCard.bookingLink) {
+      lines.push(`${profile.businessCard.bookingLinkLabel || "Book Now"}: ${profile.businessCard.bookingLink}`);
+    }
   }
   
   // Profile link

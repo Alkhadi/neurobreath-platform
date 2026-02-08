@@ -284,6 +284,152 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
             <p className="text-sm opacity-90">{profile.businessDescription}</p>
           </div>
         )}
+
+        {/* Category-specific Details Blocks */}
+        {profile?.cardCategory === "ADDRESS" && profile?.addressCard && (
+          <div className="mt-6 bg-white/10 backdrop-blur-md p-4 rounded-lg">
+            <h3 className="font-semibold mb-3 text-base">Address</h3>
+            <div className="text-sm space-y-1">
+              {profile.addressCard.addressLine1 && <p>{profile.addressCard.addressLine1}</p>}
+              {profile.addressCard.addressLine2 && <p>{profile.addressCard.addressLine2}</p>}
+              {profile.addressCard.city && profile.addressCard.postcode && (
+                <p>{profile.addressCard.city}, {profile.addressCard.postcode}</p>
+              )}
+              {profile.addressCard.country && <p>{profile.addressCard.country}</p>}
+              {profile.addressCard.directionsNote && (
+                <p className="mt-2 text-xs opacity-75 italic">{profile.addressCard.directionsNote}</p>
+              )}
+              {(profile.addressCard.addressLine1 || profile.addressCard.mapQueryOverride) && (
+                <div className="mt-3 pt-3 border-t border-white/20">
+                  <p className="text-xs opacity-75 mb-1">Find Address:</p>
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                      profile.addressCard.mapQueryOverride ||
+                      [
+                        profile.addressCard.addressLine1,
+                        profile.addressCard.addressLine2,
+                        profile.addressCard.city,
+                        profile.addressCard.postcode,
+                        profile.addressCard.country,
+                      ]
+                        .filter(Boolean)
+                        .join(", ")
+                    )}`}
+                    data-pdf-link={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                      profile.addressCard.mapQueryOverride ||
+                      [
+                        profile.addressCard.addressLine1,
+                        profile.addressCard.addressLine2,
+                        profile.addressCard.city,
+                        profile.addressCard.postcode,
+                        profile.addressCard.country,
+                      ]
+                        .filter(Boolean)
+                        .join(", ")
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-semibold underline hover:opacity-80 transition-opacity"
+                  >
+                    {profile.addressCard.mapLinkLabel || "Click Here"}
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {profile?.cardCategory === "BANK" && profile?.bankCard && (
+          <div className="mt-6 bg-white/10 backdrop-blur-md p-4 rounded-lg">
+            <h3 className="font-semibold mb-3 text-base">Bank Details</h3>
+            <div className="text-sm space-y-2">
+              {profile.bankCard.bankName && (
+                <p><span className="opacity-75">Bank:</span> {profile.bankCard.bankName}</p>
+              )}
+              {profile.bankCard.accountName && (
+                <p><span className="opacity-75">Account Name:</span> {profile.bankCard.accountName}</p>
+              )}
+              {profile.bankCard.sortCode && (
+                <p><span className="opacity-75">Sort Code:</span> {profile.bankCard.sortCode}</p>
+              )}
+              {profile.bankCard.accountNumber && (
+                <p><span className="opacity-75">Account Number:</span> {profile.bankCard.accountNumber}</p>
+              )}
+              {profile.bankCard.iban && (
+                <p><span className="opacity-75">IBAN:</span> {profile.bankCard.iban}</p>
+              )}
+              {profile.bankCard.swiftBic && (
+                <p><span className="opacity-75">SWIFT/BIC:</span> {profile.bankCard.swiftBic}</p>
+              )}
+              {profile.bankCard.referenceNote && (
+                <p className="mt-2 text-xs opacity-75 italic">{profile.bankCard.referenceNote}</p>
+              )}
+              {profile.bankCard.paymentLink && (
+                <div className="mt-3 pt-3 border-t border-white/20">
+                  <a
+                    href={profile.bankCard.paymentLink}
+                    data-pdf-link={profile.bankCard.paymentLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold hover:bg-white/30 transition-colors"
+                  >
+                    {profile.bankCard.paymentLinkLabel || "Send Money"}
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {profile?.cardCategory === "BUSINESS" && profile?.businessCard && (
+          <div className="mt-6 bg-white/10 backdrop-blur-md p-4 rounded-lg">
+            <h3 className="font-semibold mb-3 text-base">Business</h3>
+            <div className="text-sm space-y-2">
+              {profile.businessCard.companyName && (
+                <p className="font-semibold text-base">{profile.businessCard.companyName}</p>
+              )}
+              {profile.businessCard.services && (
+                <p className="opacity-90">{profile.businessCard.services}</p>
+              )}
+              {profile.businessCard.websiteUrl && (
+                <p>
+                  <span className="opacity-75">Website:</span>{" "}
+                  <a
+                    href={profile.businessCard.websiteUrl}
+                    data-pdf-link={profile.businessCard.websiteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:opacity-80 transition-opacity"
+                  >
+                    {profile.businessCard.websiteUrl}
+                  </a>
+                </p>
+              )}
+              {profile.businessCard.hours && (
+                <p><span className="opacity-75">Hours:</span> {profile.businessCard.hours}</p>
+              )}
+              {profile.businessCard.locationNote && (
+                <p><span className="opacity-75">Location:</span> {profile.businessCard.locationNote}</p>
+              )}
+              {profile.businessCard.vatOrRegNo && (
+                <p className="text-xs opacity-75">VAT/Reg: {profile.businessCard.vatOrRegNo}</p>
+              )}
+              {profile.businessCard.bookingLink && (
+                <div className="mt-3 pt-3 border-t border-white/20">
+                  <a
+                    href={profile.businessCard.bookingLink}
+                    data-pdf-link={profile.businessCard.bookingLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold hover:bg-white/30 transition-colors"
+                  >
+                    {profile.businessCard.bookingLinkLabel || "Book Now"}
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

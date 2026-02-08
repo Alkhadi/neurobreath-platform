@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { Profile } from "@/lib/utils";
 import { GradientSelector } from "./gradient-selector";
@@ -23,9 +23,43 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
   const [editedProfile, setEditedProfile] = useState<Profile>(profile);
   const [uploading, setUploading] = useState(false);
   const [showFrameChooser, setShowFrameChooser] = useState(false);
-  const [selectedFrameCategory, setSelectedFrameCategory] = useState<FrameCategory>("ADDRESS");
+  const [selectedFrameCategory, setSelectedFrameCategory] = useState<FrameCategory>(
+    profile.cardCategory || "ADDRESS"
+  );
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const backgroundInputRef = useRef<HTMLInputElement>(null);
+  const autosaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Autosave: debounced save (600ms)
+  const triggerAutosave = useCallback(() => {
+    if (autosaveTimerRef.current) {
+      clearTimeout(autosaveTimerRef.current);
+    }
+    setSaveStatus("saving");
+    autosaveTimerRef.current = setTimeout(() => {
+      onSave(editedProfile);
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus("idle"), 2000);
+    }, 600);
+  }, [editedProfile, onSave]);
+
+  // Trigger autosave when editedProfile changes (except on initial mount)
+  useEffect(() => {
+    if (editedProfile !== profile) {
+      triggerAutosave();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editedProfile]);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (autosaveTimerRef.current) {
+        clearTimeout(autosaveTimerRef.current);
+      }
+    };
+  }, []);
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -342,6 +376,556 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Card Details Section (Category-specific inputs) */}
+          <div className="border-t border-gray-200 pt-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold text-gray-800">Card Details</h3>
+              {saveStatus === "saving" && (
+                <span className="text-sm text-gray-500 italic">Saving...</span>
+              )}
+              {saveStatus === "saved" && (
+                <span className="text-sm text-green-600 font-semibold">✓ Saved</span>
+              )}
+            </div>
+            <p className="text-xs text-gray-600 mb-4">
+              Fill in details specific to the category you selected above ({selectedFrameCategory}).
+              These will appear on your card.
+            </p>
+
+            {/* ADDRESS CARD FIELDS */}
+            {selectedFrameCategory === "ADDRESS" && (
+              <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="flex justify-between items-center mb-2">
+                  <h4 className="text-sm font-bold text-gray-800">Address Card</h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditedProfile({
+                        ...editedProfile,
+                        cardCategory: "ADDRESS",
+                        addressCard: {},
+                      });
+                      toast.success("Address fields reset");
+                    }}
+                    className="text-xs text-red-600 hover:underline"
+                  >
+                    Reset this section
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="address-line1" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Address Line 1
+                    </label>
+                    <input
+                      id="address-line1"
+                      type="text"
+                      value={editedProfile.addressCard?.addressLine1 ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "ADDRESS",
+                          addressCard: { ...editedProfile.addressCard, addressLine1: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="address-line2" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Address Line 2
+                    </label>
+                    <input
+                      id="address-line2"
+                      type="text"
+                      value={editedProfile.addressCard?.addressLine2 ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "ADDRESS",
+                          addressCard: { ...editedProfile.addressCard, addressLine2: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="address-city" className="block text-sm font-semibold text-gray-700 mb-2">
+                      City
+                    </label>
+                    <input
+                      id="address-city"
+                      type="text"
+                      value={editedProfile.addressCard?.city ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "ADDRESS",
+                          addressCard: { ...editedProfile.addressCard, city: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="address-postcode" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Postcode
+                    </label>
+                    <input
+                      id="address-postcode"
+                      type="text"
+                      value={editedProfile.addressCard?.postcode ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "ADDRESS",
+                          addressCard: { ...editedProfile.addressCard, postcode: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="address-country" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Country
+                    </label>
+                    <input
+                      id="address-country"
+                      type="text"
+                      value={editedProfile.addressCard?.country ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "ADDRESS",
+                          addressCard: { ...editedProfile.addressCard, country: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="address-map-label" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Map Link Label
+                    </label>
+                    <input
+                      id="address-map-label"
+                      type="text"
+                      placeholder="Click Here"
+                      value={editedProfile.addressCard?.mapLinkLabel ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "ADDRESS",
+                          addressCard: { ...editedProfile.addressCard, mapLinkLabel: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="address-directions" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Directions Note (short)
+                  </label>
+                  <input
+                    id="address-directions"
+                    type="text"
+                    maxLength={60}
+                    value={editedProfile.addressCard?.directionsNote ?? ""}
+                    onChange={(e) =>
+                      setEditedProfile({
+                        ...editedProfile,
+                        cardCategory: "ADDRESS",
+                        addressCard: { ...editedProfile.addressCard, directionsNote: e.target.value },
+                      })
+                    }
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="address-map-override" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Custom Map Query (optional, overrides address fields)
+                  </label>
+                  <input
+                    id="address-map-override"
+                    type="text"
+                    value={editedProfile.addressCard?.mapQueryOverride ?? ""}
+                    onChange={(e) =>
+                      setEditedProfile({
+                        ...editedProfile,
+                        cardCategory: "ADDRESS",
+                        addressCard: { ...editedProfile.addressCard, mapQueryOverride: e.target.value },
+                      })
+                    }
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* BANK CARD FIELDS */}
+            {selectedFrameCategory === "BANK" && (
+              <div className="space-y-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                <div className="flex justify-between items-center mb-2">
+                  <h4 className="text-sm font-bold text-gray-800">Bank Card</h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditedProfile({
+                        ...editedProfile,
+                        cardCategory: "BANK",
+                        bankCard: {},
+                      });
+                      toast.success("Bank fields reset");
+                    }}
+                    className="text-xs text-red-600 hover:underline"
+                  >
+                    Reset this section
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="bank-account-name" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Account Name
+                    </label>
+                    <input
+                      id="bank-account-name"
+                      type="text"
+                      value={editedProfile.bankCard?.accountName ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "BANK",
+                          bankCard: { ...editedProfile.bankCard, accountName: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="bank-name" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Bank Name
+                    </label>
+                    <input
+                      id="bank-name"
+                      type="text"
+                      value={editedProfile.bankCard?.bankName ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "BANK",
+                          bankCard: { ...editedProfile.bankCard, bankName: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="bank-sort-code" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Sort Code
+                    </label>
+                    <input
+                      id="bank-sort-code"
+                      type="text"
+                      value={editedProfile.bankCard?.sortCode ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "BANK",
+                          bankCard: { ...editedProfile.bankCard, sortCode: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="bank-account-number" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Account Number
+                    </label>
+                    <input
+                      id="bank-account-number"
+                      type="text"
+                      value={editedProfile.bankCard?.accountNumber ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "BANK",
+                          bankCard: { ...editedProfile.bankCard, accountNumber: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="bank-iban" className="block text-sm font-semibold text-gray-700 mb-2">
+                      IBAN (optional)
+                    </label>
+                    <input
+                      id="bank-iban"
+                      type="text"
+                      value={editedProfile.bankCard?.iban ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "BANK",
+                          bankCard: { ...editedProfile.bankCard, iban: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="bank-swift" className="block text-sm font-semibold text-gray-700 mb-2">
+                      SWIFT/BIC (optional)
+                    </label>
+                    <input
+                      id="bank-swift"
+                      type="text"
+                      value={editedProfile.bankCard?.swiftBic ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "BANK",
+                          bankCard: { ...editedProfile.bankCard, swiftBic: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="bank-payment-link" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Payment Link (optional)
+                    </label>
+                    <input
+                      id="bank-payment-link"
+                      type="url"
+                      value={editedProfile.bankCard?.paymentLink ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "BANK",
+                          bankCard: { ...editedProfile.bankCard, paymentLink: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="bank-payment-label" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Payment Link Label
+                    </label>
+                    <input
+                      id="bank-payment-label"
+                      type="text"
+                      placeholder="Send Money"
+                      value={editedProfile.bankCard?.paymentLinkLabel ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "BANK",
+                          bankCard: { ...editedProfile.bankCard, paymentLinkLabel: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="bank-reference" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Reference Note (short)
+                  </label>
+                  <input
+                    id="bank-reference"
+                    type="text"
+                    maxLength={60}
+                    value={editedProfile.bankCard?.referenceNote ?? ""}
+                    onChange={(e) =>
+                      setEditedProfile({
+                        ...editedProfile,
+                        cardCategory: "BANK",
+                        bankCard: { ...editedProfile.bankCard, referenceNote: e.target.value },
+                      })
+                    }
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* BUSINESS CARD FIELDS */}
+            {selectedFrameCategory === "BUSINESS" && (
+              <div className="space-y-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                <div className="flex justify-between items-center mb-2">
+                  <h4 className="text-sm font-bold text-gray-800">Business Card</h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditedProfile({
+                        ...editedProfile,
+                        cardCategory: "BUSINESS",
+                        businessCard: {},
+                      });
+                      toast.success("Business fields reset");
+                    }}
+                    className="text-xs text-red-600 hover:underline"
+                  >
+                    Reset this section
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="business-company-name" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Company Name
+                    </label>
+                    <input
+                      id="business-company-name"
+                      type="text"
+                      value={editedProfile.businessCard?.companyName ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "BUSINESS",
+                          businessCard: { ...editedProfile.businessCard, companyName: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="business-website" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Website URL
+                    </label>
+                    <input
+                      id="business-website"
+                      type="url"
+                      value={editedProfile.businessCard?.websiteUrl ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "BUSINESS",
+                          businessCard: { ...editedProfile.businessCard, websiteUrl: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label htmlFor="business-services" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Services (max 80 chars)
+                    </label>
+                    <input
+                      id="business-services"
+                      type="text"
+                      maxLength={80}
+                      value={editedProfile.businessCard?.services ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "BUSINESS",
+                          businessCard: { ...editedProfile.businessCard, services: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="business-location" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Location Note (short)
+                    </label>
+                    <input
+                      id="business-location"
+                      type="text"
+                      maxLength={60}
+                      value={editedProfile.businessCard?.locationNote ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "BUSINESS",
+                          businessCard: { ...editedProfile.businessCard, locationNote: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="business-hours" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Hours (short)
+                    </label>
+                    <input
+                      id="business-hours"
+                      type="text"
+                      maxLength={60}
+                      value={editedProfile.businessCard?.hours ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "BUSINESS",
+                          businessCard: { ...editedProfile.businessCard, hours: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="business-booking-link" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Booking Link (optional)
+                    </label>
+                    <input
+                      id="business-booking-link"
+                      type="url"
+                      value={editedProfile.businessCard?.bookingLink ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "BUSINESS",
+                          businessCard: { ...editedProfile.businessCard, bookingLink: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="business-booking-label" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Booking Link Label
+                    </label>
+                    <input
+                      id="business-booking-label"
+                      type="text"
+                      placeholder="Book Now"
+                      value={editedProfile.businessCard?.bookingLinkLabel ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "BUSINESS",
+                          businessCard: { ...editedProfile.businessCard, bookingLinkLabel: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="business-vat" className="block text-sm font-semibold text-gray-700 mb-2">
+                      VAT/Reg No (optional)
+                    </label>
+                    <input
+                      id="business-vat"
+                      type="text"
+                      value={editedProfile.businessCard?.vatOrRegNo ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "BUSINESS",
+                          businessCard: { ...editedProfile.businessCard, vatOrRegNo: e.target.value },
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Action Buttons */}

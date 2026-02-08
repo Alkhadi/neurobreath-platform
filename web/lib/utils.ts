@@ -53,6 +53,39 @@ export interface Profile {
     pinterest?: string;
     whatsapp?: string;
   };
+  // Category-specific fields (NB-Card enhancement)
+  cardCategory?: "ADDRESS" | "BANK" | "BUSINESS";
+  addressCard?: {
+    addressLine1?: string;
+    addressLine2?: string;
+    city?: string;
+    postcode?: string;
+    country?: string;
+    directionsNote?: string;
+    mapLinkLabel?: string;
+    mapQueryOverride?: string;
+  };
+  bankCard?: {
+    accountName?: string;
+    bankName?: string;
+    sortCode?: string;
+    accountNumber?: string;
+    iban?: string;
+    swiftBic?: string;
+    paymentLink?: string;
+    paymentLinkLabel?: string;
+    referenceNote?: string;
+  };
+  businessCard?: {
+    companyName?: string;
+    services?: string;
+    websiteUrl?: string;
+    locationNote?: string;
+    hours?: string;
+    bookingLink?: string;
+    bookingLinkLabel?: string;
+    vatOrRegNo?: string;
+  };
 }
 
 export interface Contact {
