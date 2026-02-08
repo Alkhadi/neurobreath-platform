@@ -47,7 +47,6 @@ import {
   upsertSavedCard,
 } from "@/lib/nbcard-saved-cards";
 
-import { getTemplatesByCategory } from "@/app/uk/resources/nb-card/_templatePack";
 
 import {
   downloadBlob,
@@ -1131,29 +1130,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           ))}
         </div>
 
-        {savedCategory !== "PROFILE" ? (
-          <div className="mt-3">
-            <div className="text-xs font-medium text-muted-foreground">Templates</div>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {getTemplatesByCategory(savedCategory)
-                .slice(0, 6)
-                .map((t) => (
-                  <button
-                    key={t.id}
-                    type="button"
-                    onClick={() => handleSaveCurrentAsNew({ templateId: t.id, frameUrl: t.backgroundUrl, avatarUrl: t.avatarUrl })}
-                    className="group flex items-center gap-2 rounded-lg border bg-background px-2 py-1 text-left hover:bg-muted/40"
-                    disabled={!!busyKey}
-                  >
-                    <span className="h-8 w-12 overflow-hidden rounded-md border bg-muted">
-                      <Image src={t.backgroundUrl} alt={t.alt} width={48} height={32} className="h-full w-full object-cover" />
-                    </span>
-                    <span className="text-xs font-medium group-hover:underline">{t.name}</span>
-                  </button>
-                ))}
-            </div>
-          </div>
-        ) : null}
+        {null}
 
         <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
           {savedCardsInCategory.length === 0 ? (
