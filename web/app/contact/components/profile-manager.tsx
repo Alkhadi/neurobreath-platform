@@ -7,6 +7,12 @@ import { GradientSelector } from "./gradient-selector";
 import { FrameChooser } from "./frame-chooser";
 import { FaSave, FaTimes, FaTrash } from "react-icons/fa";
 import { storeAsset, generateAssetKey } from "../lib/nbcard-assets";
+import {
+  clearProfileDraft,
+  getNbcardStorageNamespace,
+  loadProfileDraft,
+  saveProfileDraft,
+} from "@/lib/nbcard-saved-cards";
 
 type FrameCategory = "ADDRESS" | "BANK" | "BUSINESS";
 
@@ -29,35 +35,57 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const backgroundInputRef = useRef<HTMLInputElement>(null);
-  const autosaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const draftTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const hasRestoredDraftRef = useRef(false);
+  const didInitRef = useRef(false);
 
-  // Autosave: debounced save (600ms)
-  const triggerAutosave = useCallback(() => {
-    if (autosaveTimerRef.current) {
-      clearTimeout(autosaveTimerRef.current);
-    }
-    setSaveStatus("saving");
-    autosaveTimerRef.current = setTimeout(() => {
-      onSave(editedProfile);
-      setSaveStatus("saved");
-      setTimeout(() => setSaveStatus("idle"), 2000);
-    }, 600);
-  }, [editedProfile, onSave]);
+  const namespace = getNbcardStorageNamespace({ userEmail, profileEmail: profile.email });
 
-  // Trigger autosave when editedProfile changes (except on initial mount)
+  // Restore locally persisted draft (so autosave doesn't need to call onSave / close modal)
   useEffect(() => {
-    if (editedProfile !== profile) {
-      triggerAutosave();
+    if (hasRestoredDraftRef.current) return;
+    if (!profile.id) return;
+
+    const draft = loadProfileDraft(namespace, profile.id);
+    if (draft && typeof draft === "object") {
+      setEditedProfile(draft);
+      toast.message("Restored unsaved changes", { description: "Your draft was saved on this device." });
     }
+    hasRestoredDraftRef.current = true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editedProfile]);
+  }, [namespace, profile.id]);
+
+  // Draft autosave: debounced local persistence only (never closes modal)
+  const persistDraft = useCallback(() => {
+    if (!profile.id) return;
+    if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+
+    setSaveStatus("saving");
+    draftTimerRef.current = setTimeout(() => {
+      try {
+        saveProfileDraft(namespace, editedProfile);
+        setSaveStatus("saved");
+        setTimeout(() => setSaveStatus("idle"), 2000);
+      } catch {
+        setSaveStatus("idle");
+      }
+    }, 600);
+  }, [editedProfile, namespace, profile.id]);
+
+  // Trigger draft persistence when editedProfile changes (except initial mount)
+  useEffect(() => {
+    if (!didInitRef.current) {
+      didInitRef.current = true;
+      return;
+    }
+    if (editedProfile === profile) return;
+    persistDraft();
+  }, [editedProfile, persistDraft, profile]);
 
   // Cleanup timer on unmount
   useEffect(() => {
     return () => {
-      if (autosaveTimerRef.current) {
-        clearTimeout(autosaveTimerRef.current);
-      }
+      if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
     };
   }, []);
 
@@ -119,6 +147,9 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (profile.id) {
+      clearProfileDraft(namespace, profile.id);
+    }
     onSave(editedProfile);
   };
 

@@ -6,6 +6,7 @@ import html2canvas from "html2canvas";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
+import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +27,22 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import type { Contact, Profile } from "@/lib/utils";
+
+import {
+  type SavedCardCategory,
+  type SavedCardRecord,
+  deleteSavedCard,
+  generateProfileId,
+  getCategoryFromProfile,
+  getNbcardStorageNamespace,
+  loadActiveSavedCardIds,
+  loadSavedCards,
+  normalizeProfileForCategory,
+  setActiveSavedCardId,
+  upsertSavedCard,
+} from "@/lib/nbcard-saved-cards";
+
+import { getTemplatesByCategory } from "@/app/uk/resources/nb-card/_templatePack";
 
 import {
   downloadBlob,
@@ -374,6 +391,20 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   const [isQrVcard, setIsQrVcard] = React.useState(false);
   const [busyKey, setBusyKey] = React.useState<string | null>(null);
 
+  const namespace = React.useMemo(
+    () => getNbcardStorageNamespace({ profileEmail: profile.email }),
+    [profile.email]
+  );
+
+  const [savedCards, setSavedCards] = React.useState<SavedCardRecord[]>([]);
+  const [activeSavedIds, setActiveSavedIds] = React.useState<Partial<Record<SavedCardCategory, string>>>({});
+  const [savedCategory, setSavedCategory] = React.useState<SavedCardCategory>(() => getCategoryFromProfile(profile));
+
+  React.useEffect(() => {
+    setSavedCards(loadSavedCards(namespace));
+    setActiveSavedIds(loadActiveSavedCardIds(namespace));
+  }, [namespace]);
+
   const shareUrl = React.useMemo(() => getProfileShareUrl(profile.id), [profile.id]);
 
   const qrValue = React.useMemo(() => {
@@ -600,6 +631,145 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
     });
   }
 
+  const savedCategoryOptions: Array<{ key: SavedCardCategory; label: string }> = React.useMemo(
+    () => [
+      { key: "PROFILE", label: "Profile" },
+      { key: "ADDRESS", label: "Address" },
+      { key: "BANK", label: "Bank" },
+      { key: "BUSINESS", label: "Business" },
+    ],
+    []
+  );
+
+  const activeSavedIdForCategory = activeSavedIds[savedCategory] ?? null;
+  const savedCardsInCategory = React.useMemo(
+    () =>
+      savedCards
+        .filter((c) => c.category === savedCategory)
+        .sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : 1)),
+    [savedCards, savedCategory]
+  );
+
+  function updateActiveProfileSlot(nextProfile: Profile) {
+    const idx = profiles.findIndex((p) => p.id === profile.id);
+    if (idx < 0) {
+      toast.error("Could not update active profile");
+      return;
+    }
+    const next = [...profiles];
+    next[idx] = nextProfile;
+    onSetProfiles(next);
+  }
+
+  function handleLoadSavedCard(cardId: string) {
+    const card = savedCards.find((c) => c.id === cardId);
+    if (!card) {
+      toast.error("Saved card not found");
+      return;
+    }
+
+    updateActiveProfileSlot(card.profile);
+    setSavedCategory(card.category);
+    setActiveSavedCardId(namespace, card.category, card.id);
+    setActiveSavedIds((prev) => ({ ...prev, [card.category]: card.id }));
+    toast.success("Loaded saved card");
+  }
+
+  function handleSaveCurrentAsNew(source?: { templateId?: string; frameUrl?: string; avatarUrl?: string }) {
+    const id = generateProfileId();
+    const nextProfile: Profile = normalizeProfileForCategory(
+      {
+        ...profile,
+        id,
+        frameUrl: source?.frameUrl ?? profile.frameUrl,
+        backgroundUrl: source?.frameUrl ? undefined : profile.backgroundUrl,
+        photoUrl: profile.photoUrl || source?.avatarUrl,
+      },
+      savedCategory
+    );
+
+    const record: SavedCardRecord = {
+      id,
+      name: `${savedCategoryOptions.find((c) => c.key === savedCategory)?.label ?? "Card"} — ${profile.fullName || "Untitled"}`,
+      category: savedCategory,
+      profile: nextProfile,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      templateId: source?.templateId,
+    };
+
+    const nextCards = upsertSavedCard(namespace, record);
+    setSavedCards(nextCards);
+    setActiveSavedCardId(namespace, savedCategory, id);
+    setActiveSavedIds((prev) => ({ ...prev, [savedCategory]: id }));
+    toast.success("Saved new card");
+  }
+
+  function handleUpdateSelected() {
+    const activeId = activeSavedIdForCategory;
+    if (!activeId) {
+      toast.message("Select a saved card first");
+      return;
+    }
+    if (profile.id !== activeId) {
+      toast.message("Load the saved card first", { description: "Then edit and update it." });
+      return;
+    }
+
+    const existing = savedCards.find((c) => c.id === activeId);
+    if (!existing) {
+      toast.error("Saved card not found");
+      return;
+    }
+
+    const nextProfile = normalizeProfileForCategory(profile, savedCategory);
+    const nextCards = upsertSavedCard(namespace, {
+      ...existing,
+      category: savedCategory,
+      profile: nextProfile,
+      name: existing.name,
+      createdAt: existing.createdAt,
+      updatedAt: existing.updatedAt,
+    });
+    setSavedCards(nextCards);
+    toast.success("Saved card updated");
+  }
+
+  function handleRename(cardId: string) {
+    const existing = savedCards.find((c) => c.id === cardId);
+    if (!existing) return;
+    const nextName = prompt("Rename saved card", existing.name)?.trim();
+    if (!nextName) return;
+    const nextCards = upsertSavedCard(namespace, { ...existing, name: nextName });
+    setSavedCards(nextCards);
+    toast.success("Renamed");
+  }
+
+  function handleDuplicate(cardId: string) {
+    const existing = savedCards.find((c) => c.id === cardId);
+    if (!existing) return;
+    const id = generateProfileId();
+    const clonedProfile = { ...existing.profile, id };
+    const nextCards = upsertSavedCard(namespace, {
+      ...existing,
+      id,
+      name: `${existing.name} (copy)`,
+      profile: clonedProfile,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
+    setSavedCards(nextCards);
+    toast.success("Duplicated");
+  }
+
+  function handleDelete(cardId: string) {
+    if (!confirm("Delete this saved card?")) return;
+    const nextCards = deleteSavedCard(namespace, cardId);
+    setSavedCards(nextCards);
+    setActiveSavedIds(loadActiveSavedCardIds(namespace));
+    toast.success("Deleted");
+  }
+
   return (
     <div className="rounded-2xl border bg-card p-4 md:p-6">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -675,6 +845,111 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           <Button variant="outline" onClick={openSms} disabled={!!busyKey}>
             SMS
           </Button>
+        </div>
+      </div>
+
+      <div className="mt-4 rounded-xl border bg-muted/20 p-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="text-sm font-semibold">Saved Cards</div>
+            <div className="text-xs text-muted-foreground">Save multiple cards per category and load instantly before sharing.</div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" onClick={() => handleSaveCurrentAsNew()} disabled={!!busyKey}>
+              Save current as new
+            </Button>
+            <Button size="sm" variant="secondary" onClick={handleUpdateSelected} disabled={!!busyKey || !activeSavedIdForCategory}>
+              Update selected
+            </Button>
+          </div>
+        </div>
+
+        <div className="mt-3 flex flex-wrap gap-2">
+          {savedCategoryOptions.map((c) => (
+            <Button
+              key={c.key}
+              type="button"
+              size="sm"
+              variant={savedCategory === c.key ? "default" : "outline"}
+              onClick={() => setSavedCategory(c.key)}
+              disabled={!!busyKey}
+            >
+              {c.label}
+            </Button>
+          ))}
+        </div>
+
+        {savedCategory !== "PROFILE" ? (
+          <div className="mt-3">
+            <div className="text-xs font-medium text-muted-foreground">Templates</div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {getTemplatesByCategory(savedCategory)
+                .slice(0, 6)
+                .map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => handleSaveCurrentAsNew({ templateId: t.id, frameUrl: t.backgroundUrl, avatarUrl: t.avatarUrl })}
+                    className="group flex items-center gap-2 rounded-lg border bg-background px-2 py-1 text-left hover:bg-muted/40"
+                    disabled={!!busyKey}
+                  >
+                    <span className="h-8 w-12 overflow-hidden rounded-md border bg-muted">
+                      <Image src={t.backgroundUrl} alt={t.alt} width={48} height={32} className="h-full w-full object-cover" />
+                    </span>
+                    <span className="text-xs font-medium group-hover:underline">{t.name}</span>
+                  </button>
+                ))}
+            </div>
+          </div>
+        ) : null}
+
+        <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {savedCardsInCategory.length === 0 ? (
+            <div className="text-sm text-muted-foreground">No saved cards yet for this category.</div>
+          ) : null}
+
+          {savedCardsInCategory.map((c) => {
+            const isActive = c.id === activeSavedIdForCategory;
+            const bgSrc = c.profile.frameUrl || c.profile.backgroundUrl;
+            const canUseImageBg = typeof bgSrc === "string" && bgSrc.length > 0 && !bgSrc.startsWith("local://");
+            const canUseNextImage = canUseImageBg && typeof bgSrc === "string" && bgSrc.startsWith("/");
+
+            return (
+              <div key={c.id} className={`rounded-lg border p-3 ${isActive ? "border-primary" : ""}`}>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="h-12 w-20 overflow-hidden rounded-md border bg-gradient-to-br from-purple-600 to-blue-500" aria-hidden="true">
+                      {canUseNextImage ? <Image src={bgSrc} alt="" width={80} height={48} className="h-full w-full object-cover" /> : null}
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold leading-tight">{c.name}</div>
+                      <div className="text-xs text-muted-foreground">{new Date(c.updatedAt).toLocaleDateString()}</div>
+                    </div>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant={isActive ? "secondary" : "default"}
+                    onClick={() => handleLoadSavedCard(c.id)}
+                    disabled={!!busyKey}
+                  >
+                    {isActive ? "Loaded" : "Load"}
+                  </Button>
+                </div>
+
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <Button size="sm" variant="outline" onClick={() => handleRename(c.id)} disabled={!!busyKey}>
+                    Rename
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => handleDuplicate(c.id)} disabled={!!busyKey}>
+                    Duplicate
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => handleDelete(c.id)} disabled={!!busyKey}>
+                    Delete
+                  </Button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
