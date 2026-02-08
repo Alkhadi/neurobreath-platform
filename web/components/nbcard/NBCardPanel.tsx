@@ -37,11 +37,9 @@ function sanitizeProfile(profile: Profile): Profile {
     ...profile,
     socialMedia: {
       instagram: sanitizeSocialUrl(social.instagram),
-      facebook: sanitizeSocialUrl(social.facebook),
-      tiktok: sanitizeSocialUrl(social.tiktok),
+      facebook: sanitizeSocialUrl(social.tiktok),
       linkedin: sanitizeSocialUrl(social.linkedin),
       twitter: sanitizeSocialUrl(social.twitter),
-      website: sanitizeSocialUrl(social.website),
     },
   };
 }

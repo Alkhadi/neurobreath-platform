@@ -106,12 +106,11 @@ export function generateProfileVCard(profile: Profile): string {
   if (profile.phone) lines.push(`TEL;TYPE=CELL:${sanitizeVcard(profile.phone)}`);
   if (profile.email) lines.push(`EMAIL;TYPE=INTERNET:${sanitizeVcard(profile.email)}`);
 
-  const website = profile.socialMedia?.website;
+  const website = profile.website;
   if (website) lines.push(`URL:${sanitizeVcard(website)}`);
 
   for (const [key, value] of Object.entries(profile.socialMedia || {})) {
     if (!value) continue;
-    if (key === 'website') continue;
     lines.push(`X-SOCIALPROFILE;TYPE=${sanitizeVcard(key)}:${sanitizeVcard(value)}`);
   }
 

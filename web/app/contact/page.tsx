@@ -37,7 +37,6 @@ function sanitizeProfile(profile: Profile): Profile {
       tiktok: sanitizeSocialUrl(social.tiktok),
       linkedin: sanitizeSocialUrl(social.linkedin),
       twitter: sanitizeSocialUrl(social.twitter),
-      website: sanitizeSocialUrl(social.website),
     },
   };
 }

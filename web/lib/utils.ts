@@ -37,13 +37,21 @@ export interface Profile {
   backgroundUrl?: string;
   frameUrl?: string;
   gradient: string;
+  address?: string;
+  website?: string;
+  wellbeingLink?: string;
+  bankSortCode?: string;
+  bankAccountNumber?: string;
   socialMedia: {
     instagram?: string;
     facebook?: string;
     tiktok?: string;
     linkedin?: string;
     twitter?: string;
-    website?: string;
+    youtube?: string;
+    snapchat?: string;
+    pinterest?: string;
+    whatsapp?: string;
   };
 }
 

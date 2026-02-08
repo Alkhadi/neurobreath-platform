@@ -258,6 +258,60 @@ async function createSimplePdf(profile: Profile, shareUrl: string, qrDataUrl?: s
   return await doc.save();
 }
 
+function renderShareText(profile: Profile, shareUrl: string): string {
+  const lines: string[] = [];
+  
+  // Header
+  lines.push(`${profile.fullName}`);
+  if (profile.jobTitle) lines.push(profile.jobTitle);
+  lines.push(""); // blank line
+  
+  // Address
+  if (profile.address) {
+    lines.push("🏠 Find Address:");
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`;
+    lines.push(`Click Here: ${mapsUrl}`);
+    lines.push(""); // blank line
+  }
+  
+  // Contact
+  if (profile.phone) lines.push(`📞 ${profile.phone}`);
+  if (profile.email) lines.push(`📧 ${profile.email}`);
+  if (profile.website) lines.push(`🌐 ${profile.website}`);
+  if (profile.wellbeingLink) lines.push(`💚 Wellbeing: ${profile.wellbeingLink}`);
+  
+  // Socials
+  const socials: string[] = [];
+  if (profile.socialMedia?.instagram) socials.push(`Instagram: ${profile.socialMedia.instagram}`);
+  if (profile.socialMedia?.facebook) socials.push(`Facebook: ${profile.socialMedia.facebook}`);
+  if (profile.socialMedia?.linkedin) socials.push(`LinkedIn: ${profile.socialMedia.linkedin}`);
+  if (profile.socialMedia?.twitter) socials.push(`X (Twitter): ${profile.socialMedia.twitter}`);
+  if (profile.socialMedia?.tiktok) socials.push(`TikTok: ${profile.socialMedia.tiktok}`);
+  if (profile.socialMedia?.youtube) socials.push(`YouTube: ${profile.socialMedia.youtube}`);
+  if (profile.socialMedia?.whatsapp) socials.push(`WhatsApp: ${profile.socialMedia.whatsapp}`);
+  
+  if (socials.length > 0) {
+    lines.push(""); // blank line
+    lines.push("Social Media:");
+    socials.forEach(s => lines.push(s));
+  }
+  
+  // Bank details
+  if (profile.bankSortCode || profile.bankAccountNumber) {
+    lines.push(""); // blank line
+    lines.push("Bank Details:");
+    if (profile.bankSortCode) lines.push(`Sort Code: ${profile.bankSortCode}`);
+    if (profile.bankAccountNumber) lines.push(`Account: ${profile.bankAccountNumber}`);
+  }
+  
+  // Profile link
+  lines.push(""); // blank line
+  lines.push("View my profile:");
+  lines.push(shareUrl);
+  
+  return lines.join("\n");
+}
+
 export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSetContacts }: ShareButtonsProps) {
   const [isQrOpen, setIsQrOpen] = React.useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = React.useState(false);
@@ -436,6 +490,60 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
     });
   }
 
+  async function handleShareAsText() {
+    await withBusy("text-share", async () => {
+      const text = renderShareText(profile, shareUrl);
+      const ok = await shareViaWebShare({
+        title: `${profile.fullName} - Contact Info`,
+        text,
+      });
+      if (!ok) {
+        const copied = await copyTextToClipboard(text);
+        if (copied) {
+          toast.success("Contact info copied to clipboard");
+        } else {
+          toast.error("Failed to copy text");
+        }
+      } else {
+        toast.success("Shared as text");
+      }
+    });
+  }
+
+  async function handleShareViaEmail() {
+    await withBusy("email-share", async () => {
+      // Try PDF with navigator.share first
+      if (navigator.share && navigator.canShare) {
+        try {
+          const pdfBytes = await createSimplePdf(profile, shareUrl);
+          const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
+          const fileName = `${profile.fullName.replace(/\s+/g, "_")}_NBCard.pdf`;
+          const file = new File([pdfBlob], fileName, { type: "application/pdf" });
+          
+          const canShareFile = navigator.canShare({ files: [file] });
+          if (canShareFile) {
+            const text = renderShareText(profile, shareUrl);
+            await navigator.share({
+              title: `${profile.fullName} - NBCard`,
+              text: text,
+              files: [file],
+            });
+            toast.success("Shared via email");
+            return;
+          }
+        } catch (e) {
+          console.error("Share with PDF failed:", e);
+        }
+      }
+      
+      // Fallback: mailto with text body
+      const text = renderShareText(profile, shareUrl);
+      const mailtoUrl = `mailto:?subject=${encodeURIComponent(`${profile.fullName} - NBCard`)}&body=${encodeURIComponent(text)}`;
+      window.location.href = mailtoUrl;
+      toast.message("Email opened", { description: "Attachments not supported via mailto." });
+    });
+  }
+
   return (
     <div className="rounded-2xl border bg-card p-4 md:p-6">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -482,6 +590,14 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleShareVcardFile} disabled={!!busyKey}>
                 Share vCard
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleShareAsText} disabled={!!busyKey}>
+                Share as Text
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleShareViaEmail} disabled={!!busyKey}>
+                <Mail className="mr-2 h-4 w-4" />
+                Share via Email
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleExportContactsCsv} disabled={!!busyKey}>

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { getAuthedUserId } from "@/lib/auth/require-auth";
+import { prisma } from "@/lib/db";
 
 function isAdmin(email: string | undefined): boolean {
   if (!email) return false;
@@ -9,14 +8,58 @@ function isAdmin(email: string | undefined): boolean {
   return adminEmails.includes(email.toLowerCase());
 }
 
-function getEmailFromRequest(req: NextRequest): string | undefined {
-  return req.headers.get("x-admin-email") || undefined;
+async function getAdminEmail(req: NextRequest): Promise<string | null> {
+  const auth = await getAuthedUserId(req);
+  if (!auth.ok) return null;
+  
+  const user = await prisma.authUser.findUnique({
+    where: { id: auth.userId },
+    select: { email: true },
+  });
+  
+  return user?.email || null;
+}
+
+export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const email = await getAdminEmail(req);
+    if (!email || !isAdmin(email)) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
+    const { id } = params;
+    const body = await req.json();
+    const { name, category, imageUrl, sortOrder, isActive } = body;
+
+    const updateData: Record<string, unknown> = {};
+    if (name !== undefined) updateData.name = name;
+    if (category !== undefined) {
+      const validCategories = ["ADDRESS", "BANK", "BUSINESS"];
+      if (!validCategories.includes(category.toUpperCase())) {
+        return NextResponse.json({ error: "Invalid category" }, { status: 400 });
+      }
+      updateData.category = category.toUpperCase();
+    }
+    if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
+    if (sortOrder !== undefined) updateData.sortOrder = sortOrder;
+    if (isActive !== undefined) updateData.isActive = isActive;
+
+    const frame = await prisma.nbCardFrame.update({
+      where: { id },
+      data: updateData,
+    });
+
+    return NextResponse.json({ frame });
+  } catch (error) {
+    console.error("Failed to update frame:", error);
+    return NextResponse.json({ error: "Failed to update frame" }, { status: 500 });
+  }
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const email = getEmailFromRequest(req);
-    if (!isAdmin(email)) {
+    const email = await getAdminEmail(req);
+    if (!email || !isAdmin(email)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 

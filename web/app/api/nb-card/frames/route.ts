@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { getAuthedUserId } from "@/lib/auth/require-auth";
+import { prisma } from "@/lib/db";
 
 function isAdmin(email: string | undefined): boolean {
   if (!email) return false;
@@ -9,10 +8,17 @@ function isAdmin(email: string | undefined): boolean {
   return adminEmails.includes(email.toLowerCase());
 }
 
-function getEmailFromRequest(req: NextRequest): string | undefined {
-  // In a real app, extract from NextAuth session or JWT
-  // For now, require admin to pass email via header for testing
-  return req.headers.get("x-admin-email") || undefined;
+async function getAdminEmail(req: NextRequest): Promise<string | null> {
+  const auth = await getAuthedUserId(req);
+  if (!auth.ok) return null;
+  
+  // Get user email from database
+  const user = await prisma.authUser.findUnique({
+    where: { id: auth.userId },
+    select: { email: true },
+  });
+  
+  return user?.email || null;
 }
 
 export async function GET(req: NextRequest) {
@@ -38,8 +44,8 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const email = getEmailFromRequest(req);
-    if (!isAdmin(email)) {
+    const email = await getAdminEmail(req);
+    if (!email || !isAdmin(email)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 

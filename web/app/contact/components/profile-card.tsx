@@ -1,7 +1,7 @@
 "use client";
 
 import { Profile, cn } from "@/lib/utils";
-import { FaInstagram, FaFacebook, FaTiktok, FaLinkedin, FaTwitter, FaGlobe, FaPhone, FaEnvelope } from "react-icons/fa";
+import { FaInstagram, FaFacebook, FaTiktok, FaLinkedin, FaTwitter, FaGlobe, FaPhone, FaEnvelope, FaHome } from "react-icons/fa";
 import Image from "next/image";
 import styles from "./profile-card.module.css";
 
@@ -35,7 +35,6 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false }: P
     { icon: FaTiktok, url: profile?.socialMedia?.tiktok, color: "#000000" },
     { icon: FaLinkedin, url: profile?.socialMedia?.linkedin, color: "#0A66C2" },
     { icon: FaTwitter, url: profile?.socialMedia?.twitter, color: "#1DA1F2" },
-    { icon: FaGlobe, url: profile?.socialMedia?.website, color: "#4CAF50" },
   ];
 
   return (
@@ -139,6 +138,35 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false }: P
             <FaEnvelope className="text-xl" />
             <span className="text-lg">{profile?.email ?? "Email"}</span>
           </a>
+          {profile?.address && (
+            <div className="flex items-center gap-3 p-2">
+              <FaHome className="text-xl" />
+              <div className="flex flex-col">
+                <span className="text-sm opacity-75">Find Address:</span>
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`}
+                  data-pdf-link={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-base underline hover:opacity-80 transition-opacity"
+                >
+                  Click Here
+                </a>
+              </div>
+            </div>
+          )}
+          {profile?.website && (
+            <a
+              href={profile.website}
+              data-pdf-link={profile.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 hover:bg-white/10 p-2 rounded-lg transition-colors"
+            >
+              <FaGlobe className="text-xl" />
+              <span className="text-lg break-all">{profile.website}</span>
+            </a>
+          )}
         </div>
 
         {/* Social Media Icons */}

@@ -435,7 +435,6 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                 { key: "tiktok", label: "TikTok", placeholder: "https://tiktok.com/@yourname" },
                 { key: "linkedin", label: "LinkedIn", placeholder: "https://linkedin.com/in/yourname" },
                 { key: "twitter", label: "X (Twitter)", placeholder: "https://x.com/yourname" },
-                { key: "website", label: "Website", placeholder: "https://your-site.com" },
               ] as const).map(({ key, label, placeholder }) => (
                 <div key={key}>
                   <label htmlFor={`social-${key}`} className="block text-sm font-semibold text-gray-700 mb-2">
