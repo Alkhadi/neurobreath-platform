@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import html2canvas from "html2canvas";
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { PDFDocument, PDFName, StandardFonts, rgb } from "pdf-lib";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -28,7 +28,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import type { Contact, Profile } from "@/lib/utils";
-import { getOrCreateNbcardDeviceId } from "@/lib/utils";
+import {
+  type NbcardSavedCard,
+  type NbcardSavedCardCategory,
+  getNbcardSavedNamespace,
+  getOrCreateNbcardDeviceId,
+  loadNbcardActiveSavedCardIds,
+  loadNbcardSavedCards,
+  migrateNbcardSavedCardsFromLegacy,
+  setNbcardActiveSavedCardId,
+  upsertNbcardSavedCard,
+  deleteNbcardSavedCard,
+} from "@/lib/utils";
 
 import { GradientSelector } from "./gradient-selector";
 import { FrameChooser } from "./frame-chooser";
@@ -36,15 +47,9 @@ import { storeAsset, generateAssetKey } from "../lib/nbcard-assets";
 
 import {
   type SavedCardCategory,
-  type SavedCardRecord,
-  deleteSavedCard,
   generateProfileId,
   getCategoryFromProfile,
-  loadActiveSavedCardIds,
-  loadSavedCards,
   normalizeProfileForCategory,
-  setActiveSavedCardId,
-  upsertSavedCard,
 } from "@/lib/nbcard-saved-cards";
 
 
@@ -137,6 +142,99 @@ async function captureProfileCardPng(): Promise<Blob> {
   });
 }
 
+type PdfAnnotsArrayLike = {
+  push: (value: unknown) => void;
+};
+
+function getPdfPageNode(page: unknown): { Annots?: () => unknown; set: (name: PDFName, value: unknown) => void } | null {
+  if (!page || typeof page !== "object") return null;
+  const node = (page as { node?: unknown }).node;
+  if (!node || typeof node !== "object") return null;
+
+  const set = (node as { set?: unknown }).set;
+  if (typeof set !== "function") return null;
+
+  return node as unknown as { Annots?: () => unknown; set: (name: PDFName, value: unknown) => void };
+}
+
+function ensurePdfAnnotsArray(doc: PDFDocument, page: unknown): PdfAnnotsArrayLike | null {
+  // pdf-lib's Page API doesn't expose a stable link helper, so we use a minimal
+  // annotation dictionary approach.
+  const node = getPdfPageNode(page);
+  if (!node) return null;
+
+  const existing = node.Annots?.();
+  if (existing && typeof (existing as { push?: unknown }).push === "function") {
+    return existing as unknown as PdfAnnotsArrayLike;
+  }
+
+  const arr = doc.context.obj([]);
+  node.set(PDFName.of("Annots"), arr);
+  return arr as unknown as PdfAnnotsArrayLike;
+}
+
+function addPdfLinkOverlaysFromDom(params: {
+  doc: PDFDocument;
+  page: unknown;
+  root: HTMLElement;
+  cardX: number;
+  cardY: number;
+  cardPdfWidth: number;
+  cardPdfHeight: number;
+}) {
+  const { doc, page, root, cardX, cardY, cardPdfWidth, cardPdfHeight } = params;
+  const rootRect = root.getBoundingClientRect();
+  if (!rootRect.width || !rootRect.height) return;
+
+  const scaleX = cardPdfWidth / rootRect.width;
+  const scaleY = cardPdfHeight / rootRect.height;
+
+  const annots = ensurePdfAnnotsArray(doc, page);
+  if (!annots) return;
+  const linkEls = root.querySelectorAll<HTMLElement>("[data-pdf-link]");
+
+  linkEls.forEach((el) => {
+    const uri = (el.getAttribute("data-pdf-link") || "").trim();
+    if (!uri) return;
+
+    // Avoid empty placeholder URIs.
+    if (uri === "tel:" || uri === "mailto:") return;
+
+    const r = el.getBoundingClientRect();
+    if (!r.width || !r.height) return;
+
+    const relX = r.left - rootRect.left;
+    const relTop = r.top - rootRect.top;
+
+    const x1 = cardX + relX * scaleX;
+    const x2 = x1 + r.width * scaleX;
+
+    // DOM y grows down from top; PDF y grows up from bottom.
+    const yTop = cardY + cardPdfHeight - relTop * scaleY;
+    const y1 = yTop - r.height * scaleY;
+    const y2 = yTop;
+
+    if (!Number.isFinite(x1) || !Number.isFinite(x2) || !Number.isFinite(y1) || !Number.isFinite(y2)) return;
+    if (x2 <= x1 || y2 <= y1) return;
+
+    try {
+      const linkDict = doc.context.obj({
+        Type: "Annot",
+        Subtype: "Link",
+        Rect: [x1, y1, x2, y2],
+        Border: [0, 0, 0],
+        A: {
+          S: "URI",
+          URI: uri,
+        },
+      });
+      annots.push(doc.context.register(linkDict));
+    } catch {
+      // best-effort
+    }
+  });
+}
+
 async function createSimplePdf(profile: Profile, shareUrl: string, qrDataUrl?: string) {
   const doc = await PDFDocument.create();
   const page = doc.addPage([595.28, 841.89]); // A4
@@ -148,14 +246,16 @@ async function createSimplePdf(profile: Profile, shareUrl: string, qrDataUrl?: s
   // Capture card as PNG and embed it
   let cardImageHeight = 0;
   let cardY = height - 80;
+  let cardX = 48;
+  let cardPdfWidth = Math.min(width - 96, 400);
   try {
     const cardPngBlob = await captureProfileCardPng();
     const cardPngBytes = await cardPngBlob.arrayBuffer();
     const cardImage = await doc.embedPng(cardPngBytes);
     const cardAspect = cardImage.width / cardImage.height;
-    const cardPdfWidth = Math.min(width - 96, 400);
+    cardPdfWidth = Math.min(width - 96, 400);
     cardImageHeight = cardPdfWidth / cardAspect;
-    const cardX = (width - cardPdfWidth) / 2;
+    cardX = (width - cardPdfWidth) / 2;
     cardY = height - 80 - cardImageHeight;
 
     page.drawImage(cardImage, {
@@ -164,6 +264,24 @@ async function createSimplePdf(profile: Profile, shareUrl: string, qrDataUrl?: s
       width: cardPdfWidth,
       height: cardImageHeight,
     });
+
+    // Overlay clickable areas from the DOM onto the embedded image.
+    try {
+      const root = document.getElementById("profile-card-capture");
+      if (root && cardImageHeight > 0 && cardPdfWidth > 0) {
+        addPdfLinkOverlaysFromDom({
+          doc,
+          page,
+          root,
+          cardX,
+          cardY,
+          cardPdfWidth,
+          cardPdfHeight: cardImageHeight,
+        });
+      }
+    } catch {
+      // ignore overlay failures; keep embedded image PDF
+    }
   } catch (err) {
     console.error("Failed to embed card image in PDF:", err);
     // Fallback: text-only
@@ -396,6 +514,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   const [busyKey, setBusyKey] = React.useState<string | null>(null);
 
   const [sessionEmail, setSessionEmail] = React.useState<string | null>(null);
+  const deviceId = React.useMemo(() => getOrCreateNbcardDeviceId(), []);
   const [storageNamespace, setStorageNamespace] = React.useState<string>(() => {
     // Default to guest namespace immediately; upgrade to email namespace once session loads.
     const deviceId = getOrCreateNbcardDeviceId();
@@ -499,16 +618,24 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
     };
   }, [contacts, profiles, storageNamespace]);
 
-  const namespace = storageNamespace;
+  // Saved Cards persistence namespace (REQUIRED): session email (lowercased) OR device-id
+  const savedCardsNamespace = React.useMemo(() => getNbcardSavedNamespace(sessionEmail ?? deviceId), [deviceId, sessionEmail]);
 
-  const [savedCards, setSavedCards] = React.useState<SavedCardRecord[]>([]);
-  const [activeSavedIds, setActiveSavedIds] = React.useState<Partial<Record<SavedCardCategory, string>>>({});
+  const [savedCards, setSavedCards] = React.useState<NbcardSavedCard[]>([]);
+  const [activeSavedIds, setActiveSavedIds] = React.useState<Partial<Record<NbcardSavedCardCategory, string>>>({});
   const [savedCategory, setSavedCategory] = React.useState<SavedCardCategory>(() => getCategoryFromProfile(profile));
 
   React.useEffect(() => {
-    setSavedCards(loadSavedCards(namespace));
-    setActiveSavedIds(loadActiveSavedCardIds(namespace));
-  }, [namespace]);
+    // Safe migration from previous storage formats into `nbcard:saved:<namespace>`.
+    migrateNbcardSavedCardsFromLegacy(savedCardsNamespace, [
+      sessionEmail ? `email:${sessionEmail}` : `device:${deviceId}`,
+      `device:${deviceId}`,
+      "guest",
+    ]);
+
+    setSavedCards(loadNbcardSavedCards(savedCardsNamespace));
+    setActiveSavedIds(loadNbcardActiveSavedCardIds(savedCardsNamespace));
+  }, [savedCardsNamespace, sessionEmail, deviceId]);
 
   const shareUrl = React.useMemo(() => getProfileShareUrl(profile.id), [profile.id]);
 
@@ -916,39 +1043,38 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
       return;
     }
 
-    updateActiveProfileSlot(card.profile);
+    updateActiveProfileSlot(card.snapshot);
     setSavedCategory(card.category);
-    setActiveSavedCardId(namespace, card.category, card.id);
+    setNbcardActiveSavedCardId(savedCardsNamespace, card.category, card.id);
     setActiveSavedIds((prev) => ({ ...prev, [card.category]: card.id }));
     toast.success("Loaded saved card");
   }
 
-  function handleSaveCurrentAsNew(source?: { templateId?: string; frameUrl?: string; avatarUrl?: string }) {
+  function handleSaveCurrentAsNew() {
     const id = generateProfileId();
     const nextProfile: Profile = normalizeProfileForCategory(
       {
         ...profile,
         id,
-        frameUrl: source?.frameUrl ?? profile.frameUrl,
-        backgroundUrl: source?.frameUrl ? undefined : profile.backgroundUrl,
-        photoUrl: profile.photoUrl || source?.avatarUrl,
+        frameUrl: profile.frameUrl,
+        backgroundUrl: profile.backgroundUrl,
+        photoUrl: profile.photoUrl,
       },
       savedCategory
     );
 
-    const record: SavedCardRecord = {
+    const record: NbcardSavedCard = {
       id,
-      name: `${savedCategoryOptions.find((c) => c.key === savedCategory)?.label ?? "Card"} — ${profile.fullName || "Untitled"}`,
+      title: `${savedCategoryOptions.find((c) => c.key === savedCategory)?.label ?? "Card"} — ${profile.fullName || "Untitled"}`,
       category: savedCategory,
-      profile: nextProfile,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      templateId: source?.templateId,
+      snapshot: nextProfile,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
     };
 
-    const nextCards = upsertSavedCard(namespace, record);
+    const nextCards = upsertNbcardSavedCard(savedCardsNamespace, record);
     setSavedCards(nextCards);
-    setActiveSavedCardId(namespace, savedCategory, id);
+    setNbcardActiveSavedCardId(savedCardsNamespace, savedCategory, id);
     setActiveSavedIds((prev) => ({ ...prev, [savedCategory]: id }));
 
     // Load immediately so the user can edit/share this exact snapshot.
@@ -974,24 +1100,60 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
     }
 
     const nextProfile = normalizeProfileForCategory(profile, savedCategory);
-    const nextCards = upsertSavedCard(namespace, {
+
+    const nextCards = upsertNbcardSavedCard(savedCardsNamespace, {
       ...existing,
       category: savedCategory,
-      profile: nextProfile,
-      name: existing.name,
+      snapshot: nextProfile,
+      title: existing.title,
       createdAt: existing.createdAt,
-      updatedAt: existing.updatedAt,
     });
     setSavedCards(nextCards);
     toast.success("Saved card updated");
   }
 
+  function handleNewEmptyCard() {
+    const id = generateProfileId();
+    const cleared: Profile = {
+      ...profile,
+      id,
+      fullName: "",
+      jobTitle: "",
+      phone: "",
+      email: "",
+      profileDescription: "",
+      businessDescription: "",
+      address: "",
+      website: "",
+      wellbeingLink: "",
+      bankSortCode: "",
+      bankAccountNumber: "",
+      socialMedia: {},
+      photoUrl: undefined,
+      backgroundUrl: undefined,
+      frameUrl: undefined,
+    };
+
+    const nextProfile = normalizeProfileForCategory(cleared, savedCategory);
+    updateActiveProfileSlot(nextProfile);
+
+    // A new draft is not a saved record yet.
+    setNbcardActiveSavedCardId(savedCardsNamespace, savedCategory, null);
+    setActiveSavedIds((prev) => {
+      const next = { ...prev };
+      delete next[savedCategory];
+      return next;
+    });
+
+    toast.message("New empty card", { description: "This draft is not saved until you click ‘Save current as new’." });
+  }
+
   function handleRename(cardId: string) {
     const existing = savedCards.find((c) => c.id === cardId);
     if (!existing) return;
-    const nextName = prompt("Rename saved card", existing.name)?.trim();
+    const nextName = prompt("Rename saved card", existing.title)?.trim();
     if (!nextName) return;
-    const nextCards = upsertSavedCard(namespace, { ...existing, name: nextName });
+    const nextCards = upsertNbcardSavedCard(savedCardsNamespace, { ...existing, title: nextName });
     setSavedCards(nextCards);
     toast.success("Renamed");
   }
@@ -1000,14 +1162,13 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
     const existing = savedCards.find((c) => c.id === cardId);
     if (!existing) return;
     const id = generateProfileId();
-    const clonedProfile = { ...existing.profile, id };
-    const nextCards = upsertSavedCard(namespace, {
+    const clonedProfile = { ...existing.snapshot, id };
+    const nextCards = upsertNbcardSavedCard(savedCardsNamespace, {
       ...existing,
       id,
-      name: `${existing.name} (copy)`,
-      profile: clonedProfile,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      title: `${existing.title} (copy)`,
+      snapshot: clonedProfile,
+      createdAt: Date.now(),
     });
     setSavedCards(nextCards);
     toast.success("Duplicated");
@@ -1015,9 +1176,9 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
   function handleDelete(cardId: string) {
     if (!confirm("Delete this saved card?")) return;
-    const nextCards = deleteSavedCard(namespace, cardId);
+    const nextCards = deleteNbcardSavedCard(savedCardsNamespace, cardId);
     setSavedCards(nextCards);
-    setActiveSavedIds(loadActiveSavedCardIds(namespace));
+    setActiveSavedIds(loadNbcardActiveSavedCardIds(savedCardsNamespace));
     toast.success("Deleted");
   }
 
@@ -1110,7 +1271,10 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
               Save current as new
             </Button>
             <Button size="sm" variant="secondary" onClick={handleUpdateSelected} disabled={!!busyKey || !activeSavedIdForCategory}>
-              Update selected
+              Overwrite selected
+            </Button>
+            <Button size="sm" variant="outline" onClick={handleNewEmptyCard} disabled={!!busyKey}>
+              New empty card
             </Button>
           </div>
         </div>
@@ -1121,7 +1285,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
               key={c.key}
               type="button"
               size="sm"
-              variant={activeEditorTab === c.key ? "default" : "outline"}
+              variant={savedCategory === c.key ? "default" : "outline"}
               onClick={() => openFocusedEditor(c.key)}
               disabled={!!busyKey}
             >
@@ -1130,8 +1294,6 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           ))}
         </div>
 
-        {null}
-
         <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
           {savedCardsInCategory.length === 0 ? (
             <div className="text-sm text-muted-foreground">No saved cards yet for this category.</div>
@@ -1139,7 +1301,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
           {savedCardsInCategory.map((c) => {
             const isActive = c.id === activeSavedIdForCategory;
-            const bgSrc = c.profile.frameUrl || c.profile.backgroundUrl;
+            const bgSrc = c.snapshot.frameUrl || c.snapshot.backgroundUrl;
             const canUseImageBg = typeof bgSrc === "string" && bgSrc.length > 0 && !bgSrc.startsWith("local://");
             const canUseNextImage = canUseImageBg && typeof bgSrc === "string" && bgSrc.startsWith("/");
 
@@ -1151,8 +1313,8 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                       {canUseNextImage ? <Image src={bgSrc} alt="" width={80} height={48} className="h-full w-full object-cover" /> : null}
                     </div>
                     <div>
-                      <div className="text-sm font-semibold leading-tight">{c.name}</div>
-                      <div className="text-xs text-muted-foreground">{new Date(c.updatedAt).toLocaleDateString()}</div>
+                      <div className="text-sm font-semibold leading-tight">{c.title}</div>
+                      <div className="text-xs text-muted-foreground">{new Date(c.updatedAt).toLocaleString()}</div>
                     </div>
                   </div>
                   <Button

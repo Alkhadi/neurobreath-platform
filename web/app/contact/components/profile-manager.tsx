@@ -3,19 +3,22 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { getSession } from "next-auth/react";
 import { toast } from "sonner";
-import { Profile } from "@/lib/utils";
+import {
+  type Profile,
+  getNbcardSavedNamespace,
+  getOrCreateNbcardDeviceId,
+  loadNbcardSavedCards,
+  upsertNbcardSavedCard,
+} from "@/lib/utils";
 import { GradientSelector } from "./gradient-selector";
 import { FrameChooser } from "./frame-chooser";
 import { FaSave, FaTimes, FaTrash } from "react-icons/fa";
 import { storeAsset, generateAssetKey } from "../lib/nbcard-assets";
 import {
   clearProfileDraft,
-  getNbcardStorageNamespace,
   loadProfileDraft,
-  loadSavedCards,
   normalizeProfileForCategory,
   saveProfileDraft,
-  upsertSavedCard,
 } from "@/lib/nbcard-saved-cards";
 
 type FrameCategory = "ADDRESS" | "BANK" | "BUSINESS";
@@ -63,7 +66,9 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
   }, []);
 
   const effectiveUserEmail = sessionEmail ?? userEmail;
-  const namespace = getNbcardStorageNamespace({ userEmail: effectiveUserEmail, profileEmail: profile.email });
+  const deviceId = getOrCreateNbcardDeviceId();
+  const namespace = getNbcardSavedNamespace(effectiveUserEmail ?? deviceId);
+  const assetNamespace = sessionEmail ?? deviceId;
 
   // Restore locally persisted draft (so autosave doesn't need to call onSave / close modal)
   useEffect(() => {
@@ -127,7 +132,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
     try {
       // Store in IndexedDB as local asset
       const assetKey = generateAssetKey("avatar");
-      const localUrl = await storeAsset(file, assetKey, effectiveUserEmail);
+      const localUrl = await storeAsset(file, assetKey, assetNamespace);
 
       setEditedProfile({ ...editedProfile, photoUrl: localUrl });
       toast.success("Photo uploaded and stored locally");
@@ -153,7 +158,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
     try {
       // Store in IndexedDB as local asset
       const assetKey = generateAssetKey("bg");
-      const localUrl = await storeAsset(file, assetKey, effectiveUserEmail);
+      const localUrl = await storeAsset(file, assetKey, assetNamespace);
 
       setEditedProfile({ ...editedProfile, backgroundUrl: localUrl, frameUrl: undefined });
       toast.success("Background uploaded and stored locally");
@@ -178,16 +183,15 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
     // If this profile corresponds to a Saved Card, persist it back automatically.
     // This makes Saved Cards fully editable via the existing modal.
     try {
-      const saved = loadSavedCards(namespace);
+      const saved = loadNbcardSavedCards(namespace);
       const existing = saved.find((c) => c.id === editedProfile.id);
       if (existing) {
-        upsertSavedCard(namespace, {
+        upsertNbcardSavedCard(namespace, {
           ...existing,
           category: existing.category,
-          name: existing.name,
+          title: existing.title,
           createdAt: existing.createdAt,
-          updatedAt: existing.updatedAt,
-          profile: normalizeProfileForCategory(editedProfile, existing.category),
+          snapshot: normalizeProfileForCategory(editedProfile, existing.category),
         });
       }
     } catch {

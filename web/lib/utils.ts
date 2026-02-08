@@ -110,6 +110,216 @@ export function getOrCreateNbcardDeviceId(): string {
   return deviceId;
 }
 
+export type NbcardSavedCardCategory = "PROFILE" | "ADDRESS" | "BANK" | "BUSINESS";
+
+// Local-first Saved Cards model (stored in localStorage)
+export type NbcardSavedCard = {
+  id: string;
+  title: string;
+  category: NbcardSavedCardCategory;
+  snapshot: Profile;
+  updatedAt: number; // epoch ms
+  createdAt?: number; // epoch ms
+};
+
+type NbcardSavedActiveIds = Partial<Record<NbcardSavedCardCategory, string>>;
+
+const NBCARD_SAVED_KEY_PREFIX = "nbcard:saved:"; // REQUIRED format: nbcard:saved:<namespace>
+const NBCARD_SAVED_ACTIVE_KEY_PREFIX = "nbcard:saved:active:";
+
+// Legacy keys (kept for safe migration only)
+const NBCARD_LEGACY_SAVED_KEY_PREFIX = "nbcard:savedCards:v1:";
+const NBCARD_LEGACY_ACTIVE_KEY_PREFIX = "nbcard:savedCards:activeId:v1:";
+
+function nbcardSavedKey(namespace: string): string {
+  return `${NBCARD_SAVED_KEY_PREFIX}${namespace}`;
+}
+
+function nbcardSavedActiveKey(namespace: string): string {
+  return `${NBCARD_SAVED_ACTIVE_KEY_PREFIX}${namespace}`;
+}
+
+function safeJsonParse<T>(value: string | null): T | null {
+  if (!value) return null;
+  try {
+    return JSON.parse(value) as T;
+  } catch {
+    return null;
+  }
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === "object";
+}
+
+function coerceCategory(value: unknown): NbcardSavedCardCategory | null {
+  return value === "PROFILE" || value === "ADDRESS" || value === "BANK" || value === "BUSINESS" ? value : null;
+}
+
+export function getNbcardSavedNamespace(userEmail?: string | null): string {
+  const normalized = (userEmail ?? "").toString().trim().toLowerCase();
+  if (normalized && normalized.includes("@")) return normalized;
+  return getOrCreateNbcardDeviceId();
+}
+
+export function loadNbcardSavedCards(namespace: string): NbcardSavedCard[] {
+  if (typeof window === "undefined") return [];
+
+  const parsed = safeJsonParse<unknown>(window.localStorage.getItem(nbcardSavedKey(namespace)));
+  if (!Array.isArray(parsed)) return [];
+
+  const out: NbcardSavedCard[] = [];
+
+  for (const raw of parsed) {
+    if (!isRecord(raw)) continue;
+
+    const category = coerceCategory(raw.category);
+    if (!category) continue;
+
+    const id = typeof raw.id === "string" ? raw.id : null;
+    const title = typeof raw.title === "string" ? raw.title : null;
+    const snapshot = isRecord(raw.snapshot) ? (raw.snapshot as unknown as Profile) : null;
+    if (!id || !title || !snapshot) continue;
+
+    const updatedAt = typeof raw.updatedAt === "number" && Number.isFinite(raw.updatedAt) ? raw.updatedAt : Date.now();
+    const createdAt = typeof raw.createdAt === "number" && Number.isFinite(raw.createdAt) ? raw.createdAt : undefined;
+
+    out.push({
+      id,
+      title,
+      category,
+      snapshot,
+      updatedAt,
+      ...(createdAt ? { createdAt } : {}),
+    });
+  }
+
+  return out;
+}
+
+export function saveNbcardSavedCards(namespace: string, cards: NbcardSavedCard[]): void {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(nbcardSavedKey(namespace), JSON.stringify(cards));
+}
+
+export function upsertNbcardSavedCard(namespace: string, next: Omit<NbcardSavedCard, "updatedAt"> & { updatedAt?: number }): NbcardSavedCard[] {
+  const cards = loadNbcardSavedCards(namespace);
+  const idx = cards.findIndex((c) => c.id === next.id);
+  const updatedAt = typeof next.updatedAt === "number" && Number.isFinite(next.updatedAt) ? next.updatedAt : Date.now();
+
+  const withTimestamps: NbcardSavedCard = {
+    ...next,
+    updatedAt,
+    createdAt: typeof next.createdAt === "number" && Number.isFinite(next.createdAt) ? next.createdAt : cards[idx]?.createdAt ?? updatedAt,
+  };
+
+  const updated = idx >= 0 ? cards.map((c) => (c.id === next.id ? withTimestamps : c)) : [withTimestamps, ...cards];
+  saveNbcardSavedCards(namespace, updated);
+  return updated;
+}
+
+export function deleteNbcardSavedCard(namespace: string, id: string): NbcardSavedCard[] {
+  const cards = loadNbcardSavedCards(namespace);
+  const updated = cards.filter((c) => c.id !== id);
+  saveNbcardSavedCards(namespace, updated);
+
+  const active = loadNbcardActiveSavedCardIds(namespace);
+  const nextActive: NbcardSavedActiveIds = { ...active };
+  (Object.keys(nextActive) as NbcardSavedCardCategory[]).forEach((k) => {
+    if (nextActive[k] === id) delete nextActive[k];
+  });
+  saveNbcardActiveSavedCardIds(namespace, nextActive);
+
+  return updated;
+}
+
+export function loadNbcardActiveSavedCardIds(namespace: string): NbcardSavedActiveIds {
+  if (typeof window === "undefined") return {};
+  const parsed = safeJsonParse<NbcardSavedActiveIds>(window.localStorage.getItem(nbcardSavedActiveKey(namespace)));
+  if (!parsed || typeof parsed !== "object") return {};
+  return parsed;
+}
+
+export function saveNbcardActiveSavedCardIds(namespace: string, next: NbcardSavedActiveIds): void {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(nbcardSavedActiveKey(namespace), JSON.stringify(next));
+}
+
+export function setNbcardActiveSavedCardId(namespace: string, category: NbcardSavedCardCategory, id: string | null): void {
+  const state = loadNbcardActiveSavedCardIds(namespace);
+  const next: NbcardSavedActiveIds = { ...state };
+  if (id) next[category] = id;
+  else delete next[category];
+  saveNbcardActiveSavedCardIds(namespace, next);
+}
+
+export function migrateNbcardSavedCardsFromLegacy(namespace: string, legacyNamespaces: string[]): void {
+  if (typeof window === "undefined") return;
+
+  // If new storage already exists, do nothing.
+  const existing = window.localStorage.getItem(nbcardSavedKey(namespace));
+  const existingActive = window.localStorage.getItem(nbcardSavedActiveKey(namespace));
+  if (existing || existingActive) return;
+
+  for (const legacyNs of legacyNamespaces) {
+    const legacyCardsRaw = window.localStorage.getItem(`${NBCARD_LEGACY_SAVED_KEY_PREFIX}${legacyNs}`);
+    const legacyActiveRaw = window.localStorage.getItem(`${NBCARD_LEGACY_ACTIVE_KEY_PREFIX}${legacyNs}`);
+
+    const legacyCards = safeJsonParse<unknown[]>(legacyCardsRaw);
+    const legacyActive = safeJsonParse<NbcardSavedActiveIds>(legacyActiveRaw);
+
+    const migratedCards: NbcardSavedCard[] = Array.isArray(legacyCards)
+      ? legacyCards
+          .map((c) => {
+            if (!isRecord(c)) return null;
+            const category = coerceCategory(c.category);
+            if (!category) return null;
+            const id = typeof c.id === "string" ? c.id : null;
+            const title = typeof c.name === "string" ? c.name : typeof c.title === "string" ? c.title : null;
+            const snapshotRaw = c.profile ?? c.snapshot;
+            const snapshot = isRecord(snapshotRaw) ? (snapshotRaw as unknown as Profile) : null;
+            if (!id || !title || !snapshot) return null;
+            const updatedAtRaw = c.updatedAt;
+            const createdAtRaw = c.createdAt;
+            const updatedAt =
+              typeof updatedAtRaw === "string"
+                ? Date.parse(updatedAtRaw)
+                : typeof updatedAtRaw === "number"
+                ? updatedAtRaw
+                : Date.now();
+            const createdAt =
+              typeof createdAtRaw === "string"
+                ? Date.parse(createdAtRaw)
+                : typeof createdAtRaw === "number"
+                ? createdAtRaw
+                : undefined;
+
+            return {
+              id,
+              title,
+              category,
+              snapshot,
+              updatedAt: Number.isFinite(updatedAt) ? updatedAt : Date.now(),
+              ...(typeof createdAt === "number" && Number.isFinite(createdAt) ? { createdAt } : {}),
+            };
+          })
+          .filter((c): c is NbcardSavedCard => c !== null)
+      : [];
+
+    if (migratedCards.length > 0) {
+      saveNbcardSavedCards(namespace, migratedCards);
+    }
+
+    if (legacyActive && typeof legacyActive === "object") {
+      saveNbcardActiveSavedCardIds(namespace, legacyActive);
+    }
+
+    if (migratedCards.length > 0 || (legacyActive && typeof legacyActive === "object")) {
+      return;
+    }
+  }
+}
+
 export interface Contact {
   id: string;
   name: string;
