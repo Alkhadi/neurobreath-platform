@@ -6,7 +6,7 @@ import { Profile } from "@/lib/utils";
 import { GradientSelector } from "./gradient-selector";
 import { FrameChooser } from "./frame-chooser";
 import { FaSave, FaTimes, FaTrash } from "react-icons/fa";
-import { saveUserAsset } from "@/app/uk/resources/nb-card/_assetResolver";
+import { storeAsset, generateAssetKey } from "../lib/nbcard-assets";
 
 type FrameCategory = "ADDRESS" | "BANK" | "BUSINESS";
 
@@ -16,9 +16,10 @@ interface ProfileManagerProps {
   onDelete?: () => void;
   onClose: () => void;
   isNew?: boolean;
+  userEmail?: string; // For IndexedDB namespace
 }
 
-export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = false }: ProfileManagerProps) {
+export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = false, userEmail }: ProfileManagerProps) {
   const [editedProfile, setEditedProfile] = useState<Profile>(profile);
   const [uploading, setUploading] = useState(false);
   const [showFrameChooser, setShowFrameChooser] = useState(false);
@@ -26,106 +27,53 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
   const fileInputRef = useRef<HTMLInputElement>(null);
   const backgroundInputRef = useRef<HTMLInputElement>(null);
 
-  const toDataUrl = (blob: Blob) =>
-    new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onerror = () => reject(new Error("Failed to read file"));
-      reader.onload = () => resolve(String(reader.result));
-      reader.readAsDataURL(blob);
-    });
-
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 100 * 1024 * 1024) {
-      toast.error("File size must be less than 100MB");
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File size must be less than 10MB");
       return;
     }
 
     setUploading(true);
 
     try {
-      // LIVE EDIT: Try local storage first (instant, offline-safe)
-      try {
-        const localUrl = await saveUserAsset(file);
-        setEditedProfile({ ...editedProfile, photoUrl: localUrl });
-        toast.success("Photo stored locally (device)");
-        return; // Skip cloud upload
-      } catch (localErr) {
-        console.warn("Local storage failed, trying cloud:", localErr);
-      }
+      // Store in IndexedDB as local asset
+      const assetKey = generateAssetKey("avatar");
+      const localUrl = await storeAsset(file, assetKey, userEmail);
 
-      // Fallback to cloud upload
-      const presignedRes = await fetch("/api/upload/presigned", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fileName: file.name,
-          contentType: file.type,
-          isPublic: true,
-        }),
-      });
+      setEditedProfile({ ...editedProfile, photoUrl: localUrl });
+      toast.success("Photo uploaded and stored locally");
+    } catch (err) {
+      console.error("Upload error:", err);
+      toast.error("Failed to upload photo");
+    } finally {
+      setUploading(false);
+    }
+  };
 
-      if (!presignedRes.ok) {
-        const errorText = await presignedRes.text().catch(() => "Failed to get upload URL");
-        throw new Error(errorText || "Failed to get upload URL");
-      }
-      const { uploadUrl, cloud_storage_path } = await presignedRes.json();
+  const handleBackgroundUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-      // Check if Content-Disposition header is required
-      const urlObj = new URL(uploadUrl);
-      const signedHeaders = urlObj.searchParams.get("X-Amz-SignedHeaders") ?? "";
-      const needsContentDisposition = signedHeaders.includes("content-disposition");
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File size must be less than 10MB");
+      return;
+    }
 
-      // Upload to S3
-      const uploadHeaders: Record<string, string> = {
-        "Content-Type": file.type,
-      };
-      if (needsContentDisposition) {
-        uploadHeaders["Content-Disposition"] = "attachment";
-      }
+    setUploading(true);
 
-      const uploadRes = await fetch(uploadUrl, {
-        method: "PUT",
-        headers: uploadHeaders,
-        body: file,
-      });
+    try {
+      // Store in IndexedDB as local asset
+      const assetKey = generateAssetKey("bg");
+      const localUrl = await storeAsset(file, assetKey, userEmail);
 
-      if (!uploadRes.ok) throw new Error("Failed to upload file");
-
-      // Complete upload
-      const completeRes = await fetch("/api/upload/complete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          cloud_storage_path,
-          isPublic: true,
-        }),
-      });
-
-      if (!completeRes.ok) {
-        const errorText = await completeRes.text().catch(() => "Failed to complete upload");
-        throw new Error(errorText || "Failed to complete upload");
-      }
-      const { fileUrl } = await completeRes.json();
-
-      setEditedProfile({ ...editedProfile, photoUrl: fileUrl });
-      toast.success("Photo uploaded to cloud");
-    } catch (error) {
-      console.error("Upload error:", error);
-
-      // Final fallback: store locally as data URL so avatar still updates on this device.
-      try {
-        const dataUrl = await toDataUrl(file);
-        setEditedProfile({ ...editedProfile, photoUrl: dataUrl });
-        toast.message("Photo stored locally", {
-          description: "Cloud upload unavailable; avatar saved on this device.",
-        });
-      } catch (fallbackError) {
-        console.error("Local fallback failed:", fallbackError);
-        toast.error("Failed to upload photo. Please try a smaller image.");
-      }
+      setEditedProfile({ ...editedProfile, backgroundUrl: localUrl, frameUrl: undefined });
+      toast.success("Background uploaded and stored locally");
+    } catch (err) {
+      console.error("Upload error:", err);
+      toast.error("Failed to upload background");
     } finally {
       setUploading(false);
     }
@@ -133,98 +81,6 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
 
   const handleClearBackground = () => {
     setEditedProfile({ ...editedProfile, backgroundUrl: undefined, frameUrl: undefined });
-  };
-
-  const handleBackgroundUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (file.size > 100 * 1024 * 1024) {
-      toast.error("File size must be less than 100MB");
-      return;
-    }
-
-    setUploading(true);
-
-    try {
-      // LIVE EDIT: Try local storage first (instant, offline-safe)
-      try {
-        const localUrl = await saveUserAsset(file);
-        setEditedProfile({ ...editedProfile, backgroundUrl: localUrl });
-        toast.success("Background stored locally (device)");
-        return; // Skip cloud upload
-      } catch (localErr) {
-        console.warn("Local storage failed, trying cloud:", localErr);
-      }
-
-      // Fallback to cloud upload
-      const presignedRes = await fetch("/api/upload/presigned", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fileName: file.name,
-          contentType: file.type,
-          isPublic: true,
-        }),
-      });
-
-      if (!presignedRes.ok) {
-        const errorText = await presignedRes.text().catch(() => "Failed to get upload URL");
-        throw new Error(errorText || "Failed to get upload URL");
-      }
-      const { uploadUrl, cloud_storage_path } = await presignedRes.json();
-
-      const urlObj = new URL(uploadUrl);
-      const signedHeaders = urlObj.searchParams.get("X-Amz-SignedHeaders") ?? "";
-      const needsContentDisposition = signedHeaders.includes("content-disposition");
-
-      const uploadHeaders: Record<string, string> = {
-        "Content-Type": file.type,
-      };
-      if (needsContentDisposition) {
-        uploadHeaders["Content-Disposition"] = "attachment";
-      }
-
-      const uploadRes = await fetch(uploadUrl, {
-        method: "PUT",
-        headers: uploadHeaders,
-        body: file,
-      });
-
-      if (!uploadRes.ok) throw new Error("Failed to upload file");
-
-      const completeRes = await fetch("/api/upload/complete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          cloud_storage_path,
-          isPublic: true,
-        }),
-      });
-
-      if (!completeRes.ok) {
-        const errorText = await completeRes.text().catch(() => "Failed to complete upload");
-        throw new Error(errorText || "Failed to complete upload");
-      }
-      const { fileUrl } = await completeRes.json();
-
-      setEditedProfile({ ...editedProfile, backgroundUrl: fileUrl });
-      toast.success("Background uploaded to cloud");
-    } catch (error) {
-      console.error("Background upload error:", error);
-      try {
-        const dataUrl = await toDataUrl(file);
-        setEditedProfile({ ...editedProfile, backgroundUrl: dataUrl });
-        toast.message("Background stored locally", {
-          description: "Cloud upload unavailable; background saved on this device.",
-        });
-      } catch (fallbackError) {
-        console.error("Background local fallback failed:", fallbackError);
-        toast.error("Failed to upload background. Please try a smaller image.");
-      }
-    } finally {
-      setUploading(false);
-    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {

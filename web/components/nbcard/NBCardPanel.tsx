@@ -244,7 +244,7 @@ export function NBCardPanel() {
           {/* Profile Card with Capture Wrapper */}
           <div className="mb-6">
             <div
-              id="profile-card-capture"
+              id="profile-card-capture-wrapper"
               className="cursor-pointer text-left w-full"
               role="button"
               tabIndex={0}
@@ -264,6 +264,7 @@ export function NBCardPanel() {
                   e?.stopPropagation();
                   handleEditProfile();
                 }}
+                userEmail={undefined}
               />
             </div>
           </div>
@@ -375,6 +376,7 @@ export function NBCardPanel() {
             setIsNewProfile(false);
           }}
           isNew={isNewProfile}
+          userEmail={undefined}
         />
       )}
     </>

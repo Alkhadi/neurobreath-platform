@@ -44,5 +44,8 @@
     "node_modules",
     ".next",
     ".build"
-  ]
+  ],
+  "typeAcquisition": {
+    "disableFilenameBasedTypeAcquisition": true
+  }
 }

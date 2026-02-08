@@ -80,10 +80,11 @@ async function captureProfileCardPng(): Promise<Blob> {
   const target = document.getElementById("profile-card-capture");
   if (!target) throw new Error("Profile card element not found");
 
-  // Wait for fonts to load
+  // CAPTURE-SAFE TIMING (MANDATORY):
+  // 1. Wait for fonts to load
   await document.fonts.ready;
 
-  // Wait for all images inside card to decode
+  // 2. Wait for all images inside card to decode
   const images = target.querySelectorAll<HTMLImageElement>("img");
   await Promise.all(
     Array.from(images).map((img) => {
@@ -92,10 +93,12 @@ async function captureProfileCardPng(): Promise<Blob> {
     })
   );
 
-  // CRITICAL: Wait 2 animation frames for layout flush after user edits background/avatar
-  // This ensures html2canvas captures the final rendered state
-  await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+  // 3. Wait 2 animation frames to ensure layout is flushed after background/avatar changes
+  await new Promise((resolve) => 
+    requestAnimationFrame(() => requestAnimationFrame(resolve))
+  );
 
+  // COLOR FIDELITY: No color conversion, no filters
   const canvas = await html2canvas(target, {
     scale: 2,
     backgroundColor: null,
@@ -104,11 +107,12 @@ async function captureProfileCardPng(): Promise<Blob> {
     allowTaint: false,
   });
 
+  // PNG export with true alpha (no JPEG color shifts)
   return await new Promise<Blob>((resolve, reject) => {
     canvas.toBlob((blob) => {
       if (!blob) reject(new Error("Failed to create image blob"));
       else resolve(blob);
-    }, "image/png");
+    }, "image/png", 1.0);
   });
 }
 
