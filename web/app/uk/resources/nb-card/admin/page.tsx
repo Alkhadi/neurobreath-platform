@@ -219,10 +219,11 @@ export default function AdminFramesPage() {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="frame-name" className="block text-sm font-medium text-gray-700 mb-1">
                     Name *
                   </label>
                   <input
+                    id="frame-name"
                     type="text"
                     value={formName}
                     onChange={(e) => setFormName(e.target.value)}
@@ -231,10 +232,11 @@ export default function AdminFramesPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="frame-category" className="block text-sm font-medium text-gray-700 mb-1">
                     Category *
                   </label>
                   <select
+                    id="frame-category"
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value as FrameCategory)}
                     required
@@ -246,10 +248,11 @@ export default function AdminFramesPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="frame-image-url" className="block text-sm font-medium text-gray-700 mb-1">
                     Image URL (or upload below)
                   </label>
                   <input
+                    id="frame-image-url"
                     type="url"
                     value={formImageUrl}
                     onChange={(e) => setFormImageUrl(e.target.value)}
@@ -258,10 +261,11 @@ export default function AdminFramesPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="frame-sort-order" className="block text-sm font-medium text-gray-700 mb-1">
                     Sort Order
                   </label>
                   <input
+                    id="frame-sort-order"
                     type="number"
                     value={formSortOrder}
                     onChange={(e) => setFormSortOrder(parseInt(e.target.value))}
@@ -270,10 +274,11 @@ export default function AdminFramesPage() {
                 </div>
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="frame-file-upload" className="block text-sm font-medium text-gray-700 mb-1">
                   Or Upload Image (PNG, JPEG, WebP - max 3MB)
                 </label>
                 <input
+                  id="frame-file-upload"
                   type="file"
                   accept="image/png,image/jpeg,image/jpg,image/webp"
                   onChange={(e) => setFormFile(e.target.files?.[0] || null)}
@@ -381,6 +386,7 @@ export default function AdminFramesPage() {
                     <button
                       onClick={() => handleDelete(frame.id)}
                       className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                      aria-label="Delete frame"
                     >
                       <FaTrash />
                     </button>
