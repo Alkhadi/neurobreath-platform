@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1680" viewBox="0 0 1080 1680">
+  <defs>
+    <style>
+      :root {
+        --nb-dark: #0b1220;
+        --nb-mid: #111827;
+        --nb-surface: rgba(255,255,255,0.92);
+        --nb-surface-2: rgba(255,255,255,0.75);
+        --nb-blue: #3b82f6;
+        --nb-cyan: #06b6d4;
+        --nb-amber: #f59e0b;
+        --nb-slate: #94a3b8;
+      }
+    </style>
+    <linearGradient id="mb-p-grad1" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#0b1220"/>
+    </linearGradient>
+    <radialGradient id="mb-p-glow" cx="0.5" cy="0.25" r="0.5">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0b1220"/>
+    </radialGradient>
+    <linearGradient id="mb-p-accent" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="mb-p-clip">
+      <rect x="16" y="16" width="1048" height="1648" rx="24"/>
+    </clipPath>
+  </defs>
+
+  <!-- Base -->
+  <rect x="16" y="16" width="1048" height="1648" rx="24" fill="url(#mb-p-grad1)"/>
+
+  <g clip-path="url(#mb-p-clip)">
+    <!-- Subtle glow -->
+    <rect x="16" y="16" width="1048" height="1648" fill="url(#mb-p-glow)" opacity="0.35"/>
+
+    <!-- Accent wash -->
+    <rect x="16" y="16" width="1048" height="840" fill="url(#mb-p-accent)"/>
+
+    <!-- Flowing abstract curves -->
+    <path d="M16,700 Q270,580 540,700 T1064,620" fill="none" stroke="#94a3b8" stroke-width="0.6" opacity="0.1"/>
+    <path d="M16,720 Q290,610 560,720 T1064,650" fill="none" stroke="#3b82f6" stroke-width="0.4" opacity="0.07"/>
+    <path d="M16,740 Q310,640 580,740 T1064,680" fill="none" stroke="#94a3b8" stroke-width="0.3" opacity="0.05"/>
+
+    <!-- Corner bracket accents -->
+    <line x1="80" y1="80" x2="80" y2="160" stroke="#94a3b8" stroke-width="0.8" opacity="0.12"/>
+    <line x1="80" y1="80" x2="160" y2="80" stroke="#94a3b8" stroke-width="0.8" opacity="0.12"/>
+    <line x1="1000" y1="1600" x2="1000" y2="1520" stroke="#94a3b8" stroke-width="0.8" opacity="0.12"/>
+    <line x1="1000" y1="1600" x2="920" y2="1600" stroke="#94a3b8" stroke-width="0.8" opacity="0.12"/>
+
+    <!-- Subtle horizontal divider -->
+    <line x1="80" y1="840" x2="1000" y2="840" stroke="#94a3b8" stroke-width="0.4" opacity="0.06"/>
+
+    <!-- Content panel - upper portion -->
+    <rect x="60" y="100" width="960" height="680" rx="12" fill="rgba(255,255,255,0.025)"/>
+
+    <!-- Blue accent bar -->
+    <rect x="60" y="100" width="3" height="48" rx="1.5" fill="#3b82f6" opacity="0.28"/>
+
+    <!-- Content panel - lower portion -->
+    <rect x="60" y="880" width="960" height="700" rx="12" fill="rgba(255,255,255,0.018)"/>
+
+    <!-- Sparse dot pattern -->
+    <circle cx="900" cy="900" r="1" fill="#94a3b8" opacity="0.1"/>
+    <circle cx="940" cy="900" r="1" fill="#94a3b8" opacity="0.1"/>
+    <circle cx="980" cy="900" r="1" fill="#94a3b8" opacity="0.1"/>
+    <circle cx="900" cy="940" r="1" fill="#94a3b8" opacity="0.1"/>
+    <circle cx="940" cy="940" r="1" fill="#94a3b8" opacity="0.1"/>
+    <circle cx="980" cy="940" r="1" fill="#94a3b8" opacity="0.1"/>
+
+    <!-- Bottom edge line -->
+    <line x1="60" y1="1600" x2="350" y2="1600" stroke="#94a3b8" stroke-width="0.5" opacity="0.1"/>
+  </g>
+</svg>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      :root {
+        --nb-dark: #0b1220;
+        --nb-mid: #111827;
+        --nb-surface: rgba(255,255,255,0.92);
+        --nb-surface-2: rgba(255,255,255,0.75);
+        --nb-blue: #3b82f6;
+        --nb-cyan: #06b6d4;
+        --nb-amber: #f59e0b;
+        --nb-slate: #94a3b8;
+      }
+    </style>
+    <linearGradient id="mb-l-grad1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1220"/>
+      <stop offset="60%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="mb-l-grad2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.08"/>
+      <stop offset="50%" stop-color="#06b6d4" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="mb-l-glow" cx="0.2" cy="0.3" r="0.6">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0b1220"/>
+    </radialGradient>
+    <clipPath id="mb-l-clip">
+      <rect x="16" y="16" width="1568" height="868" rx="24"/>
+    </clipPath>
+  </defs>
+
+  <!-- Base -->
+  <rect x="16" y="16" width="1568" height="868" rx="24" fill="url(#mb-l-grad1)"/>
+
+  <g clip-path="url(#mb-l-clip)">
+    <!-- Subtle radial glow -->
+    <rect x="16" y="16" width="1568" height="868" fill="url(#mb-l-glow)" opacity="0.4"/>
+
+    <!-- Horizontal sweep -->
+    <rect x="16" y="16" width="1568" height="868" fill="url(#mb-l-grad2)"/>
+
+    <!-- Abstract linework - flowing curves -->
+    <path d="M16,500 Q300,350 600,480 T1200,380 T1584,500" fill="none" stroke="#94a3b8" stroke-width="0.6" opacity="0.1"/>
+    <path d="M16,520 Q350,370 650,500 T1250,400 T1584,520" fill="none" stroke="#3b82f6" stroke-width="0.4" opacity="0.08"/>
+    <path d="M16,540 Q400,400 700,520 T1300,420 T1584,540" fill="none" stroke="#94a3b8" stroke-width="0.3" opacity="0.06"/>
+
+    <!-- Minimal geometric accents -->
+    <line x1="100" y1="100" x2="100" y2="200" stroke="#94a3b8" stroke-width="0.8" opacity="0.12"/>
+    <line x1="100" y1="100" x2="200" y2="100" stroke="#94a3b8" stroke-width="0.8" opacity="0.12"/>
+    <line x1="1500" y1="780" x2="1500" y2="680" stroke="#94a3b8" stroke-width="0.8" opacity="0.12"/>
+    <line x1="1500" y1="780" x2="1400" y2="780" stroke="#94a3b8" stroke-width="0.8" opacity="0.12"/>
+
+    <!-- Very subtle vertical divider -->
+    <line x1="1000" y1="80" x2="1000" y2="820" stroke="#94a3b8" stroke-width="0.4" opacity="0.06"/>
+
+    <!-- Content panel - slightly lighter area -->
+    <rect x="60" y="100" width="880" height="680" rx="12" fill="rgba(255,255,255,0.025)"/>
+
+    <!-- Small accent mark -->
+    <rect x="60" y="100" width="3" height="40" rx="1.5" fill="#3b82f6" opacity="0.3"/>
+
+    <!-- Subtle dot pattern (sparse) -->
+    <circle cx="1100" cy="150" r="1" fill="#94a3b8" opacity="0.1"/>
+    <circle cx="1150" cy="150" r="1" fill="#94a3b8" opacity="0.1"/>
+    <circle cx="1200" cy="150" r="1" fill="#94a3b8" opacity="0.1"/>
+    <circle cx="1100" cy="200" r="1" fill="#94a3b8" opacity="0.1"/>
+    <circle cx="1150" cy="200" r="1" fill="#94a3b8" opacity="0.1"/>
+    <circle cx="1200" cy="200" r="1" fill="#94a3b8" opacity="0.1"/>
+    <circle cx="1100" cy="250" r="1" fill="#94a3b8" opacity="0.1"/>
+    <circle cx="1150" cy="250" r="1" fill="#94a3b8" opacity="0.1"/>
+    <circle cx="1200" cy="250" r="1" fill="#94a3b8" opacity="0.1"/>
+
+    <!-- Bottom edge line -->
+    <line x1="60" y1="820" x2="400" y2="820" stroke="#94a3b8" stroke-width="0.5" opacity="0.1"/>
+  </g>
+</svg>

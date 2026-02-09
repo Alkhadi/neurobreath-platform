@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="t-mb-l-g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1220"/>
+      <stop offset="60%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <radialGradient id="t-mb-l-gl" cx="0.2" cy="0.3" r="0.6">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0b1220"/>
+    </radialGradient>
+    <clipPath id="t-mb-l-c">
+      <rect x="16" y="16" width="1568" height="868" rx="24"/>
+    </clipPath>
+  </defs>
+  <rect x="16" y="16" width="1568" height="868" rx="24" fill="url(#t-mb-l-g1)"/>
+  <g clip-path="url(#t-mb-l-c)">
+    <rect x="16" y="16" width="1568" height="868" fill="url(#t-mb-l-gl)" opacity="0.4"/>
+    <path d="M16,500 Q300,350 600,480 T1200,380 T1584,500" fill="none" stroke="#94a3b8" stroke-width="1" opacity="0.12"/>
+    <path d="M16,520 Q350,370 650,500 T1250,400 T1584,520" fill="none" stroke="#3b82f6" stroke-width="0.8" opacity="0.1"/>
+    <line x1="100" y1="100" x2="100" y2="200" stroke="#94a3b8" stroke-width="1.5" opacity="0.15"/>
+    <line x1="100" y1="100" x2="200" y2="100" stroke="#94a3b8" stroke-width="1.5" opacity="0.15"/>
+    <line x1="1500" y1="780" x2="1500" y2="680" stroke="#94a3b8" stroke-width="1.5" opacity="0.15"/>
+    <line x1="1500" y1="780" x2="1400" y2="780" stroke="#94a3b8" stroke-width="1.5" opacity="0.15"/>
+    <rect x="60" y="100" width="880" height="680" rx="12" fill="rgba(255,255,255,0.025)"/>
+    <rect x="60" y="100" width="5" height="40" rx="2.5" fill="#3b82f6" opacity="0.35"/>
+  </g>
+</svg>
