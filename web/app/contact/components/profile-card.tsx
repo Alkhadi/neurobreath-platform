@@ -136,6 +136,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
   const hasBackgroundImage = Boolean(resolvedBackgroundUrl);
 
   const socialMediaLinks = [
+    { icon: FaGlobe, url: profile?.socialMedia?.website, color: "#6366F1", label: "Website" },
     { icon: FaInstagram, url: profile?.socialMedia?.instagram, color: "#E1306C" },
     { icon: FaFacebook, url: profile?.socialMedia?.facebook, color: "#1877F2" },
     { icon: FaTiktok, url: profile?.socialMedia?.tiktok, color: "#000000" },

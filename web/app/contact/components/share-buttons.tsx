@@ -102,6 +102,34 @@ async function dataUrlToPngBlob(dataUrl: string): Promise<Blob> {
   return await res.blob();
 }
 
+// UNIFIED EXPORT PIPELINE: Guarantees Download and Share use identical assets
+async function buildExportAssets(profile: Profile, shareUrl: string): Promise<{ pngBlob: Blob; pdfBytes: Uint8Array; qrPngUrl?: string }> {
+  // 1. Capture PNG once (used by both PNG export and PDF embed)
+  const pngBlob = await captureProfileCardPng();
+  
+  // 2. Generate QR code PNG if available
+  let qrPngUrl: string | undefined;
+  try {
+    const svg = document.getElementById("nbcard-qr-svg");
+    if (svg) {
+      const xml = new XMLSerializer().serializeToString(svg);
+      const svgDataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(xml)}`;
+      const pngBlob = await dataUrlToPngBlob(svgDataUrl);
+      qrPngUrl = URL.createObjectURL(pngBlob);
+    }
+  } catch {
+    // ignore QR if unavailable
+  }
+  
+  // 3. Generate PDF embedding the captured PNG
+  const pdfBytes = await createSimplePdf(profile, shareUrl, qrPngUrl);
+  
+  // Cleanup QR object URL
+  if (qrPngUrl) URL.revokeObjectURL(qrPngUrl);
+  
+  return { pngBlob, pdfBytes, qrPngUrl };
+}
+
 async function captureProfileCardPng(): Promise<Blob> {
   const target = document.getElementById("profile-card-capture");
   if (!target) throw new Error("Profile card element not found");
@@ -706,24 +734,24 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
   async function handleDownloadPng() {
     await withBusy("png", async () => {
-      const png = await captureProfileCardPng();
-      downloadBlob(png, `${profile.fullName.replace(/\s+/g, "_")}_NBCard.png`);
+      const { pngBlob } = await buildExportAssets(profile, shareUrl);
+      downloadBlob(pngBlob, `${profile.fullName.replace(/\s+/g, "_")}_NBCard.png`);
       toast.success("PNG downloaded");
     });
   }
 
   async function handleSharePng() {
     await withBusy("png-share", async () => {
-      const png = await captureProfileCardPng();
+      const { pngBlob } = await buildExportAssets(profile, shareUrl);
       const fileName = `${profile.fullName.replace(/\s+/g, "_")}.png`;
       const ok = await shareViaWebShare({
         title: `NBCard — ${profile.fullName}`,
-        files: [new File([png], fileName, { type: "image/png" })],
+        files: [new File([pngBlob], fileName, { type: "image/png" })],
       });
       if (ok) {
         toast.success("Shared image");
       } else {
-        downloadBlob(png, `${profile.fullName.replace(/\s+/g, "_")}_NBCard.png`);
+        downloadBlob(pngBlob, `${profile.fullName.replace(/\s+/g, "_")}_NBCard.png`);
         toast.message("Share not supported", { description: "Image downloaded instead." });
       }
     });
@@ -731,22 +759,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
   async function handleDownloadPdf() {
     await withBusy("pdf", async () => {
-      let qrPngUrl: string | undefined;
-      try {
-        const svg = document.getElementById("nbcard-qr-svg");
-        if (svg) {
-          const xml = new XMLSerializer().serializeToString(svg);
-          const svgDataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(xml)}`;
-          const pngBlob = await dataUrlToPngBlob(svgDataUrl);
-          qrPngUrl = URL.createObjectURL(pngBlob);
-        }
-      } catch {
-        // ignore
-      }
-
-      const pdfBytes = await createSimplePdf(profile, shareUrl, qrPngUrl);
-      if (qrPngUrl) URL.revokeObjectURL(qrPngUrl);
-
+      const { pdfBytes } = await buildExportAssets(profile, shareUrl);
       downloadBlob(new Blob([pdfBytes], { type: "application/pdf" }), `${profile.fullName.replace(/\s+/g, "_")}_NBCard.pdf`);
       toast.success("PDF downloaded");
     });
@@ -834,7 +847,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
       // Try PDF with navigator.share first
       if (navigator.share && navigator.canShare) {
         try {
-          const pdfBytes = await createSimplePdf(profile, shareUrl);
+          const { pdfBytes } = await buildExportAssets(profile, shareUrl);
           const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
           const fileName = `${profile.fullName.replace(/\s+/g, "_")}_NBCard.pdf`;
           const file = new File([pdfBlob], fileName, { type: "application/pdf" });

@@ -48,6 +48,10 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
   const draftTimerRef = useRef<NodeJS.Timeout | null>(null);
   const hasRestoredDraftRef = useRef(false);
   const didInitRef = useRef(false);
+  
+  // LIVE BACKGROUND PREVIEW: objectURL for instant preview before upload completes
+  const [backgroundPreviewUrl, setBackgroundPreviewUrl] = useState<string | null>(null);
+  const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -127,6 +131,12 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
       return;
     }
 
+    // LIVE PREVIEW: Create objectURL immediately for instant preview
+    if (photoPreviewUrl) URL.revokeObjectURL(photoPreviewUrl);
+    const previewUrl = URL.createObjectURL(file);
+    setPhotoPreviewUrl(previewUrl);
+    setEditedProfile({ ...editedProfile, photoUrl: previewUrl });
+
     setUploading(true);
 
     try {
@@ -135,6 +145,8 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
       const localUrl = await storeAsset(file, assetKey, assetNamespace);
 
       setEditedProfile({ ...editedProfile, photoUrl: localUrl });
+      setPhotoPreviewUrl(null); // Clear preview once upload completes
+      URL.revokeObjectURL(previewUrl);
       toast.success("Photo uploaded and stored locally");
     } catch (err) {
       console.error("Upload error:", err);
@@ -153,6 +165,12 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
       return;
     }
 
+    // LIVE PREVIEW: Create objectURL immediately for instant background preview
+    if (backgroundPreviewUrl) URL.revokeObjectURL(backgroundPreviewUrl);
+    const previewUrl = URL.createObjectURL(file);
+    setBackgroundPreviewUrl(previewUrl);
+    setEditedProfile({ ...editedProfile, backgroundUrl: previewUrl, frameUrl: undefined });
+
     setUploading(true);
 
     try {
@@ -161,6 +179,8 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
       const localUrl = await storeAsset(file, assetKey, assetNamespace);
 
       setEditedProfile({ ...editedProfile, backgroundUrl: localUrl, frameUrl: undefined });
+      setBackgroundPreviewUrl(null); // Clear preview once upload completes
+      URL.revokeObjectURL(previewUrl);
       toast.success("Background uploaded and stored locally");
     } catch (err) {
       console.error("Upload error:", err);
@@ -423,6 +443,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
             <h3 className="text-lg font-bold text-gray-800 mb-3">Social Media Links</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {([
+                { key: "website", label: "Website", placeholder: "https://yourwebsite.com" },
                 { key: "instagram", label: "Instagram", placeholder: "https://instagram.com/yourname" },
                 { key: "facebook", label: "Facebook", placeholder: "https://facebook.com/yourname" },
                 { key: "tiktok", label: "TikTok", placeholder: "https://tiktok.com/@yourname" },
@@ -443,12 +464,17 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                     spellCheck={false}
                     inputMode="url"
                     value={editedProfile.socialMedia?.[key] ?? ""}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      let value = e.target.value.trim();
+                      // Normalize website URLs: add https:// if missing scheme
+                      if (key === "website" && value && !value.match(/^https?:\/\//i)) {
+                        value = `https://${value}`;
+                      }
                       setEditedProfile({
                         ...editedProfile,
-                        socialMedia: { ...editedProfile.socialMedia, [key]: e.target.value },
-                      })
-                    }
+                        socialMedia: { ...editedProfile.socialMedia, [key]: value },
+                      });
+                    }}
                     placeholder={placeholder}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
