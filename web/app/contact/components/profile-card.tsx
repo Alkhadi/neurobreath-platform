@@ -7,15 +7,17 @@ import { getSession } from "next-auth/react";
 import { resolveAssetUrl } from "../lib/nbcard-assets";
 import { CaptureImage } from "./capture-image";
 import styles from "./profile-card.module.css";
+import type { TemplateSelection } from "@/lib/nbcard-templates";
 
 interface ProfileCardProps {
   profile: Profile;
   onPhotoClick?: (e?: React.MouseEvent) => void;
   showEditButton?: boolean;
   userEmail?: string; // For IndexedDB namespace
+  templateSelection?: TemplateSelection; // Template background/overlay
 }
 
-export function ProfileCard({ profile, onPhotoClick, showEditButton = false, userEmail }: ProfileCardProps) {
+export function ProfileCard({ profile, onPhotoClick, showEditButton = false, userEmail, templateSelection }: ProfileCardProps) {
   const [sessionEmail, setSessionEmail] = useState<string | null>(null);
   const [resolvedBackgroundUrl, setResolvedBackgroundUrl] = useState<string | null>(null);
   const [resolvedPhotoUrl, setResolvedPhotoUrl] = useState<string | null>(null);
@@ -23,6 +25,26 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
   const [photoRevoke, setPhotoRevoke] = useState<(() => void) | null>(null);
 
   const assetNamespace = userEmail ?? sessionEmail ?? undefined;
+
+  // Determine if we're using template mode (new) or legacy background mode
+  const useTemplateMode = Boolean(templateSelection?.backgroundId);
+  
+  // Build template paths from IDs
+  // ID format: "modern_geometric_v1_landscape" -> "modern_geometric_landscape_bg.svg"
+  // ID format: "ink_frame_v1_portrait" -> "ink_frame_overlay_portrait.svg"
+  const getTemplatePath = (id: string, type: 'background' | 'overlay'): string => {
+    // Remove version suffix (_v1)
+    const base = id.replace(/_v\d+_/, '_');
+    const suffix = type === 'background' ? '_bg.svg' : '.svg';
+    return `/nb-card/templates/${type}s/${base}${suffix}`;
+  };
+  
+  const templateBackgroundSrc = useTemplateMode && templateSelection?.backgroundId
+    ? getTemplatePath(templateSelection.backgroundId, 'background')
+    : null;
+  const templateOverlaySrc = useTemplateMode && templateSelection?.overlayId
+    ? getTemplatePath(templateSelection.overlayId, 'overlay')
+    : null;
 
   useEffect(() => {
     let cancelled = false;
@@ -133,7 +155,10 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
     gradientClassMap[profile?.gradient ?? ""] ??
     gradientClassMap[defaultGradient];
 
-  const hasBackgroundImage = Boolean(resolvedBackgroundUrl);
+  // Priority order: template > legacy frameUrl/backgroundUrl > gradient
+  const hasTemplateBackground = Boolean(templateBackgroundSrc);
+  const hasLegacyBackground = !useTemplateMode && Boolean(resolvedBackgroundUrl);
+  const hasAnyBackground = hasTemplateBackground || hasLegacyBackground;
 
   const socialMediaLinks = [
     { icon: FaGlobe, url: profile?.socialMedia?.website, color: "#6366F1", label: "Website" },
@@ -149,11 +174,24 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
       id="profile-card-capture"
       className={cn(
         "relative isolate w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden",
-        !hasBackgroundImage && gradientClass,
-        hasBackgroundImage && "bg-gray-900"
+        !hasAnyBackground && gradientClass,
+        hasAnyBackground && "bg-gray-900"
       )}
     >
-      {hasBackgroundImage && resolvedBackgroundUrl && (
+      {/* TEMPLATE BACKGROUND LAYER (z=0) */}
+      {hasTemplateBackground && templateBackgroundSrc && (
+        <div className="absolute inset-0 z-0 pointer-events-none select-none">
+          <img
+            src={templateBackgroundSrc}
+            alt="Card background"
+            className="w-full h-full object-cover"
+            loading="eager"
+          />
+        </div>
+      )}
+
+      {/* LEGACY BACKGROUND LAYER (z=0, only if no template) */}
+      {!useTemplateMode && hasLegacyBackground && resolvedBackgroundUrl && (
         <div className="absolute inset-0 z-0 pointer-events-none">
           <CaptureImage
             src={resolvedBackgroundUrl}
@@ -163,10 +201,24 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
         </div>
       )}
 
-      {hasBackgroundImage && (
+      {/* Dark overlay for readability (z=1) */}
+      {hasAnyBackground && (
         <div className="absolute inset-0 z-[1] bg-black/35 pointer-events-none" />
       )}
 
+      {/* TEMPLATE OVERLAY LAYER (z=2) */}
+      {hasTemplateBackground && templateOverlaySrc && (
+        <div className="absolute inset-0 z-[2] pointer-events-none select-none">
+          <img
+            src={templateOverlaySrc}
+            alt="Card overlay"
+            className="w-full h-full object-cover"
+            loading="eager"
+          />
+        </div>
+      )}
+
+      {/* CARD CONTENT (z=10) */}
       <div className="relative z-10 p-8 text-white">
         {/* Profile Photo */}
         <div className="flex justify-center mb-6">

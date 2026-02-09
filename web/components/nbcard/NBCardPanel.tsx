@@ -12,6 +12,8 @@ import { ContactCapture } from "@/app/contact/components/contact-capture";
 import { ProfileCard } from "@/app/contact/components/profile-card";
 import { ProfileManager } from "@/app/contact/components/profile-manager";
 import { ShareButtons } from "@/app/contact/components/share-buttons";
+import { TemplatePicker } from "@/app/contact/components/template-picker";
+import { type TemplateSelection, loadTemplateSelection, saveTemplateSelection } from "@/lib/nbcard-templates";
 
 const SOCIAL_PLACEHOLDER_VALUES = new Set([
   "https://instagram.com/username",
@@ -63,6 +65,7 @@ export function NBCardPanel() {
   const [isNewProfile, setIsNewProfile] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [templateSelection, setTemplateSelection] = useState<TemplateSelection>({});
 
   // Load NBCard state + register SW
   useEffect(() => {
@@ -76,13 +79,26 @@ export function NBCardPanel() {
       setProfiles(sanitizedProfiles);
       setContacts(state.contacts);
 
+      // Load template selection for the first profile
+      const savedTemplateSelection = loadTemplateSelection(sanitizedProfiles[0]?.id);
+      if (savedTemplateSelection) {
+        setTemplateSelection(savedTemplateSelection);
+      }
+
       // Support deep-linking to a specific profile via ?profile=<id>
       try {
         const params = new URLSearchParams(window.location.search);
         const profileId = params.get("profile");
         if (profileId) {
           const index = sanitizedProfiles.findIndex((p) => p.id === profileId);
-          if (index >= 0) setCurrentProfileIndex(index);
+          if (index >= 0) {
+            setCurrentProfileIndex(index);
+            // Load template selection for the linked profile
+            const linkedTemplateSelection = loadTemplateSelection(sanitizedProfiles[index]?.id);
+            if (linkedTemplateSelection) {
+              setTemplateSelection(linkedTemplateSelection);
+            }
+          }
         }
       } catch {
         // ignore
@@ -134,6 +150,13 @@ export function NBCardPanel() {
   }, [profiles, contacts, mounted]);
 
   const currentProfile = useMemo(() => profiles?.[currentProfileIndex] ?? defaultProfile, [profiles, currentProfileIndex]);
+
+  // Persist template selection when it changes
+  useEffect(() => {
+    if (mounted && templateSelection) {
+      saveTemplateSelection(templateSelection, currentProfile?.id);
+    }
+  }, [templateSelection, currentProfile?.id, mounted]);
 
   const handleSaveProfile = (profile: Profile) => {
     if (isNewProfile) {
@@ -201,6 +224,22 @@ export function NBCardPanel() {
     }
   };
 
+  const handleTemplateSelectionChange = (newSelection: TemplateSelection) => {
+    setTemplateSelection(newSelection);
+  };
+
+  // Load template selection when profile changes
+  useEffect(() => {
+    if (mounted) {
+      const savedSelection = loadTemplateSelection(currentProfile?.id);
+      if (savedSelection) {
+        setTemplateSelection(savedSelection);
+      } else {
+        setTemplateSelection({});
+      }
+    }
+  }, [currentProfileIndex, currentProfile?.id, mounted]);
+
   return (
     <>
       {/* Profile Selector */}
@@ -265,6 +304,7 @@ export function NBCardPanel() {
                   handleEditProfile();
                 }}
                 userEmail={undefined}
+                templateSelection={templateSelection}
               />
             </div>
           </div>
@@ -309,6 +349,15 @@ export function NBCardPanel() {
             />
           </div>
         </div>
+      </div>
+
+      {/* Template Picker Section */}
+      <div className="mb-8">
+        <TemplatePicker
+          selection={templateSelection}
+          orientation={templateSelection.orientation || 'landscape'}
+          onSelectionChange={handleTemplateSelectionChange}
+        />
       </div>
 
       {/* Contact Capture Section */}
