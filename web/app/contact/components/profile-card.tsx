@@ -159,7 +159,6 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
             src={resolvedBackgroundUrl}
             alt="Card background"
             className="w-full h-full object-cover"
-            style={{ objectFit: "cover", objectPosition: "center" }}
           />
         </div>
       )}
@@ -174,7 +173,6 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
                   src={resolvedPhotoUrl}
                   alt={profile?.fullName ?? "Profile"}
                   className="w-full h-full object-cover"
-                  style={{ objectFit: "cover", objectPosition: "center" }}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-400 to-blue-500 text-4xl font-bold text-white">
