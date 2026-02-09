@@ -17,12 +17,11 @@ export interface CaptureImageProps {
   src: string;
   alt: string;
   className?: string;
-  style?: React.CSSProperties;
   onLoad?: () => void;
   onError?: () => void;
 }
 
-export function CaptureImage({ src, alt, className, style, onLoad, onError }: CaptureImageProps) {
+export function CaptureImage({ src, alt, className, onLoad, onError }: CaptureImageProps) {
   const imgRef = React.useRef<HTMLImageElement>(null);
   
   React.useEffect(() => {
@@ -44,7 +43,6 @@ export function CaptureImage({ src, alt, className, style, onLoad, onError }: Ca
       src={src}
       alt={alt}
       className={className}
-      style={style}
       decoding="async"
       loading="eager"
       crossOrigin="anonymous"
