@@ -103,31 +103,37 @@ async function dataUrlToPngBlob(dataUrl: string): Promise<Blob> {
 }
 
 // UNIFIED EXPORT PIPELINE: Guarantees Download and Share use identical assets
-async function buildExportAssets(profile: Profile, shareUrl: string): Promise<{ pngBlob: Blob; pdfBytes: Uint8Array; qrPngUrl?: string }> {
+async function buildExportAssets(
+  profile: Profile,
+  shareUrl: string,
+  options: { includePdf?: boolean } = {}
+): Promise<{ pngBlob: Blob; pdfBytes?: Uint8Array }> {
   // 1. Capture PNG once (used by both PNG export and PDF embed)
   const pngBlob = await captureProfileCardPng();
-  
-  // 2. Generate QR code PNG if available
+
+  if (!options.includePdf) return { pngBlob };
+
+  // 2. Generate QR code PNG if available (only needed for PDF)
   let qrPngUrl: string | undefined;
   try {
     const svg = document.getElementById("nbcard-qr-svg");
     if (svg) {
       const xml = new XMLSerializer().serializeToString(svg);
       const svgDataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(xml)}`;
-      const pngBlob = await dataUrlToPngBlob(svgDataUrl);
-      qrPngUrl = URL.createObjectURL(pngBlob);
+      const qrPngBlob = await dataUrlToPngBlob(svgDataUrl);
+      qrPngUrl = URL.createObjectURL(qrPngBlob);
     }
   } catch {
     // ignore QR if unavailable
   }
-  
-  // 3. Generate PDF embedding the captured PNG
-  const pdfBytes = await createSimplePdf(profile, shareUrl, qrPngUrl);
-  
-  // Cleanup QR object URL
-  if (qrPngUrl) URL.revokeObjectURL(qrPngUrl);
-  
-  return { pngBlob, pdfBytes, qrPngUrl };
+
+  try {
+    // 3. Generate PDF embedding the captured PNG
+    const pdfBytes = await createSimplePdf(profile, shareUrl, qrPngUrl);
+    return { pngBlob, pdfBytes };
+  } finally {
+    if (qrPngUrl) URL.revokeObjectURL(qrPngUrl);
+  }
 }
 
 async function captureProfileCardPng(): Promise<Blob> {
@@ -335,7 +341,7 @@ async function createSimplePdf(profile: Profile, shareUrl: string, qrDataUrl?: s
   y -= 20;
 
   if (profile.phone) {
-    const phoneText = `📞 ${profile.phone}`;
+    const phoneText = `Phone: ${profile.phone}`;
     page.drawText(phoneText, {
       x: 48,
       y,
@@ -377,7 +383,7 @@ async function createSimplePdf(profile: Profile, shareUrl: string, qrDataUrl?: s
   }
 
   if (profile.email) {
-    const emailText = `📧 ${profile.email}`;
+    const emailText = `Email: ${profile.email}`;
     page.drawText(emailText, {
       x: 48,
       y,
@@ -538,6 +544,7 @@ function renderShareText(profile: Profile, shareUrl: string): string {
 export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSetContacts }: ShareButtonsProps) {
   const [isQrOpen, setIsQrOpen] = React.useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = React.useState(false);
+  const [isShareFallbackOpen, setIsShareFallbackOpen] = React.useState(false);
   const [isQrVcard, setIsQrVcard] = React.useState(false);
   const [busyKey, setBusyKey] = React.useState<string | null>(null);
 
@@ -679,6 +686,11 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
     setBusyKey(key);
     try {
       return await fn();
+    } catch (err) {
+      console.error(err);
+      const message = err instanceof Error ? err.message : "Something went wrong";
+      toast.error(message);
+      return null;
     } finally {
       setBusyKey(null);
     }
@@ -694,14 +706,22 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
   async function handleShareNative() {
     await withBusy("share", async () => {
+      const fileName = `${profile.fullName.replace(/\s+/g, "_")}.png`;
+      const { pngBlob } = await buildExportAssets(profile, shareUrl);
+      const pngFile = new File([pngBlob], fileName, { type: "image/png" });
+
       const ok = await shareViaWebShare({
         title: `NBCard — ${profile.fullName}`,
         text: `Here’s my contact card: ${shareUrl}`,
+        files: [pngFile],
       });
-      if (!ok) {
-        const copied = await copyTextToClipboard(shareUrl);
-        toast.message("Share not available", { description: copied ? "Link copied instead." : "Copy the link manually." });
+
+      if (ok) {
+        toast.success("Shared");
+        return;
       }
+
+      setIsShareFallbackOpen(true);
     });
   }
 
@@ -752,14 +772,15 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
         toast.success("Shared image");
       } else {
         downloadBlob(pngBlob, `${profile.fullName.replace(/\s+/g, "_")}_NBCard.png`);
-        toast.message("Share not supported", { description: "Image downloaded instead." });
+        toast.message("Sharing not supported here", { description: "Image downloaded instead." });
       }
     });
   }
 
   async function handleDownloadPdf() {
     await withBusy("pdf", async () => {
-      const { pdfBytes } = await buildExportAssets(profile, shareUrl);
+      const { pdfBytes } = await buildExportAssets(profile, shareUrl, { includePdf: true });
+      if (!pdfBytes) throw new Error("Failed to generate PDF");
       downloadBlob(new Blob([pdfBytes], { type: "application/pdf" }), `${profile.fullName.replace(/\s+/g, "_")}_NBCard.pdf`);
       toast.success("PDF downloaded");
     });
@@ -847,7 +868,8 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
       // Try PDF with navigator.share first
       if (navigator.share && navigator.canShare) {
         try {
-          const { pdfBytes } = await buildExportAssets(profile, shareUrl);
+          const { pdfBytes } = await buildExportAssets(profile, shareUrl, { includePdf: true });
+          if (!pdfBytes) throw new Error("Failed to generate PDF");
           const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
           const fileName = `${profile.fullName.replace(/\s+/g, "_")}_NBCard.pdf`;
           const file = new File([pdfBlob], fileName, { type: "application/pdf" });
@@ -2412,6 +2434,47 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           <DialogFooter>
             <Button type="button" onClick={() => setIsPrivacyOpen(false)}>
               Done
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isShareFallbackOpen} onOpenChange={setIsShareFallbackOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Share your card</DialogTitle>
+            <DialogDescription>
+              File sharing isn’t supported in this browser. Use one of these options instead.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid grid-cols-1 gap-2">
+            <Button variant="default" onClick={handleDownloadPng} disabled={!!busyKey}>
+              <Download className="mr-2 h-4 w-4" /> Download PNG
+            </Button>
+            <Button variant="secondary" onClick={handleDownloadPdf} disabled={!!busyKey}>
+              <Download className="mr-2 h-4 w-4" /> Download PDF
+            </Button>
+            <Button variant="outline" onClick={handleCopyLink} disabled={!!busyKey}>
+              <LinkIcon className="mr-2 h-4 w-4" /> Copy link
+            </Button>
+
+            <div className="grid grid-cols-3 gap-2 pt-2">
+              <Button variant="outline" onClick={openWhatsapp}>
+                WhatsApp
+              </Button>
+              <Button variant="outline" onClick={openEmail}>
+                <Mail className="mr-2 h-4 w-4" /> Email
+              </Button>
+              <Button variant="outline" onClick={openSms}>
+                <MessageSquare className="mr-2 h-4 w-4" /> SMS
+              </Button>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="secondary" onClick={() => setIsShareFallbackOpen(false)}>
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>

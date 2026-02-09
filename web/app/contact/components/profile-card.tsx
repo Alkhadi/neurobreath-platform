@@ -148,13 +148,13 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
     <div
       id="profile-card-capture"
       className={cn(
-        "relative w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden",
+        "relative isolate w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden",
         !hasBackgroundImage && gradientClass,
         hasBackgroundImage && "bg-gray-900"
       )}
     >
       {hasBackgroundImage && resolvedBackgroundUrl && (
-        <div className="absolute inset-0 -z-10">
+        <div className="absolute inset-0 z-0 pointer-events-none">
           <CaptureImage
             src={resolvedBackgroundUrl}
             alt="Card background"
@@ -163,7 +163,11 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
         </div>
       )}
 
-      <div className="p-8 text-white relative">
+      {hasBackgroundImage && (
+        <div className="absolute inset-0 z-[1] bg-black/35 pointer-events-none" />
+      )}
+
+      <div className="relative z-10 p-8 text-white">
         {/* Profile Photo */}
         <div className="flex justify-center mb-6">
           <div className="relative group">
