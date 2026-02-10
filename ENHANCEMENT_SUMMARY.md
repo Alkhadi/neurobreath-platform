@@ -12,6 +12,7 @@ Extended and hardened the NeuroBreath platform while preserving all existing fun
 ## ✅ Guest Mode Verification
 
 ### Confirmed Working
+
 - ✅ Guest mode remains fully functional
 - ✅ No forced login or authentication required
 - ✅ All data stored locally in `neurobreath:guestProgress`
@@ -20,6 +21,7 @@ Extended and hardened the NeuroBreath platform while preserving all existing fun
 - ✅ Privacy-first design maintained
 
 ### New Guest Features
+
 - **GuestBadge Component:** Visual indicator for guest mode with tooltip
 - **GuestModeInfo Modal:** Explains privacy benefits and export options
 - **7-Session Prompt:** Gentle, dismissible account creation prompt after 7 sessions
@@ -30,7 +32,8 @@ Extended and hardened the NeuroBreath platform while preserving all existing fun
 ## 📦 Files Added
 
 ### Guest Mode Enhancements
-```
+
+```text
 web/lib/guest-progress.ts
 web/components/GuestBadge.tsx
 web/components/GuestModeInfo.tsx
@@ -39,35 +42,40 @@ web/components/ExportGuestData.tsx
 ```
 
 ### Teacher Dashboard
-```
+
+```text
 web/app/teacher/dashboard/page.tsx
 web/app/api/teacher/analytics/route.ts
 web/components/teacher/AnalyticsCharts.tsx
 ```
 
 ### SEND Reporting
-```
+
+```text
 web/lib/send-report-rules.ts
 web/app/api/send-report/generate/route.ts
 web/app/send-report/page.tsx
 ```
 
 ### Parent Companion
-```
+
+```text
 web/app/api/parent/auth/route.ts
 web/app/api/parent/progress/route.ts
 web/app/parent/[parentCode]/page.tsx
 ```
 
 ### Flutter Sync
-```
+
+```text
 web/lib/sync-schema.ts
 web/app/api/sync/route.ts
 flutter_app/docs/SYNC_API.md
 ```
 
 ### Open-Source Core
-```
+
+```text
 packages/neurobreath-core/
   ├── package.json
   ├── LICENSE (MIT)
@@ -91,7 +99,8 @@ packages/neurobreath-core/
 ## 📝 Files Modified
 
 ### Prisma Schema
-```
+
+```text
 web/prisma/schema.prisma
   - Added: SENDReport model
   - Added: ParentAccess model
@@ -277,15 +286,18 @@ ABACUS_API_KEY=...
 ## 🎨 UI Components Added
 
 ### Guest Mode
+
 - `GuestBadge` - Visual indicator
 - `GuestModeInfo` - Info modal
 - `GuestAccountPrompt` - 7-session prompt
 - `ExportGuestData` - Export button/modal
 
-### Teacher
+### Teacher (Dashboard)
+
 - `AnalyticsCharts` - Dashboard charts (client component)
 
 ### All SSR-Safe
+
 - No hydration errors
 - Client-only rendering where needed
 - Proper `'use client'` directives
@@ -294,13 +306,15 @@ ABACUS_API_KEY=...
 
 ## 📱 Mobile Readiness
 
-### Flutter Sync
+### Flutter Sync (API)
+
 - Complete API documentation
 - Type-safe contracts
 - Offline-first strategy
 - Guest and auth modes supported
 
 ### Parent View
+
 - Mobile-optimized layout
 - JSON API responses
 - Read-only access
@@ -311,6 +325,7 @@ ABACUS_API_KEY=...
 ## 🧪 Testing Checklist
 
 ### Guest Mode ✅
+
 - [x] Can use app without login
 - [x] Guest progress persists in localStorage
 - [x] No forced account creation
@@ -319,24 +334,28 @@ ABACUS_API_KEY=...
 - [x] No hydration errors
 
 ### Teacher Dashboard ✅
+
 - [x] SSR-safe rendering
 - [x] API returns aggregated data
 - [x] Charts render client-side only
 - [x] No window access during SSR
 
 ### SEND Reports ✅
+
 - [x] Rules engine works without AI
 - [x] Disclaimer always shown
 - [x] Reports stored in database
 - [x] NOT presented as diagnostic
 
 ### Parent Access ✅
+
 - [x] Codes generate successfully
 - [x] Read-only access enforced
 - [x] Progress API returns correct data
 - [x] Mobile-friendly responses
 
 ### Flutter Sync ✅
+
 - [x] Guest mode returns data as-is
 - [x] Auth mode merges with server
 - [x] Conflicts resolved correctly
@@ -347,6 +366,7 @@ ABACUS_API_KEY=...
 ## 🚀 Deployment Notes
 
 ### 1. Run Migrations
+
 ```bash
 cd web
 npx prisma migrate deploy
@@ -354,6 +374,7 @@ npx prisma generate
 ```
 
 ### 2. Build Core Package (Optional)
+
 ```bash
 cd packages/neurobreath-core
 npm install
@@ -361,11 +382,13 @@ npm run build
 ```
 
 ### 3. No Config Changes Required
+
 - All features work out of the box
 - AI is optional (falls back to rules)
 - No new required env vars
 
 ### 4. Verify Guest Mode
+
 - Test without login
 - Check localStorage key: `neurobreath:guestProgress`
 - Confirm export works
@@ -375,6 +398,7 @@ npm run build
 ## 📊 Impact Summary
 
 ### Lines of Code Added
+
 - **Guest Mode:** ~600 lines
 - **Teacher Dashboard:** ~400 lines
 - **SEND Reporting:** ~500 lines
@@ -384,6 +408,7 @@ npm run build
 - **Total:** ~3,200 lines
 
 ### API Endpoints Added
+
 - `GET/POST /api/teacher/analytics`
 - `POST/GET /api/send-report/generate`
 - `POST/GET/DELETE /api/parent/auth`
@@ -391,6 +416,7 @@ npm run build
 - `POST /api/sync`
 
 ### Database Models Added
+
 - `SENDReport` (training recommendations)
 - `ParentAccess` (parent codes)
 
@@ -398,7 +424,7 @@ npm run build
 
 ## 🎯 Success Criteria Met
 
-✅ **Guest mode preserved** - No forced login, fully functional  
+- ✅ **Guest mode preserved** - No forced login, fully functional  
 ✅ **No hydration errors** - All components SSR-safe  
 ✅ **Existing onboarding intact** - No breaking changes  
 ✅ **Privacy-first** - No tracking, UK education compliant  
@@ -414,6 +440,7 @@ npm run build
 ## 🔄 Next Steps (Optional)
 
 ### Short Term
+
 1. Add Recharts library for live charts
 2. Implement AI provider integration (OpenAI/Abacus)
 3. Build report view/edit pages
@@ -421,6 +448,7 @@ npm run build
 5. Create parent access management UI
 
 ### Long Term
+
 1. Flutter app implementation using sync API
 2. Teacher classroom management features
 3. Advanced analytics and insights
@@ -432,11 +460,13 @@ npm run build
 ## 📚 Documentation
 
 ### For Developers
+
 - `IMPLEMENTATION_PLAN.md` - Detailed implementation plan
 - `flutter_app/docs/SYNC_API.md` - Flutter sync API docs
 - `packages/neurobreath-core/README.md` - Core package docs
 
 ### For Users
+
 - Guest mode info built into UI
 - Teacher dashboard has getting started guide
 - SEND reports include disclaimers
@@ -446,14 +476,16 @@ npm run build
 
 ## 🙏 Acknowledgments
 
-Built with:
+### Built with
+
 - Next.js 14 (App Router)
 - Prisma ORM
 - TypeScript
 - Tailwind CSS
 - shadcn/ui components
 
-Philosophy:
+### Philosophy
+
 - Privacy-first
 - Offline-capable
 - No forced authentication
@@ -468,5 +500,4 @@ Philosophy:
 
 ---
 
-*Last Updated: December 30, 2025*
-
+Last Updated: December 30, 2025

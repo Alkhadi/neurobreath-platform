@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Play, Pause, RotateCcw, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -41,72 +41,40 @@ export function PMRBodyScan({ mode }: Props) {
   
   const areas = mode === 'pmr' ? PMR_MUSCLE_GROUPS : BODY_SCAN_AREAS
   const currentArea = areas?.[currentIndex]
-  
-  useEffect(() => {
-    if (isPlaying) {
-      timerRef.current = setInterval(() => {
-        setSessionTime(prev => prev + 1)
-        setPhaseTimeLeft(prev => {
-          if (prev <= 1) {
-            if (mode === 'pmr') {
-              if (phase === 'tense') {
-                setPhase('relax')
-                return 10
-              } else if (phase === 'relax') {
-                if (currentIndex < areas.length - 1) {
-                  setCurrentIndex(prev => prev + 1)
-                  setPhase('tense')
-                  return 5
-                } else {
-                  setIsPlaying(false)
-                  handleComplete()
-                  return 0
-                }
-              }
-            } else {
-              if (currentIndex < areas.length - 1) {
-                setCurrentIndex(prev => prev + 1)
-                return timePerArea
-              } else {
-                setIsPlaying(false)
-                handleComplete()
-                return 0
-              }
-            }
-          }
-          return prev - 1
-        })
-      }, 1000)
-    } else {
-      if (timerRef.current) clearInterval(timerRef.current)
-    }
-    
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current)
-    }
-  }, [isPlaying, phase, currentIndex, mode, timePerArea, areas.length])
-  
-  const handleStart = () => {
-    setIsPlaying(true)
-    if (sessionTime === 0) {
-      setPhase(mode === 'pmr' ? 'tense' : 'pause')
-      setPhaseTimeLeft(mode === 'pmr' ? 5 : timePerArea)
-    }
+
+  const WIDTH_CLASS_BY_PERCENT: Record<number, string> = {
+    0: 'w-0',
+    5: 'w-[5%]',
+    10: 'w-[10%]',
+    15: 'w-[15%]',
+    20: 'w-[20%]',
+    25: 'w-1/4',
+    30: 'w-[30%]',
+    35: 'w-[35%]',
+    40: 'w-2/5',
+    45: 'w-[45%]',
+    50: 'w-1/2',
+    55: 'w-[55%]',
+    60: 'w-3/5',
+    65: 'w-[65%]',
+    70: 'w-[70%]',
+    75: 'w-3/4',
+    80: 'w-4/5',
+    85: 'w-[85%]',
+    90: 'w-[90%]',
+    95: 'w-[95%]',
+    100: 'w-full'
   }
-  
-  const handlePause = () => {
-    setIsPlaying(false)
+
+  const percentToWidthClass = (percent: number): string => {
+    const clamped = Math.max(0, Math.min(100, percent))
+    const rounded = Math.round(clamped / 5) * 5
+    return WIDTH_CLASS_BY_PERCENT[rounded] ?? 'w-0'
   }
-  
-  const handleReset = () => {
-    setIsPlaying(false)
-    setCurrentIndex(0)
-    setPhase('pause')
-    setPhaseTimeLeft(0)
-    setSessionTime(0)
-  }
-  
-  const handleComplete = () => {
+
+  const progressPercent = ((currentIndex + 1) / (areas.length || 1)) * 100
+
+  const handleComplete = useCallback(() => {
     const today = new Date().toISOString().split('T')[0]
     const wasToday = progress?.lastActivityDate === today
     const newStreak = wasToday ? progress?.currentStreak ?? 0 : (progress?.currentStreak ?? 0) + 1
@@ -157,6 +125,70 @@ export function PMRBodyScan({ mode }: Props) {
     toast.success(`${mode === 'pmr' ? 'PMR' : 'Body Scan'} session completed!`, {
       description: 'Great work on your relaxation practice'
     })
+  }, [bodyScanSessions, currentIndex, mode, pmrSessions, progress, sessionTime, setBodyScanSessions, setPmrSessions, setProgress])
+  
+  useEffect(() => {
+    if (isPlaying) {
+      timerRef.current = setInterval(() => {
+        setSessionTime(prev => prev + 1)
+        setPhaseTimeLeft(prev => {
+          if (prev <= 1) {
+            if (mode === 'pmr') {
+              if (phase === 'tense') {
+                setPhase('relax')
+                return 10
+              } else if (phase === 'relax') {
+                if (currentIndex < areas.length - 1) {
+                  setCurrentIndex(prev => prev + 1)
+                  setPhase('tense')
+                  return 5
+                } else {
+                  setIsPlaying(false)
+                  handleComplete()
+                  return 0
+                }
+              }
+            } else {
+              if (currentIndex < areas.length - 1) {
+                setCurrentIndex(prev => prev + 1)
+                return timePerArea
+              } else {
+                setIsPlaying(false)
+                handleComplete()
+                return 0
+              }
+            }
+          }
+          return prev - 1
+        })
+      }, 1000)
+    } else {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+    
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [isPlaying, phase, currentIndex, mode, timePerArea, areas.length, handleComplete])
+  
+  const handleStart = () => {
+    setIsPlaying(true)
+    if (sessionTime === 0) {
+      setPhase(mode === 'pmr' ? 'tense' : 'pause')
+      setPhaseTimeLeft(mode === 'pmr' ? 5 : timePerArea)
+    }
+  }
+  
+  const handlePause = () => {
+    setIsPlaying(false)
+  }
+  
+  const handleReset = () => {
+    setIsPlaying(false)
+    setCurrentIndex(0)
+    setPhase('pause')
+    setPhaseTimeLeft(0)
+    setSessionTime(0)
   }
   
   const getInstructions = () => {
@@ -214,8 +246,7 @@ export function PMRBodyScan({ mode }: Props) {
             </div>
             <div className="w-full bg-secondary h-2 rounded-full overflow-hidden">
               <div 
-                className="h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all"
-                style={{ width: `${((currentIndex + 1) / areas.length) * 100}%` }}
+                className={`h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all ${percentToWidthClass(progressPercent)}`}
               />
             </div>
           </div>
@@ -281,5 +312,7 @@ export function PMRBodyScan({ mode }: Props) {
         </div>
       </Card>
     </div>
+
   )
+
 }

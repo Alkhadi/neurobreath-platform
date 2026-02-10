@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Brain, TrendingUp, Users, Zap, Heart, Sun, Book, CheckCircle2 } from 'lucide-react';
+import { Brain, TrendingUp, Users, Zap, Heart, Sun, Book, CheckCircle2, type LucideIcon } from 'lucide-react';
 
 interface Evidence {
   id: string;
@@ -13,7 +13,7 @@ interface Evidence {
   source: string;
   year: string;
   category: 'behavioral' | 'physical' | 'social' | 'psychological' | 'lifestyle';
-  icon: any;
+  icon: LucideIcon;
   strength: 'strong' | 'moderate' | 'emerging';
   keyPoints: string[];
 }
@@ -250,7 +250,7 @@ export const EvidenceHub = () => {
   };
 
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
       <div className="text-center mb-8">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">Evidence Hub</h2>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">

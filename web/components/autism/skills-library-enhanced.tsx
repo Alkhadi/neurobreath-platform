@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { skills } from '@/lib/data/skills';
-import { Search, Star, StarOff, Play, Pause, Check, BookOpen, TrendingUp, Clock, Award, Sparkles } from 'lucide-react';
+import { Search, Star, StarOff, Play, Pause, Check, BookOpen, TrendingUp, Clock, Award } from 'lucide-react';
 import { logSkillPractice, toggleFavoriteSkill, loadProgress, getMasteryLevelName } from '@/lib/progress-store-enhanced';
 import { toast } from 'sonner';
 
@@ -25,8 +25,10 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
   const [isPracticing, setIsPracticing] = useState(false);
   const [practiceTime, setPracticeTime] = useState(0);
   const [practiceNotes, setPracticeNotes] = useState('');
-  const [progress, setProgress] = useState<any>(null);
+  type ProgressState = ReturnType<typeof loadProgress>;
+  const [progress, setProgress] = useState<ProgressState | null>(null);
   const [sortBy, setSortBy] = useState<'relevance' | 'mastery' | 'recent'>('relevance');
+  const practiceIntervalRef = useRef<number | null>(null);
 
   // Load progress on mount and when updated - client side only to avoid hydration mismatch
   useEffect(() => {
@@ -69,7 +71,7 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
     }
 
     return filtered;
-  }, [skills, searchQuery, selectedTags, sortBy, progress]);
+  }, [searchQuery, selectedTags, sortBy, progress]);
 
   const toggleTag = (tag: string) => {
     setSelectedTags(prev => 
@@ -91,16 +93,17 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
     setPracticeNotes('');
     
     // Start timer
-    const interval = setInterval(() => {
+    const interval = window.setInterval(() => {
       setPracticeTime(prev => prev + 1);
     }, 1000);
-    
-    (window as any).__practiceInterval = interval;
+
+    practiceIntervalRef.current = interval;
   };
 
   const stopPractice = (completed: boolean = true) => {
-    if ((window as any).__practiceInterval) {
-      clearInterval((window as any).__practiceInterval);
+    if (practiceIntervalRef.current) {
+      clearInterval(practiceIntervalRef.current);
+      practiceIntervalRef.current = null;
     }
     
     if (selectedSkill && practiceTime > 0) {
@@ -147,7 +150,12 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
   return (
     <div className="w-full">
       {/* Search and Filters */}
-        <div className="mb-8 space-y-4">
+        <div
+          className="mb-8 space-y-4"
+          data-tour="nb:autism-hub:skills-filters"
+          data-tour-order="10"
+          data-tour-title="Skills filters & sorting"
+        >
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
@@ -173,36 +181,46 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
             ))}
           </div>
 
-          <div className="flex gap-2 items-center">
-            <span className="text-sm text-muted-foreground">Sort by:</span>
-            <Button
-              variant={sortBy === 'relevance' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSortBy('relevance')}
-            >
-              Relevance
-            </Button>
-            <Button
-              variant={sortBy === 'mastery' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSortBy('mastery')}
-            >
-              <TrendingUp className="h-4 w-4 mr-1" />
-              Mastery
-            </Button>
-            <Button
-              variant={sortBy === 'recent' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSortBy('recent')}
-            >
-              <Clock className="h-4 w-4 mr-1" />
-              Recent
-            </Button>
+          <div className="flex flex-wrap gap-2 items-center">
+            <span className="text-sm text-muted-foreground whitespace-nowrap">Sort by:</span>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant={sortBy === 'relevance' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSortBy('relevance')}
+                className="flex-shrink-0"
+              >
+                Relevance
+              </Button>
+              <Button
+                variant={sortBy === 'mastery' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSortBy('mastery')}
+                className="flex-shrink-0"
+              >
+                <TrendingUp className="h-4 w-4 mr-1" />
+                Mastery
+              </Button>
+              <Button
+                variant={sortBy === 'recent' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSortBy('recent')}
+                className="flex-shrink-0"
+              >
+                <Clock className="h-4 w-4 mr-1" />
+                Recent
+              </Button>
+            </div>
           </div>
         </div>
 
         {/* Skills Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            data-tour="nb:autism-hub:skills-results"
+            data-tour-order="11"
+            data-tour-title="Skills results list"
+          >
           {filteredSkills.map(skill => {
             const mastery = progress?.skillMastery?.[skill.id];
             const isFavorite = progress?.favoriteSkills?.includes(skill.id) || false;
@@ -229,10 +247,10 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
                 </button>
 
                 <CardHeader className="pr-14">
-                  <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                  <CardTitle className="text-xl group-hover:text-primary transition-colors break-words">
                     {skill.title}
                   </CardTitle>
-                  <CardDescription>{skill.description}</CardDescription>
+                  <CardDescription className="break-words">{skill.description}</CardDescription>
                   
                   {/* Tags */}
                   <div className="flex flex-wrap gap-1 mt-2">

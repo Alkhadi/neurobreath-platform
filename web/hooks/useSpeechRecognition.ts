@@ -57,7 +57,18 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
   useEffect(() => {
     if (!supported) return;
 
-    const SpeechRecognitionClass = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance;
+    const SpeechRecognitionClass =
+      (window as Window & {
+        SpeechRecognition?: SpeechRecognitionConstructor;
+        webkitSpeechRecognition?: SpeechRecognitionConstructor;
+      }).SpeechRecognition ||
+      (window as Window & {
+        SpeechRecognition?: SpeechRecognitionConstructor;
+        webkitSpeechRecognition?: SpeechRecognitionConstructor;
+      }).webkitSpeechRecognition;
+
+    if (!SpeechRecognitionClass) return;
     const recognition: SpeechRecognitionInstance = new SpeechRecognitionClass();
     
     recognition.continuous = false;

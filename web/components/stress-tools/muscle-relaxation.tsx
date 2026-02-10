@@ -3,8 +3,11 @@
 import { useState, useEffect } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { Dumbbell, Play, Pause, SkipForward, CheckCircle2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+
+import { useUniversalProgress } from '@/contexts/UniversalProgressContext'
 
 const bodyParts = [
   { name: 'Hands', instruction: 'Make a fist with both hands. Squeeze tightly for 5 seconds, then release and relax for 10 seconds.' },
@@ -21,11 +24,22 @@ const bodyParts = [
 ]
 
 export function MuscleRelaxation() {
+  const { isComplete, markComplete } = useUniversalProgress()
+
   const [isActive, setIsActive] = useState(false)
   const [currentPart, setCurrentPart] = useState(0)
   const [phase, setPhase] = useState<'tense' | 'release'>('tense')
   const [countdown, setCountdown] = useState(5)
   const [completed, setCompleted] = useState(false)
+
+  const activityType = 'technique' as const
+  const activityId = 'stress:muscle_relaxation'
+  const persistedComplete = isComplete(activityType, activityId)
+
+  useEffect(() => {
+    if (!completed) return
+    void markComplete(activityType, activityId)
+  }, [activityId, activityType, completed, markComplete])
 
   useEffect(() => {
     if (!isActive) return
@@ -111,6 +125,15 @@ export function MuscleRelaxation() {
       <div className="flex items-center gap-2 mb-6">
         <Dumbbell className="h-6 w-6 text-teal-600" />
         <h3 className="text-xl font-semibold">Progressive Muscle Relaxation</h3>
+        {persistedComplete ? (
+          <Badge
+            variant="secondary"
+            className="ml-auto gap-1"
+            data-testid="nb-universal-progress-completed-badge"
+          >
+            <CheckCircle2 className="h-3.5 w-3.5" /> Completed
+          </Badge>
+        ) : null}
       </div>
 
       {!isActive ? (

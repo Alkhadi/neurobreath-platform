@@ -8,8 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   Heart, 
-  BookOpen, 
-  CheckCircle2, 
   ExternalLink, 
   Lightbulb,
   Clock,
@@ -39,8 +37,8 @@ export default function ADHDCarerSupportPage() {
     <main className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-rose-950">
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 overflow-hidden bg-gradient-to-br from-rose-600 via-pink-600 to-purple-600 text-white">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <div className="text-center space-y-6 mb-12">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
             <div className="flex justify-center mb-4">
               <div className="p-4 bg-white/20 rounded-full">
                 <HeartHandshake className="w-16 h-16" />
@@ -163,8 +161,8 @@ export default function ADHDCarerSupportPage() {
 
       {/* Carer Wellbeing Section */}
       <section id="carer-wellbeing" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Carer Wellbeing & Self-Care</h2>
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">Carer Wellbeing & Self-Care</h2>
           
           <Alert className="mb-6 border-amber-200 bg-amber-50 dark:bg-amber-950/20">
             <AlertCircle className="h-4 w-4 text-amber-600" />
@@ -249,8 +247,8 @@ export default function ADHDCarerSupportPage() {
 
       {/* Daily Support Strategies */}
       <section id="daily-support" className="py-16 bg-gradient-to-br from-rose-50 via-purple-50 to-pink-50 dark:from-rose-950 dark:via-purple-950 dark:to-pink-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Daily Living Support</h2>
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">Daily Living Support</h2>
           
           <div className="grid gap-6">
             <Card>
@@ -370,8 +368,8 @@ export default function ADHDCarerSupportPage() {
 
       {/* Crisis Planning */}
       <section id="crisis-planning" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Crisis Planning & Emergency Resources</h2>
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">Crisis Planning & Emergency Resources</h2>
           
           <Alert className="mb-6 border-red-200 bg-red-50 dark:bg-red-950/20">
             <Phone className="h-4 w-4 text-red-600" />
@@ -450,8 +448,8 @@ export default function ADHDCarerSupportPage() {
 
       {/* Respite & Support Resources */}
       <section id="respite-resources" className="py-16 bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 dark:from-purple-950 dark:via-pink-950 dark:to-rose-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Respite Care & Support Services</h2>
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">Respite Care & Support Services</h2>
           
           <div className="grid gap-6 lg:grid-cols-2 mb-6">
             <Card>
@@ -561,8 +559,8 @@ export default function ADHDCarerSupportPage() {
 
       {/* Support Organizations */}
       <section id="organizations" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Support Organizations</h2>
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">Support Organizations</h2>
           
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <Card>
@@ -624,8 +622,8 @@ export default function ADHDCarerSupportPage() {
 
       {/* Breathing & Carer Stress */}
       <section id="breathing" className="py-16 bg-gradient-to-br from-rose-50 via-purple-50 to-pink-50 dark:from-rose-950 dark:via-purple-950 dark:to-pink-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">
             Breathing for Carer Stress Relief
           </h2>
           

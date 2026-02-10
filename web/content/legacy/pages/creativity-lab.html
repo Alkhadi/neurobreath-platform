@@ -32,11 +32,9 @@
     <link rel="stylesheet" href="assets/css/base.css">
     <link rel="stylesheet" href="assets/css/site.css">
     <link rel="stylesheet" href="assets/css/creativity-lab.css">
+    <link rel="stylesheet" href="assets/css/legacy-fallback.css">
     
-    <!-- React CDN -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Removed external React/Babel CDNs (unpkg) to reduce third-party script execution risk -->
     <script src="assets/js/voice-preferences.js" defer></script>
     <script src="assets/js/site.js" defer></script>
 </head>
@@ -115,7 +113,13 @@
 </header>
 
 <main id="main" class="page-main creativity-lab-main">
-    <div id="root"></div>
+    <div id="root">
+      <div class="nb-legacy-fallback nb-legacy-fallback--wide">
+        <h1 class="nb-legacy-fallback__title">Creativity Lab</h1>
+        <p class="nb-legacy-fallback__p nb-legacy-fallback__p--muted">This is a legacy snapshot. The interactive Creativity Lab previously ran via browser-compiled scripts. For the current tools and experiences, use the main NeuroBreath app.</p>
+        <p class="nb-legacy-fallback__p"><a href="/tools" class="nb-legacy-fallback__link">Open Tools</a></p>
+      </div>
+    </div>
 </main>
 
 <footer class="site-footer" id="siteFooter">
@@ -181,12 +185,6 @@
   </div>
 </footer>
 
-<!-- Creativity Lab React App -->
-<script type="text/babel" src="assets/js/creativity-lab.js"></script>
-
-<!-- Year in footer -->
-<script>
-    document.getElementById('yearFooter').textContent = new Date().getFullYear();
-</script>
+<!-- Legacy note: interactive scripts removed for safety -->
 </body>
 </html>

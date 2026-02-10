@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { loadProgress, resetProgress, getLevelInfo, getAnalytics, getMasteryLevelName } from '@/lib/progress-store-enhanced';
 import { Flame, Trophy, Clock, Target, TrendingUp, RotateCcw, Zap, Award, Star, ChevronUp, Sparkles } from 'lucide-react';
 import { badges } from '@/lib/data/badges';
@@ -18,9 +18,14 @@ interface ProgressDashboardEnhancedProps {
 }
 
 export function ProgressDashboardEnhanced({ onReset }: ProgressDashboardEnhancedProps) {
-  const [progress, setProgress] = useState<any>(null);
-  const [levelInfo, setLevelInfo] = useState<any>(null);
-  const [analytics, setAnalytics] = useState<any>(null);
+  type ProgressState = ReturnType<typeof loadProgress>;
+  type LevelInfo = ReturnType<typeof getLevelInfo>;
+  type Analytics = ReturnType<typeof getAnalytics>;
+  type TopSkill = Analytics['topSkills'][number];
+
+  const [progress, setProgress] = useState<ProgressState | null>(null);
+  const [levelInfo, setLevelInfo] = useState<LevelInfo | null>(null);
+  const [analytics, setAnalytics] = useState<Analytics | null>(null);
 
   useEffect(() => {
     // Initial load on client side to avoid hydration mismatch
@@ -262,7 +267,7 @@ export function ProgressDashboardEnhanced({ onReset }: ProgressDashboardEnhanced
               <CardContent>
                 {analytics.topSkills.length > 0 ? (
                   <div className="space-y-4">
-                    {analytics.topSkills.map((skill: any, idx: number) => (
+                    {analytics.topSkills.map((skill: TopSkill, idx: number) => (
                       <div key={skill.skillId} className="space-y-2">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">

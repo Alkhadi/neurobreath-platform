@@ -1,6 +1,7 @@
 'use client'
 
 import { Zap, TrendingUp, BookOpen, AlertCircle, Users, Stethoscope, ChevronDown, Activity } from 'lucide-react'
+import { PageHeader } from '@/components/page/PageHeader'
 import { BreathingExercise } from './stress-tools/breathing-exercise'
 import { GroundingExercise } from './stress-tools/grounding-exercise'
 import { StressTracker } from './stress-tools/stress-tracker'
@@ -13,10 +14,28 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import './styles/globals.css'
+import { CredibilityFooter } from '@/components/trust/CredibilityFooter'
+import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog'
+import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial'
+import type { Region } from '@/lib/region/region'
 
 export const dynamic = 'force-static'
 
 export default function StressPage() {
+  const region: Region = 'UK'
+  const editorial = createEditorialMeta({
+    authorId: 'nb-editorial-team',
+    reviewerId: 'nb-evidence-review',
+    editorialRoleNotes: 'Reviewed for clarity, safety language, and stress-support framing.',
+    createdAt: '2026-01-16',
+    updatedAt: '2026-01-17',
+    reviewedAt: '2026-01-17',
+    reviewIntervalDays: 120,
+    changeLog: createChangeLog([
+      createChangeLogEntry('2026-01-17', 'Credibility footer and review details added.', 'safety'),
+    ]),
+    citationsSummary: createCitationsSummary(0, ['C']),
+  })
   return (
     <main className="min-h-screen">
       {/* Skip Link for Accessibility */}
@@ -27,17 +46,13 @@ export default function StressPage() {
       {/* Hero Section */}
       <section id="main-content" className="relative py-16 px-4 overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-block p-3 bg-primary/10 rounded-full mb-6">
-              <Zap className="h-12 w-12 text-primary" />
-            </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-teal-600 to-purple-600 bg-clip-text text-transparent">
-              Stress — Understand, Manage, Thrive
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-              Evidence-based tools and resources to understand and manage stress. Track your progress, build resilience, and find calm.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
+          <div className="mb-12">
+            <PageHeader 
+              title="Stress Hub" 
+              description="Evidence-based tools and resources to understand and manage stress. Track your progress, build resilience, and find calm."
+              showMetadata
+            />
+            <div className="flex flex-wrap justify-center gap-4 mt-6">
               <a href="#interactive-tools">
                 <Button size="lg" className="px-8 bg-teal-600 hover:bg-teal-700">
                   <Activity className="mr-2 h-5 w-5" />
@@ -78,6 +93,7 @@ export default function StressPage() {
         </div>
       </section>
 
+
       {/* What is Stress */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
@@ -113,7 +129,7 @@ export default function StressPage() {
 
           <Tabs defaultValue="breathing" className="w-full">
             <div className="overflow-x-auto pb-4">
-              <TabsList className="inline-flex w-auto min-w-full justify-start">
+              <TabsList className="inline-flex w-auto min-w-full justify-start gap-2 flex-wrap">
                 <TabsTrigger value="breathing" className="flex-shrink-0">
                   <Zap className="h-4 w-4 mr-2" />
                   Breathing
@@ -530,6 +546,12 @@ export default function StressPage() {
           </p>
         </div>
       </footer>
+
+      <section className="py-10 px-4 bg-slate-50">
+        <div className="max-w-6xl mx-auto">
+          <CredibilityFooter editorial={editorial} region={region} />
+        </div>
+      </section>
     </main>
   )
 }

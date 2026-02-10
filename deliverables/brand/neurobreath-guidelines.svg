@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-label="NeuroBreath logo guidelines">
+  <title>NeuroBreath Logo Guidelines</title>
+  <rect width="1200" height="800" fill="hsl(0 0% 100%)" />
+  <text x="60" y="90" fill="hsl(222.2 47.4% 11.2%)" font-family="Inter, sans-serif" font-size="42" font-weight="600">NeuroBreath Logo Guidelines</text>
+  <text x="60" y="140" fill="hsl(215.4 16.3% 46.9%)" font-family="Inter, sans-serif" font-size="20">Clear space and minimum sizes</text>
+
+  <g transform="translate(60 190)">
+    <rect x="0" y="0" width="520" height="520" fill="none" stroke="hsl(214.3 31.8% 91.4%)" stroke-width="2" />
+    <g transform="translate(80 80) scale(0.703125)">
+      <circle cx="256" cy="256" r="176" fill="none" stroke="hsl(222.2 47.4% 11.2%)" stroke-width="64" stroke-linecap="round" stroke-dasharray="966 140" stroke-dashoffset="138" />
+      <g fill="hsl(215.4 16.3% 46.9%)">
+        <circle cx="236" cy="256" r="28" />
+        <circle cx="276" cy="256" r="28" />
+      </g>
+    </g>
+    <rect x="80" y="80" width="360" height="360" fill="none" stroke="hsl(214.3 31.8% 91.4%)" stroke-width="2" stroke-dasharray="8 10" />
+    <text x="0" y="560" fill="hsl(215.4 16.3% 46.9%)" font-family="Inter, sans-serif" font-size="18">Clear space = 1x ring thickness around the icon.</text>
+  </g>
+
+  <g transform="translate(640 220)">
+    <text x="0" y="0" fill="hsl(222.2 47.4% 11.2%)" font-family="Inter, sans-serif" font-size="24" font-weight="600">Minimum sizes</text>
+    <text x="0" y="40" fill="hsl(215.4 16.3% 46.9%)" font-family="Inter, sans-serif" font-size="18">Icon-only: 16px (use small variant below)</text>
+    <text x="0" y="70" fill="hsl(215.4 16.3% 46.9%)" font-family="Inter, sans-serif" font-size="18">Logo lockup: 120px wide</text>
+
+    <g transform="translate(0 110)">
+      <rect x="0" y="0" width="240" height="80" fill="none" stroke="hsl(214.3 31.8% 91.4%)" stroke-width="2" />
+      <g transform="translate(12 8) scale(0.296875)">
+        <circle cx="256" cy="256" r="176" fill="none" stroke="hsl(222.2 47.4% 11.2%)" stroke-width="72" stroke-linecap="round" stroke-dasharray="966 140" stroke-dashoffset="138" />
+      </g>
+      <text x="0" y="110" fill="hsl(215.4 16.3% 46.9%)" font-family="Inter, sans-serif" font-size="16">Small variant</text>
+    </g>
+  </g>
+</svg>

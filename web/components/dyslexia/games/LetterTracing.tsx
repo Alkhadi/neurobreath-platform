@@ -3,7 +3,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Volume2, RefreshCw, CheckCircle, ChevronRight, Trophy } from 'lucide-react';
+import { Volume2, RefreshCw, CheckCircle, Trophy } from 'lucide-react';
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS';
 import { useProgress } from '@/contexts/ProgressContext';
 
 const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
@@ -38,7 +39,9 @@ export function LetterTracing() {
 
   const speakLetter = (letter: string) => {
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(letter);
+      const cleanText = sanitizeForTTS(letter);
+      if (!cleanText) return;
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.rate = 0.7;
       window.speechSynthesis.speak(utterance);
     }
@@ -159,8 +162,7 @@ export function LetterTracing() {
               onTouchStart={startDrawing}
               onTouchMove={draw}
               onTouchEnd={stopDrawing}
-              className="border-2 border-gray-300 rounded-lg cursor-crosshair bg-white dark:bg-gray-800"
-              style={{ touchAction: 'none' }}
+              className="border-2 border-gray-300 rounded-lg cursor-crosshair bg-white dark:bg-gray-800 touch-none"
             />
           </div>
 

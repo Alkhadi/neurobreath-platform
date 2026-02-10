@@ -10,6 +10,7 @@
 ## 📋 WHAT HAS BEEN IMPLEMENTED
 
 ### 1. System Prompt (NEW FILE)
+
 **Location:** `web/lib/ai-coach/system-prompt.ts`
 
 - Complete AI Coach behavioral specification
@@ -19,6 +20,7 @@
 - Clear scope boundaries (educational only)
 
 ### 2. Resource Catalog (NEW FILE)
+
 **Location:** `web/lib/ai-coach/resource-catalog.ts`
 
 - 25+ NeuroBreath tools/pages catalogued
@@ -27,9 +29,11 @@
 - Covers: breathing, focus, reading, sleep, mood, workplace, autism, ADHD, dyslexia
 
 ### 3. Enhanced TypeScript Types
+
 **Location:** `web/types/ai-coach.ts`
 
 **New Interfaces:**
+
 - `UserContext` - Captures user's situation (age, setting, goals, symptoms, etc.)
 - `RecommendedResource` - Primary/Backup/Add-on structure
 - `DayPlanItem` - 7-day micro plan
@@ -44,24 +48,28 @@
 ### 4. Display Components (NEW FILES)
 
 #### `recommendations-display.tsx`
+
 - Shows Primary/Backup/Add-on recommendations
 - Color-coded cards (blue/green/purple)
 - "Who it's for", "How to do it", "Exact settings", "When to use"
 - Direct CTA buttons with internal links
 
 #### `seven-day-plan.tsx`
+
 - Day-by-day micro plan with timeline
 - Numbered day circles with activity descriptions
 - Duration and notes for each day
 - Gradient indigo/purple theme
 
 #### `thirty-day-challenge.tsx`
+
 - Challenge rule display
 - Badge milestones (Flame, Star, Trophy icons)
 - Tracking link to progress dashboard
 - Gradient amber/orange theme
 
 #### `internal-links-display.tsx`
+
 - NeuroBreath tool recommendations
 - Step-by-step numbering
 - Reason for each recommendation
@@ -69,15 +77,18 @@
 - Gradient teal/cyan theme
 
 ### 5. Updated AI Coach Chat Component
+
 **Location:** `web/components/blog/ai-coach-chat.tsx`
 
 **New Imports:**
+
 - `RecommendationsDisplay`
 - `SevenDayPlan`
 - `ThirtyDayChallenge`
 - `InternalLinksDisplay`
 
 **Updated AnswerDisplay Function:**
+
 - Integrated all new display components
 - Reordered output to match system prompt structure:
   1. Summary
@@ -101,18 +112,21 @@
 ## 🎨 VISUAL DESIGN
 
 ### Color Theming
+
 - **Recommendations**: Blue (primary), Green (backup), Purple (add-on)
 - **7-Day Plan**: Indigo/Purple gradient
 - **30-Day Challenge**: Amber/Orange gradient
 - **Internal Links**: Teal/Cyan gradient
 
 ### Layout
+
 - All new components are `Card`-based with proper dark mode support
 - Gradient backgrounds for visual hierarchy
 - Icons for quick visual recognition
 - Responsive design (mobile-first)
 
 ### Accessibility
+
 - ✅ Keyboard navigable
 - ✅ Focus indicators
 - ✅ ARIA labels where needed
@@ -124,7 +138,8 @@
 ## 🔧 TECHNICAL ARCHITECTURE
 
 ### Data Flow
-```
+
+```text
 User Question 
 → AI Coach API (/api/ai-coach)
 → Intent Parser
@@ -136,6 +151,7 @@ User Question
 ```
 
 ### Resource Matching
+
 ```typescript
 // Example: User asks about ADHD focus
 Tags: ['adhd', 'focus', 'attention']
@@ -148,6 +164,7 @@ Returns:
 3. Box Breathing
 ↓
 Presented as "Open on NeuroBreath" links
+
 ```
 
 ---
@@ -159,6 +176,7 @@ Presented as "Open on NeuroBreath" links
 **File to Update:** `web/app/api/ai-coach/route.ts`
 
 **Changes Required:**
+
 1. Import system prompt and resource catalog
 2. Add resource catalog to API request context
 3. Update LLM prompt construction
@@ -166,6 +184,7 @@ Presented as "Open on NeuroBreath" links
 5. Populate recommendations, internal links, 7-day plan, 30-day challenge
 
 **Pseudocode:**
+
 ```typescript
 import { SYSTEM_PROMPT } from '@/lib/ai-coach/system-prompt'
 import { NEUROBREATH_RESOURCE_CATALOG, findResourcesByTags } from '@/lib/ai-coach/resource-catalog'
@@ -199,6 +218,7 @@ const llmResponse = await callLLM(prompt)
 const answer: AICoachAnswer = parseStructuredResponse(llmResponse)
 
 return NextResponse.json({ answer, meta: {...} })
+
 ```
 
 ---
@@ -212,12 +232,14 @@ return NextResponse.json({ answer, meta: {...} })
 
 **Expected Output:**
 
-**1. Plain-English Answer**
+#### 1. Plain-English Answer
+
 - ADHD makes focusing hard, but you can train your brain with practice
 - Short bursts work better than long sessions
 - Movement breaks help reset attention
 
-**2. Best-Fit Recommendations**
+#### 2. Best-Fit Recommendations
+
 - **Primary**: Focus Garden (5 min/day, gamified attention training)
   - Settings: Start with 3-minute sessions, 2x per day
   - When: Before homework and after school
@@ -226,12 +248,14 @@ return NextResponse.json({ answer, meta: {...} })
   - When: When feeling distracted or overwhelmed
 - **Add-on**: 30-Day Focus Challenge (1 min/day minimum)
 
-**3. Open on NeuroBreath**
+#### 3. Open on NeuroBreath
+
 - Focus Garden → "Gamified attention training with rewards"
 - ADHD Tools → "Timers and organization helpers"
 - Progress Dashboard → "Track your focus streak"
 
-**4. 7-Day Micro Plan**
+#### 4. 7-Day Micro Plan
+
 - Day 1: Try Focus Garden for 3 minutes, any time
 - Day 2: Focus Garden before homework (3 min)
 - Day 3: Add Box Breathing when distracted (1 min)
@@ -240,17 +264,20 @@ return NextResponse.json({ answer, meta: {...} })
 - Day 6: Practice at the same time each day
 - Day 7: Celebrate your streak! Reward yourself
 
-**5. 30-Day Challenge**
+#### 5. 30-Day Challenge
+
 - Rule: "Practice focus training for at least 1 minute every day"
 - Badges: Day 3 (🔥 Streak Starter), Day 7 (⭐ Week Warrior), Day 30 (🏆 Focus Master)
 - Track: Progress Dashboard
 
-**6. Evidence Snapshot**
+#### 6. Evidence Snapshot
+
 - NHS: ADHD management strategies for children
 - NICE NG87: ADHD diagnosis and management
 - PubMed: Attention training games show improvement in ADHD children
 
-**7. Follow-Up Questions**
+#### 7. Follow-Up Questions
+
 - "What time of day do you usually do homework?"
 - "Do you have a quiet space without distractions?"
 
@@ -263,12 +290,14 @@ return NextResponse.json({ answer, meta: {...} })
 
 **Expected Output:**
 
-**1. Plain-English Answer**
+#### 1. Plain-English Answer (Autism Example)
+
 - Sensory overload happens when your nervous system gets too much input
 - Quick regulation helps prevent shutdown/meltdown
 - Predictable recovery routine is key
 
-**2. Best-Fit Recommendations**
+#### 2. Best-Fit Recommendations (Autism Example)
+
 - **Primary**: SOS 60-Second Reset (1 min, immediate relief)
   - Settings: 5 deep breaths, eyes closed, focus on exhale
   - When: First sign of overwhelm
@@ -277,12 +306,14 @@ return NextResponse.json({ answer, meta: {...} })
   - When: Break time or quiet space available
 - **Add-on**: Workplace Adjustments Guide
 
-**3. Open on NeuroBreath**
+#### 3. Open on NeuroBreath (Autism Example)
+
 - SOS 60-Second Reset → "Fast downshift for acute overwhelm"
 - Autism Support Hub → "Sensory strategies and workplace adjustments"
 - Workplace Wellbeing → "Reasonable adjustments templates"
 
-**4. 7-Day Micro Plan**
+#### 4. 7-Day Micro Plan (Autism Example)
+
 - Day 1: Identify your sensory triggers at work
 - Day 2: Practice SOS Reset twice (even if not overwhelmed)
 - Day 3: Use SOS at first sign of sensory buildup
@@ -291,7 +322,8 @@ return NextResponse.json({ answer, meta: {...} })
 - Day 6: Combine SOS + remove from trigger environment
 - Day 7: Review what worked, adjust for next week
 
-**5. Evidence Snapshot**
+#### 5. Evidence Snapshot
+
 - NHS: Autism and managing sensory issues
 - NICE CG142: Autism in adults
 - PubMed: Controlled breathing reduces autonomic arousal
@@ -301,26 +333,31 @@ return NextResponse.json({ answer, meta: {...} })
 ## 🎯 KEY FEATURES
 
 ### 1. Specificity
+
 - Exact timer settings (e.g., "4-4-4-4 rhythm, 5 cycles")
 - When to use (e.g., "before homework", "first sign of overwhelm")
 - Duration (e.g., "3 minutes", "1 minute minimum")
 
 ### 2. Internal-First
+
 - NeuroBreath tools always recommended first
 - External signposting (NHS/NICE) as secondary evidence
 - Direct links to open tools immediately
 
 ### 3. Actionable Plans
+
 - 7-day plans with specific daily actions
 - Progressive difficulty (start small, build up)
 - Realistic time commitments
 
 ### 4. Motivation
+
 - 30-day challenges with badge milestones
 - Streak tracking integration
 - Gamification elements
 
 ### 5. Personalization
+
 - Audience-aware (parents, teachers, young people, adults, workplace)
 - Context-aware (setting, age, goals)
 - Follow-up questions to refine recommendations
@@ -331,35 +368,40 @@ return NextResponse.json({ answer, meta: {...} })
 
 ### Manual Testing (When Backend Complete)
 
-**Test 1: ADHD Focus**
+#### Test 1: ADHD Focus
+
 - [ ] Ask: "ADHD child, can't focus on reading"
 - [ ] Verify: Focus Garden recommended as primary
 - [ ] Verify: 7-day plan includes progressive practice
 - [ ] Verify: Internal links to ADHD tools appear
 - [ ] Verify: 30-day challenge offered with badge milestones
 
-**Test 2: Autism Sensory**
+#### Test 2: Autism Sensory
+
 - [ ] Ask: "Autistic adult, sensory overload at supermarket"
 - [ ] Verify: SOS 60-Second Reset recommended as primary
 - [ ] Verify: Exact breathing settings provided
 - [ ] Verify: Workplace adjustments NOT recommended (wrong context)
 - [ ] Verify: Follow-up questions about triggers
 
-**Test 3: Sleep Issues**
+#### Test 3: Sleep Issues
+
 - [ ] Ask: "Teen with insomnia, can't fall asleep"
 - [ ] Verify: 4-7-8 Breathing recommended
 - [ ] Verify: Sleep tools and hygiene guidance
 - [ ] Verify: 7-day plan includes bedtime routine
 - [ ] Verify: Evidence from NHS sleep guidance
 
-**Test 4: Dyslexia Reading**
+#### Test 4: Dyslexia Reading
+
 - [ ] Ask: "Dyslexic child, reading homework is stressful"
 - [ ] Verify: Dyslexia Reading Training + calming breathing
 - [ ] Verify: Both learning and regulation addressed
 - [ ] Verify: Teacher resources suggested for parents
 - [ ] Verify: 7-day plan combines practice + breaks
 
-**Test 5: Workplace Stress**
+#### Test 5: Workplace Stress
+
 - [ ] Ask: "Workplace burnout, need quick stress relief"
 - [ ] Verify: Stress management tools recommended
 - [ ] Verify: Workplace-specific adjustments mentioned
@@ -371,21 +413,25 @@ return NextResponse.json({ answer, meta: {...} })
 ## 🔒 SAFETY & QUALITY ASSURANCE
 
 ### Crisis Detection
+
 - System prompt includes self-harm/suicide keywords
 - Immediate escalation to emergency services
 - Stops normal flow, provides crisis numbers
 
 ### Scope Boundaries
+
 - "Educational information only, not medical advice"
 - Never tells users to stop medication
 - Always includes UK-first safety line
 
 ### Evidence Integrity
+
 - Only cites provided NHS/NICE/PubMed sources
 - Says "evidence is mixed" when uncertain
 - Never fabricates research papers
 
 ### Privacy
+
 - Does not request names, addresses, medical records
 - Client-side context only (no server storage)
 - Privacy notice always visible
@@ -395,21 +441,25 @@ return NextResponse.json({ answer, meta: {...} })
 ## 🎉 NEXT STEPS
 
 ### 1. Backend Integration (Priority 1)
+
 - Update `/api/ai-coach/route.ts` with new prompt structure
 - Test with OpenAI GPT-4 or Claude Sonnet
 - Ensure structured response parsing works
 
 ### 2. User Context Collection (Optional)
+
 - Add expandable "Tell us more" form in AI Chat card
 - Collect: age group, setting, main challenge, time available
 - Pass to API as `context` parameter
 
 ### 3. Analytics (Future)
+
 - Track which resources are recommended most
 - Monitor 30-day challenge completion rates
 - Identify gaps in resource catalog
 
 ### 4. Content Expansion (Future)
+
 - Add more resources to catalog as site grows
 - Create specialized 7-day plans for common scenarios
 - Design additional 30-day challenges (sleep, reading, workplace)
@@ -419,6 +469,7 @@ return NextResponse.json({ answer, meta: {...} })
 ## 📄 FILES CREATED/MODIFIED
 
 ### New Files (9)
+
 1. `web/lib/ai-coach/system-prompt.ts` - AI behavior specification
 2. `web/lib/ai-coach/resource-catalog.ts` - Site map with metadata
 3. `web/components/blog/recommendations-display.tsx` - Primary/Backup/Add-on cards
@@ -428,10 +479,12 @@ return NextResponse.json({ answer, meta: {...} })
 7. `web/NEUROBREATH_AI_COACH_PERSONALIZED.md` - This documentation
 
 ### Modified Files (2)
+
 1. `web/types/ai-coach.ts` - Added new interfaces
 2. `web/components/blog/ai-coach-chat.tsx` - Integrated new components
 
 ### Pending Files (1)
+
 1. `web/app/api/ai-coach/route.ts` - Backend integration required
 
 ---
@@ -446,7 +499,7 @@ return NextResponse.json({ answer, meta: {...} })
 - ⏳ Backend API route (pending LLM integration)
 - ⏳ End-to-end testing (pending backend)
 
-**Overall Progress: 85% Complete**
+### Overall Progress: 85% Complete
 
 ---
 
@@ -454,10 +507,3 @@ return NextResponse.json({ answer, meta: {...} })
 **Engineer:** Senior UK Healthcare Content Safety Engineer  
 **Status:** Frontend complete, backend integration pending  
 **Next:** Update AI Coach API route with new prompt structure
-
-
-
-
-
-
-

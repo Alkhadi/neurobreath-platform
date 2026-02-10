@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1680" viewBox="0 0 1080 1680">
+  <defs>
+    <style>
+      :root {
+        --nb-dark: #0b1220;
+        --nb-mid: #111827;
+        --nb-surface: rgba(255,255,255,0.92);
+        --nb-surface-2: rgba(255,255,255,0.75);
+        --nb-blue: #3b82f6;
+        --nb-cyan: #06b6d4;
+        --nb-amber: #f59e0b;
+        --nb-slate: #94a3b8;
+      }
+    </style>
+    <linearGradient id="mg-p-grad1" x1="0" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#0b1220"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="mg-p-grad2" x1="0" y1="0" x2="1" y2="0.8">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="mg-p-grad3" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <clipPath id="mg-p-clip">
+      <rect x="16" y="16" width="1048" height="1648" rx="24"/>
+    </clipPath>
+  </defs>
+
+  <!-- Base -->
+  <rect x="16" y="16" width="1048" height="1648" rx="24" fill="url(#mg-p-grad1)"/>
+
+  <g clip-path="url(#mg-p-clip)">
+    <!-- Large diagonal sweep -->
+    <polygon points="0,0 1080,0 1080,600 0,1100" fill="url(#mg-p-grad2)" opacity="0.15"/>
+
+    <!-- Amber accent diagonal -->
+    <polygon points="0,900 1080,400 1080,500 0,1000" fill="url(#mg-p-grad3)" opacity="0.3"/>
+    <polygon points="0,950 1080,450 1080,470 0,970" fill="#f59e0b" opacity="0.1"/>
+
+    <!-- Geometric block upper area -->
+    <rect x="60" y="60" width="960" height="480" rx="16" fill="rgba(255,255,255,0.04)"/>
+    <rect x="60" y="60" width="960" height="480" rx="16" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+    <!-- Corner triangles -->
+    <polygon points="16,16 200,16 16,200" fill="#3b82f6" opacity="0.1"/>
+    <polygon points="1064,1664 1064,1500 900,1664" fill="#06b6d4" opacity="0.08"/>
+
+    <!-- Subtle vertical lines -->
+    <line x1="360" y1="16" x2="360" y2="1664" stroke="#94a3b8" stroke-width="0.5" opacity="0.06"/>
+    <line x1="720" y1="16" x2="720" y2="1664" stroke="#94a3b8" stroke-width="0.5" opacity="0.06"/>
+
+    <!-- Subtle horizontal lines -->
+    <line x1="16" y1="560" x2="1064" y2="560" stroke="#94a3b8" stroke-width="0.5" opacity="0.06"/>
+    <line x1="16" y1="1120" x2="1064" y2="1120" stroke="#94a3b8" stroke-width="0.5" opacity="0.06"/>
+
+    <!-- Safe text surface panel (center) -->
+    <rect x="80" y="600" width="920" height="700" rx="16" fill="rgba(255,255,255,0.06)"/>
+    <rect x="80" y="600" width="920" height="700" rx="16" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+
+    <!-- Accent dots cluster -->
+    <circle cx="900" cy="1400" r="5" fill="#f59e0b" opacity="0.35"/>
+    <circle cx="920" cy="1420" r="3.5" fill="#3b82f6" opacity="0.3"/>
+    <circle cx="940" cy="1395" r="2.5" fill="#06b6d4" opacity="0.3"/>
+
+    <!-- Thin accent lines bottom -->
+    <line x1="80" y1="1380" x2="450" y2="1380" stroke="#3b82f6" stroke-width="1.5" opacity="0.18"/>
+    <line x1="80" y1="1392" x2="320" y2="1392" stroke="#06b6d4" stroke-width="1" opacity="0.12"/>
+
+    <!-- QR zone (bottom center) -->
+    <rect x="400" y="1400" width="260" height="260" rx="12" fill="rgba(255,255,255,0.04)"/>
+    <rect x="400" y="1400" width="260" height="260" rx="12" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="6 4"/>
+
+    <!-- Bottom depth overlay -->
+    <rect x="16" y="1450" width="1048" height="214" fill="url(#mg-p-grad1)" opacity="0.25"/>
+  </g>
+</svg>

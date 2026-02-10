@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
-  Download, 
   BookOpen, 
   GraduationCap,
   CheckCircle2, 
@@ -25,8 +24,6 @@ import {
   Briefcase,
   Award,
   ClipboardCheck,
-  School,
-  Brain,
   HeartHandshake
 } from 'lucide-react';
 import { PathwaysNavigator } from '@/components/autism/pathways-navigator';
@@ -35,28 +32,10 @@ import Link from 'next/link';
 
 export default function AutismTeacherSupportPage() {
   const [mounted, setMounted] = useState(false);
-  const [sessionActive, setSessionActive] = useState(false);
-  const [sessionTime, setSessionTime] = useState(0);
 
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (sessionActive) {
-      interval = setInterval(() => {
-        setSessionTime(prev => prev + 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [sessionActive]);
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
 
   if (!mounted) {
     return <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-emerald-950" />;
@@ -66,7 +45,7 @@ export default function AutismTeacherSupportPage() {
     <main className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-emerald-950">
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 overflow-hidden bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 text-white">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto w-[86vw] max-w-[86vw] px-4">
           <div className="text-center space-y-6 mb-12">
             <div className="flex justify-center mb-4">
               <div className="p-4 bg-white/20 rounded-full">
@@ -196,7 +175,7 @@ export default function AutismTeacherSupportPage() {
 
       {/* Teacher Overview */}
       <section id="teacher-overview" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto w-[86vw] max-w-[86vw] px-4">
           <div className="grid gap-6 lg:grid-cols-3 mb-8">
             <div className="lg:col-span-2">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Autism (Teachers) — quick overview</h2>
@@ -327,7 +306,7 @@ export default function AutismTeacherSupportPage() {
 
       {/* Classroom Strategies Section */}
       <section id="classroom-strategies" className="py-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-emerald-950 dark:via-teal-950 dark:to-cyan-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto w-[86vw] max-w-[86vw] px-4">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-2">School: Teachers & TAs (UK)</h2>
@@ -661,7 +640,7 @@ export default function AutismTeacherSupportPage() {
 
       {/* SEND Support Section */}
       <section id="send-support" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto w-[86vw] max-w-[86vw] px-4">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">SEND Support & EHCP (England)</h2>
           
           <Card className="border-2 border-emerald-200 dark:border-emerald-800 mb-8">
@@ -799,7 +778,7 @@ export default function AutismTeacherSupportPage() {
 
       {/* Education Pathways Navigator */}
       <section id="pathways" className="py-16 bg-gradient-to-br from-emerald-50 via-blue-50 to-purple-50 dark:from-emerald-950 dark:via-blue-950 dark:to-purple-950">
-        <div className="mx-auto px-4 mb-8" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto w-[86vw] max-w-[86vw] px-4 mb-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">SEND Pathways Navigator</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -812,7 +791,7 @@ export default function AutismTeacherSupportPage() {
 
       {/* Autistic Staff Section */}
       <section id="autistic-staff" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto w-[86vw] max-w-[86vw] px-4">
           <h2 className="text-3xl md:text-4xl font-bold mb-8">Autistic teachers & staff — reasonable adjustments</h2>
           
           <Card>
@@ -932,7 +911,7 @@ export default function AutismTeacherSupportPage() {
 
       {/* Professional Development Section */}
       <section id="professional-development" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto w-[86vw] max-w-[86vw] px-4">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Professional Development & CPD</h2>
           
           <div className="grid gap-6 lg:grid-cols-2">
@@ -1127,7 +1106,7 @@ export default function AutismTeacherSupportPage() {
 
       {/* Clinical & Education Guidance */}
       <section id="guidance" className="py-16 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950 dark:via-purple-950 dark:to-pink-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto w-[86vw] max-w-[86vw] px-4">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Clinical & Education Guidance</h2>
           
           <div className="grid gap-6 lg:grid-cols-2">
@@ -1283,7 +1262,7 @@ export default function AutismTeacherSupportPage() {
 
       {/* Breathing & Regulation Section */}
       <section id="breathing-regulation" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto w-[86vw] max-w-[86vw] px-4">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
             Breathing & Regulation in the Classroom
           </h2>

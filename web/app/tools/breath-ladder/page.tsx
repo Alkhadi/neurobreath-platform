@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { ArrowLeft, ChevronUp } from 'lucide-react'
 import { toast } from 'sonner'
 import { getDeviceId } from '@/lib/device-id'
+import { trackProgress } from '@/lib/progress/track'
 
 const rungs = [
   { level: 1, pattern: '3-3-3-3', duration: 12 },
@@ -39,6 +40,12 @@ export default function BreathLadderPage() {
         })
       })
 
+      void trackProgress({
+        type: 'breathing_completed',
+        metadata: { techniqueId: 'ladder', durationSeconds: 120, category: 'calm' },
+        path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+      })
+
       setCompletedRungs(prev => [...prev, currentRung])
       toast.success(`✅ Level ${rung?.level ?? 0} completed!`)
       
@@ -57,7 +64,7 @@ export default function BreathLadderPage() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 py-12">
       <div className="container max-w-4xl mx-auto px-4">
         <Button asChild variant="ghost" className="mb-6">
-          <Link href="/tools"><ArrowLeft className="w-4 h-4 mr-2" /> Back to Tools</Link>
+          <Link href="/tools/breath-tools"><ArrowLeft className="w-4 h-4 mr-2" /> Back to Breath Tools</Link>
         </Button>
 
         <div className="bg-white rounded-2xl p-8 shadow-xl mb-8">

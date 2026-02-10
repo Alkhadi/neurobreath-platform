@@ -41,16 +41,16 @@ export default function AICoachChat() {
     {
       id: '1',
       type: 'ai',
-      content: 'Hello! Ask me anything about autism, ADHD, breathing routines, sleep hygiene, or workplace supports. I will cite reliable UK & US sources and keep things easy to digest.'
+      content: 'Hello! Ask me anything about autism, ADHD, breathing routines, sleep hygiene, or workplace supports. I will prioritise NeuroBreath internal links and cite NHS/NICE/PubMed when relevant.'
     }
   ])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [audience, setAudience] = useState<AudienceType | undefined>()
   const [topic, setTopic] = useState<string>('')
-  const [selectedQuickPrompt, setSelectedQuickPrompt] = useState<string | undefined>()
+  const [selectedQuickPrompt, setSelectedQuickPrompt] = useState<{ id: string; label: string } | undefined>()
 
-  const submitQuestion = async (questionText: string, quickPrompt?: string) => {
+  const submitQuestion = async (questionText: string, quickPrompt?: { id: string; label: string }) => {
     if (!questionText.trim() || isLoading) return
 
     const userMessage: Message = {
@@ -74,7 +74,7 @@ export default function AICoachChat() {
       // Build structured prompt
       const structuredPrompt = buildStructuredPrompt({
         message: questionText,
-        quickPrompt,
+        quickPrompt: quickPrompt?.label,
         userContext: mergedContext,
         pageContext: {
           pageKey: 'blog',
@@ -89,8 +89,10 @@ export default function AICoachChat() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          question: questionText,
+          userQuestion: questionText,
           structuredPrompt,
+          quickPromptId: quickPrompt?.id,
+          mode: quickPrompt ? 'quick' : 'typed',
           userContext: mergedContext,
           topic: topic || undefined,
           audience: audience || undefined
@@ -133,11 +135,11 @@ export default function AICoachChat() {
     await submitQuestion(input, selectedQuickPrompt)
   }
 
-  const handlePromptSelect = async (prompt: string) => {
+  const handlePromptSelect = async (prompt: { id: string; label: string }) => {
     setSelectedQuickPrompt(prompt)
-    setInput(prompt)
+    setInput(prompt.label)
     // Auto-submit when quick prompt is selected
-    await submitQuestion(prompt, prompt)
+    await submitQuestion(prompt.label, prompt)
   }
 
   return (
@@ -147,12 +149,12 @@ export default function AICoachChat() {
           <div>
             <CardTitle className="text-2xl">Ask the AI Coach</CardTitle>
             <p className="text-sm text-muted-foreground mt-2">
-              Evidence-led answers with NHS/NICE first (UK). Citations are provided for factual claims; if evidence is uncertain or mixed, we will say so.
+              Internal-first guidance with NeuroBreath links, plus NHS/NICE/PubMed citations when relevant.
             </p>
             <ul className="list-disc list-inside text-xs text-muted-foreground mt-4 space-y-1">
               <li>Scope: educational info only, not medical advice</li>
               <li>Escalation: prompts crisis help for self-harm/safety concerns</li>
-              <li>Sources: prioritises Google Scholar, PubMed, NHS, NICE, CDC, NIH, APA, university centres</li>
+              <li>Sources: NHS, NICE, PubMed (allowlist)</li>
             </ul>
             
             {/* Urgent Help Panel */}

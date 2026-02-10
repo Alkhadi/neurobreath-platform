@@ -1,48 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { TrendingUp, Users, DollarSign, AlertCircle } from 'lucide-react';
-
-// Dynamic import for recharts with ssr disabled
-const ResponsiveContainer = dynamic(
-  () => import('recharts').then((mod) => mod.ResponsiveContainer as any),
-  { ssr: false, loading: () => <div className="h-64 bg-gray-100 animate-pulse rounded-lg"></div> }
-) as any;
-const BarChart = dynamic(
-  () => import('recharts').then((mod) => mod.BarChart as any),
-  { ssr: false }
-) as any;
-const Bar = dynamic(
-  () => import('recharts').then((mod) => mod.Bar as any),
-  { ssr: false }
-) as any;
-const XAxis = dynamic(
-  () => import('recharts').then((mod) => mod.XAxis as any),
-  { ssr: false }
-) as any;
-const YAxis = dynamic(
-  () => import('recharts').then((mod) => mod.YAxis as any),
-  { ssr: false }
-) as any;
-const Tooltip = dynamic(
-  () => import('recharts').then((mod) => mod.Tooltip as any),
-  { ssr: false }
-) as any;
-const Legend = dynamic(
-  () => import('recharts').then((mod) => mod.Legend as any),
-  { ssr: false }
-) as any;
-const LineChart = dynamic(
-  () => import('recharts').then((mod) => mod.LineChart as any),
-  { ssr: false }
-) as any;
-const Line = dynamic(
-  () => import('recharts').then((mod) => mod.Line as any),
-  { ssr: false }
-) as any;
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  LineChart,
+  Line,
+} from 'recharts';
 
 export function StatisticsImpact() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });

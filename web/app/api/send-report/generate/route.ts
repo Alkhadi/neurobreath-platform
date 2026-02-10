@@ -72,10 +72,10 @@ export async function POST(request: NextRequest) {
       id: a.id,
       assessmentType: a.assessmentType,
       scores: {
-        decoding: a.readingProfile ? (a.readingProfile as any).decoding?.score : undefined,
-        wordRecognition: a.readingProfile ? (a.readingProfile as any).wordRecognition?.score : undefined,
-        fluency: a.readingProfile ? (a.readingProfile as any).fluency?.score : undefined,
-        comprehension: a.readingProfile ? (a.readingProfile as any).comprehension?.score : undefined,
+        decoding: a.readingProfile ? (a.readingProfile as Record<string, { score?: number }>).decoding?.score : undefined,
+        wordRecognition: a.readingProfile ? (a.readingProfile as Record<string, { score?: number }>).wordRecognition?.score : undefined,
+        fluency: a.readingProfile ? (a.readingProfile as Record<string, { score?: number }>).fluency?.score : undefined,
+        comprehension: a.readingProfile ? (a.readingProfile as Record<string, { score?: number }>).comprehension?.score : undefined,
       },
       timestamp: a.startedAt.toISOString()
     }))

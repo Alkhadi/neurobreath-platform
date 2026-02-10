@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-labelledby="business-02-avatar-title business-02-avatar-desc">
+  <title id="business-02-avatar-title">Startup Gradient — Business Avatar</title>
+  <desc id="business-02-avatar-desc">Professional business avatar with startup gradient style</desc>
+  <defs>
+    <linearGradient id="business-02-avatar-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1D4ED8;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#111827;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1000" height="1000" fill="url(#business-02-avatar-bg)" />
+  <circle cx="500" cy="380" r="160" fill="#4F46E5" opacity="0.25" />
+  <ellipse cx="500" cy="720" rx="280" ry="200" fill="#4F46E5" opacity="0.25" />
+</svg>

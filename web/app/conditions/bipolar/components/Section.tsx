@@ -21,11 +21,7 @@ export const Section: React.FC<SectionProps> = ({
   return (
     <section
       id={id}
-      className={`${styles.section} ${className}`}
-      style={{
-        backgroundColor:
-          background === 'gray' ? 'var(--color-surface)' : 'var(--color-background)',
-      }}
+      className={`${styles.section} ${className} ${background === 'gray' ? 'bg-muted' : 'bg-background'}`}
     >
       <div className={styles.container}>
         {title && <h2 className={styles.sectionTitle}>{title}</h2>}

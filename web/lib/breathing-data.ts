@@ -18,8 +18,57 @@ export interface BreathingTechnique {
   category: string
 }
 
+const TECHNIQUE_ALIASES: Record<string, string> = {
+  'box-4444': 'box-breathing',
+  'four-7-8': '4-7-8',
+  'coherent-55': 'coherent',
+  'sos-1m': 'sos',
+}
+
+/**
+ * Normalizes a technique to ensure valid phase durations
+ * Prevents broken animations and "inhale-only" bugs
+ */
+function normalizeTechnique(technique: BreathingTechnique): BreathingTechnique {
+  const phases = technique.phases.map(phase => ({
+    ...phase,
+    duration: Math.max(phase.duration, phase.name.toLowerCase().includes('hold') ? 0 : 1)
+  }))
+  
+  const totalCycleSeconds = phases.reduce((sum, p) => sum + p.duration, 0)
+  
+  // Ensure minimum cycle duration
+  if (totalCycleSeconds < 2) {
+    console.warn(`Technique ${technique.id} has invalid cycle duration, using fallback`)
+    return {
+      ...technique,
+      phases: [
+        { name: 'Inhale', duration: 4, color: '#60B5FF' },
+        { name: 'Exhale', duration: 6, color: '#FF9898' }
+      ]
+    }
+  }
+  
+  return { ...technique, phases }
+}
+
 export const breathingTechniques: Record<string, BreathingTechnique> = {
   'box-breathing': {
+    id: 'box-breathing',
+    name: '🟩 Box Breathing',
+    label: '🟩 Box Breathing · 4-4-4-4',
+    phases: [
+      { name: 'Inhale', duration: 4, color: '#60B5FF' },
+      { name: 'Hold', duration: 4, color: '#FF9149' },
+      { name: 'Exhale', duration: 4, color: '#FF9898' },
+      { name: 'Hold', duration: 4, color: '#A19AD3' }
+    ],
+    description: 'Equal 4-4-4-4 pattern for calm and focus',
+    benefits: ['Reduces stress', 'Improves focus', 'Steadies heart rate'],
+    category: 'calm'
+  },
+  // Alias for backward compatibility
+  'box-4444': {
     id: 'box-breathing',
     name: '🟩 Box Breathing',
     label: '🟩 Box Breathing · 4-4-4-4',
@@ -46,6 +95,20 @@ export const breathingTechniques: Record<string, BreathingTechnique> = {
     benefits: ['Promotes sleep', 'Reduces anxiety', 'Deepens relaxation'],
     category: 'sleep'
   },
+  // Alias for backward compatibility
+  'four-7-8': {
+    id: '4-7-8',
+    name: '🟦 4-7-8 Breathing',
+    label: '🟦 4-7-8 Reset',
+    phases: [
+      { name: 'Inhale', duration: 4, color: '#60B5FF' },
+      { name: 'Hold', duration: 7, color: '#FF9149' },
+      { name: 'Exhale', duration: 8, color: '#FF9898' }
+    ],
+    description: 'Extended exhale for sleep and relaxation',
+    benefits: ['Promotes sleep', 'Reduces anxiety', 'Deepens relaxation'],
+    category: 'sleep'
+  },
   'coherent': {
     id: 'coherent',
     name: '🟪 Coherent 5-5',
@@ -58,7 +121,33 @@ export const breathingTechniques: Record<string, BreathingTechnique> = {
     benefits: ['Boosts HRV', 'Enhances focus', 'Calms nervous system'],
     category: 'focus'
   },
+  // Alias for backward compatibility
+  'coherent-55': {
+    id: 'coherent',
+    name: '🟪 Coherent 5-5',
+    label: '🟪 Coherent Breathing · 5-5',
+    phases: [
+      { name: 'Inhale', duration: 5, color: '#60B5FF' },
+      { name: 'Exhale', duration: 5, color: '#FF9898' }
+    ],
+    description: 'Simple 5-5 pattern for heart rate variability',
+    benefits: ['Boosts HRV', 'Enhances focus', 'Calms nervous system'],
+    category: 'focus'
+  },
   'sos': {
+    id: 'sos',
+    name: '🆘 60-second SOS',
+    label: '🆘 SOS Reset · 60s',
+    phases: [
+      { name: 'Inhale', duration: 4, color: '#60B5FF' },
+      { name: 'Exhale', duration: 6, color: '#FF9898' }
+    ],
+    description: 'Quick 60-second reset: 4s inhale, 6s exhale. 6 cycles for immediate calm.',
+    benefits: ['60-second emergency reset', 'Reduces panic quickly', 'Perfect for transitions'],
+    category: 'transition'
+  },
+  // Alias for backward compatibility
+  'sos-1m': {
     id: 'sos',
     name: '🆘 60-second SOS',
     label: '🆘 SOS Reset · 60s',
@@ -136,7 +225,9 @@ export const breathingTechniques: Record<string, BreathingTechnique> = {
 }
 
 export function getTechniqueById(id: string): BreathingTechnique | undefined {
-  return breathingTechniques[id]
+  const resolvedId = TECHNIQUE_ALIASES[id] ?? id
+  const technique = breathingTechniques[resolvedId] ?? breathingTechniques[id]
+  return technique ? normalizeTechnique(technique) : undefined
 }
 
 export function calculateTotalCycleDuration(technique: BreathingTechnique): number {

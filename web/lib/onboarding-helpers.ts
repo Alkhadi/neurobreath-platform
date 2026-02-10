@@ -72,7 +72,7 @@ export function getOnboardingState(): {
   onboardingCompleted: boolean;
   onboardingDismissed: boolean;
   shouldShowOnboarding: boolean;
-  profile: any | null;
+  profile: unknown | null;
 } {
   if (typeof window === 'undefined') {
     return {
@@ -170,7 +170,7 @@ export function attachDebugPanel(): void {
     return;
   }
 
-  (window as any).__onboarding = {
+  window.__onboarding = {
     reset: resetOnboardingState,
     simulateReturning: simulateReturningUser,
     simulateGuest: simulateGuestUser,

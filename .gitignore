@@ -19,6 +19,9 @@ out
 .logs
 *.tsbuildinfo
 
+# Avoid mixing package managers
+**/package-lock.json
+
 
 .env
 .env.*
@@ -36,3 +39,20 @@ out
 
 # local backups
 web/package.json.bak
+
+# generated reports
+web/reports
+web/test-results
+web/playwright-report
+
+# Playwright artifacts (sometimes generated at repo root)
+test-results
+playwright-report
+
+# macOS system files
+.DS_Store
+**/.DS_Store
+
+# Keep baselines committed
+!web/perf/baseline/
+!web/tests/visual/__screenshots__/

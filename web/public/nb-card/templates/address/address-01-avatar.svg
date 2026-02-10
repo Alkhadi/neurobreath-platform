@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000"
+     role="img" aria-labelledby="t-address-01-avatar d-address-01-avatar">
+  <title id="t-address-01-avatar">Address Slate Avatar — Professional placeholder</title>
+  <desc id="d-address-01-avatar">Neutral professional avatar placeholder matching the Address Slate template</desc>
+
+  <defs>
+    <linearGradient id="a-base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E7F0F8"/>
+      <stop offset="1" stop-color="#6D8AA8"/>
+    </linearGradient>
+
+    <radialGradient id="a-glow" cx="35%" cy="30%" r="60%">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Container -->
+  <circle cx="500" cy="500" r="460" fill="url(#a-base)"/>
+  <circle cx="420" cy="360" r="360" fill="url(#a-glow)"/>
+
+  <!-- Premium ring -->
+  <circle cx="500" cy="500" r="420" fill="none" stroke="#0B1020" stroke-opacity="0.12" stroke-width="10"/>
+
+  <!-- Abstract silhouette -->
+  <g transform="translate(0 10)">
+    <!-- head -->
+    <circle cx="500" cy="390" r="120" fill="#0B1020" opacity="0.16"/>
+    <!-- shoulders -->
+    <path d="M260 820
+             C280 660 380 590 500 590
+             C620 590 720 660 740 820
+             Z"
+          fill="#0B1020" opacity="0.14"/>
+    <!-- inner highlight -->
+    <path d="M320 820
+             C340 690 410 640 500 640
+             C590 640 660 690 680 820
+             Z"
+          fill="#FFFFFF" opacity="0.10"/>
+  </g>
+
+  <!-- Small category motif: map pin (bottom-right) -->
+  <g transform="translate(770 770)">
+    <path d="M0 -72
+             C-34 -72 -60 -46 -60 -14
+             C-60 30 -10 74 0 94
+             C10 74 60 30 60 -14
+             C60 -46 34 -72 0 -72Z"
+          fill="none" stroke="#0B1020" stroke-opacity="0.18" stroke-width="10"
+          stroke-linejoin="round"/>
+    <circle cx="0" cy="-18" r="16" fill="none" stroke="#0B1020" stroke-opacity="0.14" stroke-width="10"/>
+  </g>
+</svg>

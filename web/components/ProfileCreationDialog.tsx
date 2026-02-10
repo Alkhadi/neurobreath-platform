@@ -38,7 +38,6 @@ export function ProfileCreationDialog({ open, onOpenChange }: ProfileCreationDia
   const [age, setAge] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [showPinSetup, setShowPinSetup] = useState(false);
-  const [isFirstProfile, setIsFirstProfile] = useState(false);
 
   const [, setLearnerProfile] = useLocalStorage<LearnerProfile | null>('learnerProfile', null);
   const { completeOnboarding } = useOnboarding();
@@ -78,7 +77,7 @@ export function ProfileCreationDialog({ open, onOpenChange }: ProfileCreationDia
         throw new Error(errorData.error || 'Failed to create profile');
       }
 
-      const data = await response.json();
+      await response.json();
 
       // Save to device profile store
       const deviceProfile = saveLearnerProfile({
@@ -112,7 +111,6 @@ export function ProfileCreationDialog({ open, onOpenChange }: ProfileCreationDia
       
       // If this was the first profile and PIN not set, require PIN setup
       if (!hadProfilesBefore && !isPinSet()) {
-        setIsFirstProfile(true);
         setShowPinSetup(true);
       } else {
         // Reload to update UI

@@ -5,9 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { MessageSquare, Plus, X, Download, Image as ImageIcon } from 'lucide-react';
-import { Textarea } from '@/components/ui/textarea';
+import { MessageSquare, Plus, X, Download } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface Choice {
@@ -211,6 +209,7 @@ Citation: https://www.nice.org.uk/guidance/cg170
             />
             <Button onClick={addChoice} disabled={!newChoiceText.trim()}>
               <Plus className="w-4 h-4" />
+              <span className="sr-only">Add choice</span>
             </Button>
           </div>
         </div>
@@ -229,8 +228,10 @@ Citation: https://www.nice.org.uk/guidance/cg170
                     className="relative group border-2 border-gray-300 dark:border-gray-700 rounded-lg p-4 hover:border-green-500 dark:hover:border-green-500 transition-colors text-center"
                   >
                     <button
+                      type="button"
                       onClick={() => removeChoice(choice.id)}
                       className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      aria-label={`Remove choice: ${choice.text}`}
                     >
                       <X className="w-3 h-3" />
                     </button>

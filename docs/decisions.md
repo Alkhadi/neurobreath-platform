@@ -49,7 +49,7 @@ Each decision entry follows this structure:
 **Status**: Accepted  
 **Context**: Needed hosting with global CDN, edge computing for SSR, and low cost. Considered Vercel, Netlify, and self-hosted options.
 
-**Decision**: Deploy on Cloudflare Pages with Workers for SSR, targeting www.neurobreath.co.uk.
+**Decision**: Deploy on Cloudflare Pages with Workers for SSR, targeting <https://www.neurobreath.co.uk>.
 
 **Alternatives Considered**:
 1. **Vercel**: Native Next.js support, but higher cost at scale ($20/month + usage)
@@ -304,8 +304,10 @@ ocean.frequency.value = 0.3; // Hz (slow waves)
 
 ### [DECISION-010] No Third-Party Analytics (Privacy-First)
 **Date**: 2024-12-16  
-**Status**: Accepted  
+**Status**: Superseded (2026-02-02)  
 **Context**: Many analytics tools (Google Analytics, Mixpanel) track users across sites, violate GDPR without explicit consent, and contradict our privacy-first principles.
+
+**Update (2026-02-02)**: We now use **Vercel Web Analytics** and **Vercel Speed Insights** as optional telemetry, gated behind explicit user consent (`analytics: true`). Analytics remains **off by default** until consent is saved.
 
 **Decision**: Ship Phase 1 with no analytics. Implement privacy-friendly alternative (Plausible, Fathom) in Phase 2 only if essential for product decisions.
 

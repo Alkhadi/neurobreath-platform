@@ -1,6 +1,7 @@
+
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from './ui/button'
 import { Play, Pause, Square } from 'lucide-react'
 import { BreathingTechnique } from '@/lib/breathing-data'
@@ -8,6 +9,21 @@ import { BreathingTechnique } from '@/lib/breathing-data'
 interface BreathingOrbitProps {
   technique: BreathingTechnique
   onSessionComplete?: (breaths: number, rounds: number) => void
+}
+
+const PHASE_COLOR_CLASS_BY_HEX: Record<string, { text: string; bg: string }> = {
+  '#60B5FF': { text: 'text-[#60B5FF]', bg: 'bg-[#60B5FF]' },
+  '#FF9149': { text: 'text-[#FF9149]', bg: 'bg-[#FF9149]' },
+  '#FF9898': { text: 'text-[#FF9898]', bg: 'bg-[#FF9898]' },
+  '#A19AD3': { text: 'text-[#A19AD3]', bg: 'bg-[#A19AD3]' }
+}
+
+function getPhaseTextClass(color?: string): string {
+  return PHASE_COLOR_CLASS_BY_HEX[color ?? '']?.text ?? 'text-[#60B5FF]'
+}
+
+function getPhaseBgClass(color?: string): string {
+  return PHASE_COLOR_CLASS_BY_HEX[color ?? '']?.bg ?? 'bg-[#60B5FF]'
 }
 
 export default function BreathingOrbit({ technique, onSessionComplete }: BreathingOrbitProps) {
@@ -20,8 +36,22 @@ export default function BreathingOrbit({ technique, onSessionComplete }: Breathi
   const startTimeRef = useRef<number>(0)
   const pausedTimeRef = useRef<number>(0)
 
-  const phases = technique?.phases ?? []
-  const currentPhase = phases?.[currentPhaseIndex]
+  const phases = useMemo(() => technique?.phases ?? [], [technique])
+  const safePhases = useMemo(() => {
+    const filtered = phases.filter((phase) => (phase?.duration ?? 0) > 0)
+    if (filtered.length > 0) return filtered
+    return [
+      { name: 'Inhale', duration: 4, color: '#60B5FF' },
+      { name: 'Exhale', duration: 6, color: '#FF9898' },
+    ]
+  }, [phases])
+  const currentPhase = safePhases?.[currentPhaseIndex]
+
+  useEffect(() => {
+    if (currentPhaseIndex >= safePhases.length) {
+      setCurrentPhaseIndex(0)
+    }
+  }, [currentPhaseIndex, safePhases.length])
 
   useEffect(() => {
     if (!isPlaying || isPaused) {
@@ -42,7 +72,7 @@ export default function BreathingOrbit({ technique, onSessionComplete }: Breathi
       setPhaseProgress(progress)
 
       if (elapsed >= currentPhaseDuration) {
-        const nextIndex = (currentPhaseIndex + 1) % phases.length
+        const nextIndex = (currentPhaseIndex + 1) % safePhases.length
         setCurrentPhaseIndex(nextIndex)
         startTimeRef.current = currentTime
         pausedTimeRef.current = 0
@@ -63,7 +93,7 @@ export default function BreathingOrbit({ technique, onSessionComplete }: Breathi
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, [isPlaying, isPaused, currentPhaseIndex, phases, currentPhase])
+  }, [isPlaying, isPaused, currentPhaseIndex, safePhases, currentPhase])
 
   const handleStart = () => {
     setIsPlaying(true)
@@ -98,6 +128,8 @@ export default function BreathingOrbit({ technique, onSessionComplete }: Breathi
   const orbX = 50 + 40 * Math.cos(orbAngle)
   const orbY = 50 + 40 * Math.sin(orbAngle)
 
+  const currentPhaseTextClass = getPhaseTextClass(currentPhase?.color)
+
   return (
     <div className="w-full max-w-md mx-auto">
       {/* Visualization */}
@@ -113,23 +145,30 @@ export default function BreathingOrbit({ technique, onSessionComplete }: Breathi
             strokeWidth="0.5"
             className="text-gray-300"
           />
-        </svg>
 
-        {/* Orb */}
-        <div
-          className="absolute w-8 h-8 rounded-full transition-all duration-300 -translate-x-1/2 -translate-y-1/2"
-          style={{
-            left: `${orbX}%`,
-            top: `${orbY}%`,
-            backgroundColor: currentPhase?.color ?? '#60B5FF',
-            boxShadow: `0 0 20px ${currentPhase?.color ?? '#60B5FF'}`
-          }}
-        />
+          {/* Orb glow */}
+          <circle
+            cx={orbX}
+            cy={orbY}
+            r="8"
+            fill="currentColor"
+            className={`${currentPhaseTextClass} transition-all duration-300 opacity-30`}
+          />
+
+          {/* Orb core */}
+          <circle
+            cx={orbX}
+            cy={orbY}
+            r="4"
+            fill="currentColor"
+            className={`${currentPhaseTextClass} transition-all duration-300`}
+          />
+        </svg>
 
         {/* Phase Label */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
-            <p className="text-2xl font-semibold" style={{ color: currentPhase?.color ?? '#60B5FF' }}>
+            <p className={`text-2xl font-semibold ${currentPhaseTextClass}`}>
               {isPlaying ? (currentPhase?.name ?? 'Ready') : 'Ready'}
             </p>
             <p className="text-sm text-gray-500 mt-1">{breathCount} breaths</p>
@@ -139,7 +178,7 @@ export default function BreathingOrbit({ technique, onSessionComplete }: Breathi
 
       {/* Phase Labels */}
       <div className="flex justify-around mb-6 text-sm">
-        {phases?.map((phase, idx) => (
+        {safePhases?.map((phase, idx) => (
           <div
             key={idx}
             className={`flex items-center gap-1 transition-opacity ${
@@ -147,8 +186,7 @@ export default function BreathingOrbit({ technique, onSessionComplete }: Breathi
             }`}
           >
             <span
-              className="w-3 h-3 rounded-full"
-              style={{ backgroundColor: phase?.color ?? '#60B5FF' }}
+              className={`w-3 h-3 rounded-full ${getPhaseBgClass(phase?.color)}`}
             />
             <span>{phase?.name ?? ''}</span>
           </div>

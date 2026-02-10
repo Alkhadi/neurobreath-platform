@@ -1,6 +1,7 @@
+
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { ChevronDown } from 'lucide-react'
 
@@ -8,6 +9,11 @@ export default function RewardTutorial() {
   const [isOpen, setIsOpen] = useState(false)
   const [badgeGameStep, setBadgeGameStep] = useState(0)
   const [badgeUnlocked, setBadgeUnlocked] = useState(false)
+  const toggleButtonRef = useRef<HTMLButtonElement | null>(null)
+
+  useEffect(() => {
+    toggleButtonRef.current?.setAttribute('aria-expanded', isOpen ? 'true' : 'false')
+  }, [isOpen])
 
   const handleBadgePractice = () => {
     setBadgeGameStep(1)
@@ -32,10 +38,12 @@ export default function RewardTutorial() {
   return (
     <div className="mb-8 border border-gray-200 rounded-lg overflow-hidden bg-white">
       <button
+        ref={toggleButtonRef}
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors"
-        aria-expanded={isOpen}
+        aria-expanded="false"
+        aria-controls="reward-tutorial-panel"
       >
         <div className="flex items-center gap-3">
           <span className="text-2xl">🎖️</span>
@@ -49,7 +57,7 @@ export default function RewardTutorial() {
       </button>
 
       {isOpen && (
-        <div className="p-6 pt-0 space-y-8">
+        <div id="reward-tutorial-panel" className="p-6 pt-0 space-y-8">
           {/* Step 1: What are badges */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">

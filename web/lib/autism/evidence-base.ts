@@ -1,4 +1,4 @@
-import type { EvidenceLink, Skill, Badge, CalmTechnique } from '@/types/autism'
+import type { Skill, Badge, CalmTechnique } from '@/types/autism'
 
 // =============================================================================
 // EVIDENCE BASE - UK/US/EU

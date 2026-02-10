@@ -1,0 +1,32 @@
+/* Minimal styles for legacy HTML fallbacks (keeps pages readable without inline styles). */
+
+.nb-legacy-fallback {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 16px;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+.nb-legacy-fallback--wide {
+  max-width: 1000px;
+  padding: 32px 16px;
+  line-height: 1.6;
+}
+
+.nb-legacy-fallback__title {
+  margin: 0 0 12px;
+}
+
+.nb-legacy-fallback__p {
+  margin: 0 0 16px;
+}
+
+.nb-legacy-fallback__p--muted {
+  color: #444;
+}
+
+.nb-legacy-fallback__link {
+  color: #0b63ce;
+  text-decoration: underline;
+}

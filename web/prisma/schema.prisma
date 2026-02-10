@@ -92,6 +92,18 @@ model VoicePreference {
 // READING ASSESSMENT MODELS
 // ============================================================================
 
+model NbCardFrame {
+  id          String   @id @default(cuid())
+  name        String
+  category    String   // ADDRESS | BANK | BUSINESS
+  imageUrl    String
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  @@index([category, isActive, sortOrder])
+}
+
 model ReadingPassage {
   id              String   @id @default(cuid())
   title           String
@@ -450,4 +462,231 @@ model UserProfile {
   age               Int?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @default(now()) @updatedAt
+}
+
+// ============================================================================
+// OPTIONAL AUTH (NEXTAUTH JWT + CREDENTIALS) — ISOLATED FROM EXISTING Session
+// ============================================================================
+
+model AuthUser {
+  id                 String   @id @default(cuid())
+  email              String   @unique
+  name               String?
+  passwordHash       String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now()) @updatedAt
+
+  // Cookie consent (shared across devices for signed-in users)
+  consentState        Json?
+  consentUpdatedAt    DateTime?
+
+  // Universal progress tracking consent marker (one-time prompt)
+  progressConsentAt   DateTime?
+
+  // Optional link into the existing “deviceId” ecosystem
+  primaryDeviceId    String?
+
+  // 2FA (TOTP)
+  twoFactorEnabled   Boolean  @default(false)
+  twoFactorSecretEnc String?  // encrypted secret blob (AES-256-GCM)
+
+  passwordResets     AuthPasswordResetToken[]
+  trustedDevices     AuthTrustedDevice[]
+  rateLimits         AuthRateLimit[]
+  accounts           Account[]
+  sessions           AuthSession[]
+  universalProgressEvents UniversalProgressEvent[]
+  progressEvents          ProgressEvent[]
+  userDevices             UserDevice[]
+  subjectAccesses         SubjectAccess[]
+
+  @@index([primaryDeviceId])
+}
+
+// ============================================================================
+// APPEND-ONLY PROGRESS EVENT STREAM (DEVICE + USER)
+// ============================================================================
+
+// ============================================================================
+// SUBJECT PROFILES (LEARNERS) + ACCESS CONTROL
+// ============================================================================
+
+model SubjectProfile {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  kind            String   @default("learner")
+  displayName     String
+  createdByUserId String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+  archivedAt      DateTime?
+
+  accesses        SubjectAccess[]
+
+  @@index([createdByUserId, createdAt])
+  @@index([archivedAt])
+}
+
+model SubjectAccess {
+  id        String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  subjectId String        @db.Uuid
+  subject   SubjectProfile @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  userId    String
+  user      AuthUser      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  role      String
+  canWrite  Boolean       @default(true)
+  createdAt DateTime      @default(now())
+
+  @@unique([subjectId, userId])
+  @@index([userId, subjectId])
+}
+
+model ProgressEvent {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  occurredAt DateTime @default(now())
+  type       String
+
+  userId   String?
+  user     AuthUser? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deviceId String
+
+  // Future-proofing: parent/teacher views can later write events for a subject profile
+  // (e.g. child learner). For now, the API forces subjectId to the signed-in user id
+  // ("self") or null for anonymous events.
+  subjectId String?
+
+  path     String?
+  metadata Json
+
+  @@index([userId, occurredAt])
+  @@index([deviceId, occurredAt])
+  @@index([subjectId, occurredAt])
+  @@index([type, occurredAt])
+}
+
+model UserDevice {
+  deviceId    String   @id
+  userId      String
+  user        AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstSeenAt DateTime @default(now())
+  lastSeenAt  DateTime @default(now())
+
+  @@index([userId, lastSeenAt])
+}
+
+// ============================================================================
+// UNIVERSAL PROGRESS TRACKING (USER + DEVICE)
+// ============================================================================
+
+model UniversalProgressEvent {
+  id              String   @id @default(cuid())
+
+  // Identity
+  userId          String?
+  user            AuthUser? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deviceId        String?
+
+  // Activity
+  activityType    String
+  activityId      String
+  completedAt     DateTime @default(now())
+
+  // Optional metadata
+  score           Int?
+  durationSeconds Int?
+  data            Json?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+
+  @@unique([userId, activityType, activityId])
+  @@unique([deviceId, activityType, activityId])
+  @@index([userId, activityType])
+  @@index([deviceId, activityType])
+}
+
+model AuthPasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model AuthTrustedDevice {
+  id             String   @id @default(cuid())
+  userId         String
+  deviceTokenHash String  @unique
+  deviceName     String?
+  createdAt      DateTime @default(now())
+  expiresAt      DateTime
+
+  user AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model AuthRateLimit {
+  id             String   @id @default(cuid())
+  userId         String?
+  ipAddress      String?
+  email          String?
+  attemptType    String   // login, password_reset, register
+  attemptCount   Int      @default(1)
+  lockedUntil    DateTime?
+  firstAttemptAt DateTime @default(now())
+  lastAttemptAt  DateTime @default(now())
+
+  user AuthUser? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, attemptType])
+  @@unique([ipAddress, attemptType])
+  @@unique([email, attemptType])
+  @@index([lockedUntil])
+}
+
+// NextAuth adapter models for OAuth and magic links
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model AuthSession {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }

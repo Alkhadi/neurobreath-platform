@@ -1,14 +1,12 @@
 'use client';
 
-import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, Download, Printer, TrendingUp } from 'lucide-react';
+import { FileText, Download, Printer } from 'lucide-react';
 import { useProgress } from '@/contexts/ProgressContext';
 
 export function ProgressReports() {
   const progress = useProgress();
-  const [dateRange, setDateRange] = useState('week');
 
   const generatePDF = () => {
     const reportContent = `

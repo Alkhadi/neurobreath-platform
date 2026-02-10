@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Download, Printer } from 'lucide-react'
+import { Download, Printer, type LucideIcon } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 import type { VisualLearningCard } from '@/types/ai-coach'
 
@@ -121,20 +121,28 @@ interface LearningCardProps {
 function LearningCard({ card, isFlipped, onFlip }: LearningCardProps) {
   const hasBack = !!card.back
   const Icon = getIcon(card.iconKey)
-  
+
+  const containerClassName = `relative h-48 w-full perspective-1000 ${hasBack ? 'cursor-pointer' : 'cursor-default'}`
+
+  const CardContainer = hasBack ? 'button' : 'div'
+  const containerProps = hasBack
+    ? {
+        type: 'button' as const,
+        onClick: onFlip,
+        'aria-label': `Flip card: ${card.title}`,
+      }
+    : {
+        'aria-label': card.title,
+      }
+
   return (
-    <div
-      className={`relative h-48 cursor-pointer perspective-1000 ${hasBack ? '' : 'cursor-default'}`}
-      onClick={onFlip}
-      role={hasBack ? 'button' : 'article'}
-      tabIndex={hasBack ? 0 : undefined}
-      onKeyDown={(e) => {
-        if (hasBack && (e.key === 'Enter' || e.key === ' ')) {
-          e.preventDefault()
-          onFlip()
-        }
-      }}
-      aria-label={hasBack ? `Flip card: ${card.title}` : card.title}
+    <CardContainer
+      className={
+        hasBack
+          ? `${containerClassName} text-left bg-transparent border-0 p-0`
+          : containerClassName
+      }
+      {...containerProps}
     >
       <div
         className={`relative w-full h-full transition-transform duration-500 transform-style-3d ${
@@ -192,11 +200,11 @@ function LearningCard({ card, isFlipped, onFlip }: LearningCardProps) {
           </Card>
         )}
       </div>
-    </div>
+    </CardContainer>
   )
 }
 
-function getIcon(iconKey: string): React.ComponentType<{ className?: string }> | null {
+function getIcon(iconKey: string): LucideIcon | null {
   const iconMap: Record<string, keyof typeof LucideIcons> = {
     brain: 'Brain',
     heart: 'Heart',
@@ -219,7 +227,8 @@ function getIcon(iconKey: string): React.ComponentType<{ className?: string }> |
   }
   
   const iconName = iconMap[iconKey] || 'BookOpen'
-  return (LucideIcons as any)[iconName] || null
+  const icons = LucideIcons as unknown as Record<string, LucideIcon>
+  return icons[iconName] || null
 }
 
 

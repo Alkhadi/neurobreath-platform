@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generatePresignedUploadUrl } from "@/lib/s3";
+import { UploadConfigError, generatePresignedUploadUrl } from "@/lib/s3";
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,6 +22,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ uploadUrl, cloud_storage_path });
   } catch (error) {
     console.error("Error generating presigned URL:", error);
+    if (error instanceof UploadConfigError) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 503 }
+      );
+    }
     return NextResponse.json(
       { error: "Failed to generate upload URL" },
       { status: 500 }

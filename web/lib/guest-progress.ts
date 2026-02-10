@@ -348,18 +348,20 @@ function getYesterday(): string {
 /**
  * Migrate old guest progress to new version
  */
-function migrateGuestProgress(old: any): GuestProgress {
+function migrateGuestProgress(old: unknown): GuestProgress {
   // v0 → v1 migration (if needed in future)
-  console.warn('[GuestProgress] Migrating old version:', old.version)
+  const oldRecord: Record<string, unknown> =
+    typeof old === 'object' && old !== null ? (old as Record<string, unknown>) : {}
+  console.warn('[GuestProgress] Migrating old version:', oldRecord.version)
   
   const migrated = createDefaultGuestProgress()
   
   // Preserve what we can
-  if (old.sessions) migrated.sessions = old.sessions
-  if (old.assessments) migrated.assessments = old.assessments
-  if (old.badges) migrated.badges = old.badges
-  if (typeof old.totalSessions === 'number') migrated.totalSessions = old.totalSessions
-  if (typeof old.totalMinutes === 'number') migrated.totalMinutes = old.totalMinutes
+  if (Array.isArray(oldRecord.sessions)) migrated.sessions = oldRecord.sessions as GuestSession[]
+  if (Array.isArray(oldRecord.assessments)) migrated.assessments = oldRecord.assessments as GuestAssessment[]
+  if (Array.isArray(oldRecord.badges)) migrated.badges = oldRecord.badges as GuestBadge[]
+  if (typeof oldRecord.totalSessions === 'number') migrated.totalSessions = oldRecord.totalSessions
+  if (typeof oldRecord.totalMinutes === 'number') migrated.totalMinutes = oldRecord.totalMinutes
   
   return migrated
 }

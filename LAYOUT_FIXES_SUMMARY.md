@@ -1,17 +1,21 @@
 # Frontend Layout Fixes - Summary
 
 ## Issue Description
+
 The orbit tracker card in the hero section was overlapping the Quick Win planner section below it, causing layout and visibility issues.
 
 ## Root Cause Analysis
 
-### 1. **Sticky Positioning Issue**
+### 1. Sticky Positioning Issue
+
 The `.nb-hero-col-right` was using `position: sticky; top: 2rem;` which caused the orbit elements to "stick" and overlap content below.
 
 ### 2. **Z-Index Stacking Context**
+
 The Quick Win section had a lower z-index (`z-index: 1`) than needed, allowing the orbit tracker to appear on top.
 
 ### 3. **Missing Containment**
+
 The orbit tracker card and other elements lacked proper containment properties (`box-sizing: border-box`, `width: 100%`).
 
 ## Solutions Implemented
@@ -19,6 +23,7 @@ The orbit tracker card and other elements lacked proper containment properties (
 ### CSS Changes (`web/app/globals.css`)
 
 #### 1. Fixed Hero Right Column Positioning
+
 ```css
 /* BEFORE */
 .nb-hero-col-right {
@@ -38,9 +43,11 @@ The orbit tracker card and other elements lacked proper containment properties (
   gap: 1rem;
 }
 ```
+
 **Why:** Removed `sticky` positioning to prevent overlap. Added flexbox layout for better vertical stacking.
 
 #### 2. Enhanced Quick Win Section Z-Index
+
 ```css
 /* BEFORE */
 .nb-hero-quickwin-section {
@@ -57,9 +64,11 @@ The orbit tracker card and other elements lacked proper containment properties (
   clear: both;
 }
 ```
+
 **Why:** Increased z-index to ensure Quick Win appears above all orbit elements. Added `clear: both` for proper flow.
 
 #### 3. Improved Quick Win Component Styling
+
 ```css
 /* BEFORE */
 .nb-quickwin {
@@ -75,9 +84,11 @@ The orbit tracker card and other elements lacked proper containment properties (
   box-sizing: border-box;
 }
 ```
+
 **Why:** Higher z-index guarantees it's above orbit elements. Added width/box-sizing for proper containment.
 
 #### 4. Orbit Tracker Card Containment
+
 ```css
 /* BEFORE */
 .orbit-tracker-card {
@@ -99,9 +110,11 @@ The orbit tracker card and other elements lacked proper containment properties (
   box-sizing: border-box;
 }
 ```
+
 **Why:** Ensures the card stays within its container and doesn't overflow.
 
 #### 5. Updated Responsive Behavior
+
 ```css
 /* BEFORE */
 @media (max-width: 1024px) {
@@ -131,15 +144,19 @@ The orbit tracker card and other elements lacked proper containment properties (
   }
 }
 ```
+
 **Why:** Better mobile layout with proper spacing and width constraints.
 
 ### TypeScript Fixes
 
 #### Fixed Progress Card Component
+
 **Issue:** The `ProgressCard` component expected separate `stats` and `statItems` props, but was dynamically extracting values from `stats` using array indexing, which was fragile.
 
 **Solution:**
+
 1. Updated `statItems` in `challenges-section.tsx` to include `value` property:
+
 ```typescript
 const statItems = [
   {
@@ -153,7 +170,8 @@ const statItems = [
 ]
 ```
 
-2. Simplified `ProgressCard` component:
+1. Simplified `ProgressCard` component:
+
 ```typescript
 // BEFORE
 export default function ProgressCard({ stats, statItems }: ProgressCardProps) {
@@ -166,11 +184,11 @@ export default function ProgressCard({ statItems }: ProgressCardProps) {
 }
 ```
 
-3. Updated interface to remove unused `stats` prop.
+1. Updated interface to remove unused `stats` prop.
 
 ## Z-Index Stacking Order (Final)
 
-```
+```text
 Background (0)
   ↑
 Orbit Elements (1)
@@ -212,6 +230,7 @@ Quick Win Component (20)
 ## Browser Compatibility
 
 All CSS properties used are widely supported:
+
 - `position: relative` ✅
 - `z-index` ✅
 - `box-sizing: border-box` ✅

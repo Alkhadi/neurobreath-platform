@@ -16,25 +16,29 @@ import { logCalmSession, toggleFavoriteExercise, loadProgress } from '@/lib/prog
 import type { MoodRating } from '@/lib/types';
 import { toast } from 'sonner';
 
+type BreathingExercise = (typeof breathingExercises)[number];
+type CalmingTechnique = (typeof calmingTechniques)[number];
+type ProgressState = ReturnType<typeof loadProgress>;
+
 interface CalmToolkitEnhancedProps {
   onProgressUpdate?: () => void;
 }
 
 // Helper Components - Defined Before Main Component
 interface TechniqueCardProps {
-  technique: any;
-  progress: any;
+  technique: CalmingTechnique;
+  progress: ProgressState | null;
   onUpdate: () => void;
 }
 
-const CalmingTechniqueCard = ({ technique, progress, onUpdate }: TechniqueCardProps) => {
+const CalmingTechniqueCard = ({ technique, progress: _progress, onUpdate }: TechniqueCardProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [timeSpent, setTimeSpent] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
-  const timerRef = useRef<any>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const startTechnique = () => {
     setIsActive(true);
@@ -117,6 +121,36 @@ const CalmingTechniqueCard = ({ technique, progress, onUpdate }: TechniqueCardPr
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const WIDTH_CLASS_BY_PERCENT: Record<number, string> = {
+    0: 'w-0',
+    5: 'w-[5%]',
+    10: 'w-[10%]',
+    15: 'w-[15%]',
+    20: 'w-[20%]',
+    25: 'w-1/4',
+    30: 'w-[30%]',
+    35: 'w-[35%]',
+    40: 'w-2/5',
+    45: 'w-[45%]',
+    50: 'w-1/2',
+    55: 'w-[55%]',
+    60: 'w-3/5',
+    65: 'w-[65%]',
+    70: 'w-[70%]',
+    75: 'w-3/4',
+    80: 'w-4/5',
+    85: 'w-[85%]',
+    90: 'w-[90%]',
+    95: 'w-[95%]',
+    100: 'w-full'
+  };
+
+  const percentToWidthClass = (percent: number): string => {
+    const clamped = Math.max(0, Math.min(100, percent));
+    const rounded = Math.round(clamped / 5) * 5;
+    return WIDTH_CLASS_BY_PERCENT[rounded] ?? 'w-0';
+  };
+
   const progressPercentage = ((currentStep + 1) / (technique?.steps?.length || 1)) * 100;
 
   return (
@@ -177,8 +211,7 @@ const CalmingTechniqueCard = ({ technique, progress, onUpdate }: TechniqueCardPr
                   </div>
                   <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300"
-                      style={{ width: `${progressPercentage}%` }}
+                      className={`h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300 ${percentToWidthClass(progressPercentage)}`}
                     />
                   </div>
                 </div>
@@ -278,7 +311,7 @@ const CalmingTechniqueCard = ({ technique, progress, onUpdate }: TechniqueCardPr
 };
 
 export function CalmToolkitEnhanced({ onProgressUpdate }: CalmToolkitEnhancedProps) {
-  const [progress, setProgress] = useState<any>(null);
+  const [progress, setProgress] = useState<ProgressState | null>(null);
 
   useEffect(() => {
     // Load progress only on client side to avoid hydration mismatch
@@ -340,8 +373,8 @@ export function CalmToolkitEnhanced({ onProgressUpdate }: CalmToolkitEnhancedPro
 }
 
 interface ExerciseCardProps {
-  exercise: any;
-  progress: any;
+  exercise: BreathingExercise;
+  progress: ProgressState | null;
   onUpdate: () => void;
 }
 
@@ -356,8 +389,8 @@ const BreathingExerciseCard = ({ exercise, progress, onUpdate }: ExerciseCardPro
   const [moodAfter, setMoodAfter] = useState<MoodRating | undefined>();
   const [sessionNotes, setSessionNotes] = useState('');
   const [soundEnabled, setSoundEnabled] = useState(false);
-  const intervalRef = useRef<any>(null);
-  const phaseIntervalRef = useRef<any>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const phaseIntervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isFavorite = progress?.favoriteExercises?.includes(exercise?.id);
 
   const startExercise = () => {
@@ -411,7 +444,12 @@ const BreathingExerciseCard = ({ exercise, progress, onUpdate }: ExerciseCardPro
 
   const playSound = (phaseName: string) => {
     // Simple beep for phase changes (browser API)
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const AudioContextClass =
+      window.AudioContext ||
+      (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!AudioContextClass) return;
+
+    const audioContext = new AudioContextClass();
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
     

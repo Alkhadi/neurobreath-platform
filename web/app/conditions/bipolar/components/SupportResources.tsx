@@ -57,22 +57,21 @@ export const SupportResources: React.FC<SupportResourcesProps> = ({ language }) 
       </div>
 
       <div className="resource-content">
-        {selectedAudience === 'children' && <ChildrenResources language={language} t={t} />}
-        {selectedAudience === 'adolescents' && <AdolescentsResources language={language} t={t} />}
-        {selectedAudience === 'adults' && <AdultsResources language={language} t={t} />}
-        {selectedAudience === 'elderly' && <ElderlyResources language={language} t={t} />}
-        {selectedAudience === 'parents' && <ParentsResources language={language} t={t} />}
-        {selectedAudience === 'teachers' && <TeachersResources language={language} t={t} />}
-        {selectedAudience === 'carers' && <CarersResources language={language} t={t} />}
-        {selectedAudience === 'healthcare' && <HealthcareResources language={language} t={t} />}
+        {selectedAudience === 'children' && <ChildrenResources t={t} />}
+        {selectedAudience === 'adolescents' && <AdolescentsResources t={t} />}
+        {selectedAudience === 'adults' && <AdultsResources t={t} />}
+        {selectedAudience === 'elderly' && <ElderlyResources t={t} />}
+        {selectedAudience === 'parents' && <ParentsResources t={t} />}
+        {selectedAudience === 'teachers' && <TeachersResources t={t} />}
+        {selectedAudience === 'carers' && <CarersResources t={t} />}
+        {selectedAudience === 'healthcare' && <HealthcareResources />}
       </div>
     </Section>
   );
 };
 
 // Children Resources
-const ChildrenResources: React.FC<{ language: Language; t: (uk: string, us: string) => string }> =
-  ({ language, t }) => (
+const ChildrenResources: React.FC<{ t: (uk: string, us: string) => string }> = ({ t }) => (
     <>
       <ContentCard title="Understanding Bipolar Disorder in Children" icon="👶">
         <p>
@@ -124,9 +123,8 @@ const ChildrenResources: React.FC<{ language: Language; t: (uk: string, us: stri
 
 // Adolescents Resources
 const AdolescentsResources: React.FC<{
-  language: Language;
   t: (uk: string, us: string) => string;
-}> = ({ language, t }) => (
+}> = ({ t }) => (
   <>
     <ContentCard title="Bipolar Disorder in Adolescence" icon="🧑">
       <p>
@@ -180,8 +178,7 @@ const AdolescentsResources: React.FC<{
 );
 
 // Adults Resources
-const AdultsResources: React.FC<{ language: Language; t: (uk: string, us: string) => string }> =
-  ({ language, t }) => (
+const AdultsResources: React.FC<{ t: (uk: string, us: string) => string }> = ({ t }) => (
     <>
       <ContentCard title="Living Well with Bipolar Disorder" icon="👤">
         <p>
@@ -252,8 +249,7 @@ const AdultsResources: React.FC<{ language: Language; t: (uk: string, us: string
   );
 
 // Elderly Resources
-const ElderlyResources: React.FC<{ language: Language; t: (uk: string, us: string) => string }> =
-  ({ language, t }) => (
+const ElderlyResources: React.FC<{ t: (uk: string, us: string) => string }> = ({ t }) => (
     <>
       <ContentCard title="Bipolar Disorder in Older Adults" icon="👵">
         <p>
@@ -305,8 +301,7 @@ const ElderlyResources: React.FC<{ language: Language; t: (uk: string, us: strin
   );
 
 // Parents Resources
-const ParentsResources: React.FC<{ language: Language; t: (uk: string, us: string) => string }> =
-  ({ language, t }) => (
+const ParentsResources: React.FC<{ t: (uk: string, us: string) => string }> = ({ t }) => (
     <>
       <ContentCard title="Supporting Your Child with Bipolar Disorder" icon="👨‍👩‍👧">
         <p>
@@ -371,8 +366,7 @@ const ParentsResources: React.FC<{ language: Language; t: (uk: string, us: strin
   );
 
 // Teachers Resources
-const TeachersResources: React.FC<{ language: Language; t: (uk: string, us: string) => string }> =
-  ({ language, t }) => (
+const TeachersResources: React.FC<{ t: (uk: string, us: string) => string }> = ({ t }) => (
     <>
       <ContentCard title="Supporting Students with Bipolar Disorder" icon="👩‍🏫">
         <p>
@@ -436,10 +430,7 @@ const TeachersResources: React.FC<{ language: Language; t: (uk: string, us: stri
   );
 
 // Carers Resources
-const CarersResources: React.FC<{ language: Language; t: (uk: string, us: string) => string }> = ({
-  language,
-  t,
-}) => (
+const CarersResources: React.FC<{ t: (uk: string, us: string) => string }> = ({ t }) => (
   <>
     <ContentCard title="Caring for Someone with Bipolar Disorder" icon="🤲">
       <p>
@@ -514,10 +505,7 @@ const CarersResources: React.FC<{ language: Language; t: (uk: string, us: string
 );
 
 // Healthcare Resources
-const HealthcareResources: React.FC<{
-  language: Language;
-  t: (uk: string, us: string) => string;
-}> = ({ language, t }) => (
+const HealthcareResources: React.FC = () => (
   <>
     <ContentCard title="Clinical Guidelines" icon="📋">
       <p>

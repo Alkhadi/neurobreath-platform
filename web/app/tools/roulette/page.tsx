@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { ArrowLeft, Shuffle } from 'lucide-react'
 import { toast } from 'sonner'
 import { getDeviceId } from '@/lib/device-id'
+import { trackProgress } from '@/lib/progress/track'
 import { breathingTechniques } from '@/lib/breathing-data'
 
 const techniques = Object.values(breathingTechniques)
@@ -43,6 +44,17 @@ export default function RoulettePage() {
           category: 'transition'
         })
       })
+
+      void trackProgress({
+        type: 'breathing_completed',
+        metadata: {
+          techniqueId: selectedTechnique.id,
+          durationSeconds: 60,
+          category: 'transition',
+        },
+        path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+      })
+
       toast.success('✅ Reset logged successfully!')
     } catch (error) {
       console.error('Failed to log session:', error)
@@ -54,7 +66,7 @@ export default function RoulettePage() {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 py-12">
       <div className="container max-w-4xl mx-auto px-4">
         <Button asChild variant="ghost" className="mb-6">
-          <Link href="/tools"><ArrowLeft className="w-4 h-4 mr-2" /> Back to Tools</Link>
+          <Link href="/tools/breath-tools"><ArrowLeft className="w-4 h-4 mr-2" /> Back to Breath Tools</Link>
         </Button>
 
         <div className="bg-white rounded-2xl p-8 shadow-xl mb-8">

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { ClipboardCheck, AlertTriangle, CheckCircle2, ArrowRight, RotateCcw } from 'lucide-react';
+import { ClipboardCheck, AlertTriangle, CheckCircle2, RotateCcw } from 'lucide-react';
 
 type AgeGroup = 'preschool' | 'primary' | 'secondary' | 'adult';
 type Answer = 'never' | 'sometimes' | 'often' | 'always';

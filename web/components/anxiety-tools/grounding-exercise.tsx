@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, X, Eye, Hand, Ear, Utensils, Wind } from 'lucide-react'
+import { Check, X, Eye, Hand, Ear, Utensils, Wind, type LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -13,7 +13,7 @@ import { toast } from 'sonner'
 interface GroundingItem {
   category: 'see' | 'touch' | 'hear' | 'smell' | 'taste'
   label: string
-  icon: any
+  icon: LucideIcon
   count: number
   color: string
 }
@@ -107,6 +107,31 @@ export function GroundingExercise() {
   const completedCount = Object.values(items)?.flat()?.filter?.(Boolean)?.length ?? 0
   const totalCount = 15
   const progress_percent = Math.floor((completedCount / totalCount) * 100)
+  const progressRounded = Math.max(0, Math.min(100, Math.round(progress_percent / 5) * 5))
+  const progressWidthClass: Record<number, string> = {
+    0: 'w-0',
+    5: 'w-[5%]',
+    10: 'w-[10%]',
+    15: 'w-[15%]',
+    20: 'w-1/5',
+    25: 'w-1/4',
+    30: 'w-[30%]',
+    35: 'w-[35%]',
+    40: 'w-2/5',
+    45: 'w-[45%]',
+    50: 'w-1/2',
+    55: 'w-[55%]',
+    60: 'w-3/5',
+    65: 'w-[65%]',
+    70: 'w-[70%]',
+    75: 'w-3/4',
+    80: 'w-4/5',
+    85: 'w-[85%]',
+    90: 'w-[90%]',
+    95: 'w-[95%]',
+    100: 'w-full'
+  }
+  const progressClassName = progressWidthClass[progressRounded] || 'w-0'
 
   return (
     <div className="space-y-6">
@@ -119,8 +144,7 @@ export function GroundingExercise() {
         <div className="flex items-center gap-4">
           <div className="flex-1 bg-secondary h-2 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all duration-300"
-              style={{ width: `${progress_percent}%` }}
+              className={`h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all duration-300 ${progressClassName}`}
             />
           </div>
           <span className="text-sm font-medium">{completedCount}/{totalCount}</span>

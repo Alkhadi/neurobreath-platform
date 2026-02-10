@@ -2,8 +2,15 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { PageHeader } from '@/components/page/PageHeader'
 import { Button } from '@/components/ui/button'
 import { Moon, Trophy, Target, CheckCircle, Calendar, TrendingUp, Award, Flame, Sparkles, Heart, Brain, Users, BookOpen, Lightbulb, Shield } from 'lucide-react'
+import { EvidenceFooter } from '@/components/evidence-footer'
+import { evidenceByRoute } from '@/lib/evidence/page-evidence'
+import { CredibilityFooter } from '@/components/trust/CredibilityFooter'
+import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog'
+import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial'
+import type { Region } from '@/lib/region/region'
 
 // Types
 interface SleepEntry {
@@ -71,6 +78,66 @@ const calculateSleepScore = (entries: SleepEntry[]): number => {
   return Math.round(hoursScore + qualityScore)
 }
 
+const PERCENT_BUCKETS = [
+  0, 5, 10, 15, 20, 25, 30, 35, 40, 45,
+  50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100,
+]
+
+const HEIGHT_CLASS_BY_PERCENT: Record<number, string> = {
+  0: 'h-0',
+  5: 'h-[5%]',
+  10: 'h-[10%]',
+  15: 'h-[15%]',
+  20: 'h-[20%]',
+  25: 'h-[25%]',
+  30: 'h-[30%]',
+  35: 'h-[35%]',
+  40: 'h-[40%]',
+  45: 'h-[45%]',
+  50: 'h-[50%]',
+  55: 'h-[55%]',
+  60: 'h-[60%]',
+  65: 'h-[65%]',
+  70: 'h-[70%]',
+  75: 'h-[75%]',
+  80: 'h-[80%]',
+  85: 'h-[85%]',
+  90: 'h-[90%]',
+  95: 'h-[95%]',
+  100: 'h-[100%]',
+}
+
+const WIDTH_CLASS_BY_PERCENT: Record<number, string> = {
+  0: 'w-0',
+  5: 'w-[5%]',
+  10: 'w-[10%]',
+  15: 'w-[15%]',
+  20: 'w-[20%]',
+  25: 'w-[25%]',
+  30: 'w-[30%]',
+  35: 'w-[35%]',
+  40: 'w-[40%]',
+  45: 'w-[45%]',
+  50: 'w-[50%]',
+  55: 'w-[55%]',
+  60: 'w-[60%]',
+  65: 'w-[65%]',
+  70: 'w-[70%]',
+  75: 'w-[75%]',
+  80: 'w-[80%]',
+  85: 'w-[85%]',
+  90: 'w-[90%]',
+  95: 'w-[95%]',
+  100: 'w-[100%]',
+}
+
+const toPercentBucket = (value: number): number => {
+  if (!Number.isFinite(value)) return 0
+  const rounded = Math.round(value / 5) * 5
+  const clamped = Math.min(100, Math.max(0, rounded))
+  return PERCENT_BUCKETS.includes(clamped) ? clamped : 0
+}
+
 // Initial badges
 const initialBadges: Badge[] = [
   { id: 'first_log', name: 'First Steps', icon: '🌙', description: 'Log your first sleep entry', requirement: '1 entry', unlocked: false },
@@ -97,7 +164,23 @@ const initialChecklist: ChecklistItem[] = [
   { id: 'c10', text: 'Write down worries before bed', completed: false, category: 'routine' },
 ]
 
+const evidence = evidenceByRoute['/sleep']
+
 export default function SleepPage() {
+  const region: Region = 'UK'
+  const editorial = createEditorialMeta({
+    authorId: 'nb-editorial-team',
+    reviewerId: 'nb-evidence-review',
+    editorialRoleNotes: 'Reviewed for clarity, safety language, and sleep-support framing.',
+    createdAt: '2026-01-16',
+    updatedAt: '2026-01-17',
+    reviewedAt: '2026-01-17',
+    reviewIntervalDays: 120,
+    changeLog: createChangeLog([
+      createChangeLogEntry('2026-01-17', 'Credibility footer and review details added.', 'safety'),
+    ]),
+    citationsSummary: createCitationsSummary(evidence?.citations?.length ?? 0, ['A', 'B']),
+  })
   // State
   const [activeSection, setActiveSection] = useState<string>('understanding')
   const [sleepEntries, setSleepEntries] = useState<SleepEntry[]>([])
@@ -183,47 +266,45 @@ export default function SleepPage() {
       <div className="container max-w-4xl mx-auto px-4">
         
         {/* Hero Section */}
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 shadow-xl mb-8 text-white">
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-4xl">💤</span>
-            <h1 className="text-4xl font-bold">Sleep Issues</h1>
-          </div>
-          <p className="text-indigo-200 text-lg mb-4">Train the Mind</p>
-          <p className="text-white/90 text-lg">
-            Evidence-based tools and resources to understand and manage sleep issues. Track your progress, build resilience, and find rest.
-          </p>
+        <div className="mb-8">
+          <PageHeader 
+            title="Sleep Hub" 
+            description="Evidence-based tools and resources to understand and manage sleep. Track your progress, build resilience, and find rest."
+            showMetadata
+          />
           
           {/* Quick Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-            <div className="bg-white/20 rounded-xl p-4 text-center">
-              <Flame className="w-6 h-6 mx-auto mb-1" />
-              <p className="text-2xl font-bold">{streak}</p>
-              <p className="text-sm text-white/80">Day Streak</p>
+            <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-200">
+              <Flame className="w-6 h-6 mx-auto mb-1 text-orange-500" />
+              <p className="text-2xl font-bold text-slate-900">{streak}</p>
+              <p className="text-sm text-slate-600">Day Streak</p>
             </div>
-            <div className="bg-white/20 rounded-xl p-4 text-center">
-              <Target className="w-6 h-6 mx-auto mb-1" />
-              <p className="text-2xl font-bold">{sleepScore}</p>
-              <p className="text-sm text-white/80">Sleep Score</p>
+            <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-200">
+              <Target className="w-6 h-6 mx-auto mb-1 text-blue-500" />
+              <p className="text-2xl font-bold text-slate-900">{sleepScore}</p>
+              <p className="text-sm text-slate-600">Sleep Score</p>
             </div>
-            <div className="bg-white/20 rounded-xl p-4 text-center">
-              <Trophy className="w-6 h-6 mx-auto mb-1" />
-              <p className="text-2xl font-bold">{unlockedBadges}/{badges.length}</p>
-              <p className="text-sm text-white/80">Badges</p>
+            <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-200">
+              <Trophy className="w-6 h-6 mx-auto mb-1 text-yellow-500" />
+              <p className="text-2xl font-bold text-slate-900">{unlockedBadges}/{badges.length}</p>
+              <p className="text-sm text-slate-600">Badges</p>
             </div>
-            <div className="bg-white/20 rounded-xl p-4 text-center">
-              <CheckCircle className="w-6 h-6 mx-auto mb-1" />
-              <p className="text-2xl font-bold">{checklistProgress}%</p>
-              <p className="text-sm text-white/80">Hygiene</p>
+            <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-200">
+              <CheckCircle className="w-6 h-6 mx-auto mb-1 text-green-500" />
+              <p className="text-2xl font-bold text-slate-900">{checklistProgress}%</p>
+              <p className="text-sm text-slate-600">Hygiene</p>
             </div>
           </div>
           
           <Button 
             onClick={() => setShowTracker(!showTracker)} 
-            className="mt-6 bg-white text-indigo-600 hover:bg-indigo-100"
+            className="mt-6 bg-indigo-600 text-white hover:bg-indigo-700"
           >
             <Moon className="w-4 h-4 mr-2" /> {showTracker ? 'Hide' : 'Open'} Sleep Tracker
           </Button>
         </div>
+
 
         {/* Sleep Tracker Panel */}
         {showTracker && (
@@ -298,11 +379,11 @@ export default function SleepPage() {
                   const dateStr = date.toISOString().split('T')[0]
                   const entry = sleepEntries.find(e => e.date === dateStr)
                   const height = entry ? (entry.hoursSlept / 12) * 100 : 10
+                  const heightClass = HEIGHT_CLASS_BY_PERCENT[toPercentBucket(height)] || 'h-[10%]'
                   return (
                     <div key={i} className="flex-1 flex flex-col items-center">
                       <div 
-                        className={`w-full rounded-t-lg transition-all ${entry ? 'bg-indigo-500' : 'bg-gray-200'}`}
-                        style={{ ['--bar-height' as string]: `${height}%`, height: 'var(--bar-height)' } as React.CSSProperties}
+                        className={`w-full rounded-t-lg transition-all ${heightClass} ${entry ? 'bg-indigo-500' : 'bg-gray-200'}`}
                         title={entry ? `${entry.hoursSlept}h - ${entry.quality}⭐` : 'No data'}
                         role="img"
                         aria-label={entry ? `${entry.hoursSlept} hours of sleep` : 'No data'}
@@ -358,8 +439,7 @@ export default function SleepPage() {
               </div>
               <div className="mt-3 bg-gray-200 rounded-full h-3">
                 <div 
-                  className="bg-green-500 h-3 rounded-full transition-all" 
-                  style={{ ['--progress-width' as string]: `${checklistProgress}%`, width: 'var(--progress-width)' } as React.CSSProperties}
+                  className={`h-3 rounded-full transition-all bg-green-500 ${WIDTH_CLASS_BY_PERCENT[toPercentBucket(checklistProgress)] || 'w-0'}`}
                   role="progressbar"
                   aria-label={`Sleep hygiene checklist progress: ${Math.round(checklistProgress)}%`}
                 />
@@ -1212,6 +1292,15 @@ export default function SleepPage() {
             <Link href="/techniques/4-7-8">Try Sleep Breathing</Link>
           </Button>
         </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <CredibilityFooter editorial={editorial} region={region} />
+      </div>
+
+      {/* Evidence Sources */}
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <EvidenceFooter evidence={evidence} />
       </div>
     </div>
   )

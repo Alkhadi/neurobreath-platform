@@ -5,8 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Search, Zap, CheckCircle2, ExternalLink } from 'lucide-react';
-import { adhdSkills, skillCategories, type ADHDSkill } from '@/lib/data/adhd-skills';
+import { Search, Zap, CheckCircle2 } from 'lucide-react';
+import { adhdSkills, skillCategories } from '@/lib/data/adhd-skills';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Dialog,

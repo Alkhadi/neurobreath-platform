@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { PageHeader } from '@/components/page/PageHeader';
 import { Brain, Wind, Heart, TrendingUp, BookOpen, AlertCircle, Users, Stethoscope, ChevronDown, Activity, Sparkles } from 'lucide-react';
 import { BreathingSuite } from '@/components/anxiety-tools/breathing-suite';
 import { GroundingExercise } from '@/components/anxiety-tools/grounding-exercise';
@@ -16,6 +17,10 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { EvidenceFooter } from '@/components/evidence-footer';
+import { evidenceByRoute } from '@/lib/evidence/page-evidence';
+
+const evidence = evidenceByRoute['/tools/anxiety-tools'];
 
 export default function AnxietyToolsPage() {
   const [activeTab, setActiveTab] = useState('breathing');
@@ -31,30 +36,22 @@ export default function AnxietyToolsPage() {
       </a>
 
       {/* Hero Section */}
-      <section className="relative py-20 md:py-32 overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 text-white">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative mx-auto px-4 text-center space-y-6" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <div className="inline-block p-4 bg-white/10 backdrop-blur-sm rounded-full mb-4">
-            <Brain className="h-16 w-16" />
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            Anxiety Toolkit
-          </h1>
-          <p className="text-xl md:text-2xl max-w-3xl mx-auto opacity-90 mb-8">
-            Evidence-based tools and strategies to calm the body and train the mind
-          </p>
-          <p className="text-sm opacity-75 max-w-2xl mx-auto mb-8">
-            Built with guidance from NHS, NICE, CDC, Mental Health Foundation, APA, NAMI, and peer-reviewed research
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
+      <section className="py-12 md:py-16">
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
+          <PageHeader 
+            title="Anxiety Toolkit" 
+            description="Evidence-based tools and strategies to calm the body and train the mind. Built with guidance from NHS, NICE, CDC, Mental Health Foundation, APA, NAMI, and peer-reviewed research."
+            showMetadata
+          />
+          <div className="flex flex-wrap justify-center gap-4 mt-6">
             <a href="#interactive-tools">
-              <Button size="lg" className="px-8 bg-white text-blue-600 hover:bg-gray-100">
+              <Button size="lg" className="px-8">
                 <Wind className="mr-2 h-5 w-5" />
                 Start Practicing
               </Button>
             </a>
             <a href="#crisis-help">
-              <Button size="lg" variant="outline" className="px-8 border-white text-white hover:bg-white/10">
+              <Button size="lg" variant="outline" className="px-8">
                 <AlertCircle className="mr-2 h-5 w-5" />
                 Crisis Resources
               </Button>
@@ -65,7 +62,7 @@ export default function AnxietyToolsPage() {
 
       {/* Quick Stats */}
       <section className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <h2 className="text-3xl font-bold text-center mb-8">You're Not Alone</h2>
           <div className="grid md:grid-cols-4 gap-6">
             <Card className="p-6 text-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 border-none">
@@ -90,7 +87,7 @@ export default function AnxietyToolsPage() {
 
       {/* What is Anxiety */}
       <section id="main-content" className="py-16 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950 dark:via-blue-950 dark:to-indigo-950 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-12">
             <Activity className="h-12 w-12 text-primary mx-auto mb-4" />
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Understanding Anxiety</h2>
@@ -151,7 +148,7 @@ export default function AnxietyToolsPage() {
 
       {/* Interactive Tools Hub */}
       <section id="interactive-tools" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Interactive Wellness Tools</h2>
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -274,7 +271,7 @@ export default function AnxietyToolsPage() {
 
       {/* Evidence-Based Research Section */}
       <section id="research" className="py-16 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950 dark:via-purple-950 dark:to-pink-950 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-12">
             <BookOpen className="h-12 w-12 text-primary mx-auto mb-4" />
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Evidence-Based Knowledge</h2>
@@ -702,7 +699,7 @@ export default function AnxietyToolsPage() {
 
       {/* Crisis Resources Section */}
       <section id="crisis-help" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-12">
             <AlertCircle className="h-12 w-12 text-red-600 mx-auto mb-4" />
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Crisis Resources</h2>
@@ -716,7 +713,7 @@ export default function AnxietyToolsPage() {
 
       {/* Footer Disclaimer */}
       <footer className="py-8 px-4 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950 border-t">
-        <div className="mx-auto text-center space-y-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto text-center space-y-4 w-[86vw] max-w-[86vw]">
           <p className="text-sm text-muted-foreground max-w-4xl mx-auto">
             <strong className="text-foreground">Medical Disclaimer:</strong> This platform provides educational information and self-help tools. 
             It is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or 
@@ -730,6 +727,13 @@ export default function AnxietyToolsPage() {
           </p>
         </div>
       </footer>
+
+      {/* Evidence Sources */}
+      <section className="py-12 px-4 bg-white">
+        <div className="mx-auto w-[86vw] max-w-[86vw]">
+          <EvidenceFooter evidence={evidence} />
+        </div>
+      </section>
     </main>
   );
 }

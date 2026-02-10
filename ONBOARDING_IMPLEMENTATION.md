@@ -5,6 +5,7 @@
 ### A) Beautified Onboarding Card (`OnboardingCard.tsx`)
 
 **Features:**
+
 - ✨ Gradient accent background with subtle animations
 - 📊 Clear visual hierarchy (Primary → Secondary → Tertiary CTAs)
 - 🎯 Profile benefits messaging with icons
@@ -15,6 +16,7 @@
 - 🎨 Professional, modern Tailwind styling
 
 **Key Improvements Over Original:**
+
 - Gradient background for onboarding emphasis
 - Dismissible with X button
 - Clear benefits section explaining profile value
@@ -32,6 +34,7 @@
 **Purpose:** Strict visibility enforcement wrapper
 
 **Features:**
+
 - ✅ Component-level gating (doesn't mount when hidden)
 - ✅ NOT CSS display:none - component doesn't exist in DOM
 - ✅ Supports fallback content for returning users
@@ -39,6 +42,7 @@
 - ✅ Extensively documented with maintenance notes
 
 **Visibility Logic:**
+
 ```tsx
 if (!shouldShowOnboarding) {
   return null; // Component NEVER mounts
@@ -53,6 +57,7 @@ return <>{children}</>;
 **Purpose:** Single source of truth for onboarding state
 
 **Returns:**
+
 ```typescript
 {
   shouldShowOnboarding: boolean;  // Derived state
@@ -65,11 +70,13 @@ return <>{children}</>;
 ```
 
 **localStorage Keys:**
+
 - `learnerProfile` - User's profile data
 - `onboardingCompleted` - Boolean flag
 - `onboardingDismissed` - Boolean flag
 
 **Critical Logic:**
+
 ```typescript
 shouldShow = mounted && !hasProfile && !completed && !dismissed
 ```
@@ -79,6 +86,7 @@ shouldShow = mounted && !hasProfile && !completed && !dismissed
 ### D) Onboarding Completion Mechanism
 
 **Profile Creation Flow:**
+
 ```typescript
 // When user creates a profile:
 setLearnerProfile(newProfile);
@@ -88,6 +96,7 @@ completeOnboarding();
 ```
 
 **Guest Flow:**
+
 ```typescript
 // When user continues as guest:
 dismissOnboarding();
@@ -97,6 +106,7 @@ dismissOnboarding();
 ```
 
 **Dismiss Flow:**
+
 ```typescript
 // When user clicks X:
 dismissOnboarding();
@@ -110,7 +120,8 @@ dismissOnboarding();
 
 ### Why This Cannot Leak to Returning Users
 
-**1. Component Never Mounts**
+### 1. Component Never Mounts
+
 ```tsx
 // ❌ BAD (component mounts but is hidden)
 {!hasProfile && <OnboardingCard />}
@@ -121,19 +132,22 @@ dismissOnboarding();
 </OnboardingGate>
 ```
 
-**2. Multiple Layers of Protection**
+### 2. Multiple Layers of Protection
+
 - Hook-level check (useOnboarding)
 - Component-level gate (OnboardingGate)
 - State-level flags (localStorage)
 
-**3. Hydration Safety**
+### 3. Hydration Safety
+
 ```typescript
 // Prevents SSR/client mismatch
 const [mounted, setMounted] = useState(false);
 useEffect(() => setMounted(true), []);
 ```
 
-**4. Explicit Flag Setting**
+### 4. Explicit Flag Setting
+
 - Profile creation → `completeOnboarding()`
 - Guest mode → `dismissOnboarding()`
 - Manual dismiss → `dismissOnboarding()`
@@ -143,6 +157,7 @@ useEffect(() => setMounted(true), []);
 ## 📚 Documentation Provided
 
 ### 1. Main Documentation (`docs/ONBOARDING_SYSTEM.md`)
+
 - Complete architecture overview
 - Visibility rules explained
 - Implementation guide
@@ -151,12 +166,14 @@ useEffect(() => setMounted(true), []);
 - Code quality standards
 
 ### 2. Inline Code Comments
+
 - Every critical function documented
 - Maintenance notes in components
 - TypeScript type annotations
 - Examples of correct usage
 
 ### 3. Testing Utilities (`lib/onboarding-helpers.ts`)
+
 - `resetOnboardingState()` - Simulate new user
 - `simulateReturningUser()` - Simulate existing user
 - `simulateGuestUser()` - Simulate guest mode
@@ -217,10 +234,12 @@ window.__onboarding.simulateReturning(); // Test returning user
 2. Profile creation modal opens (to be implemented)
 3. User enters profile info
 4. On submit:
+
    ```typescript
    setLearnerProfile(newProfile);
    completeOnboarding();
    ```
+
 5. `OnboardingGate` re-evaluates:
    - Has `learnerProfile` ❌ (fails first check)
 6. `shouldShowOnboarding` returns `false`
@@ -231,9 +250,11 @@ window.__onboarding.simulateReturning(); // Test returning user
 
 1. User clicks "Continue as guest"
 2. `dismissOnboarding()` is called:
+
    ```typescript
    localStorage.setItem('onboardingDismissed', 'true');
    ```
+
 3. `OnboardingGate` re-evaluates:
    - `onboardingDismissed` is true ❌ (fails check)
 4. `shouldShowOnboarding` returns `false`
@@ -299,6 +320,7 @@ export function OnboardingWizard() {
 ## ✅ Quality Checklist
 
 ### Senior Frontend Engineer ✅
+
 - [x] Clean component architecture
 - [x] Proper separation of concerns
 - [x] Reusable, testable code
@@ -307,6 +329,7 @@ export function OnboardingWizard() {
 - [x] Performance optimized (no unnecessary mounts)
 
 ### UX Designer ✅
+
 - [x] Beautiful, modern UI
 - [x] Clear visual hierarchy
 - [x] Smooth animations
@@ -315,6 +338,7 @@ export function OnboardingWizard() {
 - [x] Clear messaging
 
 ### Privacy/Security Reviewer ✅
+
 - [x] No data leakage
 - [x] User control over dismissal
 - [x] Privacy-first messaging
@@ -327,7 +351,8 @@ export function OnboardingWizard() {
 ## 📦 Files Created/Modified
 
 ### New Files
-```
+
+```text
 web/
 ├── hooks/
 │   └── useOnboarding.ts                    # Core hook
@@ -341,7 +366,8 @@ web/
 ```
 
 ### Modified Files
-```
+
+```text
 web/
 └── components/
     └── CreateProfile.tsx                    # Updated to use new system
@@ -354,17 +380,20 @@ web/
 ### Onboarding Card Features
 
 **Header:**
+
 - 👥 Users icon with gradient background
 - ✨ Sparkles animation
 - "Welcome to NeuroBreath!" title
 - Dismiss X button (top-right)
 
 **Benefits Section:**
+
 - 🎖️ Award icon
 - 4 key benefits with bullet points
 - Soft gradient background
 
 **Call-to-Action Buttons:**
+
 1. **Create a Learner Profile** (Primary)
    - Gradient background
    - UserPlus icon + TrendingUp icon
@@ -381,6 +410,7 @@ web/
    - Separated by border
 
 **Privacy Notice:**
+
 - Green dot indicator
 - "Privacy First" messaging
 - Local storage explanation
@@ -390,12 +420,14 @@ web/
 ## 🔧 Maintenance Notes
 
 ### DO ✅
+
 - Always wrap onboarding UI in `<OnboardingGate>`
 - Call `completeOnboarding()` after profile creation
 - Test both new and returning user flows
 - Update documentation when changing logic
 
 ### DON'T ❌
+
 - Don't bypass OnboardingGate
 - Don't use CSS display:none for hiding
 - Don't modify localStorage keys directly
@@ -408,20 +440,24 @@ web/
 If you encounter issues:
 
 1. **Check the state**
+
    ```javascript
    window.__onboarding.debug()
    ```
 
 2. **Reset to test**
+
    ```javascript
    window.__onboarding.reset()
    ```
 
 3. **Read the docs**
+
    - `docs/ONBOARDING_SYSTEM.md`
    - Inline code comments
 
 4. **Clear localStorage**
+
    ```javascript
    localStorage.clear()
    ```

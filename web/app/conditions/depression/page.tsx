@@ -13,6 +13,10 @@ import { References } from './components/references';
 import { DownloadPDF } from './components/download-pdf';
 import { Navigation } from './components/navigation';
 import { ScrollToTop } from './components/scroll-to-top';
+import { EvidenceFooter } from '@/components/evidence-footer';
+import { evidenceByRoute } from '@/lib/evidence/page-evidence';
+
+const evidence = evidenceByRoute['/conditions/depression'];
 
 export default function DepressionPage() {
   return (
@@ -32,6 +36,9 @@ export default function DepressionPage() {
         <SupportResources />
         <References />
         <DownloadPDF />
+        
+        {/* Evidence Sources */}
+        <EvidenceFooter evidence={evidence} />
       </div>
       <ScrollToTop />
     </main>

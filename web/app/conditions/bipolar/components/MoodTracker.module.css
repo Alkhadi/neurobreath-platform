@@ -1,0 +1,419 @@
+.container {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  margin-bottom: 2rem;
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.titleIcon {
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+}
+
+.description {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  font-size: 0.9375rem;
+}
+
+.viewToggle {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--color-border);
+  padding-bottom: 1rem;
+}
+
+.viewButton {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+}
+
+.viewButtonActive {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 0.9375rem;
+}
+
+.input {
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.select {
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  background-color: white;
+  cursor: pointer;
+}
+
+.textarea {
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #e2e8f0;
+}
+
+.moodSlider {
+  --mood-color: var(--color-mood-normal);
+}
+
+.moodSlider::-webkit-slider-thumb,
+.sleepSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: var(--color-primary);
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.2);
+}
+
+.moodSlider::-moz-range-thumb,
+.sleepSlider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: var(--color-primary);
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.2);
+}
+
+.moodSlider[data-mood='1'] {
+  --mood-color: var(--color-mood-depressive);
+  background: linear-gradient(to right, var(--mood-color) 0%, var(--mood-color) 0%, #e2e8f0 0%, #e2e8f0 100%);
+}
+.moodSlider[data-mood='2'] {
+  --mood-color: var(--color-mood-depressive);
+  background: linear-gradient(to right, var(--mood-color) 0%, var(--mood-color) 11.11%, #e2e8f0 11.11%, #e2e8f0 100%);
+}
+.moodSlider[data-mood='3'] {
+  --mood-color: var(--color-mood-depressive);
+  background: linear-gradient(to right, var(--mood-color) 0%, var(--mood-color) 22.22%, #e2e8f0 22.22%, #e2e8f0 100%);
+}
+.moodSlider[data-mood='4'] {
+  --mood-color: var(--color-mood-normal);
+  background: linear-gradient(to right, var(--mood-color) 0%, var(--mood-color) 33.33%, #e2e8f0 33.33%, #e2e8f0 100%);
+}
+.moodSlider[data-mood='5'] {
+  --mood-color: var(--color-mood-normal);
+  background: linear-gradient(to right, var(--mood-color) 0%, var(--mood-color) 44.44%, #e2e8f0 44.44%, #e2e8f0 100%);
+}
+.moodSlider[data-mood='6'] {
+  --mood-color: var(--color-mood-hypomanic);
+  background: linear-gradient(to right, var(--mood-color) 0%, var(--mood-color) 55.55%, #e2e8f0 55.55%, #e2e8f0 100%);
+}
+.moodSlider[data-mood='7'] {
+  --mood-color: var(--color-mood-hypomanic);
+  background: linear-gradient(to right, var(--mood-color) 0%, var(--mood-color) 66.66%, #e2e8f0 66.66%, #e2e8f0 100%);
+}
+.moodSlider[data-mood='8'] {
+  --mood-color: var(--color-mood-manic);
+  background: linear-gradient(to right, var(--mood-color) 0%, var(--mood-color) 77.77%, #e2e8f0 77.77%, #e2e8f0 100%);
+}
+.moodSlider[data-mood='9'] {
+  --mood-color: var(--color-mood-manic);
+  background: linear-gradient(to right, var(--mood-color) 0%, var(--mood-color) 88.88%, #e2e8f0 88.88%, #e2e8f0 100%);
+}
+.moodSlider[data-mood='10'] {
+  --mood-color: var(--color-mood-manic);
+  background: linear-gradient(to right, var(--mood-color) 0%, var(--mood-color) 100%, #e2e8f0 100%, #e2e8f0 100%);
+}
+
+.sleepSlider {
+  background: #e2e8f0;
+}
+
+.moodLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9375rem;
+}
+
+.checkbox {
+  width: 1.25rem;
+  height: 1.25rem;
+  cursor: pointer;
+}
+
+.submitButton {
+  padding: 1rem;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.successMessage {
+  padding: 1rem;
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
+  border-radius: 0.5rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.calendar {
+  width: 100%;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.calendarDay {
+  background-color: var(--color-surface);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border-left: 4px solid var(--color-mood-normal);
+}
+
+.calendarDayDate {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.calendarDayName {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.calendarDayMood {
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 0.25rem;
+  background-color: var(--color-mood-normal);
+}
+
+.calendarDayState {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.history {
+  width: 100%;
+}
+
+.exportButtons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.exportButton {
+  padding: 0.625rem 1rem;
+  background-color: var(--color-secondary);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.emptyState {
+  text-align: center;
+  color: var(--color-text-secondary);
+  padding: 2rem;
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.historyItem {
+  background-color: var(--color-surface);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+}
+
+.historyItemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.historyItemDate {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.historyItemMood {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  color: white;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  background-color: var(--color-mood-normal);
+}
+
+.historyItemDetails {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.historyItemState {
+  font-weight: 600;
+}
+
+.historyItemSleep {
+  color: var(--color-text-secondary);
+}
+
+.historyItemMeds {
+  color: var(--color-text-secondary);
+}
+
+.historyItemNotes {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+/* Mood colors */
+.moodBgDepressive {
+  background-color: var(--color-mood-depressive);
+}
+
+.moodBgNormal {
+  background-color: var(--color-mood-normal);
+}
+
+.moodBgHypomanic {
+  background-color: var(--color-mood-hypomanic);
+}
+
+.moodBgManic {
+  background-color: var(--color-mood-manic);
+}
+
+/* State borders */
+.stateBorderDepressive {
+  border-left-color: var(--color-mood-depressive);
+}
+
+.stateBorderNormal {
+  border-left-color: var(--color-mood-normal);
+}
+
+.stateBorderHypomanic {
+  border-left-color: var(--color-mood-hypomanic);
+}
+
+.stateBorderManic {
+  border-left-color: var(--color-mood-manic);
+}
+
+.stateBorderMixed {
+  border-left-color: var(--color-mood-mixed);
+}
+
+/* State text */
+.stateTextDepressive {
+  color: var(--color-mood-depressive);
+}
+
+.stateTextNormal {
+  color: var(--color-mood-normal);
+}
+
+.stateTextHypomanic {
+  color: var(--color-mood-hypomanic);
+}
+
+.stateTextManic {
+  color: var(--color-mood-manic);
+}
+
+.stateTextMixed {
+  color: var(--color-mood-mixed);
+}

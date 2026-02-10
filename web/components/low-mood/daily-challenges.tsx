@@ -2,16 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, Circle, Sparkles, Sun, Heart, Users, Zap, Book } from 'lucide-react';
+import { CheckCircle2, Circle, Sparkles, Sun, Heart, Users, Zap, Book, type LucideIcon } from 'lucide-react';
+
+interface ChallengeHistoryEntry {
+  date: string;
+  completed: number;
+  points: number;
+}
 
 interface Challenge {
   id: string;
   title: string;
   description: string;
   category: 'movement' | 'connection' | 'mindfulness' | 'self-care' | 'learning';
-  icon: any;
+  icon: LucideIcon;
   points: number;
 }
 
@@ -105,110 +110,112 @@ export const DailyChallenges = ({ onUpdate }: { onUpdate?: () => void }) => {
   const [dailyChallenges, setDailyChallenges] = useState<Challenge[]>([]);
 
   useEffect(() => {
+    const calculateStreak = (history: ChallengeHistoryEntry[]) => {
+      if (history.length === 0) {
+        setStreak(0);
+        return;
+      }
+
+      const sortedHistory = [...history].sort((a, b) => 
+        new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+
+      let currentStreak = 0;
+      const today = new Date().toDateString();
+      const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+      if (sortedHistory[0]?.date === today || sortedHistory[0]?.date === yesterday) {
+        currentStreak = 1;
+        
+        for (let i = 1; i < sortedHistory.length; i++) {
+          const prevDate = new Date(sortedHistory[i - 1].date);
+          const currDate = new Date(sortedHistory[i].date);
+          const diffDays = Math.floor((prevDate.getTime() - currDate.getTime()) / 86400000);
+          
+          if (diffDays === 1 && sortedHistory[i].completed > 0) {
+            currentStreak++;
+          } else {
+            break;
+          }
+        }
+      }
+
+      setStreak(currentStreak);
+    };
+
+    const loadDailyProgress = () => {
+      const today = new Date().toDateString();
+      const stored = localStorage.getItem('low-mood-daily-challenges');
+      
+      if (stored) {
+        try {
+          const data = JSON.parse(stored);
+          if (data.date === today) {
+            setCompletedToday(new Set(data.completed || []));
+            setTotalPoints(data.points || 0);
+            setStreak(data.streak || 0);
+            return;
+          }
+        } catch (error) {
+          console.error('Error loading daily progress:', error);
+        }
+      }
+      
+      // New day - reset completed but maintain streak
+      try {
+        const allTimeData = JSON.parse(
+          localStorage.getItem('low-mood-challenge-history') || '[]'
+        ) as ChallengeHistoryEntry[];
+        calculateStreak(allTimeData);
+      } catch (error) {
+        console.error('Error loading challenge history:', error);
+        setStreak(0);
+      }
+    };
+
+    const selectDailyChallenges = () => {
+      const today = new Date().toDateString();
+      const stored = localStorage.getItem('low-mood-todays-challenges');
+      
+      if (stored) {
+        try {
+          const data = JSON.parse(stored);
+          if (data.date === today && data.challengeIds && Array.isArray(data.challengeIds)) {
+            // Use stored challenge IDs for today and look up full challenge data
+            const selectedChallenges = data.challengeIds
+              .map((id: string) => challenges.find(c => c.id === id))
+              .filter(Boolean) as Challenge[];
+            
+            if (selectedChallenges.length > 0) {
+              setDailyChallenges(selectedChallenges);
+              return;
+            }
+          }
+        } catch (error) {
+          // If parsing fails or data is invalid, generate new challenges
+          console.error('Error loading stored challenges:', error);
+        }
+      }
+      
+      // Generate new challenges for today
+      const shuffled = [...challenges].sort(() => Math.random() - 0.5);
+      const selected = shuffled.slice(0, 5);
+      
+      // Store only the IDs, not the full challenge objects (which contain React components)
+      localStorage.setItem('low-mood-todays-challenges', JSON.stringify({
+        date: today,
+        challengeIds: selected.map(c => c.id)
+      }));
+      
+      setDailyChallenges(selected);
+    };
+
     // Load today's progress
     loadDailyProgress();
     
     // Select 5 random challenges for today
     selectDailyChallenges();
   }, []);
-
-  const loadDailyProgress = () => {
-    const today = new Date().toDateString();
-    const stored = localStorage.getItem('low-mood-daily-challenges');
-    
-    if (stored) {
-      try {
-        const data = JSON.parse(stored);
-        if (data.date === today) {
-          setCompletedToday(new Set(data.completed || []));
-          setTotalPoints(data.points || 0);
-          setStreak(data.streak || 0);
-          return;
-        }
-      } catch (error) {
-        console.error('Error loading daily progress:', error);
-      }
-    }
-    
-    // New day - reset completed but maintain streak
-    try {
-      const allTimeData = JSON.parse(localStorage.getItem('low-mood-challenge-history') || '[]');
-      calculateStreak(allTimeData);
-    } catch (error) {
-      console.error('Error loading challenge history:', error);
-      setStreak(0);
-    }
-  };
-
-  const selectDailyChallenges = () => {
-    const today = new Date().toDateString();
-    const stored = localStorage.getItem('low-mood-todays-challenges');
-    
-    if (stored) {
-      try {
-        const data = JSON.parse(stored);
-        if (data.date === today && data.challengeIds && Array.isArray(data.challengeIds)) {
-          // Use stored challenge IDs for today and look up full challenge data
-          const selectedChallenges = data.challengeIds
-            .map((id: string) => challenges.find(c => c.id === id))
-            .filter(Boolean) as Challenge[];
-          
-          if (selectedChallenges.length > 0) {
-            setDailyChallenges(selectedChallenges);
-            return;
-          }
-        }
-      } catch (error) {
-        // If parsing fails or data is invalid, generate new challenges
-        console.error('Error loading stored challenges:', error);
-      }
-    }
-    
-    // Generate new challenges for today
-    const shuffled = [...challenges].sort(() => Math.random() - 0.5);
-    const selected = shuffled.slice(0, 5);
-    
-    // Store only the IDs, not the full challenge objects (which contain React components)
-    localStorage.setItem('low-mood-todays-challenges', JSON.stringify({
-      date: today,
-      challengeIds: selected.map(c => c.id)
-    }));
-    
-    setDailyChallenges(selected);
-  };
-
-  const calculateStreak = (history: any[]) => {
-    if (history.length === 0) {
-      setStreak(0);
-      return;
-    }
-
-    const sortedHistory = [...history].sort((a, b) => 
-      new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
-
-    let currentStreak = 0;
-    const today = new Date().toDateString();
-    const yesterday = new Date(Date.now() - 86400000).toDateString();
-
-    if (sortedHistory[0]?.date === today || sortedHistory[0]?.date === yesterday) {
-      currentStreak = 1;
-      
-      for (let i = 1; i < sortedHistory.length; i++) {
-        const prevDate = new Date(sortedHistory[i - 1].date);
-        const currDate = new Date(sortedHistory[i].date);
-        const diffDays = Math.floor((prevDate.getTime() - currDate.getTime()) / 86400000);
-        
-        if (diffDays === 1 && sortedHistory[i].completed > 0) {
-          currentStreak++;
-        } else {
-          break;
-        }
-      }
-    }
-
-    setStreak(currentStreak);
-  };
 
   const toggleChallenge = (challengeId: string) => {
     const challenge = challenges.find(c => c.id === challengeId);
@@ -244,8 +251,10 @@ export const DailyChallenges = ({ onUpdate }: { onUpdate?: () => void }) => {
     }));
 
     // Update history
-    const history = JSON.parse(localStorage.getItem('low-mood-challenge-history') || '[]');
-    const existingIndex = history.findIndex((h: any) => h.date === today);
+    const history = JSON.parse(
+      localStorage.getItem('low-mood-challenge-history') || '[]'
+    ) as ChallengeHistoryEntry[];
+    const existingIndex = history.findIndex(h => h.date === today);
     
     if (existingIndex >= 0) {
       history[existingIndex] = {
@@ -265,7 +274,7 @@ export const DailyChallenges = ({ onUpdate }: { onUpdate?: () => void }) => {
     onUpdate?.();
   };
 
-  const getCategoryColor = (category: string) => {
+  const getCategoryColor = (category: Challenge['category']) => {
     switch (category) {
       case 'movement': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
       case 'connection': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
@@ -281,7 +290,7 @@ export const DailyChallenges = ({ onUpdate }: { onUpdate?: () => void }) => {
     : 0;
 
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
       <div className="text-center mb-8">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">Daily Challenges</h2>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
@@ -295,10 +304,12 @@ export const DailyChallenges = ({ onUpdate }: { onUpdate?: () => void }) => {
           <div className="text-center">
             <div className="text-4xl font-bold mb-2">{completedToday.size} / {dailyChallenges.length}</div>
             <div className="text-sm text-muted-foreground">Completed Today</div>
-            <div className="mt-3 bg-white dark:bg-gray-800 rounded-full h-2 overflow-hidden">
-              <div 
-                className="bg-blue-500 h-full transition-all duration-500"
-                style={{ width: `${completionPercentage}%` }}
+            <div className="mt-3">
+              <progress
+                className="w-full h-2 overflow-hidden rounded-full [&::-webkit-progress-bar]:bg-white dark:[&::-webkit-progress-bar]:bg-gray-800 [&::-webkit-progress-value]:bg-blue-500 dark:[&::-webkit-progress-value]:bg-blue-500"
+                value={completedToday.size}
+                max={dailyChallenges.length || 1}
+                aria-label="Daily challenge completion"
               />
             </div>
           </div>

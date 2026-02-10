@@ -7,9 +7,9 @@ interface ADHDProgressDashboardProps {
   onReset?: () => void;
 }
 
-export function ADHDProgressDashboard({ onReset }: ADHDProgressDashboardProps) {
+export function ADHDProgressDashboard({ onReset: _onReset }: ADHDProgressDashboardProps) {
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="mx-auto w-[86vw] max-w-[86vw] px-4">
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">

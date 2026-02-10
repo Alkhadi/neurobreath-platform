@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
-  Download, 
   Heart, 
   BookOpen, 
   Users, 
@@ -16,7 +15,6 @@ import {
   ExternalLink, 
   Lightbulb,
   Clock,
-  Calendar,
   Home,
   Brain,
   Pill,
@@ -24,7 +22,6 @@ import {
   Zap,
   Target,
   AlertCircle,
-  Award,
   Rocket
 } from 'lucide-react';
 import Link from 'next/link';

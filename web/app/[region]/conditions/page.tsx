@@ -1,0 +1,306 @@
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { PrimaryCtaBlock } from '@/components/growth/PrimaryCtaBlock';
+import { RelatedResources } from '@/components/growth/RelatedResources';
+import { TrustMiniPanel } from '@/components/trust/TrustMiniPanel';
+import { CredibilityFooter } from '@/components/trust/CredibilityFooter';
+import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog';
+import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial';
+import { CONDITIONS } from '@/lib/coverage/conditions';
+import { getRegionAlternates, getRegionFromKey, getRegionKey } from '@/lib/region/region';
+import { generateCanonicalUrl } from '@/lib/seo/site-seo';
+import { generatePageMetadata } from '@/lib/seo/metadata';
+import ConditionsHub from '@/components/conditions/conditions-hub';
+import { GLOSSARY_TERM_MAP } from '@/lib/glossary/glossary';
+import type { Metadata } from 'next';
+
+interface RegionConditionsProps {
+  params: Promise<{ region: string }>;
+}
+
+export async function generateMetadata({ params }: RegionConditionsProps): Promise<Metadata> {
+  const resolved = await params;
+  const region = getRegionFromKey(resolved.region);
+  const regionKey = getRegionKey(region);
+  const path = `/${regionKey}/conditions`;
+  const canonical = generateCanonicalUrl(path);
+  const alternates = getRegionAlternates('/conditions');
+
+  const baseMetadata = generatePageMetadata({
+    title: 'Conditions we cover',
+    description:
+      'Educational support across neurodivergent conditions and related support areas, with practical tools and guides.',
+    path,
+    keywords: [
+      'neurodiversity conditions support',
+      'autism support resources UK',
+      'ADHD focus tools breathing',
+      'dyslexia reading training tools',
+      'anxiety toolkit breathing exercises',
+      'stress management breathing tools',
+      'sleep support tools insomnia',
+      'depression support guide breathing',
+      'teacher parent carer support autism',
+      'SEN SEND wellbeing resources',
+    ],
+  });
+
+  return {
+    ...baseMetadata,
+    alternates: {
+      canonical,
+      languages: {
+        'en-GB': generateCanonicalUrl(alternates['en-GB']),
+        'en-US': generateCanonicalUrl(alternates['en-US']),
+      },
+    },
+  };
+}
+
+const supportNeedLabels: Record<string, string> = {
+  focus: 'Focus',
+  'executive-function': 'Executive function',
+  routines: 'Routines',
+  'emotional-regulation': 'Emotional regulation',
+  sensory: 'Sensory',
+  communication: 'Communication',
+  sleep: 'Sleep',
+  reading: 'Reading',
+  writing: 'Writing',
+  math: 'Maths',
+  stress: 'Stress',
+  anxiety: 'Anxiety',
+  visual: 'Visual processing',
+  motor: 'Motor skills',
+  confidence: 'Confidence',
+};
+
+const audienceLabels: Record<string, string> = {
+  child: 'Children',
+  teen: 'Teens',
+  adult: 'Adults',
+  'parent-carer': 'Parents & carers',
+  teacher: 'Teachers',
+  workplace: 'Workplace',
+};
+
+export default async function RegionConditionsPage({ params }: RegionConditionsProps) {
+  const resolved = await params;
+  const region = getRegionFromKey(resolved.region);
+  const regionKey = getRegionKey(region);
+
+  const path = `/${regionKey}/conditions`;
+  const url = generateCanonicalUrl(path);
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Conditions',
+        item: url,
+      },
+    ],
+  };
+
+  const webPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'Conditions we cover',
+    description: 'Filter conditions and support areas by audience and support need, then jump into tools and guides.',
+    url,
+  };
+
+  const editorial = createEditorialMeta({
+    authorId: 'nb-editorial-team',
+    reviewerId: 'nb-evidence-review',
+    editorialRoleNotes: 'Reviewed for clarity, safety language, and hub signposting.',
+    createdAt: '2026-01-17',
+    updatedAt: '2026-01-17',
+    reviewedAt: '2026-01-17',
+    reviewIntervalDays: 180,
+    changeLog: createChangeLog([
+      createChangeLogEntry('2026-01-17', 'Conditions hub updated with audience pathways.', 'content'),
+    ]),
+    citationsSummary: createCitationsSummary(9, ['A', 'B']),
+  });
+
+  if (!['uk', 'us'].includes(regionKey)) return notFound();
+
+  const audienceFlows = [
+    {
+      id: 'parent-carer',
+      label: 'Parents & carers',
+      description: 'Quick guides, calm routines, and practical tools for home support.',
+      links: [
+        { label: 'Start with guides', href: `/${regionKey}/guides` },
+        { label: 'Safeguarding', href: `/${regionKey}/trust/safeguarding` },
+      ],
+    },
+    {
+      id: 'teacher',
+      label: 'Teachers',
+      description: 'Classroom-friendly strategies, accommodations, and quick resets.',
+      links: [
+        { label: 'Teaching guides', href: `/${regionKey}/guides` },
+        { label: 'Evidence policy', href: `/${regionKey}/trust/evidence-policy` },
+      ],
+    },
+    {
+      id: 'teen',
+      label: 'Teens',
+      description: 'Focus boosts, stress resets, and sleep routines you can use today.',
+      links: [
+        { label: 'Teen-friendly guides', href: `/${regionKey}/guides` },
+        { label: 'Browse tools', href: '/tools' },
+      ],
+    },
+    {
+      id: 'adult',
+      label: 'Adults',
+      description: 'Work-ready support for attention, routines, and wellbeing.',
+      links: [
+        { label: 'Adult guides', href: `/${regionKey}/guides` },
+        { label: 'Workplace support', href: '/workplace' },
+      ],
+    },
+    {
+      id: 'child',
+      label: 'Children',
+      description: 'Gentle routines, calm activities, and parent-led practices.',
+      links: [
+        { label: 'Start with guides', href: `/${regionKey}/guides` },
+        { label: 'Tools for kids', href: '/tools' },
+      ],
+    },
+    {
+      id: 'workplace',
+      label: 'Workplace',
+      description: 'Work-friendly routines, planning aids, and stress management.',
+      links: [
+        { label: 'Workplace support', href: '/workplace' },
+        { label: 'Trust centre', href: `/${regionKey}/trust` },
+      ],
+    },
+  ];
+
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
+      <div className="mx-auto w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1200px] py-12 space-y-10">
+        <header className="space-y-4">
+          <p className="text-sm uppercase tracking-wide text-slate-500">Conditions we cover</p>
+          <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900">
+            NeuroBreath coverage across neurodivergent needs
+          </h1>
+          <p className="text-base text-slate-600 max-w-3xl">
+            Educational support, practical tools, and evidence-informed guidance. We do not provide medical advice or diagnoses.
+          </p>
+          <PrimaryCtaBlock
+            region={region}
+            title="Start with a safe next step"
+            description="Use Help Me Choose for a quick plan, or pick a starter journey that combines tools and guides."
+            primary={{ label: 'Help me choose', href: `/${regionKey}/help-me-choose` }}
+            secondary={{ label: 'Starter journeys', href: `/${regionKey}/journeys` }}
+          />
+          <div className="flex flex-wrap gap-3">
+            <Link href={`/${regionKey}/guides`} className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500">
+              Explore guides
+            </Link>
+            <Link href={`/${regionKey}/tools`} className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 hover:border-slate-300">
+              Browse tools
+            </Link>
+            <Link href={`/${regionKey}/trust/evidence-policy`} className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 hover:border-slate-300">
+              How we source evidence
+            </Link>
+            <Link href={`/${regionKey}/trust`} className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 hover:border-slate-300">
+              Trust centre
+            </Link>
+          </div>
+        </header>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="text-xl font-semibold text-slate-900">Key tools (try now)</h2>
+            <p className="mt-1 text-sm text-slate-600">
+              Start with a low-friction tool, then return to conditions to refine your plan.
+            </p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {[
+                { label: 'SOS 60-second calm', href: '/techniques/sos' },
+                { label: 'Breath tools', href: '/tools/breath-tools' },
+                { label: 'Focus tiles', href: '/tools/focus-tiles' },
+                { label: 'Sleep tools', href: '/tools/sleep-tools' },
+              ].map(item => (
+                <Link
+                  key={item.href + item.label}
+                  href={item.href}
+                  className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:border-slate-300"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </section>
+          <TrustMiniPanel region={region} />
+        </div>
+
+        <section className="space-y-4">
+          <div>
+            <h2 className="text-xl font-semibold text-slate-900">Start here by audience</h2>
+            <p className="text-sm text-slate-600">Pick the support context that fits you best.</p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {audienceFlows.map(flow => (
+              <article key={flow.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <h3 className="text-base font-semibold text-slate-900">{flow.label}</h3>
+                <p className="mt-2 text-sm text-slate-600">{flow.description}</p>
+                <div className="mt-4 flex flex-col gap-2 text-sm">
+                  {flow.links.map(link => (
+                    <Link key={link.label} href={link.href} className="text-indigo-600 hover:underline">
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-slate-200 bg-white p-6">
+          <h2 className="text-xl font-semibold text-slate-900">Key terms</h2>
+          <p className="text-sm text-slate-600">Plain‑English explanations for common terms.</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {['adhd', 'autism', 'dyslexia', 'executive-function', 'sensory-overload', 'reasonable-adjustments', 'send']
+              .map(termId => GLOSSARY_TERM_MAP.get(termId))
+              .filter(Boolean)
+              .map(term => (
+                <Link
+                  key={term!.id}
+                  href={`/${regionKey}/glossary/${term!.id}`}
+                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-indigo-300"
+                >
+                  {region === 'US' ? term!.localeVariants.us.spelling : term!.localeVariants.uk.spelling}
+                </Link>
+              ))}
+          </div>
+        </section>
+
+        <ConditionsHub
+          conditions={CONDITIONS}
+          regionKey={regionKey}
+          supportNeedLabels={supportNeedLabels}
+          audienceLabels={audienceLabels}
+        />
+
+        <RelatedResources region={region} tags={['focus', 'calm', 'sleep', 'sensory']} title="More support" maxPerGroup={5} />
+
+        <CredibilityFooter editorial={editorial} region={region} />
+      </div>
+
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+    </main>
+  );
+}

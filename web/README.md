@@ -64,7 +64,7 @@ All content is grounded in:
 | **AI Integration** | Abacus.AI API (GPT-4, Claude) | `lib/page-buddy-configs.ts` |
 | **File Storage** | AWS S3 (optional, for audio recordings) | `lib/aws-config.ts` |
 | **Deployment** | Docker Compose (local dev) | `compose.yml` |
-| **Package Manager** | npm/yarn | `package-lock.json`, `yarn.lock` |
+| **Package Manager** | Yarn (workspace standard) | `yarn.lock` |
 
 ---
 
@@ -198,6 +198,21 @@ Response (JSON or SSR HTML)
    # Server starts at http://localhost:3000
    ```
 
+---
+
+## Analytics & Performance
+
+- **Vercel Analytics + Speed Insights** are mounted via the root layout in [app/layout.tsx](app/layout.tsx#L1) and rendered by [components/analytics/VercelWebAnalytics.tsx](components/analytics/VercelWebAnalytics.tsx#L1).
+- They are **consent-gated**: both load only when the user has saved consent with `analytics: true` (see `nb_consent` cookie / `nb_consent_prefs` localStorage).
+
+**Verify in production (Vercel):**
+- Vercel Dashboard → Project → **Analytics** (Web Analytics)
+- Vercel Dashboard → Project → **Speed Insights**
+
+**Verify in-browser:**
+- Open DevTools → Application → Cookies/Local Storage and confirm consent has `analytics: true`.
+- Open DevTools → Network and look for Vercel analytics/insights requests after a navigation.
+
 6. **Verify setup**:
    - Open `http://localhost:3000`
    - You should see the homepage with navigation
@@ -309,6 +324,7 @@ Create a `.env` file in the project root with the following variables:
 |----------|----------|---------|---------|------------|
 | `DATABASE_URL` | ✅ Yes | `postgresql://postgres:postgres@localhost:5432/neurobreath` | PostgreSQL connection string | Prisma client (`lib/db.ts`) |
 | `ABACUSAI_API_KEY` | ✅ Yes | — | Abacus.AI API key for PageBuddy & AI Coach | `app/api/api-ai-chat-buddy/route.ts` |
+| `NEXT_PUBLIC_SITE_URL` | ✅ Yes (prod) | — | Canonical base URL for SEO + absolute metadata URLs | `lib/seo/site-config.ts` |
 | `NEXTAUTH_URL` | ⚠️ Recommended | `http://localhost:3000` | NextAuth base URL | NextAuth config |
 | `NEXTAUTH_SECRET` | ⚠️ Recommended | — | NextAuth JWT secret (generate with `openssl rand -base64 32`) | NextAuth config |
 | `NHS_API_KEY` | ❌ Optional | — | NHS API key for health data (not required for core features) | Legacy blog scripts |
@@ -318,6 +334,18 @@ Create a `.env` file in the project root with the following variables:
 | `AWS_FOLDER_PREFIX` | ❌ Optional | — | S3 folder prefix (e.g., `nbcard/`) | `lib/aws-config.ts` |
 | `NEXT_DIST_DIR` | ❌ Optional | `.next` | Custom Next.js build output directory | `next.config.js` |
 | `NEXT_OUTPUT_MODE` | ❌ Optional | — | Next.js output mode (`standalone`, etc.) | `next.config.js` |
+
+#### Vercel: Production vs Preview
+
+- **Production**: set `NEXT_PUBLIC_SITE_URL` to your real domain, e.g. `https://neurobreath.co.uk`.
+- **Preview deployments**: leave `NEXT_PUBLIC_SITE_URL` unset. Previews will automatically use Vercel-provided `VERCEL_URL` for `metadataBase`/canonical generation. Previews are forced to `noindex` by default to prevent preview domains being indexed.
+
+Notes:
+- `VERCEL_ENV` and `VERCEL_URL` are injected automatically by Vercel.
+- If you set `NEXT_PUBLIC_SITE_URL` at the project level for all environments, previews will still be `noindex`, but their canonical base will point at production.
+
+API notes:
+- `/api/contact` accepts `POST` for contact form submissions. A `GET` request returns a small JSON response for quick health/reachability checks.
 
 ### Security Warning
 
@@ -434,6 +462,28 @@ npm run typecheck
 
 ## Testing
 
+### Quality Gates (must be green)
+
+Run these from `web/`:
+
+- `yarn lint`
+- `yarn typecheck`
+- `yarn build`
+- `yarn test:e2e` (Playwright: chromium + firefox + webkit)
+- `yarn responsive:scan` (screenshots + horizontal overflow detection)
+- `yarn links:verify` (route inventory + DOM-discovered links -> HTTP 200/3xx)
+- `yarn perf:lighthouse` (Lighthouse mobile + desktop reports)
+
+Outputs:
+
+- `web/reports/responsive/` (screenshots + `responsive-scan.json`)
+- `web/reports/links-verification.json`
+- `web/reports/lighthouse/` (HTML/JSON + `summary.json`)
+
+Runbook:
+
+- `web/QA_RELIABILITY_CHECKLIST.md`
+
 ### Manual Testing Checklist
 
 **Core Flows:**
@@ -459,22 +509,18 @@ npm run typecheck
 
 ### Automated Testing
 
-**TODO:** No automated test suite detected in `package.json` scripts.
+This repo uses Playwright E2E tests:
 
-Recommended setup:
-- **Unit Tests:** Vitest or Jest
-- **Component Tests:** React Testing Library
-- **E2E Tests:** Playwright or Cypress
-- **API Tests:** Supertest
+- `yarn test:e2e` — default cross-browser suite (chromium + firefox + webkit)
+- `yarn test:e2e tests/buddy.spec.ts` — fast, high-signal smoke for Buddy
+- `yarn test:e2e tests/responsive.spec.ts` — overflow + Tesla mega-menu regression
 
-Example test structure:
-```bash
-web/
-├── __tests__/
-│   ├── unit/
-│   ├── integration/
-│   └── e2e/
-```
+Visual regression is intentionally separate to keep baseline management sane:
+
+- `yarn test:visual` — visual suite (dedicated config)
+- `yarn test:visual:update` — update snapshots intentionally
+
+See `web/tests/` and `web/playwright.config.visual.ts`.
 
 ---
 

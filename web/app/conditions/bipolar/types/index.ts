@@ -64,14 +64,14 @@ export interface LocalStorageData {
 }
 
 export interface ResearchData {
-  metadata: any;
-  diagnosis: any;
-  treatment_options: any;
-  management_strategies: any;
-  support_resources: any;
-  intervention_skills_and_tactics: any;
-  evidence_based_interactive_management_tools: any;
-  statistics_and_epidemiology: any;
-  references_and_citations: any;
-  language_considerations: any;
+  metadata: unknown;
+  diagnosis: unknown;
+  treatment_options: unknown;
+  management_strategies: unknown;
+  support_resources: unknown;
+  intervention_skills_and_tactics: unknown;
+  evidence_based_interactive_management_tools: unknown;
+  statistics_and_epidemiology: unknown;
+  references_and_citations: unknown;
+  language_considerations: unknown;
 }

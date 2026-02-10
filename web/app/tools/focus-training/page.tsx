@@ -1,5 +1,13 @@
-import LegacyHtmlPage from "@/components/legacy/LegacyHtmlPage";
+import type { Metadata } from 'next'
 
-export default async function FocusTrainingPage() {
-  return <LegacyHtmlPage source="focus.html" title="Focus Training" />;
+import FocusTrainingClient from './FocusTrainingClient'
+
+export const metadata: Metadata = {
+  title: 'Focus — Sprints with Recovery · NeuroBreath',
+  description:
+    'Gentle focus protocols, ADHD-friendly timers, and short drills with recovery breaks. Educational guidance only.',
+}
+
+export default function FocusTrainingPage() {
+  return <FocusTrainingClient />
 }

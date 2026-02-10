@@ -1,0 +1,26 @@
+[
+  {
+    "url": "/guides/breathing/box-breathing",
+    "recommendations": [
+      "/guides/breathing",
+      "/guides/breathing/breathing-for-sleep",
+      "/guides/breathing/coherent-breathing"
+    ]
+  },
+  {
+    "url": "/guides/breathing/coherent-breathing",
+    "recommendations": [
+      "/guides/breathing",
+      "/guides/breathing/box-breathing",
+      "/guides/breathing/breathing-for-sleep"
+    ]
+  },
+  {
+    "url": "/tools/breath-tools",
+    "recommendations": [
+      "/uk/guides/breathing-exercises-for-stress",
+      "/us/guides/breathing-exercises-for-stress",
+      "/guides/breathing"
+    ]
+  }
+]

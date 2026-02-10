@@ -14,7 +14,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 import { Lock, Shield, AlertCircle } from 'lucide-react'
-import { setPin } from '@/lib/security/devicePinStore'
 
 interface PinSetupDialogProps {
   open: boolean

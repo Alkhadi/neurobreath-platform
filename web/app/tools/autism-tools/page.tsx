@@ -1,15 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { PageHeader } from '@/components/page/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
-  Brain, Heart, Users, Target, BookOpen, Download,
-  Play, CheckCircle2, AlertCircle, Shield, Eye,
-  Volume2, Clock, Sparkles, MessageSquare, Home,
+  Brain, Heart, Target, BookOpen, Download,
+  Play, CheckCircle2, AlertCircle, Shield, Eye, Clock, Sparkles, MessageSquare, Home,
   School, FileText, Headphones, Sun, Box
 } from 'lucide-react';
 import { HowToUse } from '@/components/autism/how-to-use';
@@ -25,12 +24,18 @@ import { CrisisSupport } from '@/components/autism/crisis-support';
 import { MythsFacts } from '@/components/autism/myths-facts';
 import { EvidenceHub } from '@/components/autism/evidence-hub';
 import { initializeMilestones } from '@/lib/progress-store-enhanced';
+import { EvidenceFooter } from '@/components/evidence-footer';
+import { evidenceByRoute } from '@/lib/evidence/page-evidence';
+import { EducationalDisclaimerInline } from '@/components/trust/EducationalDisclaimerInline';
+import { TrustPanel } from '@/components/trust/TrustPanel';
+import type { Region } from '@/lib/region/region';
+
+const evidence = evidenceByRoute['/tools/autism-tools'];
 
 export default function AutismToolsPage() {
+  const region: Region = 'UK';
   const [updateTrigger, setUpdateTrigger] = useState(0);
   const [activeTab, setActiveTab] = useState('overview');
-  const [showQuickStart, setShowQuickStart] = useState(false);
-  const [showSensoryProfile, setShowSensoryProfile] = useState(false);
 
   // Initialize milestones on first load
   useEffect(() => {
@@ -67,79 +72,45 @@ export default function AutismToolsPage() {
     <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950">
       
       {/* Hero Section */}
-      <section className="relative py-16 md:py-24 overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 text-white">
-        <div className="mx-auto px-4 text-center space-y-6" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <Badge className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 text-white border-white/30">
-            <Brain className="w-4 h-4" />
-            <span>Sensory-Ready · Co-Regulation · Evidence-Backed</span>
-          </Badge>
-          
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-            Autism Tools & Support Hub
-          </h1>
-          
-          <p className="text-xl md:text-2xl max-w-3xl mx-auto opacity-90 leading-relaxed">
-            Neuro-inclusive breathing, regulation, communication supports, and daily living tools. Everything designed with sensory processing and predictability in mind.
-          </p>
+      <section className="py-12 md:py-16">
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
+          <PageHeader 
+            title="Autism Tools & Support Hub" 
+            description="Neuro-inclusive breathing, regulation, communication supports, and daily living tools. Everything designed with sensory processing and predictability in mind."
+            showMetadata
+          />
 
-          <div className="flex flex-wrap gap-3 justify-center pt-4">
+          <div className="flex flex-wrap gap-3 justify-center mt-6">
             <Button 
               size="lg" 
-              className="bg-white text-blue-600 hover:bg-white/90 gap-2 shadow-lg"
+              className="gap-2 shadow-lg"
               onClick={handleQuickStart}
             >
-              <Play className="w-5 h-5 text-blue-600" />
+              <Play className="w-5 h-5" />
               Quick Start Guide
             </Button>
             <Button 
               size="lg" 
-              className="bg-white text-blue-600 hover:bg-white/90 gap-2 shadow-lg"
+              variant="outline"
+              className="gap-2"
               onClick={handleDownloadToolkit}
             >
-              <Download className="w-5 h-5 text-blue-600" />
+              <Download className="w-5 h-5" />
               Download Toolkit PDFs
             </Button>
             <Button 
               size="lg" 
-              className="bg-white text-blue-600 hover:bg-white/90 gap-2 shadow-lg"
+              variant="outline"
+              className="gap-2"
               onClick={handleSensoryProfile}
             >
-              <Shield className="w-5 h-5 text-blue-600" />
+              <Shield className="w-5 h-5" />
               Sensory Profile
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 max-w-4xl mx-auto">
-            <button 
-              onClick={() => scrollToSection('breathing-bundles')}
-              className="flex items-start gap-3 p-4 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all cursor-pointer text-left"
-            >
-              <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
-              <div>
-                <h4 className="font-semibold text-sm">Curated Breathing Bundles</h4>
-                <p className="text-xs opacity-90">Save to device, share with carers</p>
-              </div>
-            </button>
-            <button 
-              onClick={() => scrollToSection('sensory-communication')}
-              className="flex items-start gap-3 p-4 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all cursor-pointer text-left"
-            >
-              <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
-              <div>
-                <h4 className="font-semibold text-sm">Sensory & Communication Checklists</h4>
-                <p className="text-xs opacity-90">Request adjustments in writing</p>
-              </div>
-            </button>
-            <button 
-              onClick={() => scrollToSection('evidence')}
-              className="flex items-start gap-3 p-4 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all cursor-pointer text-left"
-            >
-              <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
-              <div>
-                <h4 className="font-semibold text-sm">Evidence-Backed UK Resources</h4>
-                <p className="text-xs opacity-90">NHS, NICE, NAS guidance</p>
-              </div>
-            </button>
+          <div className="mt-4">
+            <EducationalDisclaimerInline contextLabel="Autism tools" />
           </div>
 
           <p className="text-sm opacity-75 max-w-2xl mx-auto pt-4">
@@ -151,7 +122,7 @@ export default function AutismToolsPage() {
 
       {/* Quick Access Navigation */}
       <section className="py-8 bg-white dark:bg-gray-900 border-b">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="flex flex-wrap gap-3 justify-center">
             <Button 
               variant={activeTab === 'overview' ? 'default' : 'outline'} 
@@ -199,7 +170,7 @@ export default function AutismToolsPage() {
 
       {/* Autism Quick Starter */}
       <section className="py-12 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <Card className="border-2 border-blue-200 dark:border-blue-800">
             <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50">
               <div className="flex items-center gap-3">
@@ -309,14 +280,14 @@ export default function AutismToolsPage() {
 
       {/* How to Use */}
       <section id="how-to-use" className="py-12 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <HowToUse />
         </div>
       </section>
 
       {/* Progress Dashboard */}
       <section id="progress" className="py-16 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 mb-4">
               <Target className="w-5 h-5" />
@@ -335,7 +306,7 @@ export default function AutismToolsPage() {
 
       {/* Daily Quests */}
       <section id="quests" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 mb-4">
               <Sparkles className="w-5 h-5" />
@@ -354,7 +325,7 @@ export default function AutismToolsPage() {
 
       {/* Skills Library */}
       <section id="skills" className="py-16 bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 dark:from-green-950/20 dark:via-blue-950/20 dark:to-purple-950/20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 mb-4">
               <BookOpen className="w-5 h-5" />
@@ -373,7 +344,7 @@ export default function AutismToolsPage() {
 
       {/* Calm Toolkit */}
       <section id="toolkit" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 mb-4">
               <Heart className="w-5 h-5" />
@@ -392,7 +363,7 @@ export default function AutismToolsPage() {
 
       {/* Curated Breathing Bundles */}
       <section id="breathing-bundles" className="py-16 bg-gradient-to-br from-blue-50 via-teal-50 to-cyan-50 dark:from-blue-950/20 dark:via-teal-950/20 dark:to-cyan-950/20 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 mb-4">
               <Brain className="w-5 h-5" />
@@ -480,7 +451,7 @@ export default function AutismToolsPage() {
 
       {/* Sensory Profile & Communication Tools */}
       <section id="sensory-communication" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 mb-4">
               <Shield className="w-5 h-5" />
@@ -630,7 +601,7 @@ export default function AutismToolsPage() {
 
       {/* Education Pathways */}
       <section id="pathways" className="py-16 bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 dark:from-green-950/20 dark:via-blue-950/20 dark:to-purple-950/20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 mb-4">
               <School className="w-5 h-5" />
@@ -649,7 +620,7 @@ export default function AutismToolsPage() {
 
       {/* Resources Library */}
       <section id="resources" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 mb-4">
               <Download className="w-5 h-5" />
@@ -666,16 +637,22 @@ export default function AutismToolsPage() {
         </div>
       </section>
 
+      <section className="py-12 bg-slate-50 dark:bg-slate-900">
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
+          <TrustPanel region={region} title="Evidence policy & citations" />
+        </div>
+      </section>
+
       {/* Evidence Hub */}
       <section id="evidence" className="py-16 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-indigo-950/20 dark:via-purple-950/20 dark:to-pink-950/20 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <EvidenceHub />
         </div>
       </section>
 
       {/* PubMed Research */}
       <section id="research" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 mb-4">
               <BookOpen className="w-5 h-5" />
@@ -694,7 +671,7 @@ export default function AutismToolsPage() {
 
       {/* AI Chat Hub */}
       <section id="ai-chat" className="py-16 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 mb-4">
               <MessageSquare className="w-5 h-5" />
@@ -713,15 +690,22 @@ export default function AutismToolsPage() {
 
       {/* Myths & Facts */}
       <section id="myths" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <MythsFacts />
         </div>
       </section>
 
       {/* Crisis Support */}
       <section id="crisis" className="py-16 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 dark:from-red-950/20 dark:via-orange-950/20 dark:to-yellow-950/20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <CrisisSupport />
+        </div>
+      </section>
+
+      {/* Evidence Sources */}
+      <section className="py-16 bg-white dark:bg-gray-900">
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
+          <EvidenceFooter evidence={evidence} />
         </div>
       </section>
 

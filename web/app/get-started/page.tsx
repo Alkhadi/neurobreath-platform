@@ -1,489 +1,522 @@
-import Link from 'next/link'
-import { Sparkles, Brain, HeartPulse, BookOpen, Target, Users, Award, Zap, ArrowRight, CheckCircle2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Sparkles, 
+  Wind, 
+  Brain, 
+  MessageSquare, 
+  BookOpen, 
+  Target,
+  User,
+  GraduationCap,
+  Users,
+  Heart,
+  TrendingUp,
+  CheckCircle2,
+  Zap,
+  FileText,
+  ChevronRight
+} from 'lucide-react';
 
 export default function GetStartedPage() {
+  const [selectedRole, setSelectedRole] = useState<'individual' | 'parent' | 'teacher' | 'professional' | null>(null);
+
+  const roles = [
+    {
+      id: 'individual' as const,
+      icon: User,
+      label: 'Myself',
+      description: 'Personal wellbeing support',
+      color: 'from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30',
+      borderColor: 'border-blue-200 dark:border-blue-800'
+    },
+    {
+      id: 'parent' as const,
+      icon: Heart,
+      label: 'Parent/Carer',
+      description: 'Supporting my child',
+      color: 'from-pink-50 to-rose-50 dark:from-pink-950/30 dark:to-rose-950/30',
+      borderColor: 'border-pink-200 dark:border-pink-800'
+    },
+    {
+      id: 'teacher' as const,
+      icon: GraduationCap,
+      label: 'Teacher/Educator',
+      description: 'Classroom & student support',
+      color: 'from-purple-50 to-violet-50 dark:from-purple-950/30 dark:to-violet-950/30',
+      borderColor: 'border-purple-200 dark:border-purple-800'
+    },
+    {
+      id: 'professional' as const,
+      icon: Users,
+      label: 'Professional',
+      description: 'Clinical or workplace support',
+      color: 'from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30',
+      borderColor: 'border-green-200 dark:border-green-800'
+    }
+  ];
+
+  const quickWins = [
+    {
+      title: '60-Second SOS Calm',
+      description: 'Quick breathing reset for overwhelm',
+      time: '1 min',
+      href: '/techniques/sos',
+      icon: Wind,
+      color: 'text-blue-600'
+    },
+    {
+      title: 'AI Coach Chat',
+      description: 'Get personalized guidance instantly',
+      time: '2 mins',
+      href: '/blog',
+      icon: MessageSquare,
+      color: 'text-purple-600'
+    },
+    {
+      title: 'Browse Conditions',
+      description: 'ADHD, Autism, Anxiety, Dyslexia & more',
+      time: '3 mins',
+      href: '/conditions',
+      icon: Brain,
+      color: 'text-green-600'
+    }
+  ];
+
+  const pathways = {
+    individual: {
+      title: 'Your Personal Path',
+      steps: [
+        {
+          label: 'Start with a quick calm',
+          description: 'Try the 60-second breathing reset',
+          href: '/techniques/sos',
+          icon: Wind
+        },
+        {
+          label: 'Explore your focus area',
+          description: 'Browse conditions: ADHD, Autism, Anxiety, Depression',
+          href: '/conditions',
+          icon: Brain
+        },
+        {
+          label: 'Build your routine',
+          description: 'Create daily practice with breathing exercises',
+          href: '/breathing',
+          icon: Target
+        },
+        {
+          label: 'Track your progress',
+          description: 'Earn XP, badges, and track streaks',
+          href: '/breathing',
+          icon: TrendingUp
+        }
+      ]
+    },
+    parent: {
+      title: 'Supporting Your Child',
+      steps: [
+        {
+          label: 'Find your child\'s needs',
+          description: 'Autism, ADHD, Dyslexia, Anxiety support hubs',
+          href: '/conditions',
+          icon: Brain
+        },
+        {
+          label: 'Get IEP/EHCP guidance',
+          description: 'Templates, evidence gathering, school meeting prep',
+          href: '/autism',
+          icon: FileText
+        },
+        {
+          label: 'Try calm techniques together',
+          description: 'Age-appropriate breathing & sensory tools',
+          href: '/techniques/sos',
+          icon: Wind
+        },
+        {
+          label: 'Download printable resources',
+          description: 'Checklists, visual schedules, communication aids',
+          href: '/resources',
+          icon: BookOpen
+        }
+      ]
+    },
+    teacher: {
+      title: 'Classroom Support Path',
+      steps: [
+        {
+          label: 'Browse teaching strategies',
+          description: 'Evidence-based classroom accommodations',
+          href: '/autism',
+          icon: GraduationCap
+        },
+        {
+          label: 'Use calm tools with students',
+          description: 'Whole-class breathing breaks & focus resets',
+          href: '/techniques/sos',
+          icon: Wind
+        },
+        {
+          label: 'Access printable resources',
+          description: 'Visual supports, sensory cards, behaviour plans',
+          href: '/resources',
+          icon: BookOpen
+        },
+        {
+          label: 'Get IEP/504 templates',
+          description: 'Documentation for special education planning',
+          href: '/autism',
+          icon: FileText
+        }
+      ]
+    },
+    professional: {
+      title: 'Professional Resources',
+      steps: [
+        {
+          label: 'Review evidence base',
+          description: 'Research citations, NHS/NICE guidelines',
+          href: '/trust',
+          icon: Sparkles
+        },
+        {
+          label: 'Explore clinical tools',
+          description: 'Breathing protocols, mood tracking, interventions',
+          href: '/breathing',
+          icon: Wind
+        },
+        {
+          label: 'Download client resources',
+          description: 'Printable worksheets, psychoeducation materials',
+          href: '/resources',
+          icon: BookOpen
+        },
+        {
+          label: 'Workplace adjustments',
+          description: 'Templates for neurodivergent employees',
+          href: '/autism',
+          icon: Users
+        }
+      ]
+    }
+  };
+
+  const mainFeatures = [
+    {
+      title: 'Breathing Exercises',
+      description: 'Box breathing, coherent breathing, SOS reset',
+      href: '/breathing',
+      icon: Wind,
+      badge: '5 techniques'
+    },
+    {
+      title: 'AI Coach',
+      description: 'Personalized guidance for neurodiversity & wellbeing',
+      href: '/blog',
+      icon: MessageSquare,
+      badge: 'Free to use'
+    },
+    {
+      title: 'Condition Hubs',
+      description: 'ADHD, Autism, Anxiety, Depression, Dyslexia & more',
+      href: '/conditions',
+      icon: Brain,
+      badge: '10+ conditions'
+    },
+    {
+      title: 'Downloadable Resources',
+      description: 'Checklists, templates, visual supports, guides',
+      href: '/resources',
+      icon: BookOpen,
+      badge: '60+ PDFs'
+    }
+  ];
+
   return (
-    <div className="min-h-screen">
+    <main className="min-h-screen">
+      {/* Skip Link for Accessibility */}
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
+
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-teal-50 via-white to-blue-50 py-20">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-4xl text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-teal-100 px-4 py-2 text-sm font-medium text-teal-900">
-              <Sparkles className="h-4 w-4" />
-              Your journey starts here
+      <section 
+        id="main-content" 
+        className="relative py-16 px-4 overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900"
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="flex justify-center mb-6">
+              <Badge variant="secondary" className="gap-2 px-4 py-2">
+                <Sparkles className="h-4 w-4" />
+                Welcome to NeuroBreath
+              </Badge>
             </div>
-            <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              Getting Started with{' '}
-              <span className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
-                NeuroBreath
-              </span>
+            
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent">
+              Getting Started
             </h1>
-            <p className="mb-8 text-lg text-gray-600 md:text-xl">
-              Evidence-based breathing techniques, neurodiversity support, and personalized tools
-              to help you thrive. Start in just 3 simple steps.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <Button asChild size="lg" className="bg-teal-600 hover:bg-teal-700">
-                <Link href="#choose-path">
-                  Start Your Journey
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link href="/coach">Talk to AI Coach</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3-Step Process */}
-      <section className="py-16" id="choose-path">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-5xl">
-            <h2 className="mb-12 text-center text-3xl font-bold">Your Path in 3 Simple Steps</h2>
             
-            <div className="grid gap-8 md:grid-cols-3">
-              {/* Step 1 */}
-              <Card className="relative border-2 border-teal-100 transition-all hover:border-teal-300 hover:shadow-lg">
-                <div className="absolute -top-4 left-6 flex h-8 w-8 items-center justify-center rounded-full bg-teal-600 text-sm font-bold text-white">
-                  1
-                </div>
-                <CardHeader>
-                  <Target className="mb-3 h-10 w-10 text-teal-600" />
-                  <CardTitle>Choose Your Focus</CardTitle>
-                  <CardDescription>
-                    Pick what matters most to you right now
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-teal-600" />
-                      <span>Breathing & calm techniques</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-teal-600" />
-                      <span>ADHD, autism, or dyslexia support</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-teal-600" />
-                      <span>Mental health tools</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              {/* Step 2 */}
-              <Card className="relative border-2 border-blue-100 transition-all hover:border-blue-300 hover:shadow-lg">
-                <div className="absolute -top-4 left-6 flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
-                  2
-                </div>
-                <CardHeader>
-                  <Zap className="mb-3 h-10 w-10 text-blue-600" />
-                  <CardTitle>Try Your First Tool</CardTitle>
-                  <CardDescription>
-                    Start with something quick and easy
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
-                      <span>2-minute Box Breathing exercise</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
-                      <span>Interactive focus game</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
-                      <span>Quick mood check-in</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              {/* Step 3 */}
-              <Card className="relative border-2 border-purple-100 transition-all hover:border-purple-300 hover:shadow-lg">
-                <div className="absolute -top-4 left-6 flex h-8 w-8 items-center justify-center rounded-full bg-purple-600 text-sm font-bold text-white">
-                  3
-                </div>
-                <CardHeader>
-                  <Award className="mb-3 h-10 w-10 text-purple-600" />
-                  <CardTitle>Track Your Progress</CardTitle>
-                  <CardDescription>
-                    Build streaks and earn achievements
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-purple-600" />
-                      <span>Daily quests & challenges</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-purple-600" />
-                      <span>XP points & level-ups</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-purple-600" />
-                      <span>Unlock badges & rewards</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Quick Start Paths */}
-      <section className="bg-gray-50 py-16">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-6xl">
-            <h2 className="mb-4 text-center text-3xl font-bold">Choose Your Starting Point</h2>
-            <p className="mb-12 text-center text-gray-600">
-              Not sure where to begin? Pick the area that fits your needs best.
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+              Evidence-based breathing, neurodiversity support, and mental wellbeing tools. 
+              Free for individuals, families, classrooms, and clinics.
             </p>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {/* Breathing & Calm */}
-              <Card className="group cursor-pointer border-2 transition-all hover:border-teal-300 hover:shadow-xl">
-                <Link href="/breathing/techniques" className="block h-full">
-                  <CardHeader>
-                    <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-teal-100 to-teal-200 group-hover:scale-110 transition-transform">
-                      <HeartPulse className="h-7 w-7 text-teal-700" />
-                    </div>
-                    <CardTitle className="text-xl">Breathing & Calm</CardTitle>
-                    <CardDescription>
-                      Reduce stress and anxiety with proven breathing techniques
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-teal-600" />
-                        <span>Box Breathing (4-4-4-4)</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-teal-600" />
-                        <span>4-7-8 Technique</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-teal-600" />
-                        <span>Coherent Breathing</span>
-                      </div>
-                    </div>
-                    <div className="mt-4 flex items-center gap-2 text-sm font-medium text-teal-600">
-                      Start breathing exercises
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </div>
-                  </CardContent>
+            <div className="flex flex-wrap justify-center gap-4 mb-8">
+              <Button size="lg" asChild className="gap-2">
+                <Link href="/techniques/sos">
+                  <Zap className="h-5 w-5" />
+                  Quick Start (60 seconds)
                 </Link>
-              </Card>
-
-              {/* ADHD Support */}
-              <Card className="group cursor-pointer border-2 transition-all hover:border-orange-300 hover:shadow-xl">
-                <Link href="/adhd" className="block h-full">
-                  <CardHeader>
-                    <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-orange-100 to-orange-200 group-hover:scale-110 transition-transform">
-                      <Target className="h-7 w-7 text-orange-700" />
-                    </div>
-                    <CardTitle className="text-xl">ADHD Hub</CardTitle>
-                    <CardDescription>
-                      Focus tools, timers, and executive function support
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-orange-600" />
-                        <span>Pomodoro focus timer</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-orange-600" />
-                        <span>Task breakdown tools</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-orange-600" />
-                        <span>Daily quests system</span>
-                      </div>
-                    </div>
-                    <div className="mt-4 flex items-center gap-2 text-sm font-medium text-orange-600">
-                      Explore ADHD tools
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </div>
-                  </CardContent>
+              </Button>
+              <Button size="lg" variant="outline" asChild className="gap-2">
+                <Link href="/blog">
+                  <MessageSquare className="h-5 w-5" />
+                  Ask AI Coach
                 </Link>
-              </Card>
-
-              {/* Autism Support */}
-              <Card className="group cursor-pointer border-2 transition-all hover:border-blue-300 hover:shadow-xl">
-                <Link href="/conditions/autism" className="block h-full">
-                  <CardHeader>
-                    <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-blue-100 to-blue-200 group-hover:scale-110 transition-transform">
-                      <Brain className="h-7 w-7 text-blue-700" />
-                    </div>
-                    <CardTitle className="text-xl">Autism Hub</CardTitle>
-                    <CardDescription>
-                      Sensory support, communication, and regulation tools
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-blue-600" />
-                        <span>Calm toolkit</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-blue-600" />
-                        <span>Social scripts</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-blue-600" />
-                        <span>Sensory guides</span>
-                      </div>
-                    </div>
-                    <div className="mt-4 flex items-center gap-2 text-sm font-medium text-blue-600">
-                      Visit autism hub
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </div>
-                  </CardContent>
-                </Link>
-              </Card>
-
-              {/* Dyslexia Support */}
-              <Card className="group cursor-pointer border-2 transition-all hover:border-purple-300 hover:shadow-xl">
-                <Link href="/dyslexia-reading-training" className="block h-full">
-                  <CardHeader>
-                    <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-purple-100 to-purple-200 group-hover:scale-110 transition-transform">
-                      <BookOpen className="h-7 w-7 text-purple-700" />
-                    </div>
-                    <CardTitle className="text-xl">Dyslexia Reading</CardTitle>
-                    <CardDescription>
-                      Structured literacy training and phonics practice
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-purple-600" />
-                        <span>Reading assessment</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-purple-600" />
-                        <span>Phonics lab games</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-purple-600" />
-                        <span>Fluency training</span>
-                      </div>
-                    </div>
-                    <div className="mt-4 flex items-center gap-2 text-sm font-medium text-purple-600">
-                      Start reading training
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </div>
-                  </CardContent>
-                </Link>
-              </Card>
-
-              {/* Mental Health */}
-              <Card className="group cursor-pointer border-2 transition-all hover:border-pink-300 hover:shadow-xl">
-                <Link href="/conditions/anxiety" className="block h-full">
-                  <CardHeader>
-                    <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-pink-100 to-pink-200 group-hover:scale-110 transition-transform">
-                      <HeartPulse className="h-7 w-7 text-pink-700" />
-                    </div>
-                    <CardTitle className="text-xl">Mental Health</CardTitle>
-                    <CardDescription>
-                      Anxiety, depression, and mood support tools
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-pink-600" />
-                        <span>Grounding techniques</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-pink-600" />
-                        <span>Mood tracking</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-pink-600" />
-                        <span>Coping strategies</span>
-                      </div>
-                    </div>
-                    <div className="mt-4 flex items-center gap-2 text-sm font-medium text-pink-600">
-                      Explore mental health tools
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </div>
-                  </CardContent>
-                </Link>
-              </Card>
-
-              {/* Parents & Teachers */}
-              <Card className="group cursor-pointer border-2 transition-all hover:border-green-300 hover:shadow-xl">
-                <Link href="/parent" className="block h-full">
-                  <CardHeader>
-                    <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-green-100 to-green-200 group-hover:scale-110 transition-transform">
-                      <Users className="h-7 w-7 text-green-700" />
-                    </div>
-                    <CardTitle className="text-xl">Parents & Teachers</CardTitle>
-                    <CardDescription>
-                      Support resources and progress monitoring
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-green-600" />
-                        <span>Progress dashboards</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-green-600" />
-                        <span>Classroom strategies</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-green-600" />
-                        <span>Home support guides</span>
-                      </div>
-                    </div>
-                    <div className="mt-4 flex items-center gap-2 text-sm font-medium text-green-600">
-                      Access parent/teacher hub
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </div>
-                  </CardContent>
-                </Link>
-              </Card>
+              </Button>
             </div>
+
+            {/* Trust Badge */}
+            <p className="text-sm text-muted-foreground">
+              <span className="font-semibold text-foreground">Educational only.</span> Not medical advice. No diagnosis. Evidence-informed guidance.
+            </p>
+          </div>
+
+          {/* Quick Stats */}
+          <Card className="p-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-primary mb-2">5</div>
+                <div className="text-sm text-muted-foreground">Breathing Techniques</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-primary mb-2">10+</div>
+                <div className="text-sm text-muted-foreground">Condition Hubs</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-primary mb-2">60+</div>
+                <div className="text-sm text-muted-foreground">Free Resources</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-primary mb-2">100%</div>
+                <div className="text-sm text-muted-foreground">Free to Use</div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      {/* Quick Wins Section */}
+      <section className="py-16 px-4 bg-white dark:bg-gray-950">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <Badge variant="outline" className="mb-4">Start immediately</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Quick Wins (1-3 minutes)</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Try these instant tools to get started right now
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {quickWins.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Card key={item.title} className="group hover:shadow-lg transition-all">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="p-3 bg-primary/10 rounded-lg">
+                        <Icon className={`h-6 w-6 ${item.color}`} />
+                      </div>
+                      <Badge variant="secondary" className="text-xs">{item.time}</Badge>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground mb-4">{item.description}</p>
+                    <Button asChild variant="ghost" className="group-hover:gap-2 gap-1 transition-all">
+                      <Link href={item.href}>
+                        Try now <ChevronRight className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Quick Actions CTA */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-4xl">
-            <div className="rounded-2xl bg-gradient-to-br from-teal-600 to-blue-600 p-8 text-white md:p-12">
-              <div className="mb-6 text-center">
-                <h2 className="mb-3 text-3xl font-bold">Ready to Start?</h2>
-                <p className="text-lg text-teal-50">
-                  Get personalized recommendations from our AI Coach or jump straight into an activity.
-                </p>
-              </div>
+      {/* Choose Your Role Section */}
+      <section className="py-16 px-4 bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <Badge variant="outline" className="mb-4">Personalized paths</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Choose Your Path</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Select your role to see a tailored getting started guide
+            </p>
+          </div>
+
+          {/* Role Selection */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+            {roles.map((role) => {
+              const Icon = role.icon;
+              const isSelected = selectedRole === role.id;
               
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <Button asChild size="lg" variant="secondary" className="h-auto flex-col gap-2 py-4">
-                  <Link href="/coach">
-                    <Sparkles className="h-6 w-6" />
-                    <span className="font-semibold">AI Coach</span>
-                    <span className="text-xs">Get personalized help</span>
-                  </Link>
-                </Button>
-                
-                <Button asChild size="lg" variant="secondary" className="h-auto flex-col gap-2 py-4">
-                  <Link href="/breathing/techniques">
-                    <HeartPulse className="h-6 w-6" />
-                    <span className="font-semibold">Try Breathing</span>
-                    <span className="text-xs">2-minute calm exercise</span>
-                  </Link>
-                </Button>
-                
-                <Button asChild size="lg" variant="secondary" className="h-auto flex-col gap-2 py-4 sm:col-span-2 lg:col-span-1">
-                  <Link href="/progress">
-                    <Award className="h-6 w-6" />
-                    <span className="font-semibold">View Progress</span>
-                    <span className="text-xs">Track your journey</span>
-                  </Link>
-                </Button>
-              </div>
-            </div>
+              return (
+                <Card 
+                  key={role.id}
+                  className={`cursor-pointer transition-all ${
+                    isSelected 
+                      ? `ring-2 ring-primary shadow-lg bg-gradient-to-br ${role.color}` 
+                      : 'hover:shadow-md'
+                  }`}
+                  onClick={() => setSelectedRole(role.id)}
+                >
+                  <CardContent className="p-6 text-center">
+                    <div className={`mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-4 ${
+                      isSelected ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'
+                    }`}>
+                      <Icon className="h-7 w-7" />
+                    </div>
+                    <h3 className="font-semibold mb-2">{role.label}</h3>
+                    <p className="text-sm text-muted-foreground">{role.description}</p>
+                    {isSelected && (
+                      <div className="mt-3">
+                        <Badge variant="default" className="gap-1">
+                          <CheckCircle2 className="h-3 w-3" />
+                          Selected
+                        </Badge>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
+
+          {/* Pathway Steps */}
+          {selectedRole && pathways[selectedRole] && (
+            <Card className="p-8 bg-white dark:bg-gray-800 shadow-xl">
+              <h3 className="text-2xl font-bold mb-6 text-center">
+                {pathways[selectedRole].title}
+              </h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                {pathways[selectedRole].steps.map((step, index) => {
+                  const Icon = step.icon;
+                  return (
+                    <div key={index} className="flex gap-4">
+                      <div className="flex-shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
+                          {index + 1}
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Icon className="h-5 w-5 text-primary" />
+                          <h4 className="font-semibold">{step.label}</h4>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">{step.description}</p>
+                        <Button asChild variant="link" className="h-auto p-0 text-primary">
+                          <Link href={step.href}>
+                            Go now <ChevronRight className="h-4 w-4 ml-1" />
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </Card>
+          )}
+
+          {/* Prompt if no selection */}
+          {!selectedRole && (
+            <Card className="p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-dashed">
+              <p className="text-center text-muted-foreground">
+                👆 Select your role above to see your personalized getting started path
+              </p>
+            </Card>
+          )}
         </div>
       </section>
 
-      {/* FAQs */}
-      <section className="bg-gray-50 py-16">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-3xl">
-            <h2 className="mb-8 text-center text-3xl font-bold">Common Questions</h2>
-            
-            <div className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Do I need an account?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    No! All tools work immediately. Your progress is saved locally on your device. 
-                    Creating an account is optional and allows you to sync across devices.
-                  </p>
-                </CardContent>
-              </Card>
+      {/* Main Features Overview */}
+      <section className="py-16 px-4 bg-white dark:bg-gray-950">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <Badge variant="outline" className="mb-4">Platform overview</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">What's Available</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Explore all the tools and resources available on NeuroBreath
+            </p>
+          </div>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Is NeuroBreath free?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    Yes, all core features are free to use. We believe everyone should have access 
-                    to mental health and neurodiversity support tools.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">How long does each exercise take?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    Most breathing exercises are 2-5 minutes. Other tools range from quick 1-minute 
-                    check-ins to longer 10-15 minute activities. You choose what fits your schedule.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Can parents and teachers monitor progress?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    Yes! Users can generate a 6-digit access code to share with parents, teachers, 
-                    or carers for read-only progress viewing. Visit the{' '}
-                    <Link href="/parent" className="font-medium text-teal-600 hover:underline">
-                      Parent/Teacher Hub
-                    </Link>{' '}
-                    to learn more.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
+          <div className="grid md:grid-cols-2 gap-6">
+            {mainFeatures.map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <Card key={feature.title} className="group hover:shadow-lg transition-all">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="p-3 bg-primary/10 rounded-lg">
+                          <Icon className="h-6 w-6 text-primary" />
+                        </div>
+                        <h3 className="text-xl font-semibold">{feature.title}</h3>
+                      </div>
+                      <Badge variant="secondary">{feature.badge}</Badge>
+                    </div>
+                    <p className="text-muted-foreground mb-4">{feature.description}</p>
+                    <Button asChild variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+                      <Link href={feature.href}>
+                        Explore <ChevronRight className="h-4 w-4 ml-2" />
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="border-t py-12">
-        <div className="container mx-auto px-4 text-center">
-          <h3 className="mb-4 text-2xl font-bold">Still have questions?</h3>
-          <p className="mb-6 text-gray-600">
-            Our AI Coach can help you find exactly what you need.
+      <section className="py-16 px-4 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 text-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Ready to Get Started?
+          </h2>
+          <p className="text-xl text-blue-100 mb-8">
+            Choose your first step and begin your journey today
           </p>
-          <Button asChild size="lg">
-            <Link href="/coach">
-              Talk to AI Coach
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" variant="secondary" asChild className="gap-2">
+              <Link href="/techniques/sos">
+                <Wind className="h-5 w-5" />
+                Start with Breathing (60s)
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild className="gap-2 bg-transparent border-white text-white hover:bg-white hover:text-primary">
+              <Link href="/blog">
+                <MessageSquare className="h-5 w-5" />
+                Ask AI Coach
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild className="gap-2 bg-transparent border-white text-white hover:bg-white hover:text-primary">
+              <Link href="/conditions">
+                <Brain className="h-5 w-5" />
+                Browse Conditions
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
-    </div>
-  )
+    </main>
+  );
 }

@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FileText, Download, Eye, Users, GraduationCap, Briefcase, CheckCircle, ExternalLink, Lightbulb } from 'lucide-react';
-import { TEMPLATES, type Template, type TemplateField } from '@/lib/data/templates';
+import { TEMPLATES, type Template } from '@/lib/data/templates';
 import { toast } from 'sonner';
 
 export function ResourcesLibrary() {
@@ -215,9 +215,9 @@ export function ResourcesLibrary() {
                   >
                     <CardHeader>
                       <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1">
-                          <CardTitle className="text-lg">{template.title}</CardTitle>
-                          <CardDescription className="mt-2 text-sm">
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="text-lg break-words">{template.title}</CardTitle>
+                          <CardDescription className="mt-2 text-sm break-words">
                             {template.description}
                           </CardDescription>
                         </div>
@@ -249,9 +249,9 @@ export function ResourcesLibrary() {
                   >
                     <CardHeader>
                       <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1">
-                          <CardTitle className="text-lg">{template.title}</CardTitle>
-                          <CardDescription className="mt-2 text-sm">
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="text-lg break-words">{template.title}</CardTitle>
+                          <CardDescription className="mt-2 text-sm break-words">
                             {template.description}
                           </CardDescription>
                         </div>
@@ -289,9 +289,9 @@ export function ResourcesLibrary() {
                   >
                     <CardHeader>
                       <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1">
-                          <CardTitle className="text-lg">{template.title}</CardTitle>
-                          <CardDescription className="mt-2 text-sm">
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="text-lg break-words">{template.title}</CardTitle>
+                          <CardDescription className="mt-2 text-sm break-words">
                             {template.description}
                           </CardDescription>
                         </div>

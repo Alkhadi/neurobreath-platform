@@ -1,12 +1,12 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { BookOpen, ExternalLink, FileText } from 'lucide-react';
 
 export function ADHDEvidenceHub() {
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
       <div className="text-center mb-8">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">Evidence & UK Resources 📖</h2>
         <p className="text-muted-foreground max-w-3xl mx-auto">

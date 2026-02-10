@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle2, Circle, Trophy, Zap, Star, Sparkles, Flame } from 'lucide-react';
-import { dailyQuests, weeklyChallenges, getTodaysQuests, type DailyQuest, type WeeklyChallenge } from '@/lib/data/adhd-quests';
+import { weeklyChallenges, getTodaysQuests, type DailyQuest } from '@/lib/data/adhd-quests';
 import { motion, AnimatePresence } from 'framer-motion';
 import Confetti from 'react-confetti';
 import { initADHDStore, getProgress as getADHDProgress, completeQuest as storeCompleteQuest, resetDailyQuests } from '@/lib/adhd-progress-store';

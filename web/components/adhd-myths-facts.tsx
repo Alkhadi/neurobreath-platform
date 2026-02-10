@@ -95,6 +95,8 @@ export function ADHDMythsFacts() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const allSources = getAllEvidenceSources();
 
+  type EvidenceSource = ReturnType<typeof getAllEvidenceSources>[number];
+
   const categories = [
     { value: 'all', label: 'All Myths', icon: '🔍' },
     { value: 'diagnosis', label: 'Diagnosis', icon: '🩺' },
@@ -122,7 +124,7 @@ export function ADHDMythsFacts() {
   const getEvidenceSources = (evidenceIds: string[]) => {
     return evidenceIds
       .map(id => allSources.find(s => s.id === id))
-      .filter(Boolean);
+      .filter((source): source is EvidenceSource => Boolean(source));
   };
 
   return (
@@ -212,7 +214,7 @@ export function ADHDMythsFacts() {
                       Evidence Sources
                     </div>
                     <div className="space-y-1">
-                      {sources.map((source: any) => (
+                      {sources.map((source) => (
                         <div key={source.id} className="text-xs">
                           <a
                             href={source.url}

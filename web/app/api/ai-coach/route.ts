@@ -10,6 +10,7 @@ import { synthesizeAnswer } from '@/lib/ai-coach/synthesis'
 import { getCached, setCached, generateQueryKey } from '@/lib/ai-coach/cache'
 import { normalizeQuestion, type SubmissionMode } from '@/lib/normalize-question'
 import { recommendResources } from '@/lib/recommend-resources'
+import { suggestInternalLinksForCoach } from '@/lib/assistant/answerEngine'
 
 // Force route to be dynamic (never cached)
 export const dynamic = 'force-dynamic'
@@ -148,11 +149,19 @@ export async function POST(request: NextRequest) {
       context, // Pass context for context-used echo
       topic
     })
+
+    const internalLinks = await suggestInternalLinksForCoach({
+      question: normalizedQuestion,
+      intentId: quickPromptId,
+      pathname: pathnameFromContext(context),
+      jurisdiction: context.country === 'US' ? 'US' : 'UK'
+    })
     
     // Build response with recommended resources
     const response: AICoachResponse = {
       answer: {
         ...answer,
+        internalLinks,
         recommendations: recommendedResources.map(r => ({
           category: 'primary' as const,
           title: r.title,
@@ -187,6 +196,11 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
+}
+
+function pathnameFromContext(context: UserContext): string {
+  if (context.country === 'US') return '/us'
+  return '/uk'
 }
 
 export async function GET() {

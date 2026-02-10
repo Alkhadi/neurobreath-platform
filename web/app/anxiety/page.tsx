@@ -1,4 +1,5 @@
 import { Brain, Wind, Heart, TrendingUp, BookOpen, AlertCircle, Users, Stethoscope, ChevronDown } from 'lucide-react'
+import { PageHeaderClient } from '@/components/page/PageHeaderClient'
 import { BreathingSuite } from '@/components/anxiety-tools/breathing-suite'
 import { GroundingExercise } from '@/components/anxiety-tools/grounding-exercise'
 import { CBTThoughtRecord } from '@/components/anxiety-tools/cbt-thought-record'
@@ -13,12 +14,72 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { EvidenceFooter } from '@/components/evidence-footer'
+import { evidenceByRoute } from '@/lib/evidence/page-evidence'
+import { CredibilityFooter } from '@/components/trust/CredibilityFooter'
+import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog'
+import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial'
+import type { Region } from '@/lib/region/region'
+import { Metadata } from 'next'
+import { generatePageMetadata } from '@/lib/seo/metadata'
+import { JsonLd } from '@/components/seo/json-ld'
+import { generateWebPageSchema, generateBreadcrumbsFromPath, generateBreadcrumbSchema } from '@/lib/seo/schema'
+import { generateCanonicalUrl } from '@/lib/seo/site-seo'
 
 export const dynamic = 'force-static'
 
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Anxiety Support Hub | NeuroBreath',
+  description:
+    'Evidence-based anxiety tools including breathing, grounding, CBT prompts and progress tracking to help build calm and resilience.',
+  path: '/anxiety',
+  keywords: [
+    'anxiety management',
+    'anxiety tools',
+    'anxiety resources',
+    'breathing exercises for anxiety',
+    'CBT anxiety',
+    'anxiety UK',
+    'grounding techniques',
+    'anxiety support',
+    'mental health tools',
+    'anxiety relief',
+  ],
+})
+
+const evidence = evidenceByRoute['/anxiety']
+
 export default function AnxietyPage() {
+  const region: Region = 'UK'
+  const editorial = createEditorialMeta({
+    authorId: 'nb-editorial-team',
+    reviewerId: 'nb-evidence-review',
+    editorialRoleNotes: 'Reviewed for clarity, safety language, and evidence framing.',
+    createdAt: '2026-01-16',
+    updatedAt: '2026-01-17',
+    reviewedAt: '2026-01-17',
+    reviewIntervalDays: 90,
+    changeLog: createChangeLog([
+      createChangeLogEntry('2026-01-17', 'Credibility footer and review details added.', 'safety'),
+    ]),
+    citationsSummary: createCitationsSummary(evidence?.citations?.length ?? 0, ['A', 'B']),
+  })
+  // Generate structured data
+  const pageUrl = generateCanonicalUrl('/anxiety');
+  const webPageSchema = generateWebPageSchema({
+    url: pageUrl,
+    name: 'Anxiety Support Hub | NeuroBreath',
+    description:
+      'Evidence-based anxiety tools including breathing, grounding, CBT prompts and progress tracking to help build calm and resilience.',
+  });
+  const breadcrumbs = generateBreadcrumbsFromPath('/anxiety');
+  const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+
   return (
     <main className="min-h-screen">
+      {/* Structured Data */}
+      <JsonLd data={[webPageSchema, breadcrumbSchema]} />
+
       {/* Skip Link for Accessibility */}
       <a href="#main-content" className="skip-link">
         Skip to main content
@@ -27,17 +88,13 @@ export default function AnxietyPage() {
       {/* Hero Section */}
       <section id="main-content" className="relative py-16 px-4 overflow-hidden">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-block p-3 bg-primary/10 rounded-full mb-6">
-              <Brain className="h-12 w-12 text-primary" />
-            </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-              Anxiety — Calm the Body, Train the Mind
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-              Evidence-based tools and resources to understand and manage anxiety. Track your progress, build resilience, and find calm.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
+          <div className="mb-12">
+            <PageHeaderClient 
+              title="Anxiety Hub" 
+              description="Evidence-based tools and resources to understand and manage anxiety. Track your progress, build resilience, and find calm."
+              showMetadata
+            />
+            <div className="flex flex-wrap justify-center gap-4 mt-6">
               <a href="#interactive-tools">
                 <Button size="lg" className="px-8">
                   <Wind className="mr-2 h-5 w-5" />
@@ -508,6 +565,19 @@ export default function AnxietyPage() {
           </p>
         </div>
       </footer>
+
+      <section className="py-10 px-4 bg-slate-50">
+        <div className="max-w-6xl mx-auto">
+          <CredibilityFooter editorial={editorial} region={region} />
+        </div>
+      </section>
+
+      {/* Evidence Sources */}
+      <section className="py-12 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <EvidenceFooter evidence={evidence} />
+        </div>
+      </section>
     </main>
   )
 }

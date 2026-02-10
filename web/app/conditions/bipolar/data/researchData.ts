@@ -12,14 +12,21 @@ export const getResearchData = (): ResearchData | null => {
 };
 
 // Helper function to extract text content with language support
-export const extractContent = (data: any, language: 'en-GB' | 'en-US'): string => {
+export const extractContent = (data: unknown, language: 'en-GB' | 'en-US'): string => {
   if (!data) return '';
   
   if (typeof data === 'string') return data;
-  
-  if (data.uk_content && language === 'en-GB') return data.uk_content;
-  if (data.us_content && language === 'en-US') return data.us_content;
-  if (data.description) return data.description;
+
+  if (typeof data === 'object') {
+    const record = data as Record<string, unknown>;
+    const ukContent = record.uk_content;
+    const usContent = record.us_content;
+    const description = record.description;
+
+    if (language === 'en-GB' && typeof ukContent === 'string') return ukContent;
+    if (language === 'en-US' && typeof usContent === 'string') return usContent;
+    if (typeof description === 'string') return description;
+  }
   
   return '';
 };

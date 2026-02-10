@@ -27,7 +27,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'yarn'
           cache-dependency-path: web/yarn.lock
 
@@ -35,7 +35,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: TypeScript type check
-        run: yarn tsc --noEmit
+        run: yarn typecheck
 
       - name: Lint check
         run: yarn lint
@@ -43,14 +43,17 @@ jobs:
       - name: Build production bundle
         run: yarn build
         env:
-          NEXT_PUBLIC_SITE_URL: https://www.neurobreath.co.uk
+          NEXT_PUBLIC_SITE_URL: https://neurobreath.co.uk
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/neurobreath?schema=public
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: web-build
           path: web/.next
           retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: true
 
   # ====================================
   # Web App - Accessibility Audit
@@ -59,6 +62,9 @@ jobs:
     name: Web App - Accessibility Audit
     runs-on: ubuntu-latest
     needs: web-build
+    defaults:
+      run:
+        working-directory: ./web
 
     steps:
       - name: Checkout code
@@ -67,17 +73,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: web/yarn.lock
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: web-build
           path: web/.next
 
-      - name: Start Next.js server
+      - name: Install dependencies and start server
         run: |
-          cd web
           yarn install --frozen-lockfile
           yarn start &
           sleep 10
@@ -85,18 +92,18 @@ jobs:
       - name: Run Lighthouse CI
         run: |
           npm install -g @lhci/cli
-          lhci autorun --config=./web/.lighthouserc.json
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          lhci autorun --config=.lighthouserc.json
 
   # ====================================
-  # Web App - Deploy to Cloudflare Pages (Production only)
+  # Web App - Content Quality Gate
   # ====================================
-  web-deploy:
-    name: Web App - Deploy to Cloudflare Pages
+  content-quality-gate:
+    name: Web App - Content Quality Gate
     runs-on: ubuntu-latest
-    needs: [web-build, web-accessibility]
-    if: github.ref == 'refs/heads/main'  # Only deploy on main branch
+    needs: web-build
+    defaults:
+      run:
+        working-directory: ./web
 
     steps:
       - name: Checkout code
@@ -105,26 +112,134 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: web/yarn.lock
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: web-build
+          path: web/.next
 
       - name: Install dependencies
-        run: |
-          cd web
-          yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile
 
-      - name: Build for production
-        run: |
-          cd web
-          yarn build
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run content quality gate
+        run: yarn content:quality-gate
         env:
-          NEXT_PUBLIC_SITE_URL: https://www.neurobreath.co.uk
+          QUALITY_GATE_BASE_URL: http://localhost:3000
 
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+      - name: Upload content quality reports
+        uses: actions/upload-artifact@v4
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy web/.next --project-name=neurobreath
+          name: content-quality-report
+          path: web/reports
+          retention-days: 7
+          if-no-files-found: error
+
+  # ====================================
+  # Web App - SEO & Search Console Checks
+  # ====================================
+  web-seo-validation:
+    name: Web App - SEO Validation
+    runs-on: ubuntu-latest
+    needs: web-build
+    defaults:
+      run:
+        working-directory: ./web
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: web/yarn.lock
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: web-build
+          path: web/.next
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Install Chromium
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+
+      - name: Start server
+        run: |
+          PORT=3000 yarn start &
+          sleep 10
+        env:
+          NEXT_PUBLIC_SITE_URL: https://neurobreath.co.uk
+
+      - name: Run sitemap validation
+        run: yarn seo:sitemap:ci
+        env:
+          SEO_BASE_URL: http://localhost:3000
+          NEXT_PUBLIC_SITE_URL: https://neurobreath.co.uk
+
+      - name: Run search console readiness
+        run: yarn seo:search-console-ready
+        env:
+          SEO_BASE_URL: http://localhost:3000
+          NEXT_PUBLIC_SITE_URL: https://neurobreath.co.uk
+          CHROME_PATH: /usr/bin/chromium-browser
+
+      - name: Upload SEO reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: seo-reports
+          path: web/reports
+          retention-days: 7
+          if-no-files-found: error
+
+  # ====================================
+  # Web App - Deploy to Cloudflare Pages (Production only)
+  # ====================================
+  # DISABLED: Using Vercel for deployments instead
+  # Uncomment and configure if you want to use Cloudflare Pages
+  #
+  # web-deploy:
+  #   name: Web App - Deploy to Cloudflare Pages
+  #   runs-on: ubuntu-latest
+  #   needs: [web-build, web-accessibility]
+  #   if: ${{ github.ref == 'refs/heads/main' }}
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '20'
+  #         cache: 'yarn'
+  #         cache-dependency-path: web/yarn.lock
+  #     - name: Install Yarn 1 (Classic)
+  #       run: npm install -g yarn@1.22.22
+  #     - name: Install dependencies
+  #       run: yarn install --frozen-lockfile
+  #     - name: Build for production
+  #       run: yarn build
+  #       env:
+  #         NEXT_PUBLIC_SITE_URL: https://www.neurobreath.co.uk
+  #         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/neurobreath?schema=public
+  #     - name: Deploy to Cloudflare Pages
+  #       uses: cloudflare/wrangler-action@v3
+  #       with:
+  #         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  #         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  #         command: pages deploy web/.next --project-name=neurobreath
 
   # ====================================
   # Serverless (Cloudflare Workers) - Future

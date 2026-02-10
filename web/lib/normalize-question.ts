@@ -121,7 +121,7 @@ export function normalizeQuestion(
   quickPromptId: string | undefined,
   context: UserContext,
   topic: Topic,
-  mode: SubmissionMode
+  _mode: SubmissionMode
 ): string {
   // If quick prompt provided, use its template
   if (quickPromptId) {

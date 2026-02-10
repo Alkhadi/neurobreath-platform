@@ -167,6 +167,7 @@ export function SupportCommunity() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-shrink-0 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
+                    aria-label={`Visit ${org.name} website`}
                   >
                     <ExternalLink className="w-5 h-5" />
                   </a>

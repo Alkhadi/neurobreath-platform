@@ -9,24 +9,20 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   Heart, 
-  BookOpen, 
   Users, 
   CheckCircle2, 
   ExternalLink, 
   Lightbulb,
   Clock,
   Calendar,
-  Home,
   Brain,
   Shield,
   Phone,
   Sparkles,
   HeartHandshake,
   AlertCircle,
-  UserCheck,
   FileText,
-  Activity,
-  Moon
+  Activity
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -45,7 +41,7 @@ export default function AutismCarerSupportPage() {
     <main className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-teal-950">
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 overflow-hidden bg-gradient-to-br from-teal-600 via-cyan-600 to-blue-600 text-white">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <div className="text-center space-y-6 mb-12">
             <div className="flex justify-center mb-4">
               <div className="p-4 bg-white/20 rounded-full">
@@ -172,7 +168,7 @@ export default function AutismCarerSupportPage() {
 
       {/* Carer Wellbeing Section */}
       <section id="carer-wellbeing" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Carer Wellbeing & Self-Care</h2>
           
           <Alert className="mb-6 border-amber-200 bg-amber-50 dark:bg-amber-950/20">
@@ -313,7 +309,7 @@ export default function AutismCarerSupportPage() {
 
       {/* Daily Support Strategies */}
       <section id="daily-support" className="py-16 bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50 dark:from-teal-950 dark:via-cyan-950 dark:to-blue-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Daily Support Strategies</h2>
           
           <div className="grid gap-6">
@@ -480,7 +476,7 @@ export default function AutismCarerSupportPage() {
 
       {/* Later Life & Ageing */}
       <section id="later-life" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Later Life & Ageing with Autism</h2>
           
           <div className="grid gap-6 lg:grid-cols-3 mb-6">
@@ -612,7 +608,7 @@ export default function AutismCarerSupportPage() {
 
       {/* Health & Social Care Coordination */}
       <section id="health-coordination" className="py-16 bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 dark:from-cyan-950 dark:via-blue-950 dark:to-indigo-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Health & Social Care Coordination</h2>
           
           <div className="grid gap-6">
@@ -726,7 +722,7 @@ export default function AutismCarerSupportPage() {
 
       {/* Crisis Support */}
       <section id="crisis" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Crisis Support & Emergency Resources</h2>
           
           <Alert className="mb-6 border-red-200 bg-red-50 dark:bg-red-950/20">
@@ -809,7 +805,7 @@ export default function AutismCarerSupportPage() {
 
       {/* Support Resources */}
       <section id="resources" className="py-16 bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50 dark:from-teal-950 dark:via-cyan-950 dark:to-blue-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Carer Support Organizations</h2>
           
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -920,7 +916,7 @@ export default function AutismCarerSupportPage() {
 
       {/* Breathing for Carers */}
       <section id="breathing" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
             Breathing for Carer Stress Relief
           </h2>

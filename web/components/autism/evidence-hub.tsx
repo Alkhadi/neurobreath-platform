@@ -153,12 +153,6 @@ const euResources: Resource[] = [
 export function EvidenceHub() {
   const [selectedCountry, setSelectedCountry] = useState<'uk' | 'us' | 'eu'>('uk');
 
-  const resources = {
-    uk: ukResources,
-    us: usResources,
-    eu: euResources
-  }[selectedCountry];
-
   return (
     <div className="w-full">
       <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur border-2 border-indigo-200 dark:border-indigo-900">
@@ -176,9 +170,23 @@ export function EvidenceHub() {
       <CardContent>
         <Tabs value={selectedCountry} onValueChange={(val) => setSelectedCountry(val as 'uk' | 'us' | 'eu')}>
           <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="uk">UK</TabsTrigger>
+            <TabsTrigger
+              value="uk"
+              data-tour="nb:autism-hub:resources-uk"
+              data-tour-order="5"
+              data-tour-title="UK resources (NICE/NHS/SEND etc.)"
+            >
+              UK
+            </TabsTrigger>
             <TabsTrigger value="us">US</TabsTrigger>
-            <TabsTrigger value="eu">EU/International</TabsTrigger>
+            <TabsTrigger
+              value="eu"
+              data-tour="nb:autism-hub:resources-international"
+              data-tour-order="6"
+              data-tour-title="International resources"
+            >
+              EU/International
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="uk" className="space-y-4">
@@ -201,7 +209,13 @@ export function EvidenceHub() {
         </Tabs>
 
         {/* PubMed Placeholder for Phase 2 */}
-        <div className="mt-6 p-4 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
+        <div
+          className="mt-6 p-4 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg"
+          data-tour="nb:autism-hub:pubmed-coming-soon"
+          data-tour-order="7"
+          data-tour-title="PubMed research (coming soon)"
+          data-tour-placement="bottom"
+        >
           <div className="flex items-center gap-2 mb-2">
             <FileText className="h-5 w-5 text-gray-500" />
             <h3 className="font-semibold text-gray-700 dark:text-gray-300">PubMed Research (Coming Soon)</h3>
@@ -232,15 +246,15 @@ function ResourceCard({ resource }: { resource: Resource }) {
     <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur hover:shadow-md transition-shadow">
       <CardContent className="pt-4">
         <div className="flex items-start justify-between gap-4">
-          <div className="flex-1 space-y-2">
+          <div className="flex-1 min-w-0 space-y-2">
             <div className="flex items-start gap-2">
               <Globe className="h-4 w-4 mt-1 text-muted-foreground flex-shrink-0" />
-              <div className="flex-1">
-                <h4 className="font-semibold text-sm">{resource.title}</h4>
-                <p className="text-xs text-muted-foreground">{resource.organization}</p>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-semibold text-sm break-words">{resource.title}</h4>
+                <p className="text-xs text-muted-foreground break-words">{resource.organization}</p>
               </div>
             </div>
-            <p className="text-sm text-muted-foreground">{resource.description}</p>
+            <p className="text-sm text-muted-foreground break-words">{resource.description}</p>
             {resource.topics && resource.topics.length > 0 && (
               <div className="flex flex-wrap gap-1">
                 {resource.topics.map(topic => (

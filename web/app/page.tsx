@@ -1,3 +1,5 @@
+'use client'
+
 import HeroSection from '@/components/home/hero-section'
 import CredibilitySection from '@/components/home/credibility-section'
 import GoalsSection from '@/components/home/goals-section'
@@ -7,6 +9,10 @@ import RewardsSection from '@/components/home/rewards-section'
 import ToolsSection from '@/components/home/tools-section'
 import SafetySupportSection from '@/components/home/safety-support-section'
 import OrganisationsSection from '@/components/home/organisations-section'
+import { EvidenceFooter } from '@/components/evidence-footer'
+import { evidenceByRoute } from '@/lib/evidence/page-evidence'
+
+const evidence = evidenceByRoute['/']
 
 export default function HomePage() {
   return (
@@ -39,6 +45,9 @@ export default function HomePage() {
         
         {/* For Organisations */}
         <OrganisationsSection />
+        
+        {/* Evidence Sources */}
+        <EvidenceFooter evidence={evidence} className="mt-16" />
       </div>
     </div>
   )

@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Wind, Play, Pause, RotateCcw } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { getBreathingSnapshotAtElapsedMs } from '@/lib/breathing/engineSnapshot'
 
 const techniques = [
   { name: 'Box Breathing', inhale: 4, hold1: 4, exhale: 4, hold2: 4, description: 'Equal phases for calm focus' },
@@ -13,16 +14,19 @@ const techniques = [
   { name: 'Calm Breath', inhale: 4, hold1: 2, exhale: 6, hold2: 0, description: 'Gentle stress relief' },
 ]
 
+type Phase = 'inhale' | 'hold1' | 'exhale' | 'hold2'
+
 export function BreathingExercise() {
   const [selectedTechnique, setSelectedTechnique] = useState(0)
   const [isActive, setIsActive] = useState(false)
-  const [phase, setPhase] = useState<'inhale' | 'hold1' | 'exhale' | 'hold2'>('inhale')
+  const [phase, setPhase] = useState<Phase>('inhale')
   const [countdown, setCountdown] = useState(0)
   const [cycles, setCycles] = useState(0)
+  const elapsedSecondsRef = useRef(0)
 
   const technique = techniques[selectedTechnique] ?? techniques[0]
 
-  const getPhaseSeconds = useCallback((p: string) => {
+  const getPhaseSeconds = useCallback((p: Phase) => {
     switch (p) {
       case 'inhale': return technique?.inhale ?? 4
       case 'hold1': return technique?.hold1 ?? 0
@@ -32,40 +36,41 @@ export function BreathingExercise() {
     }
   }, [technique])
 
-  const getNextPhase = useCallback((current: string): 'inhale' | 'hold1' | 'exhale' | 'hold2' => {
-    const phases: Array<'inhale' | 'hold1' | 'exhale' | 'hold2'> = ['inhale', 'hold1', 'exhale', 'hold2']
-    const idx = phases.indexOf(current as any)
-    let next = (idx + 1) % 4
-    while (getPhaseSeconds(phases[next] ?? 'inhale') === 0 && next !== idx) {
-      if (phases[next] === 'hold2') {
-        return 'inhale'
-      }
-      next = (next + 1) % 4
-    }
-    return phases[next] ?? 'inhale'
-  }, [getPhaseSeconds])
-
   useEffect(() => {
     if (!isActive) return
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          const nextPhase = getNextPhase(phase)
-          if (nextPhase === 'inhale' && phase !== 'inhale') {
-            setCycles((c) => c + 1)
-          }
-          setPhase(nextPhase)
-          return getPhaseSeconds(nextPhase)
-        }
-        return prev - 1
+
+    const phaseDefs = (['inhale', 'hold1', 'exhale', 'hold2'] as const)
+      .map((p) => ({ name: p, durationSeconds: getPhaseSeconds(p) }))
+      .filter((p) => p.durationSeconds > 0)
+
+    const syncFromElapsedSeconds = (elapsedSeconds: number) => {
+      const snapshot = getBreathingSnapshotAtElapsedMs({
+        phases: phaseDefs,
+        elapsedMs: elapsedSeconds * 1000,
+        totalMs: undefined,
       })
+
+      setPhase(snapshot.phaseName as Phase)
+      setCountdown(Math.max(0, Math.ceil(snapshot.phaseMsRemaining / 1000)))
+      setCycles(snapshot.cyclesCompleted)
+
+      return snapshot
+    }
+
+    syncFromElapsedSeconds(elapsedSecondsRef.current)
+
+    const timer = setInterval(() => {
+      elapsedSecondsRef.current += 1
+      syncFromElapsedSeconds(elapsedSecondsRef.current)
     }, 1000)
     return () => clearInterval(timer)
-  }, [isActive, phase, getNextPhase, getPhaseSeconds])
+  }, [isActive, getPhaseSeconds])
 
   const handleStart = () => {
     setIsActive(true)
     setPhase('inhale')
+    setCycles(0)
+    elapsedSecondsRef.current = 0
     setCountdown(getPhaseSeconds('inhale'))
   }
 
@@ -78,6 +83,7 @@ export function BreathingExercise() {
     setPhase('inhale')
     setCountdown(0)
     setCycles(0)
+    elapsedSecondsRef.current = 0
   }
 
   const phaseLabel = {

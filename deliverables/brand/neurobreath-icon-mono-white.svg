@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="NeuroBreath icon mono white">
+  <title>NeuroBreath Icon Mono White</title>
+  <g id="pulse-halo" fill="none">
+    <circle
+      id="halo"
+      cx="256"
+      cy="256"
+      r="176"
+      stroke="hsl(0 0% 100%)"
+      stroke-width="64"
+      stroke-linecap="round"
+      stroke-dasharray="966 140"
+      stroke-dashoffset="138"
+    />
+    <g id="neuro-core" fill="hsl(0 0% 100%)">
+      <circle cx="236" cy="256" r="28" />
+      <circle cx="276" cy="256" r="28" />
+    </g>
+  </g>
+</svg>

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Volume2, CheckCircle, XCircle, RefreshCw, Trophy } from 'lucide-react';
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS';
 import { useProgress } from '@/contexts/ProgressContext';
 
 const words = [
@@ -32,7 +33,9 @@ export function PhonemeSegmentation() {
 
   const speakWord = () => {
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(word.word);
+      const cleanText = sanitizeForTTS(word.word);
+      if (!cleanText) return;
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.rate = 0.7;
       window.speechSynthesis.speak(utterance);
     }
@@ -40,7 +43,9 @@ export function PhonemeSegmentation() {
 
   const speakPhoneme = (phoneme: string) => {
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(phoneme);
+      const cleanText = sanitizeForTTS(phoneme);
+      if (!cleanText) return;
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.rate = 0.5;
       utterance.pitch = 1.2;
       window.speechSynthesis.speak(utterance);

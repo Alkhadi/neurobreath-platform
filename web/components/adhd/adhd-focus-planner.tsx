@@ -10,11 +10,11 @@ interface ADHDFocusPlannerProps {
   onProgressUpdate?: () => void;
 }
 
-export function ADHDFocusPlanner({ onProgressUpdate }: ADHDFocusPlannerProps) {
+export function ADHDFocusPlanner({ onProgressUpdate: _onProgressUpdate }: ADHDFocusPlannerProps) {
   const [ifThen, setIfThen] = useState({ if: '', then: '' });
 
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="mx-auto w-[86vw] max-w-[86vw] px-4">
       <div className="text-center mb-8">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">Focus Sprint Planner 🎯</h2>
         <p className="text-muted-foreground max-w-3xl mx-auto">

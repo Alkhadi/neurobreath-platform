@@ -19,7 +19,6 @@ import UrgentHelpPanel from './urgent-help-panel'
 import AnswerCoverageBar from './answer-coverage-bar'
 import EvidenceSnapshot from './evidence-snapshot'
 import VisualLearningCards from './visual-learning-cards'
-import Link from 'next/link'
 import { ExternalLink, BookOpen } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
@@ -40,6 +39,20 @@ interface DebugInfo {
   apiRoute: string
   timestamp: string
   quickPromptId?: string
+}
+
+type RecommendationPayload = {
+  path: string
+  title: string
+  whoItsFor?: string
+  whenToUse?: string
+  howToDoIt?: string
+}
+
+function isRecommendationPayload(value: unknown): value is RecommendationPayload {
+  if (!value || typeof value !== 'object') return false
+  const v = value as Record<string, unknown>
+  return typeof v.path === 'string' && typeof v.title === 'string'
 }
 
 export default function AICoachChatV2() {
@@ -136,14 +149,19 @@ export default function AICoachChatV2() {
       const data = await response.json()
 
       // Extract recommended resources from answer
-      const resources: RecommendedResourceDisplay[] = data.answer.recommendations?.map((r: any) => ({
-        id: r.path,
-        title: r.title,
-        type: 'resource',
-        url: r.path,
-        whyThisFits: r.whoItsFor || r.whenToUse,
-        howToUseThisWeek: r.howToDoIt || r.whenToUse
-      })) || []
+      const recommendationsUnknown: unknown = data?.answer?.recommendations
+      const resources: RecommendedResourceDisplay[] = Array.isArray(recommendationsUnknown)
+        ? recommendationsUnknown
+            .filter(isRecommendationPayload)
+            .map((r) => ({
+              id: r.path,
+              title: r.title,
+              type: 'resource',
+              url: r.path,
+              whyThisFits: r.whoItsFor || r.whenToUse || '',
+              howToUseThisWeek: r.howToDoIt || r.whenToUse || ''
+            }))
+        : []
 
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Volume2, Lightbulb, Check, ArrowRight } from 'lucide-react';
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS';
 import { toast } from 'sonner';
 
 interface SyllableWord {
@@ -121,7 +122,9 @@ export default function SyllableSplitter() {
 
   const hearWord = () => {
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(currentWord.word);
+      const cleanText = sanitizeForTTS(currentWord.word);
+      if (!cleanText) return;
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.rate = 0.6;
       utterance.pitch = 1.0;
       window.speechSynthesis.speak(utterance);

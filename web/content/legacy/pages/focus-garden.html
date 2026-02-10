@@ -29,15 +29,16 @@
     
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assets/css/legacy-fallback.css">
     
-    <!-- React CDN -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- React/Babel CDN removed (legacy file; scripts are blocked in app render) -->
 </head>
 <body>
-    <div id="root"></div>
-    <script type="text/babel" src="app.js"></script>
+    <main class="nb-legacy-fallback">
+        <h1 class="nb-legacy-fallback__title">Focus Garden</h1>
+        <p class="nb-legacy-fallback__p nb-legacy-fallback__p--muted">This legacy page used a browser-compiled React app. The current Focus Garden is available in the main NeuroBreath app.</p>
+        <p class="nb-legacy-fallback__p"><a href="/autism/focus-garden" class="nb-legacy-fallback__link">Open Focus Garden</a></p>
+    </main>
 </body>
 </html>
 

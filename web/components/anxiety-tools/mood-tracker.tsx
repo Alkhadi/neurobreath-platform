@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Calendar as CalendarIcon, TrendingDown, TrendingUp } from 'lucide-react'
+import { Calendar as CalendarIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
@@ -11,7 +11,7 @@ import { useLocalStorage } from '@/hooks/use-local-storage'
 import { useAchievements } from '@/hooks/use-achievements'
 import { MoodEntry } from '@/lib/types'
 import { toast } from 'sonner'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 
 const MOODS = [
   { emoji: '😊', label: 'Happy', color: 'bg-yellow-200' },
@@ -121,9 +121,13 @@ export function MoodTracker() {
         
         {/* Date */}
         <div>
-          <Label htmlFor="date" className="mb-2 block">Date</Label>
+          <Label id="mood-tracker-date-label" htmlFor="date" className="mb-2 block">Date</Label>
           <input
             id="date"
+            name="date"
+            aria-labelledby="mood-tracker-date-label"
+            aria-label="Date"
+            title="Date"
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
@@ -134,12 +138,13 @@ export function MoodTracker() {
 
         {/* Anxiety Level */}
         <div>
-          <Label className="mb-2 block">
+          <Label id="anxiety-level-label" className="mb-2 block">
             Anxiety Level: <span className={`font-bold text-xl ${getAnxietyColor(anxietyLevel?.[0] ?? 5)}`}>
               {anxietyLevel?.[0] ?? 5}/10
             </span>
           </Label>
           <Slider
+            aria-labelledby="anxiety-level-label"
             value={anxietyLevel}
             onValueChange={setAnxietyLevel}
             min={0}

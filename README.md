@@ -1,116 +1,176 @@
 # NeuroBreath Platform
 
-**A neurodiversity-affirming breathing & mindfulness platform for neurodivergent individuals**
+NeuroBreath is a neurodiversity support platform focused on evidence-informed breathing tools, learning/reading supports, and practical resources for ADHD, autism, anxiety, dyslexia, and related needs.
 
-🌐 **Live Site**: [www.neurobreath.co.uk](https://www.neurobreath.co.uk)  
-📦 **Repository**: `neurobreath-platform` (monorepo)  
-🚀 **Deployment**: Cloudflare Pages (Next.js SSR via Workers)
+This repository is a monorepo. The Next.js app lives in `web/`.
 
----
+## 1) Executive Summary
 
-## 📋 Project Overview
+NeuroBreath provides structured, sensory-aware tools (breathing exercises, progress tracking, printables) and an on-page assistant (PageBuddy) to help users navigate content and adopt strategies.
 
-NeuroBreath provides **evidence-based breathing techniques, dyslexia reading training, and ADHD/autism support tools** through an accessible, sensory-safe web platform. Built with neurodivergent users at the center—featuring low-stimulation design, voice guidance, progress tracking, and gamification.
+It exists to make high-quality, evidence-informed support accessible, consistent, and easy to use for neurodivergent individuals as well as parents, teachers, and carers.
 
-### **Core Features**
-- ✅ **Breathing Techniques**: Box, 4-7-8, Coherent (5-5), SOS 60s Reset
-- ✅ **Dyslexia Reading Training**: 28+ interactive tools (Phonics Lab, Vowel Universe, Fluency Pacer, etc.)
-- ✅ **ADHD Deep Dive**: Assessment guides, school support, teen strategies
-- ✅ **Playful Breathing Lab**: Breath Ladder, Colour-Path, Focus Tiles, Roulette
-- ✅ **Voice Guidance**: Pre-recorded audio + TTS with 7 ambient sounds (rain, ocean, forest, etc.)
-- ✅ **Progress Tracking**: LocalStorage-based session history, badges, streak tracking
+## 2) Architecture Overview
 
----
+High-level request flow:
 
-## 🗂️ Monorepo Structure
-
-```
-neurobreath-platform/
-├── README.md                    # This file
-├── .gitignore                   # Production-grade ignore rules
-├── .env.example                 # Environment variables template
-├── docs/                        # Documentation
-│   ├── neurobreath-product-spec.md
-│   └── decisions.md
-├── web/                         # ✅ Next.js 14 web application
-│   ├── app/                     # App Router pages
-│   ├── components/              # React components
-│   ├── hooks/                   # Custom hooks
-│   ├── public/                  # Static assets (audio, images)
-│   ├── package.json
-│   ├── next.config.js
-│   └── tsconfig.json
-├── shared/                      # 🔮 Future: Shared data/design tokens
-│   ├── data/                    # JSON data (plants, decks, etc.)
-│   ├── design/                  # Design tokens (colors, spacing)
-│   └── assets/                  # Shared icons, images
-├── serverless/                  # 🔮 Future: Cloudflare Workers/Pages Functions
-│   └── worker/                  # API proxy layer
-├── flutter_app/                 # 🔮 Future: Mobile app (iOS/Android)
-└── .github/                     # 🔮 Future: CI/CD workflows
-    └── workflows/
-        └── ci.yml
+```text
+Browser
+    └─ Next.js App Router (web/app)
+             ├─ Server Components (SSR/SSG)
+             ├─ Client Components (interactive UI)
+             └─ API Routes (web/app/api/*/route.ts)
+                         └─ Prisma (web/lib/db.ts)
+                                     └─ PostgreSQL (local Docker or hosted)
 ```
 
----
+Key modules:
 
-## 🚀 Quick Start (Development)
+- `web/app/`: routes and API handlers
+- `web/components/`: UI components (PageBuddy lives here)
+- `web/lib/`: shared utilities (SEO config, db client, AI config)
+- `web/prisma/`: schema and migrations
+- `web/tests/`: Playwright E2E
 
-### **Prerequisites**
-- Node.js 18+ (LTS recommended)
-- Yarn 1.22+ (project uses Yarn as package manager)
+## 3) Setup Guide
 
-### **Local Development**
+### Prerequisites
+
+- Node.js 20 LTS recommended
+- Yarn classic (v1)
+- Docker (optional, for local Postgres)
+
+### Install
+
 ```bash
-# Clone the repository
-git clone https://github.com/YOUR_USERNAME/neurobreath-platform.git
-cd neurobreath-platform
-
-# Navigate to web app
 cd web
-
-# Install dependencies
 yarn install
+```
 
-# Generate Prisma client (if using database)
-yarn prisma generate
+### Configure
 
-# Start development server
+```bash
+cd web
+cp .env.example .env
+```
+
+Set required variables in `.env` (see Configuration).
+
+### Run
+
+```bash
+cd web
 yarn dev
 ```
 
-👉 **Open**: [http://localhost:3000](http://localhost:3000)
+Open: <http://localhost:3000>
 
----
+## 4) Usage Guide
 
-## 📦 Build & Deploy
+### Common commands
 
-### **Production Build**
 ```bash
 cd web
-yarn build          # Creates .next/ production bundle
-yarn start          # Serves production build locally
+yarn dev
+yarn lint
+yarn typecheck
+yarn build
 ```
 
-### **Cloudflare Pages Deployment**
+### Example API request
 
-#### **Option 1: Direct Git Integration**
-1. Push to GitHub: `git push origin main`
-2. Connect repository in [Cloudflare Dashboard](https://dash.cloudflare.com)
-3. Configure build settings:
-   - **Build command**: `cd web && yarn install && yarn build`
-   - **Build output directory**: `web/.next`
-   - **Root directory**: `/` (monorepo root)
-4. Set custom domain: `www.neurobreath.co.uk`
-5. Add redirect: `neurobreath.co.uk` → `www.neurobreath.co.uk`
+Health check:
 
-#### **Option 2: Wrangler CLI**
+```bash
+curl -s http://localhost:3000/api/healthz | jq
+```
+
+Contact form endpoint (Turnstile + Resend):
+
+```bash
+curl -X POST http://localhost:3000/api/contact \
+    -H 'Content-Type: application/json' \
+    -d '{"name":"Test","email":"test@example.com","message":"Hello","token":"TURNSTILE_TOKEN"}'
+```
+
+## 5) Configuration
+
+Environment variables are defined in `web/.env.example` (names only, no values).
+
+| Variable | Required | Used for |
+|---|---:|---|
+| `DATABASE_URL` | Yes | Prisma/Postgres |
+| `NEXT_PUBLIC_SITE_URL` | Recommended | SEO canonical fallback |
+| `ABACUSAI_API_KEY` | Optional | PageBuddy + AI Coach API routes |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Optional | Contact form client |
+| `TURNSTILE_SECRET_KEY` | Optional | Contact form server |
+| `RESEND_API_KEY` | Optional | Contact email sending |
+
+Secrets handling:
+
+- Never commit `.env` files.
+- API routes must validate env vars *inside* handlers (no throw on import).
+
+## 6) Testing
+
+Playwright E2E:
+
 ```bash
 cd web
-npx wrangler pages deploy .next --project-name=neurobreath
+yarn test:e2e
+yarn test:e2e tests/buddy.spec.ts
 ```
 
-> **⚠️ Important**: Next.js SSR features require Cloudflare Workers deployment (not static Pages). Use `@cloudflare/next-on-pages` adapter for full SSR support.
+Testing expectations:
+
+- Buddy/UI/API changes must at least run `tests/buddy.spec.ts`.
+
+## 7) Deployment
+
+CI gates for PRs are enforced in `.github/workflows/ci-gates.yml`:
+
+- `yarn lint`
+- `yarn typecheck`
+- `yarn build`
+- `yarn test:e2e tests/buddy.spec.ts`
+
+Production deployment is handled by the repository’s existing workflows and hosting configuration.
+
+## 8) Contributing Guide
+
+- Work in `web/`.
+- Before pushing, run:
+
+```bash
+cd web
+yarn lint
+yarn typecheck
+yarn build
+```
+
+PRs must follow `.github/pull_request_template.md`.
+
+## 9) FAQ & Troubleshooting
+
+### Build fails due to missing env vars
+
+- Ensure API routes do not instantiate SDK clients at module scope.
+- Ensure `.env.example` includes new env var names.
+
+### Prisma issues
+
+- Prisma client is centralized at `web/lib/db.ts`.
+- Confirm `DATABASE_URL` is set for runtime DB access.
+
+## 10) License and Credits
+
+License: see repository license files (if present).
+
+Credits:
+
+- Next.js, React, TypeScript
+- Prisma + PostgreSQL
+- Playwright
 
 ---
 
@@ -151,6 +211,7 @@ See `.env.example` for full list of required variables.
 ## 🛠️ Technology Stack
 
 ### **Frontend**
+
 - **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript 5.2
 - **Styling**: Tailwind CSS 3.3 + CSS Modules
@@ -159,16 +220,19 @@ See `.env.example` for full list of required variables.
 - **Animations**: Framer Motion
 
 ### **Audio & Voice**
+
 - **Voice Guidance**: Web Speech API (TTS) + Pre-recorded MP3s
 - **Ambient Sounds**: Web Audio API (7 procedural generators)
 - **Speech Recognition**: Web Speech API (STT)
 
 ### **Deployment**
+
 - **Hosting**: Cloudflare Pages + Workers
 - **CDN**: Cloudflare global network
-- **Domain**: www.neurobreath.co.uk (canonical)
+- **Domain**: <www.neurobreath.co.uk> (canonical)
 
 ### **Future Stack**
+
 - **Mobile**: Flutter (iOS/Android)
 - **Backend**: Cloudflare Workers + D1 Database
 - **Auth**: NextAuth.js (email/password)
@@ -197,6 +261,7 @@ This project follows a neurodiversity-affirming development philosophy:
 5. **Privacy-Focused**: No tracking, LocalStorage only for user benefit
 
 ### **Development Guidelines**
+
 - Use **descriptive commit messages** (Conventional Commits format)
 - Test on **real devices** (not just dev tools responsive mode)
 - Verify **screen reader compatibility** (NVDA/VoiceOver)
@@ -214,7 +279,7 @@ This project follows a neurodiversity-affirming development philosophy:
 ## 📞 Contact
 
 - **Website**: [www.neurobreath.co.uk](https://www.neurobreath.co.uk)
-- **Support**: support@neurobreath.co.uk
+- **Support**: <support@neurobreath.co.uk>
 - **Social**: Twitter [@NeuroBreath](https://twitter.com/NeuroBreath)
 
 ---
@@ -222,6 +287,7 @@ This project follows a neurodiversity-affirming development philosophy:
 ## 🗺️ Roadmap
 
 ### **Phase 1: MVP** ✅ Complete (Dec 2024)
+
 - [x] Core breathing techniques (Box, 4-7-8, Coherent, SOS)
 - [x] Dyslexia reading training (28+ tools)
 - [x] ADHD Deep Dive resources
@@ -229,6 +295,7 @@ This project follows a neurodiversity-affirming development philosophy:
 - [x] Progress tracking + gamification
 
 ### **Phase 2: Polish** 🚧 In Progress (Q1 2025)
+
 - [ ] Shop integration (Neurogum-style layout)
 - [ ] "Inside the Neurodivergent Brain" research deck
 - [ ] Enhanced progress dashboard
@@ -236,6 +303,7 @@ This project follows a neurodiversity-affirming development philosophy:
 - [ ] Performance optimizations
 
 ### **Phase 3: Scale** 🔮 Planned (Q2 2025)
+
 - [ ] Flutter mobile app (iOS/Android)
 - [ ] Cloudflare Workers backend
 - [ ] User accounts + authentication
@@ -243,6 +311,7 @@ This project follows a neurodiversity-affirming development philosophy:
 - [ ] Offline mode support
 
 ### **Phase 4: Community** 🔮 Planned (Q3 2025)
+
 - [ ] Teacher dashboard
 - [ ] Parent/carer resources
 - [ ] School integration tools
@@ -261,4 +330,4 @@ This project follows a neurodiversity-affirming development philosophy:
 
 ---
 
-**Built with ❤️ for the neurodivergent community**
+## Built with ❤️ for the neurodivergent community

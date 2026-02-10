@@ -1,0 +1,41 @@
+{
+  "routes": [
+    {"match": "/adhd", "type": "pillar", "conditions": ["adhd"], "supportNeeds": ["focus", "executive-function", "routines", "emotional-regulation"]},
+    {"match": "/autism", "type": "pillar", "conditions": ["autism"], "supportNeeds": ["sensory", "communication", "routines", "emotional-regulation"]},
+    {"match": "/anxiety", "type": "pillar", "conditions": ["anxiety-stress"], "supportNeeds": ["anxiety", "stress", "emotional-regulation", "sleep"]},
+    {"match": "/sleep", "type": "pillar", "conditions": ["sleep-difficulties"], "supportNeeds": ["sleep", "routines"]},
+    {"match": "/stress", "type": "pillar", "conditions": ["emotional-regulation"], "supportNeeds": ["stress", "emotional-regulation"]},
+    {"match": "/dyslexia-reading-training", "type": "pillar", "conditions": ["dyslexia"], "supportNeeds": ["reading", "routines"]},
+    {"match": "/conditions/dyslexia", "type": "cluster", "conditions": ["dyslexia"], "supportNeeds": ["reading"]},
+    {"match": "/conditions/dyspraxia", "type": "cluster", "conditions": ["dyspraxia-dcd"], "supportNeeds": ["motor", "routines"]},
+    {"match": "/conditions/dyscalculia", "type": "cluster", "conditions": ["dyscalculia"], "supportNeeds": ["math"]},
+    {"match": "/conditions/dysgraphia", "type": "cluster", "conditions": ["dysgraphia"], "supportNeeds": ["writing"]},
+    {"match": "/conditions/tourette", "type": "cluster", "conditions": ["tourette"], "supportNeeds": ["stress", "emotional-regulation"]},
+    {"match": "/conditions/slcn", "type": "cluster", "conditions": ["slcn"], "supportNeeds": ["communication"]},
+    {"match": "/conditions/sensory-processing", "type": "cluster", "conditions": ["sensory-processing"], "supportNeeds": ["sensory"]},
+    {"match": "/conditions/executive-function", "type": "cluster", "conditions": ["executive-function"], "supportNeeds": ["executive-function"]},
+    {"match": "/conditions/auditory-processing", "type": "cluster", "conditions": ["auditory-processing"], "supportNeeds": ["communication"]},
+    {"match": "/conditions/visual-processing", "type": "cluster", "conditions": ["visual-processing"], "supportNeeds": ["reading", "visual"]},
+    {"match": "/conditions/hyperlexia", "type": "cluster", "conditions": ["hyperlexia"], "supportNeeds": ["reading", "communication"]},
+    {"match": "/conditions/visual-stress", "type": "cluster", "conditions": ["visual-stress"], "supportNeeds": ["reading", "visual"]},
+
+    {"matchPrefix": "/tools/adhd-tools", "type": "tool", "conditions": ["adhd"], "supportNeeds": ["focus", "executive-function"]},
+    {"matchPrefix": "/tools/autism-tools", "type": "tool", "conditions": ["autism"], "supportNeeds": ["sensory", "communication"]},
+    {"matchPrefix": "/tools/anxiety-tools", "type": "tool", "conditions": ["anxiety-stress"], "supportNeeds": ["anxiety", "stress"]},
+    {"matchPrefix": "/tools/depression-tools", "type": "tool", "conditions": ["anxiety-stress"], "supportNeeds": ["stress", "emotional-regulation"]},
+    {"matchPrefix": "/tools/sleep-tools", "type": "tool", "conditions": ["sleep-difficulties"], "supportNeeds": ["sleep"]},
+    {"matchPrefix": "/tools/stress-tools", "type": "tool", "conditions": ["emotional-regulation"], "supportNeeds": ["stress", "emotional-regulation"]},
+    {"matchPrefix": "/tools/breath-tools", "type": "tool", "conditions": ["anxiety-stress", "emotional-regulation"], "supportNeeds": ["stress", "emotional-regulation", "sleep"]},
+    {"matchPrefix": "/tools/focus-training", "type": "tool", "conditions": ["adhd", "executive-function"], "supportNeeds": ["focus", "executive-function"]},
+
+    {"matchPrefix": "/breathing", "type": "cluster", "conditions": ["anxiety-stress", "emotional-regulation"], "supportNeeds": ["stress", "emotional-regulation", "sleep"]},
+    {"matchPrefix": "/techniques", "type": "cluster", "conditions": ["anxiety-stress", "sleep-difficulties"], "supportNeeds": ["stress", "sleep"]},
+
+    {"match": "/guides/quick-calm-in-5-minutes", "type": "cluster", "conditions": ["anxiety-stress", "emotional-regulation"], "supportNeeds": ["stress", "emotional-regulation"]},
+    {"match": "/guides/body-scan-for-stress", "type": "cluster", "conditions": ["anxiety-stress"], "supportNeeds": ["stress"]},
+    {"match": "/guides/wind-down-routine", "type": "cluster", "conditions": ["sleep-difficulties"], "supportNeeds": ["sleep"]},
+    {"match": "/guides/focus-start", "type": "cluster", "conditions": ["adhd", "executive-function"], "supportNeeds": ["focus"]},
+
+    {"matchPrefix": "/trust", "type": "trust", "conditions": [], "supportNeeds": []}
+  ]
+}

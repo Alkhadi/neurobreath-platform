@@ -1,0 +1,135 @@
+name: Performance Budget Gate
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'web/**'
+      - '.github/workflows/perf-budget.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  performance-budget:
+    name: Performance Budget Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres?schema=public
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    
+    defaults:
+      run:
+        working-directory: ./web
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need history for baseline comparison
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
+          cache-dependency-path: web/yarn.lock
+      
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      
+      - name: Build Next.js
+        run: yarn build
+        env:
+          NODE_ENV: production
+      
+      - name: Run performance gate
+        run: yarn perf:gate
+        env:
+          CI: true
+          PERF_BASE_URL: http://localhost:3000
+      
+      - name: Run dependency check
+        run: yarn perf:deps
+        if: always()
+      
+      - name: Compare to baseline
+        run: yarn perf:compare
+        if: always()
+      
+      - name: Generate AutoPlan
+        run: yarn perf:autoplan
+        if: always()
+      
+      - name: Upload performance reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-reports
+          path: web/reports/perf/
+          if-no-files-found: ignore
+          retention-days: 30
+      
+      - name: Upload Lighthouse HTML reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: web/reports/perf/*.html
+          if-no-files-found: ignore
+          retention-days: 30
+      
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summaryPath = 'web/reports/perf/perf-gate.summary.json';
+            const autoplanPath = 'web/reports/perf/autoplan.md';
+            
+            if (!fs.existsSync(summaryPath)) {
+              return;
+            }
+            
+            const summary = JSON.parse(fs.readFileSync(summaryPath, 'utf8'));
+            let body = summary.passed 
+              ? '## ✅ Performance Budget: PASSED\n\n'
+              : '## ❌ Performance Budget: FAILED\n\n';
+            
+            body += `- Failures: ${summary.failures.length}\n`;
+            body += `- Warnings: ${summary.warnings.length}\n`;
+            body += `- Improvements: ${summary.improvements.length}\n\n`;
+            
+            if (summary.failures.length > 0) {
+              body += '### Failures\n\n';
+              summary.failures.slice(0, 5).forEach(f => {
+                body += `- **${f.route}**: ${f.metric} = ${f.current}${f.unit || ''} (threshold: ${f.threshold}${f.unit || ''})\n`;
+              });
+              
+              if (fs.existsSync(autoplanPath)) {
+                body += '\n📋 AutoPlan generated - see artifacts for recommendations.\n';
+              }
+            }
+            
+            body += '\n📊 Full reports available in workflow artifacts.';
+
+            try {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body
+              });
+            } catch (err) {
+              core.warning(`Unable to comment on PR (likely permissions): ${err.message || err}`);
+            }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { PageHeaderCompact } from '@/components/page/PageHeader';
 import { PhonicsPlayer } from '@/components/PhonicsPlayer';
 import { PhonicsSoundsLab } from '@/components/PhonicsSoundsLab';
 import { VowelUniverse } from '@/components/VowelUniverse';
@@ -24,6 +25,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { GraduationCap } from 'lucide-react';
+import { EvidenceFooter } from '@/components/evidence-footer';
+import { evidenceByRoute } from '@/lib/evidence/page-evidence';
+import { CredibilityFooter } from '@/components/trust/CredibilityFooter';
+import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog';
+import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial';
+import type { Region } from '@/lib/region/region';
 // New Evidence-Based Components
 import { RhythmTraining } from '@/components/RhythmTraining';
 import { RapidNamingTest } from '@/components/RapidNamingTest';
@@ -35,7 +42,23 @@ import { AssessmentHistory } from '@/components/AssessmentHistory';
 
 type TrainingApproach = 'focused' | 'direct' | 'fluency';
 
+const evidence = evidenceByRoute['/dyslexia-reading-training'];
+
 export default function DyslexiaReadingTrainingPage() {
+  const region: Region = 'UK';
+  const editorial = createEditorialMeta({
+    authorId: 'nb-editorial-team',
+    reviewerId: 'nb-evidence-review',
+    editorialRoleNotes: 'Reviewed for clarity, safety language, and evidence framing.',
+    createdAt: '2026-01-16',
+    updatedAt: '2026-01-17',
+    reviewedAt: '2026-01-17',
+    reviewIntervalDays: 120,
+    changeLog: createChangeLog([
+      createChangeLogEntry('2026-01-17', 'Credibility footer and review details added.', 'safety'),
+    ]),
+    citationsSummary: createCitationsSummary(evidence?.citations?.length ?? 0, ['A', 'B']),
+  });
   const [sessionModalOpen, setSessionModalOpen] = useState(false);
   const breathingRef = useRef<HTMLDivElement>(null);
   const phonicsRef = useRef<HTMLDivElement>(null);
@@ -63,25 +86,17 @@ export default function DyslexiaReadingTrainingPage() {
     <ReadingLevelProvider>
       <ProgressProvider>
         <div className="min-h-screen bg-background pt-4">
-          <main className="mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8 md:space-y-12" style={{ width: '86vw', maxWidth: '86vw' }}>
+          <main className="mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8 md:space-y-12 w-[86vw] max-w-[86vw]">
             
             {/* Hero Section */}
             <section data-tutorial="hero" className="space-y-6">
               {/* Hero/Introduction Card */}
               <Card className="overflow-hidden border-2 border-primary/20">
                 <CardContent className="p-6 sm:p-8 space-y-6">
-                  <div className="space-y-3">
-                    <p className="text-xs sm:text-sm uppercase tracking-wider text-primary font-semibold">
-                      Dyslexia Reading Training • NeuroBreath
-                    </p>
-                    <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
-                      Multisensory Reading Development
-                    </h1>
-                    <p className="text-sm sm:text-base text-muted-foreground">
-                      Systematic, explicit, multisensory instruction based on the science of reading.
-                      Engaging sight, sound, and movement to reinforce letter-sound correspondences and word patterns.
-                    </p>
-                  </div>
+                  <PageHeaderCompact 
+                    title="Dyslexia Reading Training" 
+                    description="Systematic, explicit, multisensory instruction based on the science of reading. Engaging sight, sound, and movement to reinforce letter-sound correspondences and word patterns."
+                  />
 
                   <div className="space-y-3">
                     <Button
@@ -512,6 +527,14 @@ export default function DyslexiaReadingTrainingPage() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Evidence Sources */}
+        <div className="py-8">
+          <CredibilityFooter editorial={editorial} region={region} />
+        </div>
+        <div className="py-12">
+          <EvidenceFooter evidence={evidence} />
+        </div>
       </ProgressProvider>
     </ReadingLevelProvider>
   );

@@ -10,12 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Wind, Play, Pause, RotateCcw, Check, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+type BreathingExercise = (typeof breathingExercises)[number];
+type CalmingTechnique = (typeof calmingTechniques)[number];
+
 export const CalmToolkit = () => {
   const calmRef = useRef<HTMLDivElement>(null);
-
-  const scrollToCalm = () => {
-    calmRef?.current?.scrollIntoView?.({ behavior: 'smooth' });
-  };
 
   return (
     <section ref={calmRef} className="py-12 bg-gradient-to-br from-blue-50 via-green-50 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -53,15 +52,15 @@ export const CalmToolkit = () => {
 };
 
 interface BreathingExerciseCardProps {
-  exercise: any;
+  exercise: BreathingExercise;
 }
 
 const BreathingExerciseCard = ({ exercise }: BreathingExerciseCardProps) => {
   const [isRunning, setIsRunning] = useState(false);
   const [currentPhase, setCurrentPhase] = useState('');
   const [secondsRemaining, setSecondsRemaining] = useState(exercise?.duration ?? 120);
-  const intervalRef = useRef<any>(null);
-  const phaseIntervalRef = useRef<any>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const phaseIntervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { logCalm } = useProgress();
   const { toast } = useToast();
 
@@ -179,7 +178,7 @@ const BreathingExerciseCard = ({ exercise }: BreathingExerciseCardProps) => {
 };
 
 interface CalmingTechniqueCardProps {
-  technique: any;
+  technique: CalmingTechnique;
 }
 
 const CalmingTechniqueCard = ({ technique }: CalmingTechniqueCardProps) => {
@@ -188,7 +187,7 @@ const CalmingTechniqueCard = ({ technique }: CalmingTechniqueCardProps) => {
   const { toast } = useToast();
 
   const handleComplete = () => {
-    logCalm?.(technique?.duration ?? 3, technique?.name ?? 'Calming');
+    logCalm?.(technique?.id ?? 'calming', technique?.duration ?? 3);
     toast?.({
       title: 'Logged!',
       description: `You practiced: ${technique?.name}`,

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Metadata } from 'next';
+import { generatePageMetadata } from '@/lib/seo/metadata';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,17 +9,19 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   BookOpen, Brain, GraduationCap, Users, Target,
   FileText, Download, CheckCircle2, AlertCircle, 
-  Lightbulb, ClipboardCheck, Award, BookMarked
+  Lightbulb, ClipboardCheck, Award
 } from 'lucide-react';
 
-export const metadata: Metadata = {
-  title: 'Dyslexia Teacher Support Hub | NeuroBreath',
-  description: 'Professional resources and evidence-based strategies for teachers supporting students with dyslexia.',
-};
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Dyslexia Teacher Support | NeuroBreath',
+  description:
+    'Dyslexia classroom support with evidence-based strategies, assessment tools and inclusive teaching resources to improve literacy and access.',
+  path: '/conditions/dyslexia-teacher',
+});
 
 export default function DyslexiaTeacherPage() {
   return (
-    <main className="mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-8 sm:space-y-10 md:space-y-12" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <main className="mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
       
       {/* Hero Section */}
       <section className="space-y-6">

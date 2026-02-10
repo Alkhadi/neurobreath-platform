@@ -1,12 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Sparkles, Eye, Hand, Ear, Heart, Coffee, BookOpen, Download, Save, Play, Wind, Users, Brain, AlertCircle } from 'lucide-react'
+import { Sparkles, Eye, Hand, Ear, Heart, Coffee, BookOpen, Download, Save, Play, Wind, Users, Brain } from 'lucide-react'
 import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 
 export default function MindfulnessPage() {
   const [reflectionNotes, setReflectionNotes] = useState('')

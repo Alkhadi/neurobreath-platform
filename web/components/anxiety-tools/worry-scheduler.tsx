@@ -21,7 +21,7 @@ export function WorryScheduler() {
   })
   const [newWorryText, setNewWorryText] = useState('')
   const [actionPlan, setActionPlan] = useState<Record<string, string>>({})
-  const { progress, setProgress } = useAchievements()
+  useAchievements()
 
   const activeWorries = (worries ?? []).filter(w => !w?.archivedAt)
   const archivedWorries = (worries ?? []).filter(w => w?.archivedAt)

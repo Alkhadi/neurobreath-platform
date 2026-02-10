@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -20,23 +20,6 @@ interface TestResult {
   date: string;
 }
 
-const LETTERS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't'];
-const NUMBERS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
-const COLORS = [
-  { name: 'red', emoji: '🔴' },
-  { name: 'blue', emoji: '🔵' },
-  { name: 'green', emoji: '🟢' },
-  { name: 'yellow', emoji: '🟡' },
-  { name: 'purple', emoji: '🟣' }
-];
-const OBJECTS = [
-  { name: 'star', emoji: '⭐' },
-  { name: 'heart', emoji: '❤️' },
-  { name: 'tree', emoji: '🌲' },
-  { name: 'house', emoji: '🏠' },
-  { name: 'car', emoji: '🚗' }
-];
-
 export function RapidNamingTest() {
   const [testType, setTestType] = useState<'letter' | 'number' | 'color' | 'object'>('letter');
   const [testItems, setTestItems] = useState<TestItem[]>([]);
@@ -48,7 +31,7 @@ export function RapidNamingTest() {
   const timerRef = useRef<number>(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const loadResults = () => {
+  const loadResults = useCallback(() => {
     const saved = localStorage.getItem('rapid-naming-results');
     if (saved) {
       const allResults: TestResult[] = JSON.parse(saved);
@@ -56,9 +39,9 @@ export function RapidNamingTest() {
       const best = Math.max(...allResults.filter(r => r.type === testType).map(r => r.itemsPerSecond), 0);
       setBestScore(best);
     }
-  };
+  }, [testType]);
 
-  const generateTest = () => {
+  const generateTest = useCallback(() => {
     const items: TestItem[] = [];
     const gridSize = 50; // 5 rows x 10 columns
 
@@ -81,12 +64,12 @@ export function RapidNamingTest() {
 
     setTestItems(items);
     setCurrentIndex(0);
-  };
+  }, [testType]);
 
   useEffect(() => {
     generateTest();
     loadResults();
-  }, [testType]);
+  }, [generateTest, loadResults]);
 
   useEffect(() => {
     return () => {
@@ -107,7 +90,7 @@ export function RapidNamingTest() {
     }, 100);
   };
 
-  const stopTest = () => {
+  const stopTest = useCallback(() => {
     setIsRunning(false);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -130,36 +113,30 @@ export function RapidNamingTest() {
       allResults.push(result);
       localStorage.setItem('rapid-naming-results', JSON.stringify(allResults));
 
-      setResults([result, ...results]);
-      if (itemsPerSecond > bestScore) {
-        setBestScore(itemsPerSecond);
-      }
+      setResults((prev) => [result, ...prev]);
+      setBestScore((prev) => Math.max(prev, itemsPerSecond));
     }
-  };
+  }, [currentIndex, startTime, testType]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (currentIndex < testItems.length - 1) {
       setCurrentIndex(prev => prev + 1);
     } else {
       stopTest();
     }
-  };
+  }, [currentIndex, stopTest, testItems.length]);
 
-  const handleKeyPress = (e: KeyboardEvent) => {
+  const handleKeyPress = useCallback((e: KeyboardEvent) => {
     if (isRunning && e.code === 'Space') {
       e.preventDefault();
       handleNext();
     }
-  };
+  }, [handleNext, isRunning]);
 
   useEffect(() => {
-    const keyHandler = (event: KeyboardEvent) => {
-      handleKeyPress(event);
-    };
-
-    window.addEventListener('keydown', keyHandler);
-    return () => window.removeEventListener('keydown', keyHandler);
-  }, [isRunning, currentIndex, testItems]);
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [handleKeyPress]);
 
   return (
     <Card className="w-full">

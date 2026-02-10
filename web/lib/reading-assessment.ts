@@ -66,8 +66,8 @@ export function calculateReadingMetrics(
  */
 export function determineReadingLevel(
   accuracy: number,
-  wcpm: number = 0,
-  grade?: string
+  _wcpm: number = 0,
+  _grade?: string
 ): ReadingLevelResult {
   // Beginner: < 80% accuracy
   if (accuracy < 80) {
@@ -149,7 +149,7 @@ export function calculateQuickAssessmentLevel(
 export function determineDifficultyBand(
   wcpm: number,
   accuracy: number,
-  previousLevel?: string
+  _previousLevel?: string
 ): string {
   // Beginner: WCPM < 40, Accuracy < 90%
   if (wcpm < 40 && accuracy < 90) return 'beginner'

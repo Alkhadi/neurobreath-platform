@@ -60,7 +60,7 @@ export default function FocusTilesPage() {
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 py-12">
       <div className="container max-w-6xl mx-auto px-4">
         <Button asChild variant="ghost" className="mb-6">
-          <Link href="/tools"><ArrowLeft className="w-4 h-4 mr-2" /> Back to Tools</Link>
+          <Link href="/tools/breath-tools"><ArrowLeft className="w-4 h-4 mr-2" /> Back to Breath Tools</Link>
         </Button>
 
         <div className="text-center mb-12">

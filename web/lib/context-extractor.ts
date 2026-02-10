@@ -140,7 +140,7 @@ const CHALLENGE_PATTERNS: Record<MainChallenge, RegExp[]> = {
 }
 
 // Goal patterns
-const GOAL_PATTERNS: Record<string, RegExp[]> = {
+const GOAL_PATTERNS: Record<Goal, RegExp[]> = {
   'reduce-stress': [
     /\breduce.*stress\b/i,
     /\bstress.*management\b/i,
@@ -304,8 +304,7 @@ export function extractContextFromQuestion(
   }
   
   if (!extracted.goal) {
-    const goalValue = extractField(question, GOAL_PATTERNS as any)
-    extracted.goal = goalValue as Goal | undefined
+    extracted.goal = extractField(question, GOAL_PATTERNS)
   }
   
   if (!extracted.country) {

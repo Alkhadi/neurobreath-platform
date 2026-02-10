@@ -1,11 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { GraduationCap, Building2, FlaskConical, AlertCircle, ChevronRight, ExternalLink } from 'lucide-react'
+import { GraduationCap, Building2, FlaskConical, AlertCircle, ChevronRight } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Separator } from '@/components/ui/separator'
 
 // Data-driven approach for easy scaling
 const CREDIBILITY_SECTIONS = [
@@ -150,52 +149,6 @@ function CredibilityCard({ item, sectionTitle, IconComponent, sectionId, index }
         </Dialog>
       </CardContent>
     </Card>
-  )
-}
-
-function CredibilityItem({ name, affiliation, contribution, details }: CredibilityItemProps) {
-  const [isOpen, setIsOpen] = useState(false)
-
-  return (
-    <>
-      <li className="group">
-        <button
-          onClick={() => setIsOpen(true)}
-          className="w-full text-left p-3 rounded-lg hover:bg-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-        >
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex-1 min-w-0">
-              <div className="font-medium text-foreground text-sm group-hover:text-primary transition-colors break-words">
-                {name}
-              </div>
-              <div className="text-xs text-muted-foreground mt-1 line-clamp-2 break-words">
-                {contribution}
-              </div>
-            </div>
-            <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-all group-hover:translate-x-0.5 flex-shrink-0 mt-0.5" />
-          </div>
-        </button>
-      </li>
-
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[550px]">
-          <DialogHeader>
-            <DialogTitle>{name}</DialogTitle>
-            <DialogDescription>{affiliation}</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-3">
-            <div>
-              <h4 className="font-semibold text-sm text-foreground mb-1">Contribution</h4>
-              <p className="text-sm text-muted-foreground">{contribution}</p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-sm text-foreground mb-1">Details</h4>
-              <p className="text-sm text-muted-foreground leading-relaxed">{details}</p>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
   )
 }
 

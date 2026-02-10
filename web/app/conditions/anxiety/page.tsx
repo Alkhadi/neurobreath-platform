@@ -13,8 +13,12 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { EvidenceFooter } from '@/components/evidence-footer'
+import { evidenceByRoute } from '@/lib/evidence/page-evidence'
 
 export const dynamic = 'force-static'
+
+const evidence = evidenceByRoute['/conditions/anxiety']
 
 export default function ConditionsAnxietyPage() {
   return (
@@ -117,7 +121,7 @@ export default function ConditionsAnxietyPage() {
 
           <Tabs defaultValue="breathing" className="w-full">
             <div className="overflow-x-auto pb-4">
-              <TabsList className="inline-flex w-auto min-w-full justify-start">
+              <TabsList className="inline-flex w-auto min-w-full justify-start gap-2 flex-wrap">
                 <TabsTrigger value="breathing" className="flex-shrink-0">
                   <Wind className="h-4 w-4 mr-2" />
                   Breathing
@@ -508,6 +512,11 @@ export default function ConditionsAnxietyPage() {
           </p>
         </div>
       </footer>
-    </main>
+      {/* Evidence Sources */}
+      <section className="py-12 px-4 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <EvidenceFooter evidence={evidence} />
+        </div>
+      </section>    </main>
   )
 }

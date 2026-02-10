@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Brain, Heart, Sun, Users, Zap, TrendingUp, CheckCircle2, Lock } from 'lucide-react';
+import { Brain, Heart, Sun, Users, Zap, TrendingUp, CheckCircle2, type LucideIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 interface Skill {
@@ -13,7 +13,7 @@ interface Skill {
   title: string;
   category: 'behavioral' | 'cognitive' | 'social' | 'lifestyle';
   description: string;
-  icon: any;
+  icon: LucideIcon;
   duration: string;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   evidence: string;
@@ -221,7 +221,7 @@ export const SkillsLibrary = ({ onProgressUpdate }: { onProgressUpdate?: () => v
   };
 
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
       <div className="text-center mb-8">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">Skills Library</h2>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">

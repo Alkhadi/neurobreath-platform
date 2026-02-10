@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, XCircle, RefreshCw, Trophy, MoveVertical } from 'lucide-react';
+import { CheckCircle, XCircle, RefreshCw, Trophy } from 'lucide-react';
 import { useProgress } from '@/contexts/ProgressContext';
 
 const stories = [
@@ -50,15 +50,15 @@ export function StorySequencing() {
 
   const story = stories[currentStory];
 
-  useEffect(() => {
-    shuffleEvents();
-  }, [currentStory]);
-
-  const shuffleEvents = () => {
+  const shuffleEvents = useCallback(() => {
     const shuffled = [...story.events].sort(() => Math.random() - 0.5);
     setAvailableEvents(shuffled);
     setUserSequence([]);
-  };
+  }, [story.events]);
+
+  useEffect(() => {
+    shuffleEvents();
+  }, [shuffleEvents]);
 
   const handleEventClick = (event: string, fromAvailable: boolean) => {
     if (feedback) return;

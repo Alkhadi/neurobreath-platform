@@ -28,10 +28,11 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ### 1. NICE Guideline NG87 ⭐ **GOLD STANDARD**
 
 **Organization**: National Institute for Health and Care Excellence (NICE)  
-**URL**: https://www.nice.org.uk/guidance/ng87  
+**URL**: <https://www.nice.org.uk/guidance/ng87>  
 **Published**: March 2018 | **Updated**: September 2019 | **Review**: May 2025
 
 **Key Findings**:
+
 - Diagnosis must be made by specialist psychiatrist, pediatrician, or qualified healthcare professional
 - Symptoms must meet DSM-5 or ICD-11 criteria with impairment in 2+ settings
 - Symptoms present before age 12, lasting 6+ months
@@ -48,10 +49,11 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ### 2. NHS ADHD Services
 
 **Organization**: National Health Service (NHS)  
-**URL**: https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/  
+**URL**: <https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/>  
 **Updated**: 2024
 
 **Key Findings**:
+
 - **Waiting times** have escalated to **4+ years for children, 8+ years for adults**
 - ADHD is **under-recognized, under-diagnosed, and under-treated** in England
 - Digital test approved for NHS use to accelerate diagnosis in children (2024)
@@ -66,10 +68,11 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ### 3. SEND Code of Practice (0-25 Years)
 
 **Organization**: UK Department for Education and Department of Health  
-**URL**: https://www.gov.uk/government/publications/send-code-of-practice-0-to-25  
+**URL**: <https://www.gov.uk/government/publications/send-code-of-practice-0-to-25>  
 **Published**: 2015 (following Children and Families Act 2014)
 
 **Key Findings**:
+
 - ADHD classified under **"Social, Emotional and Mental Health (SEMH) needs"**
 - Early identification and tailored support required
 - **Education, Health, and Care Plans (EHCPs)** are legally binding
@@ -85,10 +88,11 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ### 4. Equality Act 2010
 
 **Organization**: UK Parliament  
-**URL**: https://www.legislation.gov.uk/ukpga/2010/15/contents  
+**URL**: <https://www.legislation.gov.uk/ukpga/2010/15/contents>  
 **Enacted**: 2010
 
 **Key Findings**:
+
 - ADHD recognized as disability if **long-term (12+ months)** and has **substantial adverse effect**
 - Employers must make **reasonable adjustments** for employees with ADHD
 - Adjustments include workplace environment, work patterns, and support provisions
@@ -104,10 +108,11 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ### 5. ADDISS (National ADHD Charity)
 
 **Organization**: ADDISS - National Attention Deficit Disorder Information and Support Service  
-**URL**: https://www.addiss.co.uk/  
+**URL**: <https://www.addiss.co.uk/>  
 **Established**: 1997 | **Helpline**: 020 8952 2800
 
 **Key Findings**:
+
 - **Only national ADHD charity in the UK**
 - Operates helpline: 020 8952 2800
 - Provides training programs including **"123 Magic"** for parents and practitioners
@@ -125,10 +130,11 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ### 1. CDC ADHD Guidelines
 
 **Organization**: Centers for Disease Control and Prevention (CDC)  
-**URL**: https://www.cdc.gov/adhd/  
+**URL**: <https://www.cdc.gov/adhd/>  
 **Updated**: 2024
 
 **Key Findings**:
+
 - References **AAP guidelines** for children/adolescents diagnosis and treatment
 - Uses **DSM-5 criteria** for ADHD diagnosis across all ages
 - **6+ symptoms** required for children up to 16 years; **5+** for ages 17+
@@ -145,10 +151,11 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ### 2. AAP Clinical Practice Guideline (2019 Update)
 
 **Organization**: American Academy of Pediatrics (AAP)  
-**URL**: https://publications.aap.org/pediatrics/article/144/4/e20192528/81590/  
+**URL**: <https://publications.aap.org/pediatrics/article/144/4/e20192528/81590/>  
 **Published**: October 2019
 
 **Key Findings**:
+
 - Applies to children and adolescents aged **4-18 years**
 - Most children with ADHD have **at least one comorbidity**; 18% have **3+**
 - **For ages 4-6**: Parent training in behavior management (PTBM) **first-line**
@@ -165,10 +172,11 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ### 3. DSM-5 Diagnostic Criteria
 
 **Organization**: American Psychiatric Association (APA)  
-**URL**: https://www.psychiatry.org/psychiatrists/practice/dsm  
+**URL**: <https://www.psychiatry.org/psychiatrists/practice/dsm>  
 **Published**: 2013 | **Updated**: DSM-5-TR 2022
 
 **Key Findings**:
+
 - ADHD classified as **neurodevelopmental disorder**
 - **6+ symptoms** (5+ for ages 17+) in inattention and/or hyperactivity-impulsivity domains
 - Symptoms present **before age 12** (raised from DSM-IV age 7)
@@ -185,10 +193,11 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ### 4. CHADD (National Organization)
 
 **Organization**: Children and Adults with Attention-Deficit/Hyperactivity Disorder  
-**URL**: https://chadd.org/  
+**URL**: <https://chadd.org/>  
 **Established**: 1987 | **Helpline**: 1-866-200-8098
 
 **Key Findings**:
+
 - Serves **17 million Americans** with ADHD
 - Operates **National Resource Center on ADHD** (funded by CDC)
 - Helpline: 1-866-200-8098 (English and Spanish)
@@ -205,10 +214,11 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ### 5. ADAA: Anxiety & ADHD Comorbidity
 
 **Organization**: Anxiety and Depression Association of America (ADAA)  
-**URL**: https://adaa.org/understanding-anxiety/related-illnesses/other-related-conditions/adult-adhd  
+**URL**: <https://adaa.org/understanding-anxiety/related-illnesses/other-related-conditions/adult-adhd>  
 **Updated**: 2024
 
 **Key Findings**:
+
 - Over **2/3 of individuals with ADHD** have at least one coexisting condition
 - **50% of adults with ADHD** also have anxiety disorder
 - **15-35% of children with ADHD** have anxiety (vs 5-15% general population)
@@ -227,11 +237,13 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ### **MEDICATION EVIDENCE**
 
 #### 1. PMID: 30097390 ⭐ **META-ANALYSIS**
+
 **Title**: Comparative Efficacy of ADHD Medications Across Ages  
-**URL**: https://pubmed.ncbi.nlm.nih.gov/30097390/  
+**URL**: <https://pubmed.ncbi.nlm.nih.gov/30097390/>  
 **Year**: 2018
 
 **Key Findings**:
+
 - **Methylphenidate** preferred first-choice for **children** (efficacy + safety)
 - **Amphetamines** preferred first-choice for **adults** (efficacy + safety)
 - Amphetamines: SMD **-1.02** for children, **-0.79** for adults (clinician ratings)
@@ -243,11 +255,13 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ---
 
 #### 2. PMID: 32014701 ⭐ **META-ANALYSIS**
+
 **Title**: ADHD Medication Protective Effects on Functional Outcomes  
-**URL**: https://pubmed.ncbi.nlm.nih.gov/32014701/  
+**URL**: <https://pubmed.ncbi.nlm.nih.gov/32014701/>  
 **Year**: 2020
 
 **Key Findings**:
+
 - ADHD medication shows **robust protective effect** on multiple functional outcomes
 - Confirmed protection for: **mood disorders, suicidality, criminality, substance use disorders**
 - Protection for: **accidents/injuries** (including TBI and motor vehicle crashes)
@@ -259,11 +273,13 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ---
 
 #### 3. PMID: 32845025 **META-ANALYSIS**
+
 **Title**: ADHD Interventions for Children with Autism Spectrum Disorder  
-**URL**: https://pubmed.ncbi.nlm.nih.gov/32845025/  
+**URL**: <https://pubmed.ncbi.nlm.nih.gov/32845025/>  
 **Year**: 2020
 
 **Key Findings**:
+
 - **Methylphenidate** reduced hyperactivity and inattention in children with **ASD+ADHD**
 - **Atomoxetine** showed efficacy in reducing inattention in ASD+ADHD population
 - Quality of evidence **low to very low**
@@ -277,11 +293,13 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ### **BEHAVIORAL THERAPY EVIDENCE**
 
 #### 4. PMID: 36794797 ⭐ **META-ANALYSIS**
+
 **Title**: Cognitive Behavioral Therapy for Adult ADHD  
-**URL**: https://pubmed.ncbi.nlm.nih.gov/36794797/  
+**URL**: <https://pubmed.ncbi.nlm.nih.gov/36794797/>  
 **Year**: 2023
 
 **Key Findings**:
+
 - **CBT effective** in reducing core ADHD symptoms in adults
 - Reduces **depression and anxiety**, increases **self-esteem and quality of life**
 - Effective both **individually and in groups**
@@ -293,11 +311,13 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ---
 
 #### 5. PMID: 31411903 **RCT**
+
 **Title**: Behavioral Interventions Reduce Medication Need in Children  
-**URL**: https://pubmed.ncbi.nlm.nih.gov/31411903/  
+**URL**: <https://pubmed.ncbi.nlm.nih.gov/31411903/>  
 **Year**: 2019
 
 **Key Findings**:
+
 - Behavioral consultation reduced medication initiation by approximately **50%**
 - Children with behavioral support used **lower medication doses** when needed
 - **40% reduction** in total methylphenidate exposure over school year
@@ -311,11 +331,13 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ### **EXECUTIVE FUNCTION & LIFESTYLE EVIDENCE**
 
 #### 6. PMID: 38178649 **SYSTEMATIC REVIEW**
+
 **Title**: Executive Function Interventions in ADHD Youth  
-**URL**: https://pubmed.ncbi.nlm.nih.gov/38178649/  
+**URL**: <https://pubmed.ncbi.nlm.nih.gov/38178649/>  
 **Year**: 2024
 
 **Key Findings**:
+
 - **Pharmacological interventions most effective** for EF deficits
 - **Psychological and digital interventions** show favorable outcomes
 - **Combination approaches** recommended for optimal results
@@ -327,11 +349,13 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ---
 
 #### 7. PMID: 40010649 **META-ANALYSIS**
+
 **Title**: Physical Activity Effects on Executive Functions in ADHD  
-**URL**: https://pubmed.ncbi.nlm.nih.gov/40010649/  
+**URL**: <https://pubmed.ncbi.nlm.nih.gov/40010649/>  
 **Year**: 2024 (December)
 
 **Key Findings**:
+
 - Physical activity **significantly improves EF** in school-aged children with ADHD
 - **Moderate to large effects** on cognitive flexibility and working memory
 - **Small to medium effect** on inhibition switching
@@ -345,11 +369,13 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ### **WORKPLACE & ADULT OUTCOMES**
 
 #### 8. PMID: 33528652 **RESEARCH STUDY**
+
 **Title**: ADHD Impact on Adult Workplace Functioning  
-**URL**: https://pubmed.ncbi.nlm.nih.gov/33528652/  
+**URL**: <https://pubmed.ncbi.nlm.nih.gov/33528652/>  
 **Year**: 2021
 
 **Key Findings**:
+
 - Adults with ADHD report **not meeting own standards** and perceived potential
 - Challenges with **executive functioning, time management, organization**
 - Difficulty with **sustained focus and task completion**
@@ -361,11 +387,13 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ---
 
 #### 9. PMID: 36451126 **RESEARCH STUDY**
+
 **Title**: ADHD, Stress, and Workplace Mental Health  
-**URL**: https://pubmed.ncbi.nlm.nih.gov/36451126/  
+**URL**: <https://pubmed.ncbi.nlm.nih.gov/36451126/>  
 **Year**: 2022
 
 **Key Findings**:
+
 - Adults with ADHD prone to **higher workplace stress levels**
 - **Increased sickness absence days** compared to non-ADHD adults
 - Higher rates of **work-related mental illness**
@@ -379,11 +407,13 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 ### **GENERAL TREATMENT EVIDENCE**
 
 #### 10. PMID: 38523592 **SYSTEMATIC REVIEW**
+
 **Title**: ADHD Treatment in Children and Adolescents  
-**URL**: https://pubmed.ncbi.nlm.nih.gov/38523592/  
+**URL**: <https://pubmed.ncbi.nlm.nih.gov/38523592/>  
 **Year**: 2024
 
 **Key Findings**:
+
 - **Pharmacological interventions (stimulants)** have strongest evidence base
 - **Non-pharmacological treatments** show promise but need more robust blinded studies
 - **Combination therapies** recommended but limited systematic superiority over monotherapy
@@ -416,17 +446,17 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 
 ### **BEHAVIORAL INTERVENTIONS (3)**
 
-4. **Parent Training in Behavior Management (PTBM)** - Ages 4-6 | **Evidence: STRONG**
+1. **Parent Training in Behavior Management (PTBM)** - Ages 4-6 | **Evidence: STRONG**
    - First-line for preschool children
    - Programs like "123 Magic"
    - Citations: NICE NG87, AAP, ADDISS, PMID 31411903
 
-5. **Behavioral Classroom Interventions** - School Age | **Evidence: STRONG**
+2. **Behavioral Classroom Interventions** - School Age | **Evidence: STRONG**
    - SMD 0.25 on teacher ratings
    - Combined with medication for 6+
    - Citations: NICE NG87, AAP, SEND Code
 
-6. **Cognitive Behavioral Therapy (CBT)** - Adults | **Evidence: STRONG**
+3. **Cognitive Behavioral Therapy (CBT)** - Adults | **Evidence: STRONG**
    - Reduces symptoms, depression, anxiety
    - Works with or without medication
    - Citations: CDC, PMID 36794797, ADAA
@@ -435,7 +465,7 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 
 ### **PSYCHOLOGICAL INTERVENTIONS (1)**
 
-7. **Executive Function Training** - School Age | **Evidence: MODERATE**
+1. **Executive Function Training** - School Age | **Evidence: MODERATE**
    - Computer-based and therapist-led
    - Best combined with other interventions
    - Citations: PMID 38178649, 40010649
@@ -444,12 +474,12 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 
 ### **LIFESTYLE INTERVENTIONS (2)**
 
-8. **Physical Activity and Exercise** - School Age | **Evidence: MODERATE**
+1. **Physical Activity and Exercise** - School Age | **Evidence: MODERATE**
    - Moderate to large effects on EF
    - Cognitively engaging exercises best
    - Citations: PMID 40010649
 
-9. **Dietary Interventions** - All Ages | **Evidence: EMERGING**
+2. **Dietary Interventions** - All Ages | **Evidence: EMERGING**
    - Omega-3 supplementation, food color exclusion
    - Small but significant effects
    - Citations: PMID 23360949
@@ -458,17 +488,17 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 
 ### **WORKPLACE INTERVENTIONS (3)**
 
-10. **Environmental Workplace Modifications** - Adults | **Evidence: STRONG**
+1. **Environmental Workplace Modifications** - Adults | **Evidence: STRONG**
     - Quiet workspace, noise reduction
     - Legally mandated (Equality Act/ADA)
     - Citations: Equality Act, PMID 33528652, 36451126
 
-11. **Time Management & Organizational Support** - Adults | **Evidence: STRONG**
+2. **Time Management & Organizational Support** - Adults | **Evidence: STRONG**
     - Task breakdown, regular check-ins
     - Assistive technology, mentorship
     - Citations: Equality Act, PMID 33528652
 
-12. **Flexible Work Arrangements** - Adults | **Evidence: MODERATE**
+3. **Flexible Work Arrangements** - Adults | **Evidence: MODERATE**
     - Flexible hours, remote work
     - Reduces stress and burnout
     - Citations: Equality Act, PMID 36451126
@@ -477,7 +507,7 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 
 ### **EDUCATIONAL INTERVENTIONS (1)**
 
-13. **IEPs, 504 Plans, EHCPs** - School Age | **Evidence: STRONG**
+1. **IEPs, 504 Plans, EHCPs** - School Age | **Evidence: STRONG**
     - Legally binding accommodations
     - Essential for educational success
     - Citations: AAP, SEND Code
@@ -492,6 +522,7 @@ Phase 1 successfully established a comprehensive, evidence-based foundation for 
 **File Size**: ~85 KB
 
 **Data Structures**:
+
 ```typescript
 interface EvidenceSource {
   id: string;
@@ -522,12 +553,14 @@ interface InterventionEvidence {
 ```
 
 **Constants**:
+
 - `UK_EVIDENCE_SOURCES`: 5 sources
 - `US_EVIDENCE_SOURCES`: 5 sources
 - `PUBMED_EVIDENCE_SOURCES`: 10 sources
 - `ADHD_INTERVENTIONS`: 13 interventions
 
 **Utility Functions** (9 functions):
+
 1. `getAllEvidenceSources()` - Returns all 15 sources
 2. `getEvidenceSourcesByCountry(country)` - Filter by UK/US/International
 3. `getEvidenceSourcesByType(type)` - Filter by source type
@@ -547,20 +580,23 @@ interface InterventionEvidence {
 ### ✅ All URLs Verified (January 2, 2025)
 
 **UK Sources**:
-- ✅ NICE NG87: https://www.nice.org.uk/guidance/ng87
-- ✅ NHS ADHD: https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/
-- ✅ SEND Code: https://www.gov.uk/government/publications/send-code-of-practice-0-to-25
-- ✅ Equality Act: https://www.legislation.gov.uk/ukpga/2010/15/contents
-- ✅ ADDISS: https://www.addiss.co.uk/
+
+- ✅ NICE NG87: <https://www.nice.org.uk/guidance/ng87>
+- ✅ NHS ADHD: <https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/>
+- ✅ SEND Code: <https://www.gov.uk/government/publications/send-code-of-practice-0-to-25>
+- ✅ Equality Act: <https://www.legislation.gov.uk/ukpga/2010/15/contents>
+- ✅ ADDISS: <https://www.addiss.co.uk/>
 
 **US Sources**:
-- ✅ CDC: https://www.cdc.gov/adhd/
-- ✅ AAP: https://publications.aap.org/pediatrics/
-- ✅ DSM-5: https://www.psychiatry.org/psychiatrists/practice/dsm
-- ✅ CHADD: https://chadd.org/
-- ✅ ADAA: https://adaa.org/
+
+- ✅ CDC: <https://www.cdc.gov/adhd/>
+- ✅ AAP: <https://publications.aap.org/pediatrics/>
+- ✅ DSM-5: <https://www.psychiatry.org/psychiatrists/practice/dsm>
+- ✅ CHADD: <https://chadd.org/>
+- ✅ ADAA: <https://adaa.org/>
 
 **PubMed PMIDs Verified**:
+
 - ✅ PMID 38523592, 32845025, 30097390, 32014701, 38178649
 - ✅ PMID 40010649, 36794797, 31411903, 33528652, 36451126
 
@@ -572,6 +608,7 @@ interface InterventionEvidence {
 **Average Citations per Intervention**: 3.2
 
 **Most Cited Sources**:
+
 1. NICE NG87 - 7 interventions
 2. AAP Guideline - 6 interventions
 3. PMID 30097390 - 3 interventions
@@ -616,30 +653,40 @@ interface InterventionEvidence {
 
 ### Search Strategy
 
-**Phase 1A: UK Research (5 queries)**
+#### Phase 1A: UK Research (5 queries)
+
 - "NHS ADHD diagnosis guidelines UK 2024"
 - "NICE NG87 ADHD guideline summary"
 - "UK SEND Code of Practice ADHD support"
 - "Equality Act 2010 ADHD reasonable adjustments"
 - "ADDISS UK ADHD charity resources"
 
-**Phase 1B: US Research (5 queries)**
+#### Phase 1B: US Research (5 queries)
+
 - "CDC ADHD diagnosis treatment guidelines 2024"
 - "AAP ADHD clinical practice guideline children"
 - "DSM-5 ADHD diagnostic criteria"
 - "CHADD ADHD organization resources US"
 - "ADAA anxiety ADHD comorbidity"
 
-**Phase 1C: PubMed Research (5 queries)**
+#### Phase 1C: PubMed Research (5 queries)
+
+#### Phase 1C Queries
+
 - "PubMed systematic review ADHD children treatment PMID"
 - "PubMed meta-analysis ADHD medication effectiveness PMID"
 - "PubMed ADHD executive function interventions PMID"
 - "PubMed ADHD behavioral therapy evidence PMID"
 - "PubMed ADHD adults workplace accommodations PMID"
 
-**Total Search Results Analyzed**: 120+ articles, guidelines, and research papers  
-**Sources Selected**: 15 (top-tier only)  
+**Total Search Results Analyzed**: 120+ articles, guidelines, and research papers
+
+#### Selection Criteria
+
+**Sources Selected**: 15 (top-tier only)
+
 **Selection Criteria**:
+
 1. Official government/professional organization guidelines
 2. Systematic reviews or meta-analyses (for PubMed)
 3. Published/updated 2010-2024
@@ -652,7 +699,10 @@ interface InterventionEvidence {
 
 ### 1. **UK-US Treatment Alignment** ✅
 
+#### Aligned on
+
 **Aligned on**:
+
 - First-line treatment for ages 4-6: Behavioral interventions (PTBM)
 - First-line for ages 6+: Combined medication + behavioral therapy
 - Methylphenidate preferred stimulant for children
@@ -660,6 +710,7 @@ interface InterventionEvidence {
 - Comorbidity screening essential
 
 **Divergences**:
+
 - UK emphasizes NICE NG87 as single guideline; US has AAP, CDC, state variations
 - UK has longer wait times (4-8 years) vs US access issues (insurance, specialists)
 - UK: Shared care with primary care; US: Specialist-dominated
@@ -667,6 +718,7 @@ interface InterventionEvidence {
 ### 2. **Evidence Strength Hierarchy**
 
 **STRONG Evidence** (8 interventions):
+
 - Stimulant medications (methylphenidate, amphetamines)
 - Non-stimulant medications (atomoxetine)
 - Parent training for ages 4-6
@@ -677,16 +729,19 @@ interface InterventionEvidence {
 - IEPs/504/EHCPs
 
 **MODERATE Evidence** (3 interventions):
+
 - Executive function training
 - Physical activity interventions
 - Flexible work arrangements
 
 **EMERGING Evidence** (2 interventions):
+
 - Dietary interventions (omega-3, food color exclusion)
 
 ### 3. **Gap Analysis**
 
 **Under-Researched Areas**:
+
 - Long-term effects of medications (>12 months)
 - Adolescent-specific treatments
 - Combination therapy superiority
@@ -695,6 +750,7 @@ interface InterventionEvidence {
 - Cultural variations in treatment response
 
 **System Gaps**:
+
 - Wait times (UK: 4-8 years)
 - Specialist access (US: insurance barriers)
 - Medication shortages (71.5% affected in 2023)
@@ -703,12 +759,14 @@ interface InterventionEvidence {
 ### 4. **Comorbidity Prevalence**
 
 **High Co-occurrence**:
+
 - 67%+ have at least one comorbid condition
 - 50% of adults have anxiety disorder
 - 18% of children have 3+ comorbidities
 - Girls with ADHD: Higher rates of depression, anxiety, eating disorders
 
 **Treatment Implications**:
+
 - Treat most impairing condition first
 - CBT effective for both ADHD and anxiety
 - Stimulants may worsen anxiety in some
@@ -718,9 +776,10 @@ interface InterventionEvidence {
 
 ## Next Steps: Phase 2 Preview
 
-### Phase 2 Will Build:
+### Phase 2 Will Build
 
 1. **Interactive ADHD Components** (10+ components)
+
    - Evidence-based skills library
    - Daily quests with XP system
    - Focus Pomodoro timer
@@ -731,6 +790,7 @@ interface InterventionEvidence {
    - Medication information hub
 
 2. **Data Integration**
+
    - Import evidence registry into components
    - Auto-generate citations from registry
    - Link interventions to detailed evidence
@@ -775,6 +835,7 @@ interface InterventionEvidence {
 ### Ready for Phase 2
 
 The evidence registry provides a **gold-standard foundation** for Phase 2 component development. All interventions have:
+
 - ✅ Multiple citations from authoritative sources
 - ✅ Evidence level classification (strong/moderate/emerging)
 - ✅ Age-appropriate targeting
@@ -792,4 +853,3 @@ The evidence registry provides a **gold-standard foundation** for Phase 2 compon
 **Evidence Sources**: 15 (verified)  
 **Interventions**: 13 (evidence-based)  
 **Citation Links**: 42 (cross-referenced)
-

@@ -1,27 +1,40 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
 import { 
-  Bot, X, Send, Mic, Volume2, VolumeX, Sparkles, 
-  MessageCircle, Map, ChevronRight, Lightbulb, HelpCircle,
-  Brain, Heart, BookOpen, Target, Users, School, Home,
-  FileText, Search, Printer, Download, Minimize2, Maximize2,
-  RotateCcw, Copy, Check, ExternalLink, History, Settings
+  Bot, Send, Volume2, VolumeX, Sparkles, 
+  MessageCircle, Map, ChevronRight,
+  Brain, Heart, Home, Download, Minimize2, Maximize2,
+  RotateCcw, Copy, Check, ExternalLink, StopCircle, Share2
 } from 'lucide-react';
 import { getPageConfig, platformInfo, type PageBuddyConfig } from '@/lib/page-buddy-configs';
+import { loadPreferences } from '@/lib/ai/core/userPreferences';
 import { cn } from '@/lib/utils';
+import { useSpeechSynthesis } from '@/hooks/use-speech-synthesis';
+import { BuddyErrorBoundary } from '@/components/buddy/error-boundary';
+import { SafeIcon } from '@/components/buddy/safe-icon';
+import { BuddyAnswerCard } from '@/components/buddy/answer-card';
+import { ShareButton } from '@/components/share/ShareButton';
+import { InstallButton } from '@/components/pwa/InstallButton';
+import type { BuddyAskResponse } from '@/lib/buddy/server/types';
+import { getBuddyIntentIdByLabel } from '@/lib/assistant/intents';
+import { AnchoredPageTour, type AnchoredTourStep, type TourPlacement } from '@/components/tour/anchored-page-tour';
 
 interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  availableTools?: string[];
+  buddyAnswer?: BuddyAskResponse['answer'];
+  buddyCitations?: BuddyAskResponse['citations'];
+  buddyMeta?: BuddyAskResponse['meta'];
 }
 
 interface PageBuddyProps {
@@ -29,20 +42,20 @@ interface PageBuddyProps {
 }
 
 export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
-  const pathname = usePathname();
+  const pathname = usePathname() || '/';
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [autoSpeak, setAutoSpeak] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  const { speak, stop, isSpeaking } = useSpeechSynthesis();
   const [showTour, setShowTour] = useState(false);
   const [currentTourStep, setCurrentTourStep] = useState(0);
+  const [tourSteps, setTourSteps] = useState<AnchoredTourStep[]>([]);
   const [mounted, setMounted] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
-  const [showSettings, setShowSettings] = useState(false);
   const [pageContent, setPageContent] = useState<{
     headings: { text: string; id: string; level: number }[];
     buttons: { text: string; id: string }[];
@@ -50,78 +63,417 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     features: string[];
   }>({ headings: [], buttons: [], sections: [], features: [] });
   const scrollRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const lastFocusedElement = useRef<HTMLElement | null>(null);
+  const isComposingRef = useRef(false);
+  const lastSentMessageRef = useRef<string | null>(null);
+  const [lastError, setLastError] = useState<string | null>(null);
+  const lastInitializedPathRef = useRef<string | null>(null);
   
   const config = getPageConfig(pathname);
+
+  const normalizePathname = useCallback((path: string) => {
+    const base = path.split('?')[0] || '/';
+    const trimmed = base.replace(/\/+$/, '') || '/';
+    return trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+  }, []);
+
+  const getPageKeyForTour = useCallback(
+    (path: string) => {
+      const normalized = normalizePathname(path);
+
+      // Preserve known stable keys already used by data-tour anchors.
+      if (normalized === '/uk') return 'uk-home';
+      if (normalized === '/us') return 'us-home';
+      if (normalized === '/autism') return 'autism-hub';
+      if (normalized === '/conditions/autism-parent') return 'conditions-autism-parent';
+      if (normalized === '/contact') return 'contact';
+
+      const parts = normalized.split('/').filter(Boolean);
+      if (parts.length === 0) return 'root';
+
+      const [first] = parts;
+      const isRegion = first === 'uk' || first === 'us';
+      const regionPrefix = isRegion ? first : null;
+      const rest = isRegion ? parts.slice(1) : parts;
+
+      if (regionPrefix && rest.length === 0) return `${regionPrefix}-home`;
+      const slug = rest.join('-') || 'root';
+      return regionPrefix ? `${regionPrefix}-${slug}` : slug;
+    },
+    [normalizePathname]
+  );
+
+  const getTourIntroLine = useCallback(
+    (path: string) => {
+      const normalized = normalizePathname(path);
+      const parts = normalized.split('/').filter(Boolean);
+      const region = parts[0] === 'uk' || parts[0] === 'us' ? parts[0] : null;
+      const rest = region ? parts.slice(1) : parts;
+      const top = rest[0] || '';
+
+      if (top === 'conditions') return 'Condition pages: overview, evidence, skills, and next steps.';
+      if (top === 'guides') return 'Guides: skim the key sections, then pick one action to try today.';
+      if (top === 'tools') return 'Tools: try a quick exercise, then save what helps.';
+      if (top === 'progress') return 'Progress: review what’s working and adjust your plan.';
+      if (top === 'my-plan') return 'My Plan: save skills, schedule routines, and track journeys.';
+      if (top === 'settings') return 'Settings: update preferences and accessibility options.';
+      if (top === 'get-started') return 'Get started: a quick path to your first helpful routine.';
+      if (top === 'help-me-choose') return 'Help me choose: answer a few prompts for a tailored path.';
+      if (normalized === '/contact') return 'Contact: send a message and find help resources.';
+
+      return 'A quick tour of the key sections on this page.';
+    },
+    [normalizePathname]
+  );
+
+  const tourIntroLine = useMemo(() => getTourIntroLine(pathname), [getTourIntroLine, pathname]);
+
+  const discoverTourSteps = useCallback((pageKey: string): AnchoredTourStep[] => {
+    if (typeof window === 'undefined') return [];
+    const MAX_STEPS = 25;
+    const nodes = Array.from(document.querySelectorAll(`[data-tour^="nb:${pageKey}:"]`));
+    const escape = (value: string) => {
+      const css = (globalThis as unknown as { CSS?: { escape?: (v: string) => string } }).CSS;
+      if (css && typeof css.escape === 'function') return css.escape(value);
+      return value.replace(/"/g, '\\"');
+    };
+
+    const parseTips = (node: HTMLElement) => {
+      const raw = node.getAttribute('data-tour-tips')?.trim();
+      if (!raw) return [];
+      const parts = raw
+        .split(/\n|\|/g)
+        .map((s) => s.trim())
+        .filter(Boolean);
+      return parts.slice(0, 4);
+    };
+
+    const defaultTips = (title: string) => {
+      const clean = title.trim();
+      return [
+        clean ? `Look for one small action in “${clean}”.` : 'Look for one small action you can try.',
+        'If this feels like too much, just skim and move on.',
+      ];
+    };
+
+    const explicit = nodes
+      .map((node, domIndex): { domIndex: number; step: AnchoredTourStep } | null => {
+        if (!(node instanceof HTMLElement)) return null;
+        if (node.getClientRects().length === 0) return null;
+
+        const tourId = node.getAttribute('data-tour')?.trim() || '';
+        if (!tourId) return null;
+
+        const orderRaw = node.getAttribute('data-tour-order');
+        const order = orderRaw ? Number(orderRaw) : 999;
+        const title = node.getAttribute('data-tour-title')?.trim() || 'Section';
+        const placementRaw = (node.getAttribute('data-tour-placement')?.trim() || 'auto') as TourPlacement;
+        const placement: TourPlacement = ['auto', 'right', 'left', 'bottom'].includes(placementRaw) ? placementRaw : 'auto';
+        const tips = parseTips(node);
+
+        const step: AnchoredTourStep = {
+          tourId,
+          selector: `[data-tour="${escape(tourId)}"]`,
+          title,
+          tips: tips.length > 0 ? tips : defaultTips(title),
+          order: Number.isFinite(order) ? order : 999,
+          placement,
+        };
+
+        return { domIndex, step };
+      })
+      .filter((v): v is { domIndex: number; step: AnchoredTourStep } => v !== null);
+
+    const explicitSteps = explicit
+      .sort((a, b) => a.step.order - b.step.order || a.domIndex - b.domIndex)
+      .map((v) => v.step)
+      .slice(0, MAX_STEPS);
+
+    // If we have a solid explicit tour, prefer it.
+    if (explicitSteps.length >= 2) return explicitSteps;
+
+    // Auto-scan fallback: discover meaningful sections and assign stable runtime IDs.
+    const main = document.querySelector('main') || document.body;
+    const candidates = Array.from(
+      main.querySelectorAll('section, [role="region"], [aria-labelledby], article')
+    ).filter((el): el is HTMLElement => el instanceof HTMLElement);
+
+    const explicitRoots = new globalThis.Set<HTMLElement>(nodes.filter((n): n is HTMLElement => n instanceof HTMLElement));
+    const isInsideExplicit = (el: HTMLElement) => {
+      for (const root of explicitRoots) {
+        if (root !== el && root.contains(el)) return true;
+      }
+      return false;
+    };
+
+    const getTitleFromElement = (el: HTMLElement) => {
+      const fromAttr = el.getAttribute('data-tour-title')?.trim();
+      if (fromAttr) return fromAttr;
+      const aria = el.getAttribute('aria-label')?.trim();
+      if (aria) return aria;
+      const heading = el.querySelector('h1, h2, h3');
+      const headingText = heading?.textContent?.trim();
+      if (headingText) return headingText;
+      const id = el.id?.trim();
+      if (id) return id.replace(/[-_]/g, ' ');
+      return 'Section';
+    };
+
+    const isVisible = (el: HTMLElement) => {
+      if (el.getAttribute('aria-hidden') === 'true') return false;
+      if (el.closest('[aria-hidden="true"]')) return false;
+      if (el.classList.contains('sr-only')) return false;
+      return el.getClientRects().length > 0;
+    };
+
+    const isActionable = (el: HTMLElement) => Boolean(el.querySelector('a[href], button, input, textarea, select'));
+    const hasMeaningfulText = (el: HTMLElement) => (el.textContent || '').replace(/\s+/g, ' ').trim().length >= 40;
+
+    const autoSteps: AnchoredTourStep[] = [];
+    let autoIndex = 0;
+    for (const el of candidates) {
+      if (autoSteps.length + explicitSteps.length >= MAX_STEPS) break;
+      if (!isVisible(el)) continue;
+      if (el.matches('nav, footer, header')) continue;
+      if (el.closest('nav, footer, header')) continue;
+      if (isInsideExplicit(el)) continue;
+      if (el.hasAttribute('data-tour')) continue;
+      if (!hasMeaningfulText(el) && !isActionable(el)) continue;
+
+      const eidExisting = el.getAttribute('data-nb-tour-eid')?.trim();
+      const eid = eidExisting || `${pageKey}:${autoIndex}`;
+      if (!eidExisting) el.setAttribute('data-nb-tour-eid', eid);
+
+      const title = getTitleFromElement(el);
+      const tipsAttr = parseTips(el);
+      autoSteps.push({
+        tourId: `nb:${pageKey}:auto:${eid}`,
+        selector: `[data-nb-tour-eid="${escape(eid)}"]`,
+        title,
+        tips: tipsAttr.length > 0 ? tipsAttr : defaultTips(title),
+        order: 5000 + autoIndex,
+        placement: 'auto',
+      });
+      autoIndex += 1;
+    }
+
+    return [...explicitSteps, ...autoSteps].slice(0, MAX_STEPS);
+  }, []);
+
+  // If the route changes mid-tour, re-scan and reset safely.
+  useEffect(() => {
+    if (!showTour) return;
+    const pageKey = getPageKeyForTour(pathname);
+    const discovered = discoverTourSteps(pageKey);
+    setTourSteps(discovered);
+    setCurrentTourStep(0);
+  }, [discoverTourSteps, getPageKeyForTour, pathname, showTour]);
+
+  const buildUserSnapshot = useCallback(() => {
+    if (typeof window === 'undefined') return undefined;
+
+    const snapshot: {
+      role?: string;
+      savedItemsCount?: number;
+      routineSlotsCount?: number;
+      activeJourneysCount?: number;
+      topTags?: string[];
+      focusGarden?: {
+        conditions?: string[];
+        minutesPerDay?: number;
+        hasWeeklyPlan?: boolean;
+      };
+    } = {};
+
+    try {
+      const raw = window.localStorage.getItem('neurobreath.userprefs.v1');
+      if (raw) {
+        const parsed: unknown = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          const root = parsed as Record<string, unknown>;
+          const myPlanRaw = root.myPlan;
+          const myPlan = myPlanRaw && typeof myPlanRaw === 'object' ? (myPlanRaw as Record<string, unknown>) : null;
+          if (myPlan) {
+            const savedItemsRaw = myPlan.savedItems;
+            const savedItems = Array.isArray(savedItemsRaw) ? savedItemsRaw : [];
+
+            const journeyProgressRaw = myPlan.journeyProgress;
+            const journeyProgress =
+              journeyProgressRaw && typeof journeyProgressRaw === 'object' && !Array.isArray(journeyProgressRaw)
+                ? Object.values(journeyProgressRaw as Record<string, unknown>)
+                : [];
+
+            const routinePlanRaw = myPlan.routinePlan;
+            const routinePlan = routinePlanRaw && typeof routinePlanRaw === 'object' ? (routinePlanRaw as Record<string, unknown>) : null;
+            const routineSlotsRaw = routinePlan?.slots;
+            const routineSlots = Array.isArray(routineSlotsRaw) ? routineSlotsRaw : [];
+
+            snapshot.savedItemsCount = savedItems.length;
+            snapshot.routineSlotsCount = routineSlots.length;
+            snapshot.activeJourneysCount = journeyProgress.filter((j) => {
+              if (!j || typeof j !== 'object') return false;
+              return (j as Record<string, unknown>).completed === false;
+            }).length;
+
+            const tagCounts = new globalThis.Map<string, number>();
+            for (const item of savedItems) {
+              if (!item || typeof item !== 'object') continue;
+              const tagsRaw = (item as Record<string, unknown>).tags;
+              const tags = Array.isArray(tagsRaw) ? tagsRaw : [];
+              for (const t of tags) {
+                const tag = String(t || '').trim().toLowerCase();
+                if (!tag) continue;
+                tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+              }
+            }
+
+            snapshot.topTags = Array.from(tagCounts.entries())
+              .sort((a, b) => b[1] - a[1])
+              .slice(0, 8)
+              .map(([tag]) => tag);
+          }
+        }
+      }
+    } catch {
+      // ignore
+    }
+
+    try {
+      const raw = window.localStorage.getItem('neurobreath.focusGardenRoadmap.v1');
+      if (raw) {
+        const parsed: unknown = JSON.parse(raw);
+        const root = parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : null;
+        const inputsRaw = root?.inputs;
+        const inputs = inputsRaw && typeof inputsRaw === 'object' ? (inputsRaw as Record<string, unknown>) : null;
+        const answer = root?.answer;
+        snapshot.focusGarden = {
+          conditions: Array.isArray(inputs?.conditions)
+            ? (inputs?.conditions as unknown[])
+                .map((c) => String(c || '').trim())
+                .filter(Boolean)
+                .slice(0, 8)
+            : undefined,
+          minutesPerDay: typeof inputs?.minutesPerDay === 'number' ? (inputs.minutesPerDay as number) : undefined,
+          hasWeeklyPlan: Boolean(answer && typeof answer === 'object'),
+        };
+      }
+    } catch {
+      // ignore
+    }
+
+    // Pull role from AI prefs (if available)
+    try {
+      const prefs = loadPreferences();
+      snapshot.role = prefs.ai.role;
+    } catch {
+      // ignore
+    }
+
+    const hasAny = Object.values(snapshot).some((v) => v !== undefined);
+    return hasAny ? snapshot : undefined;
+  }, []);
+  
+  // Focus management for dialog
+  useEffect(() => {
+    if (isOpen) {
+      // Store the currently focused element
+      lastFocusedElement.current = document.activeElement as HTMLElement;
+      // Focus the input when dialog opens
+      setTimeout(() => {
+        if (inputRef.current && !isMinimized) {
+          inputRef.current.focus();
+        }
+      }, 100);
+    } else {
+      // Stop any ongoing speech when dialog closes.
+      stop();
+      // Restore focus when dialog closes
+      if (lastFocusedElement.current && typeof lastFocusedElement.current.focus === 'function') {
+        lastFocusedElement.current.focus();
+      }
+    }
+  }, [isOpen, isMinimized, stop]);
+
+  // Stop any ongoing speech when minimized.
+  useEffect(() => {
+    if (isMinimized) stop();
+  }, [isMinimized, stop]);
   
   // Initialize on mount
   useEffect(() => {
     setMounted(true);
   }, []);
   
-  // Reset messages when page changes
+  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
-    if (mounted) {
-      // Scan page content
-      scanPageContent();
-      
-      const welcomeMessage: Message = {
-        id: 'welcome',
-        role: 'assistant',
-        content: generateDynamicWelcome(),
-        timestamp: new Date()
-      };
-      setMessages([welcomeMessage]);
-      setCurrentTourStep(0);
-      setShowTour(false);
+    if (scrollRef.current && !isMinimized) {
+      const scrollContainer = scrollRef.current;
+      // Smooth scroll to bottom
+      requestAnimationFrame(() => {
+        scrollContainer.scrollTo({
+          top: scrollContainer.scrollHeight,
+          behavior: 'smooth'
+        });
+      });
     }
-  }, [pathname, mounted]);
+  }, [messages, isLoading, isMinimized]);
   
   // Scan page content dynamically
   const scanPageContent = useCallback(() => {
     if (typeof window === 'undefined') return;
-    
-    // Give the page time to render
+
+    const schedule = (cb: () => void) => {
+      if (typeof window.requestIdleCallback === 'function') {
+        window.requestIdleCallback(() => cb(), { timeout: 1000 });
+        return;
+      }
+      setTimeout(cb, 0);
+    };
+
     setTimeout(() => {
-      const headings: { text: string; id: string; level: number }[] = [];
-      const buttons: { text: string; id: string }[] = [];
-      const sections: { name: string; id: string }[] = [];
-      const features: string[] = [];
-      
-      // Scan headings
-      document.querySelectorAll('h1, h2, h3').forEach((heading) => {
-        const text = heading.textContent?.trim();
-        const id = heading.id || heading.textContent?.toLowerCase().replace(/\s+/g, '-') || '';
-        const level = parseInt(heading.tagName.substring(1));
-        if (text) headings.push({ text, id, level });
+      schedule(() => {
+        try {
+          const headings: { text: string; id: string; level: number }[] = [];
+          const buttons: { text: string; id: string }[] = [];
+          const sections: { name: string; id: string }[] = [];
+          const features: string[] = [];
+
+          document.querySelectorAll('h1, h2, h3').forEach((heading) => {
+            const text = heading.textContent?.trim();
+            const id = heading.id || heading.textContent?.toLowerCase().replace(/\s+/g, '-') || '';
+            const level = parseInt(heading.tagName.substring(1));
+            if (text) headings.push({ text, id, level });
+          });
+
+          document.querySelectorAll('button[aria-label], a[href^="/"]').forEach((el, idx) => {
+            const text = el.getAttribute('aria-label') || el.textContent?.trim();
+            const id = el.id || `element-${idx}`;
+            if (text && text.length < 50) buttons.push({ text, id });
+          });
+
+          document.querySelectorAll('section[id], [data-section], [role="region"]').forEach((section) => {
+            const name = section.getAttribute('aria-label') ||
+              section.querySelector('h2, h3')?.textContent?.trim() ||
+              section.id.replace(/-/g, ' ');
+            const id = section.id || section.getAttribute('data-section') || '';
+            if (name && id) sections.push({ name, id });
+          });
+
+          if (document.querySelector('[data-timer], [class*="timer"]')) features.push('Timer');
+          if (document.querySelector('[data-quest], [class*="quest"]')) features.push('Quests');
+          if (document.querySelector('form')) features.push('Form');
+          if (document.querySelector('[class*="chart"], canvas')) features.push('Chart/Visualization');
+          if (document.querySelector('[data-download], [download]')) features.push('Downloads');
+          if (document.querySelector('video, audio')) features.push('Media Player');
+
+          setPageContent({ headings, buttons, sections, features });
+        } catch (error) {
+          console.error('[Buddy] Page scan error:', error);
+        }
       });
-      
-      // Scan interactive buttons and links
-      document.querySelectorAll('button[aria-label], a[href^="/"]').forEach((el, idx) => {
-        const text = el.getAttribute('aria-label') || el.textContent?.trim();
-        const id = el.id || `element-${idx}`;
-        if (text && text.length < 50) buttons.push({ text, id });
-      });
-      
-      // Scan sections with IDs or data attributes
-      document.querySelectorAll('section[id], [data-section], [role="region"]').forEach((section) => {
-        const name = section.getAttribute('aria-label') || 
-                    section.querySelector('h2, h3')?.textContent?.trim() ||
-                    section.id.replace(/-/g, ' ');
-        const id = section.id || section.getAttribute('data-section') || '';
-        if (name && id) sections.push({ name, id });
-      });
-      
-      // Detect page features
-      if (document.querySelector('[data-timer], [class*="timer"]')) features.push('Timer');
-      if (document.querySelector('[data-quest], [class*="quest"]')) features.push('Quests');
-      if (document.querySelector('form')) features.push('Form');
-      if (document.querySelector('[class*="chart"], canvas')) features.push('Chart/Visualization');
-      if (document.querySelector('[data-download], [download]')) features.push('Downloads');
-      if (document.querySelector('video, audio')) features.push('Media Player');
-      
-      setPageContent({ headings, buttons, sections, features });
-    }, 500);
+    }, 300);
   }, []);
   
   // Generate dynamic welcome message based on page content
@@ -147,6 +499,40 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     
     return baseWelcome;
   }, [config.welcomeMessage, pageContent]);
+
+  // Initialize/reset chat only when the route changes. Page scans can update `pageContent`
+  // after the user has started chatting, so we must not clobber the message history.
+  useEffect(() => {
+    if (!mounted) return;
+
+    const welcomeContent = generateDynamicWelcome();
+
+    if (lastInitializedPathRef.current !== pathname) {
+      lastInitializedPathRef.current = pathname;
+      scanPageContent();
+
+      const welcomeMessage: Message = {
+        id: 'welcome',
+        role: 'assistant',
+        content: welcomeContent,
+        timestamp: new Date(),
+      };
+
+      setMessages([welcomeMessage]);
+      setCurrentTourStep(0);
+      setShowTour(false);
+      setTourSteps([]);
+      return;
+    }
+
+    // Same route: only update the welcome text if the user hasn't started chatting yet.
+    setMessages((prev) => {
+      if (prev.length === 1 && prev[0]?.id === 'welcome') {
+        return [{ ...prev[0], content: welcomeContent }];
+      }
+      return prev;
+    });
+  }, [generateDynamicWelcome, mounted, pathname, scanPageContent]);
   
   // Scroll to section helper
   const scrollToSection = useCallback((sectionId: string) => {
@@ -163,10 +549,15 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     return false;
   }, []);
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    if (scrollRef.current && !isMinimized && messages.length > 0) {
+      // Smooth scroll to bottom with requestAnimationFrame for better performance
+      requestAnimationFrame(() => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+      });
     }
-  }, [messages]);
+  }, [messages, isMinimized]);
   
   // Keyboard shortcuts
   useEffect(() => {
@@ -186,58 +577,6 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
   
-  // Text-to-speech - only reads plain text
-  const speak = useCallback((text: string) => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
-    
-    // Clean text: remove all non-text elements
-    const cleanText = text
-      // Remove markdown formatting
-      .replace(/\*\*/g, '')
-      .replace(/\*/g, '')
-      .replace(/__/g, '')
-      .replace(/\x7e\x7e/g, '')
-      .replace(/`/g, '')
-      // Remove markdown links [text](url) - keep text
-      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-      // Remove URLs
-      .replace(/https?:\/\/[^\s]+/g, '')
-      .replace(/\/[a-z]+/g, ' ')
-      // Remove emojis and symbols
-      .replace(/[\u{1F300}-\u{1F9FF}]/gu, '')
-      .replace(/[\u{2600}-\u{26FF}]/gu, '')
-      .replace(/[\u{2700}-\u{27BF}]/gu, '')
-      .replace(/[\u{1F600}-\u{1F64F}]/gu, '')
-      .replace(/[\u{1F680}-\u{1F6FF}]/gu, '')
-      .replace(/[\u{1F1E0}-\u{1F1FF}]/gu, '')
-      // Remove common symbols and bullets
-      .replace(/[•◦▪▸►→←↑↓✓✔✗✘★☆⭐🎯🏆📚🔬📈💡🎉👉🛠️📄🏠🌟🧠✨🧘🎓💼🆘📊🤝🚀ℹ️⚠️]/g, '')
-      // Remove special characters
-      .replace(/[#@&%^$!?;:{}[\]<>|\\]/g, '')
-      // Clean up whitespace
-      .replace(/\n+/g, '. ')
-      .replace(/\s+/g, ' ')
-      .trim();
-    
-    if (!cleanText) return;
-    
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-    window.speechSynthesis.speak(utterance);
-  }, []);
-  
-  const stopSpeaking = useCallback(() => {
-    if (typeof window !== 'undefined' && window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-      setIsSpeaking(false);
-    }
-  }, []);
-  
   // Copy message to clipboard
   const copyMessage = useCallback((messageId: string, content: string) => {
     navigator.clipboard.writeText(content).then(() => {
@@ -248,10 +587,13 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   
   // Export chat history
   const exportChat = useCallback(() => {
-    const chatText = messages.map(m => 
-      `[${m.timestamp.toLocaleString()}] ${m.role === 'user' ? 'You' : 'NeuroBreath Buddy'}: ${m.content}`
-    ).join('\n\n');
-    
+    const chatText = messages
+      .map(
+        (m) =>
+          `[${m.timestamp.toLocaleString()}] ${m.role === 'user' ? 'You' : 'NeuroBreath Buddy'}: ${m.content}`
+      )
+      .join('\n\n');
+
     const blob = new Blob([chatText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -266,37 +608,78 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   // Clear chat history
   const clearChat = useCallback(() => {
     scanPageContent();
-    const welcomeMessage: Message = {
-      id: `welcome-${Date.now()}`,
-      role: 'assistant',
-      content: generateDynamicWelcome(),
-      timestamp: new Date()
-    };
-    setMessages([welcomeMessage]);
+    setMessages([]);
     setShowTour(false);
     setCurrentTourStep(0);
-  }, [generateDynamicWelcome, scanPageContent]);
+    setLastError(null);
+    stop();
+    setIsMinimized(false);
+    setCopiedMessageId(null);
+  }, [scanPageContent, stop]);
   
-  // Render markdown-like formatting
+  // Render markdown-like formatting with clickable links
   const renderMessage = (content: string) => {
-    // Split by links first to handle them specially
-    const parts = content.split(/(\[.*?\]\(.*?\))/);
+    // Split by markdown links and plain URLs
+    const linkRegex = /(\[.*?\]\(.*?\)|(?:https?:\/\/|\/)(?:[\w\d\-._~:/?#[\]@!$&'()*+,;=])+)/g;
+    const parts = content.split(linkRegex);
     
     return parts.map((part, i) => {
-      // Handle markdown links
-      const linkMatch = part.match(/\[(.*?)\]\((.*?)\)/);
-      if (linkMatch) {
-        const [, text, url] = linkMatch;
+      // Handle markdown links [text](url)
+      const markdownLinkMatch = part.match(/\[(.*?)\]\((.*?)\)/);
+      if (markdownLinkMatch) {
+        const [, text, url] = markdownLinkMatch;
+        const isExternal = url.startsWith('http');
         return (
           <a 
             key={i} 
-            href={url} 
-            className="text-primary underline hover:text-primary/80 inline-flex items-center gap-1"
-            target={url.startsWith('http') ? '_blank' : '_self'}
-            rel={url.startsWith('http') ? 'noopener noreferrer' : undefined}
+            href={url}
+            onClick={(e) => {
+              if (!isExternal) {
+                e.preventDefault();
+                router.push(url);
+                setIsOpen(false);
+              }
+            }}
+            className="text-primary underline hover:text-primary/80 inline-flex items-center gap-1 font-medium"
+            target={isExternal ? '_blank' : '_self'}
+            rel={isExternal ? 'noopener noreferrer' : undefined}
           >
             {text}
-            {url.startsWith('http') && <ExternalLink className="h-3 w-3" />}
+            {isExternal && <SafeIcon icon={ExternalLink} className="h-3 w-3" aria-hidden="true" />}
+          </a>
+        );
+      }
+      
+      // Handle plain URLs starting with http:// or https://
+      if (part.match(/^https?:\/\//)) {
+        return (
+          <a 
+            key={i} 
+            href={part}
+            className="text-primary underline hover:text-primary/80 inline-flex items-center gap-1 break-all"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {part}
+            <SafeIcon icon={ExternalLink} className="h-3 w-3" aria-hidden="true" />
+          </a>
+        );
+      }
+      
+      // Handle relative URLs starting with /
+      if (part.match(/^\/[a-zA-Z0-9\-_]+/)) {
+        return (
+          <a 
+            key={i} 
+            href={part}
+            onClick={(e) => {
+              e.preventDefault();
+              router.push(part);
+              setIsOpen(false);
+            }}
+            className="text-primary underline hover:text-primary/80 font-medium cursor-pointer"
+          >
+            {part}
           </a>
         );
       }
@@ -309,7 +692,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   };
   
   // Smart local response generator
-  const getLocalResponse = (query: string, cfg: PageBuddyConfig): string => {
+  const getLocalResponse = useCallback((query: string, cfg: PageBuddyConfig): string => {
     const q = query.toLowerCase().trim();
     
     // === DYNAMIC SECTION NAVIGATION ===
@@ -379,9 +762,10 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       // If on home page, include breathing techniques first, then all conditions
       if (cfg.pageId === 'home') {
         response += `\n\n**🌬️ Breathing Techniques Available:**\n• **Box Breathing (4-4-4-4)** – Equal count breathing for calm and focus\n• **Coherent Breathing** – Balance your nervous system with 5-5 rhythm\n• **60-Second SOS Reset** – Quick emergency calm technique\n• **Extended Exhale** – Activate relaxation response\n• **No-Hold Variants** – Safer options for those with breathing sensitivities\n\n**🧩 Neurodevelopmental Support:**\n\n**Autism** – Comprehensive support for autistic individuals:\n• Calm Toolkit with sensory-friendly breathing exercises\n• Skills Library with age adaptations (child, teen, adult)\n• Education Pathways (UK EHCP, US IEP/504, EU frameworks)\n• Workplace Adjustments Generator (15+ templates)\n• Crisis Support Resources (UK/US/EU)\n• PubMed Research Search (35M+ articles)\n• Printable templates for home-school collaboration\n\n**Autism Support for Parents** 👨‍👩‍👧:\n• EHCP/IEP request guidance & templates\n• Evidence gathering checklists\n• School meeting preparation guides\n• Understanding sensory needs\n• Communication strategies\n• Daily routine support\n\n**Autism Support for Teachers** 🎓:\n• Classroom adaptations & strategies\n• Visual schedule templates\n• Sensory accommodation plans\n• Behavior support guidance\n• Parent communication templates\n• Legal rights & responsibilities\n\n**Autism Support for Carers** ❤️:\n• Day-to-day support strategies\n• Self-care for carers\n• Managing challenging behaviors\n• Communication techniques\n• Respite resources\n• Support networks\n\n**ADHD** – Evidence-based ADHD management:\n• Focus Pomodoro Timer (5-50 min sessions)\n• Daily Quests with XP & gamification\n• Skills Library (focus, organization, time management)\n• Treatment Decision Tree (NICE/AAP guidelines)\n• Myths vs Facts (research-backed)\n• Progress tracking with streaks\n\n**ADHD Support for Parents** 👨‍👩‍👧:\n• Homework & routine strategies\n• Behavior management techniques\n• School collaboration tools\n• Medication guidance (when appropriate)\n• Understanding executive function\n• Positive reinforcement systems\n\n**ADHD Support for Teachers** 🎓:\n• Classroom management strategies\n• Attention support techniques\n• Movement breaks guidance\n• Differentiation strategies\n• Progress monitoring tools\n• Parent communication templates\n\n**ADHD Support for Carers** ❤️:\n• Daily structure support\n• Attention management tips\n• Self-regulation strategies\n• Carer wellbeing resources\n• Understanding ADHD needs\n• Practical daily strategies\n\n**Dyslexia** – Reading & learning support:\n• Reading Training Program (evidence-based)\n• Phonics & decoding strategies\n• Multi-sensory learning techniques\n• Text-to-speech tools\n• Dyslexia-friendly formatting\n• Progress tracking & celebration\n\n**Dyslexia Support for Parents** 👨‍👩‍👧:\n• At-home reading practice\n• Assessment guidance\n• Rights & accommodations\n• Homework support strategies\n• Building confidence\n• School collaboration\n\n**Dyslexia Support for Teachers** 🎓:\n• Classroom accommodations\n• Multi-sensory teaching methods\n• Assessment modifications\n• Technology tools\n• Reading intervention strategies\n• IEP/504 guidance\n\n**Dyslexia Support for Carers** ❤️:\n• Daily learning support\n• Confidence building\n• Understanding learning differences\n• Assistive technology guidance\n• Carer resources\n• Advocacy support\n\n**😰 Mental Health Support:**\n\n**Anxiety** – Calm & coping strategies:\n• 5-4-3-2-1 Grounding technique\n• Breathing exercises for panic\n• Worry time scheduling\n• Cognitive reframing tools\n• Progressive muscle relaxation\n• Crisis resources (24/7 helplines)\n\n**Depression** 💙 – Daily support tools:\n• Mood tracking & patterns\n• Activity scheduling\n• Behavioral activation strategies\n• Sleep hygiene guidance\n• Professional support pathways\n• Self-compassion exercises\n\n**Bipolar** ⚡ – Mood management:\n• Mood tracking & early warning signs\n• Sleep routine importance\n• Medication adherence support\n• Crisis planning\n• Professional resources\n• Family/carer guidance\n\n**Stress** 😓 – Daily stress management:\n• Quick stress relief techniques\n• Time management strategies\n• Boundary setting guidance\n• Relaxation practices\n• Work-life balance tips\n• Burnout prevention\n\n**Sleep Issues** 💤 – Better sleep tools:\n• Sleep hygiene checklist\n• Bedtime routine builder\n• Relaxation techniques\n• Sleep-onset strategies\n• Morning routine guidance\n• Sleep tracking tools\n\n**Low Mood & Burnout** 🌧️ – Recovery support:\n• Energy management strategies\n• Gentle activity suggestions\n• Self-care planning\n• Setting realistic expectations\n• Recovery timeline guidance\n• Professional support pathways\n\n**🏠 Universal Features:**\n• Home-school collaboration tools\n• Printable resources & templates\n• Progress tracking (all local, private)\n• Evidence-based guidance (NICE, CDC, NHS)\n• Dyslexia-friendly design options\n• Multi-age adaptations (child, teen, adult)\n\n**Where would you like to start? Ask me about any condition or breathing technique!**`;
+        response += `\n\n**Also available:** 🛡️ PTSD / Trauma support (visit /conditions/ptsd).`;
       } else {
         // For other pages, provide abbreviated version
-        response += `\n\n**🧩 All Conditions We Support:**\n\n**Neurodevelopmental:**\n• Autism (+ Parent/Teacher/Carer support)\n• ADHD (+ Parent/Teacher/Carer support)\n• Dyslexia (+ Parent/Teacher/Carer support)\n\n**Mental Health:**\n• Anxiety • Depression • Bipolar\n• Stress • Sleep Issues • Low Mood & Burnout\n\n**🌬️ Breathing Techniques:**\n• Box Breathing • Coherent Breathing\n• 60-Second SOS • Extended Exhale\n\n**Ask me about any condition or technique for detailed information!**`;
+        response += `\n\n**🧩 All Conditions We Support:**\n\n**Neurodevelopmental:**\n• Autism (+ Parent/Teacher/Carer support)\n• ADHD (+ Parent/Teacher/Carer support)\n• Dyslexia (+ Parent/Teacher/Carer support)\n\n**Mental Health:**\n• Anxiety • Depression • Bipolar • PTSD / Trauma\n• Stress • Sleep Issues • Low Mood & Burnout\n\n**🌬️ Breathing Techniques:**\n• Box Breathing • Coherent Breathing\n• 60-Second SOS • Extended Exhale\n\n**Ask me about any condition or technique for detailed information!**`;
       }
       
       return response;
@@ -441,6 +825,17 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     if (q.includes('depression')) {
       return `**💙 Depression Support** – Daily support tools\n\n**Understanding Depression:**\n• It's a medical condition\n• Not just "feeling sad"\n• Chemical & neurological\n• Treatable & manageable\n• Recovery is possible\n\n**Daily Strategies:**\n• **Behavioral Activation** – Small activities\n• **Mood Tracking** – Identify patterns\n• **Sleep Routine** – Consistent times\n• **Gentle Exercise** – Even 10 min walks\n• **Social Connection** – Even brief contact\n\n**Self-Care:**\n• Basic needs first (eat, sleep, hygiene)\n• Set tiny, achievable goals\n• Celebrate micro-wins\n• Be self-compassionate\n• Accept help offered\n\n**Professional Support:**\n• GP/Doctor consultation\n• Therapy options (CBT, IPT)\n• Medication (if recommended)\n• Support groups\n• Crisis services\n\n**Crisis Support:**\n• UK: Samaritans 116 123, Text SHOUT to 85258\n• US: 988 Suicide & Crisis Lifeline\n• EU: 112\n\n**Visit /conditions/depression for resources!**`;
     }
+
+    if (
+      q.includes('ptsd') ||
+      q.includes('trauma') ||
+      q.includes('post traumatic') ||
+      q.includes('post-traumatic') ||
+      q.includes('flashback') ||
+      q.includes('nightmare')
+    ) {
+      return `**🛡️ PTSD / Trauma Support** – Grounding & next steps\n\nIf you’re dealing with trauma responses (flashbacks, hypervigilance, nightmares), you’re not alone — and support can help.\n\n**In-the-moment grounding (try one):**\n• **5-4-3-2-1** – Name 5 things you see, 4 you feel, 3 you hear, 2 you smell, 1 you taste\n• **Feet + breath** – Feel both feet on the floor; slow exhale (4 in / 6–8 out)\n• **Orienting** – Look around and name: where you are, the date, what’s safe right now\n\n**Breathing tools (gentle options):**\n• Extended exhale (4–6 or 4–8)\n• Coherent breathing (5–5)\n• **No-hold variants** if breath holds feel uncomfortable\n\n**Daily support ideas:**\n• Sleep wind-down routine (reduce nightmares / arousal)\n• Trigger plan: identify triggers + coping steps + safe contacts\n• Professional pathways: trauma-focused therapy (e.g., TF-CBT/EMDR where appropriate)\n\n**Crisis / urgent help:**\n• UK: Samaritans 116 123, Text SHOUT to 85258\n• US: 988 Suicide & Crisis Lifeline\n• EU: 112\n\n👉 **Visit /conditions/ptsd for the full PTSD / Trauma page**`;
+    }
     
     if (q.includes('stress')) {
       return `**😓 Stress Management** – Daily relief tools\n\n**Quick Stress Relief:**\n• **Breathing** – 60-second reset, box breathing\n• **Movement** – Walk, stretch, shake it out\n• **Cold Water** – Face splash, cold drink\n• **Music** – Calming playlist\n• **Nature** – Even 5 minutes outside\n\n**Daily Prevention:**\n• Time management systems\n• Boundary setting (saying no)\n• Regular breaks (Pomodoro)\n• Physical activity routine\n• Sleep priority\n\n**Work/School Stress:**\n• Task prioritization\n• Break large tasks down\n• Realistic expectations\n• Ask for help early\n• Separate work/home time\n\n**Long-term:**\n• Identify stressors\n• Eliminate/reduce when possible\n• Build stress tolerance gradually\n• Support network\n• Professional help if chronic\n\n**Burnout Warning Signs:**\n• Exhaustion despite rest\n• Cynicism/detachment\n• Reduced performance\n• Physical symptoms\n• Need intervention\n\n**Visit /stress for complete toolkit!**`;
@@ -472,7 +867,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       } else if (cfg.pageId === 'autism') {
         response += `**Autism Hub Tools:** 🌟\n\n${platformInfo.features.autism.map((f: string) => `• ${f}`).join('\n')}\n\n**Available Now:**\n• Calm Toolkit (breathing, grounding, sensory)\n• Skills Library (50+ strategies, age-adapted)\n• Education Pathways (EHCP/IEP/504 complete guides)\n• Workplace Adjustments (15+ professional templates)\n• PubMed Search (35M+ research articles)\n• Printable Resources (50+ templates)\n• Crisis Support (UK/US/EU contacts)\n\n**For Parents:** EHCP/IEP guidance, home strategies, school collaboration\n**For Teachers:** Classroom adaptations, visual schedules, behavior support\n**For Carers:** Daily support, communication techniques, self-care\n\n**Tip:** Try the Calm Toolkit for regulation or browse printable resources!`;
       } else {
-        response += `**Page-Specific Tools:**\n${cfg.sections.map((s: any) => `• **${s.name}** – ${s.description}`).join('\n')}\n\n**Platform-Wide Features:**\n• Breathing exercises (5 techniques)\n• Progress tracking (XP, levels, streaks)\n• Printable resources (100+ templates)\n• Evidence-based guidance (NICE, CDC, NHS)\n\n**Main Hubs:**\n• **ADHD Hub (/adhd)** – Focus tools, quests, strategies\n• **Autism Hub (/autism)** – Calm toolkit, education pathways\n• **Breathing (/breathing)** – Guided breathing exercises\n\n**Ask me about:**\n• Specific tools on this page\n• Navigation to other hubs\n• How to use any feature`;
+        response += `**Page-Specific Tools:**\n${cfg.sections.map((s) => `• **${s.name}** – ${s.description}`).join('\n')}\n\n**Platform-Wide Features:**\n• Breathing exercises (5 techniques)\n• Progress tracking (XP, levels, streaks)\n• Printable resources (100+ templates)\n• Evidence-based guidance (NICE, CDC, NHS)\n\n**Main Hubs:**\n• **ADHD Hub (/adhd)** – Focus tools, quests, strategies\n• **Autism Hub (/autism)** – Calm toolkit, education pathways\n• **Breathing (/breathing)** – Guided breathing exercises\n\n**Ask me about:**\n• Specific tools on this page\n• Navigation to other hubs\n• How to use any feature`;
       }
       
       return response;
@@ -495,7 +890,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     
     // === FOCUS / POMODORO ===
     if (q.includes('focus') || q.includes('pomodoro') || q.includes('timer') || q.includes('concentrate')) {
-      return `**Focus Pomodoro Timer** ⏱️\n\nOur ADHD-friendly focus timer helps manage attention:\n\n**Features:**\n• Flexible durations (5-50 minutes)\n• ADHD-optimized intervals\n• Dopamine tips during breaks\n• Session streak tracking\n• Audio/visual notifications\n\n**Tips for success:**\n• Start with shorter sessions (15-25 min)\n• Take proper breaks\n• Use the dopamine tips!\n\n👉 Visit **/adhd** → **Focus Timer** section`;
+      return `**Focus Pomodoro Timer** ⏱️\n\nOur ADHD-friendly focus timer helps manage attention:\n\n**Features:**\n• Flexible durations (5-50 minutes)\n• ADHD-optimized intervals\n• Dopamine tips during breaks\n• Session streak tracking\n• Audio/visual notifications\n\n**Evidence Base:**\nTime-based work intervals (Pomodoro Technique) are effective for ADHD because they:\n• Create external structure for attention regulation\n• Provide frequent dopamine hits through completion\n• Reduce overwhelming sense of endless tasks\n• Allow for movement breaks essential for ADHD brains\n\n**Tips for success:**\n• Start with shorter sessions (15-25 min)\n• Take proper breaks (research shows 5-10 min optimal)\n• Use the dopamine tips!\n\n👉 **[Start a focus session now](/breathing/focus)**\n\n**Source**: NICE NG87 recommends environmental modifications and structured routines as first-line support for ADHD.`;
     }
     
     // === QUESTS / GAMIFICATION ===
@@ -540,112 +935,172 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
     }
     
     // === DEFAULT HELPFUL RESPONSE ===
-    return `I'm here to help you navigate **${cfg.pageName}**! 🤝\n\n**Popular questions:**\n• "What tools are available?"\n• "How do I get started?"\n• "What is NeuroBreath?"\n• "Show me printable resources"\n\n**This page includes:**\n${cfg.sections.slice(0, 3).map((s: any) => `• **${s.name}**: ${s.description}`).join('\n')}\n\n💡 **Tip:** Click the 🗺️ map icon for a guided tour!`;
-  };
+    return `I'm here to help you navigate **${cfg.pageName}**! 🤝\n\n**Popular questions:**\n• "What tools are available?"\n• "How do I get started?"\n• "What is NeuroBreath?"\n• "Show me printable resources"\n\n**This page includes:**\n${cfg.sections.slice(0, 3).map((s) => `• **${s.name}**: ${s.description}`).join('\n')}\n\n💡 **Tip:** Click the 🗺️ map icon for a guided tour!`;
+  }, [pageContent, scrollToSection]);
   
   // Generate AI response
-  const generateResponse = async (userMessage: string): Promise<string> => {
-    // First try local response for common questions
-    const localResponse = getLocalResponse(userMessage, config);
-    const isGenericResponse = localResponse.includes('I\'m here to help you navigate');
-    
-    // If we have a specific local response, use it
-    if (!isGenericResponse) {
-      return localResponse;
+  const generateResponse = useCallback(async (userMessage: string, intentId?: string): Promise<Message> => {
+    const q = userMessage.toLowerCase();
+    const isNavigationIntent =
+      q.includes('tour') ||
+      q.includes('map') ||
+      q.includes("what's on this page") ||
+      q.includes('what is on this page') ||
+      q.includes('page content') ||
+      q.includes('sections') ||
+      ((q.includes('show') || q.includes('find') || q.includes('where') || q.includes('take me') || q.includes('scroll')) &&
+        pageContent.sections.length > 0);
+
+    if (isNavigationIntent) {
+      const local = getLocalResponse(userMessage, config);
+      return {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: local,
+        timestamp: new Date(),
+        availableTools: pageContent.features,
+      };
     }
-    
-    // Otherwise try AI
-    const systemPrompt = `You are NeuroBreath Buddy, a friendly and supportive AI assistant for the ${config.pageName} page of the NeuroBreath neurodiversity support platform.
 
-Platform Mission: ${platformInfo.mission}
-
-Current page: ${config.pageName} (${pathname})
-Audiences: ${config.audiences.join(', ')}
-
-Your role:
-1. Help users understand and navigate this page
-2. Explain features and how to use them
-3. Provide supportive, evidence-based information about ${config.pageId === 'adhd' ? 'ADHD' : config.pageId === 'autism' ? 'autism' : 'neurodiversity'}
-4. Guide users to relevant sections based on their needs
-5. Support parents, teachers, carers, and neurodivergent individuals equally
-6. Promote home-school collaboration
-
-Guidelines:
-- Keep responses concise (3-5 sentences usually)
-- Use emoji sparingly for friendliness
-- Reference specific page sections when relevant
-- Always remind users to consult healthcare providers for medical advice
-- Be neurodiversity-affirming (not deficit-focused)
-- Mention printable resources when relevant
-- Support home-school collaboration
-
-Page sections:
-${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
+    // Load user preferences for jurisdiction
+    const prefs = loadPreferences();
+    const userSnapshot = buildUserSnapshot();
 
     try {
-      const response = await fetch('/api/ai-chat/buddy', {
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 30000);
+      const response = await fetch('/api/buddy/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          systemPrompt,
-          messages: [
-            ...messages.slice(-6).map(m => ({ role: m.role, content: m.content })),
-            { role: 'user', content: userMessage }
-          ]
-        })
+          question: userMessage,
+          intentId,
+          pathname,
+          jurisdiction: prefs.regional.jurisdiction,
+          userSnapshot,
+        }),
+        signal: controller.signal,
       });
-      
-      if (!response.ok) throw new Error('API error');
-      
-      const data = await response.json();
-      return data.content || localResponse;
+
+      window.clearTimeout(timeoutId);
+
+      // Always attempt to parse JSON so we can display server-provided fallback
+      // answers even when the API is in a degraded state.
+      let data: (BuddyAskResponse & { error?: string }) | null = null;
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
+      }
+
+      if (!response.ok) {
+        const maybeError = (data as { error?: string } | null)?.error;
+        const detail = maybeError ? ` ${maybeError}` : '';
+        throw new Error(`Request failed (${response.status}).${detail}`);
+      }
+
+      if ((data as { error?: string } | null)?.error) {
+        throw new Error((data as { error?: string })?.error || 'Assistant error');
+      }
+
+      const answer = data?.answer;
+      const citations = data?.citations || [];
+      const meta = data?.meta;
+
+      const contentForAria =
+        answer
+          ? [
+              answer.title,
+              answer.summary,
+              ...answer.sections.map((s) => `${s.heading}. ${s.text}`),
+              answer.safety.message ? `When to get help. ${answer.safety.message}` : '',
+            ]
+              .filter(Boolean)
+              .join('\n')
+          : "I couldn't find a verified answer for that right now. Try rephrasing, or ask about what's on this page.";
+
+      return {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: contentForAria,
+        timestamp: new Date(),
+        availableTools: pageContent.features,
+        buddyAnswer: answer,
+        buddyCitations: citations,
+        buddyMeta: meta,
+      };
     } catch (error) {
-      console.error('AI response error:', error);
-      return localResponse;
+      console.error('[Buddy] AI response error:', error);
+      throw error;
     }
-  };
+  }, [buildUserSnapshot, config, getLocalResponse, pageContent.features, pageContent.sections.length, pathname]);
+
   
-  // Handle sending message
-  const handleSend = async (messageText?: string) => {
-    const text = messageText || input.trim();
-    if (!text || isLoading) return;
-    
+  // Unified send pipeline for typed sends + quick questions.
+  const sendMessage = useCallback(async (text?: string, origin: 'typed' | 'quick' | 'system' = 'typed', intentId?: string): Promise<void> => {
+    const raw = (typeof text === 'string' ? text : input).trim();
+    if (!raw || isLoading) return;
+
+    if (process.env.NODE_ENV === 'development') {
+      console.debug('[Buddy] sendMessage', { origin, raw });
+    }
+
+    setLastError(null);
+    lastSentMessageRef.current = raw;
+
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: text,
-      timestamp: new Date()
+      content: raw,
+      timestamp: new Date(),
     };
-    
-    setMessages(prev => [...prev, userMessage]);
+
+    setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
-    
+
+    // If audio is speaking, stop immediately before sending the next request.
+    stop();
+
+    // Keep focus in the composer for fast follow-ups.
+    queueMicrotask(() => inputRef.current?.focus());
+
     try {
-      const response = await generateResponse(text);
-      const assistantMessage: Message = {
+      const assistantMessage = await generateResponse(raw, intentId);
+      setMessages((prev) => [...prev, assistantMessage]);
+
+      if (autoSpeak && assistantMessage.content) {
+        speak(assistantMessage.content);
+      }
+
+      requestAnimationFrame(() => inputRef.current?.focus());
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Something went wrong.';
+      setLastError(message);
+      toast.error('Could not send message', { description: message });
+      console.error('[Buddy] sendMessage failed:', { message: raw, error });
+
+      const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: response,
-        timestamp: new Date()
+        content:
+          "I couldn't send that right now. Please try again.\n\nIf this keeps happening, check your connection or refresh the page.",
+        timestamp: new Date(),
       };
-      
-      setMessages(prev => [...prev, assistantMessage]);
-      
-      if (autoSpeak) {
-        speak(response);
-      }
-    } catch (error) {
-      console.error('Error:', error);
+      setMessages((prev) => [...prev, errorMessage]);
+
+      // Restore input so the user can edit/resend.
+      setInput(raw);
+      requestAnimationFrame(() => inputRef.current?.focus());
     } finally {
       setIsLoading(false);
     }
-  };
-  
-  // Handle quick question click
-  const handleQuickQuestion = (question: string) => {
-    handleSend(question);
-  };
+  }, [autoSpeak, generateResponse, input, isLoading, speak, stop]);
+
+  const retryLast = useCallback(() => {
+    if (!lastSentMessageRef.current) return;
+    void sendMessage(lastSentMessageRef.current, 'system');
+  }, [sendMessage]);
   
   // Page tour - now using actual page content
   const startTour = () => {
@@ -658,96 +1113,103 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
         timestamp: new Date()
       };
       setMessages(prev => [...prev, alreadyActiveMessage]);
+      if (autoSpeak) {
+        speak(alreadyActiveMessage.content);
+      }
       return;
     }
     
-    // Use detected sections if available, otherwise fall back to config
-    const sectionsToTour = pageContent.sections.length > 0 
-      ? pageContent.sections.map(s => ({
-          id: s.id,
-          name: s.name,
-          description: `Navigate and explore the ${s.name} section`,
-          tips: [`Look for interactive elements in this section`, `This content is tailored to ${config.audiences.join(', ')}`]
-        }))
-      : config.sections;
-    
+    const pageKey = getPageKeyForTour(pathname);
+    const discovered = discoverTourSteps(pageKey);
+    if (discovered.length === 0) {
+      const msg: Message = {
+        id: `tour-none-${Date.now()}`,
+        role: 'assistant',
+        content:
+          "I couldn't find any tour-worthy sections on this page yet. If you want a curated tour, add stable anchors like data-tour=\"nb:<pageKey>:<sectionKey>\" (plus data-tour-title / data-tour-order).",
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, msg]);
+      if (autoSpeak) speak(msg.content);
+      return;
+    }
+
+    setTourSteps(discovered);
     setShowTour(true);
     setCurrentTourStep(0);
-    
-    const firstSection = sectionsToTour[0];
-    if (firstSection && pageContent.sections.length > 0) {
-      setTimeout(() => scrollToSection(firstSection.id), 500);
-    }
-    
+    setIsOpen(false);
+
+    const first = discovered[0];
     const tourIntro: Message = {
       id: `tour-start-${Date.now()}`,
       role: 'assistant',
-      content: `🎯 **Live Page Tour Started!**\n\nI've scanned this page and found ${sectionsToTour.length} sections to explore.\n\n**Step 1/${sectionsToTour.length}: ${firstSection?.name}**\n${firstSection?.description}\n\n💡 **Tips:**\n${firstSection?.tips.map((t: string) => `• ${t}`).join('\n')}\n\n**Note:** I'm scrolling to each section as we go!`,
-      timestamp: new Date()
+      content: `🎯 **Live Page Tour Started!**\n\nI've scanned this page and found ${discovered.length} sections to explore.\n\n**Step 1/${discovered.length}: ${first?.title}**\n\n**Note:** I’ll keep the page visible and anchor the tour panel to each section as we go.`,
+      timestamp: new Date(),
     };
-    setMessages(prev => [...prev, tourIntro]);
+    setMessages((prev) => [...prev, tourIntro]);
+    if (autoSpeak) speak(tourIntro.content);
   };
   
   const nextTourStep = () => {
-    const sectionsToTour = pageContent.sections.length > 0 
-      ? pageContent.sections.map(s => ({
-          id: s.id,
-          name: s.name,
-          description: `Explore the ${s.name} section and its features`,
-          tips: [`This section is specifically designed for ${config.pageName}`, `Interact with the elements you find here`]
-        }))
-      : config.sections;
-      
     const nextStep = currentTourStep + 1;
-    if (nextStep >= sectionsToTour.length) {
+    if (nextStep >= tourSteps.length) {
       setShowTour(false);
+      setCurrentTourStep(0);
+      setTourSteps([]);
+
       const tourEnd: Message = {
         id: `tour-end-${Date.now()}`,
         role: 'assistant',
-        content: `🎉 **Live Tour Complete!**\n\nYou've explored all ${sectionsToTour.length} sections of ${config.pageName}!\n\n**What I detected on this page:**\n${pageContent.features.length > 0 ? `• Features: ${pageContent.features.join(', ')}\n` : ''}• Sections: ${sectionsToTour.length}\n• Interactive elements: ${pageContent.buttons.length}\n\n**Next steps:**\n• Try out a feature that interests you\n• Ask me about specific sections\n• I'm here whenever you need help! 🤝`,
-        timestamp: new Date()
+        content: `🎉 **Live Tour Complete!**\n\nYou've explored all ${tourSteps.length} sections of ${config.pageName}!`,
+        timestamp: new Date(),
       };
-      setMessages(prev => [...prev, tourEnd]);
+      setMessages((prev) => [...prev, tourEnd]);
+      if (autoSpeak) speak(tourEnd.content);
       return;
     }
-    
+
     setCurrentTourStep(nextStep);
-    const section = sectionsToTour[nextStep];
-    
-    // Scroll to the actual section if it exists
-    if (pageContent.sections.length > 0 && section.id) {
-      setTimeout(() => scrollToSection(section.id), 500);
-    }
-    
-    const tourStep: Message = {
-      id: `tour-step-${nextStep}-${Date.now()}`,
-      role: 'assistant',
-      content: `**Step ${nextStep + 1}/${sectionsToTour.length}: ${section.name}**\n\n${section.description}\n\n💡 **Tips:**\n${section.tips.map((t: string) => `• ${t}`).join('\n')}`,
-      timestamp: new Date()
-    };
-    setMessages(prev => [...prev, tourStep]);
   };
-  
-  if (!mounted) return null;
   
   return (
     <>
+      <AnchoredPageTour
+        open={showTour}
+        steps={tourSteps}
+        stepIndex={Math.min(currentTourStep, Math.max(0, tourSteps.length - 1))}
+        heading="NeuroBreath Buddy"
+        subheading={`${config.pageName} Guide`}
+        introLine={tourIntroLine}
+        onStepChange={(nextIndex) => {
+          if (nextIndex < 0 || nextIndex >= tourSteps.length) return;
+          setCurrentTourStep(nextIndex);
+        }}
+        onClose={() => {
+          setShowTour(false);
+          setCurrentTourStep(0);
+          setTourSteps([]);
+        }}
+      />
       {/* Floating trigger button */}
-      <div className={cn("fixed bottom-6 right-6 z-50", isOpen && "hidden")}>
+      <div className={cn("fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[60]", isOpen && "hidden")}>
         <Button
-          onClick={() => setIsOpen(true)}
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setIsOpen(true);
+          }}
           className={cn(
-            "h-14 w-14 rounded-full shadow-lg",
+            "h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg",
             "bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90",
-            "transition-all duration-300 hover:scale-110",
-            "relative group"
+            "transition-all duration-200 hover:scale-105 active:scale-95",
+            "relative group touch-manipulation"
           )}
           size="icon"
           aria-label="Open NeuroBreath Buddy assistant (Cmd+K)"
-          data-pagebuddy-trigger="true"
         >
-          <MessageCircle className="h-6 w-6 text-white" />
-          <span className="absolute -top-8 right-0 bg-popover text-popover-foreground text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md">
+          <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+          <span className="absolute -top-8 right-0 bg-popover text-popover-foreground text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity shadow-md hidden sm:block pointer-events-none max-w-[min(16rem,calc(100vw-2rem))] whitespace-normal break-words text-right">
             Press ⌘K
           </span>
         </Button>
@@ -755,73 +1217,155 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
       
       {/* Chat dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className={cn(
-          "sm:max-w-[500px] p-0 flex flex-col transition-all",
-          isMinimized ? "h-[120px]" : "max-h-[85vh]"
-        )}>
+        <DialogContent 
+          ref={dialogRef}
+          className={cn(
+            "p-0 flex flex-col transition-all overflow-hidden",
+            "z-[60]",
+            // 2% gap from top (navigation bar) - applies to all viewports
+            "top-[calc(50%+1vh)]",
+            // Base mobile sizing - responsive for all devices
+            "w-[95vw] max-w-[340px]",
+            // Small devices (phones, unfolded screens)
+            "sm:w-[90vw] sm:max-w-[440px]",
+            // Medium devices and tablets
+            "md:w-[85vw] md:max-w-[520px]",
+            // Large devices
+            "lg:w-[80vw] lg:max-w-[580px]",
+            // Heights - adaptive for all devices with 2% top margin
+            "h-[86vh] max-h-[86vh]",
+            "sm:h-[84vh] sm:max-h-[84vh]",
+            "md:h-[82vh] md:max-h-[82vh]",
+            // Minimized state
+            isMinimized ? "h-[120px] sm:h-[130px]" : ""
+          )}
+          aria-describedby="buddy-description"
+          role="dialog"
+          aria-modal="true"
+        >
+          {/* Hidden description for screen readers */}
+          <div id="buddy-description" className="sr-only">
+            NeuroBreath Buddy is an AI assistant that can help you navigate this page,
+            answer questions about neurodiversity support, and guide you to relevant resources.
+          </div>
+          
+          {/* ARIA live region for announcing messages to screen readers */}
+          <div 
+            className="sr-only" 
+            role="status" 
+            aria-live="polite" 
+            aria-atomic="true"
+          >
+            {isLoading && "NeuroBreath Buddy is thinking..."}
+            {messages.length > 0 && messages[messages.length - 1].role === 'assistant' && 
+              `NeuroBreath Buddy says: ${messages[messages.length - 1].content.slice(0, 100)}`
+            }
+          </div>
           {/* Header */}
-          <DialogHeader className="p-4 pb-2 border-b border-border bg-gradient-to-r from-primary/10 to-purple-500/10">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                  <Bot className="h-5 w-5 text-primary" />
+          <DialogHeader className="p-3 sm:p-4 md:p-5 pb-2 sm:pb-3 border-b border-border bg-gradient-to-r from-primary/10 to-purple-500/10 flex-shrink-0">
+            <div className="flex items-center justify-between gap-2 sm:gap-3">
+              <div className="flex items-center gap-2 sm:gap-3 md:gap-4 min-w-0 flex-1">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                  <Bot className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-primary" />
                 </div>
-                <div>
-                  <DialogTitle className="text-lg font-semibold">NeuroBreath Buddy</DialogTitle>
-                  <p className="text-xs text-muted-foreground">{config.pageName} Guide</p>
+                <div className="min-w-0 flex-1">
+                  <DialogTitle className="text-sm sm:text-base md:text-lg font-semibold truncate">NeuroBreath Buddy</DialogTitle>
+                  <p className="text-[10px] sm:text-xs md:text-sm text-muted-foreground truncate">{config.pageName} Guide</p>
                 </div>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-0.5 sm:gap-1 md:gap-1.5 flex-shrink-0">
+                {isSpeaking && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-destructive hover:text-destructive hover:bg-destructive/10 touch-manipulation active:scale-95 transition-transform"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      stop();
+                    }}
+                    title="Stop speaking"
+                    aria-label="Stop speaking"
+                  >
+                    <StopCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />
+                  </Button>
+                )}
                 <Button
+                  type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-primary"
-                  onClick={() => setAutoSpeak(!autoSpeak)}
+                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-primary touch-manipulation active:scale-95 transition-transform"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setAutoSpeak(!autoSpeak);
+                  }}
                   title={autoSpeak ? 'Auto-speak on' : 'Auto-speak off'}
                   aria-label={autoSpeak ? 'Turn off auto-speak' : 'Turn on auto-speak'}
                 >
-                  {autoSpeak ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                  {autoSpeak ? <Volume2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" /> : <VolumeX className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />}
                 </Button>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-primary"
-                  onClick={startTour}
+                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-primary touch-manipulation active:scale-95 transition-transform"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    startTour();
+                  }}
                   title="Start page tour"
                   aria-label="Start guided page tour"
                 >
-                  <Map className="h-4 w-4" />
+                  <Map className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />
                 </Button>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                  onClick={exportChat}
+                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-muted-foreground hover:text-foreground hidden sm:inline-flex touch-manipulation active:scale-95 transition-transform"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    exportChat();
+                  }}
                   title="Export chat history"
                   aria-label="Export chat history"
                   disabled={messages.length <= 1}
                 >
-                  <Download className="h-4 w-4" />
+                  <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />
                 </Button>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                  onClick={clearChat}
+                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-muted-foreground hover:text-foreground touch-manipulation active:scale-95 transition-transform"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    clearChat();
+                  }}
                   title="Clear chat history"
                   aria-label="Clear chat history"
                 >
-                  <RotateCcw className="h-4 w-4" />
+                  <RotateCcw className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />
                 </Button>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                  onClick={() => setIsMinimized(!isMinimized)}
+                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 text-muted-foreground hover:text-foreground touch-manipulation active:scale-95 transition-transform"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsMinimized(!isMinimized);
+                  }}
                   title={isMinimized ? 'Maximize' : 'Minimize'}
                   aria-label={isMinimized ? 'Maximize' : 'Minimize'}
                 >
-                  {isMinimized ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
+                  {isMinimized ? <Maximize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" /> : <Minimize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />}
                 </Button>
               </div>
             </div>
@@ -829,76 +1373,126 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
           
           {/* Messages */}
           {!isMinimized && (
-          <ScrollArea className="flex-1 p-4" ref={scrollRef}>
-            <div className="space-y-4">
-              {messages.map((message) => (
+          <div className="flex-1 p-3 sm:p-4 md:p-5 overflow-y-auto min-h-0" ref={scrollRef}>
+            <div className="space-y-3 sm:space-y-4">
+              {(() => {
+                const currentAnswer = [...messages].reverse().find((m) => m.role === 'assistant');
+                if (!currentAnswer) {
+                  return (
+                    <div className="text-xs sm:text-sm text-muted-foreground">
+                      Ask a question to get a response.
+                    </div>
+                  );
+                }
+
+                const message = currentAnswer;
+                return (
                 <div
                   key={message.id}
                   className={cn(
-                    "flex gap-3",
-                    message.role === 'user' ? 'justify-end' : 'justify-start'
+                    "flex gap-2 sm:gap-3",
+                    'justify-start'
                   )}
                 >
-                  {message.role === 'assistant' && (
-                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                      <Sparkles className="h-4 w-4 text-primary" />
-                    </div>
-                  )}
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 text-primary" />
+                  </div>
                   <div
                     className={cn(
-                      "max-w-[80%] rounded-2xl px-4 py-2.5 text-sm group relative flex flex-col",
-                      message.role === 'user'
-                        ? 'bg-primary text-primary-foreground rounded-br-md'
-                        : 'bg-muted rounded-bl-md'
+                      "max-w-[85%] sm:max-w-[80%] md:max-w-[75%] rounded-2xl px-3 py-2 sm:px-4 sm:py-2.5 md:px-5 md:py-3 text-xs sm:text-sm md:text-base group relative flex flex-col",
+                      'bg-muted rounded-bl-md'
                     )}
                   >
-                    <div className="max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent pr-2 flex-shrink min-h-0 pb-2">
-                      <div className="whitespace-pre-wrap leading-relaxed pb-[2%]">
-                        {message.content.split('\n').map((line, i) => (
-                          <span key={i}>
-                            {renderMessage(line)}
-                            {i < message.content.split('\n').length - 1 && <br />}
-                          </span>
-                        ))}
-                      </div>
+                    <div className="max-h-[300px] sm:max-h-[350px] md:max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent pr-1 sm:pr-2 md:pr-3 flex-shrink min-h-0">
+                      <BuddyErrorBoundary>
+                        {message.buddyAnswer ? (
+                          <BuddyAnswerCard
+                            answer={message.buddyAnswer}
+                            citations={message.buddyCitations || []}
+                            meta={message.buddyMeta}
+                            renderLine={renderMessage}
+                          />
+                        ) : (
+                          <div className="whitespace-pre-wrap leading-relaxed break-words">
+                            {message.content.split('\n').map((line, i) => (
+                              <span key={i}>
+                                {renderMessage(line)}
+                                {i < message.content.split('\n').length - 1 && <br />}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </BuddyErrorBoundary>
                     </div>
-                    <div className="flex items-center gap-1 mt-2 pt-1 border-t border-border/30 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-                      {message.role === 'assistant' && (
+                    <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 mt-2 pt-2 border-t border-border/50 flex-shrink-0">
+                      <>
                         <Button
-                          variant="ghost"
+                          type="button"
+                          variant="outline"
                           size="sm"
-                          className="h-6 px-2 text-xs"
-                          onClick={() => speak(message.content)}
+                          className="h-6 sm:h-7 md:h-8 px-2 sm:px-3 md:px-4 text-xs md:text-sm bg-background/50 hover:bg-background border-border/50 touch-manipulation active:scale-95 transition-transform"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (isSpeaking) {
+                              stop();
+                              return;
+                            }
+                            speak(message.content);
+                          }}
                           aria-label="Listen to this message"
                         >
-                          <Volume2 className="h-3 w-3 mr-1" />
-                          Listen
+                          <Volume2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 mr-1" />
+                          <span className="text-[10px] sm:text-xs md:text-sm">Listen</span>
                         </Button>
-                      )}
+                        {isSpeaking && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="h-6 sm:h-7 md:h-8 px-2 sm:px-3 md:px-4 text-xs md:text-sm bg-destructive/10 hover:bg-destructive/20 border-destructive/50 text-destructive touch-manipulation active:scale-95 transition-transform"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              stop();
+                            }}
+                            aria-label="Stop speaking"
+                          >
+                            <StopCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 mr-1" />
+                            <span className="text-[10px] sm:text-xs md:text-sm">Stop</span>
+                          </Button>
+                        )}
+                      </>
                       <Button
-                        variant="ghost"
+                        type="button"
+                        variant="outline"
                         size="sm"
-                        className="h-6 px-2 text-xs"
-                        onClick={() => copyMessage(message.id, message.content)}
+                        className="h-6 sm:h-7 md:h-8 px-2 sm:px-3 md:px-4 text-xs md:text-sm bg-background/50 hover:bg-background border-border/50 touch-manipulation active:scale-95 transition-transform"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          copyMessage(message.id, message.content);
+                        }}
                         aria-label="Copy message"
                       >
                         {copiedMessageId === message.id ? (
-                          <><Check className="h-3 w-3 mr-1" /> Copied</>
+                          <><Check className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 mr-1" /><span className="text-[10px] sm:text-xs md:text-sm">Copied</span></>
                         ) : (
-                          <><Copy className="h-3 w-3 mr-1" /> Copy</>
+                          <><Copy className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 mr-1" /><span className="text-[10px] sm:text-xs md:text-sm">Copy</span></>
                         )}
                       </Button>
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })()}
               
               {isLoading && (
-                <div className="flex gap-3 justify-start">
-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                    <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+                <div className="flex gap-2 sm:gap-3 md:gap-4 justify-start">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full bg-primary/20 flex items-center justify-center">
+                    <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 text-primary animate-pulse" />
                   </div>
-                  <div className="bg-muted rounded-2xl rounded-bl-md px-4 py-3">
+                  <div className="bg-muted rounded-2xl rounded-bl-md px-3 py-2 sm:px-4 sm:py-3 md:px-5 md:py-4">
                     <div className="flex gap-1">
                       <span className="w-2 h-2 bg-primary/50 rounded-full animate-bounce [animation-delay:0ms]" />
                       <span className="w-2 h-2 bg-primary/50 rounded-full animate-bounce [animation-delay:150ms]" />
@@ -912,31 +1506,62 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
               {showTour && (
                 <div className="flex justify-center">
                   <Button
-                    onClick={nextTourStep}
-                    className="gap-2"
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      nextTourStep();
+                    }}
+                    className="gap-2 text-xs sm:text-sm touch-manipulation active:scale-95 transition-transform"
                     size="sm"
                   >
-                    {currentTourStep + 1 >= config.sections.length ? 'Finish Tour' : 'Next Section'}
-                    <ChevronRight className="h-4 w-4" />
+                    {currentTourStep + 1 >= tourSteps.length ? 'Finish Tour' : 'Next Section'}
+                    <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </Button>
                 </div>
               )}
             </div>
-          </ScrollArea>
+          </div>
           )}
           
           {/* Quick questions */}
           {!isMinimized && (
-          <div className="px-4 py-2 border-t border-border">
-            <p className="text-xs text-muted-foreground mb-2">Quick questions:</p>
-            <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
+          <div className="px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 border-t border-border flex-shrink-0">
+            <div className="flex items-center justify-between mb-1.5 sm:mb-2 md:mb-2.5">
+              <p className="text-[10px] sm:text-xs md:text-sm text-muted-foreground">Quick questions:</p>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-5 sm:h-6 px-1.5 sm:px-2 text-[10px] sm:text-xs sm:hidden touch-manipulation active:scale-95 transition-transform"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  exportChat();
+                }}
+                disabled={messages.length <= 1}
+                aria-label="Export chat"
+              >
+                <Download className="h-3 w-3 mr-0.5" />
+                Export
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-1 sm:gap-1.5 md:gap-2 max-h-24 sm:max-h-32 md:max-h-36 overflow-y-auto">
               {config.quickQuestions.map((question: string, idx: number) => (
                 <Button
                   key={idx}
+                  type="button"
                   variant="outline"
                   size="sm"
-                  className="h-7 text-xs px-3 flex-shrink-0"
-                  onClick={() => handleQuickQuestion(question)}
+                  className="h-6 sm:h-7 md:h-8 text-[10px] sm:text-xs md:text-sm px-2 sm:px-3 md:px-4 flex-shrink-0 leading-tight touch-manipulation active:scale-95 transition-transform"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setInput(question);
+                    void sendMessage(question, 'quick');
+                                      const id = getBuddyIntentIdByLabel(question);
+                                      void sendMessage(question, 'quick', id);
+                  }}
                   disabled={isLoading}
                 >
                   {question}
@@ -948,55 +1573,112 @@ ${config.sections.map((s: any) => `- ${s.name}: ${s.description}`).join('\n')}`;
           
           {/* Input area */}
           {!isMinimized && (
-          <div className="p-4 pt-2 border-t border-border">
+          <div className="p-3 sm:p-4 md:p-5 pt-2 sm:pt-2.5 md:pt-3 border-t border-border flex-shrink-0">
+            {lastError && (
+              <div className="mb-2 flex items-start justify-between gap-2 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2" role="alert" aria-live="polite">
+                <p className="text-xs sm:text-sm text-destructive">{lastError}</p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-7 px-2 text-xs"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    retryLast();
+                  }}
+                >
+                  Retry
+                </Button>
+              </div>
+            )}
             <form
-              className="flex gap-2"
+              className="flex gap-1.5 sm:gap-2 md:gap-2.5"
               onSubmit={(e) => {
                 e.preventDefault();
-                handleSend();
+                e.stopPropagation();
+                if (!isLoading && input.trim()) {
+                  void sendMessage(undefined, 'typed');
+                }
               }}
             >
-              <Input
+              <Textarea
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                onCompositionStart={() => {
+                  isComposingRef.current = true;
+                }}
+                onCompositionEnd={() => {
+                  isComposingRef.current = false;
+                }}
+                onKeyDown={(e) => {
+                  // Submit on Enter, but allow Shift+Enter for new lines. Avoid sending mid-IME composition.
+                  if (e.key === 'Enter' && !e.shiftKey && !isLoading && !isComposingRef.current) {
+                    e.preventDefault();
+                    void sendMessage(undefined, 'typed');
+                  }
+                }}
                 placeholder="Ask me about this page..."
-                className="flex-1"
+                className="flex-1 min-h-9 sm:min-h-10 md:min-h-11 max-h-28 sm:max-h-32 md:max-h-36 resize-none text-xs sm:text-sm md:text-base touch-manipulation"
                 disabled={isLoading}
                 aria-label="Type your question"
+                aria-describedby="buddy-input-hint"
+                autoComplete="off"
               />
+              <span id="buddy-input-hint" className="sr-only">
+                Press Enter to send your message, or Shift+Enter for a new line
+              </span>
               <Button
                 type="submit"
                 size="icon"
+                className="h-9 w-9 sm:h-10 sm:w-10 md:h-11 md:w-11 flex-shrink-0 touch-manipulation active:scale-95 transition-transform"
                 disabled={!input.trim() || isLoading}
                 aria-label="Send message"
               >
-                <Send className="h-4 w-4" />
+                <Send className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5" />
               </Button>
             </form>
           </div>
           )}
           
           {/* Page indicator */}
-          <div className="px-4 py-2 border-t border-border bg-muted/50">
-            <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-              <Badge variant="secondary" className="text-xs">
-                {config.pageId === 'adhd' && <Brain className="h-3 w-3 mr-1" />}
-                {config.pageId === 'autism' && <Heart className="h-3 w-3 mr-1" />}
-                {config.pageId === 'home' && <Home className="h-3 w-3 mr-1" />}
-                {config.pageName}
+          <div className="px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 border-t border-border bg-muted/50 flex-shrink-0">
+            <div className="flex items-center justify-center gap-1.5 sm:gap-2 md:gap-2.5 text-[10px] sm:text-xs md:text-sm text-muted-foreground flex-wrap">
+              <Badge variant="secondary" className="text-[10px] sm:text-xs md:text-sm h-5 sm:h-6 md:h-auto">
+                {config.pageId === 'adhd' && <Brain className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-3.5 md:w-3.5 mr-0.5 sm:mr-1" />}
+                {config.pageId === 'autism' && <Heart className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-3.5 md:w-3.5 mr-0.5 sm:mr-1" />}
+                {config.pageId === 'home' && <Home className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-3.5 md:w-3.5 mr-0.5 sm:mr-1" />}
+                <span className="truncate max-w-[120px] sm:max-w-none">{config.pageName}</span>
               </Badge>
-              <span>•</span>
-              <span>{pageContent.sections.length > 0 ? `${pageContent.sections.length} detected sections` : `${config.sections.length} sections`}</span>
+              <span className="hidden sm:inline">•</span>
+              <span className="hidden sm:inline">{pageContent.sections.length > 0 ? `${pageContent.sections.length} detected sections` : `${config.sections.length} sections`}</span>
               {pageContent.features.length > 0 && (
                 <>
-                  <span>•</span>
-                  <span className="flex items-center gap-1">
-                    <Sparkles className="h-3 w-3" />
+                  <span className="hidden sm:inline">•</span>
+                  <span className="hidden sm:flex items-center gap-1">
+                    <Sparkles className="h-3 w-3 md:h-3.5 md:w-3.5" />
                     {pageContent.features.length} features
                   </span>
                 </>
               )}
+            </div>
+
+            <div className="mt-2 flex items-center justify-center gap-2">
+              <ShareButton variant="outline" size="sm" className="h-7 px-2 text-[10px] sm:text-xs">
+                <>
+                  <Share2 className="h-3.5 w-3.5 mr-1" />
+                  Share
+                </>
+              </ShareButton>
+
+              <InstallButton
+                variant="outline"
+                size="sm"
+                className="h-7 px-2 text-[10px] sm:text-xs"
+                label="Install"
+                showFallbackLink
+              />
             </div>
           </div>
         </DialogContent>

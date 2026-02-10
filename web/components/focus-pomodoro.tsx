@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Play, Pause, RotateCcw, Zap, Timer, Coffee, CheckCircle2, Settings } from 'lucide-react';
+import { Play, Pause, RotateCcw, Zap, Timer, Coffee, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Slider } from '@/components/ui/slider';
 import { initADHDStore, getProgress as getADHDProgress, logFocusSession, type ADHDProgress } from '@/lib/adhd-progress-store';
@@ -31,23 +31,7 @@ export function FocusPomodoro() {
     setTodayFocusMinutes(progress.focus.totalFocusMinutes);
   }, []);
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
-
-    if (isActive && timeLeft > 0) {
-      interval = setInterval(() => {
-        setTimeLeft((time) => time - 1);
-      }, 1000);
-    } else if (timeLeft === 0) {
-      handleTimerComplete();
-    }
-
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isActive, timeLeft]);
-
-  const handleTimerComplete = () => {
+  const handleTimerComplete = useCallback(() => {
     setIsActive(false);
     
     if (mode === 'work') {
@@ -88,7 +72,23 @@ export function FocusPomodoro() {
         });
       }
     }
-  };
+  }, [breakDuration, mode, workDuration]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+
+    if (isActive && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft((time) => time - 1);
+      }, 1000);
+    } else if (timeLeft === 0) {
+      handleTimerComplete();
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [handleTimerComplete, isActive, timeLeft]);
 
   const toggleTimer = () => {
     if (!isActive && 'Notification' in window && Notification.permission === 'default') {

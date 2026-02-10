@@ -5,6 +5,36 @@ import { Card } from '@/components/ui/card'
 import { useAchievements } from '@/hooks/use-achievements'
 import { motion } from 'framer-motion'
 
+const WIDTH_CLASS_BY_PERCENT: Record<number, string> = {
+  0: 'w-0',
+  5: 'w-[5%]',
+  10: 'w-[10%]',
+  15: 'w-[15%]',
+  20: 'w-[20%]',
+  25: 'w-1/4',
+  30: 'w-[30%]',
+  35: 'w-[35%]',
+  40: 'w-2/5',
+  45: 'w-[45%]',
+  50: 'w-1/2',
+  55: 'w-[55%]',
+  60: 'w-3/5',
+  65: 'w-[65%]',
+  70: 'w-[70%]',
+  75: 'w-3/4',
+  80: 'w-4/5',
+  85: 'w-[85%]',
+  90: 'w-[90%]',
+  95: 'w-[95%]',
+  100: 'w-full'
+}
+
+function percentToWidthClass(percent: number): string {
+  const clamped = Math.max(0, Math.min(100, percent))
+  const rounded = Math.round(clamped / 5) * 5
+  return WIDTH_CLASS_BY_PERCENT[rounded] ?? 'w-0'
+}
+
 export function ProgressDashboard() {
   const { progress, allAchievements } = useAchievements()
   
@@ -111,8 +141,7 @@ export function ProgressDashboard() {
             </div>
             <div className="h-2 bg-secondary rounded-full overflow-hidden">
               <div 
-                className="h-full bg-blue-500"
-                style={{ width: `${Math.min(((progress?.stats?.breathingSessions ?? 0) / 50) * 100, 100)}%` }}
+                className={`h-full bg-blue-500 ${percentToWidthClass(((progress?.stats?.breathingSessions ?? 0) / 50) * 100)}`}
               />
             </div>
           </div>
@@ -124,8 +153,7 @@ export function ProgressDashboard() {
             </div>
             <div className="h-2 bg-secondary rounded-full overflow-hidden">
               <div 
-                className="h-full bg-purple-500"
-                style={{ width: `${Math.min(((progress?.stats?.thoughtRecords ?? 0) / 10) * 100, 100)}%` }}
+                className={`h-full bg-purple-500 ${percentToWidthClass(((progress?.stats?.thoughtRecords ?? 0) / 10) * 100)}`}
               />
             </div>
           </div>
@@ -137,8 +165,7 @@ export function ProgressDashboard() {
             </div>
             <div className="h-2 bg-secondary rounded-full overflow-hidden">
               <div 
-                className="h-full bg-green-500"
-                style={{ width: `${Math.min(((progress?.stats?.groundingSessions ?? 0) / 10) * 100, 100)}%` }}
+                className={`h-full bg-green-500 ${percentToWidthClass(((progress?.stats?.groundingSessions ?? 0) / 10) * 100)}`}
               />
             </div>
           </div>
@@ -150,8 +177,7 @@ export function ProgressDashboard() {
             </div>
             <div className="h-2 bg-secondary rounded-full overflow-hidden">
               <div 
-                className="h-full bg-pink-500"
-                style={{ width: `${Math.min(((progress?.stats?.moodEntries ?? 0) / 30) * 100, 100)}%` }}
+                className={`h-full bg-pink-500 ${percentToWidthClass(((progress?.stats?.moodEntries ?? 0) / 30) * 100)}`}
               />
             </div>
           </div>
@@ -163,8 +189,7 @@ export function ProgressDashboard() {
             </div>
             <div className="h-2 bg-secondary rounded-full overflow-hidden">
               <div 
-                className="h-full bg-yellow-500"
-                style={{ width: `${Math.min(((progress?.stats?.gratitudeEntries ?? 0) / 30) * 100, 100)}%` }}
+                className={`h-full bg-yellow-500 ${percentToWidthClass(((progress?.stats?.gratitudeEntries ?? 0) / 30) * 100)}`}
               />
             </div>
           </div>
@@ -176,8 +201,7 @@ export function ProgressDashboard() {
             </div>
             <div className="h-2 bg-secondary rounded-full overflow-hidden">
               <div 
-                className="h-full bg-orange-500"
-                style={{ width: `${Math.min(((progress?.stats?.exposureAttempts ?? 0) / 10) * 100, 100)}%` }}
+                className={`h-full bg-orange-500 ${percentToWidthClass(((progress?.stats?.exposureAttempts ?? 0) / 10) * 100)}`}
               />
             </div>
           </div>

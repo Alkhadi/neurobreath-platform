@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Music, Check, X, Trophy, Volume2 } from 'lucide-react';
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS';
 
 interface Pattern {
   id: string;
@@ -90,7 +91,7 @@ export function RhythmTraining() {
   useEffect(() => {
     // Initialize Web Audio API
     if (typeof window !== 'undefined' && !audioContextRef.current) {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioContextClass = window.AudioContext || (window as unknown as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (AudioContextClass) {
         audioContextRef.current = new AudioContextClass();
       }
@@ -137,7 +138,9 @@ export function RhythmTraining() {
       if (selectedPattern.pattern[i] === 'tap') {
         playTone(440, 150);
         if ('speechSynthesis' in window) {
-          const utterance = new SpeechSynthesisUtterance(selectedPattern.syllables[i]);
+          const cleanText = sanitizeForTTS(selectedPattern.syllables[i]);
+          if (!cleanText) return;
+          const utterance = new SpeechSynthesisUtterance(cleanText);
           utterance.rate = 1.2;
           utterance.pitch = 1.0;
           utterance.volume = 0.7;

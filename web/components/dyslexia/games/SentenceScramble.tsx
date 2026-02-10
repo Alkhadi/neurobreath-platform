@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, XCircle, RefreshCw, Trophy, Shuffle, Volume2 } from 'lucide-react';
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS';
 import { useProgress } from '@/contexts/ProgressContext';
 
 const sentences = [
@@ -26,19 +27,21 @@ export function SentenceScramble() {
 
   const sentence = sentences[currentSentence];
 
-  useEffect(() => {
-    scrambleWords();
-  }, [currentSentence]);
-
-  const scrambleWords = () => {
+  const scrambleWords = useCallback(() => {
     const shuffled = [...sentence.words].sort(() => Math.random() - 0.5);
     setScrambledWords(shuffled);
     setSelectedWords([]);
-  };
+  }, [sentence.words]);
+
+  useEffect(() => {
+    scrambleWords();
+  }, [scrambleWords]);
 
   const speakSentence = (text: string) => {
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
+      const cleanText = sanitizeForTTS(text);
+      if (!cleanText) return;
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.rate = 0.8;
       window.speechSynthesis.speak(utterance);
     }

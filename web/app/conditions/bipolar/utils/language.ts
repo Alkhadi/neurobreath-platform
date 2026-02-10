@@ -5,7 +5,10 @@ import { Language } from '../types';
 export const detectLanguage = (): Language => {
   if (typeof window === 'undefined') return 'en-GB';
   
-  const browserLang = navigator.language || (navigator as any).userLanguage;
+  const browserLang =
+    navigator.language ||
+    (navigator as Navigator & { userLanguage?: string }).userLanguage ||
+    'en-GB';
   
   // Check for US English variants
   if (browserLang.startsWith('en-US') || 

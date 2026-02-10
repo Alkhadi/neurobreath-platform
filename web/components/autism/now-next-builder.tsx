@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Download, Plus, X, ArrowRight } from 'lucide-react';
+import { Download, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface NowNextBuilderProps {
@@ -86,7 +86,7 @@ Visual supports help with transitions
         {/* Input Section */}
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="now">What\'s happening NOW?</Label>
+            <Label htmlFor="now">What's happening NOW?</Label>
             <Input
               id="now"
               value={nowActivity}
@@ -97,7 +97,7 @@ Visual supports help with transitions
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="next">What\'s happening NEXT?</Label>
+            <Label htmlFor="next">What's happening NEXT?</Label>
             <Input
               id="next"
               value={nextActivity}
@@ -117,6 +117,7 @@ Visual supports help with transitions
               value={fontSize}
               onChange={(e) => setFontSize(parseInt(e.target.value))}
               className="w-full"
+              aria-label="Text size slider"
             />
           </div>
         </div>
@@ -125,9 +126,10 @@ Visual supports help with transitions
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 border-4 border-blue-500 rounded-lg p-6 bg-blue-50 dark:bg-blue-950/20 text-center min-h-[200px] flex flex-col items-center justify-center">
             <div className="text-blue-700 dark:text-blue-300 font-bold text-xl mb-4">NOW</div>
+            {/* eslint-disable-next-line react/forbid-dom-props */}
             <div 
-              className="text-blue-900 dark:text-blue-100 font-semibold break-words" 
-              style={{ fontSize: `${fontSize}px` }}
+              className="font-semibold break-words" 
+              style={{ fontSize: `${fontSize}px`, color: 'rgb(30 58 138)' }}
             >
               {nowActivity || '???'}
             </div>
@@ -136,9 +138,10 @@ Visual supports help with transitions
           <div className="flex-1 border-4 border-green-500 rounded-lg p-6 bg-green-50 dark:bg-green-950/20 text-center min-h-[200px] flex flex-col items-center justify-center relative">
             <div className="absolute top-2 left-2 text-4xl">➡️</div>
             <div className="text-green-700 dark:text-green-300 font-bold text-xl mb-4">NEXT</div>
+            {/* eslint-disable-next-line react/forbid-dom-props */}
             <div 
-              className="text-green-900 dark:text-green-100 font-semibold break-words" 
-              style={{ fontSize: `${fontSize}px` }}
+              className="font-semibold break-words" 
+              style={{ fontSize: `${fontSize}px`, color: 'rgb(20 83 45)' }}
             >
               {nextActivity || '???'}
             </div>

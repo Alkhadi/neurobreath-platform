@@ -25,6 +25,8 @@ interface PubMedResponse {
   total: number;
   query: string;
   yearFrom: string;
+  source?: 'success' | 'fallback' | 'error';
+  message?: string;
 }
 
 const PRESET_TOPICS = [
@@ -68,15 +70,25 @@ export function PubMedResearch() {
         `/api/pubmed?query=${encodeURIComponent(query)}&max=10&yearFrom=${yearFrom}`
       );
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch research');
-      }
-
+      // Parse JSON regardless of status (API returns 200 with fallback data)
       const data: PubMedResponse = await response.json();
-      setArticles(data.articles);
-      setTotal(data.total);
+
+      if (data.articles && data.articles.length > 0) {
+        setArticles(data.articles);
+        setTotal(data.total);
+        setError(null);
+      } else if (data.message) {
+        // API returned a message (likely an error state)
+        setError(data.message);
+        setArticles([]);
+      } else {
+        // No articles found
+        setArticles([]);
+        setTotal(0);
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error occurred');
+      console.error('Research fetch error:', err);
+      setError('Unable to load research. Please check your connection and try again.');
       setArticles([]);
     } finally {
       setLoading(false);
@@ -152,7 +164,7 @@ export function PubMedResearch() {
           {/* Year Filter */}
           <div>
             <h3 className="text-sm font-medium mb-3">Filter by Year</h3>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {['2024', '2023', '2022', '2020', '2015'].map((year) => (
                 <Button
                   key={year}
@@ -160,6 +172,7 @@ export function PubMedResearch() {
                   size="sm"
                   onClick={() => setYearFrom(year)}
                   disabled={loading}
+                  className="min-w-[60px]"
                 >
                   {year}+
                 </Button>

@@ -243,17 +243,19 @@ function generateId(): string {
 /**
  * Migrate old device profiles to new version
  */
-function migrateDeviceProfiles(old: any): DeviceProfiles {
-  console.warn('[DeviceProfiles] Migrating old version:', old.version)
+function migrateDeviceProfiles(old: unknown): DeviceProfiles {
+  const oldRecord: Record<string, unknown> =
+    typeof old === 'object' && old !== null ? (old as Record<string, unknown>) : {}
+  console.warn('[DeviceProfiles] Migrating old version:', oldRecord.version)
   
   const migrated = createDefaultDeviceProfiles()
   
   // Preserve what we can
-  if (Array.isArray(old.profiles)) {
-    migrated.profiles = old.profiles
+  if (Array.isArray(oldRecord.profiles)) {
+    migrated.profiles = oldRecord.profiles as LearnerProfile[]
   }
-  if (old.activeProfileId) {
-    migrated.activeProfileId = old.activeProfileId
+  if (typeof oldRecord.activeProfileId === 'string') {
+    migrated.activeProfileId = oldRecord.activeProfileId
   }
   
   return migrated

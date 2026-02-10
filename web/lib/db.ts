@@ -6,9 +6,70 @@ const globalForPrisma = globalThis as unknown as {
   prismaLastDownReason: string | undefined
 }
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient()
+function readNonEmptyEnv(name: string): string | undefined {
+  const value = process.env[name]
+  const trimmed = typeof value === 'string' ? value.trim() : ''
+  return trimmed ? trimmed : undefined
+}
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+export function getDatabaseUrl(): string | undefined {
+  return (
+    readNonEmptyEnv('DATABASE_URL') ||
+    // Prisma Postgres
+    readNonEmptyEnv('PRISMA_DATABASE_URL') ||
+    // Common hosting/integration env vars (e.g. Vercel Postgres)
+    readNonEmptyEnv('POSTGRES_PRISMA_URL') ||
+    readNonEmptyEnv('POSTGRES_URL_NON_POOLING') ||
+    readNonEmptyEnv('POSTGRES_URL')
+  )
+}
+
+export function getDatabaseUrlSource():
+  | 'DATABASE_URL'
+  | 'PRISMA_DATABASE_URL'
+  | 'POSTGRES_PRISMA_URL'
+  | 'POSTGRES_URL_NON_POOLING'
+  | 'POSTGRES_URL'
+  | null {
+  if (readNonEmptyEnv('DATABASE_URL')) return 'DATABASE_URL'
+  if (readNonEmptyEnv('PRISMA_DATABASE_URL')) return 'PRISMA_DATABASE_URL'
+  if (readNonEmptyEnv('POSTGRES_PRISMA_URL')) return 'POSTGRES_PRISMA_URL'
+  if (readNonEmptyEnv('POSTGRES_URL_NON_POOLING')) return 'POSTGRES_URL_NON_POOLING'
+  if (readNonEmptyEnv('POSTGRES_URL')) return 'POSTGRES_URL'
+  return null
+}
+
+function ensureDatabaseUrl(): string {
+  const url = getDatabaseUrl()
+  if (url && !readNonEmptyEnv('DATABASE_URL')) {
+    // Prisma schema expects env("DATABASE_URL"); map provider-specific vars.
+    process.env.DATABASE_URL = url
+  }
+  if (!url) {
+    throw new Error('Missing DATABASE_URL')
+  }
+  return url
+}
+
+function ensurePrisma(): PrismaClient {
+  ensureDatabaseUrl()
+
+  if (globalForPrisma.prisma) return globalForPrisma.prisma
+
+  const client = new PrismaClient()
+  if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = client
+  return client
+}
+
+// Avoid instantiating Prisma at module scope when env is missing.
+// Preserve existing import API via a Proxy.
+export const prisma = new Proxy({} as PrismaClient, {
+  get(_target, prop, receiver) {
+    const client = ensurePrisma()
+    const value = Reflect.get(client as unknown as object, prop, receiver)
+    return typeof value === 'function' ? value.bind(client) : value
+  },
+})
 
 const DEFAULT_DB_DOWN_MS = 30_000
 

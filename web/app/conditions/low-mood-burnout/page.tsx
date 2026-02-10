@@ -12,7 +12,7 @@ import { EnergyAccountingTracker } from "@/components/low-mood/energy-accounting
 import { ValuesCompass } from "@/components/low-mood/values-compass";
 import { WorkplaceBoundaryBuilder } from "@/components/low-mood/workplace-boundary-builder";
 import { BurnoutProgressDashboard } from "@/components/low-mood/burnout-progress-dashboard";
-import { Battery, Heart, Brain, AlertCircle, CheckCircle2, Clock, Shield, Sun, CloudRain, Flame, Users, TrendingDown, Phone, Baby, School, GraduationCap, Briefcase, Stethoscope, Building, BookOpen, TrendingUp, ArrowRight } from "lucide-react";
+import { Battery, Heart, Brain, AlertCircle, CheckCircle2, Clock, Shield, Sun, CloudRain, Flame, Users, Phone, Baby, School, GraduationCap, Briefcase, Stethoscope, Building, BookOpen, ArrowRight } from "lucide-react";
 
 export default function LowMoodBurnoutPage() {
   const [activeTab, setActiveTab] = useState("overview");

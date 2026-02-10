@@ -4,27 +4,21 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   Download, 
   Heart, 
-  BookOpen, 
   Users, 
-  GraduationCap, 
   Briefcase,
   CheckCircle2, 
-  ExternalLink, 
-  Lightbulb,
+  ExternalLink,
   Clock,
   Calendar,
   Baby,
   UserCheck,
   Shield,
   FileText,
-  Sparkles,
-  AlertCircle
+  Sparkles
 } from 'lucide-react';
 import { PathwaysNavigator } from '@/components/autism/pathways-navigator';
 import { ResourcesLibrary } from '@/components/autism/resources-library';
@@ -78,21 +72,31 @@ export default function AutismParentSupportPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950">
       {/* Hero Section */}
-      <section className="relative py-20 md:py-32 overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 text-white">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <div className="text-center space-y-6 mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold">Autism Parent Support Hub</h1>
-            <p className="text-xl md:text-2xl max-w-3xl mx-auto opacity-90">
+      <section
+        className="relative py-16 sm:py-20 md:py-32 overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 text-white"
+        data-tour="nb:conditions-autism-parent:hero"
+        data-tour-order={1}
+        data-tour-title="Autism Parent Support Hub overview"
+      >
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">Autism Parent Support Hub</h1>
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto opacity-90 leading-relaxed">
               Everything in one place: Parent, Adult & Later-life guides, Clinic guide with checklists & references, 
               plus an in-app coach module you can import into NeuroBreath
             </p>
-            <p className="text-sm opacity-75 max-w-2xl mx-auto">
+            <p className="text-xs sm:text-sm opacity-75 max-w-2xl mx-auto">
               A4 PDFs are print-optimised with brand header/footer
             </p>
           </div>
 
           {/* Quick Navigation Badges */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
+          <div
+            className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 sm:mb-12 px-2"
+            data-tour="nb:conditions-autism-parent:quick-selector"
+            data-tour-order={2}
+            data-tour-title="Quick navigation"
+          >
             <a href="#sensory-support" className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-full text-sm font-medium transition-colors">
               Sensory-ready
             </a>
@@ -225,7 +229,7 @@ export default function AutismParentSupportPage() {
 
       {/* Download PDFs Section */}
       <section id="download-pdfs" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Download PDFs</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -319,7 +323,7 @@ export default function AutismParentSupportPage() {
 
       {/* Parent Overview Section */}
       <section id="parent-overview" className="py-16 bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50 dark:from-blue-950 dark:via-purple-950 dark:to-indigo-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="grid gap-6 lg:grid-cols-3 mb-8">
             <div className="lg:col-span-2">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Autism (Parent) — quick overview</h2>
@@ -327,7 +331,11 @@ export default function AutismParentSupportPage() {
                 A quick reference for families balancing sensory regulation, predictable routines, and communication supports.
               </p>
             </div>
-            <Card>
+            <Card
+              data-tour="nb:conditions-autism-parent:what-to-focus"
+              data-tour-order={3}
+              data-tour-title="What to focus on first"
+            >
               <CardHeader>
                 <CardTitle className="text-lg">At-a-glance focus</CardTitle>
               </CardHeader>
@@ -351,7 +359,11 @@ export default function AutismParentSupportPage() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
+            <Card
+              data-tour="nb:conditions-autism-parent:early-signs"
+              data-tour-order={4}
+              data-tour-title="Early signs"
+            >
               <CardHeader>
                 <CardTitle className="text-lg">Common signs</CardTitle>
               </CardHeader>
@@ -468,9 +480,62 @@ export default function AutismParentSupportPage() {
         </div>
       </section>
 
+      {/* Assessment Section */}
+      <section
+        id="assessment"
+        className="py-16 bg-white dark:bg-gray-900"
+        data-tour="nb:conditions-autism-parent:assessment"
+        data-tour-order={5}
+        data-tour-title="Assessment & diagnosis"
+      >
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold mb-3">Assessment & diagnosis (UK)</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              If you suspect autism, aim for clear notes and coordinated support. This is educational information only.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">What to bring</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm">
+                  <li>• Examples across settings (home, school, community)</li>
+                  <li>• Development and health history</li>
+                  <li>• Sensory profile notes (noise, touch, taste, transitions)</li>
+                  <li>• Strengths and interests (what helps regulation)</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">What good support looks like</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm">
+                  <li>• Coordinated plan across family, school and clinicians</li>
+                  <li>• Practical adjustments first (sensory, routines, communication)</li>
+                  <li>• Clear goals and review points (what changes, what stays stable)</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Quick Starter Section */}
-      <section id="co-regulation" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <section
+        id="co-regulation"
+        className="py-16 bg-white dark:bg-gray-900"
+        data-tour="nb:conditions-autism-parent:support"
+        data-tour-order={6}
+        data-tour-title="Support priorities"
+      >
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-2">Quick Starter: Autism</h2>
@@ -563,7 +628,7 @@ export default function AutismParentSupportPage() {
 
       {/* How to Use Section */}
       <section id="use" className="py-16 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950 dark:via-blue-950 dark:to-indigo-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">How to use each deliverable in NeuroBreath</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -621,7 +686,7 @@ export default function AutismParentSupportPage() {
 
       {/* Evidence Snapshot Section */}
       <section id="evidence-snapshot" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Evidence snapshot (UK)</h2>
           
           <div className="grid gap-6 md:grid-cols-2">
@@ -665,8 +730,14 @@ export default function AutismParentSupportPage() {
       </section>
 
       {/* Children & Adolescents Section */}
-      <section id="children-adolescents" className="py-16 bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 dark:from-green-950 dark:via-blue-950 dark:to-purple-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <section
+        id="children-adolescents"
+        className="py-16 bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 dark:from-green-950 dark:via-blue-950 dark:to-purple-950"
+        data-tour="nb:conditions-autism-parent:home-supports"
+        data-tour-order={7}
+        data-tour-title="Home supports"
+      >
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-2">Children & Adolescents</h2>
@@ -714,7 +785,11 @@ export default function AutismParentSupportPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card
+              data-tour="nb:conditions-autism-parent:communication-support"
+              data-tour-order={9}
+              data-tour-title="Communication supports"
+            >
               <CardHeader>
                 <CardTitle className="text-lg">AAC is speech-friendly</CardTitle>
               </CardHeader>
@@ -792,8 +867,14 @@ export default function AutismParentSupportPage() {
       </section>
 
       {/* School Section */}
-      <section id="school" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <section
+        id="school"
+        className="py-16 bg-white dark:bg-gray-900"
+        data-tour="nb:conditions-autism-parent:school-supports"
+        data-tour-order={8}
+        data-tour-title="School supports"
+      >
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-2">School: Teachers & TAs (UK)</h2>
@@ -892,6 +973,29 @@ export default function AutismParentSupportPage() {
                 </ul>
               </CardContent>
             </Card>
+
+            <Card
+              className="lg:col-span-2"
+              data-tour="nb:conditions-autism-parent:communication-support"
+              data-tour-order={9}
+              data-tour-title="Communication supports"
+            >
+              <CardHeader>
+                <Badge className="w-fit mb-2" variant="secondary">Communication</Badge>
+                <CardTitle>Communication supports that reduce friction</CardTitle>
+                <CardDescription>
+                  Align language, visuals, and expectations across home and school.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm">
+                  <li>• Agree a shared vocabulary (Now/Next, First/Then, finish tokens)</li>
+                  <li>• Use visuals everywhere (timetable, choice boards, step cards)</li>
+                  <li>• Give processing time; check understanding with simple choices</li>
+                  <li>• Provide AAC or core boards consistently; model usage without pressure</li>
+                </ul>
+              </CardContent>
+            </Card>
           </div>
 
           <Alert className="mt-6">
@@ -906,7 +1010,7 @@ export default function AutismParentSupportPage() {
 
       {/* SEND & EHCP Section */}
       <section id="pathways" className="py-16 bg-gradient-to-br from-emerald-50 via-blue-50 to-purple-50 dark:from-emerald-950 dark:via-blue-950 dark:to-purple-950">
-        <div className="mx-auto px-4 mb-12" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 mb-12 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">SEND & EHCP (England) — quick path</h2>
           
           <Card className="border-2 border-emerald-200 dark:border-emerald-800">
@@ -980,7 +1084,7 @@ export default function AutismParentSupportPage() {
 
       {/* Autistic Staff Section */}
       <section id="autistic-staff" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8">Autistic teachers & staff — reasonable adjustments</h2>
           
           <Card>
@@ -1045,7 +1149,7 @@ export default function AutismParentSupportPage() {
 
       {/* Adults Section */}
       <section id="adult-support" className="py-16 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950 dark:via-blue-950 dark:to-indigo-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Adults</h2>
           
           <div className="grid gap-6 md:grid-cols-2">
@@ -1112,7 +1216,7 @@ export default function AutismParentSupportPage() {
 
       {/* Later Life Section */}
       <section id="later-life" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-2">Later Life</h2>
@@ -1190,13 +1294,202 @@ export default function AutismParentSupportPage() {
       </section>
 
       {/* Resources Library Component */}
-      <section id="sensory-support" className="py-16 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-indigo-950 dark:via-purple-950 dark:to-pink-950 scroll-mt-20">
+      <section
+        id="sensory-support"
+        className="py-16 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-indigo-950 dark:via-purple-950 dark:to-pink-950 scroll-mt-20"
+        data-tour="nb:conditions-autism-parent:sensory-support"
+        data-tour-order={10}
+        data-tour-title="Sensory supports"
+      >
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px] mb-10">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold mb-3">Family supports: sensory, routines, and safety</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Practical ideas you can adapt to your child’s needs. Educational information only.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <Card
+              data-tour="nb:conditions-autism-parent:meltdown-support"
+              data-tour-order={11}
+              data-tour-title="Meltdowns & shutdowns"
+            >
+              <CardHeader>
+                <CardTitle className="text-lg">Meltdowns & shutdowns</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm">
+                  <li>• Reduce demands, lower sensory load, keep language minimal</li>
+                  <li>• Use predictable scripts and a calm exit plan</li>
+                  <li>• After: review triggers (ABC), plan a simpler replacement skill</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card
+              data-tour="nb:conditions-autism-parent:sleep-support"
+              data-tour-order={12}
+              data-tour-title="Sleep"
+            >
+              <CardHeader>
+                <CardTitle className="text-lg">Sleep supports</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm">
+                  <li>• Consistent timing, low light, screens off ≥1 hour</li>
+                  <li>• Optimise comfort (temperature/noise/blankets) per sensory profile</li>
+                  <li>• Track patterns to support clinical conversations</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card
+              data-tour="nb:conditions-autism-parent:eating-support"
+              data-tour-order={13}
+              data-tour-title="Eating"
+            >
+              <CardHeader>
+                <CardTitle className="text-lg">Eating & picky eating</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm">
+                  <li>• Start with sensory-safe options (texture, temperature, predictability)</li>
+                  <li>• Change one variable at a time; celebrate tiny steps</li>
+                  <li>• Seek clinical support if weight, growth or distress are concerns</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card
+              data-tour="nb:conditions-autism-parent:siblings"
+              data-tour-order={14}
+              data-tour-title="Siblings"
+            >
+              <CardHeader>
+                <CardTitle className="text-lg">Siblings</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm">
+                  <li>• Name what’s happening in simple, non-blaming language</li>
+                  <li>• Give protected 1:1 time (even 10 minutes)</li>
+                  <li>• Teach a family plan: where to go, who to ask, what to do</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card
+              data-tour="nb:conditions-autism-parent:parent-wellbeing"
+              data-tour-order={15}
+              data-tour-title="Parent wellbeing"
+            >
+              <CardHeader>
+                <CardTitle className="text-lg">Parent wellbeing</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm">
+                  <li>• Build tiny recovery windows (breathing, walk, shower reset)</li>
+                  <li>• Ask for specific help (school meeting prep, errands, bedtime)</li>
+                  <li>• Keep a short “what works” log for you and your child</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card
+              data-tour="nb:conditions-autism-parent:crisis"
+              data-tour-order={16}
+              data-tour-title="Crisis / urgent help"
+            >
+              <CardHeader>
+                <CardTitle className="text-lg">Crisis / urgent help</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  If anyone is at immediate risk of harm, call emergency services. If you need urgent mental health support, seek local crisis services.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button asChild size="sm" variant="outline">
+                    <Link href="/contact">Contact NeuroBreath</Link>
+                  </Button>
+                  <Button asChild size="sm" variant="outline">
+                    <a href="https://www.nhs.uk/mental-health/" target="_blank" rel="noopener noreferrer">
+                      NHS mental health
+                      <ExternalLink className="w-4 h-4 ml-2" />
+                    </a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card
+              className="md:col-span-2 lg:col-span-3"
+              data-tour="nb:conditions-autism-parent:resources"
+              data-tour-order={17}
+              data-tour-title="Resources"
+            >
+              <CardHeader>
+                <CardTitle className="text-lg">Resources to share</CardTitle>
+                <CardDescription>
+                  Download packs and trusted references you can use in school or clinic conversations.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-wrap gap-2">
+                <Button asChild size="sm">
+                  <a href="#download-pdfs">Download PDFs</a>
+                </Button>
+                <Button asChild size="sm" variant="outline">
+                  <a href="https://www.nhs.uk/conditions/autism/" target="_blank" rel="noopener noreferrer">
+                    NHS overview
+                    <ExternalLink className="w-4 h-4 ml-2" />
+                  </a>
+                </Button>
+                <Button asChild size="sm" variant="outline">
+                  <a href="https://www.autism.org.uk/advice-and-guidance" target="_blank" rel="noopener noreferrer">
+                    National Autistic Society
+                    <ExternalLink className="w-4 h-4 ml-2" />
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card
+              className="md:col-span-2 lg:col-span-3"
+              data-tour="nb:conditions-autism-parent:evidence"
+              data-tour-order={18}
+              data-tour-title="Evidence & references"
+            >
+              <CardHeader>
+                <CardTitle className="text-lg">Evidence & references</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  NeuroBreath links out to established guidance (NICE/NHS) and peer-reviewed evidence where available.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button asChild size="sm" variant="outline">
+                    <a href="https://www.nice.org.uk/guidance/cg170" target="_blank" rel="noopener noreferrer">
+                      NICE CG170
+                      <ExternalLink className="w-4 h-4 ml-2" />
+                    </a>
+                  </Button>
+                  <Button asChild size="sm" variant="outline">
+                    <a href="https://www.nice.org.uk/guidance/cg142" target="_blank" rel="noopener noreferrer">
+                      NICE CG142
+                      <ExternalLink className="w-4 h-4 ml-2" />
+                    </a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
         <ResourcesLibrary />
       </section>
 
       {/* Clinical Guidance Section */}
       <section id="clinical-guidance" className="py-16 bg-white dark:bg-gray-900">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Clinical & Education Guidance</h2>
           
           <div className="grid gap-6 lg:grid-cols-2">
@@ -1378,7 +1671,7 @@ export default function AutismParentSupportPage() {
 
       {/* Mental Health Quick Reference */}
       <section id="mental-health" className="py-16 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950 dark:via-purple-950 dark:to-pink-950">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
             Mental Health: Anxiety • Depression • Stress • Sleep
           </h2>
@@ -1440,6 +1733,68 @@ export default function AutismParentSupportPage() {
               </div>
             </CardContent>
           </Card>
+        </div>
+      </section>
+
+      {/* Next Steps */}
+      <section
+        id="next-steps"
+        className="py-16 bg-white dark:bg-gray-900"
+        data-tour="nb:conditions-autism-parent:next-steps"
+        data-tour-order={19}
+        data-tour-title="Next steps"
+      >
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold mb-3">Next steps</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Pick one small action, repeat it for a week, and review what changes.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Try a 2‑minute reset</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Use breathing as a predictable transition tool for parents and kids.
+                </p>
+                <Button asChild className="w-full" size="sm">
+                  <Link href="/techniques/sos">Start SOS‑60</Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Explore Autism Hub</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Skills, quests, and evidence-backed resources.
+                </p>
+                <Button asChild className="w-full" size="sm" variant="outline">
+                  <Link href="/autism">Go to Autism Hub</Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Need help?</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Ask a question or share feedback so we can improve the guides.
+                </p>
+                <Button asChild className="w-full" size="sm" variant="outline">
+                  <Link href="/contact">Contact us</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
     </main>

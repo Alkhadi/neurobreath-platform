@@ -12,6 +12,11 @@ import { ResourcesHub } from '@/components/dyslexia/ResourcesHub';
 import { ManagementGuides } from '@/components/dyslexia/ManagementGuides';
 import { EvidenceBasedStrategies } from '@/components/dyslexia/EvidenceBasedStrategies';
 import { SupportCommunity } from '@/components/dyslexia/SupportCommunity';
+import { EvidenceFooter } from '@/components/evidence-footer';
+import { evidenceByRoute } from '@/lib/evidence/page-evidence';
+import { EducationalDisclaimerInline } from '@/components/trust/EducationalDisclaimerInline';
+
+const evidence = evidenceByRoute['/conditions/dyslexia'];
 
 export default function DyslexiaHubPage() {
   // Refs for smooth scrolling
@@ -56,11 +61,13 @@ export default function DyslexiaHubPage() {
 
           <main
             id="main-content"
-            className="mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-8 sm:space-y-10 md:space-y-12"
-            style={{ width: '86vw', maxWidth: '86vw' }}
+            className="mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]"
           >
             {/* Hero Section */}
             <DyslexiaHero onScrollToSection={scrollToSection} />
+            <div className="mt-4">
+              <EducationalDisclaimerInline contextLabel="Dyslexia hub" />
+            </div>
 
             {/* Understanding Dyslexia */}
             <div ref={understandingRef}>
@@ -135,6 +142,11 @@ export default function DyslexiaHubPage() {
                 </svg>
                 Back to Top
               </button>
+            </div>
+
+            {/* Evidence Sources */}
+            <div className="pt-8">
+              <EvidenceFooter evidence={evidence} />
             </div>
           </main>
         </div>

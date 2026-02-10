@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Clock, Target, BookOpen, Smile, Brain, ArrowRight, Sparkles } from 'lucide-react'
+import { Clock, Target, Brain, ArrowRight, Sparkles } from 'lucide-react'
 
 export default function GoalsSection() {
   const goals = [

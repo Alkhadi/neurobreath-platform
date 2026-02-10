@@ -309,8 +309,51 @@ export function useDorothyAudio() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const stopTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const targetEndRef = useRef<number | null>(null);
+  const playPromiseRef = useRef<Promise<void> | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentLetter, setCurrentLetter] = useState<string | null>(null);
+
+  const isAbortError = (err: unknown) =>
+    !!err && typeof err === 'object' && 'name' in err && (err as { name?: unknown }).name === 'AbortError';
+
+  const safePlay = useCallback((audio: HTMLAudioElement) => {
+    const playPromise = audio.play();
+    playPromiseRef.current = playPromise;
+
+    playPromise
+      .catch((err) => {
+        if (isAbortError(err)) return;
+        console.error(err);
+      })
+      .finally(() => {
+        if (playPromiseRef.current === playPromise) {
+          playPromiseRef.current = null;
+        }
+      });
+  }, []);
+
+  const safePause = useCallback(async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const playPromise = playPromiseRef.current;
+    if (playPromise) {
+      try {
+        await Promise.race([
+          playPromise.catch(() => {}),
+          new Promise<void>((resolve) => setTimeout(resolve, 250))
+        ]);
+      } catch {
+        // ignore
+      }
+    }
+
+    try {
+      audio.pause();
+    } catch {
+      // ignore
+    }
+  }, []);
 
   // Initialize audio element
   useEffect(() => {
@@ -323,7 +366,7 @@ export function useDorothyAudio() {
       if (targetEndRef.current == null) return;
       // Pause as soon as we cross the segment end.
       if (audioRef.current.currentTime >= targetEndRef.current) {
-        audioRef.current.pause();
+        void safePause();
         targetEndRef.current = null;
         setIsPlaying(false);
       }
@@ -333,12 +376,12 @@ export function useDorothyAudio() {
     return () => {
       if (audioRef.current) {
         audioRef.current.removeEventListener('timeupdate', handleTimeUpdate);
-        audioRef.current.pause();
+        void safePause();
         audioRef.current = null;
       }
       if (stopTimeoutRef.current) clearTimeout(stopTimeoutRef.current);
     };
-  }, []);
+  }, [safePause]);
 
   const playWindow = useCallback((letter: string, window: LetterAudioWindow, playbackRate = 1): number => {
     if (!audioRef.current) return 0;
@@ -353,7 +396,7 @@ export function useDorothyAudio() {
     const durationMs = Math.max(0, (window.end - window.start) * 1000 / playbackRate);
     audio.currentTime = window.start;
     targetEndRef.current = window.end;
-    audio.play().catch(console.error);
+    safePlay(audio);
 
     setIsPlaying(true);
     setCurrentLetter(letter.toUpperCase());
@@ -361,13 +404,13 @@ export function useDorothyAudio() {
     // Fallback safety stop (in case timeupdate doesn't fire while buffered)
     stopTimeoutRef.current = setTimeout(() => {
       if (!audioRef.current) return;
-      audioRef.current.pause();
+      void safePause();
       targetEndRef.current = null;
       setIsPlaying(false);
     }, durationMs + 150);
 
     return durationMs;
-  }, []);
+  }, [safePause, safePlay]);
 
   // Play just the "call" portion of a letter (the initial sound)
   const playLetterCall = useCallback((letter: string, playbackRate = 1): number => {
@@ -392,16 +435,14 @@ export function useDorothyAudio() {
 
   // Stop playback
   const stop = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
+    void safePause();
     if (stopTimeoutRef.current) {
       clearTimeout(stopTimeoutRef.current);
     }
     targetEndRef.current = null;
     setIsPlaying(false);
     setCurrentLetter(null);
-  }, []);
+  }, [safePause]);
 
   // Get audio element for advanced control
   const getAudioElement = useCallback(() => audioRef.current, []);
@@ -421,7 +462,50 @@ export function useDorothyAudio() {
 export function useDorothyVowelAudio() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const stopTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const playPromiseRef = useRef<Promise<void> | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  const isAbortError = (err: unknown) =>
+    !!err && typeof err === 'object' && 'name' in err && (err as { name?: unknown }).name === 'AbortError';
+
+  const safePlay = useCallback((audio: HTMLAudioElement) => {
+    const playPromise = audio.play();
+    playPromiseRef.current = playPromise;
+
+    playPromise
+      .catch((err) => {
+        if (isAbortError(err)) return;
+        console.error(err);
+      })
+      .finally(() => {
+        if (playPromiseRef.current === playPromise) {
+          playPromiseRef.current = null;
+        }
+      });
+  }, []);
+
+  const safePause = useCallback(async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const playPromise = playPromiseRef.current;
+    if (playPromise) {
+      try {
+        await Promise.race([
+          playPromise.catch(() => {}),
+          new Promise<void>((resolve) => setTimeout(resolve, 250))
+        ]);
+      } catch {
+        // ignore
+      }
+    }
+
+    try {
+      audio.pause();
+    } catch {
+      // ignore
+    }
+  }, []);
 
   useEffect(() => {
     audioRef.current = new Audio('/audio/dorothy-vowels.mp3');
@@ -429,12 +513,12 @@ export function useDorothyVowelAudio() {
     
     return () => {
       if (audioRef.current) {
-        audioRef.current.pause();
+        void safePause();
         audioRef.current = null;
       }
       if (stopTimeoutRef.current) clearTimeout(stopTimeoutRef.current);
     };
-  }, []);
+  }, [safePause]);
 
   const playVowel = useCallback((vowel: string): number => {
     if (!audioRef.current) return 0;
@@ -447,28 +531,26 @@ export function useDorothyVowelAudio() {
     const duration = (timing.end - timing.start) * 1000;
     
     audioRef.current.currentTime = timing.start;
-    audioRef.current.play().catch(console.error);
+    safePlay(audioRef.current);
     setIsPlaying(true);
     
     stopTimeoutRef.current = setTimeout(() => {
       if (audioRef.current) {
-        audioRef.current.pause();
+        void safePause();
         setIsPlaying(false);
       }
     }, duration);
     
     return duration;
-  }, []);
+  }, [safePause, safePlay]);
 
   const stop = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
+    void safePause();
     if (stopTimeoutRef.current) {
       clearTimeout(stopTimeoutRef.current);
     }
     setIsPlaying(false);
-  }, []);
+  }, [safePause]);
 
   return { playVowel, stop, isPlaying };
 }

@@ -15,7 +15,6 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { 
-  getInterventionsByAgeGroup, 
   getRecommendedInterventions,
   getInterventionWithSources 
 } from '@/lib/data/adhd-evidence-registry';
@@ -60,6 +59,9 @@ export function TreatmentDecisionTree() {
   const [currentStep, setCurrentStep] = useState(0);
   const [selections, setSelections] = useState<Record<string, string>>({});
   const [showResults, setShowResults] = useState(false);
+
+  type Intervention = ReturnType<typeof getRecommendedInterventions>[number];
+  type Source = NonNullable<ReturnType<typeof getInterventionWithSources>>['sources'][number];
 
   const steps: DecisionStep[] = [
     {
@@ -114,8 +116,8 @@ export function TreatmentDecisionTree() {
 
     // Generate recommendations based on selections
     const recommendations = {
-      firstLine: [] as any[],
-      additional: [] as any[],
+      firstLine: [] as Intervention[],
+      additional: [] as Intervention[],
       guidelines: [] as string[]
     };
 
@@ -257,7 +259,7 @@ export function TreatmentDecisionTree() {
               <h3 className="text-xl font-semibold">First-Line Treatments (STRONG Evidence)</h3>
             </div>
             <div className="grid gap-4">
-              {recommendations.firstLine.map((intervention: any) => {
+              {recommendations.firstLine.map((intervention) => {
                 const details = getInterventionWithSources(intervention.id);
                 return (
                   <Card key={intervention.id} className="border-2 border-green-200 bg-green-50/30">
@@ -277,7 +279,7 @@ export function TreatmentDecisionTree() {
                         <div>
                           <div className="text-sm font-semibold mb-2">Evidence Sources:</div>
                           <div className="space-y-1">
-                            {details.sources.map((source: any) => (
+                            {details.sources.map((source: Source) => (
                               <div key={source.id} className="text-xs">
                                 <a
                                   href={source.url}
@@ -306,7 +308,7 @@ export function TreatmentDecisionTree() {
           <div className="space-y-3">
             <h3 className="text-xl font-semibold">Additional Recommended Interventions</h3>
             <div className="grid gap-4">
-              {recommendations.additional.map((intervention: any) => (
+              {recommendations.additional.map((intervention) => (
                 <Card key={intervention.id} className="border-2">
                   <CardHeader>
                     <div className="flex items-start justify-between">
@@ -339,21 +341,21 @@ export function TreatmentDecisionTree() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">ADHD Treatment Decision Tree</h2>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
+        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">ADHD Treatment Decision Tree</h2>
+        <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-2">
           Get evidence-based treatment recommendations from NICE NG87, AAP 2019, CDC, and PubMed research
         </p>
       </div>
 
       {/* Progress Indicator */}
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex items-center justify-center gap-1 sm:gap-2 px-2">
         {steps.map((step, idx) => (
           <div key={step.id} className="flex items-center">
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
+              className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold ${
                 idx < currentStep
                   ? 'bg-green-600 text-white'
                   : idx === currentStep
@@ -361,10 +363,10 @@ export function TreatmentDecisionTree() {
                   : 'bg-muted text-muted-foreground'
               }`}
             >
-              {idx < currentStep ? <CheckCircle2 className="h-4 w-4" /> : idx + 1}
+              {idx < currentStep ? <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4" /> : idx + 1}
             </div>
             {idx < steps.length - 1 && (
-              <div className={`w-12 h-1 mx-2 ${
+              <div className={`w-8 sm:w-12 h-1 mx-1 sm:mx-2 ${
                 idx < currentStep ? 'bg-green-600' : 'bg-muted'
               }`} />
             )}
@@ -374,30 +376,30 @@ export function TreatmentDecisionTree() {
 
       {/* Current Step */}
       <Card className="border-2">
-        <CardHeader>
-          <CardTitle className="text-2xl">{currentStepData.question}</CardTitle>
+        <CardHeader className="space-y-1 sm:space-y-2 pb-3 sm:pb-4">
+          <CardTitle className="text-lg sm:text-xl md:text-2xl leading-tight">{currentStepData.question}</CardTitle>
           {currentStepData.description && (
-            <CardDescription className="text-base">{currentStepData.description}</CardDescription>
+            <CardDescription className="text-sm sm:text-base">{currentStepData.description}</CardDescription>
           )}
         </CardHeader>
         <CardContent>
-          <div className="grid gap-3">
+          <div className="grid gap-2 sm:gap-3 grid-cols-1">
             {currentStepData.options.map((option) => (
               <Button
                 key={option.value}
                 variant="outline"
-                className="h-auto py-4 px-6 justify-start text-left hover:border-primary hover:bg-primary/5"
+                className="h-auto py-3 sm:py-4 px-3 sm:px-4 md:px-6 justify-start text-left hover:border-primary hover:bg-primary/5 min-h-[3.5rem] sm:min-h-[4rem]"
                 onClick={() => handleSelection(currentStepData.id, option.value)}
               >
-                <div className="flex items-center gap-3 w-full">
-                  {option.icon && <span className="text-2xl">{option.icon}</span>}
-                  <div className="flex-1">
-                    <div className="font-semibold">{option.label}</div>
+                <div className="flex items-start sm:items-center gap-2 sm:gap-3 w-full">
+                  {option.icon && <span className="text-lg sm:text-xl md:text-2xl flex-shrink-0 mt-0.5 sm:mt-0">{option.icon}</span>}
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-xs sm:text-sm md:text-base break-words leading-tight">{option.label}</div>
                     {option.description && (
-                      <div className="text-sm text-muted-foreground">{option.description}</div>
+                      <div className="text-[11px] sm:text-xs md:text-sm text-muted-foreground break-words mt-0.5">{option.description}</div>
                     )}
                   </div>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                  <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5 text-muted-foreground flex-shrink-0 mt-1 sm:mt-0" />
                 </div>
               </Button>
             ))}
@@ -406,22 +408,22 @@ export function TreatmentDecisionTree() {
       </Card>
 
       {/* Navigation */}
-      <div className="flex justify-between">
+      <div className="flex justify-between gap-2">
         <Button
           variant="outline"
           onClick={handleBack}
           disabled={currentStep === 0}
-          className="gap-2"
+          className="gap-1.5 sm:gap-2 text-sm sm:text-base h-9 sm:h-10 px-3 sm:px-4"
         >
-          <ChevronLeft className="h-4 w-4" />
-          Back
+          <ChevronLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <span className="hidden xs:inline">Back</span>
         </Button>
         <Button
           variant="ghost"
           onClick={handleReset}
-          className="gap-2"
+          className="gap-1.5 sm:gap-2 text-sm sm:text-base h-9 sm:h-10 px-3 sm:px-4"
         >
-          <RefreshCw className="h-4 w-4" />
+          <RefreshCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           Reset
         </Button>
       </div>

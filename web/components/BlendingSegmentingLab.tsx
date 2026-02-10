@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Layers, Check, X, Trophy, Volume2 } from 'lucide-react';
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS';
 
 interface Word {
   word: string;
@@ -73,7 +74,9 @@ export function BlendingSegmentingLab() {
 
   const playSound = (phoneme: string) => {
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(phoneme.replace(/\//g, ''));
+      const cleanText = sanitizeForTTS(phoneme.replace(/\//g, ''));
+      if (!cleanText) return;
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.rate = 0.8;
       utterance.pitch = 1.0;
       window.speechSynthesis.speak(utterance);
@@ -83,7 +86,9 @@ export function BlendingSegmentingLab() {
   const playWord = () => {
     if (!currentWord) return;
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(currentWord.word);
+      const cleanText = sanitizeForTTS(currentWord.word);
+      if (!cleanText) return;
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.rate = 0.8;
       window.speechSynthesis.speak(utterance);
     }

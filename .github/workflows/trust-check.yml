@@ -1,0 +1,74 @@
+name: Trust Governance Check
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main]
+
+jobs:
+  trust-check:
+    name: Validate Route Governance
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: web/yarn.lock
+      
+      - name: Install dependencies
+        run: |
+          cd web
+          yarn install --frozen-lockfile
+      
+      - name: Install tsx (TypeScript executor)
+        run: npm install -g tsx
+      
+      - name: Run trust governance check
+        run: npm run trust:check
+      
+      - name: Comment on PR (if failed)
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `## ⚠️ Trust Governance Check Failed
+
+            The route governance validation has failed. This usually means:
+
+            1. Missing routes: New pages were added but not registered in \`web/lib/trust/routeRegistry.ts\`
+            2. Overdue reviews: Some content needs to be reviewed
+            3. Missing evidence: Hubs/pathways require Tier A sources
+            4. Missing resource packs: Pathway pages need downloadable resource packs
+
+            To fix:
+            1. Run \`npm run trust:check\` locally to see detailed errors
+            2. Add missing routes to \`web/lib/trust/routeRegistry.ts\`
+            3. Ensure all pathways have resource packs defined
+            4. Update review dates if content has been reviewed
+
+            Why this matters:
+            Trust governance ensures NeuroBreath maintains credibility and accountability. All health-related content must be properly governed.
+
+            See the [Actions log](${context.payload.pull_request.html_url}/checks) for details.`;
+
+            try {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
+              });
+            } catch (err) {
+              core.warning(`Unable to comment on PR (likely permissions): ${err.message || err}`);
+            }

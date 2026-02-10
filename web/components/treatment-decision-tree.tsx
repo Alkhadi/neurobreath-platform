@@ -15,7 +15,6 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { 
-  getInterventionsByAgeGroup, 
   getRecommendedInterventions,
   getInterventionWithSources 
 } from '@/lib/data/adhd-evidence-registry';
@@ -60,6 +59,9 @@ export function TreatmentDecisionTree() {
   const [currentStep, setCurrentStep] = useState(0);
   const [selections, setSelections] = useState<Record<string, string>>({});
   const [showResults, setShowResults] = useState(false);
+
+  type Intervention = ReturnType<typeof getRecommendedInterventions>[number];
+  type Source = NonNullable<ReturnType<typeof getInterventionWithSources>>['sources'][number];
 
   const steps: DecisionStep[] = [
     {
@@ -114,8 +116,8 @@ export function TreatmentDecisionTree() {
 
     // Generate recommendations based on selections
     const recommendations = {
-      firstLine: [] as any[],
-      additional: [] as any[],
+      firstLine: [] as Intervention[],
+      additional: [] as Intervention[],
       guidelines: [] as string[]
     };
 
@@ -257,7 +259,7 @@ export function TreatmentDecisionTree() {
               <h3 className="text-xl font-semibold">First-Line Treatments (STRONG Evidence)</h3>
             </div>
             <div className="grid gap-4">
-              {recommendations.firstLine.map((intervention: any) => {
+              {recommendations.firstLine.map((intervention) => {
                 const details = getInterventionWithSources(intervention.id);
                 return (
                   <Card key={intervention.id} className="border-2 border-green-200 bg-green-50/30">
@@ -277,7 +279,7 @@ export function TreatmentDecisionTree() {
                         <div>
                           <div className="text-sm font-semibold mb-2">Evidence Sources:</div>
                           <div className="space-y-1">
-                            {details.sources.map((source: any) => (
+                            {details.sources.map((source: Source) => (
                               <div key={source.id} className="text-xs">
                                 <a
                                   href={source.url}
@@ -306,7 +308,7 @@ export function TreatmentDecisionTree() {
           <div className="space-y-3">
             <h3 className="text-xl font-semibold">Additional Recommended Interventions</h3>
             <div className="grid gap-4">
-              {recommendations.additional.map((intervention: any) => (
+              {recommendations.additional.map((intervention) => (
                 <Card key={intervention.id} className="border-2">
                   <CardHeader>
                     <div className="flex items-start justify-between">

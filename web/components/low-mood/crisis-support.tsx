@@ -3,7 +3,7 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, Phone, MessageSquare, Globe, Clock, Heart, Shield } from 'lucide-react';
+import { AlertTriangle, Phone, MessageSquare, Globe, Clock, Heart, Shield, type LucideIcon } from 'lucide-react';
 
 interface CrisisResource {
   id: string;
@@ -12,7 +12,7 @@ interface CrisisResource {
   contact: string;
   description: string;
   availability: string;
-  icon: any;
+  icon: LucideIcon;
   urgent?: boolean;
 }
 
@@ -131,7 +131,7 @@ const warningSigns = [
 
 export const CrisisSupport = () => {
   return (
-    <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
       <div className="text-center mb-8">
         <h2 className="text-3xl md:text-4xl font-bold mb-4 text-red-700 dark:text-red-400">
           Crisis Support

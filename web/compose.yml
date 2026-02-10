@@ -1,23 +1,47 @@
-name: neurobreath
-
 services:
-  postgres:
+  db:
     image: postgres:16
-    container_name: neurobreath-postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: neurobreath
+    container_name: neurobreath_postgres
+    restart: unless-stopped
     ports:
       - "5432:5432"
+    environment:
+      # Set these in your shell or an untracked .env file.
+      # Never commit secrets.
+      POSTGRES_DB: ${POSTGRES_DB:-neurobreath}
+      POSTGRES_USER: ${POSTGRES_USER:-neurobreath}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me}
     volumes:
       - neurobreath_pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d neurobreath"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
-      timeout: 5s
+      timeout: 3s
       retries: 20
+
+  web:
+    image: node:20-bookworm-slim
+    container_name: neurobreath_web
+    working_dir: /app
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      # IMPORTANT: inside Docker, use host `db` (the service name), not localhost.
+      DATABASE_URL: postgresql://${POSTGRES_USER:-neurobreath}:${POSTGRES_PASSWORD:-change_me}@db:5432/${POSTGRES_DB:-neurobreath}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+      # You MUST set these for real authentication flows:
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-dev_only_change_me}
+      PASSWORD_PEPPER: ${PASSWORD_PEPPER:-dev_only_change_me}
+    volumes:
+      - .:/app
+    command: >
+      bash -lc "corepack enable && corepack prepare yarn@1.22.22 --activate && yarn install && \
+      yarn prisma migrate deploy && \
+      yarn dev -- -H 0.0.0.0 -p 3000"
 
 volumes:
   neurobreath_pgdata:
-

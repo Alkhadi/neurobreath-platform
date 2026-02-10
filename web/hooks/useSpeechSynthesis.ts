@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS';
 
 interface UseSpeechSynthesisReturn {
   speak: (text: string, options?: SpeakOptions) => void;
@@ -56,8 +57,12 @@ export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
     if (!supported) return;
     
     window.speechSynthesis.cancel();
-    
-    const utterance = new SpeechSynthesisUtterance(text);
+
+    const locale = selectedVoice?.lang?.startsWith('en-US') ? 'en-US' : 'en-GB';
+    const cleanText = sanitizeForTTS(text, { locale });
+    if (!cleanText) return;
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.rate = options?.rate ?? rate;
     utterance.pitch = options?.pitch ?? 1;
     utterance.voice = options?.voice ?? selectedVoice;

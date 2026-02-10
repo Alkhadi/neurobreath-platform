@@ -1103,7 +1103,7 @@ const actionsByNeed: Record<MainNeed, {
 };
 
 export function generateDailyPlan(config: PlanConfig): DailyPlan {
-  const { ageBand, mainNeed, setting } = config;
+  const { ageBand, mainNeed } = config;
   
   const needData = actionsByNeed[mainNeed];
   

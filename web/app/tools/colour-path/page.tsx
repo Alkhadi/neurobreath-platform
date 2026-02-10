@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { ArrowLeft, Play, Pause, Square } from 'lucide-react'
 import { toast } from 'sonner'
 import { getDeviceId } from '@/lib/device-id'
+import { trackProgress } from '@/lib/progress/track'
 
 const phases = [
   { name: 'Inhale', duration: 4, color: '#60B5FF' },
@@ -13,6 +14,13 @@ const phases = [
   { name: 'Exhale', duration: 4, color: '#FF9898' },
   { name: 'Hold', duration: 4, color: '#A19AD3' }
 ]
+
+const phaseStyles = [
+  { bg: 'bg-[#60B5FF]', glow: 'shadow-[0_0_60px_#60B5FF]' },
+  { bg: 'bg-[#FF9149]', glow: 'shadow-[0_0_60px_#FF9149]' },
+  { bg: 'bg-[#FF9898]', glow: 'shadow-[0_0_60px_#FF9898]' },
+  { bg: 'bg-[#A19AD3]', glow: 'shadow-[0_0_60px_#A19AD3]' }
+] as const
 
 export default function ColourPathPage() {
   const [isPlaying, setIsPlaying] = useState(false)
@@ -52,6 +60,17 @@ export default function ColourPathPage() {
             category: 'calm'
           })
         })
+
+        void trackProgress({
+          type: 'breathing_completed',
+          metadata: {
+            techniqueId: 'colourPath',
+            durationSeconds: Math.max(0, Math.round(breathCount * 16)),
+            category: 'calm',
+          },
+          path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+        })
+
         toast.success('✅ Session logged successfully!')
       } catch (error) {
         console.error('Failed to log session:', error)
@@ -65,12 +84,13 @@ export default function ColourPathPage() {
   }
 
   const currentPhaseData = phases[currentPhase]
+  const currentPhaseStyle = phaseStyles[currentPhase] ?? phaseStyles[0]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 py-12">
       <div className="container max-w-4xl mx-auto px-4">
         <Button asChild variant="ghost" className="mb-6">
-          <Link href="/tools"><ArrowLeft className="w-4 h-4 mr-2" /> Back to Tools</Link>
+          <Link href="/tools/breath-tools"><ArrowLeft className="w-4 h-4 mr-2" /> Back to Breath Tools</Link>
         </Button>
 
         <div className="bg-white rounded-2xl p-8 shadow-xl mb-8">
@@ -84,11 +104,9 @@ export default function ColourPathPage() {
           {/* Visualization */}
           <div className="mb-8">
             <div
-              className="aspect-square max-w-md mx-auto rounded-2xl transition-all duration-1000 flex items-center justify-center"
-              style={{
-                backgroundColor: isPlaying ? (currentPhaseData?.color ?? '#60B5FF') : '#f3f4f6',
-                boxShadow: isPlaying ? `0 0 60px ${currentPhaseData?.color ?? '#60B5FF'}` : 'none'
-              }}
+              className={`aspect-square max-w-md mx-auto rounded-2xl transition-all duration-1000 flex items-center justify-center ${
+                isPlaying ? `${currentPhaseStyle.bg} ${currentPhaseStyle.glow}` : 'bg-gray-100 shadow-none'
+              }`}
             >
               <div className={`text-center ${isPlaying ? 'text-white' : 'text-gray-900'}`}>
                 <p className="text-4xl font-bold mb-2">
@@ -108,10 +126,7 @@ export default function ColourPathPage() {
                   idx === currentPhase && isPlaying ? 'opacity-100' : 'opacity-40'
                 }`}
               >
-                <div
-                  className="w-16 h-16 rounded-full mx-auto mb-2"
-                  style={{ backgroundColor: phase?.color ?? '#60B5FF' }}
-                />
+                <div className={`w-16 h-16 rounded-full mx-auto mb-2 ${phaseStyles[idx]?.bg ?? 'bg-[#60B5FF]'}`} />
                 <p className="text-sm font-medium text-gray-700">{phase?.name ?? ''}</p>
               </div>
             ))}

@@ -1,7 +1,6 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { TrendingUp, Award, Flame, Clock, Target, Star } from 'lucide-react';
 import { useProgress } from '@/contexts/ProgressContext';

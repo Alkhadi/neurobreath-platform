@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Flame, Calendar, Trophy } from 'lucide-react'
+import { Flame } from 'lucide-react'
 import Link from 'next/link'
 
 interface ChallengeData {

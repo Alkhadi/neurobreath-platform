@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Sprout } from 'lucide-react'
+import { ArrowLeft, RotateCcw, Sprout } from 'lucide-react'
+import styles from './focus-garden.module.css'
 
 // Plant stages
 const PLANT_STAGES = {
@@ -12,7 +13,6 @@ const PLANT_STAGES = {
   bud: { emoji: '🌷', name: 'Bud', water: 2 },
   bloom: { emoji: '🌸', name: 'Bloom', water: 3 }
 }
-
 // Task layers for autism
 const TASK_LAYERS = {
   structure: {
@@ -82,6 +82,16 @@ export default function FocusGardenPage() {
   const [xp, setXp] = useState(0)
   const [level, setLevel] = useState(1)
   const [showTutorial, setShowTutorial] = useState(false)
+
+  const resetGarden = () => {
+    const ok = window.confirm('Reset your Focus Garden? This cannot be undone.')
+    if (!ok) return
+    localStorage.removeItem('autism-focus-garden')
+    setGarden([])
+    setXp(0)
+    setLevel(1)
+    setShowTutorial(true)
+  }
 
   // Load from localStorage
   useEffect(() => {
@@ -180,9 +190,14 @@ export default function FocusGardenPage() {
                 A calming, supportive space for neurodivergent individuals to grow focus through gentle plant-based tasks.
               </p>
             </div>
-            <Button onClick={() => setShowTutorial(true)} variant="outline">
-              How it Works
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button onClick={() => setShowTutorial(true)} variant="outline">
+                How it Works
+              </Button>
+              <Button onClick={resetGarden} variant="outline" className="gap-2">
+                <RotateCcw className="w-4 h-4" /> Reset
+              </Button>
+            </div>
           </div>
 
           {/* Progress Bar */}
@@ -192,10 +207,11 @@ export default function FocusGardenPage() {
               <span className="text-sm text-gray-600">{xp} / {level * 100} XP</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-3">
-              {/* eslint-disable-next-line react/forbid-dom-props */}
-              <div
-                className="bg-gradient-to-r from-green-500 to-blue-500 h-3 rounded-full transition-all duration-300"
-                style={{ width: `${Math.min(100, (xp / (level * 100)) * 100)}%` } as React.CSSProperties}
+              <progress
+                className={styles.progress}
+                value={xp}
+                max={level * 100}
+                aria-label="XP progress"
               />
             </div>
           </div>

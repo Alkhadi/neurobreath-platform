@@ -1,6 +1,7 @@
+
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { cn } from '@/lib/utils'
 
 interface BreathingStats {
@@ -40,12 +41,12 @@ export function HeroBreathingOrbit() {
   const orbStyleRef = useRef<HTMLStyleElement | null>(null)
   const lastPhaseRef = useRef<Phase>('Ready')
 
-  const setOrbPositionCss = (position: { x: number; y: number }) => {
+  const setOrbPositionCss = useCallback((position: { x: number; y: number }) => {
     if (!orbStyleRef.current || !orbitId) return
     const x = Number.isFinite(position.x) ? position.x : 0
     const y = Number.isFinite(position.y) ? position.y : 50
     orbStyleRef.current.textContent = `[data-orbit-id="${orbitId}"] .orbit-orb { left: ${x.toFixed(3)}%; top: ${y.toFixed(3)}%; }`
-  }
+  }, [orbitId])
 
   useEffect(() => {
     // Generate unique ID client-side only (prevents hydration mismatch)
@@ -68,43 +69,53 @@ export function HeroBreathingOrbit() {
       const lastSessionDate = localStorage.getItem('nb-last-session-date')
 
       if (savedStats) {
-        const parsedStats = JSON.parse(savedStats)
-
-        // Calculate streak
-        const today = new Date().toDateString()
-        const yesterday = new Date(Date.now() - 86400000).toDateString()
-
-        let streakInfo = {
-          streak: 'No streak yet',
-          message: 'Complete any 1-minute challenge to start your streak. Small, regular practice helps your nervous system learn a predictable calm pattern.',
-          awards: 'Log a quick session to unlock your first badge.'
+        let parsedStats: unknown = null
+        try {
+          parsedStats = JSON.parse(savedStats)
+        } catch {
+          parsedStats = null
         }
 
-        if (lastSessionDate) {
-          const lastDate = new Date(lastSessionDate).toDateString()
-          const currentStreak = parsedStats.currentStreak || 0
+        if (parsedStats && typeof parsedStats === 'object') {
+          const stored = parsedStats as Partial<BreathingStats> & Record<string, unknown>
 
-          if (lastDate === today && currentStreak > 0) {
-            streakInfo = calculateStreakInfo(currentStreak, parsedStats.sessions)
-          } else if (lastDate === yesterday && currentStreak > 0) {
-            streakInfo = calculateStreakInfo(currentStreak, parsedStats.sessions)
-          } else if (currentStreak === 0 && parsedStats.sessions > 0) {
-            streakInfo = {
-              streak: '1 day',
-              message: 'Great start! Practice again tomorrow to build your streak.',
-              awards: parsedStats.sessions >= 5 ? '🥉 Bronze badge unlocked!' : `${parsedStats.sessions}/5 sessions to Bronze badge`
+          // Calculate streak
+          const today = new Date().toDateString()
+          const yesterday = new Date(Date.now() - 86400000).toDateString()
+
+          let streakInfo = {
+            streak: 'No streak yet',
+            message: 'Complete any 1-minute challenge to start your streak. Small, regular practice helps your nervous system learn a predictable calm pattern.',
+            awards: 'Log a quick session to unlock your first badge.'
+          }
+
+          if (lastSessionDate) {
+            const lastDate = new Date(lastSessionDate).toDateString()
+            const currentStreak = typeof stored.currentStreak === 'number' ? stored.currentStreak : 0
+            const sessionsCount = typeof stored.sessions === 'number' ? stored.sessions : 0
+
+            if (lastDate === today && currentStreak > 0) {
+              streakInfo = calculateStreakInfo(currentStreak, sessionsCount)
+            } else if (lastDate === yesterday && currentStreak > 0) {
+              streakInfo = calculateStreakInfo(currentStreak, sessionsCount)
+            } else if (currentStreak === 0 && sessionsCount > 0) {
+              streakInfo = {
+                streak: '1 day',
+                message: 'Great start! Practice again tomorrow to build your streak.',
+                awards: sessionsCount >= 5 ? '🥉 Bronze badge unlocked!' : `${sessionsCount}/5 sessions to Bronze badge`
+              }
             }
           }
-        }
 
-        setStats({ ...parsedStats, ...streakInfo })
+          setStats({ ...(stored as BreathingStats), ...streakInfo })
+        }
       }
     }
 
     return () => {
       styleEl.remove()
     }
-  }, [orbitId])
+  }, [orbitId, setOrbPositionCss])
 
   const calculateStreakInfo = (streak: number, sessions: number) => {
     let message = ''
@@ -229,13 +240,11 @@ export function HeroBreathingOrbit() {
 
     let currentPhase = phases[0]
     let phaseStart = 0
-    let progress = 0
 
     for (let i = 0; i < phases.length; i++) {
       const p = phases[i]
       if (cyclePosition >= phaseStart && cyclePosition < phaseStart + p.duration) {
         currentPhase = p
-        progress = (cyclePosition - phaseStart) / p.duration
         break
       }
       phaseStart += p.duration
@@ -288,22 +297,6 @@ export function HeroBreathingOrbit() {
         x: 80 - lineProgress * 60,
         y: 80
       }
-    }
-  }
-
-  const resetStats = () => {
-    if (confirm('Are you sure you want to reset these stats? This cannot be undone.')) {
-      const resetStats: BreathingStats = {
-        todayMinutes: 0,
-        sessions: 0,
-        lifetimeMinutes: 0,
-        lifetimeHours: 0,
-        averageSession: 0,
-        streak: 'No streak yet',
-        message: 'Complete any 1-minute challenge to start your streak.',
-        awards: 'Log a quick session to unlock your first badge.'
-      }
-      saveStats(resetStats)
     }
   }
 

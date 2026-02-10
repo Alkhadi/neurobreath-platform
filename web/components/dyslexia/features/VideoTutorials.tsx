@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Video, Play, BookOpen, Users, GraduationCap } from 'lucide-react';
+import { Video, Play } from 'lucide-react';
 
 const videos = [
   { id: 1, title: 'Understanding Dyslexia', category: 'Parents', url: 'https://www.youtube.com/watch?v=zafiGBrFkRM', duration: '10:24' },

@@ -4,7 +4,9 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Volume2, VolumeX, Play, Pause, RotateCcw, Square, Settings, Music, Headphones, X } from 'lucide-react'
 import { calculateRoundsForMinutes, getTechniqueById } from '@/lib/breathing-data'
+import { sanitizeForTTS } from '@/lib/speech/sanitizeForTTS'
 import { getDeviceId } from '@/lib/device-id'
+import { trackProgress } from '@/lib/progress/track'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import BreathingSession from './breathing-session'
@@ -268,6 +270,17 @@ export default function DailyPracticePlayer() {
             category: selectedTechnique?.category ?? 'calm'
           })
         })
+
+        void trackProgress({
+          type: 'breathing_completed',
+          metadata: {
+            techniqueId: technique,
+            durationSeconds: Math.max(0, Math.round(minutes * 60)),
+            category: selectedTechnique?.category ?? 'calm',
+          },
+          path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+        })
+
         toast.success('✅ Session completed and logged!')
       } catch (error) {
         console.error('Failed to log session:', error)
@@ -291,7 +304,9 @@ export default function DailyPracticePlayer() {
       
       // Speak phase if voice enabled
       if (voiceEnabled && 'speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(currentPhaseData?.name ?? '')
+        const cleanText = sanitizeForTTS(currentPhaseData?.name ?? '')
+        if (!cleanText) return
+        const utterance = new SpeechSynthesisUtterance(cleanText)
         utterance.rate = voiceSpeed
         if (selectedVoice) {
           const voice = availableVoices.find(v => v.name === selectedVoice)
@@ -459,26 +474,26 @@ export default function DailyPracticePlayer() {
 
           {/* Conditions badges */}
           <div className="flex flex-wrap gap-2 mb-4">
-            <Link href="/stress" className="px-3 py-1 bg-white text-gray-900 rounded-full text-xs font-medium hover:bg-white/90 transition-colors">
+            <Link href="/guides/anxiety-stress/stress-general-anxiety" className="px-3 py-1 bg-white text-gray-900 rounded-full text-xs font-medium hover:bg-white/90 transition-colors">
               Stress & General Anxiety
             </Link>
-            <Link href="/anxiety" className="px-3 py-1 bg-white text-gray-900 rounded-full text-xs font-medium hover:bg-white/90 transition-colors">
+            <Link href="/guides/anxiety-stress/panic-symptoms" className="px-3 py-1 bg-white text-gray-900 rounded-full text-xs font-medium hover:bg-white/90 transition-colors">
               Panic Symptoms
             </Link>
             <Link href="/sleep" className="px-3 py-1 bg-white text-gray-900 rounded-full text-xs font-medium hover:bg-white/90 transition-colors">
               Sleep-Onset Insomnia
             </Link>
-            <Link href="/focus" className="px-3 py-1 bg-white text-gray-900 rounded-full text-xs font-medium hover:bg-white/90 transition-colors">
+            <Link href="/guides/focus-adhd/focus-test-anxiety" className="px-3 py-1 bg-white text-gray-900 rounded-full text-xs font-medium hover:bg-white/90 transition-colors">
               Focus & Test Anxiety
             </Link>
-            <span className="px-3 py-1 bg-white text-gray-900 rounded-full text-xs font-medium">
-              PTSD Regulation*
-            </span>
-            <span className="px-3 py-1 bg-white text-gray-900 rounded-full text-xs font-medium">
+            <Link href="/guides/anxiety-stress/ptsd-regulation" className="px-3 py-1 bg-white text-gray-900 rounded-full text-xs font-medium hover:bg-white/90 transition-colors">
+              PTSD Regulation
+            </Link>
+            <Link href="/conditions/low-mood-burnout" className="px-3 py-1 bg-white text-gray-900 rounded-full text-xs font-medium hover:bg-white/90 transition-colors">
               Low Mood & Burnout
-            </span>
+            </Link>
           </div>
-          <p className="text-xs text-white/70 mb-4">* Use alongside professional care where appropriate.</p>
+          <p className="text-xs text-white/70 mb-4">Use alongside professional care where appropriate.</p>
 
           {/* Primary technique shortcuts - Launch full-screen session */}
           <div className="flex flex-wrap gap-2">

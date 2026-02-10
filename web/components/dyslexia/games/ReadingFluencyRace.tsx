@@ -29,8 +29,7 @@ export function ReadingFluencyRace() {
   const [isReading, setIsReading] = useState(false);
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [attempts, setAttempts] = useState<number[]>([]);
-  const [isComplete, setIsComplete] = useState(false);
-  const { incrementGameCompleted, addBadgeEarned, addMinutes } = useProgress();
+  const { addBadgeEarned, addMinutes } = useProgress();
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -66,7 +65,6 @@ export function ReadingFluencyRace() {
     setTimeElapsed(0);
     setIsReading(false);
     setAttempts([]);
-    setIsComplete(false);
   };
 
   const wpm = timeElapsed > 0 ? Math.round((passage.wordCount / timeElapsed) * 60) : 0;

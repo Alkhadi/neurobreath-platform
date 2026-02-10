@@ -1,6 +1,9 @@
-import type { Metadata } from 'next'
+'use client'
+
 import { Suspense } from 'react'
 import dynamic from 'next/dynamic'
+import { EvidenceFooter } from '@/components/evidence-footer'
+import { evidenceByRoute } from '@/lib/evidence/page-evidence'
 
 // Import components with dynamic loading for better error isolation
 const HeroSection = dynamic(() => import('@/components/blog/hero-section'), {
@@ -35,20 +38,12 @@ const SourcesSection = dynamic(() => import('@/components/blog/sources-section')
   loading: () => <div className="p-8 bg-card rounded-lg">Loading Sources...</div>
 })
 
-export const metadata: Metadata = {
-  title: 'AI-Powered Blog & Q&A Hub | NeuroBreath',
-  description: 'Evidence-informed AI blog and Q&A hub covering autism, ADHD, dyslexia, breathing, mood, and wellbeing for UK & US audiences.',
-  openGraph: {
-    title: 'AI-Powered Blog & Q&A Hub | NeuroBreath',
-    description: 'Evidence-informed AI blog and Q&A hub covering autism, ADHD, dyslexia, breathing, mood, and wellbeing for UK & US audiences.',
-    type: 'website',
-    url: 'https://neurobreath.co.uk/blog',
-  },
-}
+const evidence = evidenceByRoute['/blog']
 
 export default function BlogPage() {
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+      <h1 className="sr-only">NeuroBreath Blog</h1>
       {/* Hero / Positioning */}
       <Suspense fallback={<div className="p-8 bg-muted rounded-lg animate-pulse">Loading Hero...</div>}>
         <div data-tour="blog-hero">
@@ -98,6 +93,9 @@ export default function BlogPage() {
           <SourcesSection />
         </div>
       </Suspense>
-          </div>
+
+      {/* Evidence Sources */}
+      <EvidenceFooter evidence={evidence} />
+    </div>
   )
 }

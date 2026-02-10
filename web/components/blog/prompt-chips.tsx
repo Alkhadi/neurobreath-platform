@@ -2,20 +2,11 @@
 
 import { Button } from '@/components/ui/button'
 import { Sparkles } from 'lucide-react'
+import { BLOG_QUICK_PROMPTS } from '@/lib/assistant/intents'
 
 interface PromptChipsProps {
-  onSelect: (prompt: string) => void
+  onSelect: (prompt: { id: string; label: string }) => void
 }
-
-const PROMPTS = [
-  'Explain simply',
-  'Daily routines & regulation',
-  'School/classroom supports',
-  'Workplace adjustments',
-  'Assessment pathway (UK)',
-  'Common misunderstandings',
-  'When to seek help'
-]
 
 export default function PromptChips({ onSelect }: PromptChipsProps) {
   return (
@@ -25,14 +16,14 @@ export default function PromptChips({ onSelect }: PromptChipsProps) {
         <span>Quick prompts:</span>
       </div>
       <div className="flex flex-wrap gap-2">
-        {PROMPTS.map(prompt => (
+        {BLOG_QUICK_PROMPTS.map((prompt) => (
           <Button
-            key={prompt}
+            key={prompt.id}
             variant="secondary"
             size="sm"
-            onClick={() => onSelect(prompt)}
+            onClick={() => onSelect({ id: prompt.id, label: prompt.label })}
           >
-            {prompt}
+            {prompt.label}
           </Button>
         ))}
       </div>

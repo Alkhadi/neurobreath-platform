@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { getAllData } from '../utils/localStorage';
 import { MoodEntry } from '../types';
 import { Language } from '../types';
+import { cn } from '@/lib/utils';
 
 interface ProgressTrackerProps {
   language: Language;
@@ -91,123 +92,174 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({ language }) =>
   const stats = calculateStats();
   const filtered = getFilteredEntries();
 
-  const getMoodColor = (mood: number): string => {
-    if (mood <= 3) return 'var(--color-mood-depressive)';
-    if (mood <= 5) return 'var(--color-mood-normal)';
-    if (mood <= 7) return 'var(--color-mood-hypomanic)';
-    return 'var(--color-mood-manic)';
+  const getMoodTextClass = (mood: number): string => {
+    if (mood <= 3) return 'text-[var(--color-mood-depressive)]';
+    if (mood <= 5) return 'text-[var(--color-mood-normal)]';
+    if (mood <= 7) return 'text-[var(--color-mood-hypomanic)]';
+    return 'text-[var(--color-mood-manic)]';
+  };
+
+  const getMoodBgClass = (mood: number): string => {
+    if (mood <= 3) return 'bg-[var(--color-mood-depressive)]';
+    if (mood <= 5) return 'bg-[var(--color-mood-normal)]';
+    if (mood <= 7) return 'bg-[var(--color-mood-hypomanic)]';
+    return 'bg-[var(--color-mood-manic)]';
+  };
+
+  const BAR_HEIGHT_CLASSES = [
+    'h-[2px]',
+    'h-[20px]',
+    'h-[40px]',
+    'h-[60px]',
+    'h-[80px]',
+    'h-[100px]',
+    'h-[120px]',
+    'h-[140px]',
+    'h-[160px]',
+    'h-[180px]',
+    'h-[200px]',
+  ] as const;
+
+  const getBarHeightClass = (mood: number): string => {
+    const level = Math.max(0, Math.min(10, Math.round(mood)));
+    return BAR_HEIGHT_CLASSES[level] ?? 'h-[2px]';
+  };
+
+  const getMedicationAdherenceClass = (pct: number): string => {
+    if (pct >= 80) return 'text-[var(--color-success)]';
+    if (pct >= 60) return 'text-[var(--color-warning)]';
+    return 'text-[var(--color-error)]';
+  };
+
+  const getMoodStateAccentClass = (state: string): string => {
+    const accents: Record<string, string> = {
+      depressive: 'accent-[var(--color-mood-depressive)]',
+      normal: 'accent-[var(--color-mood-normal)]',
+      hypomanic: 'accent-[var(--color-mood-hypomanic)]',
+      manic: 'accent-[var(--color-mood-manic)]',
+      mixed: 'accent-[var(--color-mood-mixed)]',
+    };
+    return accents[state] ?? 'accent-[var(--color-primary)]';
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <h3 style={styles.title}>
-          <span style={{ fontSize: '1.5rem', marginRight: '0.5rem' }}>📈</span>
+    <div className="mb-8 rounded-2xl bg-white p-8 shadow-sm">
+      <div className="mb-6">
+        <h3 className="mb-2 text-[1.75rem] font-bold text-[var(--color-primary)]">
+          <span className="mr-2 text-2xl" aria-hidden="true">
+            📈
+          </span>
           {language === 'en-GB' ? 'Progress Tracker' : 'Progress Tracker'}
         </h3>
-        <p style={styles.description}>
+        <p className="text-[0.9375rem] leading-relaxed text-[var(--color-text-secondary)]">
           Visualize your mood patterns and trends over time to identify triggers, cycles, and
           improvements in your mental health journey.
         </p>
       </div>
 
-      <div style={styles.periodToggle}>
+      <div className="mb-6 flex flex-wrap gap-2">
         <button
           onClick={() => setViewPeriod('week')}
-          style={{
-            ...styles.periodButton,
-            ...(viewPeriod === 'week' ? styles.periodButtonActive : {}),
-          }}
+          type="button"
+          className={cn(
+            'rounded-lg border px-5 py-2 text-sm font-semibold transition-colors',
+            viewPeriod === 'week'
+              ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-white'
+              : 'border-[var(--color-border)] bg-white text-[var(--color-text-secondary)]'
+          )}
         >
           Week
         </button>
         <button
           onClick={() => setViewPeriod('month')}
-          style={{
-            ...styles.periodButton,
-            ...(viewPeriod === 'month' ? styles.periodButtonActive : {}),
-          }}
+          type="button"
+          className={cn(
+            'rounded-lg border px-5 py-2 text-sm font-semibold transition-colors',
+            viewPeriod === 'month'
+              ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-white'
+              : 'border-[var(--color-border)] bg-white text-[var(--color-text-secondary)]'
+          )}
         >
           Month
         </button>
         <button
           onClick={() => setViewPeriod('year')}
-          style={{
-            ...styles.periodButton,
-            ...(viewPeriod === 'year' ? styles.periodButtonActive : {}),
-          }}
+          type="button"
+          className={cn(
+            'rounded-lg border px-5 py-2 text-sm font-semibold transition-colors',
+            viewPeriod === 'year'
+              ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-white'
+              : 'border-[var(--color-border)] bg-white text-[var(--color-text-secondary)]'
+          )}
         >
           Year
         </button>
       </div>
 
       {filtered.length === 0 ? (
-        <div style={styles.emptyState}>
+        <div className="py-12 text-center text-[var(--color-text-secondary)]">
           <p>No data available for this period. Start logging your mood to see trends!</p>
         </div>
       ) : (
         <>
-          <div style={styles.statsGrid}>
-            <div style={styles.statCard}>
-              <div style={styles.statLabel}>Average Mood</div>
-              <div
-                style={{
-                  ...styles.statValue,
-                  color: getMoodColor(stats.averageMood),
-                }}
-              >
+          <div className="mb-8 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
+            <div className="rounded-xl bg-[var(--color-surface)] p-5 text-center">
+              <div className="mb-2 text-sm font-medium text-[var(--color-text-secondary)]">
+                Average Mood
+              </div>
+              <div className={cn('text-3xl font-bold', getMoodTextClass(stats.averageMood))}>
                 {stats.averageMood.toFixed(1)}/10
               </div>
             </div>
 
-            <div style={styles.statCard}>
-              <div style={styles.statLabel}>Mood Range</div>
-              <div style={styles.statValue}>
+            <div className="rounded-xl bg-[var(--color-surface)] p-5 text-center">
+              <div className="mb-2 text-sm font-medium text-[var(--color-text-secondary)]">
+                Mood Range
+              </div>
+              <div className="text-3xl font-bold text-[var(--color-text)]">
                 {stats.moodRange.min} - {stats.moodRange.max}
               </div>
             </div>
 
-            <div style={styles.statCard}>
-              <div style={styles.statLabel}>Avg. Sleep</div>
-              <div style={styles.statValue}>{stats.averageSleep.toFixed(1)}h</div>
+            <div className="rounded-xl bg-[var(--color-surface)] p-5 text-center">
+              <div className="mb-2 text-sm font-medium text-[var(--color-text-secondary)]">
+                Avg. Sleep
+              </div>
+              <div className="text-3xl font-bold text-[var(--color-text)]">
+                {stats.averageSleep.toFixed(1)}h
+              </div>
             </div>
 
-            <div style={styles.statCard}>
-              <div style={styles.statLabel}>Medication Adherence</div>
+            <div className="rounded-xl bg-[var(--color-surface)] p-5 text-center">
+              <div className="mb-2 text-sm font-medium text-[var(--color-text-secondary)]">
+                Medication Adherence
+              </div>
               <div
-                style={{
-                  ...styles.statValue,
-                  color:
-                    stats.medicationAdherence >= 80
-                      ? 'var(--color-success)'
-                      : stats.medicationAdherence >= 60
-                      ? 'var(--color-warning)'
-                      : 'var(--color-error)',
-                }}
+                className={cn(
+                  'text-3xl font-bold',
+                  getMedicationAdherenceClass(stats.medicationAdherence)
+                )}
               >
                 {stats.medicationAdherence.toFixed(0)}%
               </div>
             </div>
           </div>
 
-          <div style={styles.chartSection}>
-            <h4 style={styles.chartTitle}>Mood Trend</h4>
-            <div style={styles.chart}>
-              {filtered.slice(0, 30).reverse().map((entry, index) => {
-                const maxHeight = 200;
-                const barHeight = (entry.mood / 10) * maxHeight;
-
+          <div className="mb-8">
+            <h4 className="mb-4 text-xl font-semibold text-[var(--color-text)]">Mood Trend</h4>
+            <div className="flex h-[220px] items-end gap-1 overflow-x-auto rounded-xl bg-[var(--color-surface)] p-4">
+              {filtered.slice(0, 30).reverse().map((entry, _index) => {
                 return (
-                  <div key={entry.id} style={styles.chartBar}>
+                  <div key={entry.id} className="flex min-w-[30px] flex-col items-center">
                     <div
-                      style={{
-                        ...styles.chartBarFill,
-                        height: `${barHeight}px`,
-                        backgroundColor: getMoodColor(entry.mood),
-                      }}
+                      className={cn(
+                        'w-full min-h-[2px] rounded-t transition-all duration-300',
+                        getBarHeightClass(entry.mood),
+                        getMoodBgClass(entry.mood)
+                      )}
                       title={`${entry.date}: ${entry.mood}/10`}
                     />
-                    <div style={styles.chartBarLabel}>
+                    <div className="mt-1 text-xs text-[var(--color-text-secondary)]">
                       {new Date(entry.date).getDate()}
                     </div>
                   </div>
@@ -216,67 +268,63 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({ language }) =>
             </div>
           </div>
 
-          <div style={styles.moodStatesSection}>
-            <h4 style={styles.chartTitle}>Mood States Distribution</h4>
-            <div style={styles.moodStatesGrid}>
+          <div className="mb-8">
+            <h4 className="mb-4 text-xl font-semibold text-[var(--color-text)]">
+              Mood States Distribution
+            </h4>
+            <div className="flex flex-col gap-4">
               {Object.entries(stats.moodStates).map(([state, count]) => {
                 const percentage = (count / filtered.length) * 100;
-                const stateColors: Record<string, string> = {
-                  depressive: 'var(--color-mood-depressive)',
-                  normal: 'var(--color-mood-normal)',
-                  hypomanic: 'var(--color-mood-hypomanic)',
-                  manic: 'var(--color-mood-manic)',
-                  mixed: 'var(--color-mood-mixed)',
-                };
 
                 return (
-                  <div key={state} style={styles.moodStateItem}>
-                    <div style={styles.moodStateHeader}>
-                      <span style={styles.moodStateName}>
+                  <div key={state} className="rounded-lg bg-[var(--color-surface)] p-4">
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className="font-semibold text-[var(--color-text)]">
                         {state.charAt(0).toUpperCase() + state.slice(1)}
                       </span>
-                      <span style={styles.moodStateCount}>
+                      <span className="text-sm text-[var(--color-text-secondary)]">
                         {count} ({percentage.toFixed(0)}%)
                       </span>
                     </div>
-                    <div style={styles.moodStateBar}>
-                      <div
-                        style={{
-                          ...styles.moodStateBarFill,
-                          width: `${percentage}%`,
-                          backgroundColor: stateColors[state],
-                        }}
-                      />
-                    </div>
+                    <progress
+                      value={percentage}
+                      max={100}
+                      className={cn(
+                        'h-2 w-full overflow-hidden rounded-full bg-[var(--color-surface-dark)]',
+                        getMoodStateAccentClass(state)
+                      )}
+                    />
                   </div>
                 );
               })}
             </div>
           </div>
 
-          <div style={styles.insightsSection}>
-            <h4 style={styles.chartTitle}>Insights & Patterns</h4>
-            <div style={styles.insightsList}>
+          <div className="mt-8">
+            <h4 className="mb-4 text-xl font-semibold text-[var(--color-text)]">
+              Insights & Patterns
+            </h4>
+            <div className="flex flex-col gap-3">
               {stats.averageMood < 4 && (
-                <div style={{ ...styles.insight, ...styles.insightWarning }}>
+                <div className="rounded-lg border border-[var(--color-warning)] bg-[rgba(245,158,11,0.1)] p-4 text-[0.9375rem] leading-relaxed text-[var(--color-warning)]">
                   ⚠️ Your average mood has been low. Consider reaching out to your healthcare
                   provider.
                 </div>
               )}
               {stats.averageMood > 7 && (
-                <div style={{ ...styles.insight, ...styles.insightWarning }}>
+                <div className="rounded-lg border border-[var(--color-warning)] bg-[rgba(245,158,11,0.1)] p-4 text-[0.9375rem] leading-relaxed text-[var(--color-warning)]">
                   ⚠️ Your average mood has been elevated. Monitor for signs of hypomania or
                   mania.
                 </div>
               )}
               {stats.averageSleep < 6 && (
-                <div style={{ ...styles.insight, ...styles.insightInfo }}>
+                <div className="rounded-lg border border-[var(--color-info)] bg-[rgba(59,130,246,0.1)] p-4 text-[0.9375rem] leading-relaxed text-[var(--color-info)]">
                   💤 You're averaging less than 6 hours of sleep. Sleep is crucial for mood
                   stability.
                 </div>
               )}
               {stats.medicationAdherence < 80 && (
-                <div style={{ ...styles.insight, ...styles.insightWarning }}>
+                <div className="rounded-lg border border-[var(--color-warning)] bg-[rgba(245,158,11,0.1)] p-4 text-[0.9375rem] leading-relaxed text-[var(--color-warning)]">
                   💊 Your medication adherence is below 80%. Consistent medication is key to
                   managing bipolar disorder.
                 </div>
@@ -284,7 +332,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({ language }) =>
               {stats.averageMood >= 4 &&
                 stats.averageMood <= 6 &&
                 stats.medicationAdherence >= 80 && (
-                  <div style={{ ...styles.insight, ...styles.insightSuccess }}>
+                  <div className="rounded-lg border border-[var(--color-success)] bg-[rgba(16,185,129,0.1)] p-4 text-[0.9375rem] leading-relaxed text-[var(--color-success)]">
                     ✅ Great job! Your mood is stable and you're adhering to your treatment plan.
                   </div>
                 )}
@@ -294,178 +342,4 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({ language }) =>
       )}
     </div>
   );
-};
-
-const styles = {
-  container: {
-    backgroundColor: 'white',
-    borderRadius: '1rem',
-    padding: '2rem',
-    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-    marginBottom: '2rem',
-  } as React.CSSProperties,
-  header: {
-    marginBottom: '1.5rem',
-  } as React.CSSProperties,
-  title: {
-    fontSize: '1.75rem',
-    fontWeight: 700,
-    color: 'var(--color-primary)',
-    marginBottom: '0.5rem',
-  } as React.CSSProperties,
-  description: {
-    color: 'var(--color-text-secondary)',
-    lineHeight: 1.6,
-    fontSize: '0.9375rem',
-  } as React.CSSProperties,
-  periodToggle: {
-    display: 'flex',
-    gap: '0.5rem',
-    marginBottom: '1.5rem',
-  } as React.CSSProperties,
-  periodButton: {
-    padding: '0.5rem 1.25rem',
-    border: '1px solid var(--color-border)',
-    background: 'white',
-    color: 'var(--color-text-secondary)',
-    fontWeight: 600,
-    cursor: 'pointer',
-    borderRadius: '0.5rem',
-    transition: 'all 0.2s',
-  } as React.CSSProperties,
-  periodButtonActive: {
-    backgroundColor: 'var(--color-primary)',
-    color: 'white',
-    borderColor: 'var(--color-primary)',
-  } as React.CSSProperties,
-  emptyState: {
-    textAlign: 'center',
-    padding: '3rem',
-    color: 'var(--color-text-secondary)',
-  } as React.CSSProperties,
-  statsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    gap: '1rem',
-    marginBottom: '2rem',
-  } as React.CSSProperties,
-  statCard: {
-    backgroundColor: 'var(--color-surface)',
-    padding: '1.25rem',
-    borderRadius: '0.75rem',
-    textAlign: 'center',
-  } as React.CSSProperties,
-  statLabel: {
-    fontSize: '0.875rem',
-    color: 'var(--color-text-secondary)',
-    marginBottom: '0.5rem',
-    fontWeight: 500,
-  } as React.CSSProperties,
-  statValue: {
-    fontSize: '2rem',
-    fontWeight: 700,
-    color: 'var(--color-text)',
-  } as React.CSSProperties,
-  chartSection: {
-    marginBottom: '2rem',
-  } as React.CSSProperties,
-  chartTitle: {
-    fontSize: '1.25rem',
-    fontWeight: 600,
-    marginBottom: '1rem',
-    color: 'var(--color-text)',
-  } as React.CSSProperties,
-  chart: {
-    display: 'flex',
-    gap: '0.25rem',
-    height: '220px',
-    alignItems: 'flex-end',
-    padding: '1rem',
-    backgroundColor: 'var(--color-surface)',
-    borderRadius: '0.75rem',
-    overflowX: 'auto',
-  } as React.CSSProperties,
-  chartBar: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    minWidth: '30px',
-  } as React.CSSProperties,
-  chartBarFill: {
-    width: '100%',
-    borderRadius: '4px 4px 0 0',
-    transition: 'height 0.3s ease-out',
-    minHeight: '2px',
-  } as React.CSSProperties,
-  chartBarLabel: {
-    fontSize: '0.75rem',
-    color: 'var(--color-text-secondary)',
-    marginTop: '0.25rem',
-  } as React.CSSProperties,
-  moodStatesSection: {
-    marginBottom: '2rem',
-  } as React.CSSProperties,
-  moodStatesGrid: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-  } as React.CSSProperties,
-  moodStateItem: {
-    backgroundColor: 'var(--color-surface)',
-    padding: '1rem',
-    borderRadius: '0.5rem',
-  } as React.CSSProperties,
-  moodStateHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginBottom: '0.5rem',
-  } as React.CSSProperties,
-  moodStateName: {
-    fontWeight: 600,
-    color: 'var(--color-text)',
-  } as React.CSSProperties,
-  moodStateCount: {
-    fontSize: '0.875rem',
-    color: 'var(--color-text-secondary)',
-  } as React.CSSProperties,
-  moodStateBar: {
-    height: '8px',
-    backgroundColor: 'var(--color-surface-dark)',
-    borderRadius: '9999px',
-    overflow: 'hidden',
-  } as React.CSSProperties,
-  moodStateBarFill: {
-    height: '100%',
-    borderRadius: '9999px',
-    transition: 'width 0.5s ease-out',
-  } as React.CSSProperties,
-  insightsSection: {
-    marginTop: '2rem',
-  } as React.CSSProperties,
-  insightsList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.75rem',
-  } as React.CSSProperties,
-  insight: {
-    padding: '1rem',
-    borderRadius: '0.5rem',
-    fontSize: '0.9375rem',
-    lineHeight: 1.6,
-  } as React.CSSProperties,
-  insightSuccess: {
-    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-    color: 'var(--color-success)',
-    border: '1px solid var(--color-success)',
-  } as React.CSSProperties,
-  insightWarning: {
-    backgroundColor: 'rgba(245, 158, 11, 0.1)',
-    color: 'var(--color-warning)',
-    border: '1px solid var(--color-warning)',
-  } as React.CSSProperties,
-  insightInfo: {
-    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-    color: 'var(--color-info)',
-    border: '1px solid var(--color-info)',
-  } as React.CSSProperties,
 };

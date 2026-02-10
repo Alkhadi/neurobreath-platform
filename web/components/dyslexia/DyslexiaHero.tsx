@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { BookOpen, Users, Brain, Award, ArrowRight } from 'lucide-react';
+import { BookOpen, Users, Brain, Award } from 'lucide-react';
 
 interface DyslexiaHeroProps {
   onScrollToSection: (section: string) => void;

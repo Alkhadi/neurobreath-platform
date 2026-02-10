@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import styles from './PhonicsSoundsLab.module.css';
 import { Input } from '@/components/ui/input';
 import { 
   Play, 
@@ -119,6 +120,24 @@ const MILESTONE_COLORS: Record<string, {
   }
 };
 
+const MILESTONE_CLOCK_CLASSES: Record<string, { border: string; text: string }> = {
+  bronze: { border: 'border-[#fbbf77]', text: 'text-[#fbbf77]' },
+  silver: { border: 'border-[#e5e7eb]', text: 'text-[#e5e7eb]' },
+  gold: { border: 'border-[#facc15]', text: 'text-[#facc15]' },
+  platinum: { border: 'border-[#a5b4fc]', text: 'text-[#a5b4fc]' },
+};
+
+function getMilestoneClockClasses(id: string): { border: string; text: string } {
+  return MILESTONE_CLOCK_CLASSES[id] ?? { border: 'border-slate-300', text: 'text-slate-200' };
+}
+
+function getProgressWidthClass(progress: number): string {
+  const clamped = Math.max(0, Math.min(100, Math.round(progress)));
+  const stepped = Math.round(clamped / 5) * 5;
+  const key = `progressWidth${stepped}` as keyof typeof styles;
+  return (styles[key] as string) ?? styles.progressWidth0;
+}
+
 const HEAD_VARIANTS = [
   { name: "sunrise", gradient: "from-amber-500 to-orange-600" },
   { name: "onyx", gradient: "from-slate-600 to-slate-800" },
@@ -152,8 +171,54 @@ export function PhonicsSoundsLab() {
   
   // Refs
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const playPromiseRef = useRef<Promise<void> | null>(null);
   const countdownRef = useRef<NodeJS.Timeout | null>(null);
   const manualStopAtRef = useRef<number | null>(null);
+
+  const isAbortError = (err: unknown) =>
+    !!err && typeof err === 'object' && 'name' in err && (err as { name?: unknown }).name === 'AbortError';
+
+  const safePlay = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const playPromise = audio.play();
+    playPromiseRef.current = playPromise;
+
+    playPromise
+      .catch((err) => {
+        if (isAbortError(err)) return;
+        console.error('Play failed:', err);
+      })
+      .finally(() => {
+        if (playPromiseRef.current === playPromise) {
+          playPromiseRef.current = null;
+        }
+      });
+  }, []);
+
+  const safePause = useCallback(async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const playPromise = playPromiseRef.current;
+    if (playPromise) {
+      try {
+        await Promise.race([
+          playPromise.catch(() => {}),
+          new Promise<void>((resolve) => setTimeout(resolve, 250))
+        ]);
+      } catch {
+        // ignore
+      }
+    }
+
+    try {
+      audio.pause();
+    } catch {
+      // ignore
+    }
+  }, []);
   
   const currentLetter = ALPHABET[Math.min(currentIndex, ALPHABET.length - 1)];
   const currentData = PHONICS_LETTER_DATA[currentLetter] || { word: "", emoji: "" };
@@ -165,12 +230,57 @@ export function PhonicsSoundsLab() {
     
     return () => {
       if (audioRef.current) {
-        audioRef.current.pause();
+        void safePause();
       }
     };
-  }, []);
+  }, [safePause]);
 
   // Handle audio time updates - main synchronization logic
+  const triggerMilestone = useCallback((milestone: typeof MILESTONES[0]) => {
+    if (!audioRef.current) return;
+
+    // Pause audio immediately
+    void safePause();
+    setIsPlaying(false);
+
+    // Mark this milestone as triggered
+    setTriggeredMilestones(prev => new Set([...prev, milestone.triggerLetter]));
+
+    // Show milestone celebration
+    setCurrentMilestone(milestone);
+    setCountdown(milestone.seconds);
+    setShowMilestone(true);
+
+    // Fire confetti with milestone-specific colors
+    const colors = MILESTONE_COLORS[milestone.id]?.confetti || ["#FFD700"];
+    confetti({
+      particleCount: 200,
+      spread: 100,
+      origin: { y: 0.35 },
+      colors: colors
+    });
+
+    // Additional confetti bursts
+    setTimeout(() => {
+      confetti({
+        particleCount: 100,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: colors
+      });
+    }, 250);
+    setTimeout(() => {
+      confetti({
+        particleCount: 100,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: colors
+      });
+    }, 400);
+  }, [safePause]);
+
   const handleTimeUpdate = useCallback(() => {
     if (!audioRef.current || showMilestone) return;
     
@@ -180,7 +290,7 @@ export function PhonicsSoundsLab() {
     // and avoid triggering milestone/letter-sync logic during this micro-play.
     if (manualStopAtRef.current != null) {
       if (t >= manualStopAtRef.current) {
-        audioRef.current.pause();
+        void safePause();
         setIsPlaying(false);
         manualStopAtRef.current = null;
       }
@@ -209,52 +319,7 @@ export function PhonicsSoundsLab() {
         triggerMilestone(milestone);
       }
     }
-  }, [showMilestone, currentIndex, triggeredMilestones]);
-
-  const triggerMilestone = (milestone: typeof MILESTONES[0]) => {
-    if (!audioRef.current) return;
-    
-    // Pause audio immediately
-    audioRef.current.pause();
-    setIsPlaying(false);
-    
-    // Mark this milestone as triggered
-    setTriggeredMilestones(prev => new Set([...prev, milestone.triggerLetter]));
-    
-    // Show milestone celebration
-    setCurrentMilestone(milestone);
-    setCountdown(milestone.seconds);
-    setShowMilestone(true);
-    
-    // Fire confetti with milestone-specific colors
-    const colors = MILESTONE_COLORS[milestone.id]?.confetti || ["#FFD700"];
-    confetti({
-      particleCount: 200,
-      spread: 100,
-      origin: { y: 0.35 },
-      colors: colors
-    });
-    
-    // Additional confetti bursts
-    setTimeout(() => {
-      confetti({
-        particleCount: 100,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: colors
-      });
-    }, 250);
-    setTimeout(() => {
-      confetti({
-        particleCount: 100,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: colors
-      });
-    }, 400);
-  };
+  }, [showMilestone, currentIndex, triggeredMilestones, safePause, triggerMilestone]);
 
   // Audio event listeners
   useEffect(() => {
@@ -289,7 +354,7 @@ export function PhonicsSoundsLab() {
       audio.removeEventListener('timeupdate', handleTimeUpdate);
       audio.removeEventListener('ended', handleEnded);
     };
-  }, [handleTimeUpdate, triggeredMilestones, showCertificate]);
+  }, [handleTimeUpdate, triggeredMilestones, showCertificate, triggerMilestone]);
 
   // Countdown timer for milestones
   useEffect(() => {
@@ -321,7 +386,7 @@ export function PhonicsSoundsLab() {
     
     audioRef.current.currentTime = 0;
     audioRef.current.muted = isMuted;
-    audioRef.current.play().catch(console.error);
+    safePlay();
     setIsPlaying(true);
     setCurrentIndex(0);
     setCompletedLetters(new Set());
@@ -336,10 +401,10 @@ export function PhonicsSoundsLab() {
   const handlePause = () => {
     if (!audioRef.current) return;
     if (isPlaying) {
-      audioRef.current.pause();
+      void safePause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play().catch(console.error);
+      safePlay();
       setIsPlaying(true);
     }
   };
@@ -367,7 +432,7 @@ export function PhonicsSoundsLab() {
       const nextTiming = DOROTHY_LETTER_TIMINGS.find(t => t.letter === currentMilestone.nextLetter);
       if (nextTiming) {
         audioRef.current.currentTime = nextTiming.start - LETTER_CALL_HEADROOM;
-        audioRef.current.play().catch(console.error);
+        safePlay();
         setIsPlaying(true);
       }
     }
@@ -401,7 +466,7 @@ export function PhonicsSoundsLab() {
       const seekTime = Math.max(0, phonemeWindow.start - 0.03);
       audioRef.current.currentTime = seekTime;
       audioRef.current.muted = isMuted;
-      audioRef.current.play().catch(err => console.error('Play failed:', err));
+      safePlay();
       setIsPlaying(true);
       return;
     }
@@ -410,7 +475,7 @@ export function PhonicsSoundsLab() {
     const seekTime = Math.max(0, timing.start - LETTER_CALL_HEADROOM);
     audioRef.current.currentTime = seekTime;
     audioRef.current.muted = isMuted;
-    audioRef.current.play().catch(err => console.error('Play failed:', err));
+    safePlay();
     setIsPlaying(true);
   };
 
@@ -419,7 +484,7 @@ export function PhonicsSoundsLab() {
   };
 
   const handleClose = () => {
-    if (audioRef.current) audioRef.current.pause();
+    void safePause();
     setIsOpen(false);
     setIsPlaying(false);
     setShowMilestone(false);
@@ -503,6 +568,8 @@ export function PhonicsSoundsLab() {
   const progress = audioRef.current?.duration 
     ? (elapsedTime / audioRef.current.duration) * 100 
     : (currentIndex / ALPHABET.length) * 100;
+  const progressWidthClass = getProgressWidthClass(progress);
+  const clockClasses = currentMilestone ? getMilestoneClockClasses(currentMilestone.id) : getMilestoneClockClasses('');
 
   const getHeadGradient = () => HEAD_VARIANTS[headVariant].gradient;
 
@@ -701,9 +768,11 @@ export function PhonicsSoundsLab() {
                   <div className="mb-3 sm:mb-4 md:mb-6">
                     <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
                       <div className="flex-1 h-2 sm:h-2.5 md:h-3 rounded-full bg-slate-700 overflow-hidden">
-                        <div 
-                          className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-300"
-                          style={{ width: `${progress}%` }}
+                        <div
+                          className={cn(
+                            "h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-300",
+                            progressWidthClass
+                          )}
                         />
                       </div>
                       <span className="text-[10px] sm:text-xs md:text-sm text-slate-300 font-mono min-w-[40px] sm:min-w-[50px]">{formatTime(elapsedTime)}</span>
@@ -857,8 +926,10 @@ export function PhonicsSoundsLab() {
                     {/* Countdown Clock */}
                     <div className="flex flex-col items-center mx-auto md:mx-0">
                       <div
-                        className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full flex items-center justify-center border-4 bg-slate-900/60 shadow-xl"
-                        style={{ borderColor: MILESTONE_COLORS[currentMilestone.id]?.clock }}
+                        className={cn(
+                          "relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full flex items-center justify-center border-4 bg-slate-900/60 shadow-xl",
+                          clockClasses.border
+                        )}
                       >
                         {/* Circular progress */}
                         <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
@@ -876,16 +947,15 @@ export function PhonicsSoundsLab() {
                             cy="50"
                             r="45"
                             fill="none"
-                            stroke={MILESTONE_COLORS[currentMilestone.id]?.clock}
+                            stroke="currentColor"
                             strokeWidth="4"
                             strokeLinecap="round"
                             strokeDasharray={`${(countdown / currentMilestone.seconds) * 283} 283`}
-                            className="transition-all duration-1000"
+                            className={cn("transition-all duration-1000", clockClasses.text)}
                           />
                         </svg>
                         <span 
-                          className="text-2xl sm:text-3xl md:text-4xl font-bold z-10"
-                          style={{ color: MILESTONE_COLORS[currentMilestone.id]?.clock }}
+                          className={cn("text-2xl sm:text-3xl md:text-4xl font-bold z-10", clockClasses.text)}
                         >
                           {countdown}
                         </span>

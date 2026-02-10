@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="business-06-bg-title business-06-bg-desc">
+  <title id="business-06-bg-title">Signature Gold — Business Background</title>
+  <desc id="business-06-bg-desc">Professional business template with subtle gold accents and high-end layout</desc>
+  <defs>
+    <linearGradient id="business-06-base" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" style="stop-color:#1F2937;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#111827;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0F1419;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="business-06-glow" cx="50%" cy="30%" r="50%">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#111827;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#business-06-base)" />
+  <ellipse cx="800" cy="300" rx="700" ry="400" fill="url(#business-06-glow)" />
+  <rect x="40" y="40" width="1520" height="920" fill="none" stroke="#F59E0B" stroke-width="2" opacity="0.4" rx="32" />
+  <line x1="120" y1="260" x2="400" y2="260" stroke="#F59E0B" stroke-width="2" opacity="0.3" />
+  <rect x="120" y="140" width="360" height="100" fill="#0F1419" opacity="0.6" rx="24" />
+</svg>

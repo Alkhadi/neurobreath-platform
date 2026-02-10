@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { MoodEntry } from '../types';
+import s from './MoodTracker.module.css';
 import {
   getAllData,
   saveMoodEntry,
@@ -67,23 +68,29 @@ export const MoodTracker: React.FC<MoodTrackerProps> = ({ language }) => {
     });
   };
 
-  const getMoodColor = (mood: number): string => {
-    if (mood <= 3) return 'var(--color-mood-depressive)';
-    if (mood <= 5) return 'var(--color-mood-normal)';
-    if (mood <= 7) return 'var(--color-mood-hypomanic)';
-    return 'var(--color-mood-manic)';
+  const getMoodBgClass = (mood: number): string => {
+    if (mood <= 3) return s.moodBgDepressive;
+    if (mood <= 5) return s.moodBgNormal;
+    if (mood <= 7) return s.moodBgHypomanic;
+    return s.moodBgManic;
   };
 
-  const getMoodStateColor = (state: string): string => {
-    const colors: Record<string, string> = {
-      depressive: 'var(--color-mood-depressive)',
-      normal: 'var(--color-mood-normal)',
-      hypomanic: 'var(--color-mood-hypomanic)',
-      manic: 'var(--color-mood-manic)',
-      mixed: 'var(--color-mood-mixed)',
-    };
-    return colors[state] || 'var(--color-mood-normal)';
+  const moodStateBorderClass: Record<MoodEntry['moodState'], string> = {
+    depressive: s.stateBorderDepressive,
+    normal: s.stateBorderNormal,
+    hypomanic: s.stateBorderHypomanic,
+    manic: s.stateBorderManic,
+    mixed: s.stateBorderMixed,
   };
+
+  const moodStateTextClass: Record<MoodEntry['moodState'], string> = {
+    depressive: s.stateTextDepressive,
+    normal: s.stateTextNormal,
+    hypomanic: s.stateTextHypomanic,
+    manic: s.stateTextManic,
+    mixed: s.stateTextMixed,
+  };
+
 
   const handleExportCSV = () => {
     const csv = exportMoodDataAsCSV();
@@ -123,13 +130,15 @@ export const MoodTracker: React.FC<MoodTrackerProps> = ({ language }) => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <h3 style={styles.title}>
-          <span style={{ fontSize: '1.5rem', marginRight: '0.5rem' }}>📊</span>
+    <div className={s.container}>
+      <div className={s.header}>
+        <h3 className={s.title}>
+          <span className={s.titleIcon} aria-hidden="true">
+            📊
+          </span>
           {language === 'en-GB' ? 'Mood Tracker' : 'Mood Tracker'}
         </h3>
-        <div style={styles.description}>
+        <div className={s.description}>
           <p>
             Track your daily mood to identify patterns, triggers, and early warning signs.
             Evidence-based research shows that consistent mood tracking improves self-awareness
@@ -138,43 +147,72 @@ export const MoodTracker: React.FC<MoodTrackerProps> = ({ language }) => {
         </div>
       </div>
 
-      <div style={styles.viewToggle}>
-        <button
-          onClick={() => setView('form')}
-          style={{
-            ...styles.viewButton,
-            ...(view === 'form' ? styles.viewButtonActive : {}),
-          }}
-          aria-pressed={view === 'form'}
-        >
-          Log Mood
-        </button>
-        <button
-          onClick={() => setView('calendar')}
-          style={{
-            ...styles.viewButton,
-            ...(view === 'calendar' ? styles.viewButtonActive : {}),
-          }}
-          aria-pressed={view === 'calendar'}
-        >
-          Calendar
-        </button>
-        <button
-          onClick={() => setView('list')}
-          style={{
-            ...styles.viewButton,
-            ...(view === 'list' ? styles.viewButtonActive : {}),
-          }}
-          aria-pressed={view === 'list'}
-        >
-          History
-        </button>
+      <div className={s.viewToggle}>
+        {view === 'form' ? (
+          <button
+            onClick={() => setView('form')}
+            type="button"
+            className={`${s.viewButton} ${s.viewButtonActive}`}
+            aria-pressed="true"
+          >
+            Log Mood
+          </button>
+        ) : (
+          <button
+            onClick={() => setView('form')}
+            type="button"
+            className={s.viewButton}
+            aria-pressed="false"
+          >
+            Log Mood
+          </button>
+        )}
+
+        {view === 'calendar' ? (
+          <button
+            onClick={() => setView('calendar')}
+            type="button"
+            className={`${s.viewButton} ${s.viewButtonActive}`}
+            aria-pressed="true"
+          >
+            Calendar
+          </button>
+        ) : (
+          <button
+            onClick={() => setView('calendar')}
+            type="button"
+            className={s.viewButton}
+            aria-pressed="false"
+          >
+            Calendar
+          </button>
+        )}
+
+        {view === 'list' ? (
+          <button
+            onClick={() => setView('list')}
+            type="button"
+            className={`${s.viewButton} ${s.viewButtonActive}`}
+            aria-pressed="true"
+          >
+            History
+          </button>
+        ) : (
+          <button
+            onClick={() => setView('list')}
+            type="button"
+            className={s.viewButton}
+            aria-pressed="false"
+          >
+            History
+          </button>
+        )}
       </div>
 
       {view === 'form' && (
-        <form onSubmit={handleSubmit} style={styles.form}>
-          <div style={styles.formGroup}>
-            <label htmlFor="mood-date" style={styles.label}>
+        <form onSubmit={handleSubmit} className={s.form}>
+          <div className={s.formGroup}>
+            <label htmlFor="mood-date" className={s.label}>
               Date
             </label>
             <input
@@ -184,12 +222,12 @@ export const MoodTracker: React.FC<MoodTrackerProps> = ({ language }) => {
               onChange={(e) => setCurrentEntry({ ...currentEntry, date: e.target.value })}
               max={new Date().toISOString().split('T')[0]}
               required
-              style={styles.input}
+              className={s.input}
             />
           </div>
 
-          <div style={styles.formGroup}>
-            <label htmlFor="mood-scale" style={styles.label}>
+          <div className={s.formGroup}>
+            <label htmlFor="mood-scale" className={s.label}>
               Mood (1-10): {currentEntry.mood}
             </label>
             <input
@@ -201,23 +239,17 @@ export const MoodTracker: React.FC<MoodTrackerProps> = ({ language }) => {
               onChange={(e) =>
                 setCurrentEntry({ ...currentEntry, mood: parseInt(e.target.value) })
               }
-              style={{
-                ...styles.slider,
-                background: `linear-gradient(to right, ${getMoodColor(
-                  currentEntry.mood || 5
-                )} 0%, ${getMoodColor(currentEntry.mood || 5)} ${
-                  ((currentEntry.mood || 5) - 1) * 11.11
-                }%, #e2e8f0 ${((currentEntry.mood || 5) - 1) * 11.11}%, #e2e8f0 100%)`,
-              }}
+              className={`${s.slider} ${s.moodSlider}`}
+              data-mood={currentEntry.mood ?? 5}
             />
-            <div style={styles.moodLabels}>
+            <div className={s.moodLabels}>
               <span>1 (Very Low)</span>
               <span>10 (Very High)</span>
             </div>
           </div>
 
-          <div style={styles.formGroup}>
-            <label htmlFor="mood-state" style={styles.label}>
+          <div className={s.formGroup}>
+            <label htmlFor="mood-state" className={s.label}>
               Mood State
             </label>
             <select
@@ -226,11 +258,11 @@ export const MoodTracker: React.FC<MoodTrackerProps> = ({ language }) => {
               onChange={(e) =>
                 setCurrentEntry({
                   ...currentEntry,
-                  moodState: e.target.value as any,
+                  moodState: e.target.value as MoodEntry['moodState'],
                 })
               }
               required
-              style={styles.select}
+              className={s.select}
             >
               <option value="depressive">Depressive</option>
               <option value="normal">Normal</option>
@@ -240,8 +272,8 @@ export const MoodTracker: React.FC<MoodTrackerProps> = ({ language }) => {
             </select>
           </div>
 
-          <div style={styles.formGroup}>
-            <label htmlFor="sleep-hours" style={styles.label}>
+          <div className={s.formGroup}>
+            <label htmlFor="sleep-hours" className={s.label}>
               Sleep Hours: {currentEntry.sleepHours}
             </label>
             <input
@@ -257,12 +289,12 @@ export const MoodTracker: React.FC<MoodTrackerProps> = ({ language }) => {
                   sleepHours: parseFloat(e.target.value),
                 })
               }
-              style={styles.slider}
+              className={`${s.slider} ${s.sleepSlider}`}
             />
           </div>
 
-          <div style={styles.formGroup}>
-            <label htmlFor="medications" style={styles.checkboxLabel}>
+          <div className={s.formGroup}>
+            <label htmlFor="medications" className={s.checkboxLabel}>
               <input
                 id="medications"
                 type="checkbox"
@@ -273,14 +305,14 @@ export const MoodTracker: React.FC<MoodTrackerProps> = ({ language }) => {
                     medications: e.target.checked,
                   })
                 }
-                style={styles.checkbox}
+                className={s.checkbox}
               />
               Took medications as prescribed
             </label>
           </div>
 
-          <div style={styles.formGroup}>
-            <label htmlFor="notes" style={styles.label}>
+          <div className={s.formGroup}>
+            <label htmlFor="notes" className={s.label}>
               Notes (triggers, events, symptoms)
             </label>
             <textarea
@@ -289,16 +321,16 @@ export const MoodTracker: React.FC<MoodTrackerProps> = ({ language }) => {
               onChange={(e) => setCurrentEntry({ ...currentEntry, notes: e.target.value })}
               placeholder="Describe your day, any triggers, or notable events..."
               rows={4}
-              style={styles.textarea}
+              className={s.textarea}
             />
           </div>
 
-          <button type="submit" style={styles.submitButton}>
+          <button type="submit" className={s.submitButton}>
             Save Entry
           </button>
 
           {showSuccess && (
-            <div style={styles.successMessage} className="animate-slide-up">
+            <div className={`${s.successMessage} animate-slide-up`}>
               ✓ Mood entry saved successfully!
             </div>
           )}
@@ -306,8 +338,8 @@ export const MoodTracker: React.FC<MoodTrackerProps> = ({ language }) => {
       )}
 
       {view === 'calendar' && (
-        <div style={styles.calendar}>
-          <div style={styles.calendarGrid}>
+        <div className={s.calendar}>
+          <div className={s.calendarGrid}>
             {entries.slice(0, 90).map((entry) => {
               const date = new Date(entry.date);
               const dayName = date.toLocaleDateString('en', { weekday: 'short' });
@@ -317,27 +349,21 @@ export const MoodTracker: React.FC<MoodTrackerProps> = ({ language }) => {
               return (
                 <div
                   key={entry.id}
-                  style={{
-                    ...styles.calendarDay,
-                    borderLeft: `4px solid ${getMoodStateColor(entry.moodState)}`,
-                  }}
+                  className={`${s.calendarDay} ${moodStateBorderClass[entry.moodState]}`}
                   title={`${entry.date}: Mood ${entry.mood}/10 - ${getMoodStateName(
                     entry.moodState
                   )}`}
                 >
-                  <div style={styles.calendarDayDate}>
+                  <div className={s.calendarDayDate}>
                     {monthName} {dayNum}
                   </div>
-                  <div style={styles.calendarDayName}>{dayName}</div>
+                  <div className={s.calendarDayName}>{dayName}</div>
                   <div
-                    style={{
-                      ...styles.calendarDayMood,
-                      backgroundColor: getMoodColor(entry.mood),
-                    }}
+                    className={`${s.calendarDayMood} ${getMoodBgClass(entry.mood)}`}
                   >
                     {entry.mood}
                   </div>
-                  <div style={styles.calendarDayState}>
+                  <div className={s.calendarDayState}>
                     {getMoodStateName(entry.moodState)}
                   </div>
                 </div>
@@ -348,25 +374,25 @@ export const MoodTracker: React.FC<MoodTrackerProps> = ({ language }) => {
       )}
 
       {view === 'list' && (
-        <div style={styles.history}>
-          <div style={styles.exportButtons}>
-            <button onClick={handleExportCSV} style={styles.exportButton}>
+        <div className={s.history}>
+          <div className={s.exportButtons}>
+            <button onClick={handleExportCSV} className={s.exportButton}>
               📥 Export CSV
             </button>
-            <button onClick={handleExportJSON} style={styles.exportButton}>
+            <button onClick={handleExportJSON} className={s.exportButton}>
               📥 Export JSON
             </button>
           </div>
 
           {entries.length === 0 && (
-            <p style={styles.emptyState}>No mood entries yet. Start logging your mood above!</p>
+            <p className={s.emptyState}>No mood entries yet. Start logging your mood above!</p>
           )}
 
-          <div style={styles.historyList}>
+          <div className={s.historyList}>
             {entries.map((entry) => (
-              <div key={entry.id} style={styles.historyItem}>
-                <div style={styles.historyItemHeader}>
-                  <div style={styles.historyItemDate}>
+              <div key={entry.id} className={s.historyItem}>
+                <div className={s.historyItemHeader}>
+                  <div className={s.historyItemDate}>
                     {new Date(entry.date).toLocaleDateString('en', {
                       weekday: 'long',
                       year: 'numeric',
@@ -375,32 +401,26 @@ export const MoodTracker: React.FC<MoodTrackerProps> = ({ language }) => {
                     })}
                   </div>
                   <div
-                    style={{
-                      ...styles.historyItemMood,
-                      backgroundColor: getMoodColor(entry.mood),
-                    }}
+                    className={`${s.historyItemMood} ${getMoodBgClass(entry.mood)}`}
                   >
                     {entry.mood}/10
                   </div>
                 </div>
-                <div style={styles.historyItemDetails}>
+                <div className={s.historyItemDetails}>
                   <div
-                    style={{
-                      ...styles.historyItemState,
-                      color: getMoodStateColor(entry.moodState),
-                    }}
+                    className={`${s.historyItemState} ${moodStateTextClass[entry.moodState]}`}
                   >
                     <strong>State:</strong> {getMoodStateName(entry.moodState)}
                   </div>
-                  <div style={styles.historyItemSleep}>
+                  <div className={s.historyItemSleep}>
                     <strong>Sleep:</strong> {entry.sleepHours}h
                   </div>
-                  <div style={styles.historyItemMeds}>
+                  <div className={s.historyItemMeds}>
                     <strong>Medications:</strong> {entry.medications ? 'Yes' : 'No'}
                   </div>
                 </div>
                 {entry.notes && (
-                  <div style={styles.historyItemNotes}>
+                  <div className={s.historyItemNotes}>
                     <strong>Notes:</strong> {entry.notes}
                   </div>
                 )}
@@ -411,246 +431,4 @@ export const MoodTracker: React.FC<MoodTrackerProps> = ({ language }) => {
       )}
     </div>
   );
-};
-
-const styles = {
-  container: {
-    backgroundColor: 'white',
-    borderRadius: '1rem',
-    padding: '2rem',
-    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-    marginBottom: '2rem',
-  } as React.CSSProperties,
-  header: {
-    marginBottom: '1.5rem',
-  } as React.CSSProperties,
-  title: {
-    fontSize: '1.75rem',
-    fontWeight: 700,
-    color: 'var(--color-primary)',
-    marginBottom: '0.5rem',
-  } as React.CSSProperties,
-  description: {
-    color: 'var(--color-text-secondary)',
-    lineHeight: 1.6,
-    fontSize: '0.9375rem',
-  } as React.CSSProperties,
-  viewToggle: {
-    display: 'flex',
-    gap: '0.5rem',
-    marginBottom: '1.5rem',
-    borderBottom: '2px solid var(--color-border)',
-    paddingBottom: '1rem',
-  } as React.CSSProperties,
-  viewButton: {
-    padding: '0.5rem 1rem',
-    border: 'none',
-    background: 'transparent',
-    color: 'var(--color-text-secondary)',
-    fontWeight: 600,
-    cursor: 'pointer',
-    borderRadius: '0.5rem',
-    transition: 'all 0.2s',
-  } as React.CSSProperties,
-  viewButtonActive: {
-    backgroundColor: 'var(--color-primary)',
-    color: 'white',
-  } as React.CSSProperties,
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1.5rem',
-  } as React.CSSProperties,
-  formGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem',
-  } as React.CSSProperties,
-  label: {
-    fontWeight: 600,
-    color: 'var(--color-text)',
-    fontSize: '0.9375rem',
-  } as React.CSSProperties,
-  input: {
-    padding: '0.75rem',
-    border: '1px solid var(--color-border)',
-    borderRadius: '0.5rem',
-    fontSize: '1rem',
-    transition: 'border-color 0.2s',
-  } as React.CSSProperties,
-  select: {
-    padding: '0.75rem',
-    border: '1px solid var(--color-border)',
-    borderRadius: '0.5rem',
-    fontSize: '1rem',
-    backgroundColor: 'white',
-    cursor: 'pointer',
-  } as React.CSSProperties,
-  textarea: {
-    padding: '0.75rem',
-    border: '1px solid var(--color-border)',
-    borderRadius: '0.5rem',
-    fontSize: '1rem',
-    fontFamily: 'inherit',
-    resize: 'vertical',
-  } as React.CSSProperties,
-  slider: {
-    width: '100%',
-    height: '8px',
-    borderRadius: '4px',
-    outline: 'none',
-    cursor: 'pointer',
-    appearance: 'none',
-    WebkitAppearance: 'none',
-  } as React.CSSProperties,
-  moodLabels: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    fontSize: '0.875rem',
-    color: 'var(--color-text-secondary)',
-  } as React.CSSProperties,
-  checkboxLabel: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    cursor: 'pointer',
-    fontSize: '0.9375rem',
-  } as React.CSSProperties,
-  checkbox: {
-    width: '1.25rem',
-    height: '1.25rem',
-    cursor: 'pointer',
-  } as React.CSSProperties,
-  submitButton: {
-    padding: '1rem',
-    backgroundColor: 'var(--color-primary)',
-    color: 'white',
-    border: 'none',
-    borderRadius: '0.5rem',
-    fontSize: '1rem',
-    fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'background-color 0.2s',
-  } as React.CSSProperties,
-  successMessage: {
-    padding: '1rem',
-    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-    color: 'var(--color-success)',
-    borderRadius: '0.5rem',
-    textAlign: 'center',
-    fontWeight: 600,
-  } as React.CSSProperties,
-  calendar: {
-    width: '100%',
-  } as React.CSSProperties,
-  calendarGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
-    gap: '1rem',
-  } as React.CSSProperties,
-  calendarDay: {
-    backgroundColor: 'var(--color-surface)',
-    padding: '0.75rem',
-    borderRadius: '0.5rem',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.25rem',
-  } as React.CSSProperties,
-  calendarDayDate: {
-    fontSize: '0.875rem',
-    fontWeight: 600,
-    color: 'var(--color-text)',
-  } as React.CSSProperties,
-  calendarDayName: {
-    fontSize: '0.75rem',
-    color: 'var(--color-text-secondary)',
-  } as React.CSSProperties,
-  calendarDayMood: {
-    padding: '0.25rem',
-    borderRadius: '0.25rem',
-    color: 'white',
-    fontSize: '1.25rem',
-    fontWeight: 700,
-    textAlign: 'center',
-    marginTop: '0.25rem',
-  } as React.CSSProperties,
-  calendarDayState: {
-    fontSize: '0.75rem',
-    color: 'var(--color-text-secondary)',
-    textAlign: 'center',
-  } as React.CSSProperties,
-  history: {
-    width: '100%',
-  } as React.CSSProperties,
-  exportButtons: {
-    display: 'flex',
-    gap: '1rem',
-    marginBottom: '1.5rem',
-  } as React.CSSProperties,
-  exportButton: {
-    padding: '0.625rem 1rem',
-    backgroundColor: 'var(--color-secondary)',
-    color: 'white',
-    border: 'none',
-    borderRadius: '0.5rem',
-    fontSize: '0.9375rem',
-    fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'background-color 0.2s',
-  } as React.CSSProperties,
-  emptyState: {
-    textAlign: 'center',
-    color: 'var(--color-text-secondary)',
-    padding: '2rem',
-  } as React.CSSProperties,
-  historyList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-  } as React.CSSProperties,
-  historyItem: {
-    backgroundColor: 'var(--color-surface)',
-    padding: '1rem',
-    borderRadius: '0.5rem',
-    border: '1px solid var(--color-border)',
-  } as React.CSSProperties,
-  historyItemHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '0.5rem',
-  } as React.CSSProperties,
-  historyItemDate: {
-    fontWeight: 600,
-    color: 'var(--color-text)',
-  } as React.CSSProperties,
-  historyItemMood: {
-    padding: '0.25rem 0.75rem',
-    borderRadius: '9999px',
-    color: 'white',
-    fontWeight: 700,
-    fontSize: '0.9375rem',
-  } as React.CSSProperties,
-  historyItemDetails: {
-    display: 'flex',
-    gap: '1.5rem',
-    fontSize: '0.875rem',
-    marginBottom: '0.5rem',
-  } as React.CSSProperties,
-  historyItemState: {
-    fontWeight: 600,
-  } as React.CSSProperties,
-  historyItemSleep: {
-    color: 'var(--color-text-secondary)',
-  } as React.CSSProperties,
-  historyItemMeds: {
-    color: 'var(--color-text-secondary)',
-  } as React.CSSProperties,
-  historyItemNotes: {
-    fontSize: '0.875rem',
-    color: 'var(--color-text-secondary)',
-    marginTop: '0.5rem',
-    paddingTop: '0.5rem',
-    borderTop: '1px solid var(--color-border)',
-  } as React.CSSProperties,
 };

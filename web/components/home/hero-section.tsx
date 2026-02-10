@@ -77,11 +77,11 @@ export default function HeroSection() {
               <h4 className="nb-glass-subheading">Common concerns</h4>
               
               <div className="nb-concern-pills">
-                <Link href="/conditions/anxiety" className="nb-pill-btn">Stress & Anxiety</Link>
-                <Link href="/conditions/anxiety" className="nb-pill-btn">Panic Symptoms</Link>
+                <Link href="/guides/anxiety-stress/stress-general-anxiety" className="nb-pill-btn">Stress & Anxiety</Link>
+                <Link href="/guides/anxiety-stress/panic-symptoms" className="nb-pill-btn">Panic Symptoms</Link>
                 <Link href="/sleep" className="nb-pill-btn">Sleep Issues</Link>
-                <Link href="/conditions/anxiety" className="nb-pill-btn">Focus & Tests</Link>
-                <Link href="/conditions/anxiety" className="nb-pill-btn">PTSD Support*</Link>
+                <Link href="/guides/focus-adhd/focus-test-anxiety" className="nb-pill-btn">Focus & Tests</Link>
+                <Link href="/guides/anxiety-stress/ptsd-regulation" className="nb-pill-btn">PTSD Support</Link>
                 <Link href="/conditions/low-mood-burnout" className="nb-pill-btn">Low Mood</Link>
               </div>
             </div>

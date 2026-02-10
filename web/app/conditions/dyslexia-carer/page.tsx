@@ -1,24 +1,27 @@
 import React from 'react';
 import { Metadata } from 'next';
+import { generatePageMetadata } from '@/lib/seo/metadata';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
-  BookOpen, Brain, Heart, Users, Home,
+  BookOpen, Heart, Users, Home,
   FileText, Download, CheckCircle2, AlertCircle, 
-  Lightbulb, Phone, Shield, Clock
+  Lightbulb, Phone, Shield
 } from 'lucide-react';
 
-export const metadata: Metadata = {
-  title: 'Dyslexia Carers Support Hub | NeuroBreath',
-  description: 'Comprehensive support and resources for carers supporting individuals with dyslexia across all ages.',
-};
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Dyslexia Carer Support | NeuroBreath',
+  description:
+    'Dyslexia support for carers with daily routines, communication tips and wellbeing guidance for people of all ages, including adults.',
+  path: '/conditions/dyslexia-carer',
+});
 
 export default function DyslexiaCarersPage() {
   return (
-    <main className="mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-8 sm:space-y-10 md:space-y-12" style={{ width: '86vw', maxWidth: '86vw' }}>
+    <main className="mx-auto w-[86vw] max-w-[86vw] px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-8 sm:space-y-10 md:space-y-12">
       
       {/* Hero Section */}
       <section className="space-y-6">

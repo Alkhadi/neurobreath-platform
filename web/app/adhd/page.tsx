@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { ADHDHero } from '@/components/adhd/adhd-hero';
+import { PageHeader } from '@/components/page/PageHeader';
 import { DailyQuestsADHD } from '@/components/adhd/daily-quests-adhd';
 import { FocusPomodoro } from '@/components/adhd/focus-pomodoro';
 import { ADHDSkillsLibrary } from '@/components/adhd/adhd-skills-library';
@@ -13,33 +13,103 @@ import { initializeMilestones } from '@/lib/progress-store-enhanced';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Heart, Rocket, Zap, Star, BookOpen, Users } from 'lucide-react';
+import { Heart, Rocket, Zap, Star, BookOpen, Users, Target } from 'lucide-react';
+import { EvidenceFooter } from '@/components/evidence-footer';
+import { evidenceByRoute } from '@/lib/evidence/page-evidence';
+import { EducationalDisclaimerInline } from '@/components/trust/EducationalDisclaimerInline';
+import { CredibilityFooter } from '@/components/trust/CredibilityFooter';
+import { createChangeLog, createChangeLogEntry } from '@/lib/editorial/changeLog';
+import { createCitationsSummary, createEditorialMeta } from '@/lib/editorial/pageEditorial';
+import type { Region } from '@/lib/region/region';
+
+const evidence = evidenceByRoute['/adhd'];
 
 export default function HomePage() {
+  const region: Region = 'UK';
+  const editorial = createEditorialMeta({
+    authorId: 'nb-editorial-team',
+    reviewerId: 'nb-evidence-review',
+    editorialRoleNotes: 'Reviewed for clarity, safety language, and evidence framing.',
+    createdAt: '2026-01-16',
+    updatedAt: '2026-01-17',
+    reviewedAt: '2026-01-17',
+    reviewIntervalDays: 90,
+    changeLog: createChangeLog([
+      createChangeLogEntry('2026-01-17', 'Credibility footer and review details added.', 'safety'),
+    ]),
+    citationsSummary: createCitationsSummary(evidence?.citations?.length ?? 0, ['A', 'B']),
+  });
   // Initialize milestones on first load
   useEffect(() => {
     initializeMilestones();
   }, []);
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950">
+    <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950 pt-14 sm:pt-16 md:pt-20">
       {/* Hero Section */}
-      <section className="py-8 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <ADHDHero />
+      <section className="py-6 sm:py-8 scroll-mt-20">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <PageHeader 
+            title="ADHD Hub" 
+            description="Evidence-based support and interactive tools for ADHD management backed by NICE NG87, AAP 2019, CDC, and 10+ peer-reviewed systematic reviews. Get personalized guidance for all ages."
+            showMetadata
+          />
+
+          {/* Quick Actions */}
+          <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 mt-6">
+            <Button 
+              size="lg" 
+              className="gap-1.5 sm:gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 w-full sm:w-auto text-sm sm:text-base h-10 sm:h-11"
+              onClick={() => {
+                const element = document.getElementById('decision-tree');
+                if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+            >
+              <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="truncate">Treatment Decision Tree</span>
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="gap-1.5 sm:gap-2 border-2 w-full sm:w-auto text-sm sm:text-base h-10 sm:h-11"
+              onClick={() => {
+                const element = document.getElementById('myths-facts');
+                if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+            >
+              <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              Myths vs Facts
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="gap-1.5 sm:gap-2 border-2 w-full sm:w-auto text-sm sm:text-base h-10 sm:h-11"
+              onClick={() => {
+                const element = document.getElementById('skills');
+                if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+            >
+              <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              Skills Library
+            </Button>
+          </div>
+
+          <div className="mt-4">
+            <EducationalDisclaimerInline contextLabel="ADHD hub" />
+          </div>
         </div>
       </section>
 
       {/* Treatment Decision Tree - NEW Phase 2 Component */}
-      <section id="decision-tree" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <section id="decision-tree" className="py-12 sm:py-16 bg-white dark:bg-gray-900 scroll-mt-20">
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <TreatmentDecisionTree />
         </div>
       </section>
 
       {/* Daily Quests Section */}
-      <section id="quests" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <section id="quests" className="py-12 sm:py-16 bg-white dark:bg-gray-900 scroll-mt-20">
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
               Daily Quests & Challenges 🎮
@@ -53,13 +123,13 @@ export default function HomePage() {
       </section>
 
       {/* Focus Timer Section */}
-      <section id="focus" className="py-16 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950 dark:via-purple-950 dark:to-pink-950 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+      <section id="focus" className="py-12 sm:py-16 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950 dark:via-purple-950 dark:to-pink-950 scroll-mt-20">
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
               ADHD Focus Timer ⏱️
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-4">
               Flexible Pomodoro technique adapted for ADHD brains - adjust intervals based on your energy and hyperfocus
             </p>
           </div>
@@ -68,27 +138,27 @@ export default function HomePage() {
       </section>
 
       {/* ADHD Skills Library */}
-      <section id="skills" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <section id="skills" className="py-12 sm:py-16 bg-white dark:bg-gray-900 scroll-mt-20">
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <ADHDSkillsLibrary />
         </div>
       </section>
 
       {/* ADHD Myths & Facts - Phase 2 Component with Evidence Registry */}
-      <section id="myths-facts" className="py-16 bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 dark:from-orange-950 dark:via-yellow-950 dark:to-pink-950 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <section id="myths-facts" className="py-12 sm:py-16 bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 dark:from-orange-950 dark:via-yellow-950 dark:to-pink-950 scroll-mt-20">
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <ADHDMythsFacts />
         </div>
       </section>
 
       {/* Resources & Templates */}
-      <section id="resources" className="py-16 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+      <section id="resources" className="py-12 sm:py-16 bg-white dark:bg-gray-900 scroll-mt-20">
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
               ADHD Resources & Templates 📋
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-4">
               Downloadable templates for 504 plans, workplace accommodations, dopamine menus, and more
             </p>
           </div>
@@ -160,13 +230,13 @@ export default function HomePage() {
       </section>
 
       {/* PubMed Research */}
-      <section id="research" className="py-16 bg-gradient-to-br from-purple-50 via-white to-pink-50 dark:from-purple-950/20 dark:via-gray-900 dark:to-pink-950/20 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
-          <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+      <section id="research" className="py-12 sm:py-16 bg-gradient-to-br from-purple-50 via-white to-pink-50 dark:from-purple-950/20 dark:via-gray-900 dark:to-pink-950/20 scroll-mt-20">
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
               ADHD Research Database 📚
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-4">
               Search 35+ million peer-reviewed articles on ADHD, executive function, and neurodevelopmental research
             </p>
           </div>
@@ -175,9 +245,22 @@ export default function HomePage() {
       </section>
 
       {/* Crisis Support */}
-      <section id="crisis" className="py-16 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 dark:from-red-950 dark:via-orange-950 dark:to-yellow-950 scroll-mt-20">
-        <div className="mx-auto px-4" style={{ width: '86vw', maxWidth: '86vw' }}>
+      <section id="crisis" className="py-12 sm:py-16 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 dark:from-red-950 dark:via-orange-950 dark:to-yellow-950 scroll-mt-20">
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <CrisisSupport />
+        </div>
+      </section>
+
+      <section className="py-12 sm:py-16 bg-slate-50 dark:bg-slate-900">
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <CredibilityFooter editorial={editorial} region={region} />
+        </div>
+      </section>
+
+      {/* Evidence Sources */}
+      <section className="py-12 sm:py-16 bg-white dark:bg-gray-900">
+        <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+          <EvidenceFooter evidence={evidence} />
         </div>
       </section>
     </main>

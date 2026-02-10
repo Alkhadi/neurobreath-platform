@@ -1,7 +1,7 @@
 // Skills library data - Comprehensive evidence-based autism support strategies
 // Ported from ZIP implementation with full PubMed references and age adaptations
 
-import { type Skill, type AgeBand, type AudienceType, type EvidenceLink } from '@/types/autism';
+import { type Skill } from '@/types/autism';
 
 export const skills: Skill[] = [
   {

@@ -14,14 +14,15 @@ export function useAutismProgress() {
     setHydrated(true)
 
     // Listen for updates from other tabs/components
-    const handleUpdate = (e: CustomEvent) => {
-      setProgress(e.detail.progress)
+    const handleUpdate = (event: Event) => {
+      const custom = event as CustomEvent<{ progress: ProgressStats }>
+      setProgress(custom.detail.progress)
     }
 
-    window.addEventListener('nb:autism:progress-updated' as any, handleUpdate)
+    window.addEventListener('nb:autism:progress-updated', handleUpdate)
 
     return () => {
-      window.removeEventListener('nb:autism:progress-updated' as any, handleUpdate)
+      window.removeEventListener('nb:autism:progress-updated', handleUpdate)
     }
   }, [])
 

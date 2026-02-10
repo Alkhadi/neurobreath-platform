@@ -1,0 +1,56 @@
+{
+  "files.associations": {
+    "**/.github/workflows/deploy-vercel.yml": "yaml",
+    "**/web/prisma/migrations/**/migration.sql": "plaintext",
+    "**/prisma/migrations/**/migration.sql": "plaintext"
+  },
+  "files.exclude": {
+    "**/.next/**": true,
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/out/**": true,
+    "**/coverage/**": true,
+    "**/playwright-report/**": true,
+    "**/test-results/**": true,
+    "**/.turbo/**": true,
+    "**/.vercel/**": true
+  },
+  "search.exclude": {
+    "**/.next/**": true,
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/out/**": true,
+    "**/coverage/**": true,
+    "**/playwright-report/**": true,
+    "**/test-results/**": true,
+    "**/.turbo/**": true,
+    "**/.vercel/**": true
+  },
+  "markdownlint.config": {
+    "default": true,
+    "MD013": false,
+    "MD022": false,
+    "MD024": false,
+    "MD026": false,
+    "MD029": false,
+    "MD031": false,
+    "MD032": false,
+    "MD033": false,
+    "MD036": false,
+    "MD040": false,
+    "MD041": false,
+    "MD045": false,
+    "MD050": false,
+    "MD060": false
+  },
+  "markdownlint.ignore": [
+    "web/QA_VISUAL_REGRESSION.md",
+    "web/PERFORMANCE_BUDGETS.md",
+    "web/PERF_AUTOPLAN.md",
+    "web/QA_PERF_IMPLEMENTATION_SUMMARY.md"
+  ],
+
+  // Prisma migrations are Postgres SQL, not T-SQL.
+  // Disable MSSQL extension error checking to avoid false-positive squiggles.
+  "mssql.intelliSense.enableErrorChecking": false
+}

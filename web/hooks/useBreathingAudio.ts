@@ -66,6 +66,7 @@ export const BREATHING_PATTERNS: Record<BreathingPattern, {
 // Hook for playing breathing instruction audio
 export function useBreathingAudio() {
   const instructionAudioRef = useRef<HTMLAudioElement | null>(null);
+  const playPromiseRef = useRef<Promise<void> | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentPattern, setCurrentPattern] = useState<BreathingPattern>('box');
 
@@ -73,7 +74,16 @@ export function useBreathingAudio() {
   useEffect(() => {
     return () => {
       if (instructionAudioRef.current) {
-        instructionAudioRef.current.pause();
+        // Wait for play promise before pausing
+        if (playPromiseRef.current) {
+          playPromiseRef.current.then(() => {
+            if (instructionAudioRef.current) {
+              instructionAudioRef.current.pause()
+            }
+          }).catch(() => {})
+        } else if (instructionAudioRef.current) {
+          instructionAudioRef.current.pause()
+        }
         instructionAudioRef.current = null;
       }
     };
@@ -109,23 +119,41 @@ export function useBreathingAudio() {
   // Stop instruction audio
   const stopInstructions = useCallback(() => {
     if (instructionAudioRef.current) {
-      instructionAudioRef.current.pause();
-      instructionAudioRef.current.currentTime = 0;
-      setIsPlaying(false);
+      if (playPromiseRef.current) {
+        playPromiseRef.current.then(() => {
+          if (instructionAudioRef.current) {
+            instructionAudioRef.current.pause()
+            instructionAudioRef.current.currentTime = 0
+            setIsPlaying(false)
+          }
+        }).catch(() => {})
+      } else {
+        instructionAudioRef.current.pause()
+        instructionAudioRef.current.currentTime = 0
+        setIsPlaying(false)
+      }
     }
   }, []);
 
   // Pause instruction audio (can be resumed)
   const pauseInstructions = useCallback(() => {
     if (instructionAudioRef.current) {
-      instructionAudioRef.current.pause();
+      if (playPromiseRef.current) {
+        playPromiseRef.current.then(() => {
+          if (instructionAudioRef.current) {
+            instructionAudioRef.current.pause()
+          }
+        }).catch(() => {})
+      } else {
+        instructionAudioRef.current.pause()
+      }
     }
   }, []);
 
   // Resume instruction audio
   const resumeInstructions = useCallback(() => {
     if (instructionAudioRef.current) {
-      instructionAudioRef.current.play().catch((err) => {
+      playPromiseRef.current = instructionAudioRef.current.play().catch((err) => {
         console.error('Failed to resume breathing instructions:', err);
       });
     }
