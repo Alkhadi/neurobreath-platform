@@ -4,7 +4,9 @@ import { Profile, cn } from "@/lib/utils";
 import { FaInstagram, FaFacebook, FaTiktok, FaLinkedin, FaTwitter, FaGlobe, FaPhone, FaEnvelope, FaHome } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
+import { QRCodeSVG } from "qrcode.react";
 import { resolveAssetUrl } from "../lib/nbcard-assets";
+import { getProfileShareUrl } from "../lib/nbcard-share";
 import { CaptureImage } from "./capture-image";
 import styles from "./profile-card.module.css";
 import type { TemplateSelection } from "@/lib/nbcard-templates";
@@ -15,9 +17,10 @@ interface ProfileCardProps {
   showEditButton?: boolean;
   userEmail?: string; // For IndexedDB namespace
   templateSelection?: TemplateSelection; // Template background/overlay
+  captureId?: string;
 }
 
-export function ProfileCard({ profile, onPhotoClick, showEditButton = false, userEmail, templateSelection }: ProfileCardProps) {
+export function ProfileCard({ profile, onPhotoClick, showEditButton = false, userEmail, templateSelection, captureId }: ProfileCardProps) {
   const [sessionEmail, setSessionEmail] = useState<string | null>(null);
   const [resolvedBackgroundUrl, setResolvedBackgroundUrl] = useState<string | null>(null);
   const [resolvedPhotoUrl, setResolvedPhotoUrl] = useState<string | null>(null);
@@ -169,9 +172,12 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
     { icon: FaTwitter, url: profile?.socialMedia?.twitter, color: "#1DA1F2" },
   ];
 
+  const isFlyerPromoPortrait = templateSelection?.backgroundId === "flyer_promo_v1_portrait";
+  const shareUrl = getProfileShareUrl(profile.id);
+
   return (
     <div
-      id="profile-card-capture"
+      id={captureId ?? "profile-card-capture"}
       className={cn(
         "relative isolate w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden",
         !hasAnyBackground && gradientClass,
@@ -276,6 +282,14 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
         <p className="text-lg text-center mb-6 opacity-90">
           <span data-pdf-text={profile?.jobTitle ?? ""}>{profile?.jobTitle ?? "Job Title"}</span>
         </p>
+
+        {isFlyerPromoPortrait ? (
+          <div className="mb-6 flex items-center justify-center">
+            <div className="rounded-xl bg-white p-2 shadow-md">
+              <QRCodeSVG value={shareUrl} size={110} includeMargin level="M" />
+            </div>
+          </div>
+        ) : null}
 
         {/* Contact Info */}
         <div className="space-y-3 mb-6">

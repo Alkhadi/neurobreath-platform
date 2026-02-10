@@ -7,13 +7,17 @@ import { FaChevronDown, FaEdit, FaPlus, FaUsers } from "react-icons/fa";
 import type { Contact, Profile } from "@/lib/utils";
 import { defaultProfile } from "@/lib/utils";
 
-import { loadNbcardLocalState, saveNbcardLocalState } from "@/app/contact/lib/nbcard-storage";
+import { exportNbcardLocalState, loadNbcardLocalState, saveNbcardLocalState } from "@/app/contact/lib/nbcard-storage";
 import { ContactCapture } from "@/app/contact/components/contact-capture";
 import { ProfileCard } from "@/app/contact/components/profile-card";
 import { ProfileManager } from "@/app/contact/components/profile-manager";
 import { ShareButtons } from "@/app/contact/components/share-buttons";
 import { TemplatePicker } from "@/app/contact/components/template-picker";
 import { type TemplateSelection, loadTemplateSelection, saveTemplateSelection } from "@/lib/nbcard-templates";
+import { WelcomeModal } from "./WelcomeModal";
+import { DataControlsCenter } from "./DataControlsCenter";
+import { HelpButton } from "./HelpButton";
+import { getExampleCardPreset, resetOnboarding } from "@/lib/nb-card/onboarding";
 
 const SOCIAL_PLACEHOLDER_VALUES = new Set([
   "https://instagram.com/username",
@@ -60,6 +64,7 @@ export function NBCardPanel() {
   const [profiles, setProfiles] = useState<Profile[]>([defaultProfile]);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [hasPersistedCards, setHasPersistedCards] = useState(false);
   const [showProfileManager, setShowProfileManager] = useState(false);
   const [editingProfile, setEditingProfile] = useState<Profile | null>(null);
   const [isNewProfile, setIsNewProfile] = useState(false);
@@ -73,6 +78,14 @@ export function NBCardPanel() {
     setMounted(true);
 
     (async () => {
+      // Determine if there are any persisted cards (avoid counting fallback defaults)
+      try {
+        const exported = await exportNbcardLocalState();
+        if (!cancelled) setHasPersistedCards(Array.isArray(exported.profiles) && exported.profiles.length > 0);
+      } catch {
+        // ignore
+      }
+
       const state = await loadNbcardLocalState([defaultProfile], []);
       if (cancelled) return;
       const sanitizedProfiles = state.profiles.map(sanitizeProfile);
@@ -145,7 +158,9 @@ export function NBCardPanel() {
   // Persist profiles + contacts (local-first)
   useEffect(() => {
     if (mounted) {
-      saveNbcardLocalState({ profiles, contacts }).catch((e) => console.error("Failed to persist NBCard state", e));
+      saveNbcardLocalState({ profiles, contacts })
+        .then(() => setHasPersistedCards(true))
+        .catch((e) => console.error("Failed to persist NBCard state", e));
     }
   }, [profiles, contacts, mounted]);
 
@@ -240,8 +255,86 @@ export function NBCardPanel() {
     }
   }, [currentProfileIndex, currentProfile?.id, mounted]);
 
+  // Onboarding handlers
+  const handleCreateCard = () => {
+    handleEditProfile();
+  };
+
+  const handleUseExample = () => {
+    const example = getExampleCardPreset();
+    const exampleProfile: Profile = {
+      ...defaultProfile,
+      ...example,
+      id: Date.now().toString(),
+    };
+    setProfiles([exampleProfile]);
+    setCurrentProfileIndex(0);
+    toast.success("Example card loaded", {
+      description: "Replace the example text with your own details.",
+    });
+  };
+
+  // Data controls handlers
+  const handleRestoreData = (restoredProfiles: Profile[], restoredContacts: Contact[]) => {
+    setProfiles(restoredProfiles.length > 0 ? restoredProfiles : [defaultProfile]);
+    setContacts(restoredContacts);
+    setCurrentProfileIndex(0);
+    setHasPersistedCards(restoredProfiles.length > 0);
+  };
+
+  const handleDeleteAll = async () => {
+    // Reset onboarding so welcome appears again
+    resetOnboarding();
+
+    // Best-effort: clear localStorage keys used by NB-Card
+    try {
+      if (typeof window !== "undefined") {
+        const keys = Object.keys(window.localStorage);
+        for (const key of keys) {
+          if (key.startsWith("nbcard") || key.startsWith("nb-card")) {
+            window.localStorage.removeItem(key);
+          }
+        }
+      }
+    } catch {
+      // ignore
+    }
+
+    // Best-effort: delete IndexedDB databases
+    const deleteDb = (name: string) =>
+      new Promise<void>((resolve) => {
+        try {
+          const req = indexedDB.deleteDatabase(name);
+          req.onsuccess = () => resolve();
+          req.onerror = () => resolve();
+          req.onblocked = () => resolve();
+        } catch {
+          resolve();
+        }
+      });
+
+    await Promise.all([deleteDb("nbcard"), deleteDb("nbcard-assets")]);
+
+    // Reset in-memory state
+    setProfiles([defaultProfile]);
+    setContacts([]);
+    setCurrentProfileIndex(0);
+    setTemplateSelection({});
+    setHasPersistedCards(false);
+  };
+
   return (
     <>
+      {/* Welcome Modal (first-time onboarding) */}
+      <WelcomeModal
+        hasExistingCards={hasPersistedCards}
+        onCreateCard={handleCreateCard}
+        onUseExample={handleUseExample}
+      />
+
+      {/* Help Button (floating) */}
+      <HelpButton />
+
       {/* Profile Selector */}
       {profiles.length > 1 && (
         <div className="mb-6 flex justify-center">
@@ -346,6 +439,8 @@ export function NBCardPanel() {
               contacts={contacts}
               onSetProfiles={setProfiles}
               onSetContacts={setContacts}
+              templateSelection={templateSelection}
+              showPrivacyControls={false}
             />
           </div>
         </div>
@@ -363,6 +458,16 @@ export function NBCardPanel() {
       {/* Contact Capture Section */}
       <div className="mb-8">
         <ContactCapture contacts={contacts} onUpsert={handleUpsertContact} onDelete={handleDeleteContact} />
+      </div>
+
+      {/* Data Controls Center */}
+      <div className="mb-8">
+        <DataControlsCenter
+          profiles={profiles}
+          contacts={contacts}
+          onRestoreData={handleRestoreData}
+          onDeleteAll={handleDeleteAll}
+        />
       </div>
 
       {/* PWA Install Section */}

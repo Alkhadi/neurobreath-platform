@@ -28,6 +28,27 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import type { Contact, Profile } from "@/lib/utils";
+import type { TemplateSelection } from "@/lib/nbcard-templates";
+
+import { ProfileCard } from "./profile-card";
+
+import {
+  createBackup,
+  validateBackup,
+  migrateBackup,
+  mergeCards,
+  mergeContacts,
+  type ConflictStrategy,
+} from "@/lib/nb-card/backup";
+
+import { RedactionDialog } from "@/components/nbcard/RedactionDialog";
+import {
+  applyRedaction,
+  getDefaultRedactionSettings,
+  getPopulatedFields,
+  type RedactableField,
+} from "@/lib/nb-card/redaction";
+import { getRecommendedCaptureScale, runExportPreflight } from "@/lib/nb-card/export-preflight";
 import {
   type NbcardSavedCard,
   type NbcardSavedCardCategory,
@@ -64,7 +85,6 @@ import {
   buildWhatsappUrl,
 } from "../lib/nbcard-share";
 import {
-  exportNbcardLocalState,
   importNbcardLocalState,
   resetNbcardContacts,
   resetNbcardProfiles,
@@ -78,6 +98,8 @@ export type ShareButtonsProps = {
   contacts: Contact[];
   onSetProfiles: (next: Profile[]) => void;
   onSetContacts: (next: Contact[]) => void;
+  templateSelection?: TemplateSelection;
+  showPrivacyControls?: boolean;
 };
 
 function contactsToCsv(contacts: Contact[]): string {
@@ -106,10 +128,11 @@ async function dataUrlToPngBlob(dataUrl: string): Promise<Blob> {
 async function buildExportAssets(
   profile: Profile,
   shareUrl: string,
-  options: { includePdf?: boolean } = {}
+  options: { includePdf?: boolean } = {},
+  captureElementId: string = "profile-card-capture"
 ): Promise<{ pngBlob: Blob; pdfBytes?: Uint8Array }> {
   // 1. Capture PNG once (used by both PNG export and PDF embed)
-  const pngBlob = await captureProfileCardPng();
+  const pngBlob = await captureProfileCardPng(captureElementId);
 
   if (!options.includePdf) return { pngBlob };
 
@@ -129,38 +152,29 @@ async function buildExportAssets(
 
   try {
     // 3. Generate PDF embedding the captured PNG
-    const pdfBytes = await createSimplePdf(profile, shareUrl, qrPngUrl);
+    const pdfBytes = await createSimplePdf(profile, shareUrl, qrPngUrl, pngBlob, captureElementId);
     return { pngBlob, pdfBytes };
   } finally {
     if (qrPngUrl) URL.revokeObjectURL(qrPngUrl);
   }
 }
 
-async function captureProfileCardPng(): Promise<Blob> {
-  const target = document.getElementById("profile-card-capture");
+async function captureProfileCardPng(captureElementId: string): Promise<Blob> {
+  const target = document.getElementById(captureElementId);
   if (!target) throw new Error("Profile card element not found");
 
-  // CAPTURE-SAFE TIMING (MANDATORY):
-  // 1. Wait for fonts to load
-  await document.fonts.ready;
+  // CAPTURE-SAFE TIMING (MANDATORY)
+  const preflight = await runExportPreflight(target);
+  if (!preflight.ready) {
+    throw new Error(preflight.warnings[0] ?? "Export preflight failed");
+  }
 
-  // 2. Wait for all images inside card to decode
-  const images = target.querySelectorAll<HTMLImageElement>("img");
-  await Promise.all(
-    Array.from(images).map((img) => {
-      if (img.decode) return img.decode().catch(() => {});
-      return Promise.resolve();
-    })
-  );
-
-  // 3. Wait 2 animation frames to ensure layout is flushed after background/avatar changes
-  await new Promise((resolve) => 
-    requestAnimationFrame(() => requestAnimationFrame(resolve))
-  );
+  // Flush layout after any template/avatar changes
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
   // COLOR FIDELITY: No color conversion, no filters
   const canvas = await html2canvas(target, {
-    scale: 2,
+    scale: getRecommendedCaptureScale(),
     backgroundColor: null,
     useCORS: true,
     logging: false,
@@ -269,7 +283,7 @@ function addPdfLinkOverlaysFromDom(params: {
   });
 }
 
-async function createSimplePdf(profile: Profile, shareUrl: string, qrDataUrl?: string) {
+async function createSimplePdf(profile: Profile, shareUrl: string, qrDataUrl: string | undefined, cardPngBlob: Blob, captureElementId: string) {
   const doc = await PDFDocument.create();
   const page = doc.addPage([595.28, 841.89]); // A4
   const { width, height } = page.getSize();
@@ -277,13 +291,12 @@ async function createSimplePdf(profile: Profile, shareUrl: string, qrDataUrl?: s
   const font = await doc.embedFont(StandardFonts.Helvetica);
   const fontBold = await doc.embedFont(StandardFonts.HelveticaBold);
 
-  // Capture card as PNG and embed it
+  // Embed the captured card PNG
   let cardImageHeight = 0;
   let cardY = height - 80;
   let cardX = 48;
   let cardPdfWidth = Math.min(width - 96, 400);
   try {
-    const cardPngBlob = await captureProfileCardPng();
     const cardPngBytes = await cardPngBlob.arrayBuffer();
     const cardImage = await doc.embedPng(cardPngBytes);
     const cardAspect = cardImage.width / cardImage.height;
@@ -301,7 +314,7 @@ async function createSimplePdf(profile: Profile, shareUrl: string, qrDataUrl?: s
 
     // Overlay clickable areas from the DOM onto the embedded image.
     try {
-      const root = document.getElementById("profile-card-capture");
+      const root = document.getElementById(captureElementId);
       if (root && cardImageHeight > 0 && cardPdfWidth > 0) {
         addPdfLinkOverlaysFromDom({
           doc,
@@ -541,12 +554,42 @@ function renderShareText(profile: Profile, shareUrl: string): string {
   return lines.join("\n");
 }
 
-export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSetContacts }: ShareButtonsProps) {
+export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSetContacts, templateSelection, showPrivacyControls = true }: ShareButtonsProps) {
   const [isQrOpen, setIsQrOpen] = React.useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = React.useState(false);
   const [isShareFallbackOpen, setIsShareFallbackOpen] = React.useState(false);
   const [isQrVcard, setIsQrVcard] = React.useState(false);
   const [busyKey, setBusyKey] = React.useState<string | null>(null);
+
+  const [isRedactionOpen, setIsRedactionOpen] = React.useState(false);
+  const [pendingRedactionAction, setPendingRedactionAction] = React.useState<((fields: Set<RedactableField>) => void) | null>(null);
+  const [lastRedactionFields, setLastRedactionFields] = React.useState<Set<RedactableField> | null>(null);
+  const [exportCaptureProfile, setExportCaptureProfile] = React.useState<Profile | null>(null);
+
+  const EXPORT_CAPTURE_ID = "profile-card-capture-export";
+
+  function getDefaultIncludedFields(nextProfile: Profile): Set<RedactableField> {
+    const defaults = getDefaultRedactionSettings();
+    const populated = getPopulatedFields(nextProfile);
+    const initial = new Set<RedactableField>();
+    for (const field of populated) {
+      if (defaults[field]) initial.add(field);
+    }
+    return initial;
+  }
+
+  function requestRedactionAndRun(run: (redacted: Profile) => Promise<void>) {
+    if (busyKey) return;
+    setPendingRedactionAction(() => {
+      return (fields: Set<RedactableField>) => {
+        const clonedFields = new Set(fields);
+        setLastRedactionFields(clonedFields);
+        const redacted = applyRedaction(profile, clonedFields);
+        void run(redacted);
+      };
+    });
+    setIsRedactionOpen(true);
+  }
 
   const [sessionEmail, setSessionEmail] = React.useState<string | null>(null);
   const deviceId = React.useMemo(() => getOrCreateNbcardDeviceId(), []);
@@ -676,10 +719,12 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
   const qrValue = React.useMemo(() => {
     if (!isQrVcard) return shareUrl;
-    const vcard = generateProfileVCard(profile);
+    const fields = lastRedactionFields ?? getDefaultIncludedFields(profile);
+    const redacted = applyRedaction(profile, fields);
+    const vcard = generateProfileVCard(redacted);
     if (vcard.length > 1200) return shareUrl;
     return vcard;
-  }, [isQrVcard, profile, shareUrl]);
+  }, [isQrVcard, lastRedactionFields, profile, shareUrl]);
 
   async function withBusy<T>(key: string, fn: () => Promise<T>): Promise<T | null> {
     if (busyKey) return null;
@@ -705,98 +750,147 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   }
 
   async function handleShareNative() {
-    await withBusy("share", async () => {
-      const fileName = `${profile.fullName.replace(/\s+/g, "_")}.png`;
-      const { pngBlob } = await buildExportAssets(profile, shareUrl);
-      const pngFile = new File([pngBlob], fileName, { type: "image/png" });
+    requestRedactionAndRun(async (redacted) => {
+      await withBusy("share", async () => {
+        setExportCaptureProfile(redacted);
+        try {
+          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+          const fileName = `${safeName}.png`;
+          const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
+          const pngFile = new File([pngBlob], fileName, { type: "image/png" });
 
-      const ok = await shareViaWebShare({
-        title: `NBCard — ${profile.fullName}`,
-        text: `Here’s my contact card: ${shareUrl}`,
-        files: [pngFile],
+          const ok = await shareViaWebShare({
+            title: `NBCard — ${redacted.fullName || profile.fullName}`,
+            text: `Here’s my contact card: ${shareUrl}`,
+            files: [pngFile],
+          });
+
+          if (ok) {
+            toast.success("Shared");
+            return;
+          }
+
+          setIsShareFallbackOpen(true);
+        } finally {
+          setExportCaptureProfile(null);
+        }
       });
-
-      if (ok) {
-        toast.success("Shared");
-        return;
-      }
-
-      setIsShareFallbackOpen(true);
     });
   }
 
   async function handleDownloadVcard() {
-    await withBusy("vcard", async () => {
-      const vcard = generateProfileVCard(profile);
-      downloadBlob(new Blob([vcard], { type: "text/vcard" }), `${profile.fullName.replace(/\s+/g, "_")}_NBCard.vcf`);
-      toast.success("vCard downloaded");
+    requestRedactionAndRun(async (redacted) => {
+      await withBusy("vcard", async () => {
+        const vcard = generateProfileVCard(redacted);
+        const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+        downloadBlob(new Blob([vcard], { type: "text/vcard" }), `${safeName}_NBCard.vcf`);
+        toast.success("vCard downloaded");
+      });
     });
   }
 
   async function handleShareVcardFile() {
-    await withBusy("vcard-share", async () => {
-      const vcard = generateProfileVCard(profile);
-      const blob = new Blob([vcard], { type: "text/vcard" });
-      const fileName = `${profile.fullName.replace(/\s+/g, "_")}.vcf`;
-      const ok = await shareViaWebShare({
-        title: `vCard — ${profile.fullName}`,
-        text: "Add me to your contacts.",
-        files: [new File([blob], fileName, { type: "text/vcard" })],
+    requestRedactionAndRun(async (redacted) => {
+      await withBusy("vcard-share", async () => {
+        const vcard = generateProfileVCard(redacted);
+        const blob = new Blob([vcard], { type: "text/vcard" });
+        const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+        const fileName = `${safeName}.vcf`;
+        const ok = await shareViaWebShare({
+          title: `vCard — ${redacted.fullName || profile.fullName}`,
+          text: "Add me to your contacts.",
+          files: [new File([blob], fileName, { type: "text/vcard" })],
+        });
+        if (ok) {
+          toast.success("Shared vCard");
+        } else {
+          downloadBlob(blob, fileName);
+          toast.message("Share not supported", { description: "vCard downloaded instead." });
+        }
       });
-      if (ok) {
-        toast.success("Shared vCard");
-      } else {
-        downloadBlob(blob, fileName);
-        toast.message("Share not supported", { description: "vCard downloaded instead." });
-      }
     });
   }
 
   async function handleDownloadPng() {
-    await withBusy("png", async () => {
-      const { pngBlob } = await buildExportAssets(profile, shareUrl);
-      downloadBlob(pngBlob, `${profile.fullName.replace(/\s+/g, "_")}_NBCard.png`);
-      toast.success("PNG downloaded");
+    requestRedactionAndRun(async (redacted) => {
+      await withBusy("png", async () => {
+        setExportCaptureProfile(redacted);
+        try {
+          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
+          const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+          downloadBlob(pngBlob, `${safeName}_NBCard.png`);
+          toast.success("PNG downloaded");
+        } finally {
+          setExportCaptureProfile(null);
+        }
+      });
     });
   }
 
   async function handleSharePng() {
-    await withBusy("png-share", async () => {
-      const { pngBlob } = await buildExportAssets(profile, shareUrl);
-      const fileName = `${profile.fullName.replace(/\s+/g, "_")}.png`;
-      const ok = await shareViaWebShare({
-        title: `NBCard — ${profile.fullName}`,
-        files: [new File([pngBlob], fileName, { type: "image/png" })],
+    requestRedactionAndRun(async (redacted) => {
+      await withBusy("png-share", async () => {
+        setExportCaptureProfile(redacted);
+        try {
+          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
+          const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+          const fileName = `${safeName}.png`;
+          const ok = await shareViaWebShare({
+            title: `NBCard — ${redacted.fullName || profile.fullName}`,
+            files: [new File([pngBlob], fileName, { type: "image/png" })],
+          });
+          if (ok) {
+            toast.success("Shared image");
+          } else {
+            downloadBlob(pngBlob, `${safeName}_NBCard.png`);
+            toast.message("Sharing not supported here", { description: "Image downloaded instead." });
+          }
+        } finally {
+          setExportCaptureProfile(null);
+        }
       });
-      if (ok) {
-        toast.success("Shared image");
-      } else {
-        downloadBlob(pngBlob, `${profile.fullName.replace(/\s+/g, "_")}_NBCard.png`);
-        toast.message("Sharing not supported here", { description: "Image downloaded instead." });
-      }
     });
   }
 
   async function handleDownloadPdf() {
-    await withBusy("pdf", async () => {
-      const { pdfBytes } = await buildExportAssets(profile, shareUrl, { includePdf: true });
-      if (!pdfBytes) throw new Error("Failed to generate PDF");
-      downloadBlob(new Blob([pdfBytes], { type: "application/pdf" }), `${profile.fullName.replace(/\s+/g, "_")}_NBCard.pdf`);
-      toast.success("PDF downloaded");
+    requestRedactionAndRun(async (redacted) => {
+      await withBusy("pdf", async () => {
+        setExportCaptureProfile(redacted);
+        try {
+          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          const { pdfBytes } = await buildExportAssets(redacted, shareUrl, { includePdf: true }, EXPORT_CAPTURE_ID);
+          if (!pdfBytes) throw new Error("Failed to generate PDF");
+          const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+          downloadBlob(new Blob([pdfBytes], { type: "application/pdf" }), `${safeName}_NBCard.pdf`);
+          toast.success("PDF downloaded");
+        } finally {
+          setExportCaptureProfile(null);
+        }
+      });
     });
   }
 
   function openWhatsapp() {
-    const url = buildWhatsappUrl(`Here’s my contact card: ${shareUrl}`);
-    window.open(url, "_blank", "noopener,noreferrer");
+    requestRedactionAndRun(async (redacted) => {
+      const text = renderShareText(redacted, shareUrl);
+      const url = buildWhatsappUrl(text);
+      window.open(url, "_blank", "noopener,noreferrer");
+    });
   }
 
   function openEmail() {
-    window.location.href = buildMailtoUrl(profile);
+    requestRedactionAndRun(async (redacted) => {
+      window.location.href = buildMailtoUrl(redacted);
+    });
   }
 
   function openSms() {
-    window.location.href = buildSmsUrl(profile);
+    requestRedactionAndRun(async (redacted) => {
+      window.location.href = buildSmsUrl(redacted);
+    });
   }
 
   async function handleExportContactsCsv() {
@@ -809,8 +903,8 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
   async function handleExportJson() {
     await withBusy("json-export", async () => {
-      const json = await exportNbcardLocalState();
-      downloadBlob(new Blob([JSON.stringify(json, null, 2)], { type: "application/json" }), `nbcard_backup.json`);
+      const backup = createBackup(profiles, contacts);
+      downloadBlob(new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" }), `nbcard_backup.json`);
       toast.success("Backup exported");
     });
   }
@@ -819,10 +913,25 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
     await withBusy("json-import", async () => {
       const text = await file.text();
       const parsed = JSON.parse(text);
-      await importNbcardLocalState(parsed);
-      const next = await exportNbcardLocalState();
-      onSetProfiles(next.profiles);
-      onSetContacts(next.contacts);
+
+      const backup = validateBackup(parsed);
+      if (!backup) throw new Error("Invalid backup file");
+
+      const migrated = migrateBackup(backup);
+      const strategy: ConflictStrategy = "duplicate";
+
+      const nextProfiles = mergeCards(profiles, migrated.cards, strategy);
+      const nextContacts = mergeContacts(contacts, migrated.contacts, strategy);
+
+      await importNbcardLocalState({
+        schemaVersion: 1,
+        profiles: nextProfiles,
+        contacts: nextContacts,
+        updatedAt: migrated.exportedAt || new Date().toISOString(),
+      });
+
+      onSetProfiles(nextProfiles);
+      onSetContacts(nextContacts);
       toast.success("Backup imported");
     });
   }
@@ -844,41 +953,47 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   }
 
   async function handleShareAsText() {
-    await withBusy("text-share", async () => {
-      const text = renderShareText(profile, shareUrl);
-      const ok = await shareViaWebShare({
-        title: `${profile.fullName} - Contact Info`,
-        text,
-      });
-      if (!ok) {
-        const copied = await copyTextToClipboard(text);
-        if (copied) {
-          toast.success("Contact info copied to clipboard");
+    requestRedactionAndRun(async (redacted) => {
+      await withBusy("text-share", async () => {
+        const text = renderShareText(redacted, shareUrl);
+        const ok = await shareViaWebShare({
+          title: `${redacted.fullName || profile.fullName} - Contact Info`,
+          text,
+        });
+        if (!ok) {
+          const copied = await copyTextToClipboard(text);
+          if (copied) {
+            toast.success("Contact info copied to clipboard");
+          } else {
+            toast.error("Failed to copy text");
+          }
         } else {
-          toast.error("Failed to copy text");
+          toast.success("Shared as text");
         }
-      } else {
-        toast.success("Shared as text");
-      }
+      });
     });
   }
 
   async function handleShareViaEmail() {
-    await withBusy("email-share", async () => {
+    requestRedactionAndRun(async (redacted) => {
+      await withBusy("email-share", async () => {
       // Try PDF with navigator.share first
       if (navigator.share && navigator.canShare) {
         try {
-          const { pdfBytes } = await buildExportAssets(profile, shareUrl, { includePdf: true });
+          setExportCaptureProfile(redacted);
+          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          const { pdfBytes } = await buildExportAssets(redacted, shareUrl, { includePdf: true }, EXPORT_CAPTURE_ID);
           if (!pdfBytes) throw new Error("Failed to generate PDF");
           const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
-          const fileName = `${profile.fullName.replace(/\s+/g, "_")}_NBCard.pdf`;
+          const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+          const fileName = `${safeName}_NBCard.pdf`;
           const file = new File([pdfBlob], fileName, { type: "application/pdf" });
           
           const canShareFile = navigator.canShare({ files: [file] });
           if (canShareFile) {
-            const text = renderShareText(profile, shareUrl);
+            const text = renderShareText(redacted, shareUrl);
             await navigator.share({
-              title: `${profile.fullName} - NBCard`,
+              title: `${redacted.fullName || profile.fullName} - NBCard`,
               text: text,
               files: [file],
             });
@@ -887,14 +1002,17 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           }
         } catch (e) {
           console.error("Share with PDF failed:", e);
+        } finally {
+          setExportCaptureProfile(null);
         }
       }
       
       // Fallback: mailto with text body
-      const text = renderShareText(profile, shareUrl);
-      const mailtoUrl = `mailto:?subject=${encodeURIComponent(`${profile.fullName} - NBCard`)}&body=${encodeURIComponent(text)}`;
+      const text = renderShareText(redacted, shareUrl);
+      const mailtoUrl = `mailto:?subject=${encodeURIComponent(`${redacted.fullName || profile.fullName} - NBCard`)}&body=${encodeURIComponent(text)}`;
       window.location.href = mailtoUrl;
       toast.message("Email opened", { description: "Attachments not supported via mailto." });
+      });
     });
   }
 
@@ -1219,6 +1337,33 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
   return (
     <div className="rounded-2xl border bg-card p-4 md:p-6">
+      {exportCaptureProfile ? (
+        <div className="fixed left-[-10000px] top-0 w-[448px]">
+          <ProfileCard
+            profile={exportCaptureProfile}
+            showEditButton={false}
+            userEmail={undefined}
+            templateSelection={templateSelection}
+            captureId={EXPORT_CAPTURE_ID}
+          />
+        </div>
+      ) : null}
+
+      <RedactionDialog
+        isOpen={isRedactionOpen}
+        profile={profile}
+        onClose={() => {
+          setIsRedactionOpen(false);
+          setPendingRedactionAction(null);
+        }}
+        onConfirm={(fields) => {
+          setIsRedactionOpen(false);
+          const action = pendingRedactionAction;
+          setPendingRedactionAction(null);
+          action?.(fields);
+        }}
+      />
+
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
           <h2 className="text-lg font-semibold">Share Your Profile</h2>
@@ -1277,7 +1422,9 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                 Export contacts CSV
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setIsPrivacyOpen(true)}>Privacy & Storage</DropdownMenuItem>
+              {showPrivacyControls ? (
+                <DropdownMenuItem onClick={() => setIsPrivacyOpen(true)}>Privacy & Storage</DropdownMenuItem>
+              ) : null}
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -2341,15 +2488,20 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
               variant={isQrVcard ? "default" : "outline"}
               onClick={() => {
                 const next = !isQrVcard;
-                if (next) {
-                  const vcard = generateProfileVCard(profile);
+                if (!next) {
+                  setIsQrVcard(false);
+                  return;
+                }
+
+                requestRedactionAndRun(async (redacted) => {
+                  const vcard = generateProfileVCard(redacted);
                   if (vcard.length > 1200) {
                     toast.message("vCard too large for QR", { description: "Using link QR instead." });
                     setIsQrVcard(false);
                     return;
                   }
-                }
-                setIsQrVcard(next);
+                  setIsQrVcard(true);
+                });
               }}
             >
               {isQrVcard ? "On" : "Off"}
@@ -2385,59 +2537,61 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
         </DialogContent>
       </Dialog>
 
-      <Dialog open={isPrivacyOpen} onOpenChange={setIsPrivacyOpen}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Privacy & Data Controls</DialogTitle>
-            <DialogDescription>Your profiles and captured contacts are stored locally on this device.</DialogDescription>
-          </DialogHeader>
+      {showPrivacyControls ? (
+        <Dialog open={isPrivacyOpen} onOpenChange={setIsPrivacyOpen}>
+          <DialogContent className="sm:max-w-lg">
+            <DialogHeader>
+              <DialogTitle>Privacy & Data Controls</DialogTitle>
+              <DialogDescription>Your profiles and captured contacts are stored locally on this device.</DialogDescription>
+            </DialogHeader>
 
-          <div className="grid gap-3">
-            <div className="rounded-lg border p-3">
-              <div className="text-sm font-medium">Backup</div>
-              <div className="mt-2 flex flex-wrap gap-2">
-                <Button variant="outline" onClick={handleExportJson} disabled={!!busyKey}>
-                  Export JSON
-                </Button>
-                <label className="inline-flex">
-                  <input
-                    type="file"
-                    accept="application/json"
-                    className="hidden"
-                    onChange={async (e) => {
-                      const f = e.target.files?.[0];
-                      if (!f) return;
-                      await handleImportJson(f);
-                      e.target.value = "";
-                    }}
-                  />
-                  <Button asChild variant="outline" disabled={!!busyKey}>
-                    <span>Import JSON</span>
+            <div className="grid gap-3">
+              <div className="rounded-lg border p-3">
+                <div className="text-sm font-medium">Backup</div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <Button variant="outline" onClick={handleExportJson} disabled={!!busyKey}>
+                    Export JSON
                   </Button>
-                </label>
+                  <label className="inline-flex">
+                    <input
+                      type="file"
+                      accept="application/json"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const f = e.target.files?.[0];
+                        if (!f) return;
+                        await handleImportJson(f);
+                        e.target.value = "";
+                      }}
+                    />
+                    <Button asChild variant="outline" disabled={!!busyKey}>
+                      <span>Import JSON</span>
+                    </Button>
+                  </label>
+                </div>
+              </div>
+
+              <div className="rounded-lg border p-3">
+                <div className="text-sm font-medium">Reset</div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <Button variant="destructive" onClick={handleResetProfiles} disabled={!!busyKey}>
+                    Reset Profiles
+                  </Button>
+                  <Button variant="destructive" onClick={handleResetContacts} disabled={!!busyKey}>
+                    Clear Contacts
+                  </Button>
+                </div>
               </div>
             </div>
 
-            <div className="rounded-lg border p-3">
-              <div className="text-sm font-medium">Reset</div>
-              <div className="mt-2 flex flex-wrap gap-2">
-                <Button variant="destructive" onClick={handleResetProfiles} disabled={!!busyKey}>
-                  Reset Profiles
-                </Button>
-                <Button variant="destructive" onClick={handleResetContacts} disabled={!!busyKey}>
-                  Clear Contacts
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button type="button" onClick={() => setIsPrivacyOpen(false)}>
-              Done
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DialogFooter>
+              <Button type="button" onClick={() => setIsPrivacyOpen(false)}>
+                Done
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      ) : null}
 
       <Dialog open={isShareFallbackOpen} onOpenChange={setIsShareFallbackOpen}>
         <DialogContent className="sm:max-w-md">

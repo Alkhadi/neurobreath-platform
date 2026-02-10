@@ -66,6 +66,17 @@
       "thumb": "/nb-card/templates/thumbs/ink_frame_overlay_portrait.thumb.svg",
       "recommendedFor": ["BANK", "PROFILE"],
       "notes": "Decorative frame overlay with transparent center. Layer over any background at z-index 2."
+    },
+    {
+      "id": "flyer_promo_v1_portrait",
+      "label": "Flyer Promo (Portrait)",
+      "category": "Business",
+      "type": "background",
+      "orientation": "portrait",
+      "src": "/nb-card/templates/backgrounds/flyer_promo_portrait_bg.svg",
+      "thumb": "/nb-card/templates/thumbs/flyer_promo_portrait_bg.thumb.svg",
+      "recommendedFor": ["BUSINESS", "PROFILE"],
+      "notes": "Portrait flyer layout with headline, subheadline, CTA, QR, and contact strip zones. Designed for promo sharing."
     }
   ]
 }
