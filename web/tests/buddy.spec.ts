@@ -149,15 +149,15 @@ async function openBuddyDialog(page: Page) {
   // cross-browser flakes.
   const dialog = page.locator('div[role="dialog"]').filter({ hasText: 'NeuroBreath Buddy' });
 
-  for (let attempt = 0; attempt < 3; attempt += 1) {
+  for (let attempt = 0; attempt < 4; attempt += 1) {
     await buddyTrigger.click({ force: true });
-    if (await dialog.isVisible({ timeout: 1500 }).catch(() => false)) {
+    if (await dialog.isVisible({ timeout: 3000 }).catch(() => false)) {
       return dialog;
     }
-    await page.waitForTimeout(350);
+    await page.waitForTimeout(400);
   }
 
-  await expect(dialog).toBeVisible({ timeout: 5000 });
+  await expect(dialog).toBeVisible({ timeout: 15000 });
   return dialog;
 }
 

@@ -208,26 +208,27 @@ export const pageBuddyConfigs: Record<string, PageBuddyConfig> = {
     keywords: ['neurobreath', 'neurodiversity', 'mental health', 'support', 'tools', 'adhd', 'autism', 'parents', 'teachers', 'school']
   },
   '/blog': {
-    pageId: 'blog',
-    pageName: 'Blog & Resources',
+    pageId: 'ai-coach',
+    pageName: 'AI Coach',
     audiences: ['everyone', 'neurodivergent individuals', 'parents', 'teachers', 'carers'],
-    welcomeMessage: `Welcome to the **NeuroBreath Blog**! 📚✨\n\nI'm here to help you explore our evidence-based articles, research summaries, and practical guides.\n\n**What you'll find:**\n• 📖 In-depth articles on ADHD & autism\n• 🔬 Research-backed strategies\n• 💡 Practical tips for daily life\n• 🎓 Educational resources\n\nAll content is written with neurodivergent readers in mind. What would you like to learn about?`,
+    welcomeMessage:
+      `Welcome to the **AI Coach**! ✨\n\nPick your situation and topic to get a tailored 7‑day plan grounded in NHS/NICE guidance and research evidence.\n\nIf you want a multi-condition weekly roadmap, use **My Plan → Focus Garden** for a coordinated plan, then come back here to refine day-by-day details.`,
     quickQuestions: [
-      'Show me ADHD articles',
-      'Show me autism articles',
-      'What are the latest posts?',
-      'Find research summaries',
-      'Take me to the main hubs'
+      'Generate a 7-day plan for school mornings',
+      'Help me pick the right breathing technique',
+      'What should I do this week for ADHD + dyslexia?',
+      'Give me parent scripts for homework battles',
+      'Show me teacher supports and classroom adaptations'
     ],
     sections: [
       {
-        id: 'articles',
-        name: 'Blog Articles',
-        description: 'Evidence-based articles on neurodiversity, ADHD, autism, and mental health',
-        tips: ['Browse by category or search for specific topics', 'All articles include source citations', 'Share helpful articles with your support network']
+        id: 'ai-chat',
+        name: 'Ask the AI Coach',
+        description: 'Context-driven coaching that returns practical plans + recommended tools',
+        tips: ['Use the context chips first', 'Ask for a 7-day plan', 'Keep constraints explicit (time per day, setting, age)']
       }
     ],
-    keywords: ['blog', 'articles', 'research', 'guides', 'tips', 'evidence', 'neurodiversity']
+    keywords: ['ai coach', '7-day plan', 'weekly plan', 'tailored', 'nhs', 'nice', 'pubmed', 'parent', 'teacher']
   },
   '/tools': {
     pageId: 'tools',
@@ -401,29 +402,6 @@ export const pageBuddyConfigs: Record<string, PageBuddyConfig> = {
       }
     ],
     keywords: ['my plan', 'focus garden', 'roadmap', 'weekly plan', 'routine', 'journey', 'progress', 'saved items']
-  },
-  '/coach': {
-    pageId: 'coach',
-    pageName: 'AI Coach',
-    audiences: ['everyone', 'neurodivergent individuals', 'parents', 'teachers', 'carers'],
-    welcomeMessage:
-      `Welcome to the **AI Coach**! ✨\n\nPick your situation and topic to get a tailored 7‑day plan grounded in NHS/NICE guidance and research evidence.\n\nIf you want a multi-condition weekly roadmap, use **My Plan → Focus Garden** for a coordinated plan, then come back here to refine day-by-day details.`,
-    quickQuestions: [
-      'Generate a 7-day plan for school mornings',
-      'Help me pick the right breathing technique',
-      'What should I do this week for ADHD + dyslexia?',
-      'Give me parent scripts for homework battles',
-      'Show me teacher supports and classroom adaptations'
-    ],
-    sections: [
-      {
-        id: 'ai-chat',
-        name: 'Ask the AI Coach',
-        description: 'Context-driven coaching that returns practical plans + recommended tools',
-        tips: ['Use the context chips first', 'Ask for a 7-day plan', 'Keep constraints explicit (time per day, setting, age)']
-      }
-    ],
-    keywords: ['ai coach', '7-day plan', 'weekly plan', 'tailored', 'nhs', 'nice', 'pubmed', 'parent', 'teacher']
   },
   '/about': {
     pageId: 'about',
