@@ -2,7 +2,7 @@
 
 import { Profile, cn } from "@/lib/utils";
 import { FaInstagram, FaFacebook, FaTiktok, FaLinkedin, FaTwitter, FaGlobe, FaPhone, FaEnvelope, FaHome } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getSession } from "next-auth/react";
 import { QRCodeSVG } from "qrcode.react";
 import { resolveAssetUrl } from "../lib/nbcard-assets";
@@ -10,6 +10,7 @@ import { getProfileShareUrl } from "../lib/nbcard-share";
 import { CaptureImage } from "./capture-image";
 import styles from "./profile-card.module.css";
 import type { TemplateSelection } from "@/lib/nbcard-templates";
+import { getTemplateThemeTokens } from "@/lib/nbcard-templates";
 
 interface ProfileCardProps {
   profile: Profile;
@@ -21,6 +22,7 @@ interface ProfileCardProps {
 }
 
 export function ProfileCard({ profile, onPhotoClick, showEditButton = false, userEmail, templateSelection, captureId }: ProfileCardProps) {
+  const rootRef = useRef<HTMLDivElement | null>(null);
   const [sessionEmail, setSessionEmail] = useState<string | null>(null);
   const [resolvedBackgroundUrl, setResolvedBackgroundUrl] = useState<string | null>(null);
   const [resolvedPhotoUrl, setResolvedPhotoUrl] = useState<string | null>(null);
@@ -31,6 +33,40 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
 
   // Determine if we're using template mode (new) or legacy background mode
   const useTemplateMode = Boolean(templateSelection?.backgroundId);
+
+  const templateTheme = useTemplateMode ? getTemplateThemeTokens(templateSelection?.backgroundId) : null;
+  const contentTextClass = templateTheme?.tone === "dark" ? "text-black" : "text-white";
+  const contentHoverBgClass = templateTheme?.tone === "dark" ? "hover:bg-black/5" : "hover:bg-white/10";
+
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+
+    const theme = templateTheme;
+    const tint = templateSelection?.backgroundColor;
+
+    // Background filter
+    el.style.setProperty("--nbcard-template-bg-filter", theme?.backgroundFilter ?? "none");
+
+    // Overlays (keep consistent for UI + exports)
+    el.style.setProperty(
+      "--nbcard-template-readability-alpha",
+      String(typeof theme?.readabilityOverlayAlpha === "number" ? theme.readabilityOverlayAlpha : 0.35)
+    );
+    el.style.setProperty(
+      "--nbcard-template-lighten-alpha",
+      String(typeof theme?.lightenOverlayAlpha === "number" ? theme.lightenOverlayAlpha : 0)
+    );
+
+    // Palette tint
+    if (typeof tint === "string" && tint.trim()) {
+      el.style.setProperty("--nbcard-template-tint", tint.trim());
+      el.style.setProperty("--nbcard-template-tint-alpha", "0.18");
+    } else {
+      el.style.setProperty("--nbcard-template-tint", "transparent");
+      el.style.setProperty("--nbcard-template-tint-alpha", "0");
+    }
+  }, [templateSelection?.backgroundColor, templateSelection?.backgroundId, templateTheme]);
   
   // Build template paths from IDs
   // ID format: "modern_geometric_v1_landscape" -> "modern_geometric_landscape_bg.svg"
@@ -178,23 +214,33 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
   return (
     <div
       id={captureId ?? "profile-card-capture"}
+      ref={rootRef}
       className={cn(
         "relative isolate w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden",
         !hasAnyBackground && gradientClass,
-        hasAnyBackground && "bg-gray-900"
+        hasAnyBackground && (templateTheme?.tone === "dark" ? "bg-white" : "bg-gray-900")
       )}
     >
       {/* TEMPLATE BACKGROUND LAYER (z=0) */}
       {hasTemplateBackground && templateBackgroundSrc && (
         <div className="absolute inset-0 z-0 pointer-events-none select-none">
-          <img
+          <CaptureImage
             src={templateBackgroundSrc}
             alt="Card background"
-            className="w-full h-full object-cover"
-            loading="eager"
+            className={cn("w-full h-full object-cover", styles.templateBgImage)}
           />
         </div>
       )}
+
+      {/* OPTIONAL PALETTE TINT (z=1) */}
+      {hasTemplateBackground && templateSelection?.backgroundColor ? (
+        <div className={cn("absolute inset-0 z-[1] pointer-events-none", styles.templateTint)} aria-hidden="true" />
+      ) : null}
+
+      {/* LIGHTEN HARSH TEMPLATES (z=1) */}
+      {hasTemplateBackground && templateTheme?.lightenOverlayAlpha && templateTheme.lightenOverlayAlpha > 0 ? (
+        <div className={cn("absolute inset-0 z-[1] pointer-events-none", styles.templateLighten)} aria-hidden="true" />
+      ) : null}
 
       {/* LEGACY BACKGROUND LAYER (z=0, only if no template) */}
       {!useTemplateMode && hasLegacyBackground && resolvedBackgroundUrl && (
@@ -207,25 +253,20 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
         </div>
       )}
 
-      {/* Dark overlay for readability (z=1) */}
-      {hasAnyBackground && (
-        <div className="absolute inset-0 z-[1] bg-black/35 pointer-events-none" />
-      )}
+      {/* Readability overlay for readability (z=1) */}
+      {hasAnyBackground && (templateTheme?.readabilityOverlayAlpha ?? 0.35) > 0 ? (
+        <div className={cn("absolute inset-0 z-[1] pointer-events-none", styles.templateReadability)} aria-hidden="true" />
+      ) : null}
 
       {/* TEMPLATE OVERLAY LAYER (z=2) */}
       {hasTemplateBackground && templateOverlaySrc && (
         <div className="absolute inset-0 z-[2] pointer-events-none select-none">
-          <img
-            src={templateOverlaySrc}
-            alt="Card overlay"
-            className="w-full h-full object-cover"
-            loading="eager"
-          />
+          <CaptureImage src={templateOverlaySrc} alt="Card overlay" className="w-full h-full object-cover" />
         </div>
       )}
 
       {/* CARD CONTENT (z=10) */}
-      <div className="relative z-10 p-8 text-white">
+      <div className={cn("relative z-10 p-8", contentTextClass)}>
         {/* Profile Photo */}
         <div className="flex justify-center mb-6">
           <div className="relative group">
@@ -296,7 +337,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
           <a
             href={`tel:${profile?.phone ?? ""}`}
             data-pdf-link={`tel:${profile?.phone ?? ""}`}
-            className="flex items-center gap-3 hover:bg-white/10 p-2 rounded-lg transition-colors"
+            className={cn("flex items-center gap-3 p-2 rounded-lg transition-colors", contentHoverBgClass)}
           >
             <FaPhone className="text-xl" />
             <span className="text-lg" data-pdf-text={profile?.phone ?? ""}>
@@ -306,7 +347,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
           <a
             href={`mailto:${profile?.email ?? ""}`}
             data-pdf-link={`mailto:${profile?.email ?? ""}`}
-            className="flex items-center gap-3 hover:bg-white/10 p-2 rounded-lg transition-colors"
+            className={cn("flex items-center gap-3 p-2 rounded-lg transition-colors", contentHoverBgClass)}
           >
             <FaEnvelope className="text-xl" />
             <span className="text-lg" data-pdf-text={profile?.email ?? ""}>
@@ -336,7 +377,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
               data-pdf-link={profile.website}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 hover:bg-white/10 p-2 rounded-lg transition-colors"
+              className={cn("flex items-center gap-3 p-2 rounded-lg transition-colors", contentHoverBgClass)}
             >
               <FaGlobe className="text-xl" />
               <span className="text-lg break-all" data-pdf-text={profile.website}>
@@ -358,7 +399,10 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
                 data-pdf-link={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-white/20 text-white backdrop-blur-md p-3 rounded-full hover:bg-white/30 transition-all hover:scale-110"
+                className={cn(
+                  "backdrop-blur-md p-3 rounded-full transition-all hover:scale-110",
+                  templateTheme?.tone === "dark" ? "bg-black/5 text-black hover:bg-black/10" : "bg-white/20 text-white hover:bg-white/30"
+                )}
                 aria-label={`Visit ${social.url}`}
               >
                 <Icon className="text-2xl" />
@@ -369,13 +413,13 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
 
         {/* Descriptions */}
         {profile?.profileDescription && (
-          <div className="mt-6 bg-white/10 backdrop-blur-md p-4 rounded-lg">
+          <div className={cn("mt-6 backdrop-blur-md p-4 rounded-lg", templateTheme?.tone === "dark" ? "bg-black/5" : "bg-white/10")}>
             <h3 className="font-semibold mb-2">Profile</h3>
             <p className="text-sm opacity-90">{profile.profileDescription}</p>
           </div>
         )}
         {profile?.businessDescription && (
-          <div className="mt-3 bg-white/10 backdrop-blur-md p-4 rounded-lg">
+          <div className={cn("mt-3 backdrop-blur-md p-4 rounded-lg", templateTheme?.tone === "dark" ? "bg-black/5" : "bg-white/10")}>
             <h3 className="font-semibold mb-2">Business</h3>
             <p className="text-sm opacity-90">{profile.businessDescription}</p>
           </div>

@@ -1,0 +1,3 @@
+.customColorSwatch {
+  background-color: var(--nbcard-template-custom-color, #ffffff);
+}

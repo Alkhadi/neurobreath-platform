@@ -1,3 +1,22 @@
 .signatureFont {
   font-family: "Brush Script MT", cursive;
 }
+
+.templateBgImage {
+  filter: var(--nbcard-template-bg-filter, none);
+}
+
+.templateTint {
+  background-color: var(--nbcard-template-tint, transparent);
+  opacity: var(--nbcard-template-tint-alpha, 0);
+}
+
+.templateLighten {
+  background-color: #fff;
+  opacity: var(--nbcard-template-lighten-alpha, 0);
+}
+
+.templateReadability {
+  background-color: #000;
+  opacity: var(--nbcard-template-readability-alpha, 0.35);
+}

@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import html2canvas from "html2canvas";
-import { PDFDocument, PDFName, StandardFonts, rgb } from "pdf-lib";
+import { PDFDocument, PDFName } from "pdf-lib";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -285,45 +285,33 @@ function addPdfLinkOverlaysFromDom(params: {
 
 async function createSimplePdf(profile: Profile, shareUrl: string, qrDataUrl: string | undefined, cardPngBlob: Blob, captureElementId: string) {
   const doc = await PDFDocument.create();
-  const page = doc.addPage([595.28, 841.89]); // A4
-  const { width, height } = page.getSize();
-
-  const font = await doc.embedFont(StandardFonts.Helvetica);
-  const fontBold = await doc.embedFont(StandardFonts.HelveticaBold);
-
-  // Embed the captured card PNG
-  let cardImageHeight = 0;
-  let cardY = height - 80;
-  let cardX = 48;
-  let cardPdfWidth = Math.min(width - 96, 400);
   try {
     const cardPngBytes = await cardPngBlob.arrayBuffer();
     const cardImage = await doc.embedPng(cardPngBytes);
-    const cardAspect = cardImage.width / cardImage.height;
-    cardPdfWidth = Math.min(width - 96, 400);
-    cardImageHeight = cardPdfWidth / cardAspect;
-    cardX = (width - cardPdfWidth) / 2;
-    cardY = height - 80 - cardImageHeight;
+    // Single-page PDF sized exactly to the captured image (no appended info below).
+    const page = doc.addPage([cardImage.width, cardImage.height]);
+    const pageWidth = cardImage.width;
+    const pageHeight = cardImage.height;
 
     page.drawImage(cardImage, {
-      x: cardX,
-      y: cardY,
-      width: cardPdfWidth,
-      height: cardImageHeight,
+      x: 0,
+      y: 0,
+      width: pageWidth,
+      height: pageHeight,
     });
 
     // Overlay clickable areas from the DOM onto the embedded image.
     try {
       const root = document.getElementById(captureElementId);
-      if (root && cardImageHeight > 0 && cardPdfWidth > 0) {
+      if (root && pageWidth > 0 && pageHeight > 0) {
         addPdfLinkOverlaysFromDom({
           doc,
           page,
           root,
-          cardX,
-          cardY,
-          cardPdfWidth,
-          cardPdfHeight: cardImageHeight,
+          cardX: 0,
+          cardY: 0,
+          cardPdfWidth: pageWidth,
+          cardPdfHeight: pageHeight,
         });
       }
     } catch {
@@ -331,123 +319,12 @@ async function createSimplePdf(profile: Profile, shareUrl: string, qrDataUrl: st
     }
   } catch (err) {
     console.error("Failed to embed card image in PDF:", err);
-    // Fallback: text-only
-    page.drawText(profile.fullName || "NBCard", {
-      x: 48,
-      y: height - 80,
-      size: 22,
-      font: fontBold,
-      color: rgb(0.12, 0.12, 0.14),
-    });
+    // Fallback: return an empty PDF rather than appending extra info.
+    // (Keeping failure mode simple avoids exporting misleading/duplicated content.)
+    void profile;
+    void shareUrl;
+    void qrDataUrl;
   }
-
-  let y = cardY - 30;
-
-  // Add clickable contact info below card
-  page.drawText("Contact Information:", {
-    x: 48,
-    y,
-    size: 14,
-    font: fontBold,
-    color: rgb(0.12, 0.12, 0.14),
-  });
-  y -= 20;
-
-  if (profile.phone) {
-    const phoneText = `Phone: ${profile.phone}`;
-    page.drawText(phoneText, {
-      x: 48,
-      y,
-      size: 11,
-      font,
-      color: rgb(0.23, 0.36, 0.95),
-    });
-    // Add clickable link using pdf-lib's link API
-    const phoneUri = `tel:${profile.phone.replace(/\s/g, "")}`;
-    page.drawRectangle({
-      x: 48,
-      y: y - 4,
-      width: font.widthOfTextAtSize(phoneText, 11),
-      height: 14,
-      opacity: 0,
-      borderColor: rgb(0, 0, 0),
-      borderWidth: 0,
-    });
-    // Use the annotation dictionary approach
-    try {
-      const annots = page.node.Annots();
-      if (annots) {
-        const linkDict = doc.context.obj({
-          Type: 'Annot',
-          Subtype: 'Link',
-          Rect: [48, y - 4, 48 + font.widthOfTextAtSize(phoneText, 11), y + 10],
-          Border: [0, 0, 0],
-          A: {
-            S: 'URI',
-            URI: phoneUri,
-          },
-        });
-        annots.push(doc.context.register(linkDict));
-      }
-    } catch {
-      // Annotation API not available, continue without links
-    }
-    y -= 18;
-  }
-
-  if (profile.email) {
-    const emailText = `Email: ${profile.email}`;
-    page.drawText(emailText, {
-      x: 48,
-      y,
-      size: 11,
-      font,
-      color: rgb(0.23, 0.36, 0.95),
-    });
-    y -= 18;
-  }
-
-  y -= 10;
-  page.drawText("Profile link:", {
-    x: 48,
-    y,
-    size: 11,
-    font: fontBold,
-    color: rgb(0.20, 0.20, 0.23),
-  });
-  y -= 18;
-
-  page.drawText(shareUrl, {
-    x: 48,
-    y,
-    size: 10,
-    font,
-    color: rgb(0.23, 0.36, 0.95),
-  });
-
-  if (qrDataUrl) {
-    try {
-      const qrBytes = await fetch(qrDataUrl).then((r) => r.arrayBuffer());
-      const qrImage = await doc.embedPng(qrBytes);
-      const qrSize = 120;
-      page.drawImage(qrImage, {
-        x: width - 48 - qrSize,
-        y: Math.max(60, cardY - cardImageHeight - 20),
-        width: qrSize,
-        height: qrSize,
-      });
-    } catch {
-      // QR embedding failed, continue without it
-    }
-  }
-
-  page.drawText("Generated by NBCard", {
-    x: 48,
-    y: 36,
-    size: 9,
-    font,
-    color: rgb(0.55, 0.55, 0.60),
-  });
 
   return await doc.save();
 }

@@ -10,23 +10,131 @@ import {
   type TemplateOrientation,
   loadTemplateManifest,
   filterTemplates,
+  getTemplateThemeTokens,
+  resetTemplateManifestCache,
 } from "@/lib/nbcard-templates";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import pickerStyles from "./template-picker.module.css";
 
 interface TemplatePickerProps {
   selection: TemplateSelection;
   orientation?: TemplateOrientation;
   onSelectionChange: (selection: TemplateSelection) => void;
+  onCreateFromTemplate?: (template: Template) => void;
 }
 
-export function TemplatePicker({ selection, orientation, onSelectionChange }: TemplatePickerProps) {
+const PRESET_PALETTE: Array<{ label: string; value: string; swatchClass: string }> = [
+  { label: "White", value: "#FFFFFF", swatchClass: "bg-white" },
+  { label: "Slate 50", value: "#F8FAFC", swatchClass: "bg-slate-50" },
+  { label: "Slate 100", value: "#F1F5F9", swatchClass: "bg-slate-100" },
+  { label: "Slate 200", value: "#E2E8F0", swatchClass: "bg-slate-200" },
+  { label: "Slate 950", value: "#0F172A", swatchClass: "bg-slate-950" },
+  { label: "Gray 900", value: "#111827", swatchClass: "bg-gray-900" },
+  { label: "Blue 900", value: "#1E3A8A", swatchClass: "bg-blue-900" },
+  { label: "Sky 500", value: "#0EA5E9", swatchClass: "bg-sky-500" },
+  { label: "Emerald 500", value: "#10B981", swatchClass: "bg-emerald-500" },
+  { label: "Amber 500", value: "#F59E0B", swatchClass: "bg-amber-500" },
+  { label: "Red 500", value: "#EF4444", swatchClass: "bg-red-500" },
+  { label: "Purple 500", value: "#A855F7", swatchClass: "bg-purple-500" },
+];
+
+function TinyCardPreview({ template, selected, onSelect }: { template: Template; selected: boolean; onSelect: () => void }) {
+  const theme = getTemplateThemeTokens(template.id);
+  const isPortrait = template.orientation === "portrait";
+  const textClass = theme.tone === "dark" ? "text-black" : "text-white";
+  const thumbFilterClass = template.id.startsWith("minimal_black_v1_")
+    ? "brightness-125 contrast-90 saturate-90"
+    : template.id.startsWith("modern_geometric_v1_")
+      ? "brightness-110 contrast-95 saturate-95"
+      : "";
+  const lightenOverlayClass = template.id.startsWith("minimal_black_v1_")
+    ? "bg-white/20"
+    : template.id.startsWith("modern_geometric_v1_")
+      ? "bg-white/10"
+      : null;
+  const barOpacityClass = theme.tone === "dark" ? "opacity-50" : "opacity-85";
+  const blockOpacityClass = theme.tone === "dark" ? "opacity-40" : "opacity-70";
+
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={`relative group rounded-lg overflow-hidden border-2 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 focus-visible:ring-offset-2 ${
+        selected ? "border-purple-600 ring-2 ring-purple-600 ring-offset-2" : "border-gray-200 hover:border-purple-400"
+      }`}
+      title={template.notes || template.label}
+    >
+      <div className={`relative ${isPortrait ? "aspect-[3/4]" : "aspect-video"} bg-gray-100`} aria-hidden="true">
+        <Image
+          src={template.thumb}
+          alt={template.label}
+          fill
+          className={`object-cover ${thumbFilterClass}`}
+          unoptimized
+        />
+        {lightenOverlayClass ? <div className={`absolute inset-0 ${lightenOverlayClass}`} /> : null}
+
+        {/* Mini layout preview (avatar + text blocks) */}
+        <div className={`absolute inset-0 p-2 ${textClass}`}>
+          <div className="flex flex-col items-center justify-start h-full">
+            <div className={`mt-1 ${isPortrait ? "h-8 w-8" : "h-7 w-7"} rounded-full bg-white/80 border border-black/10`} />
+            <div className={`mt-2 w-[75%] h-2 rounded bg-current/80 ${barOpacityClass}`} />
+            <div className={`mt-1 w-[55%] h-2 rounded bg-current/70 ${blockOpacityClass}`} />
+            <div className="mt-auto w-full grid grid-cols-2 gap-1">
+              <div className={`h-2 rounded bg-current/60 ${blockOpacityClass}`} />
+              <div className={`h-2 rounded bg-current/60 ${blockOpacityClass}`} />
+              <div className={`h-2 rounded bg-current/60 ${blockOpacityClass}`} />
+              <div className={`h-2 rounded bg-current/60 ${blockOpacityClass}`} />
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="absolute bottom-0 left-0 right-0 p-2 text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+          {template.label}
+        </div>
+
+        {selected ? (
+          <div className="absolute top-2 right-2 bg-purple-600 text-white rounded-full p-1.5">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+        ) : null}
+      </div>
+    </button>
+  );
+}
+
+export function TemplatePicker({ selection, orientation, onSelectionChange, onCreateFromTemplate }: TemplatePickerProps) {
+    const rootRef = React.useRef<HTMLDivElement | null>(null);
+
+    React.useEffect(() => {
+      const el = rootRef.current;
+      if (!el) return;
+      // Used by the custom palette swatch (no JSX inline styles).
+      el.style.setProperty("--nbcard-template-custom-color", selection.backgroundColor || "#ffffff");
+    }, [selection.backgroundColor]);
+
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [backgrounds, setBackgrounds] = React.useState<Template[]>([]);
   const [overlays, setOverlays] = React.useState<Template[]>([]);
+  const [reloadKey, setReloadKey] = React.useState(0);
+
+  const reload = React.useCallback(() => {
+    setError(null);
+    setLoading(true);
+    resetTemplateManifestCache();
+    setReloadKey((k) => k + 1);
+  }, []);
 
   React.useEffect(() => {
     let cancelled = false;
@@ -35,16 +143,22 @@ export function TemplatePicker({ selection, orientation, onSelectionChange }: Te
       .then((manifest) => {
         if (cancelled) return;
 
-        const currentOrientation = orientation || 'landscape';
-        
+        // Backgrounds: include both orientations so portrait templates (Flyer) are visible.
         const filteredBackgrounds = filterTemplates(manifest.templates, {
           type: 'background',
-          orientation: currentOrientation,
+        }).sort((a, b) => {
+          // Keep Flyer near the top for predictability.
+          const aFlyer = a.id.startsWith('flyer_promo_') ? -1 : 0;
+          const bFlyer = b.id.startsWith('flyer_promo_') ? -1 : 0;
+          if (aFlyer !== bFlyer) return aFlyer - bFlyer;
+          // Then portrait before landscape to keep Flyer visible in common grids.
+          if (a.orientation !== b.orientation) return a.orientation === 'portrait' ? -1 : 1;
+          return a.label.localeCompare(b.label);
         });
 
         const filteredOverlays = filterTemplates(manifest.templates, {
           type: 'overlay',
-          orientation: currentOrientation,
+          orientation: orientation || selection.orientation || 'landscape',
         });
 
         setBackgrounds(filteredBackgrounds);
@@ -62,13 +176,14 @@ export function TemplatePicker({ selection, orientation, onSelectionChange }: Te
     return () => {
       cancelled = true;
     };
-  }, [orientation]);
+  }, [orientation, selection.orientation, reloadKey]);
 
   const handleBackgroundSelect = (templateId: string) => {
+    const picked = backgrounds.find((b) => b.id === templateId);
     onSelectionChange({
       ...selection,
       backgroundId: templateId,
-      orientation: orientation || 'landscape',
+      orientation: picked?.orientation || orientation || selection.orientation || 'landscape',
     });
     toast.success('Background updated');
   };
@@ -103,15 +218,12 @@ export function TemplatePicker({ selection, orientation, onSelectionChange }: Te
       <Card>
         <CardHeader>
           <CardTitle>Templates</CardTitle>
-          <CardDescription className="text-destructive">{error}</CardDescription>
+          <CardDescription className="text-destructive">Templates failed to load. {error}</CardDescription>
         </CardHeader>
         <CardContent>
           <Button
             onClick={() => {
-              setError(null);
-              setLoading(true);
-              // Retry by re-mounting
-              window.location.reload();
+              reload();
             }}
           >
             Retry
@@ -127,7 +239,7 @@ export function TemplatePicker({ selection, orientation, onSelectionChange }: Te
         <CardTitle>Card Templates</CardTitle>
         <CardDescription>Choose a background and optional overlay for your card</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent ref={rootRef}>
         <Tabs defaultValue="backgrounds" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="backgrounds">
@@ -142,49 +254,92 @@ export function TemplatePicker({ selection, orientation, onSelectionChange }: Te
             {backgrounds.length === 0 ? (
               <p className="text-sm text-muted-foreground py-4">No backgrounds available</p>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {backgrounds.map((template) => {
-                  const isSelected = selection.backgroundId === template.id;
-                  return (
-                    <button
-                      key={template.id}
-                      onClick={() => handleBackgroundSelect(template.id)}
-                      className={`
-                        relative group rounded-lg overflow-hidden border-2 transition-all
-                        ${isSelected 
-                          ? 'border-purple-600 ring-2 ring-purple-600 ring-offset-2' 
-                          : 'border-gray-200 hover:border-purple-400'
-                        }
-                      `}
-                      title={template.notes || template.label}
-                    >
-                      <div className="aspect-video relative bg-gray-100">
-                        <Image
-                          src={template.thumb}
-                          alt={template.label}
-                          fill
-                          className="object-cover"
-                          unoptimized // SVG thumbs don't need optimization
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {backgrounds.map((template) => {
+                    const isSelected = selection.backgroundId === template.id;
+                    return (
+                      <div key={template.id} className="space-y-2">
+                        <TinyCardPreview
+                          template={template}
+                          selected={isSelected}
+                          onSelect={() => handleBackgroundSelect(template.id)}
                         />
+
+                        {onCreateFromTemplate ? (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
+                            onClick={() => onCreateFromTemplate(template)}
+                          >
+                            Create new from template
+                          </Button>
+                        ) : null}
                       </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <div className="absolute bottom-0 left-0 right-0 p-2 text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                        {template.label}
-                      </div>
-                      {isSelected && (
-                        <div className="absolute top-2 right-2 bg-purple-600 text-white rounded-full p-1.5">
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </div>
-                      )}
+                    );
+                  })}
+                </div>
+
+                <div className="rounded-lg border bg-muted/20 p-3">
+                  <div className="text-sm font-semibold">Background color</div>
+                  <div className="text-xs text-muted-foreground">Pick a professional palette color or choose a custom one.</div>
+
+                  <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Background color palette">
+                    {PRESET_PALETTE.map((c) => {
+                      const isActive = (selection.backgroundColor || "").toLowerCase() === c.value.toLowerCase();
+                      return (
+                        <button
+                          key={c.value}
+                          type="button"
+                          onClick={() => onSelectionChange({ ...selection, backgroundColor: c.value })}
+                          className={`h-8 w-8 rounded-md border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 focus-visible:ring-offset-2 ${
+                            isActive ? "border-purple-600 ring-2 ring-purple-600 ring-offset-2" : "border-gray-300"
+                          } ${c.swatchClass}`}
+                          aria-label={`Set background color to ${c.value}`}
+                          title={c.label}
+                        />
+                      );
+                    })}
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        // Keep the current value; this is just the swatch to indicate custom.
+                        const next = selection.backgroundColor || "#ffffff";
+                        onSelectionChange({ ...selection, backgroundColor: next });
+                      }}
+                      className={`h-8 w-8 rounded-md border border-gray-300 ${pickerStyles.customColorSwatch} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 focus-visible:ring-offset-2`}
+                      aria-label="Custom background color swatch"
+                      title="Custom"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => onSelectionChange({ ...selection, backgroundColor: undefined })}
+                      className="h-8 px-3 rounded-md border border-gray-300 text-xs font-medium hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 focus-visible:ring-offset-2"
+                      aria-label="Clear background color"
+                    >
+                      Clear
                     </button>
-                  );
-                })}
+                  </div>
+
+                  <div className="mt-3 flex items-center gap-3">
+                    <label className="text-xs font-medium" htmlFor="nbcard-template-custom-color">
+                      Custom
+                    </label>
+                    <input
+                      id="nbcard-template-custom-color"
+                      type="color"
+                      value={selection.backgroundColor || "#ffffff"}
+                      onChange={(e) => onSelectionChange({ ...selection, backgroundColor: e.target.value })}
+                      className="h-9 w-14 rounded border border-gray-300 bg-white"
+                      aria-label="Choose custom background color"
+                    />
+                    <div className="text-xs text-muted-foreground">{selection.backgroundColor || "(not set)"}</div>
+                  </div>
+                </div>
               </div>
             )}
           </TabsContent>

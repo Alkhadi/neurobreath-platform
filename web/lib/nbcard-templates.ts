@@ -30,6 +30,71 @@ export interface TemplateSelection {
   backgroundId?: string;
   overlayId?: string;
   orientation?: TemplateOrientation;
+  /** Optional user-selected tint for template backgrounds (applied in UI + exports). */
+  backgroundColor?: string;
+}
+
+export type TemplateTone = 'light' | 'dark';
+
+export type TemplateThemeTokens = {
+  /** Determines whether card content renders as white-on-dark or black-on-light. */
+  tone: TemplateTone;
+  /** Optional CSS filter to apply to the template background asset (UI + exports). */
+  backgroundFilter?: string;
+  /** Readability overlay alpha (0..1). Use 0 for no overlay. */
+  readabilityOverlayAlpha?: number;
+  /** If set, a white overlay is applied to intentionally lighten harsh/dark assets. */
+  lightenOverlayAlpha?: number;
+};
+
+function isValidHexColor(value: unknown): value is string {
+  if (typeof value !== 'string') return false;
+  const v = value.trim();
+  if (!v) return false;
+  return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(v);
+}
+
+/**
+ * Minimal theme token mapping used by both preview thumbnails and the live card.
+ * Keep this intentionally small and defensive.
+ */
+export function getTemplateThemeTokens(templateId?: string | null): TemplateThemeTokens {
+  const id = (templateId ?? '').toString();
+
+  // Lighter treatment (less harsh) for these two templates.
+  if (id.startsWith('modern_geometric_v1_')) {
+    return {
+      tone: 'light',
+      backgroundFilter: 'brightness(1.12) contrast(0.96) saturate(0.95)',
+      readabilityOverlayAlpha: 0.22,
+      lightenOverlayAlpha: 0.10,
+    };
+  }
+
+  if (id.startsWith('minimal_black_v1_')) {
+    return {
+      tone: 'light',
+      backgroundFilter: 'brightness(1.22) contrast(0.92) saturate(0.9)',
+      readabilityOverlayAlpha: 0.18,
+      lightenOverlayAlpha: 0.22,
+    };
+  }
+
+  // Templates with prominent white/light content areas should render black text.
+  if (id.startsWith('address_blue_v1_') || id.startsWith('flyer_promo_v1_')) {
+    return {
+      tone: 'dark',
+      readabilityOverlayAlpha: 0,
+      lightenOverlayAlpha: 0,
+    };
+  }
+
+  // Default: keep existing white-on-dark look.
+  return {
+    tone: 'light',
+    readabilityOverlayAlpha: 0.35,
+    lightenOverlayAlpha: 0,
+  };
 }
 
 // Defensive validation helpers
@@ -84,12 +149,21 @@ function validateManifest(raw: unknown): TemplateManifest | null {
   const validTemplates = obj.templates
     .map(validateTemplate)
     .filter((t): t is Template => t !== null);
+
+  // De-dupe by id (keep first occurrence to preserve author ordering).
+  const seen = new Set<string>();
+  const deduped: Template[] = [];
+  for (const t of validTemplates) {
+    if (seen.has(t.id)) continue;
+    seen.add(t.id);
+    deduped.push(t);
+  }
   
-  if (validTemplates.length === 0) return null;
+  if (deduped.length === 0) return null;
   
   return {
     version: obj.version,
-    templates: validTemplates,
+    templates: deduped,
   };
 }
 
@@ -109,7 +183,7 @@ export async function loadTemplateManifest(): Promise<TemplateManifest> {
   
   try {
     const response = await fetch('/nb-card/templates/manifest.json', {
-      cache: 'default', // Use browser cache
+      cache: 'no-store',
     });
     
     if (!response.ok) {
@@ -129,6 +203,11 @@ export async function loadTemplateManifest(): Promise<TemplateManifest> {
     manifestError = error instanceof Error ? error : new Error('Unknown error loading manifest');
     throw manifestError;
   }
+}
+
+export function resetTemplateManifestCache(): void {
+  manifestCache = null;
+  manifestError = null;
 }
 
 /**
@@ -191,6 +270,10 @@ export function loadTemplateSelection(profileId?: string): TemplateSelection | n
     }
     if (isValidOrientation(parsed.orientation)) {
       selection.orientation = parsed.orientation;
+    }
+
+    if (isValidHexColor(parsed.backgroundColor)) {
+      selection.backgroundColor = parsed.backgroundColor;
     }
     
     return selection;
