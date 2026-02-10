@@ -5,6 +5,7 @@ import { getSession } from "next-auth/react";
 import { toast } from "sonner";
 import {
   type Profile,
+  gradientOptions,
   getNbcardSavedNamespace,
   getOrCreateNbcardDeviceId,
   loadNbcardSavedCards,
@@ -48,6 +49,58 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
   const draftTimerRef = useRef<NodeJS.Timeout | null>(null);
   const hasRestoredDraftRef = useRef(false);
   const didInitRef = useRef(false);
+
+  const extractFirstHex = (value: string): string | null => {
+    const match = value.match(/#[0-9a-fA-F]{6}/);
+    return match ? match[0] : null;
+  };
+
+  const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
+    if (!/^#[0-9a-fA-F]{6}$/.test(hex)) return null;
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return { r, g, b };
+  };
+
+  const srgbToLinear = (value: number) => {
+    const v = value / 255;
+    return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+  };
+
+  const relativeLuminance = (rgb: { r: number; g: number; b: number }) => {
+    const r = srgbToLinear(rgb.r);
+    const g = srgbToLinear(rgb.g);
+    const b = srgbToLinear(rgb.b);
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+
+  const contrastRatio = (hexA: string, hexB: string): number | null => {
+    const a = hexToRgb(hexA);
+    const b = hexToRgb(hexB);
+    if (!a || !b) return null;
+    const la = relativeLuminance(a);
+    const lb = relativeLuminance(b);
+    const L1 = Math.max(la, lb);
+    const L2 = Math.min(la, lb);
+    return (L1 + 0.05) / (L2 + 0.05);
+  };
+
+  const ensureAccessibleAccent = (hex: string): boolean => {
+    const ratio = contrastRatio(hex, "#ffffff");
+    // Accent is rendered as text/border on white in Flyer CTA.
+    if (ratio !== null && ratio < 4.5) {
+      toast.error("Accent color is too light", {
+        description: "Pick a darker color for accessible contrast on white.",
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const palettePresets = gradientOptions
+    .map((g) => ({ name: g.name, color: extractFirstHex(g.gradient) }))
+    .filter((p): p is { name: string; color: string } => !!p.color);
   
   // LIVE BACKGROUND PREVIEW: objectURL for instant preview before upload completes
   const [backgroundPreviewUrl, setBackgroundPreviewUrl] = useState<string | null>(null);
@@ -238,6 +291,153 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
             onSelect={(gradient) => setEditedProfile({ ...editedProfile, gradient })}
             onClearBackground={editedProfile.backgroundUrl ? handleClearBackground : undefined}
           />
+
+          {/* Premium Palette */}
+          <div className="rounded-xl border border-gray-200 p-4">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="text-sm font-bold text-gray-800">Palette (Premium)</h3>
+                <p className="text-xs text-gray-600">Choose an accent color (saved on this device). Used in exports exactly as shown.</p>
+              </div>
+              {editedProfile.accentColor ? (
+                <button
+                  type="button"
+                  onClick={() => setEditedProfile({ ...editedProfile, accentColor: undefined })}
+                  className="text-xs font-semibold text-gray-700 underline hover:opacity-80"
+                >
+                  Clear
+                </button>
+              ) : null}
+            </div>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              {palettePresets.slice(0, 8).map((p) => {
+                const selected = (editedProfile.accentColor ?? "").toLowerCase() === p.color.toLowerCase();
+                return (
+                  <button
+                    key={p.name}
+                    type="button"
+                    onClick={() => {
+                      if (!ensureAccessibleAccent(p.color)) return;
+                      setEditedProfile({ ...editedProfile, accentColor: p.color });
+                    }}
+                    className={
+                      "flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors " +
+                      (selected ? "border-purple-600 bg-purple-50" : "border-gray-200 hover:bg-gray-50")
+                    }
+                    aria-label={`Set palette to ${p.name}`}
+                    title={p.name}
+                  >
+                    <span className="h-4 w-4 rounded-full border border-gray-300" aria-hidden="true" />
+                    {p.name} <span className="text-gray-500 font-normal">{p.color}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-3 flex items-center gap-3">
+              <label className="text-xs font-semibold text-gray-700" htmlFor="nbcard-accent-color">
+                Custom
+              </label>
+              <input
+                id="nbcard-accent-color"
+                type="color"
+                value={editedProfile.accentColor ?? "#9333ea"}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  if (!ensureAccessibleAccent(next)) return;
+                  setEditedProfile({ ...editedProfile, accentColor: next });
+                }}
+                className="h-9 w-12 rounded border border-gray-200"
+                aria-label="Choose custom accent color"
+              />
+              <span className="text-xs text-gray-600">{editedProfile.accentColor ?? "(not set)"}</span>
+            </div>
+          </div>
+
+          {/* Flyer Content */}
+          {editedProfile.cardCategory === "FLYER" ? (
+            <div className="rounded-xl border border-gray-200 p-4">
+              <h3 className="text-sm font-bold text-gray-800">Flyer content</h3>
+              <p className="text-xs text-gray-600">Used by the Flyer template.</p>
+
+              <div className="mt-3 grid gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1" htmlFor="flyer-headline">
+                    Headline
+                  </label>
+                  <input
+                    id="flyer-headline"
+                    value={editedProfile.flyerCard?.headline ?? ""}
+                    onChange={(e) =>
+                      setEditedProfile({
+                        ...editedProfile,
+                        flyerCard: { ...editedProfile.flyerCard, headline: e.target.value },
+                      })
+                    }
+                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+                    placeholder="e.g. Free ADHD assessment"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1" htmlFor="flyer-subheadline">
+                    Subheadline
+                  </label>
+                  <input
+                    id="flyer-subheadline"
+                    value={editedProfile.flyerCard?.subheadline ?? ""}
+                    onChange={(e) =>
+                      setEditedProfile({
+                        ...editedProfile,
+                        flyerCard: { ...editedProfile.flyerCard, subheadline: e.target.value },
+                      })
+                    }
+                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+                    placeholder="Short supporting line"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1" htmlFor="flyer-cta-text">
+                      CTA text
+                    </label>
+                    <input
+                      id="flyer-cta-text"
+                      value={editedProfile.flyerCard?.ctaText ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          flyerCard: { ...editedProfile.flyerCard, ctaText: e.target.value },
+                        })
+                      }
+                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+                      placeholder="e.g. Scan to book"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1" htmlFor="flyer-cta-url">
+                      CTA URL
+                    </label>
+                    <input
+                      id="flyer-cta-url"
+                      value={editedProfile.flyerCard?.ctaUrl ?? ""}
+                      onChange={(e) =>
+                        setEditedProfile({
+                          ...editedProfile,
+                          flyerCard: { ...editedProfile.flyerCard, ctaUrl: e.target.value },
+                        })
+                      }
+                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+                      placeholder="https://..."
+                      inputMode="url"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
 
           {/* Background Upload */}
           <div>

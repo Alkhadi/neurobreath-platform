@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { FaChevronDown, FaEdit, FaPlus, FaUsers } from "react-icons/fa";
+import { getSession } from "next-auth/react";
 
 import type { Contact, Profile } from "@/lib/utils";
 import { defaultProfile } from "@/lib/utils";
@@ -18,6 +19,7 @@ import { WelcomeModal } from "./WelcomeModal";
 import { DataControlsCenter } from "./DataControlsCenter";
 import { HelpButton } from "./HelpButton";
 import { getExampleCardPreset, resetOnboarding } from "@/lib/nb-card/onboarding";
+import { Button } from "@/components/ui/button";
 
 const SOCIAL_PLACEHOLDER_VALUES = new Set([
   "https://instagram.com/username",
@@ -61,6 +63,7 @@ function detectStandalone(): boolean {
 
 export function NBCardPanel() {
   const [mounted, setMounted] = useState(false);
+  const [sessionEmail, setSessionEmail] = useState<string | null>(null);
   const [profiles, setProfiles] = useState<Profile[]>([defaultProfile]);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -71,6 +74,22 @@ export function NBCardPanel() {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [templateSelection, setTemplateSelection] = useState<TemplateSelection>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    getSession()
+      .then((s) => {
+        if (cancelled) return;
+        const email = (s?.user?.email ?? "").toString().trim().toLowerCase();
+        setSessionEmail(email && email.includes("@") ? email : null);
+      })
+      .catch(() => {
+        // ignore
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Load NBCard state + register SW
   useEffect(() => {
@@ -175,7 +194,8 @@ export function NBCardPanel() {
 
   const handleSaveProfile = (profile: Profile) => {
     if (isNewProfile) {
-      setProfiles([...profiles, { ...profile, id: Date.now().toString() }]);
+      const id = profile.id && profile.id.trim().length > 0 ? profile.id : Date.now().toString();
+      setProfiles([...profiles, { ...profile, id }]);
       setCurrentProfileIndex(profiles.length);
     } else {
       const updated = profiles.map((p) => (p.id === profile.id ? profile : p));
@@ -184,6 +204,50 @@ export function NBCardPanel() {
     setShowProfileManager(false);
     setEditingProfile(null);
     setIsNewProfile(false);
+  };
+
+  const handleCreateFromTemplate = (template: { id: string; orientation: "portrait" | "landscape"; label: string }) => {
+    const newId = Date.now().toString();
+    const isFlyer = template.id.startsWith("flyer_promo_");
+    const newProfile: Profile = {
+      id: newId,
+      fullName: "",
+      jobTitle: "",
+      phone: "",
+      email: "",
+      profileDescription: "",
+      businessDescription: "",
+      gradient: "linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)",
+      socialMedia: {},
+      ...(isFlyer
+        ? {
+            cardCategory: "FLYER" as const,
+            flyerCard: {
+              headline: "",
+              subheadline: "",
+              ctaText: "",
+              ctaUrl: "",
+            },
+          }
+        : {}),
+    };
+
+    const seededSelection: TemplateSelection = {
+      backgroundId: template.id,
+      overlayId: undefined,
+      orientation: template.orientation,
+    };
+
+    // Seed template selection for the soon-to-be-created profile without altering the current profile.
+    saveTemplateSelection(seededSelection, newId);
+
+    setEditingProfile(newProfile);
+    setIsNewProfile(true);
+    setShowProfileManager(true);
+
+    toast.message("New card from template", {
+      description: `Created a new card using ${template.label}. Add your details and save.`,
+    });
   };
 
   const handleDeleteProfile = () => {
@@ -432,6 +496,21 @@ export function NBCardPanel() {
 
         {/* Right Column - Share Buttons */}
         <div className="bg-white rounded-2xl shadow-xl p-6">
+          {!sessionEmail ? (
+            <div className="mb-4 rounded-xl border border-purple-100 bg-purple-50 px-4 py-3">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">Sign in to sync across devices</p>
+                  <p className="text-xs text-gray-700">
+                    Your cards are saved locally by default. Signing in helps you keep them across devices.
+                  </p>
+                </div>
+                <Button asChild size="sm" className="shrink-0">
+                  <a href={`/uk/login?callbackUrl=${encodeURIComponent("/resources/nb-card")}`}>Sign in</a>
+                </Button>
+              </div>
+            </div>
+          ) : null}
           <div id="share-your-profile">
             <ShareButtons
               profile={currentProfile}
@@ -452,6 +531,7 @@ export function NBCardPanel() {
           selection={templateSelection}
           orientation={templateSelection.orientation || 'landscape'}
           onSelectionChange={handleTemplateSelectionChange}
+          onCreateFromTemplate={handleCreateFromTemplate}
         />
       </div>
 

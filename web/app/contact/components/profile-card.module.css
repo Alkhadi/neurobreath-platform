@@ -1,3 +1,11 @@
 .signatureFont {
   font-family: "Brush Script MT", cursive;
 }
+
+.accentText {
+  color: var(--nb-accent, inherit);
+}
+
+.accentBorder {
+  border-color: var(--nb-accent, currentColor);
+}
