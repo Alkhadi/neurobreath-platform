@@ -98,7 +98,65 @@ export interface Profile {
     ctaText?: string;
     ctaUrl?: string;
   };
+  // Free Layout Editor: layers array for custom drag/resize elements
+  layers?: CardLayer[];
 }
+
+// NB-Card Free Layout Editor: Layer Types
+export type LayerType = "text" | "avatar" | "shape";
+export type ShapeKind = "rect" | "circle" | "line";
+export type TextAlign = "left" | "center" | "right";
+
+export interface CardLayerBase {
+  id: string;
+  type: LayerType;
+  x: number; // percentage 0-100
+  y: number; // percentage 0-100
+  w: number; // percentage 0-100
+  h: number; // percentage 0-100
+  rotation?: number; // degrees
+  zIndex: number;
+  locked: boolean;
+  visible: boolean;
+}
+
+export interface TextLayer extends CardLayerBase {
+  type: "text";
+  style: {
+    content: string;
+    fontSize: number; // px
+    fontWeight: "normal" | "bold";
+    align: TextAlign;
+    color: string; // hex
+    backgroundColor?: string; // hex, optional
+    padding?: number; // px
+  };
+}
+
+export interface AvatarLayer extends CardLayerBase {
+  type: "avatar";
+  style: {
+    src: string; // data URL or asset ref
+    fit: "cover" | "contain";
+    borderRadius: number; // px
+    borderWidth?: number; // px
+    borderColor?: string; // hex
+  };
+}
+
+export interface ShapeLayer extends CardLayerBase {
+  type: "shape";
+  style: {
+    shapeKind: ShapeKind;
+    fill: string; // hex
+    stroke?: string; // hex
+    strokeWidth?: number; // px
+    opacity: number; // 0-1
+    cornerRadius?: number; // px, rect only
+  };
+}
+
+export type CardLayer = TextLayer | AvatarLayer | ShapeLayer;
 
 // NB-Card guest namespace: shared with `web/app/contact/lib/nbcard-assets.ts`
 const NBCARD_DEVICE_ID_KEY = "nbcard-device-id";

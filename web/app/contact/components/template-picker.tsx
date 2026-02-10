@@ -14,9 +14,14 @@ import {
   resetTemplateManifestCache,
 } from "@/lib/nbcard-templates";
 
+import { type Profile, type CardLayer, type TextLayer, type AvatarLayer, type ShapeLayer } from "@/lib/utils";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
 import pickerStyles from "./template-picker.module.css";
 
 interface TemplatePickerProps {
@@ -24,6 +29,8 @@ interface TemplatePickerProps {
   orientation?: TemplateOrientation;
   onSelectionChange: (selection: TemplateSelection) => void;
   onCreateFromTemplate?: (template: Template) => void;
+  profile?: Profile; // For Free Layout Editor
+  onProfileUpdate?: (profile: Profile) => void; // For Free Layout Editor
 }
 
 const PRESET_PALETTE: Array<{ label: string; value: string; swatchClass: string }> = [
@@ -132,7 +139,7 @@ function TinyCardPreview({
   );
 }
 
-export function TemplatePicker({ selection, orientation, onSelectionChange, onCreateFromTemplate }: TemplatePickerProps) {
+export function TemplatePicker({ selection, orientation, onSelectionChange, onCreateFromTemplate, profile, onProfileUpdate }: TemplatePickerProps) {
   const rootRef = React.useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
@@ -147,6 +154,11 @@ export function TemplatePicker({ selection, orientation, onSelectionChange, onCr
   const [backgrounds, setBackgrounds] = React.useState<Template[]>([]);
   const [overlays, setOverlays] = React.useState<Template[]>([]);
   const [reloadKey, setReloadKey] = React.useState(0);
+
+  // Free Layout Editor state
+  const [editMode, setEditMode] = React.useState(false);
+  const [selectedLayerId, setSelectedLayerId] = React.useState<string | null>(null);
+  const [newLayerColor, setNewLayerColor] = React.useState("#A855F7");
 
   const reload = React.useCallback(() => {
     setError(null);
@@ -220,6 +232,110 @@ export function TemplatePicker({ selection, orientation, onSelectionChange, onCr
     });
     toast.success(templateId ? 'Overlay updated' : 'Overlay removed');
   };
+
+  // Free Layout Editor: Layer management functions
+  const addTextLayer = () => {
+    if (!profile || !onProfileUpdate) return;
+    const newLayer: TextLayer = {
+      id: `text-${Date.now()}`,
+      type: "text",
+      x: 20,
+      y: 20,
+      w: 40,
+      h: 10,
+      zIndex: (profile.layers || []).length + 1,
+      locked: false,
+      visible: true,
+      style: {
+        content: "New Text",
+        fontSize: 18,
+        fontWeight: "normal",
+        align: "left",
+        color: newLayerColor,
+      },
+    };
+    onProfileUpdate({
+      ...profile,
+      layers: [...(profile.layers || []), newLayer],
+    });
+    setSelectedLayerId(newLayer.id);
+    toast.success("Text layer added");
+  };
+
+  const addShapeLayer = (shapeKind: "rect" | "circle" | "line") => {
+    if (!profile || !onProfileUpdate) return;
+    const newLayer: ShapeLayer = {
+      id: `shape-${Date.now()}`,
+      type: "shape",
+      x: 30,
+      y: 30,
+      w: shapeKind === "line" ? 40 : 20,
+      h: shapeKind === "line" ? 1 : 20,
+      zIndex: (profile.layers || []).length + 1,
+      locked: false,
+      visible: true,
+      style: {
+        shapeKind,
+        fill: newLayerColor,
+        opacity: 1,
+        cornerRadius: shapeKind === "rect" ? 4 : undefined,
+      },
+    };
+    onProfileUpdate({
+      ...profile,
+      layers: [...(profile.layers || []), newLayer],
+    });
+    setSelectedLayerId(newLayer.id);
+    toast.success(`${shapeKind} added`);
+  };
+
+  const addAvatarLayer = () => {
+    if (!profile || !onProfileUpdate) return;
+    const newLayer: AvatarLayer = {
+      id: `avatar-${Date.now()}`,
+      type: "avatar",
+      x: 40,
+      y: 40,
+      w: 20,
+      h: 20,
+      zIndex: (profile.layers || []).length + 1,
+      locked: false,
+      visible: true,
+      style: {
+        src: "",
+        fit: "cover",
+        borderRadius: 8,
+      },
+    };
+    onProfileUpdate({
+      ...profile,
+      layers: [...(profile.layers || []), newLayer],
+    });
+    setSelectedLayerId(newLayer.id);
+    toast.success("Avatar layer added (upload image below)");
+  };
+
+  const updateLayer = (layerId: string, updates: Partial<CardLayer>) => {
+    if (!profile || !onProfileUpdate) return;
+    onProfileUpdate({
+      ...profile,
+      layers: (profile.layers || []).map((layer) =>
+        layer.id === layerId ? ({ ...layer, ...updates } as CardLayer) : layer
+      ),
+    });
+  };
+
+  const deleteLayer = (layerId: string) => {
+    if (!profile || !onProfileUpdate) return;
+    onProfileUpdate({
+      ...profile,
+      layers: (profile.layers || []).filter((layer) => layer.id !== layerId),
+    });
+    setSelectedLayerId(null);
+    toast.success("Layer deleted");
+  };
+
+  const selectedLayer = profile?.layers?.find((l) => l.id === selectedLayerId);
 
   if (loading) {
     return (
@@ -402,6 +518,230 @@ export function TemplatePicker({ selection, orientation, onSelectionChange, onCr
             )}
           </TabsContent>
         </Tabs>
+
+        {/* FREE LAYOUT EDITOR */}
+        {profile && onProfileUpdate && (
+          <div className="mt-6 rounded-lg border bg-muted/20 p-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-semibold">Free Layout Editor</h3>
+                <p className="text-xs text-muted-foreground">Add text, shapes, and images that you can drag and resize</p>
+              </div>
+              <Button
+                type="button"
+                variant={editMode ? "default" : "outline"}
+                size="sm"
+                onClick={() => {
+                  setEditMode(!editMode);
+                  if (editMode) setSelectedLayerId(null);
+                }}
+              >
+                {editMode ? "✓ Editing" : "Edit Layout"}
+              </Button>
+            </div>
+
+            {editMode && (
+              <>
+                <div className="grid grid-cols-4 gap-2">
+                  <Button type="button" variant="outline" size="sm" onClick={addTextLayer}>
+                    + Text
+                  </Button>
+                  <Button type="button" variant="outline" size="sm" onClick={() => addShapeLayer("rect")}>
+                    + Rect
+                  </Button>
+                  <Button type="button" variant="outline" size="sm" onClick={() => addShapeLayer("circle")}>
+                    + Circle
+                  </Button>
+                  <Button type="button" variant="outline" size="sm" onClick={addAvatarLayer}>
+                    + Avatar
+                  </Button>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="layer-color" className="text-xs">
+                    New Layer Color
+                  </Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="layer-color"
+                      type="color"
+                      value={newLayerColor}
+                      onChange={(e) => setNewLayerColor(e.target.value)}
+                      className="w-20 h-9"
+                    />
+                    <Input
+                      type="text"
+                      value={newLayerColor}
+                      onChange={(e) => setNewLayerColor(e.target.value)}
+                      className="flex-1 text-sm"
+                      placeholder="#A855F7"
+                    />
+                  </div>
+                </div>
+
+                {selectedLayer && (
+                  <div className="mt-4 p-3 rounded border bg-background space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-semibold">Selected: {selectedLayer.type}</h4>
+                      <Button type="button" variant="destructive" size="sm" onClick={() => deleteLayer(selectedLayer.id)}>
+                        Delete
+                      </Button>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <Label htmlFor="layer-x" className="text-xs">X %</Label>
+                        <Input
+                          id="layer-x"
+                          type="number"
+                          min={0}
+                          max={100}
+                          value={Math.round(selectedLayer.x)}
+                          onChange={(e) => updateLayer(selectedLayer.id, { x: Number(e.target.value) })}
+                          className="text-sm"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label htmlFor="layer-y" className="text-xs">Y %</Label>
+                        <Input
+                          id="layer-y"
+                          type="number"
+                          min={0}
+                          max={100}
+                          value={Math.round(selectedLayer.y)}
+                          onChange={(e) => updateLayer(selectedLayer.id, { y: Number(e.target.value) })}
+                          className="text-sm"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label htmlFor="layer-w" className="text-xs">Width %</Label>
+                        <Input
+                          id="layer-w"
+                          type="number"
+                          min={5}
+                          max={100}
+                          value={Math.round(selectedLayer.w)}
+                          onChange={(e) => updateLayer(selectedLayer.id, { w: Number(e.target.value) })}
+                          className="text-sm"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label htmlFor="layer-h" className="text-xs">Height %</Label>
+                        <Input
+                          id="layer-h"
+                          type="number"
+                          min={5}
+                          max={100}
+                          value={Math.round(selectedLayer.h)}
+                          onChange={(e) => updateLayer(selectedLayer.id, { h: Number(e.target.value) })}
+                          className="text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    {selectedLayer.type === "text" && (
+                      <>
+                        <div className="space-y-1">
+                          <Label htmlFor="text-content" className="text-xs">Text</Label>
+                          <Input
+                            id="text-content"
+                            type="text"
+                            value={selectedLayer.style.content}
+                            onChange={(e) => updateLayer(selectedLayer.id, { style: { ...selectedLayer.style, content: e.target.value } })}
+                            className="text-sm"
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="space-y-1">
+                            <Label htmlFor="text-size" className="text-xs">Font Size</Label>
+                            <Input
+                              id="text-size"
+                              type="number"
+                              min={8}
+                              max={72}
+                              value={selectedLayer.style.fontSize}
+                              onChange={(e) => updateLayer(selectedLayer.id, { style: { ...selectedLayer.style, fontSize: Number(e.target.value) } })}
+                              className="text-sm"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="text-color" className="text-xs">Color</Label>
+                            <Input
+                              id="text-color"
+                              type="color"
+                              value={selectedLayer.style.color}
+                              onChange={(e) => updateLayer(selectedLayer.id, { style: { ...selectedLayer.style, color: e.target.value } })}
+                              className="h-9"
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {selectedLayer.type === "shape" && (
+                      <>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="space-y-1">
+                            <Label htmlFor="shape-fill" className="text-xs">Fill</Label>
+                            <Input
+                              id="shape-fill"
+                              type="color"
+                              value={selectedLayer.style.fill}
+                              onChange={(e) => updateLayer(selectedLayer.id, { style: { ...selectedLayer.style, fill: e.target.value } })}
+                              className="h-9"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="shape-opacity" className="text-xs">Opacity</Label>
+                            <Slider
+                              id="shape-opacity"
+                              min={0}
+                              max={1}
+                              step={0.1}
+                              value={[selectedLayer.style.opacity]}
+                              onValueChange={([val]) => updateLayer(selectedLayer.id, { style: { ...selectedLayer.style, opacity: val } })}
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => updateLayer(selectedLayer.id, { locked: !selectedLayer.locked })}
+                      >
+                        {selectedLayer.locked ? "🔒 Locked" : "🔓 Unlocked"}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => updateLayer(selectedLayer.id, { visible: !selectedLayer.visible })}
+                      >
+                        {selectedLayer.visible ? "👁️ Visible" : "👁️‍🗨️ Hidden"}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {!selectedLayer && (profile.layers || []).length > 0 && (
+                  <p className="text-xs text-muted-foreground text-center py-2">
+                    Click a layer on the card to select and edit it
+                  </p>
+                )}
+
+                {(profile.layers || []).length === 0 && (
+                  <p className="text-xs text-muted-foreground text-center py-2">
+                    Add your first layer using the buttons above
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

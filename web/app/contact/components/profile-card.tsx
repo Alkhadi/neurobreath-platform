@@ -1,6 +1,6 @@
 "use client";
 
-import { Profile, cn } from "@/lib/utils";
+import { Profile, cn, CardLayer } from "@/lib/utils";
 import { FaInstagram, FaFacebook, FaTiktok, FaLinkedin, FaTwitter, FaGlobe, FaPhone, FaEnvelope, FaHome } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 import { getSession } from "next-auth/react";
@@ -19,9 +19,284 @@ interface ProfileCardProps {
   userEmail?: string; // For IndexedDB namespace
   templateSelection?: TemplateSelection; // Template background/overlay
   captureId?: string;
+  editMode?: boolean; // Free Layout Editor: enable drag/resize
+  selectedLayerId?: string | null; // Free Layout Editor: currently selected layer
+  onLayerUpdate?: (layerId: string, updates: Partial<CardLayer>) => void; // Free Layout Editor: update layer
+  onLayerSelect?: (layerId: string | null) => void; // Free Layout Editor: select layer
 }
 
-export function ProfileCard({ profile, onPhotoClick, showEditButton = false, userEmail, templateSelection, captureId }: ProfileCardProps) {
+// Helper component to render a single card layer
+function CardLayerRenderer({
+  layer,
+  editMode,
+  isSelected,
+  onSelect,
+  onUpdate,
+  containerRef,
+}: {
+  layer: CardLayer;
+  editMode?: boolean;
+  isSelected?: boolean;
+  onSelect?: (id: string) => void;
+  onUpdate?: (id: string, updates: Partial<CardLayer>) => void;
+  containerRef: React.RefObject<HTMLDivElement>;
+}) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0, layerX: 0, layerY: 0 });
+  const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, layerW: 0, layerH: 0 });
+
+  if (!layer.visible) return null;
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if (!editMode || layer.locked) return;
+    e.stopPropagation();
+    
+    onSelect?.(layer.id);
+    
+    const container = containerRef.current;
+    if (!container) return;
+    
+    setDragStart({
+      x: e.clientX,
+      y: e.clientY,
+      layerX: layer.x,
+      layerY: layer.y,
+    });
+    setIsDragging(true);
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDragging || !editMode || layer.locked) return;
+    e.stopPropagation();
+    
+    const container = containerRef.current;
+    if (!container) return;
+    
+    const rect = container.getBoundingClientRect();
+    const deltaX = (e.clientX - dragStart.x) / rect.width * 100;
+    const deltaY = (e.clientY - dragStart.y) / rect.height * 100;
+    
+    const newX = Math.max(0, Math.min(100 - layer.w, dragStart.layerX + deltaX));
+    const newY = Math.max(0, Math.min(100 - layer.h, dragStart.layerY + deltaY));
+    
+    onUpdate?.(layer.id, { x: newX, y: newY });
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (isDragging) {
+      e.stopPropagation();
+      setIsDragging(false);
+      (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+    }
+  };
+
+  const handleResizePointerDown = (e: React.PointerEvent, _corner: string) => {
+    if (!editMode || layer.locked) return;
+    e.stopPropagation();
+    
+    const container = containerRef.current;
+    if (!container) return;
+    
+    setResizeStart({
+      x: e.clientX,
+      y: e.clientY,
+      layerW: layer.w,
+      layerH: layer.h,
+    });
+    setIsResizing(true);
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const handleResizePointerMove = (e: React.PointerEvent) => {
+    if (!isResizing || !editMode || layer.locked) return;
+    e.stopPropagation();
+    
+    const container = containerRef.current;
+    if (!container) return;
+    
+    const rect = container.getBoundingClientRect();
+    const deltaX = (e.clientX - resizeStart.x) / rect.width * 100;
+    const deltaY = (e.clientY - resizeStart.y) / rect.height * 100;
+    
+    const newW = Math.max(5, Math.min(100 - layer.x, resizeStart.layerW + deltaX));
+    const newH = Math.max(5, Math.min(100 - layer.y, resizeStart.layerH + deltaY));
+    
+    onUpdate?.(layer.id, { w: newW, h: newH });
+  };
+
+  const handleResizePointerUp = (e: React.PointerEvent) => {
+    if (isResizing) {
+      e.stopPropagation();
+      setIsResizing(false);
+      (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+    }
+  };
+
+  const style: React.CSSProperties = {
+    position: "absolute",
+    left: `${layer.x}%`,
+    top: `${layer.y}%`,
+    width: `${layer.w}%`,
+    height: `${layer.h}%`,
+    transform: layer.rotation ? `rotate(${layer.rotation}deg)` : undefined,
+    zIndex: layer.zIndex,
+    pointerEvents: editMode && !layer.locked ? "auto" : "none",
+    cursor: editMode && !layer.locked ? (isDragging ? "grabbing" : "grab") : undefined,
+    outline: editMode && isSelected ? "2px solid #A855F7" : undefined,
+    outlineOffset: "2px",
+  };
+
+  const renderContent = () => {
+    if (layer.type === "text") {
+      return (
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            fontSize: `${layer.style.fontSize}px`,
+            fontWeight: layer.style.fontWeight,
+            textAlign: layer.style.align,
+            color: layer.style.color,
+            backgroundColor: layer.style.backgroundColor || "transparent",
+            padding: layer.style.padding ? `${layer.style.padding}px` : undefined,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: layer.style.align === "center" ? "center" : layer.style.align === "right" ? "flex-end" : "flex-start",
+            wordBreak: "break-word",
+            overflow: "hidden",
+          }}
+        >
+          {layer.style.content}
+        </div>
+      );
+    }
+
+    if (layer.type === "avatar") {
+      return (
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            borderRadius: `${layer.style.borderRadius}px`,
+            borderWidth: layer.style.borderWidth ? `${layer.style.borderWidth}px` : undefined,
+            borderColor: layer.style.borderColor || "transparent",
+            borderStyle: layer.style.borderWidth ? "solid" : undefined,
+            overflow: "hidden",
+          }}
+        >
+          {layer.style.src && (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={layer.style.src}
+              alt="Layer avatar"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: layer.style.fit,
+              }}
+            />
+          )}
+        </div>
+      );
+    }
+
+    if (layer.type === "shape") {
+      const { shapeKind, fill, stroke, strokeWidth, opacity, cornerRadius } = layer.style;
+
+      if (shapeKind === "rect") {
+        return (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              backgroundColor: fill,
+              border: stroke && strokeWidth ? `${strokeWidth}px solid ${stroke}` : undefined,
+              opacity,
+              borderRadius: cornerRadius ? `${cornerRadius}px` : undefined,
+            }}
+          />
+        );
+      }
+
+      if (shapeKind === "circle") {
+        return (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              backgroundColor: fill,
+              border: stroke && strokeWidth ? `${strokeWidth}px solid ${stroke}` : undefined,
+              opacity,
+              borderRadius: "50%",
+            }}
+          />
+        );
+      }
+
+      if (shapeKind === "line") {
+        return (
+          <div
+            style={{
+              width: "100%",
+              height: strokeWidth ? `${strokeWidth}px` : "2px",
+              backgroundColor: fill,
+              opacity,
+            }}
+          />
+        );
+      }
+    }
+
+    return null;
+  };
+
+  return (
+    <div
+      style={style}
+      onPointerDown={handlePointerDown}
+      onPointerMove={isDragging ? handlePointerMove : isResizing ? handleResizePointerMove : undefined}
+      onPointerUp={isDragging ? handlePointerUp : isResizing ? handleResizePointerUp : undefined}
+    >
+      {renderContent()}
+      
+      {/* Resize handle (bottom-right corner) */}
+      {editMode && isSelected && !layer.locked && (
+        <div
+          style={{
+            position: "absolute",
+            right: -4,
+            bottom: -4,
+            width: 12,
+            height: 12,
+            backgroundColor: "#A855F7",
+            border: "2px solid white",
+            borderRadius: "50%",
+            cursor: "nwse-resize",
+            zIndex: 1,
+          }}
+          onPointerDown={(e) => handleResizePointerDown(e, "br")}
+          onPointerMove={handleResizePointerMove}
+          onPointerUp={handleResizePointerUp}
+        />
+      )}
+    </div>
+  );
+}
+
+export function ProfileCard({
+  profile,
+  onPhotoClick,
+  showEditButton = false,
+  userEmail,
+  templateSelection,
+  captureId,
+  editMode = false,
+  selectedLayerId = null,
+  onLayerUpdate,
+  onLayerSelect,
+}: ProfileCardProps) {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const [sessionEmail, setSessionEmail] = useState<string | null>(null);
   const [resolvedBackgroundUrl, setResolvedBackgroundUrl] = useState<string | null>(null);
@@ -737,6 +1012,26 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
           </>
         )}
       </div>
+
+      {/* FREE LAYOUT EDITOR: CUSTOM LAYERS (z=15) */}
+      {profile.layers && profile.layers.length > 0 && (
+        <div className="absolute inset-0 z-[15] pointer-events-none">
+          {profile.layers
+            .filter((l) => l.visible)
+            .sort((a, b) => a.zIndex - b.zIndex)
+            .map((layer) => (
+              <CardLayerRenderer
+                key={layer.id}
+                layer={layer}
+                editMode={editMode}
+                isSelected={selectedLayerId === layer.id}
+                onSelect={onLayerSelect}
+                onUpdate={onLayerUpdate}
+                containerRef={rootRef}
+              />
+            ))}
+        </div>
+      )}
     </div>
   );
 }
