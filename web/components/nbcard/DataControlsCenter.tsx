@@ -150,9 +150,9 @@ export function DataControlsCenter({ profiles, contacts, onRestoreData, onDelete
         <div className="flex items-start gap-3 mb-4">
           <Info className="h-6 w-6 text-purple-600 flex-shrink-0 mt-1" />
           <div>
-            <h3 className="text-xl font-bold text-gray-800 mb-1">Your Data</h3>
+            <h3 className="text-xl font-bold text-gray-800 mb-1">Data &amp; Privacy</h3>
             <p className="text-sm text-gray-600">
-              Back up your cards or remove them from this device any time.
+              Back up your cards, restore them, or delete data from this device at any time.
             </p>
           </div>
         </div>
@@ -189,8 +189,7 @@ export function DataControlsCenter({ profiles, contacts, onRestoreData, onDelete
 
         <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
           <p className="text-xs text-amber-800">
-            <strong>Note:</strong> Browser storage deletion cannot guarantee secure wipe. If you need absolute data
-            security, use your browser's "Clear all browsing data" feature.
+            <strong>Note:</strong> Browsers can&apos;t guarantee a &ldquo;secure wipe&rdquo;, but this removes your cards from this app&apos;s storage.
           </p>
         </div>
       </div>

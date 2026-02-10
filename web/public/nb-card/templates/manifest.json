@@ -75,7 +75,7 @@
       "orientation": "portrait",
       "src": "/nb-card/templates/backgrounds/flyer_promo_portrait_bg.svg",
       "thumb": "/nb-card/templates/thumbs/flyer_promo_portrait_bg.thumb.svg",
-      "recommendedFor": ["BUSINESS", "PROFILE"],
+      "recommendedFor": ["FLYER", "BUSINESS", "PROFILE"],
       "notes": "Portrait flyer layout with headline, subheadline, CTA, QR, and contact strip zones. Designed for promo sharing."
     }
   ]

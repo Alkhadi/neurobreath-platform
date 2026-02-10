@@ -61,22 +61,23 @@ function isValidHexColor(value: unknown): value is string {
 export function getTemplateThemeTokens(templateId?: string | null): TemplateThemeTokens {
   const id = (templateId ?? '').toString();
 
-  // Lighter treatment (less harsh) for these two templates.
+  // Noticeably lighter treatment for these two templates.
+  // tone='dark' ensures black text on the lightened surface for readability.
   if (id.startsWith('modern_geometric_v1_')) {
     return {
-      tone: 'light',
-      backgroundFilter: 'brightness(1.12) contrast(0.96) saturate(0.95)',
-      readabilityOverlayAlpha: 0.22,
-      lightenOverlayAlpha: 0.10,
+      tone: 'dark',
+      backgroundFilter: 'brightness(1.35) contrast(0.88) saturate(0.85)',
+      readabilityOverlayAlpha: 0.05,
+      lightenOverlayAlpha: 0.35,
     };
   }
 
   if (id.startsWith('minimal_black_v1_')) {
     return {
-      tone: 'light',
-      backgroundFilter: 'brightness(1.22) contrast(0.92) saturate(0.9)',
-      readabilityOverlayAlpha: 0.18,
-      lightenOverlayAlpha: 0.22,
+      tone: 'dark',
+      backgroundFilter: 'brightness(1.40) contrast(0.85) saturate(0.82)',
+      readabilityOverlayAlpha: 0.05,
+      lightenOverlayAlpha: 0.45,
     };
   }
 
@@ -95,6 +96,21 @@ export function getTemplateThemeTokens(templateId?: string | null): TemplateThem
     readabilityOverlayAlpha: 0.35,
     lightenOverlayAlpha: 0,
   };
+}
+
+/**
+ * Determines whether a hex color is perceptually light.
+ * Uses the W3C luminance formula for accessibility contrast decisions.
+ */
+export function isLightColor(hex: string): boolean {
+  const c = hex.replace('#', '');
+  if (c.length !== 3 && c.length !== 6) return true; // default light
+  const full = c.length === 3 ? c[0] + c[0] + c[1] + c[1] + c[2] + c[2] : c;
+  const r = parseInt(full.substring(0, 2), 16);
+  const g = parseInt(full.substring(2, 4), 16);
+  const b = parseInt(full.substring(4, 6), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.55;
 }
 
 // Defensive validation helpers

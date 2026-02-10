@@ -10,7 +10,7 @@ import { getProfileShareUrl } from "../lib/nbcard-share";
 import { CaptureImage } from "./capture-image";
 import styles from "./profile-card.module.css";
 import type { TemplateSelection } from "@/lib/nbcard-templates";
-import { getTemplateThemeTokens } from "@/lib/nbcard-templates";
+import { getTemplateThemeTokens, isLightColor } from "@/lib/nbcard-templates";
 
 interface ProfileCardProps {
   profile: Profile;
@@ -36,11 +36,17 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
 
   const templateTheme = useTemplateMode ? getTemplateThemeTokens(templateSelection?.backgroundId) : null;
   const isLightSurfaceTemplate = Boolean(useTemplateMode && templateTheme?.tone === "dark");
-  const contentTextClass = isLightSurfaceTemplate ? "text-gray-900" : "text-white";
-  const hoverRowClass = isLightSurfaceTemplate ? "hover:bg-black/5" : "hover:bg-white/10";
-  const softPanelClass = isLightSurfaceTemplate ? "bg-black/5" : "bg-white/10";
-  const dividerBorderClass = isLightSurfaceTemplate ? "border-black/10" : "border-white/20";
-  const socialChipClass = isLightSurfaceTemplate ? "bg-black/10 text-gray-900" : "bg-white/20 text-white";
+
+  // Auto-contrast: if palette color is set, override text color based on palette luminance.
+  const paletteColor = templateSelection?.backgroundColor;
+  const paletteOverridesContrast = useTemplateMode && paletteColor ? isLightColor(paletteColor) : null;
+  const effectiveLightSurface = paletteOverridesContrast !== null ? paletteOverridesContrast : isLightSurfaceTemplate;
+
+  const contentTextClass = effectiveLightSurface ? "text-gray-900" : "text-white";
+  const hoverRowClass = effectiveLightSurface ? "hover:bg-black/5" : "hover:bg-white/10";
+  const softPanelClass = effectiveLightSurface ? "bg-black/5" : "bg-white/10";
+  const dividerBorderClass = effectiveLightSurface ? "border-black/10" : "border-white/20";
+  const socialChipClass = effectiveLightSurface ? "bg-black/10 text-gray-900" : "bg-white/20 text-white";
 
   useEffect(() => {
     const el = rootRef.current;
@@ -65,7 +71,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
     // Palette tint
     if (typeof tint === "string" && tint.trim()) {
       el.style.setProperty("--nbcard-template-tint", tint.trim());
-      el.style.setProperty("--nbcard-template-tint-alpha", "0.18");
+      el.style.setProperty("--nbcard-template-tint-alpha", "0.25");
     } else {
       el.style.setProperty("--nbcard-template-tint", "transparent");
       el.style.setProperty("--nbcard-template-tint-alpha", "0");

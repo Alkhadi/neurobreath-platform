@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { FaChevronDown, FaEdit, FaPlus, FaUsers } from "react-icons/fa";
+import { X } from "lucide-react";
 import { getSession } from "next-auth/react";
 
 import type { Contact, Profile } from "@/lib/utils";
@@ -21,6 +22,8 @@ import { DataControlsCenter } from "./DataControlsCenter";
 import { HelpButton } from "./HelpButton";
 import { getExampleCardPreset, resetOnboarding } from "@/lib/nb-card/onboarding";
 import { Button } from "@/components/ui/button";
+
+const SIGN_IN_CALLOUT_DISMISSED_KEY = "nb-card:sign_in_callout_dismissed";
 
 const SOCIAL_PLACEHOLDER_VALUES = new Set([
   "https://instagram.com/username",
@@ -76,6 +79,16 @@ export function NBCardPanel() {
   const [isInstalled, setIsInstalled] = useState(false);
   const [templateSelection, setTemplateSelection] = useState<TemplateSelection>({});
   const [pendingTemplateSelection, setPendingTemplateSelection] = useState<TemplateSelection | null>(null);
+  const [signInCalloutDismissed, setSignInCalloutDismissed] = useState(true); // default hidden until mount check
+
+  const handleDismissSignInCallout = useCallback(() => {
+    setSignInCalloutDismissed(true);
+    try {
+      localStorage.setItem(SIGN_IN_CALLOUT_DISMISSED_KEY, "1");
+    } catch {
+      // ignore
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -97,6 +110,13 @@ export function NBCardPanel() {
   useEffect(() => {
     let cancelled = false;
     setMounted(true);
+
+    // Check if sign-in callout was previously dismissed
+    try {
+      setSignInCalloutDismissed(localStorage.getItem(SIGN_IN_CALLOUT_DISMISSED_KEY) === "1");
+    } catch {
+      setSignInCalloutDismissed(false);
+    }
 
     (async () => {
       // Determine if there are any persisted cards (avoid counting fallback defaults)
@@ -506,19 +526,27 @@ export function NBCardPanel() {
 
         {/* Right Column - Share Buttons */}
         <div className="bg-white rounded-2xl shadow-xl p-6">
-          {!sessionEmail ? (
-            <div className="mb-4 rounded-xl border border-purple-100 bg-purple-50 px-4 py-3">
+          {!sessionEmail && !signInCalloutDismissed ? (
+            <div className="mb-4 rounded-xl border border-purple-100 bg-purple-50 px-4 py-3 relative">
               <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">Sign in to sync across devices</p>
+                <div className="pr-6">
+                  <p className="text-sm font-semibold text-gray-900">Tip: Sign in to sync across devices</p>
                   <p className="text-xs text-gray-700">
-                    Your cards are saved locally by default. Signing in helps you keep them across devices.
+                    Your cards are saved locally on this device. Sign in to keep your cards across devices and avoid losing work if your browser storage is cleared.
                   </p>
                 </div>
                 <Button asChild size="sm" className="shrink-0">
                   <a href={`/uk/login?callbackUrl=${encodeURIComponent("/resources/nb-card")}`}>Sign in</a>
                 </Button>
               </div>
+              <button
+                type="button"
+                onClick={handleDismissSignInCallout}
+                className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors"
+                aria-label="Dismiss sign-in suggestion"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
           ) : null}
           <div id="share-your-profile">

@@ -35,10 +35,14 @@ const PRESET_PALETTE: Array<{ label: string; value: string; swatchClass: string 
   { label: "Gray 900", value: "#111827", swatchClass: "bg-gray-900" },
   { label: "Blue 900", value: "#1E3A8A", swatchClass: "bg-blue-900" },
   { label: "Sky 500", value: "#0EA5E9", swatchClass: "bg-sky-500" },
+  { label: "Teal 500", value: "#14B8A6", swatchClass: "bg-teal-500" },
   { label: "Emerald 500", value: "#10B981", swatchClass: "bg-emerald-500" },
   { label: "Amber 500", value: "#F59E0B", swatchClass: "bg-amber-500" },
+  { label: "Orange 500", value: "#F97316", swatchClass: "bg-orange-500" },
   { label: "Red 500", value: "#EF4444", swatchClass: "bg-red-500" },
+  { label: "Rose 500", value: "#F43F5E", swatchClass: "bg-rose-500" },
   { label: "Purple 500", value: "#A855F7", swatchClass: "bg-purple-500" },
+  { label: "Indigo 500", value: "#6366F1", swatchClass: "bg-indigo-500" },
 ];
 
 function getAspectClass(templateOrientation: TemplateOrientation) {
@@ -58,14 +62,14 @@ function TinyCardPreview({
   const isPortrait = template.orientation === "portrait";
   const textClass = theme.tone === "dark" ? "text-black" : "text-white";
   const thumbFilterClass = template.id.startsWith("minimal_black_v1_")
-    ? "brightness-125 contrast-90 saturate-90"
+    ? "brightness-[1.40] contrast-[0.85] saturate-[0.82]"
     : template.id.startsWith("modern_geometric_v1_")
-      ? "brightness-110 contrast-95 saturate-95"
+      ? "brightness-[1.35] contrast-[0.88] saturate-[0.85]"
       : "";
   const lightenOverlayClass = template.id.startsWith("minimal_black_v1_")
-    ? "bg-white/20"
+    ? "bg-white/45"
     : template.id.startsWith("modern_geometric_v1_")
-      ? "bg-white/10"
+      ? "bg-white/35"
       : null;
   const barOpacityClass = theme.tone === "dark" ? "opacity-50" : "opacity-85";
   const blockOpacityClass = theme.tone === "dark" ? "opacity-40" : "opacity-70";

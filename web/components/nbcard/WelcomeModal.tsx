@@ -59,14 +59,14 @@ export function WelcomeModal({ hasExistingCards, onCreateCard, onUseExample }: W
             Welcome to NB-Card!
           </DialogTitle>
           <DialogDescription className="text-base text-gray-700 pt-2">
-            Create a share-ready digital card in under 60 seconds. No sign-up — your data stays on this device.
+            Create a share-ready card in under 60 seconds. No sign-up required &mdash; your data stays on this device.
           </DialogDescription>
         </DialogHeader>
 
         <div className="py-4 space-y-3">
           <div className="bg-blue-50 border border-blue-100 rounded-lg p-3">
             <p className="text-sm text-gray-700">
-              <strong className="text-blue-700">Saved locally.</strong> This card is stored on this device only —
+              <strong className="text-blue-700">Saved locally.</strong> This card is stored on this device only &mdash;
               nothing is uploaded unless you share.
             </p>
           </div>
@@ -85,6 +85,15 @@ export function WelcomeModal({ hasExistingCards, onCreateCard, onUseExample }: W
             className="w-full sm:w-auto border-purple-300 text-purple-700 hover:bg-purple-50"
           >
             Use Example Template
+          </Button>
+          <Button
+            asChild
+            variant="ghost"
+            className="w-full sm:w-auto text-gray-600 hover:text-gray-900"
+          >
+            <a href={`/uk/login?callbackUrl=${encodeURIComponent("/resources/nb-card")}`}>
+              Sign in to save across devices
+            </a>
           </Button>
         </DialogFooter>
 
