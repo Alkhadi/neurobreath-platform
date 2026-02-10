@@ -35,8 +35,12 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
   const useTemplateMode = Boolean(templateSelection?.backgroundId);
 
   const templateTheme = useTemplateMode ? getTemplateThemeTokens(templateSelection?.backgroundId) : null;
-  const contentTextClass = templateTheme?.tone === "dark" ? "text-black" : "text-white";
-  const contentHoverBgClass = templateTheme?.tone === "dark" ? "hover:bg-black/5" : "hover:bg-white/10";
+  const isLightSurfaceTemplate = Boolean(useTemplateMode && templateTheme?.tone === "dark");
+  const contentTextClass = isLightSurfaceTemplate ? "text-gray-900" : "text-white";
+  const hoverRowClass = isLightSurfaceTemplate ? "hover:bg-black/5" : "hover:bg-white/10";
+  const softPanelClass = isLightSurfaceTemplate ? "bg-black/5" : "bg-white/10";
+  const dividerBorderClass = isLightSurfaceTemplate ? "border-black/10" : "border-white/20";
+  const socialChipClass = isLightSurfaceTemplate ? "bg-black/10 text-gray-900" : "bg-white/20 text-white";
 
   useEffect(() => {
     const el = rootRef.current;
@@ -45,7 +49,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
     const theme = templateTheme;
     const tint = templateSelection?.backgroundColor;
 
-    // Background filter
+    // Template background filter
     el.style.setProperty("--nbcard-template-bg-filter", theme?.backgroundFilter ?? "none");
 
     // Overlays (keep consistent for UI + exports)
@@ -66,7 +70,16 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
       el.style.setProperty("--nbcard-template-tint", "transparent");
       el.style.setProperty("--nbcard-template-tint-alpha", "0");
     }
-  }, [templateSelection?.backgroundColor, templateSelection?.backgroundId, templateTheme]);
+
+    // Accent color (optional)
+    const accent = (profile as unknown as { accentColor?: string }).accentColor;
+    const nextAccent = (accent ?? "").toString().trim();
+    if (/^#[0-9a-fA-F]{6}$/.test(nextAccent)) {
+      el.style.setProperty("--nb-accent", nextAccent);
+    } else {
+      el.style.removeProperty("--nb-accent");
+    }
+  }, [profile, templateSelection?.backgroundColor, templateSelection?.backgroundId, templateTheme]);
   
   // Build template paths from IDs
   // ID format: "modern_geometric_v1_landscape" -> "modern_geometric_landscape_bg.svg"
@@ -259,63 +272,135 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
       ) : null}
 
       {/* TEMPLATE OVERLAY LAYER (z=2) */}
-      {hasTemplateBackground && templateOverlaySrc && (
+      {hasTemplateBackground && templateOverlaySrc ? (
         <div className="absolute inset-0 z-[2] pointer-events-none select-none">
           <CaptureImage src={templateOverlaySrc} alt="Card overlay" className="w-full h-full object-cover" />
         </div>
-      )}
+      ) : null}
 
       {/* CARD CONTENT (z=10) */}
       <div className={cn("relative z-10 p-8", contentTextClass)}>
-        {/* Profile Photo */}
-        <div className="flex justify-center mb-6">
-          <div className="relative group">
-            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-white">
-              {resolvedPhotoUrl ? (
-                <CaptureImage
-                  src={resolvedPhotoUrl}
-                  alt={profile?.fullName ?? "Profile"}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-400 to-blue-500 text-4xl font-bold text-white">
-                  {profile?.fullName?.charAt(0)?.toUpperCase() ?? "A"}
-                </div>
-              )}
-            </div>
-            {showEditButton && onPhotoClick && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onPhotoClick(e);
-                }}
-                className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg hover:scale-110 transition-transform"
-                aria-label="Upload photo"
-              >
-                <svg
-                  className="w-5 h-5 text-purple-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
-              </button>
-            )}
-          </div>
-        </div>
+        {isFlyerPromoPortrait ? (
+                <div className="space-y-4">
+                  {/* Header */}
+                  <div className="rounded-2xl bg-white/10 backdrop-blur-md p-5 text-white">
+                    <h2 className="text-3xl font-bold leading-tight" data-pdf-text={profile.flyerCard?.headline ?? ""}>
+                      {profile.flyerCard?.headline || profile.fullName || "Headline"}
+                    </h2>
+                    {profile.flyerCard?.subheadline || profile.jobTitle ? (
+                      <p className="mt-2 text-base opacity-90" data-pdf-text={profile.flyerCard?.subheadline ?? ""}>
+                        {profile.flyerCard?.subheadline || profile.jobTitle}
+                      </p>
+                    ) : null}
+                  </div>
 
+                  {/* Main panel */}
+                  <div className="rounded-2xl bg-white/95 p-5 text-gray-900">
+                    {profile.profileDescription ? (
+                      <p className="text-sm text-gray-700" data-pdf-text={profile.profileDescription}>
+                        {profile.profileDescription}
+                      </p>
+                    ) : null}
+
+                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                      <div className="flex flex-col gap-2">
+                        <a
+                          href={profile.flyerCard?.ctaUrl || shareUrl}
+                          data-pdf-link={profile.flyerCard?.ctaUrl || shareUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={cn(
+                            "inline-flex items-center justify-center rounded-xl border-2 px-4 py-3 text-sm font-semibold hover:opacity-90 transition-opacity",
+                            styles.accentBorder,
+                            styles.accentText
+                          )}
+                        >
+                          {profile.flyerCard?.ctaText || "Open link"}
+                        </a>
+                        <p className="text-xs text-gray-600 break-all" data-pdf-text={profile.flyerCard?.ctaUrl || shareUrl}>
+                          {profile.flyerCard?.ctaUrl || shareUrl}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center justify-center">
+                        <div className="rounded-xl bg-white p-2 shadow-md">
+                          <QRCodeSVG value={profile.flyerCard?.ctaUrl || shareUrl} size={120} includeMargin level="M" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Contact strip */}
+                  <div className="rounded-2xl bg-black/80 p-4 text-white">
+                    <div className="flex flex-col gap-2 text-sm">
+                      {profile.phone ? (
+                        <a href={`tel:${profile.phone}`} data-pdf-link={`tel:${profile.phone}`} className="underline">
+                          <span data-pdf-text={profile.phone}>{profile.phone}</span>
+                        </a>
+                      ) : null}
+                      {profile.email ? (
+                        <a href={`mailto:${profile.email}`} data-pdf-link={`mailto:${profile.email}`} className="underline">
+                          <span data-pdf-text={profile.email}>{profile.email}</span>
+                        </a>
+                      ) : null}
+                      {profile.website ? (
+                        <a href={profile.website} data-pdf-link={profile.website} className="underline break-all">
+                          <span data-pdf-text={profile.website}>{profile.website}</span>
+                        </a>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+        ) : (
+          <>
+                  {/* Profile Photo */}
+                  <div className="flex justify-center mb-6">
+                    <div className="relative group">
+                      <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-white">
+                        {resolvedPhotoUrl ? (
+                          <CaptureImage
+                            src={resolvedPhotoUrl}
+                            alt={profile?.fullName ?? "Profile"}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-400 to-blue-500 text-4xl font-bold text-white">
+                            {profile?.fullName?.charAt(0)?.toUpperCase() ?? "A"}
+                          </div>
+                        )}
+                      </div>
+                      {showEditButton && onPhotoClick && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onPhotoClick(e);
+                          }}
+                          className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg hover:scale-110 transition-transform"
+                          aria-label="Upload photo"
+                        >
+                          <svg
+                            className={cn("w-5 h-5", styles.accentText)}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 0 01-2-2V9z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 13a3 3 0 11-6 0 3 0 016 0z"
+                            />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                  </div>
         {/* Name & Title */}
         <h2 className={cn("text-3xl font-bold text-center mb-2", styles.signatureFont)}>
           <span data-pdf-text={profile?.fullName ?? ""}>{profile?.fullName ?? "Name"}</span>
@@ -324,20 +409,12 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
           <span data-pdf-text={profile?.jobTitle ?? ""}>{profile?.jobTitle ?? "Job Title"}</span>
         </p>
 
-        {isFlyerPromoPortrait ? (
-          <div className="mb-6 flex items-center justify-center">
-            <div className="rounded-xl bg-white p-2 shadow-md">
-              <QRCodeSVG value={shareUrl} size={110} includeMargin level="M" />
-            </div>
-          </div>
-        ) : null}
-
         {/* Contact Info */}
         <div className="space-y-3 mb-6">
           <a
             href={`tel:${profile?.phone ?? ""}`}
             data-pdf-link={`tel:${profile?.phone ?? ""}`}
-            className={cn("flex items-center gap-3 p-2 rounded-lg transition-colors", contentHoverBgClass)}
+            className={cn("flex items-center gap-3 p-2 rounded-lg transition-colors", hoverRowClass)}
           >
             <FaPhone className="text-xl" />
             <span className="text-lg" data-pdf-text={profile?.phone ?? ""}>
@@ -347,7 +424,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
           <a
             href={`mailto:${profile?.email ?? ""}`}
             data-pdf-link={`mailto:${profile?.email ?? ""}`}
-            className={cn("flex items-center gap-3 p-2 rounded-lg transition-colors", contentHoverBgClass)}
+            className={cn("flex items-center gap-3 p-2 rounded-lg transition-colors", hoverRowClass)}
           >
             <FaEnvelope className="text-xl" />
             <span className="text-lg" data-pdf-text={profile?.email ?? ""}>
@@ -377,7 +454,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
               data-pdf-link={profile.website}
               target="_blank"
               rel="noopener noreferrer"
-              className={cn("flex items-center gap-3 p-2 rounded-lg transition-colors", contentHoverBgClass)}
+              className={cn("flex items-center gap-3 p-2 rounded-lg transition-colors", hoverRowClass)}
             >
               <FaGlobe className="text-xl" />
               <span className="text-lg break-all" data-pdf-text={profile.website}>
@@ -401,7 +478,8 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
                 rel="noopener noreferrer"
                 className={cn(
                   "backdrop-blur-md p-3 rounded-full transition-all hover:scale-110",
-                  templateTheme?.tone === "dark" ? "bg-black/5 text-black hover:bg-black/10" : "bg-white/20 text-white hover:bg-white/30"
+                  socialChipClass,
+                  isLightSurfaceTemplate ? "hover:bg-black/15" : "hover:bg-white/30"
                 )}
                 aria-label={`Visit ${social.url}`}
               >
@@ -413,13 +491,13 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
 
         {/* Descriptions */}
         {profile?.profileDescription && (
-          <div className={cn("mt-6 backdrop-blur-md p-4 rounded-lg", templateTheme?.tone === "dark" ? "bg-black/5" : "bg-white/10")}>
+          <div className={cn("mt-6 backdrop-blur-md p-4 rounded-lg", softPanelClass)}>
             <h3 className="font-semibold mb-2">Profile</h3>
             <p className="text-sm opacity-90">{profile.profileDescription}</p>
           </div>
         )}
         {profile?.businessDescription && (
-          <div className={cn("mt-3 backdrop-blur-md p-4 rounded-lg", templateTheme?.tone === "dark" ? "bg-black/5" : "bg-white/10")}>
+          <div className={cn("mt-3 backdrop-blur-md p-4 rounded-lg", softPanelClass)}>
             <h3 className="font-semibold mb-2">Business</h3>
             <p className="text-sm opacity-90">{profile.businessDescription}</p>
           </div>
@@ -427,7 +505,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
 
         {/* Category-specific Details Blocks */}
         {profile?.cardCategory === "ADDRESS" && profile?.addressCard && (
-          <div className="mt-6 bg-white/10 backdrop-blur-md p-4 rounded-lg">
+          <div className={cn("mt-6 backdrop-blur-md p-4 rounded-lg", softPanelClass)}>
             <h3 className="font-semibold mb-3 text-base">Address</h3>
             <div className="text-sm space-y-1">
               {profile.addressCard.recipientName && (
@@ -447,7 +525,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
                 </p>
               )}
               {(profile.addressCard.addressLine1 || profile.addressCard.mapQueryOverride) && (
-                <div className="mt-3 pt-3 border-t border-white/20">
+                <div className={cn("mt-3 pt-3 border-t", dividerBorderClass)}>
                   <p className="text-xs opacity-75 mb-1">Find Address:</p>
                   <a
                     href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -484,7 +562,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
               )}
 
               {(profile.addressCard.phoneLabel || profile.addressCard.emailLabel) && (profile.phone || profile.email) ? (
-                <div className="mt-3 pt-3 border-t border-white/20 space-y-2">
+                <div className={cn("mt-3 pt-3 border-t space-y-2", dividerBorderClass)}>
                   {profile.phone ? (
                     <a
                       href={`tel:${profile.phone}`}
@@ -512,7 +590,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
         )}
 
         {profile?.cardCategory === "BANK" && profile?.bankCard && (
-          <div className="mt-6 bg-white/10 backdrop-blur-md p-4 rounded-lg">
+          <div className={cn("mt-6 backdrop-blur-md p-4 rounded-lg", softPanelClass)}>
             <h3 className="font-semibold mb-3 text-base">Bank Details</h3>
             <div className="text-sm space-y-2">
               {profile.bankCard.bankName && (
@@ -557,7 +635,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
                 </p>
               )}
               {profile.bankCard.paymentLink && (
-                <div className="mt-3 pt-3 border-t border-white/20">
+                <div className={cn("mt-3 pt-3 border-t", dividerBorderClass)}>
                   <a
                     href={profile.bankCard.paymentLink}
                     data-pdf-link={profile.bankCard.paymentLink}
@@ -574,7 +652,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
         )}
 
         {profile?.cardCategory === "BUSINESS" && profile?.businessCard && (
-          <div className="mt-6 bg-white/10 backdrop-blur-md p-4 rounded-lg">
+          <div className={cn("mt-6 backdrop-blur-md p-4 rounded-lg", softPanelClass)}>
             <h3 className="font-semibold mb-3 text-base">Business</h3>
             <div className="text-sm space-y-2">
               {profile.businessCard.companyName && (
@@ -625,7 +703,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
                 </p>
               )}
               {profile.businessCard.bookingLink && (
-                <div className="mt-3 pt-3 border-t border-white/20">
+                <div className={cn("mt-3 pt-3 border-t", dividerBorderClass)}>
                   <a
                     href={profile.businessCard.bookingLink}
                     data-pdf-link={profile.businessCard.bookingLink}
@@ -639,6 +717,8 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
               )}
             </div>
           </div>
+        )}
+          </>
         )}
       </div>
     </div>

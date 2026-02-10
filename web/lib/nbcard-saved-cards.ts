@@ -1,6 +1,6 @@
 import type { Profile } from "@/lib/utils";
 
-export type SavedCardCategory = "PROFILE" | "ADDRESS" | "BANK" | "BUSINESS";
+export type SavedCardCategory = "PROFILE" | "ADDRESS" | "BANK" | "BUSINESS" | "FLYER";
 
 export type SavedCardRecord = {
   id: string; // also the Profile.id that will be loaded/shared
@@ -55,6 +55,8 @@ export function getCategoryFromProfile(profile: Profile): SavedCardCategory {
       return "BANK";
     case "BUSINESS":
       return "BUSINESS";
+    case "FLYER":
+      return "FLYER";
     default:
       return "PROFILE";
   }
@@ -70,6 +72,19 @@ export function normalizeProfileForCategory(profile: Profile, category: SavedCar
     };
   }
 
+  if (category === "FLYER") {
+    const { addressCard: _addressCard, bankCard: _bankCard, businessCard: _businessCard, ...rest } = profile;
+    return {
+      ...rest,
+      cardCategory: "FLYER",
+      socialMedia: profile.socialMedia ?? {},
+      flyerCard: profile.flyerCard ?? {},
+      addressCard: undefined,
+      bankCard: undefined,
+      businessCard: undefined,
+    };
+  }
+
   const cardCategory = category;
 
   return {
@@ -79,6 +94,7 @@ export function normalizeProfileForCategory(profile: Profile, category: SavedCar
     addressCard: cardCategory === "ADDRESS" ? (profile.addressCard ?? {}) : undefined,
     bankCard: cardCategory === "BANK" ? (profile.bankCard ?? {}) : undefined,
     businessCard: cardCategory === "BUSINESS" ? (profile.businessCard ?? {}) : undefined,
+    flyerCard: undefined,
   };
 }
 

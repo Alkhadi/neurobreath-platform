@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { FaChevronDown, FaEdit, FaPlus, FaUsers } from "react-icons/fa";
-import { getSession, signIn } from "next-auth/react";
+import { getSession } from "next-auth/react";
 
 import type { Contact, Profile } from "@/lib/utils";
 import { defaultProfile } from "@/lib/utils";
@@ -20,6 +20,7 @@ import { WelcomeModal } from "./WelcomeModal";
 import { DataControlsCenter } from "./DataControlsCenter";
 import { HelpButton } from "./HelpButton";
 import { getExampleCardPreset, resetOnboarding } from "@/lib/nb-card/onboarding";
+import { Button } from "@/components/ui/button";
 
 const SOCIAL_PLACEHOLDER_VALUES = new Set([
   "https://instagram.com/username",
@@ -63,7 +64,7 @@ function detectStandalone(): boolean {
 
 export function NBCardPanel() {
   const [mounted, setMounted] = useState(false);
-  const [isSignedIn, setIsSignedIn] = useState<boolean | null>(null);
+  const [sessionEmail, setSessionEmail] = useState<string | null>(null);
   const [profiles, setProfiles] = useState<Profile[]>([defaultProfile]);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -75,6 +76,22 @@ export function NBCardPanel() {
   const [isInstalled, setIsInstalled] = useState(false);
   const [templateSelection, setTemplateSelection] = useState<TemplateSelection>({});
   const [pendingTemplateSelection, setPendingTemplateSelection] = useState<TemplateSelection | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getSession()
+      .then((s) => {
+        if (cancelled) return;
+        const email = (s?.user?.email ?? "").toString().trim().toLowerCase();
+        setSessionEmail(email && email.includes("@") ? email : null);
+      })
+      .catch(() => {
+        // ignore
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Load NBCard state + register SW
   useEffect(() => {
@@ -130,14 +147,6 @@ export function NBCardPanel() {
       } catch {
         // Don't block page; SW is best-effort
       }
-
-      // Optional: check auth status to encourage cross-device sync (local-first remains default).
-      try {
-        const session = await getSession();
-        if (!cancelled) setIsSignedIn(Boolean(session?.user));
-      } catch {
-        if (!cancelled) setIsSignedIn(false);
-      }
     })().catch((e) => console.error("Failed to load NBCard state", e));
 
     const updateInstalled = () => setIsInstalled(detectStandalone());
@@ -187,7 +196,7 @@ export function NBCardPanel() {
 
   const handleSaveProfile = (profile: Profile) => {
     if (isNewProfile) {
-      const id = Date.now().toString();
+      const id = profile.id && profile.id.trim().length > 0 ? profile.id : Date.now().toString();
       setProfiles([...profiles, { ...profile, id }]);
       setCurrentProfileIndex(profiles.length);
 
@@ -209,10 +218,10 @@ export function NBCardPanel() {
     setShowProfileManager(false);
     setEditingProfile(null);
     setIsNewProfile(false);
-  };
 
   const handleCreateFromTemplate = (template: Template) => {
-    const isFlyer = template.id.startsWith('flyer_promo_');
+    const isFlyer = template.id.startsWith("flyer_promo_");
+
     setEditingProfile({
       id: "",
       fullName: "",
@@ -225,20 +234,29 @@ export function NBCardPanel() {
       socialMedia: {},
       ...(isFlyer
         ? {
-            cardCategory: "BUSINESS" as const,
-            businessCard: {},
+            cardCategory: "FLYER" as const,
+            flyerCard: {
+              headline: "",
+              subheadline: "",
+              ctaText: "",
+              ctaUrl: "",
+            },
           }
         : {}),
     });
+
     setIsNewProfile(true);
     setPendingTemplateSelection({
       backgroundId: template.id,
       overlayId: undefined,
       orientation: template.orientation,
-      // Keep current backgroundColor selection if already set.
       backgroundColor: templateSelection.backgroundColor,
     });
     setShowProfileManager(true);
+
+    toast.message("New card from template", {
+      description: `Add your details and save to finish creating “${template.label}”.`,
+    });
   };
 
   const handleDeleteProfile = () => {
@@ -487,6 +505,21 @@ export function NBCardPanel() {
 
         {/* Right Column - Share Buttons */}
         <div className="bg-white rounded-2xl shadow-xl p-6">
+          {!sessionEmail ? (
+            <div className="mb-4 rounded-xl border border-purple-100 bg-purple-50 px-4 py-3">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">Sign in to sync across devices</p>
+                  <p className="text-xs text-gray-700">
+                    Your cards are saved locally by default. Signing in helps you keep them across devices.
+                  </p>
+                </div>
+                <Button asChild size="sm" className="shrink-0">
+                  <a href={`/uk/login?callbackUrl=${encodeURIComponent("/resources/nb-card")}`}>Sign in</a>
+                </Button>
+              </div>
+            </div>
+          ) : null}
           <div id="share-your-profile">
             <ShareButtons
               profile={currentProfile}
@@ -510,22 +543,6 @@ export function NBCardPanel() {
           onCreateFromTemplate={handleCreateFromTemplate}
         />
       </div>
-
-      {/* Optional sign-in encouragement (local-first by default) */}
-      {isSignedIn === false ? (
-        <div className="mb-8 bg-white rounded-2xl shadow-xl p-6">
-          <h3 className="text-lg font-bold text-gray-800 mb-1">Sync across devices (optional)</h3>
-          <p className="text-sm text-gray-600 mb-4">
-            Your NB-Card stays on this device by default. Sign in if you want cross-device access.
-          </p>
-          <button
-            onClick={() => signIn(undefined, { callbackUrl: window.location.href })}
-            className="inline-flex items-center justify-center bg-gradient-to-r from-purple-600 to-blue-600 text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-semibold"
-          >
-            Sign in
-          </button>
-        </div>
-      ) : null}
 
       {/* Contact Capture Section */}
       <div className="mb-8">

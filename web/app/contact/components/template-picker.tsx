@@ -41,7 +41,19 @@ const PRESET_PALETTE: Array<{ label: string; value: string; swatchClass: string 
   { label: "Purple 500", value: "#A855F7", swatchClass: "bg-purple-500" },
 ];
 
-function TinyCardPreview({ template, selected, onSelect }: { template: Template; selected: boolean; onSelect: () => void }) {
+function getAspectClass(templateOrientation: TemplateOrientation) {
+  return templateOrientation === "portrait" ? "aspect-[3/4]" : "aspect-video";
+}
+
+function TinyCardPreview({
+  template,
+  selected,
+  onSelect,
+}: {
+  template: Template;
+  selected: boolean;
+  onSelect: () => void;
+}) {
   const theme = getTemplateThemeTokens(template.id);
   const isPortrait = template.orientation === "portrait";
   const textClass = theme.tone === "dark" ? "text-black" : "text-white";
@@ -62,19 +74,17 @@ function TinyCardPreview({ template, selected, onSelect }: { template: Template;
     <button
       type="button"
       onClick={onSelect}
-      className={`relative group rounded-lg overflow-hidden border-2 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 focus-visible:ring-offset-2 ${
-        selected ? "border-purple-600 ring-2 ring-purple-600 ring-offset-2" : "border-gray-200 hover:border-purple-400"
-      }`}
+      className={
+        "relative group rounded-lg overflow-hidden border-2 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 focus-visible:ring-offset-2 " +
+        (selected
+          ? "border-purple-600 ring-2 ring-purple-600 ring-offset-2"
+          : "border-gray-200 hover:border-purple-400")
+      }
       title={template.notes || template.label}
     >
       <div className={`relative ${isPortrait ? "aspect-[3/4]" : "aspect-video"} bg-gray-100`} aria-hidden="true">
-        <Image
-          src={template.thumb}
-          alt={template.label}
-          fill
-          className={`object-cover ${thumbFilterClass}`}
-          unoptimized
-        />
+        <Image src={template.thumb} alt={template.label} fill className={`object-cover ${thumbFilterClass}`} unoptimized />
+
         {lightenOverlayClass ? <div className={`absolute inset-0 ${lightenOverlayClass}`} /> : null}
 
         {/* Mini layout preview (avatar + text blocks) */}
@@ -114,14 +124,14 @@ function TinyCardPreview({ template, selected, onSelect }: { template: Template;
 }
 
 export function TemplatePicker({ selection, orientation, onSelectionChange, onCreateFromTemplate }: TemplatePickerProps) {
-    const rootRef = React.useRef<HTMLDivElement | null>(null);
+  const rootRef = React.useRef<HTMLDivElement | null>(null);
 
-    React.useEffect(() => {
-      const el = rootRef.current;
-      if (!el) return;
-      // Used by the custom palette swatch (no JSX inline styles).
-      el.style.setProperty("--nbcard-template-custom-color", selection.backgroundColor || "#ffffff");
-    }, [selection.backgroundColor]);
+  React.useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    // Used by the custom palette swatch (no JSX inline styles).
+    el.style.setProperty("--nbcard-template-custom-color", selection.backgroundColor || "#ffffff");
+  }, [selection.backgroundColor]);
 
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
@@ -136,6 +146,8 @@ export function TemplatePicker({ selection, orientation, onSelectionChange, onCr
     setReloadKey((k) => k + 1);
   }, []);
 
+  const activeOrientation: TemplateOrientation = selection.orientation || orientation || "landscape";
+
   React.useEffect(() => {
     let cancelled = false;
 
@@ -143,25 +155,28 @@ export function TemplatePicker({ selection, orientation, onSelectionChange, onCr
       .then((manifest) => {
         if (cancelled) return;
 
-        // Backgrounds: include both orientations so portrait templates (Flyer) are visible.
-        const filteredBackgrounds = filterTemplates(manifest.templates, {
-          type: 'background',
-        }).sort((a, b) => {
-          // Keep Flyer near the top for predictability.
-          const aFlyer = a.id.startsWith('flyer_promo_') ? -1 : 0;
-          const bFlyer = b.id.startsWith('flyer_promo_') ? -1 : 0;
-          if (aFlyer !== bFlyer) return aFlyer - bFlyer;
-          // Then portrait before landscape to keep Flyer visible in common grids.
-          if (a.orientation !== b.orientation) return a.orientation === 'portrait' ? -1 : 1;
+        // Deduplicate templates by ID (defensive: manifests can be merged/extended)
+        const deduped = Array.from(new Map(manifest.templates.map((t) => [t.id, t])).values());
+
+        const allBackgrounds = filterTemplates(deduped, { type: "background" });
+        const sortedBackgrounds = [...allBackgrounds].sort((a, b) => {
+          const aFlyer = a.id.startsWith("flyer_promo_") ? 1 : 0;
+          const bFlyer = b.id.startsWith("flyer_promo_") ? 1 : 0;
+          if (aFlyer !== bFlyer) return bFlyer - aFlyer;
+
+          const aMatch = a.orientation === activeOrientation ? 1 : 0;
+          const bMatch = b.orientation === activeOrientation ? 1 : 0;
+          if (aMatch !== bMatch) return bMatch - aMatch;
+
+          // Prefer portrait slightly so flyer templates remain visible.
+          if (a.orientation !== b.orientation) return a.orientation === "portrait" ? -1 : 1;
+
           return a.label.localeCompare(b.label);
         });
 
-        const filteredOverlays = filterTemplates(manifest.templates, {
-          type: 'overlay',
-          orientation: orientation || selection.orientation || 'landscape',
-        });
+        const filteredOverlays = filterTemplates(deduped, { type: "overlay", orientation: activeOrientation });
 
-        setBackgrounds(filteredBackgrounds);
+        setBackgrounds(sortedBackgrounds);
         setOverlays(filteredOverlays);
         setLoading(false);
       })
@@ -176,14 +191,14 @@ export function TemplatePicker({ selection, orientation, onSelectionChange, onCr
     return () => {
       cancelled = true;
     };
-  }, [orientation, selection.orientation, reloadKey]);
+  }, [activeOrientation, reloadKey]);
 
   const handleBackgroundSelect = (templateId: string) => {
-    const picked = backgrounds.find((b) => b.id === templateId);
+    const picked = backgrounds.find((t) => t.id === templateId);
     onSelectionChange({
       ...selection,
       backgroundId: templateId,
-      orientation: picked?.orientation || orientation || selection.orientation || 'landscape',
+      orientation: picked?.orientation ?? activeOrientation,
     });
     toast.success('Background updated');
   };
@@ -192,7 +207,7 @@ export function TemplatePicker({ selection, orientation, onSelectionChange, onCr
     onSelectionChange({
       ...selection,
       overlayId: templateId,
-      orientation: orientation || 'landscape',
+      orientation: activeOrientation,
     });
     toast.success(templateId ? 'Overlay updated' : 'Overlay removed');
   };
@@ -242,12 +257,8 @@ export function TemplatePicker({ selection, orientation, onSelectionChange, onCr
       <CardContent ref={rootRef}>
         <Tabs defaultValue="backgrounds" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="backgrounds">
-              Backgrounds ({backgrounds.length})
-            </TabsTrigger>
-            <TabsTrigger value="overlays">
-              Overlays ({overlays.length})
-            </TabsTrigger>
+            <TabsTrigger value="backgrounds">Backgrounds ({backgrounds.length})</TabsTrigger>
+            <TabsTrigger value="overlays">Overlays ({overlays.length})</TabsTrigger>
           </TabsList>
 
           <TabsContent value="backgrounds" className="space-y-4">
@@ -348,79 +359,37 @@ export function TemplatePicker({ selection, orientation, onSelectionChange, onCr
             {overlays.length === 0 ? (
               <p className="text-sm text-muted-foreground py-4">No overlays available</p>
             ) : (
-              <>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {/* None option */}
-                  <button
-                    onClick={() => handleOverlaySelect(undefined)}
-                    className={`
-                      relative group rounded-lg overflow-hidden border-2 transition-all aspect-video
-                      ${!selection.overlayId
-                        ? 'border-purple-600 ring-2 ring-purple-600 ring-offset-2'
-                        : 'border-gray-200 hover:border-purple-400'
-                      }
-                    `}
-                  >
-                    <div className="h-full flex items-center justify-center bg-gray-50">
-                      <span className="text-sm font-medium text-gray-600">None</span>
-                    </div>
-                    {!selection.overlayId && (
-                      <div className="absolute top-2 right-2 bg-purple-600 text-white rounded-full p-1.5">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                    )}
-                  </button>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleOverlaySelect(undefined)}
+                  className={
+                    "relative group rounded-lg overflow-hidden border-2 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 focus-visible:ring-offset-2 " +
+                    getAspectClass(activeOrientation) +
+                    " " +
+                    (!selection.overlayId
+                      ? "border-purple-600 ring-2 ring-purple-600 ring-offset-2"
+                      : "border-gray-200 hover:border-purple-400")
+                  }
+                  title="No overlay"
+                >
+                  <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+                    <span className="text-sm font-medium text-gray-600">None</span>
+                  </div>
+                </button>
 
-                  {overlays.map((template) => {
-                    const isSelected = selection.overlayId === template.id;
-                    return (
-                      <button
-                        key={template.id}
-                        onClick={() => handleOverlaySelect(template.id)}
-                        className={`
-                          relative group rounded-lg overflow-hidden border-2 transition-all
-                          ${isSelected
-                            ? 'border-purple-600 ring-2 ring-purple-600 ring-offset-2'
-                            : 'border-gray-200 hover:border-purple-400'
-                          }
-                        `}
-                        title={template.notes || template.label}
-                      >
-                        <div className="aspect-video relative bg-gray-100">
-                          <Image
-                            src={template.thumb}
-                            alt={template.label}
-                            fill
-                            className="object-cover"
-                            unoptimized // SVG thumbs don't need optimization
-                          />
-                        </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <div className="absolute bottom-0 left-0 right-0 p-2 text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                          {template.label}
-                        </div>
-                        {isSelected && (
-                          <div className="absolute top-2 right-2 bg-purple-600 text-white rounded-full p-1.5">
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                              <path
-                                fillRule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          </div>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </>
+                {overlays.map((template) => {
+                  const isSelected = selection.overlayId === template.id;
+                  return (
+                    <TinyCardPreview
+                      key={template.id}
+                      template={template}
+                      selected={isSelected}
+                      onSelect={() => handleOverlaySelect(template.id)}
+                    />
+                  );
+                })}
+              </div>
             )}
           </TabsContent>
         </Tabs>

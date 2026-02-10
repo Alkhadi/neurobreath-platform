@@ -20,3 +20,11 @@
   background-color: #000;
   opacity: var(--nbcard-template-readability-alpha, 0.35);
 }
+
+.accentText {
+  color: var(--nb-accent, inherit);
+}
+
+.accentBorder {
+  border-color: var(--nb-accent, currentColor);
+}
