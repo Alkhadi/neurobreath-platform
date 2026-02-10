@@ -95,7 +95,7 @@ export async function withLocalServer<T>(fn: (baseURL: string) => Promise<T>, op
   const envBaseURL = process.env.BASE_URL
   const requestedBaseURL = (opts.baseURL ?? envBaseURL)?.replace(/\/$/, '')
   const preferredPort = opts.port ?? Number(process.env.LOCAL_SERVER_PORT || 3000)
-  const healthPath = opts.healthPath ?? '/api/health'
+  const healthPath = opts.healthPath ?? '/api/healthz'
 
   // If a baseURL is explicitly provided, prefer it. If it's local and not healthy,
   // start a server for it (so gates can run with BASE_URL=http://localhost:3001).
