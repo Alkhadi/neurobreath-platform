@@ -7,11 +7,9 @@
 
 **Root Cause**: Incorrect/deprecated Turnstile test keys were being used.
 
-**Solution**: Updated `.env.local` with the correct official Cloudflare Turnstile test keys:
-- `NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA` (officially designated test key)
-- `TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA` (officially designated test key)
+**Solution**: Updated `.env.local` to use Cloudflare Turnstile test keys for local development.
 
-These test keys are guaranteed to work on all domains (including localhost).
+Note: Do not commit any Turnstile keys (including test keys) into the repository. Keep keys only in `.env.local` / deployment environment variables.
 
 ### 2. **Email Service Not Configured Locally**
 **Problem**: Attempting to send real emails during local development failed due to missing proper configuration.
@@ -58,10 +56,10 @@ CONTACT_FROM="NeuroBreath Support <onboarding@resend.dev>"
 # Skip actual email sending in local development (logs to console instead)
 SKIP_EMAIL_SEND=true
 
-# Turnstile (using official Cloudflare test keys - always passes validation)
-# These work on ALL domains including localhost
-NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
-TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+# Turnstile (Contact form spam protection)
+# Use Cloudflare Turnstile test keys for local development (kept in .env.local)
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=your_turnstile_site_key
+TURNSTILE_SECRET_KEY=your_turnstile_secret_key
 ```
 
 ### Testing Locally

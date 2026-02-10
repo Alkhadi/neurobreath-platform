@@ -7,7 +7,7 @@ Users reported the contact form failing with "Invalid domain" error on both loca
 
 ### 1. Incorrect Turnstile Test Keys
 The `.env.local` file contained deprecated/incorrect Turnstile test keys:
-- Old keys: `0x4AAAAAACN6CvhZgQVtb_gn` (Site) / `0x4AAAAAACN6CqqyYMgcbfhMmbOrk7tj5B8` (Secret)
+- Old keys were hardcoded in docs/config and were not valid for all domains
 - These don't work on all domains, causing "Invalid domain" error
 
 ### 2. No Development Mode for Email Sending
@@ -23,8 +23,8 @@ API errors were either too cryptic or exposed internal details, making debugging
 
 Changed to official Cloudflare test keys that work everywhere:
 ```dotenv
-NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
-TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=your_turnstile_site_key
+TURNSTILE_SECRET_KEY=your_turnstile_secret_key
 ```
 
 **Impact**: Verification now passes on localhost and all test environments.
