@@ -7,6 +7,7 @@ import { PDFDocument, PDFName } from "pdf-lib";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import Image from "next/image";
+import Link from "next/link";
 import { getSession } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
@@ -436,6 +437,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   const [isPrivacyOpen, setIsPrivacyOpen] = React.useState(false);
   const [isShareFallbackOpen, setIsShareFallbackOpen] = React.useState(false);
   const [isQrVcard, setIsQrVcard] = React.useState(false);
+  const [isPrintOpen, setIsPrintOpen] = React.useState(false);
   const [busyKey, setBusyKey] = React.useState<string | null>(null);
 
   const [isRedactionOpen, setIsRedactionOpen] = React.useState(false);
@@ -748,6 +750,10 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
         }
       });
     });
+  }
+
+  function handlePrint() {
+    setIsPrintOpen(true);
   }
 
   function openWhatsapp() {
@@ -1245,6 +1251,11 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
         <div>
           <h2 className="text-lg font-semibold">Share Your Profile</h2>
           <p className="text-sm text-muted-foreground">Export as QR/PDF/vCard/image, or share via WhatsApp, email, or SMS.</p>
+          {!sessionEmail ? (
+            <p className="mt-2 text-sm text-purple-600 font-medium">
+              💡 <Link href="/signin" className="underline hover:text-purple-700">Sign in</Link> to save your cards across devices and access advanced features.
+            </p>
+          ) : null}
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -1270,6 +1281,12 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
               <DropdownMenuItem onClick={() => setIsQrOpen(true)}>
                 <QrCode className="mr-2 h-4 w-4" />
                 QR Code
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handlePrint} disabled={!!busyKey}>
+                <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
+                Print
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleDownloadPdf} disabled={!!busyKey}>
                 Download PDF
@@ -2506,6 +2523,62 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           <DialogFooter>
             <Button variant="secondary" onClick={() => setIsShareFallbackOpen(false)}>
               Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isPrintOpen} onOpenChange={setIsPrintOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Print your card</DialogTitle>
+            <DialogDescription>
+              Select a paper size and print your business card.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsPrintOpen(false);
+                window.print();
+              }}
+            >
+              A4 (210×297mm)
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsPrintOpen(false);
+                window.print();
+              }}
+            >
+              A3 (297×420mm)
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsPrintOpen(false);
+                window.print();
+              }}
+            >
+              A2 (420×594mm)
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsPrintOpen(false);
+                window.print();
+              }}
+            >
+              Letter (8.5×11in)
+            </Button>
+          </div>
+
+          <DialogFooter>
+            <Button variant="secondary" onClick={() => setIsPrintOpen(false)}>
+              Cancel
             </Button>
           </DialogFooter>
         </DialogContent>

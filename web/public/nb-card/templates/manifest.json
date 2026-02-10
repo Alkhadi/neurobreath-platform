@@ -1,82 +1,83 @@
 {
-  "version": "2026-02-09",
+  "version": "2026-02-10",
   "templates": [
     {
-      "id": "modern_geometric_v1_landscape",
-      "label": "Modern Geometric (Landscape)",
+      "id": "modern-geometric-landscape",
+      "label": "Modern Geometric",
       "category": "Business",
       "type": "background",
       "orientation": "landscape",
-      "src": "/nb-card/templates/backgrounds/modern_geometric_landscape_bg.svg",
-      "thumb": "/nb-card/templates/thumbs/modern_geometric_landscape_bg.thumb.svg",
+      "src": "/nb-card/templates/backgrounds/modern-geometric-landscape.svg",
+      "thumb": "/nb-card/templates/backgrounds/modern-geometric-landscape.svg",
+      "recommendedWidth": 1600,
+      "recommendedHeight": 900,
       "recommendedFor": ["PROFILE", "BUSINESS"],
-      "notes": "Bold diagonals with blue-cyan and amber accents. Best for white text overlays."
+      "notes": "Bold navy diagonals with blue and amber accents on clean white base."
     },
     {
-      "id": "modern_geometric_v1_portrait",
-      "label": "Modern Geometric (Portrait)",
-      "category": "Profile",
-      "type": "background",
-      "orientation": "portrait",
-      "src": "/nb-card/templates/backgrounds/modern_geometric_portrait_bg.svg",
-      "thumb": "/nb-card/templates/thumbs/modern_geometric_portrait_bg.thumb.svg",
-      "recommendedFor": ["PROFILE", "BUSINESS"],
-      "notes": "Bold diagonals with blue-cyan and amber accents. Best for white text overlays."
-    },
-    {
-      "id": "minimal_black_v1_landscape",
-      "label": "Minimal Black (Landscape)",
+      "id": "minimal-black-landscape",
+      "label": "Minimal Black",
       "category": "Business",
       "type": "background",
       "orientation": "landscape",
-      "src": "/nb-card/templates/backgrounds/minimal_black_landscape_bg.svg",
-      "thumb": "/nb-card/templates/thumbs/minimal_black_landscape_bg.thumb.svg",
+      "src": "/nb-card/templates/backgrounds/minimal-black-landscape.svg",
+      "thumb": "/nb-card/templates/backgrounds/minimal-black-landscape.svg",
+      "recommendedWidth": 1600,
+      "recommendedHeight": 900,
       "recommendedFor": ["PROFILE", "BUSINESS"],
-      "notes": "Near-black premium minimal with subtle linework. Best for white or light-grey text."
+      "notes": "Premium dark theme with elegant curved linework and subtle accents."
     },
     {
-      "id": "minimal_black_v1_portrait",
-      "label": "Minimal Black (Portrait)",
-      "category": "Profile",
-      "type": "background",
-      "orientation": "portrait",
-      "src": "/nb-card/templates/backgrounds/minimal_black_portrait_bg.svg",
-      "thumb": "/nb-card/templates/thumbs/minimal_black_portrait_bg.thumb.svg",
-      "recommendedFor": ["PROFILE", "BUSINESS"],
-      "notes": "Near-black premium minimal with subtle linework. Best for white or light-grey text."
-    },
-    {
-      "id": "address_blue_v1_landscape",
-      "label": "Address Blue Diagonal (Landscape)",
+      "id": "address-blue-diagonal-landscape",
+      "label": "Address Blue Diagonal",
       "category": "Address",
       "type": "background",
       "orientation": "landscape",
-      "src": "/nb-card/templates/backgrounds/address_blue_diagonal_landscape_bg.svg",
-      "thumb": "/nb-card/templates/thumbs/address_blue_diagonal_landscape_bg.thumb.svg",
-      "recommendedFor": ["ADDRESS"],
-      "notes": "Blue diagonal with large white content zone. Dark text on white area, white text on blue area."
+      "src": "/nb-card/templates/backgrounds/address-blue-diagonal-landscape.svg",
+      "thumb": "/nb-card/templates/backgrounds/address-blue-diagonal-landscape.svg",
+      "recommendedWidth": 1600,
+      "recommendedHeight": 900,
+      "recommendedFor": ["ADDRESS", "BUSINESS"],
+      "notes": "Blue gradient with large diagonal white content zone."
     },
     {
-      "id": "ink_frame_v1_portrait",
-      "label": "Ink Frame Overlay (Portrait)",
-      "category": "Bank",
-      "type": "overlay",
-      "orientation": "portrait",
-      "src": "/nb-card/templates/overlays/ink_frame_overlay_portrait.svg",
-      "thumb": "/nb-card/templates/thumbs/ink_frame_overlay_portrait.thumb.svg",
-      "recommendedFor": ["BANK", "PROFILE"],
-      "notes": "Decorative frame overlay with transparent center. Layer over any background at z-index 2."
-    },
-    {
-      "id": "flyer_promo_v1_portrait",
-      "label": "Flyer Promo (Portrait)",
-      "category": "Business",
+      "id": "modern-geometric-portrait",
+      "label": "Modern Geometric",
+      "category": "Profile",
       "type": "background",
       "orientation": "portrait",
-      "src": "/nb-card/templates/backgrounds/flyer_promo_portrait_bg.svg",
-      "thumb": "/nb-card/templates/thumbs/flyer_promo_portrait_bg.thumb.svg",
+      "src": "/nb-card/templates/backgrounds/modern-geometric-portrait.svg",
+      "thumb": "/nb-card/templates/backgrounds/modern-geometric-portrait.svg",
+      "recommendedWidth": 900,
+      "recommendedHeight": 1200,
+      "recommendedFor": ["PROFILE", "BUSINESS"],
+      "notes": "Bold navy diagonals with blue and amber accents on clean white base."
+    },
+    {
+      "id": "minimal-black-portrait",
+      "label": "Minimal Black",
+      "category": "Profile",
+      "type": "background",
+      "orientation": "portrait",
+      "src": "/nb-card/templates/backgrounds/minimal-black-portrait.svg",
+      "thumb": "/nb-card/templates/backgrounds/minimal-black-portrait.svg",
+      "recommendedWidth": 900,
+      "recommendedHeight": 1200,
+      "recommendedFor": ["PROFILE", "BUSINESS"],
+      "notes": "Premium dark theme with elegant curved linework and subtle accents."
+    },
+    {
+      "id": "flyer-promo-portrait",
+      "label": "Flyer Promo",
+      "category": "Flyer",
+      "type": "background",
+      "orientation": "portrait",
+      "src": "/nb-card/templates/backgrounds/flyer-promo-portrait.svg",
+      "thumb": "/nb-card/templates/backgrounds/flyer-promo-portrait.svg",
+      "recommendedWidth": 800,
+      "recommendedHeight": 1200,
       "recommendedFor": ["FLYER", "BUSINESS", "PROFILE"],
-      "notes": "Portrait flyer layout with headline, subheadline, CTA, QR, and contact strip zones. Designed for promo sharing."
+      "notes": "Indigo-violet gradient with headline section, white content panel, CTA zone, and dark contact strip."
     }
   ]
 }

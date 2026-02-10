@@ -91,6 +91,11 @@ function TinyCardPreview({
 
         {lightenOverlayClass ? <div className={`absolute inset-0 ${lightenOverlayClass}`} /> : null}
 
+        {/* Orientation badge */}
+        <div className="absolute top-2 left-2 bg-black/60 text-white text-xs font-medium px-2 py-1 rounded">
+          {isPortrait ? "Portrait" : "Landscape"}
+        </div>
+
         {/* Mini layout preview (avatar + text blocks) */}
         <div className={`absolute inset-0 p-2 ${textClass}`}>
           <div className="flex flex-col items-center justify-start h-full">
@@ -289,7 +294,7 @@ export function TemplatePicker({ selection, orientation, onSelectionChange, onCr
                             className="w-full"
                             onClick={() => onCreateFromTemplate(template)}
                           >
-                            Create new from template
+                            New
                           </Button>
                         ) : null}
                       </div>

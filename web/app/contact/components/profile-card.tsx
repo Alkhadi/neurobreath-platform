@@ -88,10 +88,15 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
   }, [profile, templateSelection?.backgroundColor, templateSelection?.backgroundId, templateTheme]);
   
   // Build template paths from IDs
-  // ID format: "modern_geometric_v1_landscape" -> "modern_geometric_landscape_bg.svg"
-  // ID format: "ink_frame_v1_portrait" -> "ink_frame_overlay_portrait.svg"
+  // New naming: "modern-geometric-landscape" -> "modern-geometric-landscape.svg"
+  // Old naming: "modern_geometric_v1_landscape" -> "modern_geometric_landscape_bg.svg" (fallback)
   const getTemplatePath = (id: string, type: 'background' | 'overlay'): string => {
-    // Remove version suffix (_v1)
+    // Try new direct naming first
+    if (id && !id.includes('_v')) {
+      const suffix = type === 'background' ? '.svg' : '.svg';
+      return `/nb-card/templates/${type}s/${id}${suffix}`;
+    }
+    // Fallback for legacy versioned IDs
     const base = id.replace(/_v\d+_/, '_');
     const suffix = type === 'background' ? '_bg.svg' : '.svg';
     return `/nb-card/templates/${type}s/${base}${suffix}`;
@@ -227,8 +232,12 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
     { icon: FaTwitter, url: profile?.socialMedia?.twitter, color: "#1DA1F2" },
   ];
 
-  const isFlyerPromoPortrait = templateSelection?.backgroundId === "flyer_promo_v1_portrait";
+  const isFlyerPromoPortrait = templateSelection?.backgroundId === "flyer-promo-portrait" || templateSelection?.backgroundId === "flyer_promo_v1_portrait";
   const shareUrl = getProfileShareUrl(profile.id);
+  
+  // Determine card orientation from template
+  const templateOrientation = templateSelection?.orientation || "landscape";
+  const orientationClass = templateOrientation === "portrait" ? "aspect-[3/4]" : "aspect-video";
 
   return (
     <div
@@ -236,6 +245,7 @@ export function ProfileCard({ profile, onPhotoClick, showEditButton = false, use
       ref={rootRef}
       className={cn(
         "relative isolate w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden",
+        orientationClass,
         !hasAnyBackground && gradientClass,
         hasAnyBackground && (templateTheme?.tone === "dark" ? "bg-white" : "bg-gray-900")
       )}

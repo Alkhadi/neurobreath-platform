@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1200" viewBox="0 0 800 1200">
+  <defs>
+    <linearGradient id="fpp-gradient" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Gradient background -->
+  <rect width="800" height="1200" fill="url(#fpp-gradient)"/>
+
+  <!-- Dot texture pattern -->
+  <g opacity="0.15">
+    <circle cx="100" cy="100" r="2" fill="white"/>
+    <circle cx="700" cy="100" r="2" fill="white"/>
+    <circle cx="400" cy="250" r="2" fill="white"/>
+    <circle cx="200" cy="400" r="2" fill="white"/>
+    <circle cx="600" cy="400" r="2" fill="white"/>
+    <circle cx="300" cy="550" r="2" fill="white"/>
+    <circle cx="500" cy="700" r="2" fill="white"/>
+    <circle cx="150" cy="850" r="2" fill="white"/>
+    <circle cx="650" cy="850" r="2" fill="white"/>
+  </g>
+
+  <!-- Headline section (semi-transparent) -->
+  <rect x="0" y="0" width="800" height="200" fill="rgba(0,0,0,0.2)"/>
+  <rect x="40" y="80" width="720" height="80" rx="12" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+
+  <!-- Main white content panel -->
+  <rect x="40" y="240" width="720" height="720" rx="16" fill="rgba(255,255,255,0.95)" stroke="rgba(0,0,0,0.05)" stroke-width="1"/>
+
+  <!-- CTA accent zone within panel -->
+  <rect x="80" y="520" width="640" height="100" rx="12" fill="rgba(99,102,241,0.08)" stroke="rgba(99,102,241,0.2)" stroke-width="1"/>
+
+  <!-- Dark contact strip -->
+  <rect x="0" y="1080" width="800" height="120" fill="rgba(0,0,0,0.8)"/>
+
+  <!-- Decorative circles on gradient areas -->
+  <circle cx="120" cy="120" r="30" fill="rgba(255,255,255,0.08)"/>
+  <circle cx="680" cy="120" r="25" fill="rgba(255,255,255,0.06)"/>
+  <circle cx="120" cy="1020" r="20" fill="rgba(255,255,255,0.05)"/>
+  <circle cx="680" cy="1020" r="28" fill="rgba(255,255,255,0.07)"/>
+</svg>
