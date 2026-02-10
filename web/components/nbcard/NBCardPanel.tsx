@@ -218,6 +218,7 @@ export function NBCardPanel() {
     setShowProfileManager(false);
     setEditingProfile(null);
     setIsNewProfile(false);
+  };
 
   const handleCreateFromTemplate = (template: Template) => {
     const isFlyer = template.id.startsWith("flyer_promo_");
