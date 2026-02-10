@@ -32,11 +32,6 @@ jobs:
       - name: Typecheck
         run: yarn typecheck
 
-      - name: Build
-        run: yarn build
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/neurobreath_test?schema=public
-
       # Playwright E2E Smoke (minimal but meaningful)
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
@@ -46,6 +41,11 @@ jobs:
 
       - name: E2E responsive overflow guard (Tesla)
         run: yarn test:e2e tests/responsive.spec.ts
+
+      - name: Build
+        run: yarn build
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/neurobreath_test?schema=public
 
       - name: Start Next.js server
         run: |
