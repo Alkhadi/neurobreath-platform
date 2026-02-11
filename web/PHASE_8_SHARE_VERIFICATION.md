@@ -107,7 +107,7 @@
 
 **Implementation Details**:
 - **Library**: `qrcode.react` v4.2.0 (`QRCodeSVG` component)
-- **QR Content**: 
+- **QR Content**:
   - **Default Mode**: Profile share URL
   - **vCard Mode**: Full vCard with embedded photo (if < 1200 chars)
 - **Profile Image Overlay**: 50x50px center cutout with user's profile photo

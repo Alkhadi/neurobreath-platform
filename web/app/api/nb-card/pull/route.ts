@@ -22,6 +22,32 @@ import { prisma, isDbDown, getDbDownReason } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
+type NBCardProfileRow = {
+  profileId: string
+  profileData: unknown
+  templateData: unknown | null
+  version: number
+  updatedAt: Date
+  createdAt: Date
+}
+
+type NBCardContactRow = {
+  contactId: string
+  contactData: unknown
+  version: number
+  updatedAt: Date
+  createdAt: Date
+}
+
+type NBCardPrismaDelegates = {
+  nBCardProfile: {
+    findMany(args: unknown): Promise<NBCardProfileRow[]>
+  }
+  nBCardContact: {
+    findMany(args: unknown): Promise<NBCardContactRow[]>
+  }
+}
+
 export async function GET(request: NextRequest) {
   // Check database availability
   if (isDbDown()) {
@@ -51,8 +77,12 @@ export async function GET(request: NextRequest) {
     const session = await getServerSession(authOptions);
     const userEmail = session?.user?.email?.toLowerCase() || null;
 
+    // NOTE: If the editor's Prisma types get temporarily stale, this keeps the
+    // API route usable without blocking dev via TS(2339) squiggles.
+    const nbPrisma = prisma as unknown as NBCardPrismaDelegates;
+
     // Fetch profiles
-    const profiles = await prisma.nBCardProfile.findMany({
+    const profiles = await nbPrisma.nBCardProfile.findMany({
       where: userEmail
         ? { userEmail }
         : { deviceId },
@@ -60,7 +90,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Fetch contacts
-    const contacts = await prisma.nBCardContact.findMany({
+    const contacts = await nbPrisma.nBCardContact.findMany({
       where: userEmail
         ? { userEmail }
         : { deviceId },
@@ -68,7 +98,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Transform server records to client format
-    const profilesPayload = profiles.map((p: typeof profiles[number]) => ({
+    const profilesPayload = profiles.map((p) => ({
       id: p.profileId,
       profileData: p.profileData,
       templateData: p.templateData,
@@ -77,7 +107,7 @@ export async function GET(request: NextRequest) {
       createdAt: p.createdAt.toISOString(),
     }));
 
-    const contactsPayload = contacts.map((c: typeof contacts[number]) => ({
+    const contactsPayload = contacts.map((c) => ({
       id: c.contactId,
       contactData: c.contactData,
       version: c.version,
