@@ -8,6 +8,8 @@ export type TemplateOrientation = 'portrait' | 'landscape';
 export type TemplateType = 'background' | 'overlay';
 export type TemplateCategory = 'Profile' | 'Business' | 'Address' | 'Bank';
 export type FrameMode = 'PROFILE' | 'BUSINESS' | 'ADDRESS' | 'BANK';
+export type CardCategory = 'ADDRESS' | 'BANK' | 'BUSINESS' | 'PROFILE';
+export type BusinessSide = 'front' | 'back';
 
 export interface Template {
   id: string;
@@ -19,6 +21,11 @@ export interface Template {
   thumb: string;
   recommendedFor?: string[];
   notes?: string;
+  // Phase 3 additions:
+  cardCategory?: CardCategory;
+  exportWidth?: number;
+  exportHeight?: number;
+  side?: BusinessSide; // Only for BUSINESS templates
 }
 
 export interface TemplateManifest {
@@ -126,6 +133,14 @@ function isValidOrientation(value: unknown): value is TemplateOrientation {
   return value === 'portrait' || value === 'landscape';
 }
 
+function isValidCardCategory(value: unknown): value is CardCategory {
+  return value === 'ADDRESS' || value === 'BANK' || value === 'BUSINESS' || value === 'PROFILE';
+}
+
+function isValidBusinessSide(value: unknown): value is BusinessSide {
+  return value === 'front' || value === 'back';
+}
+
 function validateTemplate(raw: unknown): Template | null {
   if (!raw || typeof raw !== 'object') return null;
   
@@ -151,6 +166,10 @@ function validateTemplate(raw: unknown): Template | null {
       ? obj.recommendedFor.filter(isValidString)
       : undefined,
     notes: isValidString(obj.notes) ? obj.notes : undefined,
+    cardCategory: isValidCardCategory(obj.cardCategory) ? obj.cardCategory : undefined,
+    exportWidth: typeof obj.exportWidth === 'number' && obj.exportWidth > 0 ? obj.exportWidth : undefined,
+    exportHeight: typeof obj.exportHeight === 'number' && obj.exportHeight > 0 ? obj.exportHeight : undefined,
+    side: isValidBusinessSide(obj.side) ? obj.side : undefined,
   };
 }
 
@@ -311,3 +330,37 @@ export function saveTemplateSelection(selection: TemplateSelection, profileId?: 
     console.warn('Failed to save template selection:', error);
   }
 }
+
+/**
+ * Get export dimensions from template metadata
+ * Returns default dimensions if template not found or dimensions not specified
+ */
+export function getTemplateExportDimensions(template: Template | undefined | null): { width: number; height: number } {
+  const defaultLandscape = { width: 1600, height: 900 };
+  const defaultPortrait = { width: 900, height: 1200 };
+  
+  if (!template) {
+    return defaultLandscape;
+  }
+  
+  // Use template metadata if available
+  if (template.exportWidth && template.exportHeight) {
+    return { width: template.exportWidth, height: template.exportHeight };
+  }
+  
+  // Fall back to orientation-based defaults
+  return template.orientation === 'portrait' ? defaultPortrait : defaultLandscape;
+}
+
+/**
+ * Calculate aspect ratio from template
+ */
+export function getTemplateAspectRatio(template: Template | undefined | null): string {
+  const dims = getTemplateExportDimensions(template);
+  const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
+  const divisor = gcd(dims.width, dims.height);
+  const w = dims.width / divisor;
+  const h = dims.height / divisor;
+  return `${w}/${h}`;
+}
+

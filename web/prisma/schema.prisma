@@ -104,6 +104,66 @@ model NbCardFrame {
   @@index([category, isActive, sortOrder])
 }
 
+// ============================================================================
+// NB-CARD SYNC MODELS (Phase 7: Server-side persistence)
+// ============================================================================
+
+model NBCardProfile {
+  id               String   @id @default(cuid())
+  
+  // Ownership: email (signed-in users) OR deviceId (anonymous users)
+  userEmail        String?  // Lowercase email when user is signed in
+  deviceId         String?  // Anonymous device ID when not signed in
+  
+  // Profile UUID (from client-side Profile.id field)
+  profileId        String   // UUID generated client-side
+  
+  // Full profile data as JSON (matches Profile type from utils.ts)
+  profileData      Json
+  
+  // Template selection state (matches TemplateSelection type)
+  templateData     Json?
+  
+  // Sync metadata
+  version          Int      @default(1)      // Increments on each update for optimistic locking
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now()) @updatedAt
+  
+  // Allow querying by either email or deviceId + profileId
+  @@unique([userEmail, profileId])
+  @@unique([deviceId, profileId])
+  @@index([userEmail, updatedAt])
+  @@index([deviceId, updatedAt])
+}
+
+model NBCardContact {
+  id               String   @id @default(cuid())
+  
+  // Ownership: email (signed-in users) OR deviceId (anonymous users)
+  userEmail        String?  // Lowercase email when user is signed in
+  deviceId         String?  // Anonymous device ID when not signed in
+  
+  // Contact UUID (from client-side Contact.id field)
+  contactId        String   // UUID generated client-side
+  
+  // Full contact data as JSON (matches Contact type from utils.ts)
+  contactData      Json
+  
+  // Sync metadata
+  version          Int      @default(1)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now()) @updatedAt
+  
+  @@unique([userEmail, contactId])
+  @@unique([deviceId, contactId])
+  @@index([userEmail, updatedAt])
+  @@index([deviceId, updatedAt])
+}
+
+// ============================================================================
+// READING ASSESSMENT MODELS
+// ============================================================================
+
 model ReadingPassage {
   id              String   @id @default(cuid())
   title           String

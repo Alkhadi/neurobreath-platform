@@ -15,13 +15,14 @@ import { ProfileCard } from "@/app/contact/components/profile-card";
 import { ProfileManager } from "@/app/contact/components/profile-manager";
 import { ShareButtons } from "@/app/contact/components/share-buttons";
 import { TemplatePicker } from "@/app/contact/components/template-picker";
-import { type TemplateSelection, loadTemplateSelection, saveTemplateSelection } from "@/lib/nbcard-templates";
-import type { Template } from "@/lib/nbcard-templates";
+import { type TemplateSelection, loadTemplateSelection, saveTemplateSelection, loadTemplateManifest, getTemplateById, type Template } from "@/lib/nbcard-templates";
 import { WelcomeModal } from "./WelcomeModal";
 import { DataControlsCenter } from "./DataControlsCenter";
 import { HelpButton } from "./HelpButton";
 import { getExampleCardPreset, resetOnboarding } from "@/lib/nb-card/onboarding";
 import { Button } from "@/components/ui/button";
+import { fullSync, type SyncStatus } from "@/lib/nb-card/sync";
+import { RefreshCw, Cloud, CloudOff } from "lucide-react";
 
 const SIGN_IN_CALLOUT_DISMISSED_KEY = "nb-card:sign_in_callout_dismissed";
 
@@ -80,6 +81,68 @@ export function NBCardPanel() {
   const [templateSelection, setTemplateSelection] = useState<TemplateSelection>({});
   const [pendingTemplateSelection, setPendingTemplateSelection] = useState<TemplateSelection | null>(null);
   const [signInCalloutDismissed, setSignInCalloutDismissed] = useState(true); // default hidden until mount check
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | undefined>(undefined);
+  const [currentBusinessSide, setCurrentBusinessSide] = useState<'front' | 'back'>('front');
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle');
+  const [showSyncPrompt, setShowSyncPrompt] = useState(false);
+  const [lastSyncTime, setLastSyncTime] = useState<string | null>(null);
+  const [deviceId] = useState(() => {
+    if (typeof window === 'undefined') return '';
+    try {
+      let id = localStorage.getItem('nb-card:device-id');
+      if (!id) {
+        id = `device-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+        localStorage.setItem('nb-card:device-id', id);
+      }
+      return id;
+    } catch {
+      return `device-${Date.now()}`;
+    }
+  });
+
+  // Load template when templateSelection changes
+  useEffect(() => {
+    if (!templateSelection?.backgroundId) {
+      setSelectedTemplate(undefined);
+      return;
+    }
+    
+    let cancelled = false;
+    loadTemplateManifest()
+      .then((manifest) => {
+        if (cancelled) return;
+        const template = getTemplateById(manifest.templates, templateSelection.backgroundId!);
+        setSelectedTemplate(template ?? undefined);
+      })
+      .catch(() => {
+        if (!cancelled) setSelectedTemplate(undefined);
+      });
+    
+    return () => { cancelled = true; };
+  }, [templateSelection?.backgroundId]);
+
+  // Determine if current template is a business card with front/back
+  const isBusinessCard = selectedTemplate?.cardCategory === 'BUSINESS' && selectedTemplate?.side !== undefined;
+  
+  // Get companion template (front ↔ back)
+  const getCompanionTemplateId = (currentId: string, currentSide: 'front' | 'back'): string | undefined => {
+    const targetSide = currentSide === 'front' ? 'back' : 'front';
+    // Assumes naming convention: business-01-front ↔ business-01-back
+    return currentId.replace(`-${currentSide}`, `-${targetSide}`);
+  };
+
+  const handleBusinessSideToggle = (side: 'front' | 'back') => {
+    if (!selectedTemplate || !isBusinessCard) return;
+    
+    const companionId = getCompanionTemplateId(templateSelection.backgroundId!, side === 'front' ? 'back' : 'front');
+    if (!companionId) return;
+    
+    setCurrentBusinessSide(side);
+    setTemplateSelection({
+      ...templateSelection,
+      backgroundId: companionId,
+    });
+  };
 
   const handleDismissSignInCallout = useCallback(() => {
     setSignInCalloutDismissed(true);
@@ -96,7 +159,14 @@ export function NBCardPanel() {
       .then((s) => {
         if (cancelled) return;
         const email = (s?.user?.email ?? "").toString().trim().toLowerCase();
-        setSessionEmail(email && email.includes("@") ? email : null);
+        const newEmail = email && email.includes("@") ? email : null;
+        
+        // Detect sign-in: if we just got an email and we have local profiles, offer import
+        if (newEmail && !sessionEmail && profiles.length > 0 && profiles[0].id !== defaultProfile.id) {
+          setShowSyncPrompt(true);
+        }
+        
+        setSessionEmail(newEmail);
       })
       .catch(() => {
         // ignore
@@ -104,7 +174,7 @@ export function NBCardPanel() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [sessionEmail, profiles]);
 
   // Load NBCard state + register SW
   useEffect(() => {
@@ -417,6 +487,45 @@ export function NBCardPanel() {
     setHasPersistedCards(false);
   };
 
+  // Sync handlers (Phase 7)
+  const handleSyncNow = async () => {
+    if (!deviceId) {
+      toast.error("Device ID not available");
+      return;
+    }
+    
+    setSyncStatus('syncing');
+    try {
+      const result = await fullSync(deviceId, profiles, contacts);
+      if (result.success) {
+        setProfiles(result.mergedProfiles);
+        setContacts(result.mergedContacts);
+        setLastSyncTime(new Date().toISOString());
+        setSyncStatus('success');
+        toast.success(`Synced ${result.mergedProfiles.length} profiles, ${result.mergedContacts.length} contacts`);
+        setTimeout(() => setSyncStatus('idle'), 3000);
+      } else {
+        setSyncStatus('error');
+        toast.error(`Sync failed: ${result.error}`);
+        setTimeout(() => setSyncStatus('idle'), 5000);
+      }
+    } catch (error) {
+      setSyncStatus('error');
+      toast.error("Sync error");
+      setTimeout(() => setSyncStatus('idle'), 5000);
+    }
+  };
+
+  const handleImportLocalCards = async () => {
+    setShowSyncPrompt(false);
+    await handleSyncNow();
+  };
+
+  const handleSkipImport = () => {
+    setShowSyncPrompt(false);
+    toast.message("Skipped import", { description: "You can sync manually using the sync button." });
+  };
+
   return (
     <>
       {/* Welcome Modal (first-time onboarding) */}
@@ -428,6 +537,75 @@ export function NBCardPanel() {
 
       {/* Help Button (floating) */}
       <HelpButton />
+
+      {/* Sync Prompt (import local cards on sign-in) */}
+      {showSyncPrompt && (
+        <div className="mb-6 rounded-xl border-2 border-purple-200 bg-purple-50 p-4">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Import Your Local Cards?</h3>
+              <p className="text-sm text-gray-700 mb-4">
+                You have {profiles.length} profile(s) and {contacts.length} contact(s) saved locally on this device.
+                Would you like to sync them to your account so they're available across all your devices?
+              </p>
+              <div className="flex gap-3">
+                <Button onClick={handleImportLocalCards} size="sm" className="bg-gradient-to-r from-purple-600 to-blue-600">
+                  <Cloud className="mr-2 h-4 w-4" />
+                  Yes, Sync Now
+                </Button>
+                <Button onClick={handleSkipImport} size="sm" variant="outline">
+                  Not Now
+                </Button>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowSyncPrompt(false)}
+              className="text-gray-400 hover:text-gray-600"
+              aria-label="Dismiss"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Sync Status Banner */}
+      {sessionEmail && (
+        <div className="mb-4 flex items-center justify-between rounded-lg bg-gray-50 px-4 py-2 text-sm">
+          <div className="flex items-center gap-2">
+            {syncStatus === 'syncing' ? (
+              <>
+                <RefreshCw className="h-4 w-4 animate-spin text-blue-600" />
+                <span className="text-gray-700">Syncing...</span>
+              </>
+            ) : syncStatus === 'success' ? (
+              <>
+                <Cloud className="h-4 w-4 text-green-600" />
+                <span className="text-gray-700">Synced {lastSyncTime && `• ${new Date(lastSyncTime).toLocaleTimeString()}`}</span>
+              </>
+            ) : syncStatus === 'error' ? (
+              <>
+                <CloudOff className="h-4 w-4 text-red-600" />
+                <span className="text-gray-700">Sync failed</span>
+              </>
+            ) : (
+              <>
+                <Cloud className="h-4 w-4 text-gray-400" />
+                <span className="text-gray-600">Signed in as {sessionEmail}</span>
+              </>
+            )}
+          </div>
+          <Button
+            onClick={handleSyncNow}
+            disabled={syncStatus === 'syncing'}
+            size="sm"
+            variant="ghost"
+            className="h-8"
+          >
+            {syncStatus === 'syncing' ? 'Syncing...' : 'Sync Now'}
+          </Button>
+        </div>
+      )}
 
       {/* Profile Selector */}
       {profiles.length > 1 && (
@@ -492,6 +670,7 @@ export function NBCardPanel() {
                 }}
                 userEmail={undefined}
                 templateSelection={templateSelection}
+                selectedTemplate={selectedTemplate}
               />
             </div>
           </div>
@@ -562,6 +741,34 @@ export function NBCardPanel() {
           </div>
         </div>
       </div>
+
+      {/* Business Card Front/Back Toggle */}
+      {isBusinessCard && (
+        <div className="mb-6 flex justify-center">
+          <div className="inline-flex bg-white rounded-lg shadow-md p-1">
+            <button
+              onClick={() => handleBusinessSideToggle('front')}
+              className={`px-6 py-2 rounded-md font-semibold transition-all ${
+                currentBusinessSide === 'front'
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Front
+            </button>
+            <button
+              onClick={() => handleBusinessSideToggle('back')}
+              className={`px-6 py-2 rounded-md font-semibold transition-all ${
+                currentBusinessSide === 'back'
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Back
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Template Picker Section */}
       <div className="mb-8">

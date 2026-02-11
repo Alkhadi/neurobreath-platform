@@ -20,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { downloadBlob, generateContactVCard, parseVCardToContact } from "../lib/nbcard-share";
+import { importContactsFromCSV, validateCSVFile, generateCSVTemplate } from "@/lib/nb-card/csv-importer";
 
 import { Download, FileUp, Pencil, Plus, Trash2 } from "lucide-react";
 
@@ -75,6 +76,7 @@ export function ContactCapture({ contacts, onUpsert, onDelete }: ContactCaptureP
   const [editingId, setEditingId] = React.useState<string | null>(null);
   const [draft, setDraft] = React.useState<ContactDraft>(emptyDraft);
   const importInputRef = React.useRef<HTMLInputElement>(null);
+  const csvImportInputRef = React.useRef<HTMLInputElement>(null);
 
   const filtered = React.useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -191,6 +193,56 @@ export function ContactCapture({ contacts, onUpsert, onDelete }: ContactCaptureP
     }
   }
 
+  async function importCSVFile(file: File) {
+    try {
+      // Validate file
+      const validation = validateCSVFile(file);
+      if (!validation.valid) {
+        toast.error("Invalid CSV file", { description: validation.error });
+        return;
+      }
+
+      // Read and parse CSV
+      const text = await file.text();
+      const { contacts: imported, errors } = importContactsFromCSV(text);
+
+      // Add all imported contacts
+      if (imported.length > 0) {
+        imported.forEach(contact => onUpsert(contact));
+        
+        toast.success(`Imported ${imported.length} contact${imported.length === 1 ? '' : 's'}`, {
+          description: errors.length > 0 ? `${errors.length} row(s) skipped due to errors` : 'All contacts imported successfully',
+        });
+
+        // Show error details if any
+        if (errors.length > 0 && errors.length <= 5) {
+          setTimeout(() => {
+            toast.message("Import warnings", {
+              description: errors.join('; '),
+            });
+          }, 1000);
+        }
+      } else {
+        toast.error("No contacts imported", {
+          description: errors.length > 0 ? errors[0] : 'CSV file contains no valid contacts',
+        });
+      }
+    } catch (error) {
+      console.error('CSV import error:', error);
+      toast.error("Failed to import CSV", {
+        description: error instanceof Error ? error.message : 'Unknown error',
+      });
+    } finally {
+      if (csvImportInputRef.current) csvImportInputRef.current.value = "";
+    }
+  }
+
+  function downloadCSVTemplate() {
+    const template = generateCSVTemplate();
+    downloadBlob(new Blob([template], { type: "text/csv;charset=utf-8" }), "nbcard_import_template.csv");
+    toast.success("CSV template downloaded", { description: "Fill in your contacts and import." });
+  }
+
   function deleteContact(id: string) {
     const c = contacts.find((x) => x.id === id);
     if (!c) return;
@@ -231,6 +283,30 @@ export function ContactCapture({ contacts, onUpsert, onDelete }: ContactCaptureP
               </span>
             </Button>
           </label>
+
+          <label className="inline-flex">
+            <input
+              ref={csvImportInputRef}
+              type="file"
+              accept=".csv,text/csv"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) void importCSVFile(f);
+              }}
+            />
+            <Button asChild variant="outline">
+              <span>
+                <FileUp className="mr-2 h-4 w-4" />
+                Import CSV
+              </span>
+            </Button>
+          </label>
+
+          <Button variant="outline" onClick={downloadCSVTemplate}>
+            <Download className="mr-2 h-4 w-4" />
+            CSV Template
+          </Button>
 
           <Button onClick={() => openAdd()}>
             <Plus className="mr-2 h-4 w-4" />
@@ -381,6 +457,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { generateContactVCard, parseVCardToContact, downloadBlob } from "../lib/nbcard-share";
+import { importContactsFromCSV, validateCSVFile, generateCSVTemplate } from "@/lib/nb-card/csv-importer";
 import { FaDownload, FaTrash, FaUser } from "react-icons/fa";
 
 interface ContactCaptureProps {

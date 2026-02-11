@@ -29,7 +29,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import type { Contact, Profile } from "@/lib/utils";
-import type { TemplateSelection } from "@/lib/nbcard-templates";
+import type { TemplateSelection, Template } from "@/lib/nbcard-templates";
+import { loadTemplateManifest, getTemplateById } from "@/lib/nbcard-templates";
 
 import { ProfileCard } from "./profile-card";
 
@@ -330,6 +331,14 @@ async function createSimplePdf(profile: Profile, shareUrl: string, qrDataUrl: st
   return await doc.save();
 }
 
+// TODO Phase 5 Enhancement: Business Card Dual-Sided PDF Export
+// To implement 2-page PDF (front + back):
+// 1. Pass template switch callback from NBCardPanel to ShareButtons
+// 2. In export pipeline: capture front → switch to back template → capture back
+// 3. Create PDF with both pages using pdf-lib addPage()
+// 4. Ensure both pages have same dimensions (exportWidth × exportHeight)
+// For now, business cards export the currently visible side only.
+
 function renderShareText(profile: Profile, shareUrl: string): string {
   const lines: string[] = [];
   
@@ -444,6 +453,28 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   const [pendingRedactionAction, setPendingRedactionAction] = React.useState<((fields: Set<RedactableField>) => void) | null>(null);
   const [lastRedactionFields, setLastRedactionFields] = React.useState<Set<RedactableField> | null>(null);
   const [exportCaptureProfile, setExportCaptureProfile] = React.useState<Profile | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = React.useState<Template | undefined>(undefined);
+
+  // Load template when templateSelection changes
+  React.useEffect(() => {
+    if (!templateSelection?.backgroundId) {
+      setSelectedTemplate(undefined);
+      return;
+    }
+    
+    let cancelled = false;
+    loadTemplateManifest()
+      .then((manifest) => {
+        if (cancelled) return;
+        const template = getTemplateById(manifest.templates, templateSelection.backgroundId!);
+        setSelectedTemplate(template ?? undefined);
+      })
+      .catch(() => {
+        if (!cancelled) setSelectedTemplate(undefined);
+      });
+    
+    return () => { cancelled = true; };
+  }, [templateSelection?.backgroundId]);
 
   const EXPORT_CAPTURE_ID = "profile-card-capture-export";
 
@@ -1227,6 +1258,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
             showEditButton={false}
             userEmail={undefined}
             templateSelection={templateSelection}
+            selectedTemplate={selectedTemplate}
             captureId={EXPORT_CAPTURE_ID}
           />
         </div>
@@ -1288,12 +1320,26 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                 </svg>
                 Print
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleDownloadPdf} disabled={!!busyKey}>
-                Download PDF
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleDownloadPng} disabled={!!busyKey}>
-                Download PNG
-              </DropdownMenuItem>
+              {/* Business card exports */}
+              {selectedTemplate?.cardCategory === 'BUSINESS' && selectedTemplate?.side ? (
+                <>
+                  <DropdownMenuItem onClick={handleDownloadPng} disabled={!!busyKey}>
+                    Export {selectedTemplate.side === 'front' ? 'Front' : 'Back'} PNG
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleDownloadPdf} disabled={!!busyKey}>
+                    Export {selectedTemplate.side === 'front' ? 'Front' : 'Back'} PDF
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                <>
+                  <DropdownMenuItem onClick={handleDownloadPdf} disabled={!!busyKey}>
+                    Download PDF
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleDownloadPng} disabled={!!busyKey}>
+                    Download PNG
+                  </DropdownMenuItem>
+                </>
+              )}
               <DropdownMenuItem onClick={handleSharePng} disabled={!!busyKey}>
                 Share PNG
               </DropdownMenuItem>

@@ -67,7 +67,7 @@ async function expectToast(page: Page, text: string | RegExp) {
   await expect(page.getByText(text).first()).toBeVisible();
 }
 
-test.describe('/contact NBCard buttons', () => {
+test.describe('/resources/nb-card NBCard buttons', () => {
   test.beforeEach(async ({ page }) => {
     // Best-effort: start clean for this origin.
     await page.addInitScript(() => {
@@ -89,7 +89,7 @@ test.describe('/contact NBCard buttons', () => {
   });
 
   test('Share + export + privacy/import/reset flows', async ({ page }) => {
-    await page.goto('/contact');
+    await page.goto('/resources/nb-card');
 
     const shareSection = page.locator('#share-your-profile');
     await expect(shareSection).toBeVisible();
@@ -170,7 +170,7 @@ test.describe('/contact NBCard buttons', () => {
   });
 
   test('Captured contacts: add + export + vCard import', async ({ page }) => {
-    await page.goto('/contact');
+    await page.goto('/resources/nb-card');
 
     await expect(page.getByRole('heading', { name: 'Captured Contacts' })).toBeVisible();
 

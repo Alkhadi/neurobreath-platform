@@ -1,5 +1,5 @@
 {
-  "version": "2026-02-10",
+  "version": "2026-02-11",
   "templates": [
     {
       "id": "modern-geometric-landscape",
@@ -12,7 +12,10 @@
       "recommendedWidth": 1600,
       "recommendedHeight": 900,
       "recommendedFor": ["PROFILE", "BUSINESS"],
-      "notes": "Bold navy diagonals with blue and amber accents on clean white base."
+      "notes": "Bold navy diagonals with blue and amber accents on clean white base.",
+      "cardCategory": "BUSINESS",
+      "exportWidth": 1600,
+      "exportHeight": 900
     },
     {
       "id": "minimal-black-landscape",
@@ -25,7 +28,10 @@
       "recommendedWidth": 1600,
       "recommendedHeight": 900,
       "recommendedFor": ["PROFILE", "BUSINESS"],
-      "notes": "Premium dark theme with elegant curved linework and subtle accents."
+      "notes": "Premium dark theme with elegant curved linework and subtle accents.",
+      "cardCategory": "BUSINESS",
+      "exportWidth": 1600,
+      "exportHeight": 900
     },
     {
       "id": "address-blue-diagonal-landscape",
@@ -38,7 +44,10 @@
       "recommendedWidth": 1600,
       "recommendedHeight": 900,
       "recommendedFor": ["ADDRESS", "BUSINESS"],
-      "notes": "Blue gradient with large diagonal white content zone."
+      "notes": "Blue gradient with large diagonal white content zone.",
+      "cardCategory": "ADDRESS",
+      "exportWidth": 1600,
+      "exportHeight": 900
     },
     {
       "id": "modern-geometric-portrait",
@@ -51,7 +60,10 @@
       "recommendedWidth": 900,
       "recommendedHeight": 1200,
       "recommendedFor": ["PROFILE", "BUSINESS"],
-      "notes": "Bold navy diagonals with blue and amber accents on clean white base."
+      "notes": "Bold navy diagonals with blue and amber accents on clean white base.",
+      "cardCategory": "PROFILE",
+      "exportWidth": 900,
+      "exportHeight": 1200
     },
     {
       "id": "minimal-black-portrait",
@@ -64,7 +76,10 @@
       "recommendedWidth": 900,
       "recommendedHeight": 1200,
       "recommendedFor": ["PROFILE", "BUSINESS"],
-      "notes": "Premium dark theme with elegant curved linework and subtle accents."
+      "notes": "Premium dark theme with elegant curved linework and subtle accents.",
+      "cardCategory": "PROFILE",
+      "exportWidth": 900,
+      "exportHeight": 1200
     },
     {
       "id": "flyer-promo-portrait",
@@ -77,7 +92,44 @@
       "recommendedWidth": 800,
       "recommendedHeight": 1200,
       "recommendedFor": ["FLYER", "BUSINESS", "PROFILE"],
-      "notes": "Indigo-violet gradient with headline section, white content panel, CTA zone, and dark contact strip."
+      "notes": "Indigo-violet gradient with headline section, white content panel, CTA zone, and dark contact strip.",
+      "cardCategory": "PROFILE",
+      "exportWidth": 800,
+      "exportHeight": 1200
+    },
+    {
+      "id": "business-01-front",
+      "label": "Executive Charcoal — Front",
+      "category": "Business",
+      "type": "business-card",
+      "orientation": "landscape",
+      "src": "/nb-card/templates/business/business-01-front.svg",
+      "thumb": "/nb-card/templates/business/business-01-front.svg",
+      "recommendedWidth": 1600,
+      "recommendedHeight": 900,
+      "recommendedFor": ["BUSINESS"],
+      "notes": "Professional charcoal business card front with photo, contact details, and logo placement.",
+      "cardCategory": "BUSINESS",
+      "exportWidth": 1600,
+      "exportHeight": 900,
+      "side": "front"
+    },
+    {
+      "id": "business-01-back",
+      "label": "Executive Charcoal — Back",
+      "category": "Business",
+      "type": "business-card",
+      "orientation": "landscape",
+      "src": "/nb-card/templates/business/business-01-back.svg",
+      "thumb": "/nb-card/templates/business/business-01-back.svg",
+      "recommendedWidth": 1600,
+      "recommendedHeight": 900,
+      "recommendedFor": ["BUSINESS"],
+      "notes": "Professional charcoal business card back with tagline, services, address, and social media.",
+      "cardCategory": "BUSINESS",
+      "exportWidth": 1600,
+      "exportHeight": 900,
+      "side": "back"
     }
   ]
 }

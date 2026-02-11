@@ -9,8 +9,8 @@ import { resolveAssetUrl } from "../lib/nbcard-assets";
 import { getProfileShareUrl } from "../lib/nbcard-share";
 import { CaptureImage } from "./capture-image";
 import styles from "./profile-card.module.css";
-import type { TemplateSelection } from "@/lib/nbcard-templates";
-import { getTemplateThemeTokens, isLightColor } from "@/lib/nbcard-templates";
+import type { TemplateSelection, Template } from "@/lib/nbcard-templates";
+import { getTemplateThemeTokens, isLightColor, getTemplateExportDimensions } from "@/lib/nbcard-templates";
 
 interface ProfileCardProps {
   profile: Profile;
@@ -18,6 +18,7 @@ interface ProfileCardProps {
   showEditButton?: boolean;
   userEmail?: string; // For IndexedDB namespace
   templateSelection?: TemplateSelection; // Template background/overlay
+  selectedTemplate?: Template; // Full template metadata for export dimensions
   captureId?: string;
   editMode?: boolean; // Free Layout Editor: enable drag/resize
   selectedLayerId?: string | null; // Free Layout Editor: currently selected layer
@@ -151,6 +152,7 @@ function CardLayerRenderer({
   const renderContent = () => {
     if (layer.type === "text") {
       return (
+        /* eslint-disable-next-line react/forbid-dom-props */
         <div
           style={{
             width: "100%",
@@ -175,6 +177,7 @@ function CardLayerRenderer({
 
     if (layer.type === "avatar") {
       return (
+        /* eslint-disable-next-line react/forbid-dom-props */
         <div
           style={{
             width: "100%",
@@ -187,7 +190,7 @@ function CardLayerRenderer({
           }}
         >
           {layer.style.src && (
-            /* eslint-disable-next-line @next/next/no-img-element */
+            /* eslint-disable-next-line @next/next/no-img-element, react/forbid-dom-props */
             <img
               src={layer.style.src}
               alt="Layer avatar"
@@ -207,6 +210,7 @@ function CardLayerRenderer({
 
       if (shapeKind === "rect") {
         return (
+          /* eslint-disable-next-line react/forbid-dom-props */
           <div
             style={{
               width: "100%",
@@ -222,6 +226,7 @@ function CardLayerRenderer({
 
       if (shapeKind === "circle") {
         return (
+          /* eslint-disable-next-line react/forbid-dom-props */
           <div
             style={{
               width: "100%",
@@ -237,6 +242,7 @@ function CardLayerRenderer({
 
       if (shapeKind === "line") {
         return (
+          /* eslint-disable-next-line react/forbid-dom-props */
           <div
             style={{
               width: "100%",
@@ -253,6 +259,7 @@ function CardLayerRenderer({
   };
 
   return (
+    /* eslint-disable-next-line react/forbid-dom-props */
     <div
       style={style}
       onPointerDown={handlePointerDown}
@@ -263,6 +270,7 @@ function CardLayerRenderer({
       
       {/* Resize handle (bottom-right corner) */}
       {editMode && isSelected && !layer.locked && (
+        /* eslint-disable-next-line react/forbid-dom-props */
         <div
           style={{
             position: "absolute",
@@ -291,6 +299,7 @@ export function ProfileCard({
   showEditButton = false,
   userEmail,
   templateSelection,
+  selectedTemplate,
   captureId,
   editMode = false,
   selectedLayerId = null,
@@ -308,6 +317,10 @@ export function ProfileCard({
 
   // Determine if we're using template mode (new) or legacy background mode
   const useTemplateMode = Boolean(templateSelection?.backgroundId);
+
+  // Phase 2: Get export dimensions from template metadata
+  const exportDimensions = selectedTemplate ? getTemplateExportDimensions(selectedTemplate) : { width: 1600, height: 900 };
+  const aspectRatioValue = exportDimensions.width / exportDimensions.height;
 
   const templateTheme = useTemplateMode ? getTemplateThemeTokens(templateSelection?.backgroundId) : null;
   const isLightSurfaceTemplate = Boolean(useTemplateMode && templateTheme?.tone === "dark");
@@ -510,20 +523,20 @@ export function ProfileCard({
   const isFlyerPromoPortrait = templateSelection?.backgroundId === "flyer-promo-portrait" || templateSelection?.backgroundId === "flyer_promo_v1_portrait";
   const shareUrl = getProfileShareUrl(profile.id);
   
-  // Determine card orientation from template
-  const templateOrientation = templateSelection?.orientation || "landscape";
-  const orientationClass = templateOrientation === "portrait" ? "aspect-[3/4]" : "aspect-video";
+  // Phase 2: Use template metadata for aspect ratio (no distortion)
+  // Remove hardcoded orientationClass; apply aspect-ratio via inline style
 
   return (
+    /* eslint-disable-next-line react/forbid-dom-props */
     <div
       id={captureId ?? "profile-card-capture"}
       ref={rootRef}
       className={cn(
         "relative isolate w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden",
-        orientationClass,
         !hasAnyBackground && gradientClass,
         hasAnyBackground && (templateTheme?.tone === "dark" ? "bg-white" : "bg-gray-900")
       )}
+      style={{ aspectRatio: aspectRatioValue }}
     >
       {/* TEMPLATE BACKGROUND LAYER (z=0) */}
       {hasTemplateBackground && templateBackgroundSrc && (
@@ -668,6 +681,7 @@ export function ProfileCard({
                           }}
                           className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg hover:scale-110 transition-transform"
                           aria-label="Upload photo"
+                          data-html2canvas-ignore="true"
                         >
                           <svg
                             className={cn("w-5 h-5", styles.accentText)}
