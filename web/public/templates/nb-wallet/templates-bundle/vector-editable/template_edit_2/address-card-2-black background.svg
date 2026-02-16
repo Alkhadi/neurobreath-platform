@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" fill="none">
+  <metadata>Generated 2026-02-15T20:18:58.541115Z</metadata>
+
+  <defs>
+    <linearGradient id="nb_goldStroke" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F6E27A"/>
+      <stop offset="0.25" stop-color="#C89B2D"/>
+      <stop offset="0.5" stop-color="#F2D06B"/>
+      <stop offset="0.75" stop-color="#B8871E"/>
+      <stop offset="1" stop-color="#F7E58B"/>
+    </linearGradient>
+    <radialGradient id="nb_goldBall" cx="35%" cy="30%" r="80%">
+      <stop offset="0" stop-color="#FFF2B8"/>
+      <stop offset="0.35" stop-color="#F2D06B"/>
+      <stop offset="0.7" stop-color="#C58E1C"/>
+      <stop offset="1" stop-color="#8A5B08"/>
+    </radialGradient>
+
+    <linearGradient id="nb_darkBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B0F17"/>
+      <stop offset="0.5" stop-color="#111827"/>
+      <stop offset="1" stop-color="#05070B"/>
+    </linearGradient>
+
+    <linearGradient id="nb_blueA" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B2C6B"/>
+      <stop offset="0.5" stop-color="#0EA5E9"/>
+      <stop offset="1" stop-color="#083B8F"/>
+    </linearGradient>
+
+    <linearGradient id="nb_blueB" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E0F2FE"/>
+      <stop offset="0.35" stop-color="#7DD3FC"/>
+      <stop offset="1" stop-color="#1D4ED8"/>
+    </linearGradient>
+
+    <filter id="nb_softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+
+    <style>
+      :root{
+        --nb-bg: #ffffff;
+        --nb-panel: rgba(255,255,255,0.9);
+        --nb-text: #0B1220;
+        --nb-muted: #334155;
+        --nb-accent: #0EA5E9;
+        --nb-accent2: #1D4ED8;
+        --nb-gold: #C89B2D;
+      }
+      .nb_text{font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; fill: var(--nb-text);}
+      .nb_muted{fill: var(--nb-muted);}
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1024" height="1024" fill="url(#nb_darkBg)"/>
+  <style>:root{--nb-bg:#0B0F17;--nb-text:#F8FAFC;--nb-muted:#CBD5E1;--nb-panel:rgba(17,24,39,0.66);}</style>
+  <rect x="70" y="70" width="884" height="884" rx="110" fill="none" stroke="url(#nb_goldStroke)" stroke-width="10"/>
+  <rect x="88" y="88" width="848" height="848" rx="90" fill="none" stroke="url(#nb_goldStroke)" stroke-width="4" opacity="0.85"/>
+  <line x1="532" y1="98" x2="894" y2="98" stroke="url(#nb_goldStroke)" stroke-width="4" opacity="0.9"/>
+  <line x1="230" y1="926" x2="635" y2="926" stroke="url(#nb_goldStroke)" stroke-width="4" opacity="0.9"/>
+  <line x1="54" y1="190" x2="54" y2="994" stroke="url(#nb_goldStroke)" stroke-width="6" stroke-linecap="round" opacity="0.95"/>
+  <line x1="80" y1="190" x2="80" y2="994" stroke="url(#nb_goldStroke)" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+  <circle cx="90" cy="90" r="34" fill="none" stroke="url(#nb_goldStroke)" stroke-width="6"/>
+  <circle cx="120" cy="120" r="44" fill="none" stroke="url(#nb_goldStroke)" stroke-width="6" opacity="0.9"/>
+  <circle cx="964" cy="676" r="22" fill="none" stroke="url(#nb_goldStroke)" stroke-width="6" opacity="0.95"/>
+  <circle cx="190" cy="962" r="22" fill="url(#nb_goldBall)"/>
+  <circle cx="158" cy="64" r="10" fill="url(#nb_goldBall)" opacity="0.95"/>
+  <circle cx="934" cy="512" r="20" fill="url(#nb_goldBall)"/>
+  <circle cx="942" cy="584" r="8" fill="url(#nb_goldBall)" opacity="0.95"/>
+  <circle cx="553" cy="942" r="10" fill="url(#nb_goldBall)" opacity="0.9"/>
+  <g id="nb_editable" aria-label="Editable overlay">
+    <rect id="box_fullName" x="170" y="200" width="680" height="74" opacity="0" fill="none"/>
+    <text id="field_fullName" x="170" y="260" font-size="54" font-weight="800" text-anchor="start" class="nb_text">Full Name</text>
+    <rect id="box_jobTitle" x="170" y="285" width="680" height="46" opacity="0" fill="none"/>
+    <text id="field_jobTitle" x="170" y="322" font-size="30" font-weight="600" text-anchor="start" class="nb_text">Job Title</text>
+    <rect id="box_phone" x="170" y="380" width="680" height="42" opacity="0" fill="none"/>
+    <text id="field_phone" x="170" y="414" font-size="28" font-weight="600" text-anchor="start" class="nb_text">+44 00 0000 0000</text>
+    <rect id="box_email" x="170" y="436" width="680" height="42" opacity="0" fill="none"/>
+    <text id="field_email" x="170" y="468" font-size="28" font-weight="600" text-anchor="start" class="nb_text">name@email.com</text>
+    <rect id="box_website" x="170" y="490" width="680" height="42" opacity="0" fill="none"/>
+    <text id="field_website" x="170" y="522" font-size="28" font-weight="600" text-anchor="start" class="nb_text">www.example.com</text>
+    <rect id="box_addressLine1" x="170" y="574" width="560" height="40" opacity="0" fill="none"/>
+    <text id="field_addressLine1" x="170" y="606" font-size="26" font-weight="600" text-anchor="start" class="nb_text">Address line 1</text>
+    <rect id="box_addressLine2" x="170" y="618" width="560" height="40" opacity="0" fill="none"/>
+    <text id="field_addressLine2" x="170" y="650" font-size="26" font-weight="600" text-anchor="start" class="nb_text">City, Postcode</text>
+    <rect id="box_profilePhoto" x="170" y="720" width="150" height="150" rx="26" opacity="0" fill="none"/>
+    <clipPath id="clip_profilePhoto"><rect x="170" y="720" width="150" height="150" rx="26"/></clipPath>
+    <image id="slot_profilePhoto" href="" x="170" y="720" width="150" height="150" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip_profilePhoto)"/>
+    <rect x="170" y="720" width="150" height="150" rx="26" fill="none" stroke="rgba(148,163,184,0.55)" stroke-dasharray="10 10"/>
+    <rect id="box_qr" x="770" y="740" width="190" height="190" rx="18" opacity="0" fill="none"/>
+    <clipPath id="clip_qr"><rect x="770" y="740" width="190" height="190" rx="18"/></clipPath>
+    <image id="slot_qr" href="" x="770" y="740" width="190" height="190" preserveAspectRatio="xMidYMid meet" clip-path="url(#clip_qr)"/>
+    <rect x="770" y="740" width="190" height="190" rx="18" fill="none" stroke="rgba(148,163,184,0.55)" stroke-dasharray="10 10"/>
+    <rect id="box_logo" x="770" y="200" width="190" height="90" rx="18" opacity="0" fill="none"/>
+    <clipPath id="clip_logo"><rect x="770" y="200" width="190" height="90" rx="18"/></clipPath>
+    <image id="slot_logo" href="" x="770" y="200" width="190" height="90" preserveAspectRatio="xMidYMid meet" clip-path="url(#clip_logo)"/>
+    <rect x="770" y="200" width="190" height="90" rx="18" fill="none" stroke="rgba(148,163,184,0.55)" stroke-dasharray="10 10"/>
+  </g>
+</svg>

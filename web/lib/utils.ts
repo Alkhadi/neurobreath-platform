@@ -56,7 +56,7 @@ export interface Profile {
     whatsapp?: string;
   };
   // Category-specific fields (NB-Card enhancement)
-  cardCategory?: "PROFILE" | "ADDRESS" | "BANK" | "BUSINESS" | "FLYER";
+  cardCategory?: "PROFILE" | "ADDRESS" | "BANK" | "BUSINESS" | "FLYER" | "WEDDING";
   addressCard?: {
     recipientName?: string;
     addressLine1?: string;
@@ -93,6 +93,12 @@ export interface Profile {
     vatOrRegNo?: string;
   };
   flyerCard?: {
+    headline?: string;
+    subheadline?: string;
+    ctaText?: string;
+    ctaUrl?: string;
+  };
+  weddingCard?: {
     headline?: string;
     subheadline?: string;
     ctaText?: string;
@@ -175,7 +181,7 @@ export function getOrCreateNbcardDeviceId(): string {
   return deviceId;
 }
 
-export type NbcardSavedCardCategory = "PROFILE" | "ADDRESS" | "BANK" | "BUSINESS" | "FLYER";
+export type NbcardSavedCardCategory = "PROFILE" | "ADDRESS" | "BANK" | "BUSINESS" | "FLYER" | "WEDDING";
 
 // Local-first Saved Cards model (stored in localStorage)
 export type NbcardSavedCard = {
@@ -218,7 +224,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function coerceCategory(value: unknown): NbcardSavedCardCategory | null {
-  return value === "PROFILE" || value === "ADDRESS" || value === "BANK" || value === "BUSINESS" || value === "FLYER" ? value : null;
+  return value === "PROFILE" || value === "ADDRESS" || value === "BANK" || value === "BUSINESS" || value === "FLYER" || value === "WEDDING" ? value : null;
 }
 
 export function getNbcardSavedNamespace(userEmail?: string | null): string {

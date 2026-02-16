@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2160" height="3840" viewBox="0 0 2160 3840" role="img" aria-labelledby="title" preserveAspectRatio="xMidYMid meet">
+  <title id="title">Wedding Flyer (bw) — Vector</title>
+  <defs>
+    <style><![CDATA[
+      :root {
+        --nb-font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+        --nb-bg: #ffffff;
+        --nb-text: #111827;
+        --nb-muted: #6b7280;
+        --nb-accent: #2563eb;
+        --nb-accent-2: #1d4ed8;
+        --nb-accent-3: #60a5fa;
+        --nb-border: rgba(17,24,39,0.18);
+        --nb-accent: #111827;
+      }
+      .nb-field {
+        font-family: var(--nb-font);
+        fill: var(--nb-text);
+      }
+      .nb-muted { fill: var(--nb-muted); }
+      .nb-accent { fill: var(--nb-accent); }
+      .nb-stroke-accent { stroke: var(--nb-accent); }
+      .nb-slot-outline {
+        fill: rgba(37,99,235,0.10);
+        stroke: rgba(37,99,235,0.35);
+        stroke-width: 3;
+      }
+      .nb-box {
+        fill: rgba(0,0,0,0);
+        stroke: rgba(16,185,129,0.0);
+        stroke-width: 1;
+      }
+    ]]></style>
+    <linearGradient id="nbBlueGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="var(--nb-accent-3)"/>
+      <stop offset="0.5" stop-color="var(--nb-accent)"/>
+      <stop offset="1" stop-color="var(--nb-accent-2)"/>
+    </linearGradient>
+    <linearGradient id="nbSoftBg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e0f2fe"/>
+      <stop offset="1" stop-color="#dbeafe"/>
+    </linearGradient>
+    <filter id="nbSoftShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="rgba(0,0,0,0.25)"/>
+    </filter>
+    <clipPath id="clipRoundedCard">
+      <rect x="0" y="0" width="2160" height="3840" rx="64.8" ry="64.8"/>
+    </clipPath>
+  </defs>
+  <g>
+  <defs>
+    <clipPath id="clip_slot_logo"><rect x="1620.00" y="1152.00" width="388.80" height="691.20" rx="15.55" ry="15.55" /></clipPath>
+    <clipPath id="clip_slot_cardPreview"><rect x="475.20" y="2380.80" width="1209.60" height="768.00" rx="30.00" ry="30.00" /></clipPath>
+    <clipPath id="clip_slot_qr"><rect x="1620.00" y="1900.00" width="388.80" height="388.80" rx="15.55" ry="15.55" /></clipPath>
+  </defs>
+    <rect x="0.00" y="0.00" width="2160.00" height="3840.00" rx="0.00" ry="0.00" fill="#ffffff"/>
+    <rect x="20.00" y="20.00" width="2120.00" height="3800.00" rx="180.00" ry="180.00" fill="none" stroke="#111827" stroke-width="40"/>
+    <path d="M 794.0 298.0 C 924.0 233.0, 1002.0 233.0, 1054.0 272.0 C 1080.0 298.0, 1080.0 298.0, 1106.0 272.0 C 1158.0 233.0, 1236.0 233.0, 1366.0 298.0" fill="none" stroke="#111827" stroke-width="10.4" stroke-linecap="round"/>
+    <g transform="translate(0,3840) scale(1,-1)"><path d="M 794.0 298.0 C 924.0 233.0, 1002.0 233.0, 1054.0 272.0 C 1080.0 298.0, 1080.0 298.0, 1106.0 272.0 C 1158.0 233.0, 1236.0 233.0, 1366.0 298.0" fill="none" stroke="#111827" stroke-width="10.4" stroke-linecap="round"/></g>
+    <line x1="110.0" y1="520" x2="110.0" y2="3320" stroke="#111827" stroke-width="8" opacity="0.9"/>
+    <line x1="2050.0" y1="520" x2="2050.0" y2="3320" stroke="#111827" stroke-width="8" opacity="0.9"/>
+    <g id="nb_editable">
+      <rect x="1620.00" y="1152.00" width="388.80" height="691.20" rx="15.55" ry="15.55" id="slot_logo_outline" class="nb-slot-outline"/>
+      <image id="slot_logo" x="1620.00" y="1152.00" width="388.80" height="691.20" href="" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip_slot_logo)"/>
+      <rect x="1620.00" y="1900.00" width="388.80" height="388.80" rx="15.55" ry="15.55" id="slot_qr_outline" class="nb-slot-outline"/>
+      <image id="slot_qr" x="1620.00" y="1900.00" width="388.80" height="388.80" href="" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip_slot_qr)"/>
+      <rect x="475.20" y="2380.80" width="1209.60" height="768.00" rx="30.00" ry="30.00" id="slot_cardPreview_outline" class="nb-slot-outline"/>
+      <image id="slot_cardPreview" x="475.20" y="2380.80" width="1209.60" height="768.00" href="" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip_slot_cardPreview)"/>
+      <rect x="172.80" y="576.00" width="1814.40" height="384.00" rx="0.00" ry="0.00" id="box_title" class="nb-box"/>
+      <text id="field_title" class="nb-field" x="172.80" y="845.00" font-size="269" font-weight="600" text-anchor="start"><tspan x="172.80" dy="0.00">Wedding Invitation</tspan></text>
+      <rect x="172.80" y="1075.20" width="1814.40" height="307.20" rx="0.00" ry="0.00" id="box_subtitle" class="nb-box"/>
+      <text id="field_subtitle" class="nb-field" x="172.80" y="1248.20" font-size="173" font-weight="600" text-anchor="start"><tspan x="172.80" dy="0.00">Together with their families</tspan></text>
+      <rect x="172.80" y="2496.00" width="1814.40" height="691.20" rx="0.00" ry="0.00" id="box_details" class="nb-box"/>
+      <text id="field_details" class="nb-field" x="172.80" y="2630.00" font-size="134" font-weight="600" text-anchor="start"><tspan x="172.80" dy="0.00">Date • Time • Venue</tspan><tspan x="172.80" dy="160.80">Address line 1</tspan><tspan x="172.80" dy="160.80">Address line 2</tspan></text>
+      <rect x="172.80" y="3456.00" width="1814.40" height="230.40" rx="0.00" ry="0.00" id="box_cta" class="nb-box"/>
+      <text id="field_cta" class="nb-field" x="172.80" y="3610.00" font-size="154" font-weight="600" text-anchor="start"><tspan x="172.80" dy="0.00">RSVP: email@example.com</tspan></text>
+    </g>
+  </g>
+</svg>

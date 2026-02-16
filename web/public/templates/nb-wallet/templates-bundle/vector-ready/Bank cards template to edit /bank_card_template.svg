@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2068" height="1202" viewBox="0 0 2068 1202" role="img" aria-labelledby="title" preserveAspectRatio="xMidYMid meet">
+  <title id="title">Bank Details Card (Vector)</title>
+  <defs>
+    <style><![CDATA[
+      :root {
+        --nb-font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+        --nb-bg: #ffffff;
+        --nb-text: #111827;
+        --nb-muted: #6b7280;
+        --nb-accent: #2563eb;
+        --nb-accent-2: #1d4ed8;
+        --nb-accent-3: #60a5fa;
+        --nb-border: rgba(17,24,39,0.18);
+      }
+      .nb-field {
+        font-family: var(--nb-font);
+        fill: var(--nb-text);
+      }
+      .nb-muted { fill: var(--nb-muted); }
+      .nb-accent { fill: var(--nb-accent); }
+      .nb-stroke-accent { stroke: var(--nb-accent); }
+      .nb-slot-outline {
+        fill: rgba(37,99,235,0.10);
+        stroke: rgba(37,99,235,0.35);
+        stroke-width: 3;
+      }
+      .nb-box {
+        fill: rgba(0,0,0,0);
+        stroke: rgba(16,185,129,0.0);
+        stroke-width: 1;
+      }
+    ]]></style>
+    <linearGradient id="nbBlueGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="var(--nb-accent-3)"/>
+      <stop offset="0.5" stop-color="var(--nb-accent)"/>
+      <stop offset="1" stop-color="var(--nb-accent-2)"/>
+    </linearGradient>
+    <linearGradient id="nbSoftBg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e0f2fe"/>
+      <stop offset="1" stop-color="#dbeafe"/>
+    </linearGradient>
+    <filter id="nbSoftShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="rgba(0,0,0,0.25)"/>
+    </filter>
+    <clipPath id="clipRoundedCard">
+      <rect x="0" y="0" width="2068" height="1202" rx="36.059999999999995" ry="36.059999999999995"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#clipRoundedCard)">
+  <defs>
+    <clipPath id="clip_slot_qr"><rect x="1613.04" y="576.96" width="330.88" height="360.60" rx="16.54" ry="16.54" /></clipPath>
+  </defs>
+    <rect x="0.00" y="0.00" width="2068.00" height="1202.00" rx="48.08" ry="48.08" fill="url(#nbSoftBg)"/>
+    <g opacity="0.85">
+      <path d="M 206.8 120.2 C 579.0 24.0, 992.6 120.2, 909.9 336.6 C 827.2 552.9, 372.2 480.8, 206.8 360.6 Z" fill="rgba(56,189,248,0.55)"/>
+      <path d="M 1282.2 72.1 C 1861.2 24.0, 2026.6 240.4, 1902.6 432.7 C 1778.5 625.0, 1282.2 577.0, 1240.8 360.6 Z" fill="rgba(59,130,246,0.22)"/>
+      <path d="M 1447.6 745.2 C 1964.6 649.1, 2171.4 1057.8, 1778.5 1153.9 C 1489.0 1226.0, 1075.4 1033.7, 1199.4 889.5 Z" fill="rgba(14,165,233,0.25)"/>
+    </g>
+    <g filter="url(#nbSoftShadow)">
+      <g transform="translate(330.9,625.0) rotate(-12)">
+        <rect x="0.00" y="0.00" width="744.48" height="360.60" rx="28.00" ry="28.00" fill="#06b6d4"/>
+        <rect x="0.00" y="60.10" width="744.48" height="60.10" rx="0.00" ry="0.00" fill="rgba(0,0,0,0.55)"/>
+        <rect x="103.40" y="192.32" width="248.16" height="96.16" rx="10.00" ry="10.00" fill="rgba(255,255,255,0.85)"/>
+      </g>
+      <g transform="translate(620.4,697.2)">
+        <rect x="0.00" y="0.00" width="909.92" height="396.66" rx="34.00" ry="34.00" fill="#1d4ed8"/>
+        <rect x="103.40" y="120.20" width="144.76" height="96.16" rx="10.00" ry="10.00" fill="#fbbf24" stroke="#d97706" stroke-width="4"/>
+        <path d="M 103.4 168.3 H 248.2" stroke="#d97706" stroke-width="4" opacity="0.7"/>
+        <rect x="103.40" y="288.48" width="248.16" height="36.06" rx="14.00" ry="14.00" fill="rgba(255,255,255,0.25)"/>
+        <rect x="413.60" y="288.48" width="248.16" height="36.06" rx="14.00" ry="14.00" fill="rgba(255,255,255,0.25)"/>
+        <circle cx="806.5" cy="324.5" r="48.1" fill="#ef4444" opacity="0.95"/>
+        <circle cx="868.6" cy="324.5" r="48.1" fill="#f59e0b" opacity="0.95"/>
+      </g>
+    </g>
+    <g id="nb_editable">
+      <rect x="1613.04" y="576.96" width="330.88" height="360.60" rx="16.54" ry="16.54" id="slot_qr_outline" class="nb-slot-outline"/>
+      <image id="slot_qr" x="1613.04" y="576.96" width="330.88" height="360.60" href="" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip_slot_qr)"/>
+      <text x="124.1" y="144.2" font-size="90" font-weight="800" class="nb-field">Bank Details</text>
+      <rect x="165.44" y="144.24" width="1447.60" height="84.14" rx="0.00" ry="0.00" id="box_bankName" class="nb-box"/>
+      <text id="field_bankName" class="nb-field" x="165.44" y="186.31" font-size="60" font-weight="600" dominant-baseline="middle">Bank Name: <tspan class="nb-muted">YOUR VALUE</tspan></text>
+      <rect x="165.44" y="540.90" width="1447.60" height="84.14" rx="0.00" ry="0.00" id="box_accountName" class="nb-box"/>
+      <text id="field_accountName" class="nb-field" x="165.44" y="582.97" font-size="60" font-weight="600" dominant-baseline="middle">Name on Account: <tspan class="nb-muted">YOUR VALUE</tspan></text>
+      <rect x="165.44" y="649.08" width="723.80" height="72.12" rx="0.00" ry="0.00" id="box_sortCode" class="nb-box"/>
+      <text id="field_sortCode" class="nb-field" x="165.44" y="685.14" font-size="48" font-weight="600" dominant-baseline="middle">Sort Code: <tspan class="nb-muted">YOUR VALUE</tspan></text>
+      <rect x="165.44" y="721.20" width="930.60" height="72.12" rx="0.00" ry="0.00" id="box_accountNumber" class="nb-box"/>
+      <text id="field_accountNumber" class="nb-field" x="165.44" y="757.26" font-size="48" font-weight="600" dominant-baseline="middle">Account Number: <tspan class="nb-muted">YOUR VALUE</tspan></text>
+      <rect x="165.44" y="841.40" width="1654.40" height="72.12" rx="0.00" ry="0.00" id="box_iban" class="nb-box"/>
+      <text id="field_iban" class="nb-field" x="165.44" y="877.46" font-size="42" font-weight="600" dominant-baseline="middle">IBAN: <tspan class="nb-muted">YOUR VALUE</tspan></text>
+      <rect x="165.44" y="913.52" width="1240.80" height="72.12" rx="0.00" ry="0.00" id="box_swift" class="nb-box"/>
+      <text id="field_swift" class="nb-field" x="165.44" y="949.58" font-size="42" font-weight="600" dominant-baseline="middle">SWIFT/BIC: <tspan class="nb-muted">YOUR VALUE</tspan></text>
+      <rect x="165.44" y="1009.68" width="1240.80" height="72.12" rx="0.00" ry="0.00" id="box_reference" class="nb-box"/>
+      <text id="field_reference" class="nb-field" x="165.44" y="1045.74" font-size="42" font-weight="600" dominant-baseline="middle">Reference: <tspan class="nb-muted">YOUR VALUE</tspan></text>
+    </g>
+  </g>
+</svg>

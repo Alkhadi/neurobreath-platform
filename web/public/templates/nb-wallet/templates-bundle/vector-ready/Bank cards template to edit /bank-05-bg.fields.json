@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "size": {
+    "width": 1600.0,
+    "height": 1000.0
+  },
+  "category": "bank",
+  "fields": [
+    {
+      "key": "bankName",
+      "type": "text",
+      "id": "field_bankName",
+      "box": {
+        "x": 128.0,
+        "y": 120.0,
+        "w": 1120.0,
+        "h": 70.0
+      },
+      "style": {
+        "fontSize": 50,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    },
+    {
+      "key": "accountName",
+      "type": "text",
+      "id": "field_accountName",
+      "box": {
+        "x": 128.0,
+        "y": 450.0,
+        "w": 1120.0,
+        "h": 70.0
+      },
+      "style": {
+        "fontSize": 50,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    },
+    {
+      "key": "sortCode",
+      "type": "text",
+      "id": "field_sortCode",
+      "box": {
+        "x": 128.0,
+        "y": 540.0,
+        "w": 560.0,
+        "h": 60.0
+      },
+      "style": {
+        "fontSize": 40,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    },
+    {
+      "key": "accountNumber",
+      "type": "text",
+      "id": "field_accountNumber",
+      "box": {
+        "x": 128.0,
+        "y": 600.0,
+        "w": 720.0,
+        "h": 60.0
+      },
+      "style": {
+        "fontSize": 40,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    },
+    {
+      "key": "iban",
+      "type": "text",
+      "id": "field_iban",
+      "box": {
+        "x": 128.0,
+        "y": 700.0,
+        "w": 1280.0,
+        "h": 60.0
+      },
+      "style": {
+        "fontSize": 35,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    },
+    {
+      "key": "swift",
+      "type": "text",
+      "id": "field_swift",
+      "box": {
+        "x": 128.0,
+        "y": 760.0,
+        "w": 960.0,
+        "h": 60.0
+      },
+      "style": {
+        "fontSize": 35,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    },
+    {
+      "key": "reference",
+      "type": "text",
+      "id": "field_reference",
+      "box": {
+        "x": 128.0,
+        "y": 840.0,
+        "w": 960.0,
+        "h": 60.0
+      },
+      "style": {
+        "fontSize": 35,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    }
+  ],
+  "slots": [
+    {
+      "key": "qr",
+      "type": "image",
+      "id": "slot_qr",
+      "box": {
+        "x": 1248.0,
+        "y": 480.0,
+        "w": 256.0,
+        "h": 300.0
+      },
+      "fit": "contain",
+      "shape": "roundedRect",
+      "radius": 12.8
+    }
+  ],
+  "colors": {
+    "bg": "--nb-bg",
+    "text": "--nb-text",
+    "muted": "--nb-muted",
+    "accent": "--nb-accent"
+  },
+  "notes": [
+    "SVG text is edited by targeting #field_* ids. Fit strategy is shrink-to-fit inside corresponding #box_*.",
+    "Image slots are rectangles with opacity 0; your renderer should clip/crop images to these boxes."
+  ]
+}

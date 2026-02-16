@@ -1,0 +1,49 @@
+<svg preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="bank-06-bg-title bank-06-bg-desc">
+  <title id="bank-06-bg-title">Clean Transfer — Bank Background</title>
+  <desc id="bank-06-bg-desc">Professional bank template with simple transfer motif and high readability</desc>
+  <defs>
+    <style><![CDATA[
+      :root {
+        --nb-font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+        --nb-text: #111827;
+        --nb-muted: #6b7280;
+        --nb-accent: #a7770d;
+      }
+      .nb-field { font-family: var(--nb-font); fill: var(--nb-text); }
+    ]]></style>
+    <linearGradient id="bank-06-base" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E293B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0F172A;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bank-06-base)" />
+  <path d="M 300,500 L 1300,500" stroke="#10B981" stroke-width="2" opacity="0.2" marker-end="url(#arrow)" />
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+      <path d="M 0,0 L 10,5 L 0,10 Z" fill="#10B981" opacity="0.2" />
+    </marker>
+  </defs>
+  <rect x="40" y="40" width="1520" height="920" fill="none" stroke="#D1D5DB" stroke-width="2" opacity="0.25" rx="32" />
+  <rect x="120" y="140" width="360" height="100" fill="#0F172A" opacity="0.4" rx="24" />
+<g id="nb_editable" data-nb-category="bank" data-nb-version="1">
+  <g id="nb_fields">
+    <rect id="box_bankName" x="128.00" y="120.00" width="1120.00" height="70.00" fill="none" opacity="0" data-nb-box="bankName"/>
+    <text id="field_bankName" class="nb-field" x="128.00" y="170.00" font-size="50" font-weight="600" data-nb-field="bankName">Bank Name</text>
+    <rect id="box_accountName" x="128.00" y="450.00" width="1120.00" height="70.00" fill="none" opacity="0" data-nb-box="accountName"/>
+    <text id="field_accountName" class="nb-field" x="128.00" y="500.00" font-size="50" font-weight="600" data-nb-field="accountName">Account Name</text>
+    <rect id="box_sortCode" x="128.00" y="540.00" width="560.00" height="60.00" fill="none" opacity="0" data-nb-box="sortCode"/>
+    <text id="field_sortCode" class="nb-field" x="128.00" y="580.00" font-size="40" font-weight="600" data-nb-field="sortCode">Sort Code: 00-00-00</text>
+    <rect id="box_accountNumber" x="128.00" y="600.00" width="720.00" height="60.00" fill="none" opacity="0" data-nb-box="accountNumber"/>
+    <text id="field_accountNumber" class="nb-field" x="128.00" y="640.00" font-size="40" font-weight="600" data-nb-field="accountNumber">Account No: 00000000</text>
+    <rect id="box_iban" x="128.00" y="700.00" width="1280.00" height="60.00" fill="none" opacity="0" data-nb-box="iban"/>
+    <text id="field_iban" class="nb-field" x="128.00" y="735.00" font-size="35" font-weight="600" data-nb-field="iban">IBAN: GB00 XXXX 0000 0000 0000 00</text>
+    <rect id="box_swift" x="128.00" y="760.00" width="960.00" height="60.00" fill="none" opacity="0" data-nb-box="swift"/>
+    <text id="field_swift" class="nb-field" x="128.00" y="795.00" font-size="35" font-weight="600" data-nb-field="swift">SWIFT/BIC: XXXXXXXX</text>
+    <rect id="box_reference" x="128.00" y="840.00" width="960.00" height="60.00" fill="none" opacity="0" data-nb-box="reference"/>
+    <text id="field_reference" class="nb-field" x="128.00" y="875.00" font-size="35" font-weight="600" data-nb-field="reference">Reference: (optional)</text>
+  </g>
+  <g id="nb_slots">
+    <rect id="slot_qr" x="1248.00" y="480.00" width="256.00" height="300.00" rx="12.80" ry="12.80" fill="none" opacity="0" data-nb-slot="qr"/>
+  </g>
+</g>
+</svg>

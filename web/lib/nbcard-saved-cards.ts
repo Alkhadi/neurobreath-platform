@@ -1,6 +1,6 @@
 import type { Profile } from "@/lib/utils";
 
-export type SavedCardCategory = "PROFILE" | "ADDRESS" | "BANK" | "BUSINESS" | "FLYER";
+export type SavedCardCategory = "PROFILE" | "ADDRESS" | "BANK" | "BUSINESS" | "FLYER" | "WEDDING";
 
 export type SavedCardRecord = {
   id: string; // also the Profile.id that will be loaded/shared
@@ -57,6 +57,8 @@ export function getCategoryFromProfile(profile: Profile): SavedCardCategory {
       return "BUSINESS";
     case "FLYER":
       return "FLYER";
+    case "WEDDING":
+      return "WEDDING";
     default:
       return "PROFILE";
   }
@@ -64,7 +66,15 @@ export function getCategoryFromProfile(profile: Profile): SavedCardCategory {
 
 export function normalizeProfileForCategory(profile: Profile, category: SavedCardCategory): Profile {
   if (category === "PROFILE") {
-    const { addressCard: _addressCard, bankCard: _bankCard, businessCard: _businessCard, cardCategory: _cardCategory, ...rest } = profile;
+    const {
+      addressCard: _addressCard,
+      bankCard: _bankCard,
+      businessCard: _businessCard,
+      flyerCard: _flyerCard,
+      weddingCard: _weddingCard,
+      cardCategory: _cardCategory,
+      ...rest
+    } = profile;
     return {
       ...rest,
       cardCategory: undefined,
@@ -73,12 +83,25 @@ export function normalizeProfileForCategory(profile: Profile, category: SavedCar
   }
 
   if (category === "FLYER") {
-    const { addressCard: _addressCard, bankCard: _bankCard, businessCard: _businessCard, ...rest } = profile;
+    const { addressCard: _addressCard, bankCard: _bankCard, businessCard: _businessCard, weddingCard: _weddingCard, ...rest } = profile;
     return {
       ...rest,
       cardCategory: "FLYER",
       socialMedia: profile.socialMedia ?? {},
       flyerCard: profile.flyerCard ?? {},
+      addressCard: undefined,
+      bankCard: undefined,
+      businessCard: undefined,
+    };
+  }
+
+  if (category === "WEDDING") {
+    const { addressCard: _addressCard, bankCard: _bankCard, businessCard: _businessCard, flyerCard: _flyerCard, ...rest } = profile;
+    return {
+      ...rest,
+      cardCategory: "WEDDING",
+      socialMedia: profile.socialMedia ?? {},
+      weddingCard: profile.weddingCard ?? {},
       addressCard: undefined,
       bankCard: undefined,
       businessCard: undefined,
@@ -95,6 +118,7 @@ export function normalizeProfileForCategory(profile: Profile, category: SavedCar
     bankCard: cardCategory === "BANK" ? (profile.bankCard ?? {}) : undefined,
     businessCard: cardCategory === "BUSINESS" ? (profile.businessCard ?? {}) : undefined,
     flyerCard: undefined,
+    weddingCard: undefined,
   };
 }
 

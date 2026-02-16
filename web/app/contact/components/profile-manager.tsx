@@ -22,7 +22,15 @@ import {
   saveProfileDraft,
 } from "@/lib/nbcard-saved-cards";
 
-type FrameCategory = "ADDRESS" | "BANK" | "BUSINESS";
+type FrameCategory = "ADDRESS" | "BANK" | "BUSINESS" | "FLYER" | "WEDDING";
+
+const frameCategoryLabel: Record<FrameCategory, string> = {
+  ADDRESS: "Address details",
+  BANK: "Bank details",
+  BUSINESS: "Business profile",
+  FLYER: "Flyers",
+  WEDDING: "Wedding",
+};
 
 interface ProfileManagerProps {
   profile: Profile;
@@ -31,15 +39,20 @@ interface ProfileManagerProps {
   onClose: () => void;
   isNew?: boolean;
   userEmail?: string; // For IndexedDB namespace
+  onSelectTemplate?: (templateId: string) => void;
 }
 
-export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = false, userEmail }: ProfileManagerProps) {
+export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = false, userEmail, onSelectTemplate }: ProfileManagerProps) {
   const [editedProfile, setEditedProfile] = useState<Profile>(profile);
   const [sessionEmail, setSessionEmail] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [showFrameChooser, setShowFrameChooser] = useState(false);
   const initialFrameCategory: FrameCategory =
-    profile.cardCategory === "BANK" || profile.cardCategory === "BUSINESS" || profile.cardCategory === "ADDRESS"
+    profile.cardCategory === "BANK" ||
+    profile.cardCategory === "BUSINESS" ||
+    profile.cardCategory === "ADDRESS" ||
+    profile.cardCategory === "FLYER" ||
+    profile.cardCategory === "WEDDING"
       ? profile.cardCategory
       : "ADDRESS";
   const [selectedFrameCategory, setSelectedFrameCategory] = useState<FrameCategory>(initialFrameCategory);
@@ -49,6 +62,69 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
   const draftTimerRef = useRef<NodeJS.Timeout | null>(null);
   const hasRestoredDraftRef = useRef(false);
   const didInitRef = useRef(false);
+
+  const setCategory = useCallback(
+    (category: FrameCategory) => {
+      setSelectedFrameCategory(category);
+
+      if (category === "ADDRESS") {
+        setEditedProfile((prev) => ({
+          ...prev,
+          cardCategory: "ADDRESS",
+          addressCard: prev.addressCard ?? {},
+        }));
+        return;
+      }
+
+      if (category === "BANK") {
+        setEditedProfile((prev) => ({
+          ...prev,
+          cardCategory: "BANK",
+          bankCard: prev.bankCard ?? {},
+        }));
+        return;
+      }
+
+      if (category === "BUSINESS") {
+        setEditedProfile((prev) => ({
+          ...prev,
+          cardCategory: "BUSINESS",
+          businessCard: prev.businessCard ?? {},
+        }));
+        return;
+      }
+
+      if (category === "FLYER") {
+        setEditedProfile((prev) => ({
+          ...prev,
+          cardCategory: "FLYER",
+          flyerCard:
+            prev.flyerCard ??
+            ({
+              headline: "",
+              subheadline: "",
+              ctaText: "",
+              ctaUrl: "",
+            } satisfies NonNullable<Profile["flyerCard"]>),
+        }));
+        return;
+      }
+
+      setEditedProfile((prev) => ({
+        ...prev,
+        cardCategory: "WEDDING",
+        weddingCard:
+          prev.weddingCard ??
+          ({
+            headline: "",
+            subheadline: "",
+            ctaText: "",
+            ctaUrl: "",
+          } satisfies NonNullable<Profile["weddingCard"]>),
+      }));
+    },
+    [setEditedProfile]
+  );
 
   const extractFirstHex = (value: string): string | null => {
     const match = value.match(/#[0-9a-fA-F]{6}/);
@@ -140,6 +216,15 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
     hasRestoredDraftRef.current = true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [namespace, profile.id]);
+
+  // Keep UI category in sync with stored category (draft restore / external changes).
+  useEffect(() => {
+    const cat = editedProfile.cardCategory;
+    if (cat === "ADDRESS" || cat === "BANK" || cat === "BUSINESS" || cat === "FLYER" || cat === "WEDDING") {
+      // Don't stomp an explicit Wedding selection (Wedding is a Flyer subset in current data model).
+      if (selectedFrameCategory !== cat) setSelectedFrameCategory(cat);
+    }
+  }, [editedProfile.cardCategory, selectedFrameCategory]);
 
   // Draft autosave: debounced local persistence only (never closes modal)
   const persistDraft = useCallback(() => {
@@ -355,11 +440,15 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
             </div>
           </div>
 
-          {/* Flyer Content */}
-          {editedProfile.cardCategory === "FLYER" ? (
+          {/* Flyer / Wedding Content */}
+          {selectedFrameCategory === "FLYER" || selectedFrameCategory === "WEDDING" ? (
             <div className="rounded-xl border border-gray-200 p-4">
-              <h3 className="text-sm font-bold text-gray-800">Flyer content</h3>
-              <p className="text-xs text-gray-600">Used by the Flyer template.</p>
+              <h3 className="text-sm font-bold text-gray-800">
+                {selectedFrameCategory === "WEDDING" ? "Wedding content" : "Flyer content"}
+              </h3>
+              <p className="text-xs text-gray-600">
+                {selectedFrameCategory === "WEDDING" ? "Used by Wedding flyer templates." : "Used by the Flyer template."}
+              </p>
 
               <div className="mt-3 grid gap-3">
                 <div>
@@ -368,15 +457,21 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                   </label>
                   <input
                     id="flyer-headline"
-                    value={editedProfile.flyerCard?.headline ?? ""}
+                    value={
+                      selectedFrameCategory === "WEDDING"
+                        ? editedProfile.weddingCard?.headline ?? ""
+                        : editedProfile.flyerCard?.headline ?? ""
+                    }
                     onChange={(e) =>
                       setEditedProfile({
                         ...editedProfile,
-                        flyerCard: { ...editedProfile.flyerCard, headline: e.target.value },
+                        ...(selectedFrameCategory === "WEDDING"
+                          ? { weddingCard: { ...editedProfile.weddingCard, headline: e.target.value } }
+                          : { flyerCard: { ...editedProfile.flyerCard, headline: e.target.value } }),
                       })
                     }
                     className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
-                    placeholder="e.g. Free ADHD assessment"
+                    placeholder={selectedFrameCategory === "WEDDING" ? "e.g. John & Jane" : "e.g. Free ADHD assessment"}
                   />
                 </div>
 
@@ -386,15 +481,21 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                   </label>
                   <input
                     id="flyer-subheadline"
-                    value={editedProfile.flyerCard?.subheadline ?? ""}
+                    value={
+                      selectedFrameCategory === "WEDDING"
+                        ? editedProfile.weddingCard?.subheadline ?? ""
+                        : editedProfile.flyerCard?.subheadline ?? ""
+                    }
                     onChange={(e) =>
                       setEditedProfile({
                         ...editedProfile,
-                        flyerCard: { ...editedProfile.flyerCard, subheadline: e.target.value },
+                        ...(selectedFrameCategory === "WEDDING"
+                          ? { weddingCard: { ...editedProfile.weddingCard, subheadline: e.target.value } }
+                          : { flyerCard: { ...editedProfile.flyerCard, subheadline: e.target.value } }),
                       })
                     }
                     className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
-                    placeholder="Short supporting line"
+                    placeholder={selectedFrameCategory === "WEDDING" ? "e.g. Saturday 25 July" : "Short supporting line"}
                   />
                 </div>
 
@@ -405,15 +506,21 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                     </label>
                     <input
                       id="flyer-cta-text"
-                      value={editedProfile.flyerCard?.ctaText ?? ""}
+                      value={
+                        selectedFrameCategory === "WEDDING"
+                          ? editedProfile.weddingCard?.ctaText ?? ""
+                          : editedProfile.flyerCard?.ctaText ?? ""
+                      }
                       onChange={(e) =>
                         setEditedProfile({
                           ...editedProfile,
-                          flyerCard: { ...editedProfile.flyerCard, ctaText: e.target.value },
+                          ...(selectedFrameCategory === "WEDDING"
+                            ? { weddingCard: { ...editedProfile.weddingCard, ctaText: e.target.value } }
+                            : { flyerCard: { ...editedProfile.flyerCard, ctaText: e.target.value } }),
                         })
                       }
                       className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
-                      placeholder="e.g. Scan to book"
+                      placeholder={selectedFrameCategory === "WEDDING" ? "e.g. RSVP" : "e.g. Scan to book"}
                     />
                   </div>
                   <div>
@@ -422,11 +529,17 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                     </label>
                     <input
                       id="flyer-cta-url"
-                      value={editedProfile.flyerCard?.ctaUrl ?? ""}
+                      value={
+                        selectedFrameCategory === "WEDDING"
+                          ? editedProfile.weddingCard?.ctaUrl ?? ""
+                          : editedProfile.flyerCard?.ctaUrl ?? ""
+                      }
                       onChange={(e) =>
                         setEditedProfile({
                           ...editedProfile,
-                          flyerCard: { ...editedProfile.flyerCard, ctaUrl: e.target.value },
+                          ...(selectedFrameCategory === "WEDDING"
+                            ? { weddingCard: { ...editedProfile.weddingCard, ctaUrl: e.target.value } }
+                            : { flyerCard: { ...editedProfile.flyerCard, ctaUrl: e.target.value } }),
                         })
                       }
                       className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
@@ -449,13 +562,13 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
             <div className="mb-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
               <h4 className="text-sm font-bold text-gray-800 mb-2">Professional frames made for you</h4>
               <p className="text-xs text-gray-600 mb-3">
-                Choose a frame style for how you want your profile presented: Address details, Bank details, or Business profile.
+                Choose a frame style for how you want your profile presented: Address details, Bank details, Business profile, Flyers, or Wedding.
               </p>
               
               <div className="flex flex-wrap gap-2 mb-3">
                 <button
                   type="button"
-                  onClick={() => setSelectedFrameCategory("ADDRESS")}
+                  onClick={() => setCategory("ADDRESS")}
                   className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
                     selectedFrameCategory === "ADDRESS"
                       ? "bg-purple-600 text-white"
@@ -466,7 +579,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                 </button>
                 <button
                   type="button"
-                  onClick={() => setSelectedFrameCategory("BANK")}
+                  onClick={() => setCategory("BANK")}
                   className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
                     selectedFrameCategory === "BANK"
                       ? "bg-purple-600 text-white"
@@ -477,7 +590,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                 </button>
                 <button
                   type="button"
-                  onClick={() => setSelectedFrameCategory("BUSINESS")}
+                  onClick={() => setCategory("BUSINESS")}
                   className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
                     selectedFrameCategory === "BUSINESS"
                       ? "bg-purple-600 text-white"
@@ -485,6 +598,34 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                   }`}
                 >
                   Business profile
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCategory("FLYER");
+                  }}
+                  className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                    selectedFrameCategory === "FLYER"
+                      ? "bg-purple-600 text-white"
+                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  }`}
+                >
+                  Flyers
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCategory("WEDDING");
+                  }}
+                  className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                    selectedFrameCategory === "WEDDING"
+                      ? "bg-purple-600 text-white"
+                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  }`}
+                >
+                  Wedding
                 </button>
               </div>
 
@@ -695,9 +836,17 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
               )}
             </div>
             <p className="text-xs text-gray-600 mb-4">
-              Fill in details specific to the category you selected above ({selectedFrameCategory}).
+              Fill in details specific to the category you selected above ({frameCategoryLabel[selectedFrameCategory]}).
               These will appear on your card.
             </p>
+
+            {(selectedFrameCategory === "FLYER" || selectedFrameCategory === "WEDDING") && (
+              <div className="p-4 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-700">
+                {selectedFrameCategory === "WEDDING"
+                  ? "Wedding templates use the Wedding content section above."
+                  : "Flyer templates use the Flyer content section above."}
+              </div>
+            )}
 
             {/* ADDRESS CARD FIELDS */}
             {selectedFrameCategory === "ADDRESS" && (
@@ -1260,6 +1409,10 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
           category={selectedFrameCategory}
           onSelect={(frameUrl) => {
             setEditedProfile({ ...editedProfile, frameUrl, backgroundUrl: undefined });
+            setShowFrameChooser(false);
+          }}
+          onSelectTemplate={(template) => {
+            onSelectTemplate?.(template.id);
             setShowFrameChooser(false);
           }}
           onClose={() => setShowFrameChooser(false)}

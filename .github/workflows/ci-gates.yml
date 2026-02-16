@@ -23,6 +23,10 @@ jobs:
           cache: "yarn"
           cache-dependency-path: web/yarn.lock
 
+      - name: Validate SVG templates (no raster refs)
+        working-directory: .
+        run: node web/scripts/validate-svg-no-raster.mjs --dirs web/public/templates/nb-wallet/templates-bundle
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 

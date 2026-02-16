@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "size": {
+    "width": 2100,
+    "height": 1200
+  },
+  "category": "address",
+  "fields": [
+    {
+      "key": "fullName",
+      "type": "text",
+      "id": "field_fullName",
+      "box": {
+        "x": 168.0,
+        "y": 156.0,
+        "w": 1680.0,
+        "h": 96.0
+      },
+      "style": {
+        "fontSize": 72,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    },
+    {
+      "key": "addressLine1",
+      "type": "text",
+      "id": "field_addressLine1",
+      "box": {
+        "x": 168.0,
+        "y": 432.0,
+        "w": 1680.0,
+        "h": 72.0
+      },
+      "style": {
+        "fontSize": 48,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    },
+    {
+      "key": "addressLine2",
+      "type": "text",
+      "id": "field_addressLine2",
+      "box": {
+        "x": 168.0,
+        "y": 504.0,
+        "w": 1680.0,
+        "h": 72.0
+      },
+      "style": {
+        "fontSize": 48,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    },
+    {
+      "key": "city",
+      "type": "text",
+      "id": "field_city",
+      "box": {
+        "x": 168.0,
+        "y": 600.0,
+        "w": 1050.0,
+        "h": 72.0
+      },
+      "style": {
+        "fontSize": 48,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    },
+    {
+      "key": "postcode",
+      "type": "text",
+      "id": "field_postcode",
+      "box": {
+        "x": 168.0,
+        "y": 672.0000000000001,
+        "w": 840.0,
+        "h": 72.0
+      },
+      "style": {
+        "fontSize": 48,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    },
+    {
+      "key": "phone",
+      "type": "text",
+      "id": "field_phone",
+      "box": {
+        "x": 168.0,
+        "y": 840.0,
+        "w": 1260.0,
+        "h": 72.0
+      },
+      "style": {
+        "fontSize": 48,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    },
+    {
+      "key": "email",
+      "type": "text",
+      "id": "field_email",
+      "box": {
+        "x": 168.0,
+        "y": 912.0,
+        "w": 1470.0,
+        "h": 72.0
+      },
+      "style": {
+        "fontSize": 48,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    }
+  ],
+  "slots": [
+    {
+      "key": "profilePhoto",
+      "type": "image",
+      "id": "slot_profilePhoto",
+      "box": {
+        "x": 1638.0,
+        "y": 144.0,
+        "w": 294.0,
+        "h": 216.0
+      },
+      "fit": "cover",
+      "shape": "roundedRect",
+      "radius": 12.959999999999999
+    },
+    {
+      "key": "qr",
+      "type": "image",
+      "id": "slot_qr",
+      "box": {
+        "x": 1638.0,
+        "y": 390.0,
+        "w": 294.0,
+        "h": 294.0
+      },
+      "fit": "contain",
+      "shape": "roundedRect",
+      "radius": 16.0
+    }
+  ],
+  "colors": {
+    "bg": "--nb-bg",
+    "text": "--nb-text",
+    "muted": "--nb-muted",
+    "accent": "--nb-accent"
+  },
+  "notes": [
+    "SVG text is edited by targeting #field_* ids. Fit strategy is shrink-to-fit inside corresponding #box_*.",
+    "Image slots are rectangles with opacity 0; your renderer should clip/crop images to these boxes."
+  ]
+}

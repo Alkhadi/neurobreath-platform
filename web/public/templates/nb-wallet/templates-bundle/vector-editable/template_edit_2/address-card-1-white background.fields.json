@@ -1,0 +1,195 @@
+{
+  "version": 1,
+  "category": "address-card",
+  "size": {
+    "w": 1024,
+    "h": 1024
+  },
+  "fields": {
+    "fullName": {
+      "id": "field_fullName",
+      "box": [
+        170,
+        200,
+        680,
+        74
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 54,
+        "fontWeight": 800,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "jobTitle": {
+      "id": "field_jobTitle",
+      "box": [
+        170,
+        285,
+        680,
+        46
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 30,
+        "fontWeight": 600,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "phone": {
+      "id": "field_phone",
+      "box": [
+        170,
+        380,
+        680,
+        42
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 28,
+        "fontWeight": 600,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "email": {
+      "id": "field_email",
+      "box": [
+        170,
+        436,
+        680,
+        42
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 28,
+        "fontWeight": 600,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "website": {
+      "id": "field_website",
+      "box": [
+        170,
+        490,
+        680,
+        42
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 28,
+        "fontWeight": 600,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "addressLine1": {
+      "id": "field_addressLine1",
+      "box": [
+        170,
+        574,
+        560,
+        40
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 26,
+        "fontWeight": 600,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "addressLine2": {
+      "id": "field_addressLine2",
+      "box": [
+        170,
+        618,
+        560,
+        40
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 26,
+        "fontWeight": 600,
+        "fill": "var(--nb-text)"
+      }
+    }
+  },
+  "slots": {
+    "profilePhoto": {
+      "id": "slot_profilePhoto",
+      "box": [
+        170,
+        720,
+        150,
+        150
+      ],
+      "type": "image",
+      "fit": "cover",
+      "preserveAspectRatio": "xMidYMid slice"
+    },
+    "qr": {
+      "id": "slot_qr",
+      "box": [
+        770,
+        740,
+        190,
+        190
+      ],
+      "type": "qr",
+      "fit": "contain",
+      "preserveAspectRatio": "xMidYMid meet",
+      "qr": {
+        "payload": "shareUrl",
+        "errorCorrection": "M",
+        "margin": 2
+      }
+    },
+    "logo": {
+      "id": "slot_logo",
+      "box": [
+        770,
+        200,
+        190,
+        90
+      ],
+      "type": "image",
+      "fit": "contain",
+      "preserveAspectRatio": "xMidYMid meet"
+    }
+  },
+  "colors": {
+    "cssVars": [
+      "--nb-bg",
+      "--nb-panel",
+      "--nb-text",
+      "--nb-muted",
+      "--nb-accent",
+      "--nb-accent2",
+      "--nb-gold"
+    ]
+  },
+  "recommendedExport": [
+    {
+      "format": "png",
+      "scale": 2
+    },
+    {
+      "format": "pdf"
+    }
+  ],
+  "share": {
+    "qrPayloadOptions": [
+      "shareUrl",
+      "vCard",
+      "mailto",
+      "tel",
+      "website"
+    ],
+    "default": "shareUrl"
+  }
+}

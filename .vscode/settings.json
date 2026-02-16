@@ -52,5 +52,9 @@
 
   // Prisma migrations are Postgres SQL, not T-SQL.
   // Disable MSSQL extension error checking to avoid false-positive squiggles.
-  "mssql.intelliSense.enableErrorChecking": false
+  "mssql.intelliSense.enableErrorChecking": false,
+
+  // Disable Webhint in this repo to avoid noisy editor diagnostics.
+  // (It may try to resolve a "hint" package / baseline mapping and crash.)
+  "webhint.enable": false
 }

@@ -311,7 +311,21 @@ export function NBCardPanel() {
   };
 
   const handleCreateFromTemplate = (template: Template) => {
-    const isFlyer = template.id.startsWith("flyer_promo_");
+    const inferredCategory = template.cardCategory
+      ? template.cardCategory
+      : template.id.startsWith("flyer_promo_")
+        ? (/wedding/i.test(template.label) ? ("WEDDING" as const) : ("FLYER" as const))
+        : undefined;
+
+    const nextSelection: TemplateSelection = {
+      backgroundId: template.id,
+      overlayId: undefined,
+      orientation: template.orientation,
+      backgroundColor: templateSelection.backgroundColor,
+    };
+
+    // Apply immediately so the preview reflects the chosen template while editing.
+    setTemplateSelection(nextSelection);
 
     setEditingProfile({
       id: "",
@@ -323,8 +337,26 @@ export function NBCardPanel() {
       businessDescription: "",
       gradient: "linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)",
       socialMedia: {},
-      ...(isFlyer
-        ? {
+      ...(inferredCategory === "ADDRESS"
+        ? ({
+            cardCategory: "ADDRESS" as const,
+            addressCard: {},
+          } as const)
+        : {}),
+      ...(inferredCategory === "BANK"
+        ? ({
+            cardCategory: "BANK" as const,
+            bankCard: {},
+          } as const)
+        : {}),
+      ...(inferredCategory === "BUSINESS"
+        ? ({
+            cardCategory: "BUSINESS" as const,
+            businessCard: {},
+          } as const)
+        : {}),
+      ...(inferredCategory === "FLYER"
+        ? ({
             cardCategory: "FLYER" as const,
             flyerCard: {
               headline: "",
@@ -332,17 +364,23 @@ export function NBCardPanel() {
               ctaText: "",
               ctaUrl: "",
             },
-          }
+          } as const)
+        : {}),
+      ...(inferredCategory === "WEDDING"
+        ? ({
+            cardCategory: "WEDDING" as const,
+            weddingCard: {
+              headline: "",
+              subheadline: "",
+              ctaText: "",
+              ctaUrl: "",
+            },
+          } as const)
         : {}),
     });
 
     setIsNewProfile(true);
-    setPendingTemplateSelection({
-      backgroundId: template.id,
-      overlayId: undefined,
-      orientation: template.orientation,
-      backgroundColor: templateSelection.backgroundColor,
-    });
+    setPendingTemplateSelection(nextSelection);
     setShowProfileManager(true);
 
     toast.message("New card from template", {
@@ -856,6 +894,25 @@ export function NBCardPanel() {
           }}
           isNew={isNewProfile}
           userEmail={undefined}
+          onSelectTemplate={(templateId) => {
+            loadTemplateManifest()
+              .then((manifest) => {
+                const template = getTemplateById(manifest.templates, templateId);
+                if (!template) return;
+                const nextSelection: TemplateSelection = {
+                  backgroundId: template.id,
+                  overlayId: undefined,
+                  orientation: template.orientation,
+                  backgroundColor: templateSelection.backgroundColor,
+                };
+
+                setTemplateSelection(nextSelection);
+                if (isNewProfile) setPendingTemplateSelection(nextSelection);
+              })
+              .catch(() => {
+                // ignore
+              });
+          }}
         />
       )}
     </>

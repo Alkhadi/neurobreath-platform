@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2160" height="3840" viewBox="0 0 2160 3840" role="img" aria-labelledby="title" preserveAspectRatio="xMidYMid meet">
+  <title id="title">Church Worship Flyer (v2) — Vector</title>
+  <defs>
+    <style><![CDATA[
+      :root {
+        --nb-font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+        --nb-bg: #ffffff;
+        --nb-text: #111827;
+        --nb-muted: #6b7280;
+        --nb-accent: #2563eb;
+        --nb-accent-2: #1d4ed8;
+        --nb-accent-3: #60a5fa;
+        --nb-border: rgba(17,24,39,0.18);
+        --nb-accent: #f59e0b;
+        --nb-accent-2: #d97706;
+        --nb-accent-3: #fde68a;
+      }
+      .nb-field {
+        font-family: var(--nb-font);
+        fill: var(--nb-text);
+      }
+      .nb-muted { fill: var(--nb-muted); }
+      .nb-accent { fill: var(--nb-accent); }
+      .nb-stroke-accent { stroke: var(--nb-accent); }
+      .nb-slot-outline {
+        fill: rgba(37,99,235,0.10);
+        stroke: rgba(37,99,235,0.35);
+        stroke-width: 3;
+      }
+      .nb-box {
+        fill: rgba(0,0,0,0);
+        stroke: rgba(16,185,129,0.0);
+        stroke-width: 1;
+      }
+    ]]></style>
+    <linearGradient id="nbBlueGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="var(--nb-accent-3)"/>
+      <stop offset="0.5" stop-color="var(--nb-accent)"/>
+      <stop offset="1" stop-color="var(--nb-accent-2)"/>
+    </linearGradient>
+    <linearGradient id="nbSoftBg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e0f2fe"/>
+      <stop offset="1" stop-color="#dbeafe"/>
+    </linearGradient>
+    <filter id="nbSoftShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="rgba(0,0,0,0.25)"/>
+    </filter>
+    <clipPath id="clipRoundedCard">
+      <rect x="0" y="0" width="2160" height="3840" rx="64.8" ry="64.8"/>
+    </clipPath>
+  </defs>
+  <defs>
+    <clipPath id="clip_slot_logo"><rect x="1620.00" y="1152.00" width="388.80" height="691.20" rx="15.55" ry="15.55" /></clipPath>
+    <clipPath id="clip_slot_backgroundImage"><rect x="0.00" y="0.00" width="2160.00" height="1228.80" rx="0.00" ry="0.00" /></clipPath>
+    <clipPath id="clip_slot_speakerPhoto"><rect x="388.80" y="691.20" width="1382.40" height="1305.60" rx="36.00" ry="36.00" /></clipPath>
+    <clipPath id="clip_slot_qr"><rect x="1620.00" y="1900.00" width="388.80" height="388.80" rx="15.55" ry="15.55" /></clipPath>
+    <filter id="fog" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="22"/></filter>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="6" cy="6" r="4" fill="rgba(255,255,255,0.55)"/></pattern>
+  </defs>
+  <g clip-path="url(#clipRoundedCard)">
+    <rect x="0.00" y="0.00" width="2160.00" height="3840.00" rx="0.00" ry="0.00" fill="#ffffff"/>
+    <rect x="0.00" y="0.00" width="2160.00" height="768.00" rx="0.00" ry="0.00" fill="url(#dots)" opacity="0.55"/>
+    <circle cx="548.7" cy="1037.6" r="2.5" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="1478.2" cy="161.8" r="3.0" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="2050.3" cy="285.9" r="4.6" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="1000.6" cy="529.2" r="4.0" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="481.7" cy="906.0" r="2.4" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="563.3" cy="96.8" r="3.1" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="900.5" cy="977.4" r="3.5" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="329.1" cy="334.7" r="6.0" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="230.6" cy="696.0" r="3.5" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="1392.7" cy="414.7" r="4.8" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="1075.3" cy="725.5" r="5.6" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="1238.5" cy="218.7" r="2.3" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="1947.1" cy="564.7" r="2.8" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="1947.1" cy="654.8" r="4.9" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="1820.6" cy="362.0" r="3.4" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="1815.0" cy="211.6" r="5.1" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="297.8" cy="765.9" r="4.8" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="1954.8" cy="918.9" r="4.0" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="492.2" cy="226.7" r="4.1" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="1099.0" cy="148.1" r="5.6" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="1094.4" cy="777.0" r="2.9" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="582.1" cy="88.7" r="3.4" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="626.7" cy="499.5" r="3.5" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="1729.9" cy="966.8" r="2.7" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="878.3" cy="242.7" r="4.7" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="2003.1" cy="278.3" r="5.1" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="691.3" cy="90.0" r="5.1" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="772.5" cy="246.7" r="3.7" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="558.5" cy="486.2" r="3.8" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="920.5" cy="664.4" r="3.2" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="292.9" cy="161.9" r="2.4" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="1120.7" cy="436.4" r="5.2" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="1089.6" cy="783.8" r="5.9" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="230.4" cy="93.7" r="2.6" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="859.0" cy="649.6" r="5.0" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="791.2" cy="1040.2" r="2.0" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="1732.6" cy="286.5" r="5.5" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="172.4" cy="1040.4" r="5.0" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="2033.5" cy="655.9" r="2.7" fill="rgba(245,158,11,0.45)"/>
+    <circle cx="1993.4" cy="517.6" r="2.3" fill="rgba(245,158,11,0.45)"/>
+    <rect x="0" y="1382.4" width="2160" height="844.8" fill="white" opacity="0.65" filter="url(#fog)"/>
+    <path d="M 0 3456.0 C 540.0 3148.8, 1620.0 3763.2, 2160.0 3456.0 L 2160.0 3840.0 L 0 3840.0 Z" fill="rgba(245,158,11,0.16)"/>
+    <g id="nb_editable">
+      <rect x="1620.00" y="1152.00" width="388.80" height="691.20" rx="15.55" ry="15.55" id="slot_logo_outline" class="nb-slot-outline"/>
+      <rect x="0.00" y="0.00" width="2160.00" height="1228.80" rx="0.00" ry="0.00" id="slot_backgroundImage_outline" class="nb-slot-outline"/>
+      <rect x="388.80" y="691.20" width="1382.40" height="1305.60" rx="36.00" ry="36.00" id="slot_speakerPhoto_outline" class="nb-slot-outline"/>
+      <rect x="1620.00" y="1900.00" width="388.80" height="388.80" rx="15.55" ry="15.55" id="slot_qr_outline" class="nb-slot-outline"/>
+      <image id="slot_logo" x="1620.00" y="1152.00" width="388.80" height="691.20" href="" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip_slot_logo)"/>
+      <image id="slot_backgroundImage" x="0.00" y="0.00" width="2160.00" height="1228.80" href="" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip_slot_backgroundImage)"/>
+      <image id="slot_speakerPhoto" x="388.80" y="691.20" width="1382.40" height="1305.60" href="" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip_slot_speakerPhoto)"/>
+      <image id="slot_qr" x="1620.00" y="1900.00" width="388.80" height="388.80" href="" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip_slot_qr)"/>
+      <rect x="172.80" y="576.00" width="1814.40" height="384.00" rx="0.00" ry="0.00" id="box_title" class="nb-box"/>
+      <text id="field_title" x="1080.00" y="845.00" font-size="269" font-weight="600" text-anchor="middle" fill="#111827"><tspan x="1080.00" dy="0.00">Praise and</tspan></text>
+      <rect x="172.80" y="1075.20" width="1814.40" height="307.20" rx="0.00" ry="0.00" id="box_subtitle" class="nb-box"/>
+      <text id="field_subtitle" x="1080.00" y="1255.20" font-size="180" font-weight="900" text-anchor="middle" fill="#f59e0b" stroke="rgba(0,0,0,0.25)" stroke-width="6" paint-order="stroke"><tspan x="1080.00" dy="0.00">WORSHIP</tspan></text>
+      <rect x="172.80" y="2496.00" width="1814.40" height="691.20" rx="0.00" ry="0.00" id="box_details" class="nb-box"/>
+      <text id="field_details" x="1080.00" y="2550.00" font-size="54" font-weight="700" text-anchor="middle" fill="#111827"><tspan x="1080.00" dy="0.00">24 JULY, 2029 • 08:00AM – 11:00AM</tspan><tspan x="1080.00" dy="62.10">123 Anywhere St, Any City</tspan><tspan x="1080.00" dy="62.10">www.example.com</tspan></text>
+      <rect x="172.80" y="3456.00" width="1814.40" height="230.40" rx="0.00" ry="0.00" id="box_cta" class="nb-box"/>
+      <text id="field_cta" x="1080.00" y="3500.00" font-size="44" font-weight="700" text-anchor="middle" fill="#111827"><tspan x="1080.00" dy="0.00">All are welcome</tspan></text>
+    </g>
+  </g>
+</svg>

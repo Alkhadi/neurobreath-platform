@@ -14,7 +14,7 @@ import {
   resetTemplateManifestCache,
 } from "@/lib/nbcard-templates";
 
-import { type Profile, type CardLayer, type TextLayer, type AvatarLayer, type ShapeLayer } from "@/lib/utils";
+import { cn, type Profile, type CardLayer, type TextLayer, type AvatarLayer, type ShapeLayer } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -402,6 +402,17 @@ export function TemplatePicker({ selection, orientation, onSelectionChange, onCr
                           onSelect={() => handleBackgroundSelect(template.id)}
                         />
 
+                        <button
+                          type="button"
+                          onClick={() => handleBackgroundSelect(template.id)}
+                          className={cn(
+                            "w-full text-left text-sm font-medium leading-snug",
+                            isSelected ? "text-purple-700" : "text-gray-800 hover:text-purple-700"
+                          )}
+                        >
+                          {template.label}
+                        </button>
+
                         {onCreateFromTemplate ? (
                           <Button
                             type="button"
@@ -410,7 +421,7 @@ export function TemplatePicker({ selection, orientation, onSelectionChange, onCr
                             className="w-full"
                             onClick={() => onCreateFromTemplate(template)}
                           >
-                            New
+                            Create new profile
                           </Button>
                         ) : null}
                       </div>

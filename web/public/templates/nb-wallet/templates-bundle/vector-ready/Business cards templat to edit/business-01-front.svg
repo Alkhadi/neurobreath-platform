@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="business-01-front-title" preserveAspectRatio="xMidYMid meet">
+  <title id="business-01-front-title">Executive Charcoal — Business Card Front</title>
+  
+  <defs>
+    <style><![CDATA[
+      :root {
+        --nb-font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+        --nb-text: #111827;
+        --nb-muted: #6b7280;
+        --nb-accent: #a7770d;
+      }
+      .nb-field { font-family: var(--nb-font); fill: var(--nb-text); }
+    ]]></style>
+    <linearGradient id="business-01-front-base" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#111827;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1F2937;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#111827;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="business-01-front-highlight" cx="30%" cy="30%" r="60%">
+      <stop offset="0%" style="stop-color:#1D4ED8;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#111827;stop-opacity:0" />
+    </radialGradient>
+    <pattern id="business-01-front-grid" x="0" y="0" width="1600" height="900" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="1.5" fill="#F59E0B" opacity="0.15" />
+    </pattern>
+  </defs>
+  
+  <!-- Base gradient -->
+  <rect width="1600" height="900" fill="url(#business-01-front-base)" />
+  
+  <!-- Highlight blob -->
+  <ellipse cx="480" cy="270" rx="600" ry="450" fill="url(#business-01-front-highlight)" />
+  
+  <!-- Edge frame -->
+  <rect x="40" y="40" width="1520" height="820" fill="none" stroke="#F59E0B" stroke-width="2" opacity="0.3" rx="32" />
+  
+  <!-- Grid micro-pattern -->
+  <rect x="80" y="80" width="1440" height="740" fill="url(#business-01-front-grid)" opacity="0.6" />
+  
+  <!-- Briefcase motif (top-left) -->
+  <g transform="translate(160, 120)" opacity="0.35">
+    <rect x="0" y="15" width="50" height="35" rx="4" fill="none" stroke="#4F46E5" stroke-width="3" />
+    <rect x="18" y="0" width="14" height="15" fill="none" stroke="#4F46E5" stroke-width="3" stroke-linejoin="round" />
+    <line x1="0" y1="30" x2="50" y2="30" stroke="#4F46E5" stroke-width="2" opacity="0.6" />
+  </g>
+  
+  <!-- Content area readability wash -->
+  <rect x="100" y="120" width="700" height="500" fill="#111827" opacity="0.4" rx="24" />
+  
+  <!-- Profile photo placeholder (left side) -->
+  <image id="nb-card-photo" x="140" y="160" width="200" height="200" preserveAspectRatio="xMidYMid slice" href="" style="clip-path: circle(45%);" />
+  
+  <!-- Front side text fields with standard IDs -->
+  <text id="nb-card-name" x="380" y="220" font-family="system-ui, -apple-system, sans-serif" font-size="56" font-weight="700" fill="#FFFFFF">John Doe</text>
+  <text id="nb-card-title" x="380" y="270" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="400" fill="#F59E0B">Chief Executive Officer</text>
+  <text id="nb-card-company" x="380" y="315" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="600" fill="#9CA3AF">NeuroBreath Inc.</text>
+  
+  <!-- Contact info section -->
+  <g id="nb-card-contact-group">
+    <text id="nb-card-phone" x="380" y="400" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#E5E7EB">📞 +1 (555) 123-4567</text>
+    <text id="nb-card-email" x="380" y="440" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#E5E7EB">✉️ john@neurobreath.com</text>
+    <a id="nb-card-website-link" href="https://neurobreath.com" target="_blank" rel="noopener">
+      <text id="nb-card-website" x="380" y="480" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#60A5FA" text-decoration="underline">🌐 neurobreath.com</text>
+    </a>
+  </g>
+  
+  <!-- Logo placeholder (bottom-right) -->
+  <image id="nb-card-logo" x="1200" y="650" width="300" height="150" preserveAspectRatio="xMidYMid meet" href="" />
+  
+  <!-- QR code placeholder (bottom-left) -->
+  <rect id="nb-card-qr-bg" x="140" y="650" width="150" height="150" fill="#FFFFFF" rx="8" />
+  <image id="nb-card-qr" x="150" y="660" width="130" height="130" preserveAspectRatio="xMidYMid meet" href="" />
+<g id="nb_editable" data-nb-category="business" data-nb-version="1">
+  <g id="nb_fields">
+    <rect id="box_companyName" x="128.00" y="108.00" width="880.00" height="72.00" fill="none" opacity="0" data-nb-box="companyName"/>
+    <text id="field_companyName" class="nb-field" x="128.00" y="158.00" font-size="50" font-weight="600" data-nb-field="companyName">Company Name</text>
+    <rect id="box_fullName" x="128.00" y="495.00" width="1120.00" height="72.00" fill="none" opacity="0" data-nb-box="fullName"/>
+    <text id="field_fullName" class="nb-field" x="128.00" y="558.00" font-size="63" font-weight="600" data-nb-field="fullName">Full Name</text>
+    <rect id="box_jobTitle" x="128.00" y="558.00" width="1120.00" height="54.00" fill="none" opacity="0" data-nb-box="jobTitle"/>
+    <text id="field_jobTitle" class="nb-field" x="128.00" y="598.00" font-size="40" font-weight="600" data-nb-field="jobTitle">Job Title</text>
+    <rect id="box_phone" x="128.00" y="648.00" width="1120.00" height="54.00" fill="none" opacity="0" data-nb-box="phone"/>
+    <text id="field_phone" class="nb-field" x="128.00" y="684.00" font-size="36" font-weight="600" data-nb-field="phone">+44 0000 000000</text>
+    <rect id="box_email" x="128.00" y="702.00" width="1120.00" height="54.00" fill="none" opacity="0" data-nb-box="email"/>
+    <text id="field_email" class="nb-field" x="128.00" y="738.00" font-size="36" font-weight="600" data-nb-field="email">name@example.com</text>
+    <rect id="box_website" x="128.00" y="756.00" width="1120.00" height="54.00" fill="none" opacity="0" data-nb-box="website"/>
+    <text id="field_website" class="nb-field" x="128.00" y="792.00" font-size="36" font-weight="600" data-nb-field="website">https://example.com</text>
+  </g>
+  <g id="nb_slots">
+    <rect id="slot_logo" x="1280.00" y="90.00" width="224.00" height="126.00" rx="5.04" ry="5.04" fill="none" opacity="0" data-nb-slot="logo"/>
+    <rect id="slot_qr" x="140.00" y="650.00" width="150.00" height="150.00" rx="8" ry="8" fill="none" opacity="0" data-nb-slot="qr"/>
+  </g>
+</g>
+</svg>

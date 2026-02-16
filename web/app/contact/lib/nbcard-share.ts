@@ -6,6 +6,49 @@ export type ShareFile = {
   text?: string;
 };
 
+export type VCardOptions = {
+  includeAddress?: boolean;
+  includeBusiness?: boolean;
+};
+
+export function renderBankQrText(profile: Profile, shareUrl: string): string {
+  const lines: string[] = [];
+  lines.push('NBCard — Bank Details');
+  if (profile.fullName) lines.push(`Name: ${profile.fullName}`);
+
+  const b = profile.bankCard;
+  if (b?.bankName) lines.push(`Bank: ${b.bankName}`);
+  if (b?.accountName) lines.push(`Account Name: ${b.accountName}`);
+  if (b?.sortCode) lines.push(`Sort Code: ${b.sortCode}`);
+  if (b?.accountNumber) lines.push(`Account Number: ${b.accountNumber}`);
+  if (b?.iban) lines.push(`IBAN: ${b.iban}`);
+  if (b?.swiftBic) lines.push(`SWIFT/BIC: ${b.swiftBic}`);
+  if (b?.referenceNote) lines.push(`Reference: ${b.referenceNote}`);
+  if (b?.paymentLink) lines.push(`${b.paymentLinkLabel || 'Payment Link'}: ${b.paymentLink}`);
+
+  lines.push('');
+  lines.push('Profile:');
+  lines.push(shareUrl);
+  return lines.join('\n');
+}
+
+export function renderFlyerQrText(profile: Profile, shareUrl: string): string {
+  const lines: string[] = [];
+  const isWedding = (profile.cardCategory ?? "").toString().toUpperCase() === "WEDDING";
+  const card = isWedding ? profile.weddingCard : profile.flyerCard;
+
+  lines.push(isWedding ? 'NBCard — Wedding' : 'NBCard — Flyer');
+  if (card?.headline) lines.push(card.headline);
+  if (card?.subheadline) lines.push(card.subheadline);
+  if (card?.ctaText) lines.push(card.ctaText);
+  if (card?.ctaUrl) lines.push(card.ctaUrl);
+
+  lines.push('');
+  lines.push('Profile:');
+  lines.push(shareUrl);
+  return lines.join('\n');
+}
+
 export function getProfileShareUrl(profileId: string): string {
   if (typeof window === 'undefined') return `/resources/nb-card?profile=${encodeURIComponent(profileId)}`;
   const url = new URL('/resources/nb-card', window.location.origin);
@@ -96,18 +139,54 @@ export function downloadBlob(blob: Blob, filename: string): void {
   URL.revokeObjectURL(url);
 }
 
-export function generateProfileVCard(profile: Profile): string {
+export function generateProfileVCard(profile: Profile, options: VCardOptions = {}): string {
   const lines: string[] = [];
   lines.push('BEGIN:VCARD');
   lines.push('VERSION:3.0');
   lines.push(`FN:${sanitizeVcard(profile.fullName)}`);
   lines.push(`TITLE:${sanitizeVcard(profile.jobTitle)}`);
-  lines.push('ORG:NeuroBreath');
+  const org = profile.businessCard?.companyName || 'NeuroBreath';
+  lines.push(`ORG:${sanitizeVcard(org)}`);
   if (profile.phone) lines.push(`TEL;TYPE=CELL:${sanitizeVcard(profile.phone)}`);
   if (profile.email) lines.push(`EMAIL;TYPE=INTERNET:${sanitizeVcard(profile.email)}`);
 
-  const website = profile.website;
+  const website = profile.businessCard?.websiteUrl || profile.website;
   if (website) lines.push(`URL:${sanitizeVcard(website)}`);
+
+  if (options.includeAddress) {
+    const a = profile.addressCard;
+    const hasAny =
+      !!a?.addressLine1?.trim() ||
+      !!a?.addressLine2?.trim() ||
+      !!a?.city?.trim() ||
+      !!a?.postcode?.trim() ||
+      !!a?.country?.trim();
+
+    if (hasAny) {
+      const street = [a?.addressLine1, a?.addressLine2].filter(Boolean).join(' ');
+      lines.push(
+        `ADR:;;${sanitizeVcard(street)};${sanitizeVcard(a?.city || '')};;${sanitizeVcard(
+          a?.postcode || ''
+        )};${sanitizeVcard(a?.country || '')}`
+      );
+    }
+  }
+
+  const notes: string[] = [];
+  if (profile.profileDescription) notes.push(`Profile: ${profile.profileDescription}`);
+  if (options.includeBusiness) {
+    if (profile.businessDescription) notes.push(`Business: ${profile.businessDescription}`);
+    if (profile.businessCard?.tagline) notes.push(`Tagline: ${profile.businessCard.tagline}`);
+    if (profile.businessCard?.services) notes.push(`Services: ${profile.businessCard.services}`);
+    if (profile.businessCard?.hours) notes.push(`Hours: ${profile.businessCard.hours}`);
+    if (profile.businessCard?.bookingLink) notes.push(`Booking: ${profile.businessCard.bookingLink}`);
+    if (profile.businessCard?.locationNote) notes.push(`Location: ${profile.businessCard.locationNote}`);
+    if (profile.businessCard?.vatOrRegNo) notes.push(`VAT/Reg: ${profile.businessCard.vatOrRegNo}`);
+  }
+  if (options.includeAddress) {
+    if (profile.addressCard?.directionsNote) notes.push(`Directions: ${profile.addressCard.directionsNote}`);
+  }
+  if (notes.length) lines.push(`NOTE:${sanitizeVcard(notes.join(' | '))}`);
 
   for (const [key, value] of Object.entries(profile.socialMedia || {})) {
     if (!value) continue;

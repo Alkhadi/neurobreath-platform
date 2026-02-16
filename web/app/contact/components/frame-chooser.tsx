@@ -4,12 +4,9 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { FaTimes } from "react-icons/fa";
 import Image from "next/image";
-import {
-  getTemplatesByCategory,
-  type TemplateCategory,
-} from "@/app/uk/resources/nb-card/_templatePack";
+import { filterTemplates, loadTemplateManifest, type Template } from "@/lib/nbcard-templates";
 
-type FrameCategory = "ADDRESS" | "BANK" | "BUSINESS";
+type FrameCategory = "ADDRESS" | "BANK" | "BUSINESS" | "FLYER" | "WEDDING";
 
 interface Frame {
   id: string;
@@ -24,6 +21,7 @@ interface Frame {
 interface FrameChooserProps {
   category: FrameCategory;
   onSelect: (frameUrl: string) => void;
+  onSelectTemplate?: (template: Template) => void;
   onClose: () => void;
 }
 
@@ -53,17 +51,48 @@ function setCachedFrames(frames: Frame[]) {
   }
 }
 
-export function FrameChooser({ category, onSelect, onClose }: FrameChooserProps) {
+export function FrameChooser({ category, onSelect, onSelectTemplate, onClose }: FrameChooserProps) {
   const [frames, setFrames] = useState<Frame[]>([]);
   const [loading, setLoading] = useState(true);
   const [useBuiltinOnly, setUseBuiltinOnly] = useState(false);
+  const [builtinTemplates, setBuiltinTemplates] = useState<Template[]>([]);
 
-  // Get built-in templates for this category
-  const builtinTemplates = getTemplatesByCategory(category as TemplateCategory);
+  const matchesCategory = (template: Template, cat: FrameCategory) => {
+    if (template.cardCategory) return template.cardCategory === cat;
+    const normalized = (template.category ?? "").toString().trim().toLowerCase();
+    if (cat === "ADDRESS") return normalized === "address";
+    if (cat === "BANK") return normalized === "bank";
+    if (cat === "BUSINESS") return normalized === "business";
+    if (cat === "FLYER") return normalized === "flyer";
+    if (cat === "WEDDING") return normalized === "flyer" && /wedding/i.test(template.label ?? "");
+    return false;
+  };
 
   useEffect(() => {
     async function loadFrames() {
       setLoading(true);
+
+      const builtinOnlyCategory = category === "FLYER" || category === "WEDDING";
+
+      // Always load the current template manifests for built-in fallback
+      try {
+        const manifest = await loadTemplateManifest();
+        const backgrounds = filterTemplates(manifest.templates, { type: "background" });
+        const categoryTemplates = backgrounds
+          .filter((t) => matchesCategory(t, category))
+          .sort((a, b) => a.label.localeCompare(b.label));
+        setBuiltinTemplates(categoryTemplates);
+      } catch (err) {
+        console.error("Failed to load built-in templates:", err);
+        setBuiltinTemplates([]);
+      }
+
+      if (builtinOnlyCategory) {
+        setUseBuiltinOnly(true);
+        setFrames([]);
+        setLoading(false);
+        return;
+      }
 
       // Try cache first
       const cached = getCachedFrames();
@@ -119,7 +148,11 @@ export function FrameChooser({ category, onSelect, onClose }: FrameChooserProps)
                 ? "Address Details Frames"
                 : category === "BANK"
                 ? "Bank Details Frames"
-                : "Business Profile Frames"}
+                : category === "BUSINESS"
+                ? "Business Profile Frames"
+                : category === "FLYER"
+                ? "Flyer Templates"
+                : "Wedding Flyer Templates"}
             </p>
           </div>
           <button
@@ -149,15 +182,27 @@ export function FrameChooser({ category, onSelect, onClose }: FrameChooserProps)
                   <button
                     key={template.id}
                     onClick={() => {
-                      onSelect(template.backgroundUrl);
+                      if (typeof (onSelectTemplate as unknown) === "function") {
+                        (onSelectTemplate as (t: Template) => void)(template);
+                      } else {
+                        onSelect(template.src);
+                      }
                       toast.success("Template applied");
                       onClose();
                     }}
-                    className="group relative aspect-[8/5] rounded-lg overflow-hidden border-2 border-gray-200 hover:border-purple-500 transition-all hover:shadow-lg"
+                    className="group relative rounded-lg overflow-hidden border-2 border-gray-200 hover:border-purple-500 transition-all hover:shadow-lg"
+                    style={{
+                      aspectRatio:
+                        template.exportWidth && template.exportHeight
+                          ? template.exportWidth / template.exportHeight
+                          : template.orientation === "portrait"
+                          ? 3 / 4
+                          : 8 / 5,
+                    }}
                   >
                     <Image
-                      src={template.backgroundUrl}
-                      alt={template.alt}
+                      src={template.thumb}
+                      alt={template.label}
                       fill
                       className="object-cover"
                       unoptimized
@@ -165,7 +210,7 @@ export function FrameChooser({ category, onSelect, onClose }: FrameChooserProps)
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-                      <p className="text-white text-sm font-semibold">{template.name}</p>
+                      <p className="text-white text-sm font-semibold">{template.label}</p>
                     </div>
                   </button>
                 ))}

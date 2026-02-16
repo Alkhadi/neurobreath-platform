@@ -46,8 +46,7 @@ import {
 import { RedactionDialog } from "@/components/nbcard/RedactionDialog";
 import {
   applyRedaction,
-  getDefaultRedactionSettings,
-  getPopulatedFields,
+  getDefaultIncludedFieldsForProfile,
   type RedactableField,
 } from "@/lib/nb-card/redaction";
 import { getRecommendedCaptureScale, runExportPreflight } from "@/lib/nb-card/export-preflight";
@@ -85,6 +84,8 @@ import {
   buildMailtoUrl,
   buildSmsUrl,
   buildWhatsappUrl,
+  renderBankQrText,
+  renderFlyerQrText,
 } from "../lib/nbcard-share";
 import {
   importNbcardLocalState,
@@ -445,7 +446,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   const [isQrOpen, setIsQrOpen] = React.useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = React.useState(false);
   const [isShareFallbackOpen, setIsShareFallbackOpen] = React.useState(false);
-  const [isQrVcard, setIsQrVcard] = React.useState(false);
+  const [isQrVcard, setIsQrVcard] = React.useState(true);
   const [isPrintOpen, setIsPrintOpen] = React.useState(false);
   const [busyKey, setBusyKey] = React.useState<string | null>(null);
 
@@ -479,13 +480,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   const EXPORT_CAPTURE_ID = "profile-card-capture-export";
 
   function getDefaultIncludedFields(nextProfile: Profile): Set<RedactableField> {
-    const defaults = getDefaultRedactionSettings();
-    const populated = getPopulatedFields(nextProfile);
-    const initial = new Set<RedactableField>();
-    for (const field of populated) {
-      if (defaults[field]) initial.add(field);
-    }
-    return initial;
+    return getDefaultIncludedFieldsForProfile(nextProfile);
   }
 
   function requestRedactionAndRun(run: (redacted: Profile) => Promise<void>) {
@@ -519,7 +514,9 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   const photoInputRef = React.useRef<HTMLInputElement>(null);
   const backgroundInputRef = React.useRef<HTMLInputElement>(null);
   const [showFrameChooser, setShowFrameChooser] = React.useState(false);
-  const [selectedFrameCategory, setSelectedFrameCategory] = React.useState<"ADDRESS" | "BANK" | "BUSINESS">("ADDRESS");
+  const [selectedFrameCategory, setSelectedFrameCategory] = React.useState<"ADDRESS" | "BANK" | "BUSINESS" | "FLYER" | "WEDDING">(
+    "ADDRESS"
+  );
 
   const NAMESPACED_STATE_KEY_PREFIX = "nbcard:namespacedState:v1:";
 
@@ -628,10 +625,18 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   const shareUrl = React.useMemo(() => getProfileShareUrl(profile.id), [profile.id]);
 
   const qrValue = React.useMemo(() => {
-    if (!isQrVcard) return shareUrl;
     const fields = lastRedactionFields ?? getDefaultIncludedFields(profile);
     const redacted = applyRedaction(profile, fields);
-    const vcard = generateProfileVCard(redacted);
+    const category = getCategoryFromProfile(profile);
+
+    if (category === "BANK") return renderBankQrText(redacted, shareUrl);
+    if (category === "FLYER" || category === "WEDDING") return renderFlyerQrText(redacted, shareUrl);
+
+    if (!isQrVcard) return shareUrl;
+    const vcard = generateProfileVCard(redacted, {
+      includeAddress: category === "ADDRESS",
+      includeBusiness: category === "BUSINESS" || category === "PROFILE",
+    });
     if (vcard.length > 1200) return shareUrl;
     return vcard;
   }, [isQrVcard, lastRedactionFields, profile, shareUrl]);
@@ -692,7 +697,11 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   async function handleDownloadVcard() {
     requestRedactionAndRun(async (redacted) => {
       await withBusy("vcard", async () => {
-        const vcard = generateProfileVCard(redacted);
+        const category = getCategoryFromProfile(profile);
+        const vcard = generateProfileVCard(redacted, {
+          includeAddress: category === "ADDRESS",
+          includeBusiness: category === "BUSINESS" || category === "PROFILE",
+        });
         const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
         downloadBlob(new Blob([vcard], { type: "text/vcard" }), `${safeName}_NBCard.vcf`);
         toast.success("vCard downloaded");
@@ -703,7 +712,11 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   async function handleShareVcardFile() {
     requestRedactionAndRun(async (redacted) => {
       await withBusy("vcard-share", async () => {
-        const vcard = generateProfileVCard(redacted);
+        const category = getCategoryFromProfile(profile);
+        const vcard = generateProfileVCard(redacted, {
+          includeAddress: category === "ADDRESS",
+          includeBusiness: category === "BUSINESS" || category === "PROFILE",
+        });
         const blob = new Blob([vcard], { type: "text/vcard" });
         const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
         const fileName = `${safeName}.vcf`;
@@ -936,6 +949,8 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
       { key: "ADDRESS", label: "Address" },
       { key: "BANK", label: "Bank" },
       { key: "BUSINESS", label: "Business" },
+      { key: "FLYER", label: "Flyer" },
+      { key: "WEDDING", label: "Wedding" },
     ],
     []
   );
@@ -1004,15 +1019,41 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
       };
     }
 
-    return {
-      ...base,
-      cardCategory: "BUSINESS",
-      socialMedia: base.socialMedia ?? {},
-      businessCard: {
-        bookingLinkLabel: "Book Now",
-        ...(base.businessCard ?? {}),
-      },
-    };
+    if (tab === "BUSINESS") {
+      return {
+        ...base,
+        cardCategory: "BUSINESS",
+        socialMedia: base.socialMedia ?? {},
+        businessCard: {
+          bookingLinkLabel: "Book Now",
+          ...(base.businessCard ?? {}),
+        },
+      };
+    }
+
+    if (tab === "FLYER") {
+      return {
+        ...base,
+        cardCategory: "FLYER",
+        socialMedia: base.socialMedia ?? {},
+        flyerCard: {
+          ...(base.flyerCard ?? {}),
+        },
+      };
+    }
+
+    if (tab === "WEDDING") {
+      return {
+        ...base,
+        cardCategory: "WEDDING",
+        socialMedia: base.socialMedia ?? {},
+        weddingCard: {
+          ...(base.weddingCard ?? {}),
+        },
+      };
+    }
+
+    return { ...base, socialMedia: base.socialMedia ?? {} };
   }
 
   function openFocusedEditor(tab: SavedCardCategory) {
@@ -1476,7 +1517,11 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                 ? "Edit Address Card"
                 : activeEditorTab === "BANK"
                 ? "Edit Bank Card"
-                : "Edit Business Card"}
+                : activeEditorTab === "BUSINESS"
+                ? "Edit Business Card"
+                : activeEditorTab === "FLYER"
+                ? "Edit Flyer Card"
+                : "Edit Wedding Card"}
             </DialogTitle>
             <DialogDescription id="nbcard-editor-desc">
               Changes update the live card instantly and autosave on this device.
@@ -1542,6 +1587,28 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                         }`}
                       >
                         Business profile
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedFrameCategory("FLYER")}
+                        className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                          selectedFrameCategory === "FLYER"
+                            ? "bg-purple-600 text-white"
+                            : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                        }`}
+                      >
+                        Flyer
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedFrameCategory("WEDDING")}
+                        className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                          selectedFrameCategory === "WEDDING"
+                            ? "bg-purple-600 text-white"
+                            : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                        }`}
+                      >
+                        Wedding
                       </button>
                     </div>
                     <button
@@ -2200,6 +2267,180 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
               </div>
             ) : null}
 
+            {activeEditorTab === "FLYER" ? (
+              <div className="mt-4 space-y-4">
+                <div>
+                  <label htmlFor="nbcard-editor-flyer-headline" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Headline
+                  </label>
+                  <input
+                    id="nbcard-editor-flyer-headline"
+                    type="text"
+                    autoFocus
+                    value={editorProfile.flyerCard?.headline ?? ""}
+                    onChange={(e) => {
+                      const next = withEditorDefaults(
+                        { ...editorProfile, flyerCard: { ...(editorProfile.flyerCard ?? {}), headline: e.target.value } },
+                        "FLYER"
+                      );
+                      setEditorProfile(next);
+                      updateActiveProfileSlot(next);
+                    }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="nbcard-editor-flyer-subheadline" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Subheadline (optional)
+                  </label>
+                  <input
+                    id="nbcard-editor-flyer-subheadline"
+                    type="text"
+                    value={editorProfile.flyerCard?.subheadline ?? ""}
+                    onChange={(e) => {
+                      const next = withEditorDefaults(
+                        { ...editorProfile, flyerCard: { ...(editorProfile.flyerCard ?? {}), subheadline: e.target.value } },
+                        "FLYER"
+                      );
+                      setEditorProfile(next);
+                      updateActiveProfileSlot(next);
+                    }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="nbcard-editor-flyer-ctaText" className="block text-sm font-semibold text-gray-700 mb-2">
+                      CTA Text (optional)
+                    </label>
+                    <input
+                      id="nbcard-editor-flyer-ctaText"
+                      type="text"
+                      value={editorProfile.flyerCard?.ctaText ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, flyerCard: { ...(editorProfile.flyerCard ?? {}), ctaText: e.target.value } },
+                          "FLYER"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-flyer-ctaUrl" className="block text-sm font-semibold text-gray-700 mb-2">
+                      CTA URL (optional)
+                    </label>
+                    <input
+                      id="nbcard-editor-flyer-ctaUrl"
+                      type="url"
+                      value={editorProfile.flyerCard?.ctaUrl ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, flyerCard: { ...(editorProfile.flyerCard ?? {}), ctaUrl: e.target.value } },
+                          "FLYER"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      placeholder="https://example.com"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            {activeEditorTab === "WEDDING" ? (
+              <div className="mt-4 space-y-4">
+                <div>
+                  <label htmlFor="nbcard-editor-wedding-headline" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Headline
+                  </label>
+                  <input
+                    id="nbcard-editor-wedding-headline"
+                    type="text"
+                    autoFocus
+                    value={editorProfile.weddingCard?.headline ?? ""}
+                    onChange={(e) => {
+                      const next = withEditorDefaults(
+                        { ...editorProfile, weddingCard: { ...(editorProfile.weddingCard ?? {}), headline: e.target.value } },
+                        "WEDDING"
+                      );
+                      setEditorProfile(next);
+                      updateActiveProfileSlot(next);
+                    }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="nbcard-editor-wedding-subheadline" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Subheadline (optional)
+                  </label>
+                  <input
+                    id="nbcard-editor-wedding-subheadline"
+                    type="text"
+                    value={editorProfile.weddingCard?.subheadline ?? ""}
+                    onChange={(e) => {
+                      const next = withEditorDefaults(
+                        { ...editorProfile, weddingCard: { ...(editorProfile.weddingCard ?? {}), subheadline: e.target.value } },
+                        "WEDDING"
+                      );
+                      setEditorProfile(next);
+                      updateActiveProfileSlot(next);
+                    }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="nbcard-editor-wedding-ctaText" className="block text-sm font-semibold text-gray-700 mb-2">
+                      CTA Text (optional)
+                    </label>
+                    <input
+                      id="nbcard-editor-wedding-ctaText"
+                      type="text"
+                      value={editorProfile.weddingCard?.ctaText ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, weddingCard: { ...(editorProfile.weddingCard ?? {}), ctaText: e.target.value } },
+                          "WEDDING"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="nbcard-editor-wedding-ctaUrl" className="block text-sm font-semibold text-gray-700 mb-2">
+                      CTA URL (optional)
+                    </label>
+                    <input
+                      id="nbcard-editor-wedding-ctaUrl"
+                      type="url"
+                      value={editorProfile.weddingCard?.ctaUrl ?? ""}
+                      onChange={(e) => {
+                        const next = withEditorDefaults(
+                          { ...editorProfile, weddingCard: { ...(editorProfile.weddingCard ?? {}), ctaUrl: e.target.value } },
+                          "WEDDING"
+                        );
+                        setEditorProfile(next);
+                        updateActiveProfileSlot(next);
+                      }}
+                      placeholder="https://example.com"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
             {activeEditorTab === "BUSINESS" ? (
               <div className="mt-4 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2415,38 +2656,50 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>QR Code</DialogTitle>
-            <DialogDescription>Default encodes your profile link. Optionally encode a lightweight vCard.</DialogDescription>
+            <DialogDescription>
+              {getCategoryFromProfile(profile) === "BANK"
+                ? "Encodes your bank card details as structured text."
+                : getCategoryFromProfile(profile) === "FLYER" || getCategoryFromProfile(profile) === "WEDDING"
+                  ? "Encodes your flyer/wedding text (and optional CTA link)."
+                  : "Encode a vCard (full contact data). If too large, we fall back to a link."}
+            </DialogDescription>
           </DialogHeader>
 
-          <div className="flex items-center justify-between rounded-lg border p-3">
-            <div className="text-sm">
-              <div className="font-medium">Encode vCard</div>
-              <div className="text-muted-foreground">If too large, we fall back to link.</div>
-            </div>
-            <Button
-              type="button"
-              variant={isQrVcard ? "default" : "outline"}
-              onClick={() => {
-                const next = !isQrVcard;
-                if (!next) {
-                  setIsQrVcard(false);
-                  return;
-                }
-
-                requestRedactionAndRun(async (redacted) => {
-                  const vcard = generateProfileVCard(redacted);
-                  if (vcard.length > 1200) {
-                    toast.message("vCard too large for QR", { description: "Using link QR instead." });
+          {getCategoryFromProfile(profile) === "BANK" || getCategoryFromProfile(profile) === "FLYER" || getCategoryFromProfile(profile) === "WEDDING" ? null : (
+            <div className="flex items-center justify-between rounded-lg border p-3">
+              <div className="text-sm">
+                <div className="font-medium">Encode vCard</div>
+                <div className="text-muted-foreground">If too large, we fall back to link.</div>
+              </div>
+              <Button
+                type="button"
+                variant={isQrVcard ? "default" : "outline"}
+                onClick={() => {
+                  const next = !isQrVcard;
+                  if (!next) {
                     setIsQrVcard(false);
                     return;
                   }
-                  setIsQrVcard(true);
-                });
-              }}
-            >
-              {isQrVcard ? "On" : "Off"}
-            </Button>
-          </div>
+
+                  requestRedactionAndRun(async (redacted) => {
+                    const category = getCategoryFromProfile(profile);
+                    const vcard = generateProfileVCard(redacted, {
+                      includeAddress: category === "ADDRESS",
+                      includeBusiness: category === "BUSINESS" || category === "PROFILE",
+                    });
+                    if (vcard.length > 1200) {
+                      toast.message("vCard too large for QR", { description: "Using link QR instead." });
+                      setIsQrVcard(false);
+                      return;
+                    }
+                    setIsQrVcard(true);
+                  });
+                }}
+              >
+                {isQrVcard ? "On" : "Off"}
+              </Button>
+            </div>
+          )}
 
           <div className="flex items-center justify-center rounded-xl border bg-muted/30 p-4">
             <QRCodeSVG id="nbcard-qr-svg" value={qrValue} size={260} includeMargin level="M" />

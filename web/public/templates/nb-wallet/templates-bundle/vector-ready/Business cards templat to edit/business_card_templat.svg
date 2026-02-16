@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2100" height="1200" viewBox="0 0 2100 1200" role="img" aria-labelledby="title" preserveAspectRatio="xMidYMid meet">
+  <title id="title">Business Card (Vector)</title>
+  <defs>
+    <style><![CDATA[
+      :root {
+        --nb-font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+        --nb-bg: #ffffff;
+        --nb-text: #111827;
+        --nb-muted: #6b7280;
+        --nb-accent: #2563eb;
+        --nb-accent-2: #1d4ed8;
+        --nb-accent-3: #60a5fa;
+        --nb-border: rgba(17,24,39,0.18);
+      }
+      .nb-field {
+        font-family: var(--nb-font);
+        fill: var(--nb-text);
+      }
+      .nb-muted { fill: var(--nb-muted); }
+      .nb-accent { fill: var(--nb-accent); }
+      .nb-stroke-accent { stroke: var(--nb-accent); }
+      .nb-slot-outline {
+        fill: rgba(37,99,235,0.10);
+        stroke: rgba(37,99,235,0.35);
+        stroke-width: 3;
+      }
+      .nb-box {
+        fill: rgba(0,0,0,0);
+        stroke: rgba(16,185,129,0.0);
+        stroke-width: 1;
+      }
+    ]]></style>
+    <linearGradient id="nbBlueGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="var(--nb-accent-3)"/>
+      <stop offset="0.5" stop-color="var(--nb-accent)"/>
+      <stop offset="1" stop-color="var(--nb-accent-2)"/>
+    </linearGradient>
+    <linearGradient id="nbSoftBg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e0f2fe"/>
+      <stop offset="1" stop-color="#dbeafe"/>
+    </linearGradient>
+    <filter id="nbSoftShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="rgba(0,0,0,0.25)"/>
+    </filter>
+    <clipPath id="clipRoundedCard">
+      <rect x="0" y="0" width="2100" height="1200" rx="36.0" ry="36.0"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#clipRoundedCard)">
+  <defs>
+    <clipPath id="clip_slot_logo"><rect x="1680.00" y="120.00" width="294.00" height="168.00" rx="6.72" ry="6.72" /></clipPath>
+    <clipPath id="clip_slot_profilePhoto"><rect x="1302.00" y="120.00" width="672.00" height="936.00" rx="24.00" ry="24.00" /></clipPath>
+    <clipPath id="clip_slot_qr"><rect x="168.00" y="300.00" width="240.00" height="240.00" rx="12.00" ry="12.00" /></clipPath>
+  </defs>
+    <rect x="0.00" y="0.00" width="2100.00" height="1200.00" rx="48.00" ry="48.00" fill="#05060a"/>
+    <g>
+      <polygon points="0.00,0.00 798.00,0.00 693.00,240.00 0.00,240.00" fill="var(--nb-accent)"/>
+      <polygon points="1134.00,888.00 2100.00,888.00 2100.00,1200.00 1302.00,1200.00" fill="var(--nb-accent)"/>
+    </g>
+    <rect x="0.00" y="672.00" width="1218.00" height="120.00" rx="0.00" ry="0.00" fill="rgba(255,255,255,0.14)"/>
+    <g opacity="0.95">
+      <circle cx="126.00" cy="900.00" r="36.00" fill="rgba(167,119,13,0.16)"/>
+<path d="M8.5 3.5c.9 5.2 4.8 9.1 10 10l-2.2 2.2c-.5.5-1.3.7-2 .5-2.2-.7-4.1-1.9-5.7-3.5S5.8 9.8 5.1 7.6c-.2-.7 0-1.5.5-2L7.8 3.5z" transform="translate(112.00,886.00) scale(1.1667)" fill="none" stroke="var(--nb-accent)" stroke-width="1.71" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="126.00" cy="1044.00" r="36.00" fill="rgba(167,119,13,0.16)"/>
+
+<g transform="translate(112.00,1030.00) scale(1.1667)" fill="none" stroke="var(--nb-accent)" stroke-width="1.71" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="12" cy="12" r="8"/>
+  <path d="M4 12h16"/>
+  <path d="M12 4c2.2 2.4 3.5 5.1 3.5 8s-1.3 5.6-3.5 8c-2.2-2.4-3.5-5.1-3.5-8s1.3-5.6 3.5-8z"/>
+</g>
+      <circle cx="126.00" cy="972.00" r="36.00" fill="rgba(167,119,13,0.16)"/>
+
+<g transform="translate(112.00,958.00) scale(1.1667)" fill="none" stroke="var(--nb-accent)" stroke-width="1.71" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="4" y="6" width="16" height="12" rx="2" ry="2"/>
+  <path d="M4 8l8 6 8-6"/>
+</g>
+    </g>
+    <g id="nb_editable">
+      <rect x="1680.00" y="120.00" width="294.00" height="168.00" rx="6.72" ry="6.72" id="slot_logo_outline" class="nb-slot-outline"/>
+      <image id="slot_logo" x="1680.00" y="120.00" width="294.00" height="168.00" href="" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip_slot_logo)"/>
+      <rect x="1302.00" y="120.00" width="672.00" height="936.00" rx="24.00" ry="24.00" id="slot_profilePhoto_outline" class="nb-slot-outline"/>
+      <image id="slot_profilePhoto" x="1302.00" y="120.00" width="672.00" height="936.00" href="" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip_slot_profilePhoto)"/>
+      <rect x="168.00" y="300.00" width="240.00" height="240.00" rx="12.00" ry="12.00" id="slot_qr_outline" class="nb-slot-outline"/>
+      <image id="slot_qr" x="168.00" y="300.00" width="240.00" height="240.00" href="" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip_slot_qr)"/>
+      <rect x="168.00" y="144.00" width="1155.00" height="96.00" rx="0.00" ry="0.00" id="box_companyName" class="nb-box"/>
+      <text id="field_companyName" x="168.00" y="192.00" font-size="66" font-weight="600" text-anchor="start" dominant-baseline="middle" fill="#111827">COMPANY NAME</text>
+      <rect x="168.00" y="660.00" width="1470.00" height="96.00" rx="0.00" ry="0.00" id="box_fullName" class="nb-box"/>
+      <text id="field_fullName" x="168.00" y="708.00" font-size="84" font-weight="600" text-anchor="start" dominant-baseline="middle" fill="#111827">YOUR NAME</text>
+      <rect x="168.00" y="744.00" width="1470.00" height="72.00" rx="0.00" ry="0.00" id="box_jobTitle" class="nb-box"/>
+      <text id="field_jobTitle" x="168.00" y="780.00" font-size="54" font-weight="600" text-anchor="start" dominant-baseline="middle" fill="#e5e7eb">JOB TITLE</text>
+      <rect x="168.00" y="864.00" width="1470.00" height="72.00" rx="0.00" ry="0.00" id="box_phone" class="nb-box"/>
+      <text id="field_phone" x="168.00" y="900.00" font-size="48" font-weight="600" text-anchor="start" dominant-baseline="middle" fill="#f5d36b">+44 0000 000000</text>
+      <rect x="168.00" y="936.00" width="1470.00" height="72.00" rx="0.00" ry="0.00" id="box_email" class="nb-box"/>
+      <text id="field_email" x="168.00" y="972.00" font-size="48" font-weight="600" text-anchor="start" dominant-baseline="middle" fill="#f5d36b">you@example.com</text>
+      <rect x="168.00" y="1008.00" width="1470.00" height="72.00" rx="0.00" ry="0.00" id="box_website" class="nb-box"/>
+      <text id="field_website" x="168.00" y="1044.00" font-size="48" font-weight="600" text-anchor="start" dominant-baseline="middle" fill="#f5d36b">www.example.com</text>
+    </g>
+  </g>
+</svg>

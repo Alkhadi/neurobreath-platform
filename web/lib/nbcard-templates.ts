@@ -10,6 +10,7 @@ export type TemplateCategory = 'Profile' | 'Business' | 'Address' | 'Bank';
 export type FrameMode = 'PROFILE' | 'BUSINESS' | 'ADDRESS' | 'BANK';
 export type CardCategory = 'ADDRESS' | 'BANK' | 'BUSINESS' | 'PROFILE';
 export type BusinessSide = 'front' | 'back';
+export type TemplateEngine = 'nb-card' | 'nb-wallet';
 
 export interface Template {
   id: string;
@@ -19,6 +20,10 @@ export interface Template {
   orientation: TemplateOrientation;
   src: string;
   thumb: string;
+  /** Rendering engine: legacy NBCard backgrounds vs nb-wallet SVG templates. */
+  engine?: TemplateEngine;
+  /** For nb-wallet templates: the companion .fields.json descriptor. */
+  fieldsSrc?: string;
   recommendedFor?: string[];
   notes?: string;
   // Phase 3 additions:
@@ -44,7 +49,7 @@ export interface TemplateSelection {
 export type TemplateTone = 'light' | 'dark';
 
 export type TemplateThemeTokens = {
-  /** Determines whether card content renders as white-on-dark or black-on-light. */
+  /** Template surface tone: 'dark' => white text, 'light' => black text. */
   tone: TemplateTone;
   /** Optional CSS filter to apply to the template background asset (UI + exports). */
   backgroundFilter?: string;
@@ -68,38 +73,37 @@ function isValidHexColor(value: unknown): value is string {
 export function getTemplateThemeTokens(templateId?: string | null): TemplateThemeTokens {
   const id = (templateId ?? '').toString();
 
-  // Noticeably lighter treatment for these two templates.
-  // tone='dark' ensures black text on the lightened surface for readability.
+  // Light-surface templates should render black text.
   if (id.startsWith('modern_geometric_v1_')) {
     return {
-      tone: 'dark',
-      backgroundFilter: 'brightness(1.35) contrast(0.88) saturate(0.85)',
-      readabilityOverlayAlpha: 0.05,
-      lightenOverlayAlpha: 0.35,
+      tone: 'light',
+      backgroundFilter: 'brightness(1.08) contrast(0.95) saturate(0.95)',
+      readabilityOverlayAlpha: 0,
+      lightenOverlayAlpha: 0,
     };
   }
 
   if (id.startsWith('minimal_black_v1_')) {
     return {
       tone: 'dark',
-      backgroundFilter: 'brightness(1.40) contrast(0.85) saturate(0.82)',
-      readabilityOverlayAlpha: 0.05,
-      lightenOverlayAlpha: 0.45,
+      backgroundFilter: 'none',
+      readabilityOverlayAlpha: 0.35,
+      lightenOverlayAlpha: 0,
     };
   }
 
   // Templates with prominent white/light content areas should render black text.
   if (id.startsWith('address_blue_v1_') || id.startsWith('flyer_promo_v1_')) {
     return {
-      tone: 'dark',
+      tone: 'light',
       readabilityOverlayAlpha: 0,
       lightenOverlayAlpha: 0,
     };
   }
 
-  // Default: keep existing white-on-dark look.
+  // Default: treat templates as dark surfaces (white text).
   return {
-    tone: 'light',
+    tone: 'dark',
     readabilityOverlayAlpha: 0.35,
     lightenOverlayAlpha: 0,
   };
@@ -125,8 +129,19 @@ function isValidString(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
+function encodeTemplateAssetUrl(value: string): string {
+  // Public asset paths can include spaces and even a literal '#'
+  // (e.g. canva folders). Those must be URL-encoded or they break fetch/img.
+  // Keep this intentionally minimal and idempotent.
+  return value.split(' ').join('%20').split('#').join('%23');
+}
+
 function isValidTemplateType(value: unknown): value is TemplateType {
   return value === 'background' || value === 'overlay';
+}
+
+function isValidTemplateEngine(value: unknown): value is TemplateEngine {
+  return value === 'nb-card' || value === 'nb-wallet';
 }
 
 function isValidOrientation(value: unknown): value is TemplateOrientation {
@@ -160,8 +175,10 @@ function validateTemplate(raw: unknown): Template | null {
     category: obj.category,
     type: obj.type,
     orientation: obj.orientation,
-    src: obj.src,
-    thumb: obj.thumb,
+    src: encodeTemplateAssetUrl(obj.src),
+    thumb: encodeTemplateAssetUrl(obj.thumb),
+    engine: isValidTemplateEngine(obj.engine) ? obj.engine : undefined,
+    fieldsSrc: isValidString(obj.fieldsSrc) ? encodeTemplateAssetUrl(obj.fieldsSrc) : undefined,
     recommendedFor: Array.isArray(obj.recommendedFor)
       ? obj.recommendedFor.filter(isValidString)
       : undefined,
@@ -205,6 +222,17 @@ function validateManifest(raw: unknown): TemplateManifest | null {
 let manifestCache: TemplateManifest | null = null;
 let manifestError: Error | null = null;
 
+async function fetchAndValidateManifest(url: string): Promise<TemplateManifest | null> {
+  try {
+    const response = await fetch(url, { cache: 'no-store' });
+    if (!response.ok) return null;
+    const raw = await response.json();
+    return validateManifest(raw);
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Fetches and validates the template manifest
  * Caches on success, retries on failure
@@ -217,23 +245,34 @@ export async function loadTemplateManifest(): Promise<TemplateManifest> {
   if (manifestError) throw manifestError;
   
   try {
-    const response = await fetch('/nb-card/templates/manifest.json', {
-      cache: 'no-store',
-    });
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch manifest: ${response.status} ${response.statusText}`);
+    const [base, wallet] = await Promise.all([
+      fetchAndValidateManifest('/nb-card/templates/manifest.json'),
+      fetchAndValidateManifest('/nb-card/templates/manifest.nb-wallet.json'),
+    ]);
+
+    const mergedTemplates = [
+      ...(base?.templates ?? []),
+      ...(wallet?.templates ?? []),
+    ];
+
+    // De-dupe by id (keep first occurrence to preserve author ordering).
+    const seen = new Set<string>();
+    const templates: Template[] = [];
+    for (const t of mergedTemplates) {
+      if (seen.has(t.id)) continue;
+      seen.add(t.id);
+      templates.push(t);
     }
-    
-    const raw = await response.json();
-    const validated = validateManifest(raw);
-    
-    if (!validated) {
+
+    if (templates.length === 0) {
       throw new Error('Invalid manifest format');
     }
-    
-    manifestCache = validated;
-    return validated;
+
+    manifestCache = {
+      version: base?.version ?? wallet?.version ?? 'unknown',
+      templates,
+    };
+    return manifestCache;
   } catch (error) {
     manifestError = error instanceof Error ? error : new Error('Unknown error loading manifest');
     throw manifestError;

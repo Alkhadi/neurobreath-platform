@@ -1,0 +1,341 @@
+{
+  "version": 1,
+  "category": "flyer",
+  "size": {
+    "w": 1024,
+    "h": 1536
+  },
+  "fields": {
+    "brandName": {
+      "id": "field_brandName",
+      "box": [
+        160,
+        250,
+        704,
+        60
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 40,
+        "fontWeight": 800,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "headline": {
+      "id": "field_headline",
+      "box": [
+        120,
+        390,
+        784,
+        72
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 58,
+        "fontWeight": 900,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "subHeadline": {
+      "id": "field_subHeadline",
+      "box": [
+        120,
+        468,
+        784,
+        58
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 40,
+        "fontWeight": 700,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "descriptionLine1": {
+      "id": "field_descriptionLine1",
+      "box": [
+        160,
+        580,
+        704,
+        36
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 26,
+        "fontWeight": 500,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "descriptionLine2": {
+      "id": "field_descriptionLine2",
+      "box": [
+        160,
+        616,
+        704,
+        36
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 26,
+        "fontWeight": 500,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "featuresTitle": {
+      "id": "field_featuresTitle",
+      "box": [
+        120,
+        770,
+        520,
+        44
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 34,
+        "fontWeight": 900,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "feature1": {
+      "id": "field_feature1",
+      "box": [
+        160,
+        842,
+        520,
+        36
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 28,
+        "fontWeight": 600,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "feature2": {
+      "id": "field_feature2",
+      "box": [
+        160,
+        884,
+        520,
+        36
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 28,
+        "fontWeight": 600,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "feature3": {
+      "id": "field_feature3",
+      "box": [
+        160,
+        926,
+        520,
+        36
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 28,
+        "fontWeight": 600,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "feature4": {
+      "id": "field_feature4",
+      "box": [
+        160,
+        968,
+        520,
+        36
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 28,
+        "fontWeight": 600,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "designedForTitle": {
+      "id": "field_designedForTitle",
+      "box": [
+        120,
+        1072,
+        520,
+        44
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 34,
+        "fontWeight": 900,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "audience1": {
+      "id": "field_audience1",
+      "box": [
+        160,
+        1146,
+        520,
+        34
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 26,
+        "fontWeight": 600,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "audience2": {
+      "id": "field_audience2",
+      "box": [
+        160,
+        1184,
+        520,
+        34
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 26,
+        "fontWeight": 600,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "audience3": {
+      "id": "field_audience3",
+      "box": [
+        160,
+        1222,
+        520,
+        34
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 26,
+        "fontWeight": 600,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "scanLabel": {
+      "id": "field_scanLabel",
+      "box": [
+        650,
+        1080,
+        300,
+        40
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 28,
+        "fontWeight": 800,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "url": {
+      "id": "field_url",
+      "box": [
+        610,
+        1440,
+        420,
+        28
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 22,
+        "fontWeight": 700,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "footerNote": {
+      "id": "field_footerNote",
+      "box": [
+        120,
+        1490,
+        784,
+        28
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 20,
+        "fontWeight": 600,
+        "fill": "var(--nb-text)"
+      }
+    }
+  },
+  "slots": {
+    "logo": {
+      "id": "slot_logo",
+      "box": [
+        420,
+        110,
+        184,
+        184
+      ],
+      "type": "image",
+      "fit": "contain",
+      "preserveAspectRatio": "xMidYMid meet"
+    },
+    "qr": {
+      "id": "slot_qr",
+      "box": [
+        710,
+        1180,
+        220,
+        220
+      ],
+      "type": "qr",
+      "fit": "contain",
+      "preserveAspectRatio": "xMidYMid meet",
+      "qr": {
+        "payload": "shareUrl",
+        "errorCorrection": "M",
+        "margin": 2
+      }
+    }
+  },
+  "colors": {
+    "cssVars": [
+      "--nb-bg",
+      "--nb-panel",
+      "--nb-text",
+      "--nb-muted",
+      "--nb-accent",
+      "--nb-accent2",
+      "--nb-gold"
+    ]
+  },
+  "recommendedExport": [
+    {
+      "format": "png",
+      "scale": 2
+    },
+    {
+      "format": "pdf"
+    }
+  ],
+  "share": {
+    "qrPayloadOptions": [
+      "shareUrl",
+      "website",
+      "vCard"
+    ],
+    "default": "shareUrl"
+  }
+}

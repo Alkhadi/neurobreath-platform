@@ -6,11 +6,516 @@ import { useEffect, useRef, useState } from "react";
 import { getSession } from "next-auth/react";
 import { QRCodeSVG } from "qrcode.react";
 import { resolveAssetUrl } from "../lib/nbcard-assets";
-import { getProfileShareUrl } from "../lib/nbcard-share";
+import { generateProfileVCard, getProfileShareUrl, renderBankQrText, renderFlyerQrText } from "../lib/nbcard-share";
 import { CaptureImage } from "./capture-image";
 import styles from "./profile-card.module.css";
 import type { TemplateSelection, Template } from "@/lib/nbcard-templates";
-import { getTemplateThemeTokens, isLightColor, getTemplateExportDimensions } from "@/lib/nbcard-templates";
+import {
+  getTemplateThemeTokens,
+  isLightColor,
+  getTemplateExportDimensions,
+  loadTemplateManifest,
+  getTemplateById,
+} from "@/lib/nbcard-templates";
+
+type WalletFieldDescriptor = {
+  key: string;
+  type: "text";
+  id: string;
+  box?: { x: number; y: number; w: number; h: number };
+  style?: { fontSize?: number; fontWeight?: number; align?: "left" | "center" | "right"; fit?: string };
+};
+
+type WalletSlotDescriptor = {
+  key: string;
+  type: "image";
+  id: string;
+  box?: { x: number; y: number; w: number; h: number };
+  fit?: "cover" | "contain";
+  shape?: "roundedRect" | "rect";
+  radius?: number;
+};
+
+type WalletTemplateDescriptor = {
+  schemaVersion: number;
+  size?: { width: number; height: number };
+  category?: string;
+  fields?: WalletFieldDescriptor[];
+  slots?: WalletSlotDescriptor[];
+};
+
+function normalizeTextValue(value: unknown): string {
+  if (typeof value !== "string") return "";
+  return value.trim();
+}
+
+function safeText(value: unknown, fallback: string = ""): string {
+  const t = normalizeTextValue(value);
+  return t || fallback;
+}
+
+function getWalletFieldValue(profile: Profile, key: string, shareUrl: string): string {
+  const address = profile.addressCard;
+  const bank = profile.bankCard;
+  const business = profile.businessCard;
+  const flyer = profile.flyerCard;
+  const wedding = profile.weddingCard;
+
+  switch (key) {
+    // Common
+    case "fullName":
+      return safeText(profile.fullName);
+    case "jobTitle":
+      return safeText(profile.jobTitle);
+    case "phone":
+      return safeText(profile.phone);
+    case "email":
+      return safeText(profile.email);
+    case "website":
+      return safeText(business?.websiteUrl ?? profile.website ?? profile.socialMedia?.website);
+
+    // Address
+    case "recipientName":
+      return safeText(address?.recipientName ?? profile.fullName);
+    case "addressLine1":
+      return safeText(address?.addressLine1 ?? profile.address);
+    case "addressLine2":
+      return safeText(address?.addressLine2);
+    case "city":
+      return safeText(address?.city);
+    case "postcode":
+      return safeText(address?.postcode);
+    case "country":
+      return safeText(address?.country);
+
+    // Bank
+    case "bankName":
+      return safeText(bank?.bankName);
+    case "accountName":
+      return safeText(bank?.accountName ?? profile.fullName);
+    case "sortCode":
+      return safeText(bank?.sortCode ?? profile.bankSortCode);
+    case "accountNumber":
+      return safeText(bank?.accountNumber ?? profile.bankAccountNumber);
+    case "iban":
+      return safeText(bank?.iban);
+    case "swiftBic":
+      return safeText(bank?.swiftBic);
+    case "swift":
+      return safeText(bank?.swiftBic);
+    case "referenceNote":
+      return safeText(bank?.referenceNote);
+    case "reference":
+      return safeText(bank?.referenceNote);
+    case "paymentLink":
+      return safeText(bank?.paymentLink ?? shareUrl);
+    case "paymentLinkLabel":
+      return safeText(bank?.paymentLinkLabel);
+
+    // Business
+    case "co":
+      return safeText(business?.companyName);
+    case "companyName":
+      return safeText(business?.companyName);
+    case "tagline":
+      return safeText(business?.tagline);
+    case "services":
+      return safeText(business?.services);
+    case "locationNote":
+      return safeText(business?.locationNote);
+    case "hours":
+      return safeText(business?.hours);
+    case "bookingLink":
+      return safeText(business?.bookingLink);
+    case "bookingLinkLabel":
+      return safeText(business?.bookingLinkLabel);
+    case "vatOrRegNo":
+      return safeText(business?.vatOrRegNo);
+
+    // Flyer / Wedding
+    case "title": {
+      const src = profile.cardCategory === "WEDDING" ? wedding : flyer;
+      return safeText(src?.headline ?? profile.fullName);
+    }
+    case "subtitle": {
+      const src = profile.cardCategory === "WEDDING" ? wedding : flyer;
+      return safeText(src?.subheadline ?? profile.jobTitle);
+    }
+    case "details":
+      return safeText(profile.profileDescription || profile.businessDescription);
+    case "cta": {
+      const src = profile.cardCategory === "WEDDING" ? wedding : flyer;
+      return safeText(src?.ctaText ?? "Scan QR");
+    }
+    case "ctaUrl": {
+      const src = profile.cardCategory === "WEDDING" ? wedding : flyer;
+      return safeText(src?.ctaUrl ?? shareUrl);
+    }
+    default:
+      return "";
+  }
+}
+
+function computeWalletQrValue(profile: Profile, shareUrl: string): string {
+  const category = (profile.cardCategory ?? "PROFILE").toString().toUpperCase();
+
+  if (category === "BANK") return renderBankQrText(profile, shareUrl);
+  if (category === "FLYER" || category === "WEDDING") return renderFlyerQrText(profile, shareUrl);
+
+  const vcard = generateProfileVCard(profile, {
+    includeAddress: category === "ADDRESS",
+    includeBusiness: category === "BUSINESS" || category === "PROFILE",
+  });
+  if (vcard.length > 1200) return shareUrl;
+  return vcard;
+}
+
+function setSvgImageHref(img: SVGElement, href: string) {
+  img.setAttribute("href", href);
+  // Legacy fallback for some renderers.
+  img.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", href);
+}
+
+function applyShrinkToFit(params: {
+  textEl: SVGTextElement;
+  text: string;
+  boxWidth: number;
+  fontSize: number;
+  fontWeight: number;
+}) {
+  const { textEl, text, boxWidth, fontSize, fontWeight } = params;
+  if (!text || !boxWidth || !fontSize) return;
+
+  // Use a canvas measurement approximation. This avoids needing the SVG to be in-DOM.
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  const family = "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+  ctx.font = `${fontWeight} ${fontSize}px ${family}`;
+  const width = ctx.measureText(text).width;
+  if (!width) return;
+  if (width <= boxWidth) return;
+
+  const next = Math.max(10, Math.floor(fontSize * (boxWidth / width) * 0.98));
+  textEl.setAttribute("font-size", String(next));
+}
+
+function getSvgNumericAttr(el: Element, name: string): number | null {
+  const raw = el.getAttribute(name);
+  if (!raw) return null;
+  const n = parseFloat(raw);
+  return Number.isFinite(n) ? n : null;
+}
+
+function parseStopColor(stop: Element): string | null {
+  const direct = stop.getAttribute("stop-color")?.trim();
+  if (direct) return direct;
+  const style = stop.getAttribute("style") ?? "";
+  const m = style.match(/stop-color\s*:\s*([^;]+)\s*;?/i);
+  return m?.[1]?.trim() || null;
+}
+
+function parseHexToRgb(color: string): { r: number; g: number; b: number } | null {
+  const c = color.trim();
+  const hex = c.startsWith("#") ? c.slice(1) : c;
+  if (!/^[0-9a-fA-F]{3}$/.test(hex) && !/^[0-9a-fA-F]{6}$/.test(hex)) return null;
+  const full = hex.length === 3 ? hex.split("").map((ch) => ch + ch).join("") : hex;
+  const r = parseInt(full.slice(0, 2), 16);
+  const g = parseInt(full.slice(2, 4), 16);
+  const b = parseInt(full.slice(4, 6), 16);
+  if (![r, g, b].every((v) => Number.isFinite(v))) return null;
+  return { r, g, b };
+}
+
+function luminanceFromRgb(rgb: { r: number; g: number; b: number }): number {
+  return (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
+}
+
+function guessBackgroundIsDark(doc: Document, svg: SVGSVGElement): boolean | null {
+  const viewBox = svg.getAttribute("viewBox")?.trim();
+  let vbW: number | null = null;
+  let vbH: number | null = null;
+  if (viewBox) {
+    const parts = viewBox.split(/\s+/).map((p) => parseFloat(p));
+    if (parts.length === 4 && parts.every((n) => Number.isFinite(n))) {
+      vbW = parts[2];
+      vbH = parts[3];
+    }
+  }
+
+  const rects = Array.from(svg.querySelectorAll("rect"));
+  const baseRect = rects.find((r) => {
+    const x = getSvgNumericAttr(r, "x") ?? 0;
+    const y = getSvgNumericAttr(r, "y") ?? 0;
+    const w = getSvgNumericAttr(r, "width");
+    const h = getSvgNumericAttr(r, "height");
+    if (x !== 0 || y !== 0) return false;
+    if (w == null || h == null) return false;
+    if (vbW != null && vbH != null) {
+      return Math.abs(w - vbW) < 0.5 && Math.abs(h - vbH) < 0.5;
+    }
+    return true;
+  });
+
+  const fill = baseRect?.getAttribute("fill")?.trim();
+  if (!fill) return null;
+
+  const rgb = parseHexToRgb(fill);
+  if (rgb) return luminanceFromRgb(rgb) < 0.55;
+
+  const urlMatch = fill.match(/^url\(#([^\)]+)\)$/);
+  if (urlMatch) {
+    const id = urlMatch[1];
+    const gradient = doc.getElementById(id);
+    if (gradient) {
+      const stops = Array.from(gradient.querySelectorAll("stop"));
+      const colors = stops
+        .map(parseStopColor)
+        .filter((c): c is string => typeof c === "string" && c.length > 0)
+        .map((c) => parseHexToRgb(c))
+        .filter((c): c is { r: number; g: number; b: number } => c !== null);
+      if (colors.length > 0) {
+        const avg = colors.reduce((sum, c) => sum + luminanceFromRgb(c), 0) / colors.length;
+        return avg < 0.55;
+      }
+    }
+  }
+
+  return null;
+}
+
+function wrapTextToLines(params: {
+  text: string;
+  maxWidth: number;
+  maxLines: number;
+  fontSize: number;
+  fontWeight: number;
+}): string[] {
+  const { text, maxWidth, maxLines, fontSize, fontWeight } = params;
+  const cleaned = text.replace(/\s+/g, " ").trim();
+  if (!cleaned) return [""];
+  if (!maxWidth || maxLines <= 1) return [cleaned];
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return [cleaned];
+  const family = "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+  ctx.font = `${fontWeight} ${fontSize}px ${family}`;
+
+  const words = cleaned.split(" ");
+  const lines: string[] = [];
+  let current = "";
+
+  const pushLine = (line: string) => {
+    if (lines.length < maxLines) lines.push(line);
+  };
+
+  for (const word of words) {
+    const next = current ? `${current} ${word}` : word;
+    const width = ctx.measureText(next).width;
+    if (width <= maxWidth || !current) {
+      current = next;
+      continue;
+    }
+
+    pushLine(current);
+    current = word;
+    if (lines.length >= maxLines - 1) break;
+  }
+
+  if (lines.length < maxLines) {
+    pushLine(current);
+  }
+
+  // If we still have remaining words, append them onto the last line and let shrink-to-fit handle it.
+  const usedWords = lines.join(" ").split(" ").filter(Boolean).length;
+  if (usedWords < words.length && lines.length > 0) {
+    const remaining = words.slice(usedWords).join(" ");
+    lines[lines.length - 1] = `${lines[lines.length - 1]} ${remaining}`.trim();
+  }
+
+  return lines;
+}
+
+function setSvgTextValue(params: {
+  textEl: SVGTextElement;
+  value: string;
+  boxWidth?: number;
+  fontSize?: number;
+  fontWeight?: number;
+}): { usedText: string } {
+  const { textEl, value, boxWidth, fontSize, fontWeight } = params;
+
+  const tspans = Array.from(textEl.querySelectorAll("tspan"));
+  if (tspans.length === 0) {
+    textEl.textContent = value;
+    return { usedText: value };
+  }
+
+  const maxLines = Math.max(1, tspans.length);
+  const width = typeof boxWidth === "number" && boxWidth > 0 ? boxWidth : undefined;
+  const fs = typeof fontSize === "number" && fontSize > 0 ? fontSize : 40;
+  const fw = typeof fontWeight === "number" && fontWeight > 0 ? fontWeight : 600;
+
+  const lines = width ? wrapTextToLines({ text: value, maxWidth: width, maxLines, fontSize: fs, fontWeight: fw }) : [value];
+  for (let i = 0; i < tspans.length; i++) {
+    tspans[i].textContent = lines[i] ?? "";
+  }
+
+  return { usedText: lines.join(" ").trim() };
+}
+
+function renderWalletSvg(params: {
+  svgSource: string;
+  descriptor: WalletTemplateDescriptor;
+  profile: Profile;
+  shareUrl: string;
+  photoHref?: string | null;
+  logoHref?: string | null;
+  backgroundHref?: string | null;
+  qrHref?: string | null;
+  paletteHex?: string | null;
+}): string {
+  const { svgSource, descriptor, profile, shareUrl, photoHref, logoHref, backgroundHref, qrHref, paletteHex } = params;
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(svgSource, "image/svg+xml");
+  const svg = doc.documentElement;
+
+  // Force responsive sizing.
+  svg.setAttribute("width", "100%");
+  svg.setAttribute("height", "100%");
+
+  // Auto-contrast wallet templates by overriding CSS vars used for text.
+  // Many bundled bank/business SVGs ship dark backgrounds but default --nb-text to dark.
+  let walletTextColor: string | null = null;
+  try {
+    const palette = typeof paletteHex === "string" ? paletteHex.trim() : "";
+    if (/^#[0-9a-fA-F]{3}$/.test(palette) || /^#[0-9a-fA-F]{6}$/.test(palette)) {
+      (svg as unknown as SVGSVGElement).style.setProperty("--nb-bg", palette);
+    }
+
+    const paletteSaysLight = palette ? isLightColor(palette) : null;
+    const guessedDark =
+      guessBackgroundIsDark(doc, svg as unknown as SVGSVGElement) ??
+      ["bank", "business"].includes((descriptor.category ?? "").toString().toLowerCase());
+    const bgIsDark = paletteSaysLight !== null ? !paletteSaysLight : guessedDark;
+
+    walletTextColor = bgIsDark ? "#ffffff" : "#000000";
+    (svg as unknown as SVGSVGElement).style.setProperty("--nb-text", walletTextColor);
+    (svg as unknown as SVGSVGElement).style.setProperty("--nb-muted", walletTextColor);
+  } catch {
+    walletTextColor = null;
+  }
+
+  const fields = Array.isArray(descriptor.fields) ? descriptor.fields : [];
+  for (const field of fields) {
+    if (!field || field.type !== "text" || typeof field.id !== "string") continue;
+    const value = getWalletFieldValue(profile, field.key, shareUrl);
+    const textEl = doc.getElementById(field.id);
+    if (!textEl) continue;
+    if (textEl.tagName.toLowerCase() !== "text") continue;
+
+    const svgText = textEl as unknown as SVGTextElement;
+    const fontSize = typeof field.style?.fontSize === "number" ? field.style.fontSize : undefined;
+    const fontWeight = typeof field.style?.fontWeight === "number" ? field.style.fontWeight : 600;
+    const boxWidth = typeof field.box?.w === "number" ? field.box.w : undefined;
+
+    const { usedText } = setSvgTextValue({ textEl: svgText, value, boxWidth, fontSize, fontWeight });
+
+    // Requested: strict black/white contrast for editable template text.
+    if (walletTextColor) {
+      svgText.setAttribute("fill", walletTextColor);
+    }
+
+    const align = field.style?.align;
+    if (align === "center") svgText.setAttribute("text-anchor", "middle");
+    else if (align === "right") svgText.setAttribute("text-anchor", "end");
+    else if (align === "left") svgText.setAttribute("text-anchor", "start");
+
+    if (typeof fontSize === "number") {
+      svgText.setAttribute("font-size", String(fontSize));
+    }
+
+    if (field.style?.fit === "shrink-to-fit" && typeof fontSize === "number" && typeof boxWidth === "number") {
+      applyShrinkToFit({ textEl: svgText, text: usedText || value, boxWidth, fontSize, fontWeight });
+    }
+  }
+
+  const slots = Array.isArray(descriptor.slots) ? descriptor.slots : [];
+  for (const slot of slots) {
+    if (!slot || slot.type !== "image" || typeof slot.id !== "string") continue;
+
+    let href: string | undefined;
+    if (slot.key === "profilePhoto" || slot.key === "speakerPhoto") href = photoHref ?? undefined;
+    if (slot.key === "logo") href = logoHref ?? photoHref ?? undefined;
+    if (slot.key === "backgroundImage") href = backgroundHref ?? undefined;
+    if (slot.key === "qr") href = qrHref ?? undefined;
+    if (!href) continue;
+
+    const existing = doc.getElementById(slot.id);
+    if (!existing) continue;
+
+    const tag = existing.tagName.toLowerCase();
+    if (tag === "image") {
+      setSvgImageHref(existing as unknown as SVGElement, href);
+      continue;
+    }
+
+    if (tag === "rect") {
+      const rect = existing as unknown as SVGRectElement;
+      const x = rect.getAttribute("x") ?? "0";
+      const y = rect.getAttribute("y") ?? "0";
+      const w = rect.getAttribute("width") ?? "0";
+      const h = rect.getAttribute("height") ?? "0";
+      const rx = rect.getAttribute("rx") ?? (typeof slot.radius === "number" ? String(slot.radius) : "0");
+      const ry = rect.getAttribute("ry") ?? (typeof slot.radius === "number" ? String(slot.radius) : "0");
+
+      const img = doc.createElementNS("http://www.w3.org/2000/svg", "image");
+      img.setAttribute("id", slot.id + "__img");
+      img.setAttribute("x", x);
+      img.setAttribute("y", y);
+      img.setAttribute("width", w);
+      img.setAttribute("height", h);
+      img.setAttribute(
+        "preserveAspectRatio",
+        slot.fit === "cover" ? "xMidYMid slice" : "xMidYMid meet"
+      );
+      setSvgImageHref(img as unknown as SVGElement, href);
+
+      const needsClip = (parseFloat(rx) || 0) > 0 || (parseFloat(ry) || 0) > 0;
+      if (needsClip) {
+        const clipId = `clip_${slot.id}`;
+        let defs = svg.querySelector("defs");
+        if (!defs) {
+          defs = doc.createElementNS("http://www.w3.org/2000/svg", "defs");
+          svg.insertBefore(defs, svg.firstChild);
+        }
+
+        if (!doc.getElementById(clipId)) {
+          const clip = doc.createElementNS("http://www.w3.org/2000/svg", "clipPath");
+          clip.setAttribute("id", clipId);
+          const clipRect = doc.createElementNS("http://www.w3.org/2000/svg", "rect");
+          clipRect.setAttribute("x", x);
+          clipRect.setAttribute("y", y);
+          clipRect.setAttribute("width", w);
+          clipRect.setAttribute("height", h);
+          clipRect.setAttribute("rx", rx);
+          clipRect.setAttribute("ry", ry);
+          clip.appendChild(clipRect);
+          defs.appendChild(clip);
+        }
+
+        img.setAttribute("clip-path", `url(#${clipId})`);
+      }
+
+      rect.parentNode?.insertBefore(img, rect.nextSibling);
+    }
+  }
+
+  return new XMLSerializer().serializeToString(svg);
+}
 
 interface ProfileCardProps {
   profile: Profile;
@@ -307,53 +812,105 @@ export function ProfileCard({
   onLayerSelect,
 }: ProfileCardProps) {
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const walletQrSourceRef = useRef<HTMLDivElement | null>(null);
   const [sessionEmail, setSessionEmail] = useState<string | null>(null);
   const [resolvedBackgroundUrl, setResolvedBackgroundUrl] = useState<string | null>(null);
   const [resolvedPhotoUrl, setResolvedPhotoUrl] = useState<string | null>(null);
   const [backgroundRevoke, setBackgroundRevoke] = useState<(() => void) | null>(null);
   const [photoRevoke, setPhotoRevoke] = useState<(() => void) | null>(null);
+  const [walletSvgSource, setWalletSvgSource] = useState<string | null>(null);
+  const [walletDescriptor, setWalletDescriptor] = useState<WalletTemplateDescriptor | null>(null);
+  const [walletQrDataUrl, setWalletQrDataUrl] = useState<string | null>(null);
+  const [walletRenderedSvg, setWalletRenderedSvg] = useState<string | null>(null);
+
+  const [resolvedTemplate, setResolvedTemplate] = useState<Template | undefined>(selectedTemplate);
 
   const assetNamespace = userEmail ?? sessionEmail ?? undefined;
+
+  // Ensure we have full template metadata even when the parent doesn't pass it.
+  useEffect(() => {
+    let cancelled = false;
+
+    const backgroundId = templateSelection?.backgroundId;
+    if (!backgroundId) {
+      setResolvedTemplate(selectedTemplate);
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    if (selectedTemplate?.id === backgroundId) {
+      setResolvedTemplate(selectedTemplate);
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    loadTemplateManifest()
+      .then((manifest) => getTemplateById(manifest.templates, backgroundId))
+      .then((tpl) => {
+        if (cancelled) return;
+        setResolvedTemplate(tpl ?? selectedTemplate);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setResolvedTemplate(selectedTemplate);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [templateSelection?.backgroundId, selectedTemplate]);
 
   // Determine if we're using template mode (new) or legacy background mode
   const useTemplateMode = Boolean(templateSelection?.backgroundId);
 
+  const looksLikeWalletTemplate = Boolean(useTemplateMode && templateSelection?.backgroundId?.startsWith("wallet-"));
+
+  const isWalletTemplate = Boolean(
+    useTemplateMode &&
+      resolvedTemplate?.engine === "nb-wallet" &&
+      typeof resolvedTemplate?.fieldsSrc === "string" &&
+      resolvedTemplate.fieldsSrc.trim()
+  );
+
   // Phase 2: Get export dimensions from template metadata
-  const exportDimensions = selectedTemplate ? getTemplateExportDimensions(selectedTemplate) : { width: 1600, height: 900 };
+  const exportDimensions = resolvedTemplate ? getTemplateExportDimensions(resolvedTemplate) : { width: 1600, height: 900 };
   const aspectRatioValue = exportDimensions.width / exportDimensions.height;
 
-  const templateTheme = useTemplateMode ? getTemplateThemeTokens(templateSelection?.backgroundId) : null;
-  const isLightSurfaceTemplate = Boolean(useTemplateMode && templateTheme?.tone === "dark");
+  const templateTheme = useTemplateMode && !isWalletTemplate ? getTemplateThemeTokens(templateSelection?.backgroundId) : null;
+  const templateSurfaceIsLight = Boolean(useTemplateMode && templateTheme?.tone === "light");
 
   // Auto-contrast: if palette color is set, override text color based on palette luminance.
-  const paletteColor = templateSelection?.backgroundColor;
-  const paletteOverridesContrast = useTemplateMode && paletteColor ? isLightColor(paletteColor) : null;
-  const effectiveLightSurface = paletteOverridesContrast !== null ? paletteOverridesContrast : isLightSurfaceTemplate;
+  const paletteColor = isWalletTemplate ? undefined : templateSelection?.backgroundColor;
+  const paletteSurfaceIsLight = useTemplateMode && paletteColor ? isLightColor(paletteColor) : null;
+  const effectiveSurfaceIsLight = paletteSurfaceIsLight !== null ? paletteSurfaceIsLight : templateSurfaceIsLight;
 
-  const contentTextClass = effectiveLightSurface ? "text-gray-900" : "text-white";
-  const hoverRowClass = effectiveLightSurface ? "hover:bg-black/5" : "hover:bg-white/10";
-  const softPanelClass = effectiveLightSurface ? "bg-black/5" : "bg-white/10";
-  const dividerBorderClass = effectiveLightSurface ? "border-black/10" : "border-white/20";
-  const socialChipClass = effectiveLightSurface ? "bg-black/10 text-gray-900" : "bg-white/20 text-white";
+  // Requested: strict black/white contrast (no grays) for light/dark surfaces.
+  const contentTextClass = effectiveSurfaceIsLight ? "text-black" : "text-white";
+  const hoverRowClass = effectiveSurfaceIsLight ? "hover:bg-black/5" : "hover:bg-white/10";
+  const softPanelClass = effectiveSurfaceIsLight ? "bg-black/5" : "bg-white/10";
+  const dividerBorderClass = effectiveSurfaceIsLight ? "border-black/10" : "border-white/20";
+  const socialChipClass = effectiveSurfaceIsLight ? "bg-black/10 text-black" : "bg-white/20 text-white";
 
   useEffect(() => {
     const el = rootRef.current;
     if (!el) return;
 
     const theme = templateTheme;
-    const tint = templateSelection?.backgroundColor;
+    const tint = isWalletTemplate ? undefined : templateSelection?.backgroundColor;
 
-    // Template background filter
+    // Template background filter (nb-wallet templates render their own styling)
     el.style.setProperty("--nbcard-template-bg-filter", theme?.backgroundFilter ?? "none");
 
     // Overlays (keep consistent for UI + exports)
     el.style.setProperty(
       "--nbcard-template-readability-alpha",
-      String(typeof theme?.readabilityOverlayAlpha === "number" ? theme.readabilityOverlayAlpha : 0.35)
+      String(isWalletTemplate ? 0 : typeof theme?.readabilityOverlayAlpha === "number" ? theme.readabilityOverlayAlpha : 0.35)
     );
     el.style.setProperty(
       "--nbcard-template-lighten-alpha",
-      String(typeof theme?.lightenOverlayAlpha === "number" ? theme.lightenOverlayAlpha : 0)
+      String(isWalletTemplate ? 0 : typeof theme?.lightenOverlayAlpha === "number" ? theme.lightenOverlayAlpha : 0)
     );
 
     // Palette tint
@@ -373,7 +930,7 @@ export function ProfileCard({
     } else {
       el.style.removeProperty("--nb-accent");
     }
-  }, [profile, templateSelection?.backgroundColor, templateSelection?.backgroundId, templateTheme]);
+  }, [profile, isWalletTemplate, templateSelection?.backgroundColor, templateSelection?.backgroundId, templateTheme]);
   
   // Build template paths from IDs
   // New naming: "modern-geometric-landscape" -> "modern-geometric-landscape.svg"
@@ -391,11 +948,98 @@ export function ProfileCard({
   };
   
   const templateBackgroundSrc = useTemplateMode && templateSelection?.backgroundId
-    ? getTemplatePath(templateSelection.backgroundId, 'background')
+    ? (isWalletTemplate || looksLikeWalletTemplate ? null : (resolvedTemplate?.src ?? getTemplatePath(templateSelection.backgroundId, 'background')))
     : null;
   const templateOverlaySrc = useTemplateMode && templateSelection?.overlayId
-    ? getTemplatePath(templateSelection.overlayId, 'overlay')
+    ? (isWalletTemplate ? null : getTemplatePath(templateSelection.overlayId, 'overlay'))
     : null;
+
+  const shareUrl = getProfileShareUrl(profile.id);
+  const walletQrValue = isWalletTemplate ? computeWalletQrValue(profile, shareUrl) : null;
+
+  // Load nb-wallet SVG + descriptor
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!isWalletTemplate || !resolvedTemplate?.src || !resolvedTemplate?.fieldsSrc) {
+      setWalletSvgSource(null);
+      setWalletDescriptor(null);
+      setWalletRenderedSvg(null);
+      return;
+    }
+
+    (async () => {
+      const [svgRes, fieldsRes] = await Promise.all([
+        fetch(resolvedTemplate.src, { cache: "no-store" }),
+        fetch(resolvedTemplate.fieldsSrc!, { cache: "no-store" }),
+      ]);
+
+      if (!svgRes.ok) throw new Error(`Failed to load template SVG (${svgRes.status})`);
+      if (!fieldsRes.ok) throw new Error(`Failed to load template fields (${fieldsRes.status})`);
+
+      const [svgText, fieldsRaw] = await Promise.all([svgRes.text(), fieldsRes.json()]);
+      if (cancelled) return;
+
+      setWalletSvgSource(svgText);
+      setWalletDescriptor(fieldsRaw as WalletTemplateDescriptor);
+    })().catch((err) => {
+      console.error("Failed to load wallet template", err);
+      if (!cancelled) {
+        setWalletSvgSource(null);
+        setWalletDescriptor(null);
+        setWalletRenderedSvg(null);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isWalletTemplate, resolvedTemplate?.src, resolvedTemplate?.fieldsSrc]);
+
+  // Convert the wallet QR SVG into a data URL for embedding into the template SVG.
+  useEffect(() => {
+    if (!isWalletTemplate || !walletQrValue) {
+      setWalletQrDataUrl(null);
+      return;
+    }
+
+    const svg = walletQrSourceRef.current?.querySelector("svg");
+    if (!svg) return;
+
+    try {
+      const xml = new XMLSerializer().serializeToString(svg);
+      const dataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(xml)}`;
+      setWalletQrDataUrl(dataUrl);
+    } catch {
+      setWalletQrDataUrl(null);
+    }
+  }, [isWalletTemplate, walletQrValue]);
+
+  // Render the wallet template SVG with injected text + images.
+  useEffect(() => {
+    if (!isWalletTemplate || !walletSvgSource || !walletDescriptor) {
+      setWalletRenderedSvg(null);
+      return;
+    }
+
+    try {
+      const next = renderWalletSvg({
+        svgSource: walletSvgSource,
+        descriptor: walletDescriptor,
+        profile,
+        shareUrl,
+        photoHref: resolvedPhotoUrl,
+        logoHref: resolvedPhotoUrl,
+        backgroundHref: resolvedBackgroundUrl,
+        qrHref: walletQrDataUrl,
+        paletteHex: templateSelection?.backgroundColor ?? null,
+      });
+      setWalletRenderedSvg(next);
+    } catch (err) {
+      console.error("Failed to render wallet template", err);
+      setWalletRenderedSvg(null);
+    }
+  }, [isWalletTemplate, walletSvgSource, walletDescriptor, profile, shareUrl, resolvedPhotoUrl, resolvedBackgroundUrl, walletQrDataUrl, templateSelection?.backgroundColor]);
 
   useEffect(() => {
     let cancelled = false;
@@ -507,7 +1151,8 @@ export function ProfileCard({
     gradientClassMap[defaultGradient];
 
   // Priority order: template > legacy frameUrl/backgroundUrl > gradient
-  const hasTemplateBackground = Boolean(templateBackgroundSrc);
+  const hasWalletBackground = Boolean(isWalletTemplate && walletRenderedSvg);
+  const hasTemplateBackground = hasWalletBackground || Boolean(templateBackgroundSrc);
   const hasLegacyBackground = !useTemplateMode && Boolean(resolvedBackgroundUrl);
   const hasAnyBackground = hasTemplateBackground || hasLegacyBackground;
 
@@ -521,7 +1166,6 @@ export function ProfileCard({
   ];
 
   const isFlyerPromoPortrait = templateSelection?.backgroundId === "flyer-promo-portrait" || templateSelection?.backgroundId === "flyer_promo_v1_portrait";
-  const shareUrl = getProfileShareUrl(profile.id);
   
   // Phase 2: Use template metadata for aspect ratio (no distortion)
   // Remove hardcoded orientationClass; apply aspect-ratio via inline style
@@ -534,12 +1178,24 @@ export function ProfileCard({
       className={cn(
         "relative isolate w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden",
         !hasAnyBackground && gradientClass,
-        hasAnyBackground && (templateTheme?.tone === "dark" ? "bg-white" : "bg-gray-900")
+        hasAnyBackground && (isWalletTemplate ? "bg-white" : (effectiveSurfaceIsLight ? "bg-white" : "bg-black"))
       )}
       style={{ aspectRatio: aspectRatioValue }}
     >
+      {isWalletTemplate && walletQrValue ? (
+        <div ref={walletQrSourceRef} className="fixed left-[-10000px] top-0 opacity-0 pointer-events-none select-none" aria-hidden="true">
+          <QRCodeSVG value={walletQrValue} size={512} includeMargin level="M" />
+        </div>
+      ) : null}
+
       {/* TEMPLATE BACKGROUND LAYER (z=0) */}
-      {hasTemplateBackground && templateBackgroundSrc && (
+      {hasWalletBackground && walletRenderedSvg ? (
+        <div className="absolute inset-0 z-0 pointer-events-none select-none" aria-hidden="true">
+          <div className={cn("w-full h-full", styles.templateBgImage)} dangerouslySetInnerHTML={{ __html: walletRenderedSvg }} />
+        </div>
+      ) : null}
+
+      {!hasWalletBackground && hasTemplateBackground && templateBackgroundSrc && (
         <div className="absolute inset-0 z-0 pointer-events-none select-none">
           <CaptureImage
             src={templateBackgroundSrc}
@@ -550,12 +1206,12 @@ export function ProfileCard({
       )}
 
       {/* OPTIONAL PALETTE TINT (z=1) */}
-      {hasTemplateBackground && templateSelection?.backgroundColor ? (
+      {!isWalletTemplate && hasTemplateBackground && templateSelection?.backgroundColor ? (
         <div className={cn("absolute inset-0 z-[1] pointer-events-none", styles.templateTint)} aria-hidden="true" />
       ) : null}
 
       {/* LIGHTEN HARSH TEMPLATES (z=1) */}
-      {hasTemplateBackground && templateTheme?.lightenOverlayAlpha && templateTheme.lightenOverlayAlpha > 0 ? (
+      {!isWalletTemplate && hasTemplateBackground && templateTheme?.lightenOverlayAlpha && templateTheme.lightenOverlayAlpha > 0 ? (
         <div className={cn("absolute inset-0 z-[1] pointer-events-none", styles.templateLighten)} aria-hidden="true" />
       ) : null}
 
@@ -571,29 +1227,38 @@ export function ProfileCard({
       )}
 
       {/* Readability overlay for readability (z=1) */}
-      {hasAnyBackground && (templateTheme?.readabilityOverlayAlpha ?? 0.35) > 0 ? (
+      {!isWalletTemplate && hasAnyBackground && (templateTheme?.readabilityOverlayAlpha ?? 0.35) > 0 ? (
         <div className={cn("absolute inset-0 z-[1] pointer-events-none", styles.templateReadability)} aria-hidden="true" />
       ) : null}
 
       {/* TEMPLATE OVERLAY LAYER (z=2) */}
-      {hasTemplateBackground && templateOverlaySrc ? (
+      {!isWalletTemplate && hasTemplateBackground && templateOverlaySrc ? (
         <div className="absolute inset-0 z-[2] pointer-events-none select-none">
           <CaptureImage src={templateOverlaySrc} alt="Card overlay" className="w-full h-full object-cover" />
         </div>
       ) : null}
 
       {/* CARD CONTENT (z=10) */}
+      {isWalletTemplate ? null : (
       <div className={cn("relative z-10 p-8", contentTextClass)}>
         {isFlyerPromoPortrait ? (
                 <div className="space-y-4">
                   {/* Header */}
                   <div className="rounded-2xl bg-white/10 backdrop-blur-md p-5 text-white">
-                    <h2 className="text-3xl font-bold leading-tight" data-pdf-text={profile.flyerCard?.headline ?? ""}>
-                      {profile.flyerCard?.headline || profile.fullName || "Headline"}
+                    <h2
+                      className="text-3xl font-bold leading-tight"
+                      data-pdf-text={(profile.cardCategory === "WEDDING" ? profile.weddingCard?.headline : profile.flyerCard?.headline) ?? ""}
+                    >
+                      {(profile.cardCategory === "WEDDING" ? profile.weddingCard?.headline : profile.flyerCard?.headline) ||
+                        profile.fullName ||
+                        "Headline"}
                     </h2>
-                    {profile.flyerCard?.subheadline || profile.jobTitle ? (
-                      <p className="mt-2 text-base opacity-90" data-pdf-text={profile.flyerCard?.subheadline ?? ""}>
-                        {profile.flyerCard?.subheadline || profile.jobTitle}
+                    {(profile.cardCategory === "WEDDING" ? profile.weddingCard?.subheadline : profile.flyerCard?.subheadline) || profile.jobTitle ? (
+                      <p
+                        className="mt-2 text-base opacity-90"
+                        data-pdf-text={(profile.cardCategory === "WEDDING" ? profile.weddingCard?.subheadline : profile.flyerCard?.subheadline) ?? ""}
+                      >
+                        {(profile.cardCategory === "WEDDING" ? profile.weddingCard?.subheadline : profile.flyerCard?.subheadline) || profile.jobTitle}
                       </p>
                     ) : null}
                   </div>
@@ -609,8 +1274,8 @@ export function ProfileCard({
                     <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                       <div className="flex flex-col gap-2">
                         <a
-                          href={profile.flyerCard?.ctaUrl || shareUrl}
-                          data-pdf-link={profile.flyerCard?.ctaUrl || shareUrl}
+                          href={(profile.cardCategory === "WEDDING" ? profile.weddingCard?.ctaUrl : profile.flyerCard?.ctaUrl) || shareUrl}
+                          data-pdf-link={(profile.cardCategory === "WEDDING" ? profile.weddingCard?.ctaUrl : profile.flyerCard?.ctaUrl) || shareUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className={cn(
@@ -619,16 +1284,19 @@ export function ProfileCard({
                             styles.accentText
                           )}
                         >
-                          {profile.flyerCard?.ctaText || "Open link"}
+                          {(profile.cardCategory === "WEDDING" ? profile.weddingCard?.ctaText : profile.flyerCard?.ctaText) || "Open link"}
                         </a>
-                        <p className="text-xs text-gray-600 break-all" data-pdf-text={profile.flyerCard?.ctaUrl || shareUrl}>
-                          {profile.flyerCard?.ctaUrl || shareUrl}
+                        <p
+                          className="text-xs text-gray-600 break-all"
+                          data-pdf-text={(profile.cardCategory === "WEDDING" ? profile.weddingCard?.ctaUrl : profile.flyerCard?.ctaUrl) || shareUrl}
+                        >
+                          {(profile.cardCategory === "WEDDING" ? profile.weddingCard?.ctaUrl : profile.flyerCard?.ctaUrl) || shareUrl}
                         </p>
                       </div>
 
                       <div className="flex items-center justify-center">
                         <div className="rounded-xl bg-white p-2 shadow-md">
-                          <QRCodeSVG value={profile.flyerCard?.ctaUrl || shareUrl} size={120} includeMargin level="M" />
+                          <QRCodeSVG value={renderFlyerQrText(profile, shareUrl)} size={120} includeMargin level="M" />
                         </div>
                       </div>
                     </div>
@@ -784,7 +1452,7 @@ export function ProfileCard({
                 className={cn(
                   "backdrop-blur-md p-3 rounded-full transition-all hover:scale-110",
                   socialChipClass,
-                  isLightSurfaceTemplate ? "hover:bg-black/15" : "hover:bg-white/30"
+                  effectiveSurfaceIsLight ? "hover:bg-black/15" : "hover:bg-white/30"
                 )}
                 aria-label={`Visit ${social.url}`}
               >
@@ -1026,6 +1694,7 @@ export function ProfileCard({
           </>
         )}
       </div>
+      )}
 
       {/* FREE LAYOUT EDITOR: CUSTOM LAYERS (z=15) */}
       {profile.layers && profile.layers.length > 0 && (

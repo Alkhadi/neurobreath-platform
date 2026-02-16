@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "size": {
+    "width": 2160,
+    "height": 3840
+  },
+  "category": "flyer",
+  "fields": [
+    {
+      "key": "title",
+      "type": "text",
+      "id": "field_title",
+      "box": {
+        "x": 172.8,
+        "y": 576.0,
+        "w": 1814.3999999999999,
+        "h": 384.0
+      },
+      "style": {
+        "fontSize": 269,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    },
+    {
+      "key": "subtitle",
+      "type": "text",
+      "id": "field_subtitle",
+      "box": {
+        "x": 172.8,
+        "y": 1075.1999999999998,
+        "w": 1814.3999999999999,
+        "h": 307.2
+      },
+      "style": {
+        "fontSize": 173,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    },
+    {
+      "key": "details",
+      "type": "text",
+      "id": "field_details",
+      "box": {
+        "x": 172.8,
+        "y": 2496.0,
+        "w": 1814.3999999999999,
+        "h": 691.1999999999999
+      },
+      "style": {
+        "fontSize": 134,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    },
+    {
+      "key": "cta",
+      "type": "text",
+      "id": "field_cta",
+      "box": {
+        "x": 172.8,
+        "y": 3456.0,
+        "w": 1814.3999999999999,
+        "h": 230.39999999999998
+      },
+      "style": {
+        "fontSize": 154,
+        "fontWeight": 600,
+        "align": "left",
+        "fit": "shrink-to-fit"
+      }
+    }
+  ],
+  "slots": [
+    {
+      "key": "logo",
+      "type": "image",
+      "id": "slot_logo",
+      "box": {
+        "x": 1620.0,
+        "y": 1152.0,
+        "w": 388.8,
+        "h": 691.1999999999999
+      },
+      "fit": "cover",
+      "shape": "roundedRect",
+      "radius": 15.552000000000001
+    },
+    {
+      "key": "qr",
+      "type": "image",
+      "id": "slot_qr",
+      "box": {
+        "x": 1620.0,
+        "y": 1900.0,
+        "w": 388.8,
+        "h": 388.8
+      },
+      "fit": "contain",
+      "shape": "roundedRect",
+      "radius": 15.552000000000001
+    }
+  ],
+  "colors": {
+    "bg": "--nb-bg",
+    "text": "--nb-text",
+    "muted": "--nb-muted",
+    "accent": "--nb-accent"
+  },
+  "notes": [
+    "SVG text is edited by targeting #field_* ids. Fit strategy is shrink-to-fit inside corresponding #box_*.",
+    "Image slots are rectangles with opacity 0; your renderer should clip/crop images to these boxes."
+  ]
+}

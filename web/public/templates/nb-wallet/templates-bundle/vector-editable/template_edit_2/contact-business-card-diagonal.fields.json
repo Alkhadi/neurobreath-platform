@@ -1,0 +1,212 @@
+{
+  "version": 1,
+  "category": "business-card",
+  "size": {
+    "w": 1600,
+    "h": 900
+  },
+  "fields": {
+    "companyName": {
+      "id": "field_companyName",
+      "box": [
+        140,
+        120,
+        820,
+        56
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 40,
+        "fontWeight": 900,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "fullName": {
+      "id": "field_fullName",
+      "box": [
+        140,
+        180,
+        820,
+        80
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 62,
+        "fontWeight": 900,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "jobTitle": {
+      "id": "field_jobTitle",
+      "box": [
+        140,
+        268,
+        820,
+        46
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 34,
+        "fontWeight": 650,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "phone": {
+      "id": "field_phone",
+      "box": [
+        140,
+        384,
+        720,
+        44
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 32,
+        "fontWeight": 700,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "email": {
+      "id": "field_email",
+      "box": [
+        140,
+        444,
+        720,
+        44
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 32,
+        "fontWeight": 700,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "website": {
+      "id": "field_website",
+      "box": [
+        140,
+        504,
+        720,
+        44
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 32,
+        "fontWeight": 700,
+        "fill": "var(--nb-text)"
+      }
+    },
+    "addressLine1": {
+      "id": "field_addressLine1",
+      "box": [
+        140,
+        576,
+        760,
+        38
+      ],
+      "fit": "shrink-to-fit",
+      "style": {
+        "fontFamily": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "fontSize": 28,
+        "fontWeight": 650,
+        "fill": "var(--nb-text)"
+      }
+    }
+  },
+  "slots": {
+    "profilePhoto": {
+      "id": "slot_profilePhoto",
+      "box": [
+        1180,
+        110,
+        300,
+        300
+      ],
+      "type": "image",
+      "fit": "cover",
+      "preserveAspectRatio": "xMidYMid slice"
+    },
+    "qr": {
+      "id": "slot_qr",
+      "box": [
+        1180,
+        430,
+        300,
+        300
+      ],
+      "type": "qr",
+      "fit": "contain",
+      "preserveAspectRatio": "xMidYMid meet",
+      "qr": {
+        "payload": "shareUrl",
+        "errorCorrection": "M",
+        "margin": 2
+      }
+    },
+    "barcode": {
+      "id": "slot_barcode",
+      "box": [
+        140,
+        670,
+        820,
+        90
+      ],
+      "type": "barcode",
+      "fit": "contain",
+      "preserveAspectRatio": "xMidYMid meet",
+      "barcode": {
+        "format": "code128",
+        "payload": "shareText",
+        "quietZone": 10
+      }
+    },
+    "logo": {
+      "id": "slot_logo",
+      "box": [
+        140,
+        70,
+        240,
+        110
+      ],
+      "type": "image",
+      "fit": "contain",
+      "preserveAspectRatio": "xMidYMid meet"
+    }
+  },
+  "colors": {
+    "cssVars": [
+      "--nb-bg",
+      "--nb-panel",
+      "--nb-text",
+      "--nb-muted",
+      "--nb-accent",
+      "--nb-accent2",
+      "--nb-gold"
+    ]
+  },
+  "recommendedExport": [
+    {
+      "format": "png",
+      "scale": 2
+    },
+    {
+      "format": "pdf"
+    }
+  ],
+  "share": {
+    "qrPayloadOptions": [
+      "shareUrl",
+      "vCard",
+      "mailto",
+      "tel",
+      "website"
+    ],
+    "default": "shareUrl"
+  }
+}

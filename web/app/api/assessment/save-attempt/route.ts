@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { getDbDownReason, isDbDown, markDbDown, prisma } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,6 +28,17 @@ export const dynamic = 'force-dynamic'
  * }
  */
 export async function POST(request: NextRequest) {
+  if (isDbDown()) {
+    return NextResponse.json(
+      {
+        success: false,
+        dbUnavailable: true,
+        dbUnavailableReason: getDbDownReason() ?? 'Database not configured',
+      },
+      { status: 200 }
+    )
+  }
+
   try {
     const body = await request.json()
 
@@ -92,10 +103,15 @@ export async function POST(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Error saving reading attempt:', error)
+    console.debug('[Assessment API] Database unavailable (normal in dev without DB setup)')
+    markDbDown(error)
     return NextResponse.json(
-      { error: 'Failed to save reading attempt' },
-      { status: 500 }
+      {
+        success: false,
+        dbUnavailable: true,
+        dbUnavailableReason: getDbDownReason() ?? 'Database not configured',
+      },
+      { status: 200 }
     )
   }
 }
@@ -105,6 +121,19 @@ export async function POST(request: NextRequest) {
  * Retrieves reading assessment history for a device
  */
 export async function GET(request: NextRequest) {
+  if (isDbDown()) {
+    return NextResponse.json(
+      {
+        success: true,
+        count: 0,
+        attempts: [],
+        dbUnavailable: true,
+        dbUnavailableReason: getDbDownReason() ?? 'Database not configured',
+      },
+      { status: 200 }
+    )
+  }
+
   try {
     const deviceId = request.nextUrl.searchParams.get('deviceId')
 
@@ -140,13 +169,14 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.debug('[Assessment API] Database unavailable (normal in dev without DB setup)')
+    markDbDown(error)
     // Return 200 with empty data and dbUnavailable flag to keep console clean
     return NextResponse.json({
       success: true,
       count: 0,
       attempts: [],
       dbUnavailable: true,
-      dbUnavailableReason: 'Database not configured'
+      dbUnavailableReason: getDbDownReason() ?? 'Database not configured'
     }, { status: 200 })
   }
 }
