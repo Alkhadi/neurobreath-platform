@@ -11,6 +11,7 @@ import {
   loadNbcardSavedCards,
   upsertNbcardSavedCard,
 } from "@/lib/utils";
+import { stripUrls, clamp, looksLikeUrl } from "@/lib/nbcard/sanitize";
 import { GradientSelector } from "./gradient-selector";
 import { FrameChooser } from "./frame-chooser";
 import { FaSave, FaTimes, FaTrash } from "react-icons/fa";
@@ -440,6 +441,49 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
             </div>
           </div>
 
+          {/* Typography: Font Family Selector */}
+          <div className="rounded-xl border border-gray-200 p-4">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="text-sm font-bold text-gray-800">Typography</h3>
+                <p className="text-xs text-gray-600">Choose a font family for your card (applied to all text)</p>
+              </div>
+            </div>
+
+            <div className="mt-3">
+              <label className="block text-xs font-semibold text-gray-700 mb-1" htmlFor="nbcard-font-selector">
+                Font Family
+              </label>
+              <select
+                id="nbcard-font-selector"
+                value={editedProfile.typography?.fontKey ?? "inter"}
+                onChange={(e) => {
+                  setEditedProfile({
+                    ...editedProfile,
+                    typography: { ...editedProfile.typography, fontKey: e.target.value },
+                  });
+                }}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              >
+                <option value="inter">Inter (Default)</option>
+                <option value="roboto">Roboto</option>
+                <option value="open-sans">Open Sans</option>
+                <option value="lato">Lato</option>
+                <option value="montserrat">Montserrat</option>
+                <option value="poppins">Poppins</option>
+                <option value="raleway">Raleway</option>
+                <option value="nunito">Nunito</option>
+                <option value="source-sans-3">Source Sans 3</option>
+                <option value="merriweather">Merriweather</option>
+                <option value="playfair-display">Playfair Display</option>
+                <option value="ubuntu">Ubuntu</option>
+                <option value="fira-sans">Fira Sans</option>
+                <option value="manrope">Manrope</option>
+                <option value="plus-jakarta-sans">Plus Jakarta Sans</option>
+              </select>
+            </div>
+          </div>
+
           {/* Flyer / Wedding Content */}
           {selectedFrameCategory === "FLYER" || selectedFrameCategory === "WEDDING" ? (
             <div className="rounded-xl border border-gray-200 p-4">
@@ -699,12 +743,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="profile-full-name" className="block text-sm font-semibold text-gray-700 mb-2">
-                Full Name *
+                Full Name
               </label>
               <input
                 id="profile-full-name"
                 type="text"
-                required
                 value={editedProfile.fullName}
                 onChange={(e) => setEditedProfile({ ...editedProfile, fullName: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
@@ -712,12 +755,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
             </div>
             <div>
               <label htmlFor="profile-job-title" className="block text-sm font-semibold text-gray-700 mb-2">
-                Job Title *
+                Job Title
               </label>
               <input
                 id="profile-job-title"
                 type="text"
-                required
                 value={editedProfile.jobTitle}
                 onChange={(e) => setEditedProfile({ ...editedProfile, jobTitle: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
@@ -725,12 +767,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
             </div>
             <div>
               <label htmlFor="profile-phone" className="block text-sm font-semibold text-gray-700 mb-2">
-                Phone *
+                Phone
               </label>
               <input
                 id="profile-phone"
                 type="tel"
-                required
                 value={editedProfile.phone}
                 onChange={(e) => setEditedProfile({ ...editedProfile, phone: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
@@ -738,12 +779,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
             </div>
             <div>
               <label htmlFor="profile-email" className="block text-sm font-semibold text-gray-700 mb-2">
-                Email *
+                Email
               </label>
               <input
                 id="profile-email"
                 type="email"
-                required
                 value={editedProfile.email}
                 onChange={(e) => setEditedProfile({ ...editedProfile, email: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
@@ -785,11 +825,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {([
                 { key: "website", label: "Website", placeholder: "https://yourwebsite.com" },
-                { key: "instagram", label: "Instagram", placeholder: "https://instagram.com/yourname" },
-                { key: "facebook", label: "Facebook", placeholder: "https://facebook.com/yourname" },
-                { key: "tiktok", label: "TikTok", placeholder: "https://tiktok.com/@yourname" },
-                { key: "linkedin", label: "LinkedIn", placeholder: "https://linkedin.com/in/yourname" },
-                { key: "twitter", label: "X (Twitter)", placeholder: "https://x.com/yourname" },
+                { key: "instagram", label: "Instagram", placeholder: "Instagram profile URL" },
+                { key: "facebook", label: "Facebook", placeholder: "Facebook profile URL" },
+                { key: "tiktok", label: "TikTok", placeholder: "TikTok profile URL" },
+                { key: "linkedin", label: "LinkedIn", placeholder: "LinkedIn profile URL" },
+                { key: "twitter", label: "X (Twitter)", placeholder: "X profile URL" },
               ] as const).map(({ key, label, placeholder }) => (
                 <div key={key}>
                   <label htmlFor={`social-${key}`} className="block text-sm font-semibold text-gray-700 mb-2">
@@ -966,7 +1006,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                     <input
                       id="address-map-label"
                       type="text"
-                      placeholder="Click Here"
+                      placeholder="Get Directions"
                       value={editedProfile.addressCard?.mapLinkLabel ?? ""}
                       onChange={(e) =>
                         setEditedProfile({
@@ -988,33 +1028,83 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                     type="text"
                     maxLength={60}
                     value={editedProfile.addressCard?.directionsNote ?? ""}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      // Auto-sanitize on change
+                      const sanitized = stripUrls(clamp(raw, 60));
+                      if (sanitized !== raw && raw.length > 0) {
+                        toast.warning("URLs removed from Directions Note. Use Custom Map URL field instead.");
+                      }
                       setEditedProfile({
                         ...editedProfile,
                         cardCategory: "ADDRESS",
-                        addressCard: { ...editedProfile.addressCard, directionsNote: e.target.value },
-                      })
-                    }
+                        addressCard: { ...editedProfile.addressCard, directionsNote: sanitized },
+                      });
+                    }}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Human-readable hint (e.g., "Near the library"). No URLs allowed.
+                  </p>
                 </div>
                 <div>
-                  <label htmlFor="address-map-override" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Custom Map Query (optional, overrides address fields)
+                  <label htmlFor="address-map-url-override" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Custom Directions/Map URL (optional)
                   </label>
                   <input
-                    id="address-map-override"
+                    id="address-map-url-override"
                     type="text"
-                    value={editedProfile.addressCard?.mapQueryOverride ?? ""}
+                    placeholder="https://www.google.com/maps/dir/?api=1&destination=..."
+                    value={editedProfile.addressCard?.mapUrlOverride ?? ""}
                     onChange={(e) =>
                       setEditedProfile({
                         ...editedProfile,
                         cardCategory: "ADDRESS",
-                        addressCard: { ...editedProfile.addressCard, mapQueryOverride: e.target.value },
+                        addressCard: { ...editedProfile.addressCard, mapUrlOverride: e.target.value },
                       })
                     }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Paste a full Google Maps /dir/?api=1… link here to override default map behavior.
+                  </p>
+                </div>
+                <div>
+                  <label htmlFor="address-map-destination-override" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Custom Destination (optional)
+                  </label>
+                  <input
+                    id="address-map-destination-override"
+                    type="text"
+                    placeholder="Eiffel Tower, Paris"
+                    value={editedProfile.addressCard?.mapDestinationOverride ?? ""}
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      // Auto-move URLs to mapUrlOverride
+                      if (looksLikeUrl(raw) && raw.trim().length > 0) {
+                        toast.info("URL detected. Moving to Custom Map URL field.");
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "ADDRESS",
+                          addressCard: {
+                            ...editedProfile.addressCard,
+                            mapUrlOverride: raw,
+                            mapDestinationOverride: "",
+                          },
+                        });
+                      } else {
+                        setEditedProfile({
+                          ...editedProfile,
+                          cardCategory: "ADDRESS",
+                          addressCard: { ...editedProfile.addressCard, mapDestinationOverride: raw },
+                        });
+                      }
+                    }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Plain text destination (e.g., landmark name). Do NOT paste links here.
+                  </p>
                 </div>
               </div>
             )}

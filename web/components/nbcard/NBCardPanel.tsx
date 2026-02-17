@@ -6,7 +6,7 @@ import { FaChevronDown, FaEdit, FaPlus, FaUsers } from "react-icons/fa";
 import { X } from "lucide-react";
 import { getSession } from "next-auth/react";
 
-import type { Contact, Profile } from "@/lib/utils";
+import type { Contact, Profile, CardLayer } from "@/lib/utils";
 import { defaultProfile } from "@/lib/utils";
 
 import { exportNbcardLocalState, loadNbcardLocalState, saveNbcardLocalState } from "@/app/contact/lib/nbcard-storage";
@@ -85,8 +85,7 @@ export function NBCardPanel() {
   const [currentBusinessSide, setCurrentBusinessSide] = useState<'front' | 'back'>('front');
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle');
   const [showSyncPrompt, setShowSyncPrompt] = useState(false);
-  const [lastSyncTime, setLastSyncTime] = useState<string | null>(null);
-  const [deviceId] = useState(() => {
+  const [lastSyncTime, setLastSyncTime] = useState<string | null>(null);  const [deviceId] = useState(() => {
     if (typeof window === 'undefined') return '';
     try {
       let id = localStorage.getItem('nb-card:device-id');
@@ -97,6 +96,19 @@ export function NBCardPanel() {
       return id;
     } catch {
       return `device-${Date.now()}`;
+    }
+  });
+  
+  // Free Layout Editor state (lifted from TemplatePicker)
+  const [layoutEditMode, setLayoutEditMode] = useState(false);
+  const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
+  
+  // Canvas Edit Mode - inline editing on the canvas preview
+  const [canvasEditMode, setCanvasEditMode] = useState(() => {
+    try {
+      return localStorage.getItem('nb-card:canvas-edit-mode') === '1';
+    } catch {
+      return false;
     }
   });
 
@@ -685,34 +697,112 @@ export function NBCardPanel() {
         <div>
           {/* Profile Card with Capture Wrapper */}
           <div className="mb-6">
-            <div
-              id="profile-card-capture-wrapper"
-              className="cursor-pointer text-left w-full"
-              role="button"
-              tabIndex={0}
-              aria-label="Edit profile"
-              onClick={handleEditProfile}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  handleEditProfile();
-                }
-              }}
-            >
+            <div id="profile-card-capture-wrapper" className="text-left w-full">
               <ProfileCard
                 profile={currentProfile}
-                showEditButton
+                showEditButton={false}
                 onPhotoClick={(e) => {
                   e?.stopPropagation();
-                  handleEditProfile();
+                  if (!canvasEditMode) {
+                    handleEditProfile();
+                  }
                 }}
                 userEmail={undefined}
                 templateSelection={templateSelection}
                 selectedTemplate={selectedTemplate}
+                editMode={layoutEditMode}
+                canvasEditMode={canvasEditMode}
+                selectedLayerId={selectedLayerId}
+                onLayerSelect={setSelectedLayerId}
+                onLayerUpdate={(layerId, updates) => {
+                  // Update layer in current profile
+                  setProfiles(prev => prev.map((p, idx) => {
+                    if (idx === currentProfileIndex) {
+                      const layers = p.layers || [];
+                      return {
+                        ...p,
+                        layers: layers.map(layer => 
+                          layer.id === layerId ? { ...layer, ...updates } as CardLayer : layer
+                        ),
+                      };
+                    }
+                    return p;
+                  }));
+                  // Auto-save draft
+                  setTimeout(() => {
+                    const updatedProfiles = profiles.map((p, idx) => {
+                      if (idx === currentProfileIndex) {
+                        const layers = p.layers || [];
+                        return {
+                          ...p,
+                          layers: layers.map(layer => 
+                            layer.id === layerId ? { ...layer, ...updates } as CardLayer : layer
+                          ),
+                        };
+                      }
+                      return p;
+                    });
+                    saveNbcardLocalState({ profiles: updatedProfiles, contacts });
+                  }, 400);
+                }}
               />
             </div>
           </div>
-          <p className="text-center text-sm text-gray-600 mb-4">Click on the card to edit your profile</p>
+          <p className="text-center text-sm text-gray-600 mb-4">
+            {canvasEditMode
+              ? "Double-click text to edit inline, click avatar/background to upload" 
+              : layoutEditMode 
+                ? "Click on a layer to select it, then drag to reposition" 
+                : "Use the buttons below to edit your profile or layout"}
+          </p>
+
+          {/* Canvas Edit Mode & Layout Edit Mode Toggles */}
+          {currentProfile && (
+            <div className="flex justify-center gap-3 mb-4">
+              <button
+                onClick={() => {
+                  const newMode = !canvasEditMode;
+                  setCanvasEditMode(newMode);
+                  try {
+                    localStorage.setItem('nb-card:canvas-edit-mode', newMode ? '1' : '0');
+                  } catch {}
+                  if (newMode) {
+                    setLayoutEditMode(false);
+                    setSelectedLayerId(null);
+                    toast.info("Canvas Edit Mode enabled. Double-click text to edit, click avatar/background to upload.");
+                  }
+                }}
+                className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                  canvasEditMode
+                    ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:border-emerald-400'
+                }`}
+              >
+                {canvasEditMode ? 'Exit Canvas Edit' : 'Canvas Edit'}
+              </button>
+              <button
+                onClick={() => {
+                  setLayoutEditMode(!layoutEditMode);
+                  if (!layoutEditMode) {
+                    setCanvasEditMode(false);
+                    try {
+                      localStorage.setItem('nb-card:canvas-edit-mode', '0');
+                    } catch {}
+                    toast.info("Layout Edit Mode enabled. Click layers to select and drag to reposition.");
+                  } else {
+                    setSelectedLayerId(null);
+                  }
+                }}
+                className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                  layoutEditMode
+                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:border-purple-400'
+                }`}
+              >
+                {layoutEditMode ? 'Exit Edit Layout' : 'Edit Layout'}
+              </button>
+            </div>
+          )}
 
           {/* Action Buttons */}
           <div className="flex gap-3">
@@ -815,6 +905,16 @@ export function NBCardPanel() {
           orientation={templateSelection.orientation || 'landscape'}
           onSelectionChange={handleTemplateSelectionChange}
           onCreateFromTemplate={handleCreateFromTemplate}
+          profile={currentProfile}
+          onProfileUpdate={(updatedProfile) => {
+            const updated = [...profiles];
+            updated[currentProfileIndex] = updatedProfile;
+            setProfiles(updated);
+          }}
+          editMode={layoutEditMode}
+          selectedLayerId={selectedLayerId}
+          onEditModeChange={setLayoutEditMode}
+          onSelectedLayerChange={setSelectedLayerId}
         />
       </div>
 

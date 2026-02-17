@@ -31,6 +31,10 @@ interface TemplatePickerProps {
   onCreateFromTemplate?: (template: Template) => void;
   profile?: Profile; // For Free Layout Editor
   onProfileUpdate?: (profile: Profile) => void; // For Free Layout Editor
+  editMode?: boolean; // CONTROLLED: from parent (NBCardPanel)
+  selectedLayerId?: string | null; // CONTROLLED: from parent
+  onEditModeChange?: (editMode: boolean) => void; // Callback to parent
+  onSelectedLayerChange?: (layerId: string | null) => void; // Callback to parent
 }
 
 const PRESET_PALETTE: Array<{ label: string; value: string; swatchClass: string }> = [
@@ -139,7 +143,18 @@ function TinyCardPreview({
   );
 }
 
-export function TemplatePicker({ selection, orientation, onSelectionChange, onCreateFromTemplate, profile, onProfileUpdate }: TemplatePickerProps) {
+export function TemplatePicker({ 
+  selection, 
+  orientation, 
+  onSelectionChange, 
+  onCreateFromTemplate, 
+  profile, 
+  onProfileUpdate,
+  editMode: editModeProp,
+  selectedLayerId: selectedLayerIdProp,
+  onEditModeChange,
+  onSelectedLayerChange,
+}: TemplatePickerProps) {
   const rootRef = React.useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
@@ -155,9 +170,22 @@ export function TemplatePicker({ selection, orientation, onSelectionChange, onCr
   const [overlays, setOverlays] = React.useState<Template[]>([]);
   const [reloadKey, setReloadKey] = React.useState(0);
 
-  // Free Layout Editor state
-  const [editMode, setEditMode] = React.useState(false);
-  const [selectedLayerId, setSelectedLayerId] = React.useState<string | null>(null);
+  // Free Layout Editor state: use controlled props when available, fallback to local state
+  const editMode = editModeProp !== undefined ? editModeProp : false;
+  const selectedLayerId = selectedLayerIdProp !== undefined ? selectedLayerIdProp : null;
+  
+  const setEditMode = (value: boolean) => {
+    if (onEditModeChange) {
+      onEditModeChange(value);
+    }
+  };
+  
+  const setSelectedLayerId = (value: string | null) => {
+    if (onSelectedLayerChange) {
+      onSelectedLayerChange(value);
+    }
+  };
+
   const [newLayerColor, setNewLayerColor] = React.useState("#A855F7");
 
   const reload = React.useCallback(() => {
@@ -247,7 +275,7 @@ export function TemplatePicker({ selection, orientation, onSelectionChange, onCr
       locked: false,
       visible: true,
       style: {
-        content: "New Text",
+        content: "",
         fontSize: 18,
         fontWeight: "normal",
         align: "left",

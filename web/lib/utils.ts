@@ -66,7 +66,10 @@ export interface Profile {
     country?: string;
     directionsNote?: string;
     mapLinkLabel?: string;
-    mapQueryOverride?: string;
+    mapQueryOverride?: string; // LEGACY: kept for backwards compatibility, treated as destination if not URL
+    mapUrlOverride?: string; // NEW: full Google Maps URL; used as-is if valid http(s)
+    mapDestinationOverride?: string; // NEW: plain destination string for destination= (NOT a URL)
+    websiteUrl?: string; // NEW: optional website (only shown when template/schema uses it)
     phoneLabel?: string;
     emailLabel?: string;
   };
@@ -106,6 +109,10 @@ export interface Profile {
   };
   // Free Layout Editor: layers array for custom drag/resize elements
   layers?: CardLayer[];
+  // Typography: font family selection (key matches next/font loaded fonts)
+  typography?: {
+    fontKey?: string; // e.g. "inter", "roboto", "montserrat"
+  };
 }
 
 // NB-Card Free Layout Editor: Layer Types
@@ -413,10 +420,10 @@ export interface Contact {
 
 export const defaultProfile: Profile = {
   id: "default",
-  fullName: "Alkhadi Koroma",
-  jobTitle: "Flutter Developer",
-  phone: "+44-77-1315-0495",
-  email: "koromadjmoe@gmail.com",
+  fullName: "",
+  jobTitle: "",
+  phone: "",
+  email: "",
   profileDescription: "",
   businessDescription: "",
   gradient: "linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)",

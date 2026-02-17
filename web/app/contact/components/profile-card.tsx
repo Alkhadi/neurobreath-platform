@@ -1,6 +1,8 @@
 "use client";
 
-import { Profile, cn, CardLayer } from "@/lib/utils";
+import { Profile, cn, CardLayer, type TextLayer } from "@/lib/utils";
+import { buildMapHref } from "@/lib/nbcard/mapHref";
+import { stripUrls, clamp } from "@/lib/nbcard/sanitize";
 import { FaInstagram, FaFacebook, FaTiktok, FaLinkedin, FaTwitter, FaGlobe, FaPhone, FaEnvelope, FaHome } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 import { getSession } from "next-auth/react";
@@ -182,8 +184,9 @@ function applyShrinkToFit(params: {
   boxWidth: number;
   fontSize: number;
   fontWeight: number;
+  fontFamily?: string;
 }) {
-  const { textEl, text, boxWidth, fontSize, fontWeight } = params;
+  const { textEl, text, boxWidth, fontSize, fontWeight, fontFamily } = params;
   if (!text || !boxWidth || !fontSize) return;
 
   // Use a canvas measurement approximation. This avoids needing the SVG to be in-DOM.
@@ -191,7 +194,7 @@ function applyShrinkToFit(params: {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  const family = "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+  const family = fontFamily || "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
   ctx.font = `${fontWeight} ${fontSize}px ${family}`;
   const width = ctx.measureText(text).width;
   if (!width) return;
@@ -291,8 +294,9 @@ function wrapTextToLines(params: {
   maxLines: number;
   fontSize: number;
   fontWeight: number;
+  fontFamily?: string;
 }): string[] {
-  const { text, maxWidth, maxLines, fontSize, fontWeight } = params;
+  const { text, maxWidth, maxLines, fontSize, fontWeight, fontFamily } = params;
   const cleaned = text.replace(/\s+/g, " ").trim();
   if (!cleaned) return [""];
   if (!maxWidth || maxLines <= 1) return [cleaned];
@@ -300,7 +304,7 @@ function wrapTextToLines(params: {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   if (!ctx) return [cleaned];
-  const family = "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+  const family = fontFamily || "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
   ctx.font = `${fontWeight} ${fontSize}px ${family}`;
 
   const words = cleaned.split(" ");
@@ -344,8 +348,9 @@ function setSvgTextValue(params: {
   boxWidth?: number;
   fontSize?: number;
   fontWeight?: number;
+  fontFamily?: string;
 }): { usedText: string } {
-  const { textEl, value, boxWidth, fontSize, fontWeight } = params;
+  const { textEl, value, boxWidth, fontSize, fontWeight, fontFamily } = params;
 
   const tspans = Array.from(textEl.querySelectorAll("tspan"));
   if (tspans.length === 0) {
@@ -358,7 +363,7 @@ function setSvgTextValue(params: {
   const fs = typeof fontSize === "number" && fontSize > 0 ? fontSize : 40;
   const fw = typeof fontWeight === "number" && fontWeight > 0 ? fontWeight : 600;
 
-  const lines = width ? wrapTextToLines({ text: value, maxWidth: width, maxLines, fontSize: fs, fontWeight: fw }) : [value];
+  const lines = width ? wrapTextToLines({ text: value, maxWidth: width, maxLines, fontSize: fs, fontWeight: fw, fontFamily }) : [value];
   for (let i = 0; i < tspans.length; i++) {
     tspans[i].textContent = lines[i] ?? "";
   }
@@ -409,6 +414,27 @@ function renderWalletSvg(params: {
     walletTextColor = null;
   }
 
+  // Calculate font family once for all fields
+  const selectedFontKey = profile.typography?.fontKey ?? "inter";
+  const fontFamilyMap: Record<string, string> = {
+    "inter": "Inter, sans-serif",
+    "roboto": "Roboto, sans-serif",
+    "open-sans": "Open Sans, sans-serif",
+    "lato": "Lato, sans-serif",
+    "montserrat": "Montserrat, sans-serif",
+    "poppins": "Poppins, sans-serif",
+    "raleway": "Raleway, sans-serif",
+    "nunito": "Nunito, sans-serif",
+    "source-sans-3": "Source Sans 3, sans-serif",
+    "merriweather": "Merriweather, serif",
+    "playfair-display": "Playfair Display, serif",
+    "ubuntu": "Ubuntu, sans-serif",
+    "fira-sans": "Fira Sans, sans-serif",
+    "manrope": "Manrope, sans-serif",
+    "plus-jakarta-sans": "Plus Jakarta Sans, sans-serif",
+  };
+  const walletFontFamily = fontFamilyMap[selectedFontKey] || "Inter, sans-serif";
+
   const fields = Array.isArray(descriptor.fields) ? descriptor.fields : [];
   for (const field of fields) {
     if (!field || field.type !== "text" || typeof field.id !== "string") continue;
@@ -418,11 +444,24 @@ function renderWalletSvg(params: {
     if (textEl.tagName.toLowerCase() !== "text") continue;
 
     const svgText = textEl as unknown as SVGTextElement;
+    
+    // Hide empty fields to avoid placeholder text
+    if (!value || !value.trim()) {
+      svgText.setAttribute("opacity", "0");
+      svgText.setAttribute("display", "none");
+      svgText.textContent = "";
+      continue;
+    }
+    
+    // Show field with value
+    svgText.setAttribute("opacity", "1");
+    svgText.removeAttribute("display");
+
     const fontSize = typeof field.style?.fontSize === "number" ? field.style.fontSize : undefined;
     const fontWeight = typeof field.style?.fontWeight === "number" ? field.style.fontWeight : 600;
     const boxWidth = typeof field.box?.w === "number" ? field.box.w : undefined;
 
-    const { usedText } = setSvgTextValue({ textEl: svgText, value, boxWidth, fontSize, fontWeight });
+    const { usedText } = setSvgTextValue({ textEl: svgText, value, boxWidth, fontSize, fontWeight, fontFamily: walletFontFamily });
 
     // Requested: strict black/white contrast for editable template text.
     if (walletTextColor) {
@@ -438,8 +477,11 @@ function renderWalletSvg(params: {
       svgText.setAttribute("font-size", String(fontSize));
     }
 
+    // Apply selected font family to SVG text
+    svgText.setAttribute("font-family", walletFontFamily);
+
     if (field.style?.fit === "shrink-to-fit" && typeof fontSize === "number" && typeof boxWidth === "number") {
-      applyShrinkToFit({ textEl: svgText, text: usedText || value, boxWidth, fontSize, fontWeight });
+      applyShrinkToFit({ textEl: svgText, text: usedText || value, boxWidth, fontSize, fontWeight, fontFamily: walletFontFamily });
     }
   }
 
@@ -526,6 +568,7 @@ interface ProfileCardProps {
   selectedTemplate?: Template; // Full template metadata for export dimensions
   captureId?: string;
   editMode?: boolean; // Free Layout Editor: enable drag/resize
+  canvasEditMode?: boolean; // Canvas Edit Mode: inline editing on preview
   selectedLayerId?: string | null; // Free Layout Editor: currently selected layer
   onLayerUpdate?: (layerId: string, updates: Partial<CardLayer>) => void; // Free Layout Editor: update layer
   onLayerSelect?: (layerId: string | null) => void; // Free Layout Editor: select layer
@@ -535,6 +578,7 @@ interface ProfileCardProps {
 function CardLayerRenderer({
   layer,
   editMode,
+  canvasEditMode,
   isSelected,
   onSelect,
   onUpdate,
@@ -542,6 +586,7 @@ function CardLayerRenderer({
 }: {
   layer: CardLayer;
   editMode?: boolean;
+  canvasEditMode?: boolean;
   isSelected?: boolean;
   onSelect?: (id: string) => void;
   onUpdate?: (id: string, updates: Partial<CardLayer>) => void;
@@ -551,8 +596,64 @@ function CardLayerRenderer({
   const [isResizing, setIsResizing] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0, layerX: 0, layerY: 0 });
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, layerW: 0, layerH: 0 });
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState('');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Auto-focus textarea when editing starts
+  useEffect(() => {
+    if (isEditing && textareaRef.current) {
+      textareaRef.current.focus();
+      textareaRef.current.select();
+    }
+  }, [isEditing]);
 
   if (!layer.visible) return null;
+
+  // Canvas Edit Mode: inline text editing
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    if (!canvasEditMode || layer.type !== 'text' || layer.locked) return;
+    e.stopPropagation();
+    const textContent = layer.type === 'text' ? layer.style.content : '';
+    setEditValue(textContent || '');
+    setIsEditing(true);
+  };
+
+  const handleAvatarClick = (e: React.MouseEvent) => {
+    if (!canvasEditMode || layer.type !== 'avatar' || layer.locked) return;
+    e.stopPropagation();
+    
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (evt: Event) => {
+      const file = (evt.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const src = e.target?.result as string;
+        if (src) {
+          onUpdate?.(layer.id, { style: { ...layer.style, src } });
+        }
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  };
+
+  const commitEdit = () => {
+    if (layer.type === 'text' && editValue !== layer.style.content) {
+      const newStyle = { ...layer.style, content: editValue };
+      onUpdate?.(layer.id, { style: newStyle } as Partial<TextLayer>);
+    }
+    setIsEditing(false);
+  };
+
+  const cancelEdit = () => {
+    setIsEditing(false);
+    setEditValue('');
+  };
 
   const handlePointerDown = (e: React.PointerEvent) => {
     if (!editMode || layer.locked) return;
@@ -648,14 +749,19 @@ function CardLayerRenderer({
     height: `${layer.h}%`,
     transform: layer.rotation ? `rotate(${layer.rotation}deg)` : undefined,
     zIndex: layer.zIndex,
-    pointerEvents: editMode && !layer.locked ? "auto" : "none",
-    cursor: editMode && !layer.locked ? (isDragging ? "grabbing" : "grab") : undefined,
+    pointerEvents: (editMode && !layer.locked) || (canvasEditMode && !layer.locked) ? "auto" : "none",
+    cursor: canvasEditMode && !layer.locked 
+      ? (layer.type === 'text' ? 'text' : layer.type === 'avatar' ? 'pointer' : 'default')
+      : (editMode && !layer.locked ? (isDragging ? "grabbing" : "grab") : undefined),
     outline: editMode && isSelected ? "2px solid #A855F7" : undefined,
     outlineOffset: "2px",
   };
 
   const renderContent = () => {
     if (layer.type === "text") {
+      const hasContent = layer.style.content && layer.style.content.trim().length > 0;
+      const showPlaceholder = canvasEditMode && !hasContent;
+
       return (
         /* eslint-disable-next-line react/forbid-dom-props */
         <div
@@ -664,8 +770,9 @@ function CardLayerRenderer({
             height: "100%",
             fontSize: `${layer.style.fontSize}px`,
             fontWeight: layer.style.fontWeight,
+            fontFamily: "var(--nb-font, ui-sans-serif, system-ui, sans-serif)",
             textAlign: layer.style.align,
-            color: layer.style.color,
+            color: showPlaceholder ? "rgba(156, 163, 175, 0.6)" : layer.style.color,
             backgroundColor: layer.style.backgroundColor || "transparent",
             padding: layer.style.padding ? `${layer.style.padding}px` : undefined,
             display: "flex",
@@ -673,9 +780,12 @@ function CardLayerRenderer({
             justifyContent: layer.style.align === "center" ? "center" : layer.style.align === "right" ? "flex-end" : "flex-start",
             wordBreak: "break-word",
             overflow: "hidden",
+            fontStyle: showPlaceholder ? "italic" : undefined,
           }}
+          data-html2canvas-ignore={showPlaceholder ? "true" : undefined}
+          data-placeholder={showPlaceholder ? "true" : undefined}
         >
-          {layer.style.content}
+          {hasContent ? layer.style.content : (showPlaceholder ? "Double-click to edit text" : "")}
         </div>
       );
     }
@@ -767,16 +877,64 @@ function CardLayerRenderer({
     /* eslint-disable-next-line react/forbid-dom-props */
     <div
       style={style}
-      onPointerDown={handlePointerDown}
+      onPointerDown={editMode ? handlePointerDown : undefined}
       onPointerMove={isDragging ? handlePointerMove : isResizing ? handleResizePointerMove : undefined}
       onPointerUp={isDragging ? handlePointerUp : isResizing ? handleResizePointerUp : undefined}
+      onDoubleClick={handleDoubleClick}
+      onClick={layer.type === 'avatar' ? handleAvatarClick : undefined}
     >
       {renderContent()}
+      
+      {/* Inline text editor overlay */}
+      {isEditing && layer.type === 'text' && (
+        /* eslint-disable-next-line react/forbid-dom-props */
+        <div
+          data-html2canvas-ignore="true"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 1000,
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* eslint-disable-next-line react/forbid-dom-props */}
+          <textarea
+            ref={textareaRef}
+            value={editValue}
+            onChange={(e) => setEditValue(e.target.value)}
+            onBlur={commitEdit}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                commitEdit();
+              } else if (e.key === 'Escape') {
+                e.preventDefault();
+                cancelEdit();
+              }
+            }}
+            style={{
+              width: '100%',
+              height: '100%',
+              fontSize: layer.type === 'text' ? `${layer.style.fontSize}px` : '16px',
+              fontWeight: layer.type === 'text' ? layer.style.fontWeight : 'normal',
+              color: layer.type === 'text' ? layer.style.color : '#000',
+              textAlign: layer.type === 'text' ? layer.style.align : 'left',
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              border: '2px solid #10B981',
+              borderRadius: '4px',
+              padding: '8px',
+              resize: 'none',
+              outline: 'none',
+            }}
+          />
+        </div>
+      )}
       
       {/* Resize handle (bottom-right corner) */}
       {editMode && isSelected && !layer.locked && (
         /* eslint-disable-next-line react/forbid-dom-props */
         <div
+          data-html2canvas-ignore="true"
           style={{
             position: "absolute",
             right: -4,
@@ -807,6 +965,7 @@ export function ProfileCard({
   selectedTemplate,
   captureId,
   editMode = false,
+  canvasEditMode = false,
   selectedLayerId = null,
   onLayerUpdate,
   onLayerSelect,
@@ -1170,17 +1329,25 @@ export function ProfileCard({
   // Phase 2: Use template metadata for aspect ratio (no distortion)
   // Remove hardcoded orientationClass; apply aspect-ratio via inline style
 
+  const selectedFontKey = profile.typography?.fontKey ?? "inter";
+  const fontVarName = `--font-${selectedFontKey}`;
+
   return (
     /* eslint-disable-next-line react/forbid-dom-props */
     <div
       id={captureId ?? "profile-card-capture"}
       ref={rootRef}
       className={cn(
-        "relative isolate w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden",
+        "relative isolate w-full max-w-md mx-auto rounded-3xl overflow-hidden",
+        styles.card3dEdge,
         !hasAnyBackground && gradientClass,
         hasAnyBackground && (isWalletTemplate ? "bg-white" : (effectiveSurfaceIsLight ? "bg-white" : "bg-black"))
       )}
-      style={{ aspectRatio: aspectRatioValue }}
+      style={{ 
+        aspectRatio: aspectRatioValue,
+        // @ts-expect-error - CSS custom properties
+        "--nb-font": `var(${fontVarName})`,
+      }}
     >
       {isWalletTemplate && walletQrValue ? (
         <div ref={walletQrSourceRef} className="fixed left-[-10000px] top-0 opacity-0 pointer-events-none select-none" aria-hidden="true">
@@ -1493,43 +1660,21 @@ export function ProfileCard({
               )}
               {profile.addressCard.country && <p data-pdf-text={profile.addressCard.country}>{profile.addressCard.country}</p>}
               {profile.addressCard.directionsNote && (
-                <p className="mt-2 text-xs opacity-75 italic" data-pdf-text={profile.addressCard.directionsNote}>
-                  {profile.addressCard.directionsNote}
+                <p className="mt-2 text-xs opacity-75 italic" data-pdf-text={stripUrls(clamp(profile.addressCard.directionsNote, 60))}>
+                  {stripUrls(clamp(profile.addressCard.directionsNote, 60))}
                 </p>
               )}
-              {(profile.addressCard.addressLine1 || profile.addressCard.mapQueryOverride) && (
+              {(profile.addressCard.addressLine1 || profile.addressCard.mapUrlOverride || profile.addressCard.mapDestinationOverride || profile.addressCard.mapQueryOverride) && (
                 <div className={cn("mt-3 pt-3 border-t", dividerBorderClass)}>
                   <p className="text-xs opacity-75 mb-1">Find Address:</p>
                   <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                      profile.addressCard.mapQueryOverride ||
-                      [
-                        profile.addressCard.addressLine1,
-                        profile.addressCard.addressLine2,
-                        profile.addressCard.city,
-                        profile.addressCard.postcode,
-                        profile.addressCard.country,
-                      ]
-                        .filter(Boolean)
-                        .join(", ")
-                    )}`}
-                    data-pdf-link={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                      profile.addressCard.mapQueryOverride ||
-                      [
-                        profile.addressCard.addressLine1,
-                        profile.addressCard.addressLine2,
-                        profile.addressCard.city,
-                        profile.addressCard.postcode,
-                        profile.addressCard.country,
-                      ]
-                        .filter(Boolean)
-                        .join(", ")
-                    )}`}
+                    href={buildMapHref(profile.addressCard)}
+                    data-pdf-link={buildMapHref(profile.addressCard)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm font-semibold underline hover:opacity-80 transition-opacity"
+                    className="text-sm font-semibold underline hover:opacity-80 transition-opacity break-words"
                   >
-                    {profile.addressCard.mapLinkLabel || "Click Here"}
+                    {profile.addressCard.mapLinkLabel || "Get Directions"}
                   </a>
                 </div>
               )}
@@ -1707,6 +1852,7 @@ export function ProfileCard({
                 key={layer.id}
                 layer={layer}
                 editMode={editMode}
+                canvasEditMode={canvasEditMode}
                 isSelected={selectedLayerId === layer.id}
                 onSelect={onLayerSelect}
                 onUpdate={onLayerUpdate}

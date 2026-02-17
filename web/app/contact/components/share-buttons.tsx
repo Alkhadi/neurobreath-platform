@@ -10,6 +10,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { getSession } from "next-auth/react";
 
+import { buildMapHref } from "@/lib/nbcard/mapHref";
+import { stripUrls, clamp } from "@/lib/nbcard/sanitize";
+import { captureToBlob } from "@/lib/nbcard/export/capture";
+import { shareFileOrFallback, blobToFile } from "@/lib/nbcard/export/share";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -164,33 +169,41 @@ async function buildExportAssets(
 
 async function captureProfileCardPng(captureElementId: string): Promise<Blob> {
   const target = document.getElementById(captureElementId);
-  if (!target) throw new Error("Profile card element not found");
+  if (!target) throw new Error("Element not found");
+  
+  // Use the new capture helper for consistent, reliable capture
+  try {
+    return await captureToBlob(target, {
+      scale: getRecommendedCaptureScale(),
+      backgroundColor: null,
+    });
+  } catch (error) {
+    // Fallback to preflight + html2canvas if the helper fails
+    const preflight = await runExportPreflight(target);
+    if (!preflight.ready) {
+      throw new Error(preflight.warnings[0] ?? "Export preflight failed");
+    }
 
-  // CAPTURE-SAFE TIMING (MANDATORY)
-  const preflight = await runExportPreflight(target);
-  if (!preflight.ready) {
-    throw new Error(preflight.warnings[0] ?? "Export preflight failed");
+    // Flush layout after any template/avatar changes
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+    // COLOR FIDELITY: No color conversion, no filters
+    const canvas = await html2canvas(target, {
+      scale: getRecommendedCaptureScale(),
+      backgroundColor: null,
+      useCORS: true,
+      logging: false,
+      allowTaint: false,
+    });
+
+    // PNG export with true alpha (no JPEG color shifts)
+    return await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (!blob) reject(new Error("Failed to create image blob"));
+        else resolve(blob);
+      }, "image/png", 1.0);
+    });
   }
-
-  // Flush layout after any template/avatar changes
-  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-
-  // COLOR FIDELITY: No color conversion, no filters
-  const canvas = await html2canvas(target, {
-    scale: getRecommendedCaptureScale(),
-    backgroundColor: null,
-    useCORS: true,
-    logging: false,
-    allowTaint: false,
-  });
-
-  // PNG export with true alpha (no JPEG color shifts)
-  return await new Promise<Blob>((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (!blob) reject(new Error("Failed to create image blob"));
-      else resolve(blob);
-    }, "image/png", 1.0);
-  });
 }
 
 type PdfAnnotsArrayLike = {
@@ -395,13 +408,17 @@ function renderShareText(profile: Profile, shareUrl: string): string {
     const cityLine = [profile.addressCard.city, profile.addressCard.postcode].filter(Boolean).join(", ");
     if (cityLine) lines.push(cityLine);
     if (profile.addressCard.country) lines.push(profile.addressCard.country);
-    if (profile.addressCard.directionsNote) lines.push(`Note: ${profile.addressCard.directionsNote}`);
-    const mapQuery = profile.addressCard.mapQueryOverride || 
-      [profile.addressCard.addressLine1, profile.addressCard.addressLine2, profile.addressCard.city, profile.addressCard.postcode, profile.addressCard.country]
-        .filter(Boolean).join(", ");
-    if (mapQuery) {
-      const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
-      lines.push(`${profile.addressCard.mapLinkLabel || "Click Here"}: ${mapsLink}`);
+    
+    // Sanitize directionsNote (no URLs)
+    if (profile.addressCard.directionsNote) {
+      const sanitized = stripUrls(clamp(profile.addressCard.directionsNote, 60));
+      if (sanitized) lines.push(`Note: ${sanitized}`);
+    }
+    
+    // Use buildMapHref for consistent link generation
+    const mapsLink = buildMapHref(profile.addressCard);
+    if (mapsLink) {
+      lines.push(`${profile.addressCard.mapLinkLabel || "Get Directions"}: ${mapsLink}`);
     }
   }
 
@@ -789,6 +806,39 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
           downloadBlob(new Blob([pdfBytes], { type: "application/pdf" }), `${safeName}_NBCard.pdf`);
           toast.success("PDF downloaded");
+        } finally {
+          setExportCaptureProfile(null);
+        }
+      });
+    });
+  }
+
+  async function handleSharePdf() {
+    requestRedactionAndRun(async (redacted) => {
+      await withBusy("pdf-share", async () => {
+        setExportCaptureProfile(redacted);
+        try {
+          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          const { pdfBytes } = await buildExportAssets(redacted, shareUrl, { includePdf: true }, EXPORT_CAPTURE_ID);
+          if (!pdfBytes) throw new Error("Failed to generate PDF");
+          const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+          const fileName = `${safeName}.pdf`;
+          const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
+          const pdfFile = blobToFile(pdfBlob, fileName);
+          
+          const shared = await shareFileOrFallback({
+            file: pdfFile,
+            title: `NBCard — ${redacted.fullName || profile.fullName || "NB-Card"}`,
+            text: "Here's my NBCard profile",
+            fallbackDownload: true,
+          });
+          
+          if (shared) {
+            toast.success("PDF shared");
+          }
+        } catch (error) {
+          toast.error("Failed to share PDF");
+          console.error(error);
         } finally {
           setExportCaptureProfile(null);
         }
@@ -1384,6 +1434,9 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
               <DropdownMenuItem onClick={handleSharePng} disabled={!!busyKey}>
                 Share PNG
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSharePdf} disabled={!!busyKey}>
+                Share PDF
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={handleDownloadVcard} disabled={!!busyKey}>
                 Download vCard
               </DropdownMenuItem>
@@ -1792,11 +1845,11 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                   <h3 className="text-lg font-bold text-gray-800 mb-3">Social Links</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {([
-                      { key: "instagram", label: "Instagram", placeholder: "https://instagram.com/yourname" },
-                      { key: "facebook", label: "Facebook", placeholder: "https://facebook.com/yourname" },
-                      { key: "tiktok", label: "TikTok", placeholder: "https://tiktok.com/@yourname" },
-                      { key: "linkedin", label: "LinkedIn", placeholder: "https://linkedin.com/in/yourname" },
-                      { key: "twitter", label: "X (Twitter)", placeholder: "https://x.com/yourname" },
+                      { key: "instagram", label: "Instagram", placeholder: "Instagram profile URL" },
+                      { key: "facebook", label: "Facebook", placeholder: "Facebook profile URL" },
+                      { key: "tiktok", label: "TikTok", placeholder: "TikTok profile URL" },
+                      { key: "linkedin", label: "LinkedIn", placeholder: "LinkedIn profile URL" },
+                      { key: "twitter", label: "X (Twitter)", placeholder: "X profile URL" },
                     ] as const).map(({ key, label, placeholder }) => (
                       <div key={key}>
                         <label htmlFor={`nbcard-editor-social-${key}`} className="block text-sm font-semibold text-gray-700 mb-2">
