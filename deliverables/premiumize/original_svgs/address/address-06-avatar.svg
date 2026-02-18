@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-labelledby="address-06-avatar-title address-06-avatar-desc">
+  <title id="address-06-avatar-title">Route Card — Address Avatar</title>
+  <desc id="address-06-avatar-desc">Professional address avatar with route motif</desc>
+  <defs>
+    <linearGradient id="address-06-avatar-bg" x1="100%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#A7C3D9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E7F0F8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1000" height="1000" fill="url(#address-06-avatar-bg)" />
+  <circle cx="500" cy="380" r="160" fill="#6D8AA8" opacity="0.2" />
+  <ellipse cx="500" cy="720" rx="280" ry="200" fill="#6D8AA8" opacity="0.2" />
+  <path d="M 300,500 Q 400,450 500,500 Q 600,550 700,500" fill="none" stroke="#6D8AA8" stroke-width="2" opacity="0.25" />
+</svg>

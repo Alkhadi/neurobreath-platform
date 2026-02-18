@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-labelledby="business-03-avatar-title business-03-avatar-desc">
+  <title id="business-03-avatar-title">Consultant White — Business Avatar</title>
+  <desc id="business-03-avatar-desc">Professional business avatar with clean consultant style</desc>
+  <defs>
+    <linearGradient id="business-03-avatar-bg" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1F2937;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#374151;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1000" height="1000" fill="url(#business-03-avatar-bg)" />
+  <circle cx="500" cy="380" r="160" fill="#F59E0B" opacity="0.18" />
+  <ellipse cx="500" cy="720" rx="280" ry="200" fill="#F59E0B" opacity="0.18" />
+</svg>

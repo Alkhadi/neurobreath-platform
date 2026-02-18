@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-labelledby="bank-06-avatar-title bank-06-avatar-desc">
+  <title id="bank-06-avatar-title">Clean Transfer — Bank Avatar</title>
+  <desc id="bank-06-avatar-desc">Professional bank avatar with clean transfer style</desc>
+  <defs>
+    <linearGradient id="bank-06-avatar-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E293B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0F172A;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1000" height="1000" fill="url(#bank-06-avatar-bg)" />
+  <circle cx="500" cy="380" r="160" fill="#D1D5DB" opacity="0.22" />
+  <ellipse cx="500" cy="720" rx="280" ry="200" fill="#D1D5DB" opacity="0.22" />
+</svg>

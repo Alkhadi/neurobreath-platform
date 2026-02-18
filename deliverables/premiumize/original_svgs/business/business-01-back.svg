@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="business-01-back-title" preserveAspectRatio="xMidYMid meet">
+  <title id="business-01-back-title">Executive Charcoal — Business Card Back</title>
+  
+  <defs>
+    <linearGradient id="business-01-back-base" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#111827;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1F2937;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#111827;stop-opacity:1" />
+    </linearGradient>
+    <pattern id="business-01-back-grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="1.5" fill="#F59E0B" opacity="0.15" />
+    </pattern>
+  </defs>
+  
+  <!-- Base gradient -->
+  <rect width="1600" height="900" fill="url(#business-01-back-base)" />
+  
+  <!-- Edge frame -->
+  <rect x="40" y="40" width="1520" height="820" fill="none" stroke="#F59E0B" stroke-width="2" opacity="0.3" rx="32" />
+  
+  <!-- Grid micro-pattern -->
+  <rect x="80" y="80" width="1440" height="740" fill="url(#business-01-back-grid)" opacity="0.6" />
+  
+  <!-- Monogram frame (top-right) -->
+  <g transform="translate(1440, 100)" opacity="0.35">
+    <rect x="0" y="0" width="50" height="50" rx="8" fill="none" stroke="#F59E0B" stroke-width="3" />
+    <circle cx="25" cy="25" r="15" fill="none" stroke="#F59E0B" stroke-width="2" />
+  </g>
+  
+  <!-- Central content area -->
+  <rect x="200" y="150" width="1200" height="600" fill="#111827" opacity="0.5" rx="32" />
+  
+  <!-- Back side content - centered layout -->
+  <g id="nb-card-back-content">
+    <!-- Company tagline/slogan -->
+    <text id="nb-card-tagline" x="800" y="280" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="600" fill="#F59E0B" text-anchor="middle">Breathe Better, Live Better</text>
+    
+    <!-- Services/specialties -->
+    <text id="nb-card-specialty" x="800" y="360" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#E5E7EB" text-anchor="middle">Digital Health • Mental Wellness • Breathing Science</text>
+    
+    <!-- Address block -->
+    <g id="nb-card-address-block">
+      <text id="nb-card-address-line1" x="800" y="480" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#9CA3AF" text-anchor="middle">123 Innovation Drive, Suite 400</text>
+      <text id="nb-card-address-line2" x="800" y="515" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#9CA3AF" text-anchor="middle">San Francisco, CA 94105</text>
+      <text id="nb-card-address-country" x="800" y="550" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#9CA3AF" text-anchor="middle">United States</text>
+    </g>
+    
+    <!-- Social media handles (back side specific) -->
+    <g id="nb-card-social-handles">
+      <a id="nb-card-instagram-link" href="https://instagram.com/neurobreath" target="_blank" rel="noopener">
+        <text id="nb-card-instagram" x="500" y="650" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#60A5FA">@neurobreath</text>
+      </a>
+      <a id="nb-card-linkedin-link" href="https://linkedin.com/company/neurobreath" target="_blank" rel="noopener">
+        <text id="nb-card-linkedin" x="800" y="650" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#60A5FA" text-anchor="middle">LinkedIn: /neurobreath</text>
+      </a>
+      <a id="nb-card-twitter-link" href="https://twitter.com/neurobreath" target="_blank" rel="noopener">
+        <text id="nb-card-twitter" x="1100" y="650" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#60A5FA" text-anchor="end">@neurobreath</text>
+      </a>
+    </g>
+  </g>
+  
+  <!-- Company logo (large, centered) -->
+  <image id="nb-card-logo-large" x="650" y="100" width="300" height="100" preserveAspectRatio="xMidYMid meet" href="" />
+</svg>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="t-mg-l-g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1220"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="t-mg-l-g2" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="t-mg-l-g3" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <clipPath id="t-mg-l-c">
+      <rect x="16" y="16" width="1568" height="868" rx="24"/>
+    </clipPath>
+  </defs>
+  <rect x="16" y="16" width="1568" height="868" rx="24" fill="url(#t-mg-l-g1)"/>
+  <g clip-path="url(#t-mg-l-c)">
+    <polygon points="0,0 1100,0 700,900 0,900" fill="url(#t-mg-l-g2)" opacity="0.18"/>
+    <polygon points="950,0 1050,0 650,900 550,900" fill="url(#t-mg-l-g3)" opacity="0.35"/>
+    <rect x="1100" y="60" width="440" height="340" rx="16" fill="#1e293b" opacity="0.6"/>
+    <polygon points="16,16 180,16 16,160" fill="#3b82f6" opacity="0.12"/>
+    <polygon points="1584,884 1420,884 1584,740" fill="#06b6d4" opacity="0.1"/>
+    <rect x="60" y="120" width="580" height="520" rx="16" fill="rgba(255,255,255,0.06)"/>
+    <rect x="1320" y="580" width="220" height="220" rx="12" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="6 4"/>
+  </g>
+</svg>

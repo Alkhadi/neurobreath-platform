@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-labelledby="bank-04-avatar-title bank-04-avatar-desc">
+  <title id="bank-04-avatar-title">Ledger Lines — Bank Avatar</title>
+  <desc id="bank-04-avatar-desc">Professional bank avatar with ledger style</desc>
+  <defs>
+    <linearGradient id="bank-04-avatar-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E293B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0F172A;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1000" height="1000" fill="url(#bank-04-avatar-bg)" />
+  <circle cx="500" cy="380" r="160" fill="#D1D5DB" opacity="0.28" />
+  <ellipse cx="500" cy="720" rx="280" ry="200" fill="#D1D5DB" opacity="0.28" />
+</svg>

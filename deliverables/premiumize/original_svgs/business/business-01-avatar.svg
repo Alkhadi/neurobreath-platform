@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-labelledby="business-01-avatar-title business-01-avatar-desc">
+  <title id="business-01-avatar-title">Executive Charcoal — Business Avatar</title>
+  <desc id="business-01-avatar-desc">Professional business avatar with briefcase and monogram motifs for executive identity</desc>
+  <defs>
+    <linearGradient id="business-01-avatar-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1F2937;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#111827;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Base -->
+  <rect width="1000" height="1000" fill="url(#business-01-avatar-bg)" />
+  
+  <!-- Abstract silhouette -->
+  <circle cx="500" cy="380" r="160" fill="#F59E0B" opacity="0.2" />
+  <ellipse cx="500" cy="720" rx="280" ry="200" fill="#F59E0B" opacity="0.2" />
+  
+  <!-- Briefcase motif (bottom-right) -->
+  <g transform="translate(720, 760)" opacity="0.5">
+    <rect x="0" y="11" width="38" height="26" rx="3" fill="none" stroke="#4F46E5" stroke-width="3" />
+    <rect x="14" y="0" width="10" height="11" fill="none" stroke="#4F46E5" stroke-width="2" stroke-linejoin="round" />
+    <line x1="0" y1="23" x2="38" y2="23" stroke="#4F46E5" stroke-width="2" opacity="0.6" />
+  </g>
+</svg>

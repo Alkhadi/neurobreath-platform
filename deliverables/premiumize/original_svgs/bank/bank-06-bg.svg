@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="bank-06-bg-title bank-06-bg-desc">
+  <title id="bank-06-bg-title">Clean Transfer — Bank Background</title>
+  <desc id="bank-06-bg-desc">Professional bank template with simple transfer motif and high readability</desc>
+  <defs>
+    <linearGradient id="bank-06-base" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E293B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0F172A;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bank-06-base)" />
+  <path d="M 300,500 L 1300,500" stroke="#10B981" stroke-width="2" opacity="0.2" marker-end="url(#arrow)" />
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+      <path d="M 0,0 L 10,5 L 0,10 Z" fill="#10B981" opacity="0.2" />
+    </marker>
+  </defs>
+  <rect x="40" y="40" width="1520" height="920" fill="none" stroke="#D1D5DB" stroke-width="2" opacity="0.25" rx="32" />
+  <rect x="120" y="140" width="360" height="100" fill="#0F172A" opacity="0.4" rx="24" />
+</svg>

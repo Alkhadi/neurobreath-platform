@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200">
+  <defs>
+    <radialGradient id="mbp-glow" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#1e293b" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mbp-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1220"/>
+      <stop offset="50%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Base gradient -->
+  <rect width="900" height="1200" fill="url(#mbp-bg)"/>
+
+  <!-- Radial glow -->
+  <ellipse cx="450" cy="600" rx="400" ry="550" fill="url(#mbp-glow)"/>
+
+  <!-- Content panel area -->
+  <rect x="80" y="240" width="740" height="720" rx="16" fill="rgba(255,255,255,0.025)" stroke="rgba(148,163,184,0.15)" stroke-width="1"/>
+
+  <!-- Elegant curved lines -->
+  <path d="M 150 320 Q 450 280, 750 320" fill="none" stroke="#94a3b8" stroke-width="1" opacity="0.3"/>
+  <path d="M 150 880 Q 450 920, 750 880" fill="none" stroke="#94a3b8" stroke-width="1" opacity="0.3"/>
+
+  <!-- Corner brackets -->
+  <path d="M 80 240 L 80 290 M 80 240 L 130 240" stroke="#94a3b8" stroke-width="2" opacity="0.4"/>
+  <path d="M 820 240 L 770 240 M 820 240 L 820 290" stroke="#94a3b8" stroke-width="2" opacity="0.4"/>
+  <path d="M 80 960 L 80 910 M 80 960 L 130 960" stroke="#94a3b8" stroke-width="2" opacity="0.4"/>
+  <path d="M 820 960 L 770 960 M 820 960 L 820 910" stroke="#94a3b8" stroke-width="2" opacity="0.4"/>
+
+  <!-- Blue accent mark -->
+  <circle cx="750" cy="600" r="8" fill="#3b82f6" opacity="0.6"/>
+  <circle cx="750" cy="600" r="14" fill="none" stroke="#3b82f6" stroke-width="1" opacity="0.3"/>
+
+  <!-- Dot pattern -->
+  <circle cx="700" cy="150" r="1.5" fill="#94a3b8" opacity="0.2"/>
+  <circle cx="750" cy="170" r="1.5" fill="#94a3b8" opacity="0.2"/>
+  <circle cx="800" cy="150" r="1.5" fill="#94a3b8" opacity="0.2"/>
+  <circle cx="700" cy="1050" r="1.5" fill="#94a3b8" opacity="0.2"/>
+  <circle cx="750" cy="1030" r="1.5" fill="#94a3b8" opacity="0.2"/>
+  <circle cx="800" cy="1050" r="1.5" fill="#94a3b8" opacity="0.2"/>
+
+  <!-- Horizontal divider hint -->
+  <line x1="150" y1="600" x2="750" y2="600" stroke="#94a3b8" stroke-width="1" opacity="0.2"/>
+
+  <!-- Bottom edge line -->
+  <line x1="80" y1="1100" x2="820" y2="1100" stroke="#94a3b8" stroke-width="1" opacity="0.15"/>
+</svg>
