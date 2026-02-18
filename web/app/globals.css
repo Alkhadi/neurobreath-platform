@@ -1,3 +1,47 @@
+/* =========================================================================
+   CUSTOM FONTS - Beardsons Family
+   ========================================================================= */
+
+@font-face {
+  font-family: 'Beardsons';
+  src: url('/fonts/Beardsons Normal.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Beardsons Inline';
+  src: url('/fonts/Beardsons Inline.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Beardsons Shadow';
+  src: url('/fonts/Beardsons Shadow.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Beardsons Extras';
+  src: url('/fonts/Beardsons Extras.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Monday';
+  src: url('/fonts/Monday.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

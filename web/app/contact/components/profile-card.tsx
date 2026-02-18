@@ -770,7 +770,7 @@ function CardLayerRenderer({
             height: "100%",
             fontSize: `${layer.style.fontSize}px`,
             fontWeight: layer.style.fontWeight,
-            fontFamily: "var(--nb-font, ui-sans-serif, system-ui, sans-serif)",
+            fontFamily: layer.style.fontFamily || "var(--nb-font, ui-sans-serif, system-ui, sans-serif)",
             textAlign: layer.style.align,
             color: showPlaceholder ? "rgba(156, 163, 175, 0.6)" : layer.style.color,
             backgroundColor: layer.style.backgroundColor || "transparent",

@@ -138,6 +138,7 @@ export interface TextLayer extends CardLayerBase {
   style: {
     content: string;
     fontSize: number; // px
+    fontFamily?: string; // font name, defaults to Inter
     fontWeight: "normal" | "bold";
     align: TextAlign;
     color: string; // hex

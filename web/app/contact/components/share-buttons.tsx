@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import html2canvas from "html2canvas";
+import { waitForAllFonts } from "@/lib/nb-card/font-loader";
 import { PDFDocument, PDFName } from "pdf-lib";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
@@ -170,6 +171,12 @@ async function buildExportAssets(
 async function captureProfileCardPng(captureElementId: string): Promise<Blob> {
   const target = document.getElementById(captureElementId);
   if (!target) throw new Error("Element not found");
+  
+  // CRITICAL: Wait for fonts to finish loading before capture
+  await waitForAllFonts(5000);
+
+  // Flush layout to ensure fonts are rendered
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
   
   // Use the new capture helper for consistent, reliable capture
   try {

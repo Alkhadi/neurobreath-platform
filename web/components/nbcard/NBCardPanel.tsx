@@ -8,6 +8,30 @@ import { getSession } from "next-auth/react";
 
 import type { Contact, Profile, CardLayer } from "@/lib/utils";
 import { defaultProfile } from "@/lib/utils";
+import {
+  createLayerHistory,
+  pushHistory,
+  undo as undoHistory,
+  redo as redoHistory,
+  canUndo,
+  canRedo,
+  createTextLayer,
+  createAvatarLayer,
+  createShapeLayer,
+  updateLayer,
+  deleteLayer,
+  duplicateLayer,
+  bringLayerForward,
+  sendLayerBackward,
+  alignLayersLeft,
+  alignLayersCenter,
+  alignLayersRight,
+  alignLayersTop,
+  alignLayersMiddle,
+  alignLayersBottom,
+  type LayerHistory,
+} from "@/lib/nb-card/layer-editor";
+import { EditorToolbar, LayersPanel } from "./EditorToolbar";
 
 import { exportNbcardLocalState, loadNbcardLocalState, saveNbcardLocalState } from "@/app/contact/lib/nbcard-storage";
 import { ContactCapture } from "@/app/contact/components/contact-capture";
@@ -85,7 +109,19 @@ export function NBCardPanel() {
   const [currentBusinessSide, setCurrentBusinessSide] = useState<'front' | 'back'>('front');
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle');
   const [showSyncPrompt, setShowSyncPrompt] = useState(false);
-  const [lastSyncTime, setLastSyncTime] = useState<string | null>(null);  const [deviceId] = useState(() => {
+  const [lastSyncTime, setLastSyncTime] = useState<string | null>(null);
+
+  // Pro Editor: Undo/Redo History (initialized with defaultProfile, synced via useEffect)
+  const [history, setHistory] = useState<LayerHistory>(() =>
+    createLayerHistory(defaultProfile)
+  );
+
+  // Pro Editor: Zoom & Grid
+  const [zoom, setZoom] = useState(1);
+  const [gridEnabled, setGridEnabled] = useState(false);
+  const [snapEnabled, setSnapEnabled] = useState(true);
+  
+  const [deviceId] = useState(() => {
     if (typeof window === 'undefined') return '';
     try {
       let id = localStorage.getItem('nb-card:device-id');
@@ -288,6 +324,11 @@ export function NBCardPanel() {
   }, [profiles, contacts, mounted]);
 
   const currentProfile = useMemo(() => profiles?.[currentProfileIndex] ?? defaultProfile, [profiles, currentProfileIndex]);
+
+  // Sync history when current profile changes (e.g., via profile selector)
+  useEffect(() => {
+    setHistory(createLayerHistory(currentProfile));
+  }, [currentProfile, currentProfileIndex]);
 
   // Persist template selection when it changes
   useEffect(() => {
@@ -575,6 +616,321 @@ export function NBCardPanel() {
     setShowSyncPrompt(false);
     toast.message("Skipped import", { description: "You can sync manually using the sync button." });
   };
+
+  // Pro Editor: Undo/Redo handlers
+  const handleUndo = useCallback(() => {
+    const newHistory = undoHistory(history);
+    setHistory(newHistory);
+    setProfiles((prev) =>
+      prev.map((p, idx) =>
+        idx === currentProfileIndex ? newHistory.present : p
+      )
+    );
+    toast.info("Undo");
+  }, [history, currentProfileIndex]);
+
+  const handleRedo = useCallback(() => {
+    const newHistory = redoHistory(history);
+    setHistory(newHistory);
+    setProfiles((prev) =>
+      prev.map((p, idx) =>
+        idx === currentProfileIndex ? newHistory.present : p
+      )
+    );
+    toast.info("Redo");
+  }, [history,currentProfileIndex]);
+
+  const commitToHistory = useCallback(
+    (updatedProfile: Profile) => {
+      setHistory((prev) => pushHistory(prev, updatedProfile));
+    },
+    []
+  );
+
+  // Pro Editor: Zoom handlers
+  const handleZoomIn = () => setZoom((z) => Math.min(z + 0.25, 3));
+  const handleZoomOut = () => setZoom((z) => Math.max(z - 0.25, 0.25));
+  const handleZoomFit = () => setZoom(1);
+
+  // Pro Editor: Grid/Snap toggles
+  const handleToggleGrid = () => setGridEnabled((g) => !g);
+  const handleToggleSnap = () => setSnapEnabled((s) => !s);
+
+  // Pro Editor: Layer management
+  const handleAddText = () => {
+    const layer = createTextLayer(10, 10, "Double-click to edit");
+    const updatedProfile = {
+      ...currentProfile,
+      layers: [...(currentProfile.layers || []), layer],
+    };
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    setSelectedLayerId(layer.id);
+    setLayoutEditMode(true);
+    toast.success("Text layer added");
+  };
+
+  const handleAddShape = (kind: "rect" | "circle" | "line") => {
+    const layer = createShapeLayer(10, 10, kind);
+    const updatedProfile = {
+      ...currentProfile,
+      layers: [...(currentProfile.layers || []), layer],
+    };
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    setSelectedLayerId(layer.id);
+    setLayoutEditMode(true);
+    toast.success(`${kind.charAt(0).toUpperCase() + kind.slice(1)} added`);
+  };
+
+  const handleAddAvatar = () => {
+    const layer = createAvatarLayer(10, 10, "");
+    const updatedProfile = {
+      ...currentProfile,
+      layers: [...(currentProfile.layers || []), layer],
+    };
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    setSelectedLayerId(layer.id);
+    setLayoutEditMode(true);
+    toast.success("Avatar layer added. Click to upload image.");
+  };
+
+  const handleAddImage = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = (evt: Event) => {
+      const file = (evt.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const src = e.target?.result as string;
+        if (src) {
+          const layer = createAvatarLayer(10, 10, src);
+          // Type guard: layer is always AvatarLayer from createAvatarLayer
+          const avatarLayer = layer as import("@/lib/utils").AvatarLayer;
+          avatarLayer.style.borderRadius = 0;
+          const updatedProfile = {
+            ...currentProfile,
+            layers: [...(currentProfile.layers || []), layer],
+          };
+          setProfiles((prev) =>
+            prev.map((p, idx) =>
+              idx === currentProfileIndex ? updatedProfile : p
+            )
+          );
+          commitToHistory(updatedProfile);
+          setSelectedLayerId(layer.id);
+          setLayoutEditMode(true);
+          toast.success("Image added");
+        }
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  };
+
+  const handleDuplicateLayer = useCallback(() => {
+    if (!selectedLayerId) return;
+    const updatedProfile = duplicateLayer(currentProfile, selectedLayerId);
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    const newLayer = updatedProfile.layers?.find(
+      (l) => l.id !== selectedLayerId && l.x >= (currentProfile.layers?.find((l2) => l2.id === selectedLayerId)?.x ?? 0)
+    );
+    if (newLayer) setSelectedLayerId(newLayer.id);
+    toast.success("Layer duplicated");
+  }, [selectedLayerId, currentProfile, currentProfileIndex, commitToHistory]);
+
+  const handleDeleteLayer = useCallback(() => {
+    if (!selectedLayerId) return;
+    if (!confirm("Delete this layer?")) return;
+    const updatedProfile = deleteLayer(currentProfile, selectedLayerId);
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    setSelectedLayerId(null);
+    toast.success("Layer deleted");
+  }, [selectedLayerId, currentProfile, currentProfileIndex, commitToHistory]);
+
+  const handleToggleLayerLock = () => {
+    if (!selectedLayerId) return;
+    const layer = currentProfile.layers?.find((l) => l.id === selectedLayerId);
+    if (!layer) return;
+    const updatedProfile = updateLayer(currentProfile, selectedLayerId, {
+      locked: !layer.locked,
+    });
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+  };
+
+  const handleToggleLayerVisibility = () => {
+    if (!selectedLayerId) return;
+    const layer = currentProfile.layers?.find((l) => l.id === selectedLayerId);
+    if (!layer) return;
+    const updatedProfile = updateLayer(currentProfile, selectedLayerId, {
+      visible: !layer.visible,
+    });
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+  };
+
+  const handleBringForward = () => {
+    if (!selectedLayerId) return;
+    const updatedProfile = bringLayerForward(currentProfile, selectedLayerId);
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    toast.success("Brought forward");
+  };
+
+  const handleSendBackward = () => {
+    if (!selectedLayerId) return;
+    const updatedProfile = sendLayerBackward(currentProfile, selectedLayerId);
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    toast.success("Sent backward");
+  };
+
+  const handleAlign = (
+    direction: "left" | "center" | "right" | "top" | "middle" | "bottom"
+  ) => {
+    if (!selectedLayerId) return;
+    let updatedProfile = currentProfile;
+
+    switch (direction) {
+      case "left":
+        updatedProfile = alignLayersLeft(currentProfile, [selectedLayerId]);
+        break;
+      case "center":
+        updatedProfile = alignLayersCenter(currentProfile, [selectedLayerId]);
+        break;
+      case "right":
+        updatedProfile = alignLayersRight(currentProfile, [selectedLayerId]);
+        break;
+      case "top":
+        updatedProfile = alignLayersTop(currentProfile, [selectedLayerId]);
+        break;
+      case "middle":
+        updatedProfile = alignLayersMiddle(currentProfile, [selectedLayerId]);
+        break;
+      case "bottom":
+        updatedProfile = alignLayersBottom(currentProfile, [selectedLayerId]);
+        break;
+    }
+
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    toast.success(`Aligned ${direction}`);
+  };
+
+  const handleReorderLayers = (newOrder: CardLayer[]) => {
+    const updatedProfile = { ...currentProfile, layers: newOrder };
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+  };
+
+  const handleToggleLayerVisibilityById = (layerId: string) => {
+    const layer = currentProfile.layers?.find((l) => l.id === layerId);
+    if (!layer) return;
+    const updatedProfile = updateLayer(currentProfile, layerId, {
+      visible: !layer.visible,
+    });
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+  };
+
+  const handleToggleLayerLockById = (layerId: string) => {
+    const layer = currentProfile.layers?.find((l) => l.id === layerId);
+    if (!layer) return;
+    const updatedProfile = updateLayer(currentProfile, layerId, {
+      locked: !layer.locked,
+    });
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+  };
+
+  // Keyboard shortcuts for pro editor
+  useEffect(() => {
+    if (!layoutEditMode && !canvasEditMode) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't interfere with typing in input fields
+      const target = e.target as HTMLElement;
+      const isTyping = target.tagName === 'INPUT' || 
+                       target.tagName === 'TEXTAREA' || 
+                       target.isContentEditable;
+      
+      // Undo: Ctrl+Z / Cmd+Z (works even when typing)
+      if ((e.ctrlKey || e.metaKey) && e.key === "z" && !e.shiftKey) {
+        e.preventDefault();
+        handleUndo();
+        return;
+      }
+      // Redo: Ctrl+Y / Cmd+Shift+Z (works even when typing)
+      if (
+        ((e.ctrlKey || e.metaKey) && e.key === "y") ||
+        ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === "z")
+      ) {
+        e.preventDefault();
+        handleRedo();
+        return;
+      }
+      
+      // Skip other shortcuts if user is typing
+      if (isTyping) return;
+      
+      // Delete selected layer: Delete / Backspace
+      if (selectedLayerId && (e.key === "Delete" || e.key === "Backspace")) {
+        e.preventDefault();
+        handleDeleteLayer();
+      }
+      // Duplicate: Ctrl+D / Cmd+D
+      if (selectedLayerId && (e.ctrlKey || e.metaKey) && e.key === "d") {
+        e.preventDefault();
+        handleDuplicateLayer();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [
+    layoutEditMode,
+    canvasEditMode,
+    selectedLayerId,
+    handleUndo,
+    handleRedo,
+    handleDeleteLayer,
+    handleDuplicateLayer,
+  ]);
+
+  const selectedLayer =
+    currentProfile.layers?.find((l) => l.id === selectedLayerId) || null;
 
   return (
     <>
@@ -894,6 +1250,58 @@ export function NBCardPanel() {
             >
               Back
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Professional Editor Toolbar (when Layout Edit Mode is active) */}
+      {layoutEditMode && (
+        <div className="mb-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2">
+            <EditorToolbar
+              canUndo={canUndo(history)}
+              canRedo={canRedo(history)}
+              onUndo={handleUndo}
+              onRedo={handleRedo}
+              zoom={zoom}
+              onZoomIn={handleZoomIn}
+              onZoomOut={handleZoomOut}
+              onZoomFit={handleZoomFit}
+              gridEnabled={gridEnabled}
+              onToggleGrid={handleToggleGrid}
+              snapEnabled={snapEnabled}
+              onToggleSnap={handleToggleSnap}
+              selectedLayerId={selectedLayerId}
+              selectedLayer={selectedLayer}
+              onAddText={handleAddText}
+              onAddShape={handleAddShape}
+              onAddAvatar={handleAddAvatar}
+              onAddImage={handleAddImage}
+              onDuplicate={handleDuplicateLayer}
+              onDelete={handleDeleteLayer}
+              onToggleLock={handleToggleLayerLock}
+              onToggleVisibility={handleToggleLayerVisibility}
+              onBringForward={handleBringForward}
+              onSendBackward={handleSendBackward}
+              onAlign={handleAlign}
+              profile={currentProfile}
+              onProfileUpdate={(updatedProfile) => {
+                const updated = [...profiles];
+                updated[currentProfileIndex] = updatedProfile;
+                setProfiles(updated);
+                commitToHistory(updatedProfile);
+              }}
+            />
+          </div>
+          <div>
+            <LayersPanel
+              layers={currentProfile.layers || []}
+              selectedLayerId={selectedLayerId}
+              onSelectLayer={setSelectedLayerId}
+              onReorderLayers={handleReorderLayers}
+              onToggleLayerVisibility={handleToggleLayerVisibilityById}
+              onToggleLayerLock={handleToggleLayerLockById}
+            />
           </div>
         </div>
       )}
