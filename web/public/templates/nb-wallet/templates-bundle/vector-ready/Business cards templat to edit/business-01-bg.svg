@@ -1,8 +1,8 @@
-<svg preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="business-01-bg-title business-01-bg-desc">
+<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1600 1000" role="img" aria-labelledby="business-01-bg-title business-01-bg-desc">
   <title id="business-01-bg-title">Executive Charcoal — Business Profile Background</title>
   <desc id="business-01-bg-desc">Professional business template with charcoal gradient, briefcase motif, and executive presentation</desc>
   <defs>
-    <style><![CDATA[
+    <style>
       :root {
         --nb-font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
         --nb-text: #111827;
@@ -10,7 +10,7 @@
         --nb-accent: #a7770d;
       }
       .nb-field { font-family: var(--nb-font); fill: var(--nb-text); }
-    ]]></style>
+    </style>
     <linearGradient id="business-01-base" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#111827;stop-opacity:1" />
       <stop offset="50%" style="stop-color:#1F2937;stop-opacity:1" />
@@ -25,51 +25,51 @@
     </pattern>
   </defs>
   
-  <!-- Base gradient -->
+  
   <rect width="1600" height="1000" fill="url(#business-01-base)" />
   
-  <!-- Highlight blob -->
+  
   <ellipse cx="480" cy="300" rx="600" ry="500" fill="url(#business-01-highlight)" />
   
-  <!-- Edge frame -->
+  
   <rect x="40" y="40" width="1520" height="920" fill="none" stroke="#F59E0B" stroke-width="2" opacity="0.3" rx="32" />
   
-  <!-- Grid micro-pattern -->
+  
   <rect x="80" y="80" width="1440" height="840" fill="url(#business-01-grid)" opacity="0.6" />
   
-  <!-- Briefcase motif (top-left) -->
+  
   <g transform="translate(160, 120)" opacity="0.35">
     <rect x="0" y="15" width="50" height="35" rx="4" fill="none" stroke="#4F46E5" stroke-width="3" />
     <rect x="18" y="0" width="14" height="15" fill="none" stroke="#4F46E5" stroke-width="3" stroke-linejoin="round" />
     <line x1="0" y1="30" x2="50" y2="30" stroke="#4F46E5" stroke-width="2" opacity="0.6" />
   </g>
   
-  <!-- Monogram frame (bottom-right) -->
+  
   <g transform="translate(1360, 800)" opacity="0.35">
     <rect x="0" y="0" width="50" height="50" rx="8" fill="none" stroke="#F59E0B" stroke-width="3" />
     <circle cx="25" cy="25" r="15" fill="none" stroke="#F59E0B" stroke-width="2" />
   </g>
   
-  <!-- Corner wash for readability -->
+  
   <rect x="100" y="120" width="400" height="120" fill="#111827" opacity="0.4" rx="24" />
 <g id="nb_editable" data-nb-category="business" data-nb-version="1">
   <g id="nb_fields">
-    <rect id="box_companyName" x="128.00" y="120.00" width="880.00" height="80.00" fill="none" opacity="0" data-nb-box="companyName"/>
-    <text id="field_companyName" class="nb-field" x="128.00" y="175.00" font-size="55" font-weight="600" data-nb-field="companyName">Company Name</text>
-    <rect id="box_fullName" x="128.00" y="550.00" width="1120.00" height="80.00" fill="none" opacity="0" data-nb-box="fullName"/>
-    <text id="field_fullName" class="nb-field" x="128.00" y="620.00" font-size="70" font-weight="600" data-nb-field="fullName">Full Name</text>
-    <rect id="box_jobTitle" x="128.00" y="620.00" width="1120.00" height="60.00" fill="none" opacity="0" data-nb-box="jobTitle"/>
-    <text id="field_jobTitle" class="nb-field" x="128.00" y="665.00" font-size="45" font-weight="600" data-nb-field="jobTitle">Job Title</text>
-    <rect id="box_phone" x="128.00" y="720.00" width="1120.00" height="60.00" fill="none" opacity="0" data-nb-box="phone"/>
-    <text id="field_phone" class="nb-field" x="128.00" y="760.00" font-size="40" font-weight="600" data-nb-field="phone">+44 0000 000000</text>
-    <rect id="box_email" x="128.00" y="780.00" width="1120.00" height="60.00" fill="none" opacity="0" data-nb-box="email"/>
-    <text id="field_email" class="nb-field" x="128.00" y="820.00" font-size="40" font-weight="600" data-nb-field="email">name@example.com</text>
-    <rect id="box_website" x="128.00" y="840.00" width="1120.00" height="60.00" fill="none" opacity="0" data-nb-box="website"/>
-    <text id="field_website" class="nb-field" x="128.00" y="880.00" font-size="40" font-weight="600" data-nb-field="website">https://example.com</text>
+    <rect id="box_companyName" x="128.00" y="120.00" width="880.00" height="80.00" fill="none" opacity="0" data-nb-box="companyName" />
+    <text id="field_companyName" class="nb-field" x="128.00" y="175.00" font-size="55" font-weight="600" data-nb-field="companyName">​</text>
+    <rect id="box_fullName" x="128.00" y="550.00" width="1120.00" height="80.00" fill="none" opacity="0" data-nb-box="fullName" />
+    <text id="field_fullName" class="nb-field" x="128.00" y="620.00" font-size="70" font-weight="600" data-nb-field="fullName">​</text>
+    <rect id="box_jobTitle" x="128.00" y="620.00" width="1120.00" height="60.00" fill="none" opacity="0" data-nb-box="jobTitle" />
+    <text id="field_jobTitle" class="nb-field" x="128.00" y="665.00" font-size="45" font-weight="600" data-nb-field="jobTitle">​</text>
+    <rect id="box_phone" x="128.00" y="720.00" width="1120.00" height="60.00" fill="none" opacity="0" data-nb-box="phone" />
+    <text id="field_phone" class="nb-field" x="128.00" y="760.00" font-size="40" font-weight="600" data-nb-field="phone">​</text>
+    <rect id="box_email" x="128.00" y="780.00" width="1120.00" height="60.00" fill="none" opacity="0" data-nb-box="email" />
+    <text id="field_email" class="nb-field" x="128.00" y="820.00" font-size="40" font-weight="600" data-nb-field="email">​</text>
+    <rect id="box_website" x="128.00" y="840.00" width="1120.00" height="60.00" fill="none" opacity="0" data-nb-box="website" />
+    <text id="field_website" class="nb-field" x="128.00" y="880.00" font-size="40" font-weight="600" data-nb-field="website">​</text>
   </g>
   <g id="nb_slots">
-    <rect id="slot_logo" x="1280.00" y="100.00" width="224.00" height="140.00" rx="5.60" ry="5.60" fill="none" opacity="0" data-nb-slot="logo"/>
-    <rect id="slot_qr" x="1280.00" y="260.00" width="224.00" height="224.00" rx="12" ry="12" fill="none" opacity="0" data-nb-slot="qr"/>
+    <rect id="slot_logo" x="1280.00" y="100.00" width="224.00" height="140.00" rx="5.60" ry="5.60" fill="none" opacity="0" data-nb-slot="logo" />
+    <rect id="slot_qr" x="1280.00" y="260.00" width="224.00" height="224.00" rx="12" ry="12" fill="none" opacity="0" data-nb-slot="qr" />
   </g>
 </g>
 </svg>

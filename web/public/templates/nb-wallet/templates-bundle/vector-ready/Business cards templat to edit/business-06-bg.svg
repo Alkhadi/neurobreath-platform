@@ -1,8 +1,8 @@
-<svg preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="business-06-bg-title business-06-bg-desc">
+<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1600 1000" role="img" aria-labelledby="business-06-bg-title business-06-bg-desc">
   <title id="business-06-bg-title">Signature Gold — Business Background</title>
   <desc id="business-06-bg-desc">Professional business template with subtle gold accents and high-end layout</desc>
   <defs>
-    <style><![CDATA[
+    <style>
       :root {
         --nb-font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
         --nb-text: #111827;
@@ -10,7 +10,7 @@
         --nb-accent: #a7770d;
       }
       .nb-field { font-family: var(--nb-font); fill: var(--nb-text); }
-    ]]></style>
+    </style>
     <linearGradient id="business-06-base" x1="50%" y1="0%" x2="50%" y2="100%">
       <stop offset="0%" style="stop-color:#1F2937;stop-opacity:1" />
       <stop offset="50%" style="stop-color:#111827;stop-opacity:1" />
@@ -28,22 +28,22 @@
   <rect x="120" y="140" width="360" height="100" fill="#0F1419" opacity="0.6" rx="24" />
 <g id="nb_editable" data-nb-category="business" data-nb-version="1">
   <g id="nb_fields">
-    <rect id="box_companyName" x="128.00" y="120.00" width="880.00" height="80.00" fill="none" opacity="0" data-nb-box="companyName"/>
-    <text id="field_companyName" class="nb-field" x="128.00" y="175.00" font-size="55" font-weight="600" data-nb-field="companyName">Company Name</text>
-    <rect id="box_fullName" x="128.00" y="550.00" width="1120.00" height="80.00" fill="none" opacity="0" data-nb-box="fullName"/>
-    <text id="field_fullName" class="nb-field" x="128.00" y="620.00" font-size="70" font-weight="600" data-nb-field="fullName">Full Name</text>
-    <rect id="box_jobTitle" x="128.00" y="620.00" width="1120.00" height="60.00" fill="none" opacity="0" data-nb-box="jobTitle"/>
-    <text id="field_jobTitle" class="nb-field" x="128.00" y="665.00" font-size="45" font-weight="600" data-nb-field="jobTitle">Job Title</text>
-    <rect id="box_phone" x="128.00" y="720.00" width="1120.00" height="60.00" fill="none" opacity="0" data-nb-box="phone"/>
-    <text id="field_phone" class="nb-field" x="128.00" y="760.00" font-size="40" font-weight="600" data-nb-field="phone">+44 0000 000000</text>
-    <rect id="box_email" x="128.00" y="780.00" width="1120.00" height="60.00" fill="none" opacity="0" data-nb-box="email"/>
-    <text id="field_email" class="nb-field" x="128.00" y="820.00" font-size="40" font-weight="600" data-nb-field="email">name@example.com</text>
-    <rect id="box_website" x="128.00" y="840.00" width="1120.00" height="60.00" fill="none" opacity="0" data-nb-box="website"/>
-    <text id="field_website" class="nb-field" x="128.00" y="880.00" font-size="40" font-weight="600" data-nb-field="website">https://example.com</text>
+    <rect id="box_companyName" x="128.00" y="120.00" width="880.00" height="80.00" fill="none" opacity="0" data-nb-box="companyName" />
+    <text id="field_companyName" class="nb-field" x="128.00" y="175.00" font-size="55" font-weight="600" data-nb-field="companyName">​</text>
+    <rect id="box_fullName" x="128.00" y="550.00" width="1120.00" height="80.00" fill="none" opacity="0" data-nb-box="fullName" />
+    <text id="field_fullName" class="nb-field" x="128.00" y="620.00" font-size="70" font-weight="600" data-nb-field="fullName">​</text>
+    <rect id="box_jobTitle" x="128.00" y="620.00" width="1120.00" height="60.00" fill="none" opacity="0" data-nb-box="jobTitle" />
+    <text id="field_jobTitle" class="nb-field" x="128.00" y="665.00" font-size="45" font-weight="600" data-nb-field="jobTitle">​</text>
+    <rect id="box_phone" x="128.00" y="720.00" width="1120.00" height="60.00" fill="none" opacity="0" data-nb-box="phone" />
+    <text id="field_phone" class="nb-field" x="128.00" y="760.00" font-size="40" font-weight="600" data-nb-field="phone">​</text>
+    <rect id="box_email" x="128.00" y="780.00" width="1120.00" height="60.00" fill="none" opacity="0" data-nb-box="email" />
+    <text id="field_email" class="nb-field" x="128.00" y="820.00" font-size="40" font-weight="600" data-nb-field="email">​</text>
+    <rect id="box_website" x="128.00" y="840.00" width="1120.00" height="60.00" fill="none" opacity="0" data-nb-box="website" />
+    <text id="field_website" class="nb-field" x="128.00" y="880.00" font-size="40" font-weight="600" data-nb-field="website">​</text>
   </g>
   <g id="nb_slots">
-    <rect id="slot_logo" x="1280.00" y="100.00" width="224.00" height="140.00" rx="5.60" ry="5.60" fill="none" opacity="0" data-nb-slot="logo"/>
-    <rect id="slot_qr" x="1280.00" y="260.00" width="224.00" height="224.00" rx="12" ry="12" fill="none" opacity="0" data-nb-slot="qr"/>
+    <rect id="slot_logo" x="1280.00" y="100.00" width="224.00" height="140.00" rx="5.60" ry="5.60" fill="none" opacity="0" data-nb-slot="logo" />
+    <rect id="slot_qr" x="1280.00" y="260.00" width="224.00" height="224.00" rx="12" ry="12" fill="none" opacity="0" data-nb-slot="qr" />
   </g>
 </g>
 </svg>

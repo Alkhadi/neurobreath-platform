@@ -2,7 +2,7 @@
   <title id="business-01-back-title">Executive Charcoal — Business Card Back</title>
   
   <defs>
-    <style><![CDATA[
+    <style>
       :root {
         --nb-font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
         --nb-text: #111827;
@@ -10,7 +10,7 @@
         --nb-accent: #a7770d;
       }
       .nb-field { font-family: var(--nb-font); fill: var(--nb-text); }
-    ]]></style>
+    </style>
     <linearGradient id="business-01-back-base" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#111827;stop-opacity:1" />
       <stop offset="50%" style="stop-color:#1F2937;stop-opacity:1" />
@@ -21,73 +21,73 @@
     </pattern>
   </defs>
   
-  <!-- Base gradient -->
+  
   <rect width="1600" height="900" fill="url(#business-01-back-base)" />
   
-  <!-- Edge frame -->
+  
   <rect x="40" y="40" width="1520" height="820" fill="none" stroke="#F59E0B" stroke-width="2" opacity="0.3" rx="32" />
   
-  <!-- Grid micro-pattern -->
+  
   <rect x="80" y="80" width="1440" height="740" fill="url(#business-01-back-grid)" opacity="0.6" />
   
-  <!-- Monogram frame (top-right) -->
+  
   <g transform="translate(1440, 100)" opacity="0.35">
     <rect x="0" y="0" width="50" height="50" rx="8" fill="none" stroke="#F59E0B" stroke-width="3" />
     <circle cx="25" cy="25" r="15" fill="none" stroke="#F59E0B" stroke-width="2" />
   </g>
   
-  <!-- Central content area -->
+  
   <rect x="200" y="150" width="1200" height="600" fill="#111827" opacity="0.5" rx="32" />
   
-  <!-- Back side content - centered layout -->
+  
   <g id="nb-card-back-content">
-    <!-- Company tagline/slogan -->
-    <text id="nb-card-tagline" x="800" y="280" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="600" fill="#F59E0B" text-anchor="middle">Breathe Better, Live Better</text>
     
-    <!-- Services/specialties -->
-    <text id="nb-card-specialty" x="800" y="360" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#E5E7EB" text-anchor="middle">Digital Health • Mental Wellness • Breathing Science</text>
+    <text id="nb-card-tagline" x="800" y="280" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="600" fill="#F59E0B" text-anchor="middle">​</text>
     
-    <!-- Address block -->
+    
+    <text id="nb-card-specialty" x="800" y="360" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#E5E7EB" text-anchor="middle">​</text>
+    
+    
     <g id="nb-card-address-block">
-      <text id="nb-card-address-line1" x="800" y="480" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#9CA3AF" text-anchor="middle">123 Innovation Drive, Suite 400</text>
-      <text id="nb-card-address-line2" x="800" y="515" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#9CA3AF" text-anchor="middle">San Francisco, CA 94105</text>
-      <text id="nb-card-address-country" x="800" y="550" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#9CA3AF" text-anchor="middle">United States</text>
+      <text id="nb-card-address-line1" x="800" y="480" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#9CA3AF" text-anchor="middle">​</text>
+      <text id="nb-card-address-line2" x="800" y="515" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#9CA3AF" text-anchor="middle">​</text>
+      <text id="nb-card-address-country" x="800" y="550" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#9CA3AF" text-anchor="middle">​</text>
     </g>
     
-    <!-- Social media handles (back side specific) -->
+    
     <g id="nb-card-social-handles">
       <a id="nb-card-instagram-link" href="https://instagram.com/neurobreath" target="_blank" rel="noopener">
-        <text id="nb-card-instagram" x="500" y="650" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#60A5FA">@neurobreath</text>
+        <text id="nb-card-instagram" x="500" y="650" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#60A5FA">​</text>
       </a>
       <a id="nb-card-linkedin-link" href="https://linkedin.com/company/neurobreath" target="_blank" rel="noopener">
-        <text id="nb-card-linkedin" x="800" y="650" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#60A5FA" text-anchor="middle">LinkedIn: /neurobreath</text>
+        <text id="nb-card-linkedin" x="800" y="650" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#60A5FA" text-anchor="middle">​</text>
       </a>
       <a id="nb-card-twitter-link" href="https://twitter.com/neurobreath" target="_blank" rel="noopener">
-        <text id="nb-card-twitter" x="1100" y="650" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#60A5FA" text-anchor="end">@neurobreath</text>
+        <text id="nb-card-twitter" x="1100" y="650" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#60A5FA" text-anchor="end">​</text>
       </a>
     </g>
   </g>
   
-  <!-- Company logo (large, centered) -->
+  
   <image id="nb-card-logo-large" x="650" y="100" width="300" height="100" preserveAspectRatio="xMidYMid meet" href="" />
 <g id="nb_editable" data-nb-category="business" data-nb-version="1">
   <g id="nb_fields">
-    <rect id="box_companyName" x="128.00" y="108.00" width="880.00" height="72.00" fill="none" opacity="0" data-nb-box="companyName"/>
-    <text id="field_companyName" class="nb-field" x="128.00" y="158.00" font-size="50" font-weight="600" data-nb-field="companyName">Company Name</text>
-    <rect id="box_fullName" x="128.00" y="495.00" width="1120.00" height="72.00" fill="none" opacity="0" data-nb-box="fullName"/>
-    <text id="field_fullName" class="nb-field" x="128.00" y="558.00" font-size="63" font-weight="600" data-nb-field="fullName">Full Name</text>
-    <rect id="box_jobTitle" x="128.00" y="558.00" width="1120.00" height="54.00" fill="none" opacity="0" data-nb-box="jobTitle"/>
-    <text id="field_jobTitle" class="nb-field" x="128.00" y="598.00" font-size="40" font-weight="600" data-nb-field="jobTitle">Job Title</text>
-    <rect id="box_phone" x="128.00" y="648.00" width="1120.00" height="54.00" fill="none" opacity="0" data-nb-box="phone"/>
-    <text id="field_phone" class="nb-field" x="128.00" y="684.00" font-size="36" font-weight="600" data-nb-field="phone">+44 0000 000000</text>
-    <rect id="box_email" x="128.00" y="702.00" width="1120.00" height="54.00" fill="none" opacity="0" data-nb-box="email"/>
-    <text id="field_email" class="nb-field" x="128.00" y="738.00" font-size="36" font-weight="600" data-nb-field="email">name@example.com</text>
-    <rect id="box_website" x="128.00" y="756.00" width="1120.00" height="54.00" fill="none" opacity="0" data-nb-box="website"/>
-    <text id="field_website" class="nb-field" x="128.00" y="792.00" font-size="36" font-weight="600" data-nb-field="website">https://example.com</text>
+    <rect id="box_companyName" x="128.00" y="108.00" width="880.00" height="72.00" fill="none" opacity="0" data-nb-box="companyName" />
+    <text id="field_companyName" class="nb-field" x="128.00" y="158.00" font-size="50" font-weight="600" data-nb-field="companyName">​</text>
+    <rect id="box_fullName" x="128.00" y="495.00" width="1120.00" height="72.00" fill="none" opacity="0" data-nb-box="fullName" />
+    <text id="field_fullName" class="nb-field" x="128.00" y="558.00" font-size="63" font-weight="600" data-nb-field="fullName">​</text>
+    <rect id="box_jobTitle" x="128.00" y="558.00" width="1120.00" height="54.00" fill="none" opacity="0" data-nb-box="jobTitle" />
+    <text id="field_jobTitle" class="nb-field" x="128.00" y="598.00" font-size="40" font-weight="600" data-nb-field="jobTitle">​</text>
+    <rect id="box_phone" x="128.00" y="648.00" width="1120.00" height="54.00" fill="none" opacity="0" data-nb-box="phone" />
+    <text id="field_phone" class="nb-field" x="128.00" y="684.00" font-size="36" font-weight="600" data-nb-field="phone">​</text>
+    <rect id="box_email" x="128.00" y="702.00" width="1120.00" height="54.00" fill="none" opacity="0" data-nb-box="email" />
+    <text id="field_email" class="nb-field" x="128.00" y="738.00" font-size="36" font-weight="600" data-nb-field="email">​</text>
+    <rect id="box_website" x="128.00" y="756.00" width="1120.00" height="54.00" fill="none" opacity="0" data-nb-box="website" />
+    <text id="field_website" class="nb-field" x="128.00" y="792.00" font-size="36" font-weight="600" data-nb-field="website">​</text>
   </g>
   <g id="nb_slots">
-    <rect id="slot_logo" x="1280.00" y="90.00" width="224.00" height="126.00" rx="5.04" ry="5.04" fill="none" opacity="0" data-nb-slot="logo"/>
-    <rect id="slot_qr" x="140.00" y="650.00" width="150.00" height="150.00" rx="8" ry="8" fill="none" opacity="0" data-nb-slot="qr"/>
+    <rect id="slot_logo" x="1280.00" y="90.00" width="224.00" height="126.00" rx="5.04" ry="5.04" fill="none" opacity="0" data-nb-slot="logo" />
+    <rect id="slot_qr" x="140.00" y="650.00" width="150.00" height="150.00" rx="8" ry="8" fill="none" opacity="0" data-nb-slot="qr" />
   </g>
 </g>
 </svg>

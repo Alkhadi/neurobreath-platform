@@ -2,89 +2,89 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
   <defs>
     <linearGradient id="abd-blue" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1e40af"/>
-      <stop offset="50%" stop-color="#3b82f6"/>
-      <stop offset="100%" stop-color="#2563eb"/>
+      <stop offset="0%" stop-color="#1e40af" />
+      <stop offset="50%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#2563eb" />
     </linearGradient>
     <linearGradient id="abd-cyan" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.3"/>
-      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0" />
     </linearGradient>
   </defs>
 
-  <!-- Blue base -->
-  <rect width="1600" height="900" fill="url(#abd-blue)"/>
+  
+  <rect width="1600" height="900" fill="url(#abd-blue)" />
 
-  <!-- Cyan accent wash -->
-  <rect x="0" y="0" width="1600" height="900" fill="url(#abd-cyan)"/>
+  
+  <rect x="0" y="0" width="1600" height="900" fill="url(#abd-cyan)" />
 
-  <!-- Diagonal white content zone -->
-  <path d="M 300 0 L 1600 0 L 1600 900 L 700 900 Z" fill="rgba(255,255,255,0.92)"/>
+  
+  <path d="M 300 0 L 1600 0 L 1600 900 L 700 900 Z" fill="rgba(255,255,255,0.92)" />
 
-  <!-- Shadow edge for white zone -->
-  <path d="M 300 0 L 700 900" stroke="rgba(0,0,0,0.08)" stroke-width="2"/>
+  
+  <path d="M 300 0 L 700 900" stroke="rgba(0,0,0,0.08)" stroke-width="2" />
 
-  <!-- Vertical stripes on blue side -->
-  <rect x="50" y="0" width="2" height="900" fill="rgba(255,255,255,0.1)"/>
-  <rect x="150" y="0" width="1" height="900" fill="rgba(255,255,255,0.08)"/>
-  <rect x="220" y="0" width="2" height="900" fill="rgba(255,255,255,0.1)"/>
+  
+  <rect x="50" y="0" width="2" height="900" fill="rgba(255,255,255,0.1)" />
+  <rect x="150" y="0" width="1" height="900" fill="rgba(255,255,255,0.08)" />
+  <rect x="220" y="0" width="2" height="900" fill="rgba(255,255,255,0.1)" />
 
-  <!-- Corner brackets on white zone -->
-  <path d="M 350 50 L 350 120 M 350 50 L 420 50" stroke="rgba(30,41,59,0.3)" stroke-width="2"/>
-  <path d="M 1550 50 L 1480 50 M 1550 50 L 1550 120" stroke="rgba(30,41,59,0.3)" stroke-width="2"/>
-  <path d="M 750 850 L 750 780 M 750 850 L 820 850" stroke="rgba(30,41,59,0.3)" stroke-width="2"/>
-  <path d="M 1550 850 L 1480 850 M 1550 850 L 1550 780" stroke="rgba(30,41,59,0.3)" stroke-width="2"/>
+  
+  <path d="M 350 50 L 350 120 M 350 50 L 420 50" stroke="rgba(30,41,59,0.3)" stroke-width="2" />
+  <path d="M 1550 50 L 1480 50 M 1550 50 L 1550 120" stroke="rgba(30,41,59,0.3)" stroke-width="2" />
+  <path d="M 750 850 L 750 780 M 750 850 L 820 850" stroke="rgba(30,41,59,0.3)" stroke-width="2" />
+  <path d="M 1550 850 L 1480 850 M 1550 850 L 1550 780" stroke="rgba(30,41,59,0.3)" stroke-width="2" />
 
-  <!-- Content panel outline on white zone -->
-  <rect x="380" y="180" width="1100" height="540" rx="12" fill="none" stroke="rgba(30,41,59,0.08)" stroke-width="1" stroke-dasharray="8 4"/>
+  
+  <rect x="380" y="180" width="1100" height="540" rx="12" fill="none" stroke="rgba(30,41,59,0.08)" stroke-width="1" stroke-dasharray="8 4" />
 
-  <!-- Geometric accents on blue side -->
-  <circle cx="150" cy="200" r="6" fill="rgba(255,255,255,0.3)"/>
-  <circle cx="180" cy="240" r="4" fill="rgba(255,255,255,0.25)"/>
-  <circle cx="120" cy="260" r="5" fill="rgba(255,255,255,0.28)"/>
+  
+  <circle cx="150" cy="200" r="6" fill="rgba(255,255,255,0.3)" />
+  <circle cx="180" cy="240" r="4" fill="rgba(255,255,255,0.25)" />
+  <circle cx="120" cy="260" r="5" fill="rgba(255,255,255,0.28)" />
 
-  <circle cx="150" cy="700" r="6" fill="rgba(255,255,255,0.3)"/>
-  <circle cx="180" cy="660" r="4" fill="rgba(255,255,255,0.25)"/>
-  <circle cx="120" cy="640" r="5" fill="rgba(255,255,255,0.28)"/>
+  <circle cx="150" cy="700" r="6" fill="rgba(255,255,255,0.3)" />
+  <circle cx="180" cy="660" r="4" fill="rgba(255,255,255,0.25)" />
+  <circle cx="120" cy="640" r="5" fill="rgba(255,255,255,0.28)" />
 
-  <!-- Dots on white zone -->
-  <circle cx="1400" cy="150" r="3" fill="rgba(30,41,59,0.15)"/>
-  <circle cx="1420" cy="170" r="2" fill="rgba(30,41,59,0.12)"/>
-  <circle cx="1440" cy="150" r="2.5" fill="rgba(30,41,59,0.13)"/>
+  
+  <circle cx="1400" cy="150" r="3" fill="rgba(30,41,59,0.15)" />
+  <circle cx="1420" cy="170" r="2" fill="rgba(30,41,59,0.12)" />
+  <circle cx="1440" cy="150" r="2.5" fill="rgba(30,41,59,0.13)" />
 
-  <!-- Bottom accent line -->
-  <line x1="380" y1="780" x2="780" y2="780" stroke="rgba(30,41,59,0.15)" stroke-width="2"/>
+  
+  <line x1="380" y1="780" x2="780" y2="780" stroke="rgba(30,41,59,0.15)" stroke-width="2" />
   <g id="nb_editable" aria-label="Editable overlay">
-    <rect id="box_fullName" x="140" y="150" width="820" height="80" opacity="0" fill="none"/>
-    <text id="field_fullName" x="140" y="210" font-size="62" font-weight="900" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" fill="var(--nb-text,#0B1220)" text-anchor="start">Full Name</text>
-    <rect id="box_jobTitle" x="140" y="236" width="820" height="46" opacity="0" fill="none"/>
-    <text id="field_jobTitle" x="140" y="270" font-size="34" font-weight="650" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" fill="var(--nb-text,#0B1220)" text-anchor="start">Job Title</text>
-    <rect id="box_phone" x="140" y="352" width="720" height="44" opacity="0" fill="none"/>
-    <text id="field_phone" x="140" y="388" font-size="32" font-weight="700" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" fill="var(--nb-text,#0B1220)" text-anchor="start">+44 00 0000 0000</text>
-    <rect id="box_email" x="140" y="412" width="720" height="44" opacity="0" fill="none"/>
-    <text id="field_email" x="140" y="448" font-size="32" font-weight="700" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" fill="var(--nb-text,#0B1220)" text-anchor="start">name@email.com</text>
-    <rect id="box_website" x="140" y="472" width="720" height="44" opacity="0" fill="none"/>
-    <text id="field_website" x="140" y="508" font-size="32" font-weight="700" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" fill="var(--nb-text,#0B1220)" text-anchor="start">www.example.com</text>
-    <rect id="box_addressLine1" x="140" y="556" width="760" height="38" opacity="0" fill="none"/>
-    <text id="field_addressLine1" x="140" y="590" font-size="28" font-weight="650" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" fill="var(--nb-text,#0B1220)" text-anchor="start">Address line 1</text>
-    <rect id="box_addressLine2" x="140" y="600" width="760" height="38" opacity="0" fill="none"/>
-    <text id="field_addressLine2" x="140" y="634" font-size="28" font-weight="650" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" fill="var(--nb-text,#0B1220)" text-anchor="start">City, Postcode</text>
-    <rect id="box_profilePhoto" x="1180" y="110" width="300" height="300" rx="34" opacity="0" fill="none"/>
-    <clipPath id="clip_profilePhoto"><rect x="1180" y="110" width="300" height="300" rx="34"/></clipPath>
-    <image id="slot_profilePhoto" href="" x="1180" y="110" width="300" height="300" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip_profilePhoto)"/>
-    <rect x="1180" y="110" width="300" height="300" rx="34" fill="none" stroke="rgba(148,163,184,0.55)" stroke-dasharray="10 10"/>
-    <rect id="box_qr" x="1180" y="430" width="300" height="300" rx="26" opacity="0" fill="none"/>
-    <clipPath id="clip_qr"><rect x="1180" y="430" width="300" height="300" rx="26"/></clipPath>
-    <image id="slot_qr" href="" x="1180" y="430" width="300" height="300" preserveAspectRatio="xMidYMid meet" clip-path="url(#clip_qr)"/>
-    <rect x="1180" y="430" width="300" height="300" rx="26" fill="none" stroke="rgba(148,163,184,0.55)" stroke-dasharray="10 10"/>
-    <rect id="box_barcode" x="140" y="690" width="820" height="90" rx="16" opacity="0" fill="none"/>
-    <clipPath id="clip_barcode"><rect x="140" y="690" width="820" height="90" rx="16"/></clipPath>
-    <image id="slot_barcode" href="" x="140" y="690" width="820" height="90" preserveAspectRatio="xMidYMid meet" clip-path="url(#clip_barcode)"/>
-    <rect x="140" y="690" width="820" height="90" rx="16" fill="none" stroke="rgba(148,163,184,0.55)" stroke-dasharray="10 10"/>
-    <rect id="box_logo" x="140" y="80" width="220" height="90" rx="18" opacity="0" fill="none"/>
-    <clipPath id="clip_logo"><rect x="140" y="80" width="220" height="90" rx="18"/></clipPath>
-    <image id="slot_logo" href="" x="140" y="80" width="220" height="90" preserveAspectRatio="xMidYMid meet" clip-path="url(#clip_logo)"/>
-    <rect x="140" y="80" width="220" height="90" rx="18" fill="none" stroke="rgba(148,163,184,0.55)" stroke-dasharray="10 10"/>
+    <rect id="box_fullName" x="140" y="150" width="820" height="80" opacity="0" fill="none" />
+    <text id="field_fullName" x="140" y="210" font-size="62" font-weight="900" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" fill="var(--nb-text,#0B1220)" text-anchor="start">​</text>
+    <rect id="box_jobTitle" x="140" y="236" width="820" height="46" opacity="0" fill="none" />
+    <text id="field_jobTitle" x="140" y="270" font-size="34" font-weight="650" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" fill="var(--nb-text,#0B1220)" text-anchor="start">​</text>
+    <rect id="box_phone" x="140" y="352" width="720" height="44" opacity="0" fill="none" />
+    <text id="field_phone" x="140" y="388" font-size="32" font-weight="700" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" fill="var(--nb-text,#0B1220)" text-anchor="start">​</text>
+    <rect id="box_email" x="140" y="412" width="720" height="44" opacity="0" fill="none" />
+    <text id="field_email" x="140" y="448" font-size="32" font-weight="700" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" fill="var(--nb-text,#0B1220)" text-anchor="start">​</text>
+    <rect id="box_website" x="140" y="472" width="720" height="44" opacity="0" fill="none" />
+    <text id="field_website" x="140" y="508" font-size="32" font-weight="700" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" fill="var(--nb-text,#0B1220)" text-anchor="start">​</text>
+    <rect id="box_addressLine1" x="140" y="556" width="760" height="38" opacity="0" fill="none" />
+    <text id="field_addressLine1" x="140" y="590" font-size="28" font-weight="650" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" fill="var(--nb-text,#0B1220)" text-anchor="start">​</text>
+    <rect id="box_addressLine2" x="140" y="600" width="760" height="38" opacity="0" fill="none" />
+    <text id="field_addressLine2" x="140" y="634" font-size="28" font-weight="650" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" fill="var(--nb-text,#0B1220)" text-anchor="start">​</text>
+    <rect id="box_profilePhoto" x="1180" y="110" width="300" height="300" rx="34" opacity="0" fill="none" />
+    <clipPath id="clip_profilePhoto"><rect x="1180" y="110" width="300" height="300" rx="34" /></clipPath>
+    <image id="slot_profilePhoto" href="" x="1180" y="110" width="300" height="300" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip_profilePhoto)" />
+    <rect x="1180" y="110" width="300" height="300" rx="34" fill="none" stroke="rgba(148,163,184,0.55)" stroke-dasharray="10 10" />
+    <rect id="box_qr" x="1180" y="430" width="300" height="300" rx="26" opacity="0" fill="none" />
+    <clipPath id="clip_qr"><rect x="1180" y="430" width="300" height="300" rx="26" /></clipPath>
+    <image id="slot_qr" href="" x="1180" y="430" width="300" height="300" preserveAspectRatio="xMidYMid meet" clip-path="url(#clip_qr)" />
+    <rect x="1180" y="430" width="300" height="300" rx="26" fill="none" stroke="rgba(148,163,184,0.55)" stroke-dasharray="10 10" />
+    <rect id="box_barcode" x="140" y="690" width="820" height="90" rx="16" opacity="0" fill="none" />
+    <clipPath id="clip_barcode"><rect x="140" y="690" width="820" height="90" rx="16" /></clipPath>
+    <image id="slot_barcode" href="" x="140" y="690" width="820" height="90" preserveAspectRatio="xMidYMid meet" clip-path="url(#clip_barcode)" />
+    <rect x="140" y="690" width="820" height="90" rx="16" fill="none" stroke="rgba(148,163,184,0.55)" stroke-dasharray="10 10" />
+    <rect id="box_logo" x="140" y="80" width="220" height="90" rx="18" opacity="0" fill="none" />
+    <clipPath id="clip_logo"><rect x="140" y="80" width="220" height="90" rx="18" /></clipPath>
+    <image id="slot_logo" href="" x="140" y="80" width="220" height="90" preserveAspectRatio="xMidYMid meet" clip-path="url(#clip_logo)" />
+    <rect x="140" y="80" width="220" height="90" rx="18" fill="none" stroke="rgba(148,163,184,0.55)" stroke-dasharray="10 10" />
   </g>
 
 </svg>
