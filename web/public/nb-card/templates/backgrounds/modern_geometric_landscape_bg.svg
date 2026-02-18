@@ -2,68 +2,68 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
   <defs>
     <linearGradient id="mg-l-navy" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0f172a"/>
-      <stop offset="100%" stop-color="#1e293b"/>
+      <stop offset="0%" stop-color="#0C152A" />
+      <stop offset="100%" stop-color="#1B273A" />
     </linearGradient>
     <linearGradient id="mg-l-blue" x1="0" y1="0" x2="0.6" y2="1">
-      <stop offset="0%" stop-color="#2563eb"/>
-      <stop offset="100%" stop-color="#0ea5e9"/>
+      <stop offset="0%" stop-color="#2164F7" />
+      <stop offset="100%" stop-color="#00A4EE" />
     </linearGradient>
     <linearGradient id="mg-l-amber" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#f59e0b"/>
-      <stop offset="100%" stop-color="#f97316"/>
+      <stop offset="0%" stop-color="#FFA308" />
+      <stop offset="100%" stop-color="#FF7618" />
     </linearGradient>
     <clipPath id="mg-l-clip">
-      <rect x="0" y="0" width="1600" height="900" rx="0"/>
+      <rect x="0" y="0" width="1600" height="900" rx="0" />
     </clipPath>
-  </defs>
+  <clipPath id="nb-premium-modern-geometric-landscape-bg-clip"><rect x="0.0" y="0.0" width="1600.0" height="900.0" rx="36.0" ry="36.0" /></clipPath><filter id="nb-premium-modern-geometric-landscape-bg-bevel" x="-2%" y="-2%" width="104%" height="104%" color-interpolation-filters="sRGB"><feDropShadow dx="-1" dy="-1" stdDeviation="1.5" flood-color="#FFFFFF" flood-opacity="0.12" result="highlight" /><feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.10" result="shadow" /><feMerge><feMergeNode in="shadow" /><feMergeNode in="highlight" /><feMergeNode in="SourceGraphic" /></feMerge></filter></defs>
 
-  <!-- White base -->
-  <rect width="1600" height="900" fill="#ffffff"/>
+  
+  <g clip-path="url(#nb-premium-modern-geometric-landscape-bg-clip)" filter="url(#nb-premium-modern-geometric-landscape-bg-bevel)"><rect width="1600" height="900" fill="#ffffff" />
 
   <g clip-path="url(#mg-l-clip)">
-    <!-- Top-left navy diagonal block -->
-    <polygon points="0,0 580,0 280,450 0,450" fill="url(#mg-l-navy)"/>
-    <!-- Secondary dark layer for depth -->
-    <polygon points="0,0 520,0 240,420 0,420" fill="#0f172a" opacity="0.7"/>
-    <!-- Thin dark stripe accent -->
-    <polygon points="500,0 560,0 260,440 200,440" fill="#1e293b" opacity="0.4"/>
+    
+    <polygon points="0,0 580,0 280,450 0,450" fill="url(#mg-l-navy)" />
+    
+    <polygon points="0,0 520,0 240,420 0,420" fill="#0C152A" opacity="0.7" />
+    
+    <polygon points="500,0 560,0 260,440 200,440" fill="#1B273A" opacity="0.4" />
 
-    <!-- Bottom-right navy diagonal block -->
-    <polygon points="1600,900 1020,900 1320,450 1600,450" fill="url(#mg-l-navy)"/>
-    <!-- Secondary dark layer -->
-    <polygon points="1600,900 1080,900 1360,480 1600,480" fill="#0f172a" opacity="0.7"/>
+    
+    <polygon points="1600,900 1020,900 1320,450 1600,450" fill="url(#mg-l-navy)" />
+    
+    <polygon points="1600,900 1080,900 1360,480 1600,480" fill="#0C152A" opacity="0.7" />
 
-    <!-- Blue rotated rectangle (diamond accent) on right -->
+    
     <g transform="translate(1200, 200) rotate(45)">
-      <rect x="0" y="0" width="220" height="220" rx="8" fill="url(#mg-l-blue)"/>
-      <rect x="12" y="12" width="196" height="196" rx="4" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+      <rect x="0" y="0" width="220" height="220" rx="8" fill="url(#mg-l-blue)" />
+      <rect x="12" y="12" width="196" height="196" rx="4" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" />
     </g>
 
-    <!-- Orange/amber accent line - diagonal -->
-    <line x1="520" y1="0" x2="220" y2="480" stroke="url(#mg-l-amber)" stroke-width="3" opacity="0.85"/>
-    <line x1="1080" y1="900" x2="1380" y2="420" stroke="url(#mg-l-amber)" stroke-width="3" opacity="0.85"/>
+    
+    <line x1="520" y1="0" x2="220" y2="480" stroke="url(#mg-l-amber)" stroke-width="3" opacity="0.85" />
+    <line x1="1080" y1="900" x2="1380" y2="420" stroke="url(#mg-l-amber)" stroke-width="3" opacity="0.85" />
 
-    <!-- Orange accent border line (right side of white area) -->
-    <polyline points="1080,120 1080,380 1340,380" fill="none" stroke="#f59e0b" stroke-width="2" opacity="0.6"/>
+    
+    <polyline points="1080,120 1080,380 1340,380" fill="none" stroke="#FFA308" stroke-width="2" opacity="0.6" />
 
-    <!-- Subtle grid lines on white area -->
-    <line x1="400" y1="100" x2="400" y2="800" stroke="#e2e8f0" stroke-width="0.5" opacity="0.5"/>
-    <line x1="300" y1="500" x2="1050" y2="500" stroke="#e2e8f0" stroke-width="0.5" opacity="0.5"/>
+    
+    <line x1="400" y1="100" x2="400" y2="800" stroke="#EAEFF5" stroke-width="0.5" opacity="0.5" />
+    <line x1="300" y1="500" x2="1050" y2="500" stroke="#EAEFF5" stroke-width="0.5" opacity="0.5" />
 
-    <!-- Content guide - text surface area (invisible, just defines space) -->
-    <rect x="80" y="480" width="500" height="350" rx="8" fill="none" stroke="rgba(30,41,59,0.04)" stroke-width="1"/>
+    
+    <rect x="80" y="480" width="500" height="350" rx="8" fill="none" stroke="rgba(27,39,58,0.04)" stroke-width="1" />
 
-    <!-- Small decorative dots -->
-    <circle cx="1050" cy="650" r="3" fill="#2563eb" opacity="0.25"/>
-    <circle cx="1070" cy="670" r="2" fill="#0ea5e9" opacity="0.2"/>
-    <circle cx="1040" cy="680" r="2.5" fill="#f59e0b" opacity="0.2"/>
+    
+    <circle cx="1050" cy="650" r="3" fill="#2164F7" opacity="0.25" />
+    <circle cx="1070" cy="670" r="2" fill="#00A4EE" opacity="0.2" />
+    <circle cx="1040" cy="680" r="2.5" fill="#FFA308" opacity="0.2" />
 
-    <!-- QR zone hint (bottom right on white area) -->
-    <rect x="1060" y="540" width="160" height="160" rx="8" fill="rgba(241,245,249,0.6)" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+    
+    <rect x="1060" y="540" width="160" height="160" rx="8" fill="rgba(241,245,249,0.6)" stroke="#EAEFF5" stroke-width="1" stroke-dasharray="4 3" />
 
-    <!-- Thin blue accent on bottom -->
-    <rect x="300" y="860" width="300" height="3" rx="1.5" fill="#2563eb" opacity="0.15"/>
-    <rect x="300" y="868" width="200" height="2" rx="1" fill="#0ea5e9" opacity="0.1"/>
+    
+    <rect x="300" y="860" width="300" height="3" rx="1.5" fill="#2164F7" opacity="0.15" />
+    <rect x="300" y="868" width="200" height="2" rx="1" fill="#00A4EE" opacity="0.1" />
   </g>
-</svg>
+</g></svg>

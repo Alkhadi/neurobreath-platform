@@ -3,62 +3,62 @@
   
   <defs>
     <linearGradient id="business-01-back-base" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#111827;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#1F2937;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#111827;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#0F1627;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1C2736;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0F1627;stop-opacity:1" />
     </linearGradient>
     <pattern id="business-01-back-grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-      <circle cx="20" cy="20" r="1.5" fill="#F59E0B" opacity="0.15" />
+      <circle cx="20" cy="20" r="1.5" fill="#FFA308" opacity="0.15" />
     </pattern>
-  </defs>
+  <clipPath id="nb-premium-business-01-back-clip"><rect x="0.0" y="0.0" width="1600.0" height="900.0" rx="36.0" ry="36.0" /></clipPath><filter id="nb-premium-business-01-back-bevel" x="-2%" y="-2%" width="104%" height="104%" color-interpolation-filters="sRGB"><feDropShadow dx="-1" dy="-1" stdDeviation="1.5" flood-color="#FFFFFF" flood-opacity="0.12" result="highlight" /><feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.10" result="shadow" /><feMerge><feMergeNode in="shadow" /><feMergeNode in="highlight" /><feMergeNode in="SourceGraphic" /></feMerge></filter></defs>
   
-  <!-- Base gradient -->
-  <rect width="1600" height="900" fill="url(#business-01-back-base)" />
   
-  <!-- Edge frame -->
-  <rect x="40" y="40" width="1520" height="820" fill="none" stroke="#F59E0B" stroke-width="2" opacity="0.3" rx="32" />
+  <g clip-path="url(#nb-premium-business-01-back-clip)" filter="url(#nb-premium-business-01-back-bevel)"><rect width="1600" height="900" fill="url(#business-01-back-base)" />
   
-  <!-- Grid micro-pattern -->
+  
+  <rect x="40" y="40" width="1520" height="820" fill="none" stroke="#FFA308" stroke-width="2" opacity="0.3" rx="32" />
+  
+  
   <rect x="80" y="80" width="1440" height="740" fill="url(#business-01-back-grid)" opacity="0.6" />
   
-  <!-- Monogram frame (top-right) -->
+  
   <g transform="translate(1440, 100)" opacity="0.35">
-    <rect x="0" y="0" width="50" height="50" rx="8" fill="none" stroke="#F59E0B" stroke-width="3" />
-    <circle cx="25" cy="25" r="15" fill="none" stroke="#F59E0B" stroke-width="2" />
+    <rect x="0" y="0" width="50" height="50" rx="8" fill="none" stroke="#FFA308" stroke-width="3" />
+    <circle cx="25" cy="25" r="15" fill="none" stroke="#FFA308" stroke-width="2" />
   </g>
   
-  <!-- Central content area -->
-  <rect x="200" y="150" width="1200" height="600" fill="#111827" opacity="0.5" rx="32" />
   
-  <!-- Back side content - centered layout -->
+  <rect x="200" y="150" width="1200" height="600" fill="#0F1627" opacity="0.5" rx="32" />
+  
+  
   <g id="nb-card-back-content">
-    <!-- Company tagline/slogan -->
-    <text id="nb-card-tagline" x="800" y="280" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="600" fill="#F59E0B" text-anchor="middle">Breathe Better, Live Better</text>
     
-    <!-- Services/specialties -->
-    <text id="nb-card-specialty" x="800" y="360" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#E5E7EB" text-anchor="middle">Digital Health • Mental Wellness • Breathing Science</text>
+    <text id="nb-card-tagline" x="800" y="280" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="600" fill="#FFA308" text-anchor="middle">​</text>
     
-    <!-- Address block -->
+    
+    <text id="nb-card-specialty" x="800" y="360" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#ECEEF1" text-anchor="middle">​</text>
+    
+    
     <g id="nb-card-address-block">
-      <text id="nb-card-address-line1" x="800" y="480" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#9CA3AF" text-anchor="middle">123 Innovation Drive, Suite 400</text>
-      <text id="nb-card-address-line2" x="800" y="515" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#9CA3AF" text-anchor="middle">San Francisco, CA 94105</text>
-      <text id="nb-card-address-country" x="800" y="550" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#9CA3AF" text-anchor="middle">United States</text>
+      <text id="nb-card-address-line1" x="800" y="480" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#A0A7B4" text-anchor="middle">​</text>
+      <text id="nb-card-address-line2" x="800" y="515" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#A0A7B4" text-anchor="middle">​</text>
+      <text id="nb-card-address-country" x="800" y="550" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#A0A7B4" text-anchor="middle">​</text>
     </g>
     
-    <!-- Social media handles (back side specific) -->
+    
     <g id="nb-card-social-handles">
       <a id="nb-card-instagram-link" href="https://instagram.com/neurobreath" target="_blank" rel="noopener">
-        <text id="nb-card-instagram" x="500" y="650" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#60A5FA">@neurobreath</text>
+        <text id="nb-card-instagram" x="500" y="650" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#65AAFF">​</text>
       </a>
       <a id="nb-card-linkedin-link" href="https://linkedin.com/company/neurobreath" target="_blank" rel="noopener">
-        <text id="nb-card-linkedin" x="800" y="650" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#60A5FA" text-anchor="middle">LinkedIn: /neurobreath</text>
+        <text id="nb-card-linkedin" x="800" y="650" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#65AAFF" text-anchor="middle">​</text>
       </a>
       <a id="nb-card-twitter-link" href="https://twitter.com/neurobreath" target="_blank" rel="noopener">
-        <text id="nb-card-twitter" x="1100" y="650" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#60A5FA" text-anchor="end">@neurobreath</text>
+        <text id="nb-card-twitter" x="1100" y="650" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#65AAFF" text-anchor="end">​</text>
       </a>
     </g>
   </g>
   
-  <!-- Company logo (large, centered) -->
+  
   <image id="nb-card-logo-large" x="650" y="100" width="300" height="100" preserveAspectRatio="xMidYMid meet" href="" />
-</svg>
+</g></svg>

@@ -3,18 +3,18 @@
   <desc id="business-06-bg-desc">Professional business template with subtle gold accents and high-end layout</desc>
   <defs>
     <linearGradient id="business-06-base" x1="50%" y1="0%" x2="50%" y2="100%">
-      <stop offset="0%" style="stop-color:#1F2937;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#111827;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#0F1419;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#1C2736;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#0F1627;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0D1318;stop-opacity:1" />
     </linearGradient>
     <radialGradient id="business-06-glow" cx="50%" cy="30%" r="50%">
-      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:0.1" />
-      <stop offset="100%" style="stop-color:#111827;stop-opacity:0" />
+      <stop offset="0%" style="stop-color:#FFA308;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#0F1627;stop-opacity:0" />
     </radialGradient>
-  </defs>
-  <rect width="1600" height="1000" fill="url(#business-06-base)" />
+  <clipPath id="nb-premium-business-06-bg-clip"><rect x="0.0" y="0.0" width="1600.0" height="1000.0" rx="40.0" ry="40.0" /></clipPath><filter id="nb-premium-business-06-bg-bevel" x="-2%" y="-2%" width="104%" height="104%" color-interpolation-filters="sRGB"><feDropShadow dx="-1" dy="-1" stdDeviation="1.5" flood-color="#FFFFFF" flood-opacity="0.12" result="highlight" /><feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.10" result="shadow" /><feMerge><feMergeNode in="shadow" /><feMergeNode in="highlight" /><feMergeNode in="SourceGraphic" /></feMerge></filter></defs>
+  <g clip-path="url(#nb-premium-business-06-bg-clip)" filter="url(#nb-premium-business-06-bg-bevel)"><rect width="1600" height="1000" fill="url(#business-06-base)" />
   <ellipse cx="800" cy="300" rx="700" ry="400" fill="url(#business-06-glow)" />
-  <rect x="40" y="40" width="1520" height="920" fill="none" stroke="#F59E0B" stroke-width="2" opacity="0.4" rx="32" />
-  <line x1="120" y1="260" x2="400" y2="260" stroke="#F59E0B" stroke-width="2" opacity="0.3" />
-  <rect x="120" y="140" width="360" height="100" fill="#0F1419" opacity="0.6" rx="24" />
-</svg>
+  <rect x="40" y="40" width="1520" height="920" fill="none" stroke="#FFA308" stroke-width="2" opacity="0.4" rx="32" />
+  <line x1="120" y1="260" x2="400" y2="260" stroke="#FFA308" stroke-width="2" opacity="0.3" />
+  <rect x="120" y="140" width="360" height="100" fill="#0D1318" opacity="0.6" rx="24" />
+</g></svg>

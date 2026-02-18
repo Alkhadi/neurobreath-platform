@@ -3,15 +3,15 @@
   <desc id="address-04-bg-desc">Professional address template with subtle postcode blocks and calm gradient</desc>
   <defs>
     <linearGradient id="address-04-base" x1="50%" y1="0%" x2="50%" y2="100%">
-      <stop offset="0%" style="stop-color:#E7F0F8;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#A7C3D9;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#F1F6FB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ACC8DF;stop-opacity:1" />
     </linearGradient>
     <pattern id="address-04-blocks" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-      <rect x="0" y="0" width="48" height="48" fill="#6D8AA8" opacity="0.05" />
+      <rect x="0" y="0" width="48" height="48" fill="#6E8EAE" opacity="0.05" />
     </pattern>
-  </defs>
-  <rect width="1600" height="1000" fill="url(#address-04-base)" />
+  <clipPath id="nb-premium-address-04-bg-clip"><rect x="0.0" y="0.0" width="1600.0" height="1000.0" rx="40.0" ry="40.0" /></clipPath><filter id="nb-premium-address-04-bg-bevel" x="-2%" y="-2%" width="104%" height="104%" color-interpolation-filters="sRGB"><feDropShadow dx="-1" dy="-1" stdDeviation="1.5" flood-color="#FFFFFF" flood-opacity="0.12" result="highlight" /><feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.10" result="shadow" /><feMerge><feMergeNode in="shadow" /><feMergeNode in="highlight" /><feMergeNode in="SourceGraphic" /></feMerge></filter></defs>
+  <g clip-path="url(#nb-premium-address-04-bg-clip)" filter="url(#nb-premium-address-04-bg-bevel)"><rect width="1600" height="1000" fill="url(#address-04-base)" />
   <rect x="80" y="80" width="1440" height="840" fill="url(#address-04-blocks)" />
-  <rect x="40" y="40" width="1520" height="920" fill="none" stroke="#6D8AA8" stroke-width="2" opacity="0.3" rx="32" />
-  <rect x="120" y="120" width="360" height="120" fill="#E7F0F8" opacity="0.45" rx="24" />
-</svg>
+  <rect x="40" y="40" width="1520" height="920" fill="none" stroke="#6E8EAE" stroke-width="2" opacity="0.3" rx="32" />
+  <rect x="120" y="120" width="360" height="120" fill="#F1F6FB" opacity="0.45" rx="24" />
+</g></svg>

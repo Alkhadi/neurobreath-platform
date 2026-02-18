@@ -14,54 +14,54 @@
       }
     </style>
     <linearGradient id="ab-grad1" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1e40af"/>
-      <stop offset="50%" stop-color="#3b82f6"/>
-      <stop offset="100%" stop-color="#2563eb"/>
+      <stop offset="0%" stop-color="#1439B2" />
+      <stop offset="50%" stop-color="#3B85FF" />
+      <stop offset="100%" stop-color="#2164F7" />
     </linearGradient>
     <linearGradient id="ab-grad2" x1="0" y1="0" x2="0.5" y2="1">
-      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.3"/>
-      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#00B4D3" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#3B85FF" stop-opacity="0" />
     </linearGradient>
     <clipPath id="ab-clip">
-      <rect x="16" y="16" width="1568" height="868" rx="24"/>
+      <rect x="16" y="16" width="1568" height="868" rx="24" />
     </clipPath>
-  </defs>
+  <clipPath id="nb-premium-address-blue-diagonal-landscape-bg-clip"><rect x="0.0" y="0.0" width="1600.0" height="900.0" rx="36.0" ry="36.0" /></clipPath><filter id="nb-premium-address-blue-diagonal-landscape-bg-bevel" x="-2%" y="-2%" width="104%" height="104%" color-interpolation-filters="sRGB"><feDropShadow dx="-1" dy="-1" stdDeviation="1.5" flood-color="#FFFFFF" flood-opacity="0.12" result="highlight" /><feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.10" result="shadow" /><feMerge><feMergeNode in="shadow" /><feMergeNode in="highlight" /><feMergeNode in="SourceGraphic" /></feMerge></filter></defs>
 
-  <!-- Blue base -->
-  <rect x="16" y="16" width="1568" height="868" rx="24" fill="url(#ab-grad1)"/>
+  
+  <g clip-path="url(#nb-premium-address-blue-diagonal-landscape-bg-clip)" filter="url(#nb-premium-address-blue-diagonal-landscape-bg-bevel)"><rect x="16" y="16" width="1568" height="868" rx="24" fill="url(#ab-grad1)" />
 
   <g clip-path="url(#ab-clip)">
-    <!-- Diagonal white zone (upper right to lower left) -->
-    <polygon points="300,16 1584,16 1584,884 700,884" fill="rgba(255,255,255,0.92)"/>
+    
+    <polygon points="300,16 1584,16 1584,884 700,884" fill="rgba(255,255,255,0.92)" />
 
-    <!-- Soft inner shadow on white zone edge -->
-    <polygon points="300,16 340,16 740,884 700,884" fill="rgba(59,130,246,0.08)"/>
+    
+    <polygon points="300,16 340,16 740,884 700,884" fill="rgba(59,133,255,0.08)" />
 
-    <!-- Cyan accent wash on blue portion -->
-    <rect x="16" y="16" width="700" height="868" fill="url(#ab-grad2)"/>
+    
+    <rect x="16" y="16" width="700" height="868" fill="url(#ab-grad2)" />
 
-    <!-- Decorative stripes on blue side -->
-    <line x1="100" y1="16" x2="100" y2="884" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-    <line x1="200" y1="16" x2="200" y2="884" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+    
+    <line x1="100" y1="16" x2="100" y2="884" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+    <line x1="200" y1="16" x2="200" y2="884" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
 
-    <!-- Small geometric accents on blue side -->
-    <rect x="60" y="700" width="120" height="3" rx="1.5" fill="rgba(255,255,255,0.2)"/>
-    <rect x="60" y="715" width="80" height="2" rx="1" fill="rgba(255,255,255,0.12)"/>
-    <circle cx="60" cy="670" r="4" fill="rgba(255,255,255,0.15)"/>
+    
+    <rect x="60" y="700" width="120" height="3" rx="1.5" fill="rgba(255,255,255,0.2)" />
+    <rect x="60" y="715" width="80" height="2" rx="1" fill="rgba(255,255,255,0.12)" />
+    <circle cx="60" cy="670" r="4" fill="rgba(255,255,255,0.15)" />
 
-    <!-- Corner bracket on white zone -->
-    <line x1="1460" y1="80" x2="1520" y2="80" stroke="#3b82f6" stroke-width="1.5" opacity="0.2"/>
-    <line x1="1520" y1="80" x2="1520" y2="140" stroke="#3b82f6" stroke-width="1.5" opacity="0.2"/>
+    
+    <line x1="1460" y1="80" x2="1520" y2="80" stroke="#3B85FF" stroke-width="1.5" opacity="0.2" />
+    <line x1="1520" y1="80" x2="1520" y2="140" stroke="#3B85FF" stroke-width="1.5" opacity="0.2" />
 
-    <!-- Content panel on white zone -->
-    <rect x="480" y="120" width="1020" height="640" rx="12" fill="none" stroke="rgba(59,130,246,0.06)" stroke-width="1"/>
+    
+    <rect x="480" y="120" width="1020" height="640" rx="12" fill="none" stroke="rgba(59,133,255,0.06)" stroke-width="1" />
 
-    <!-- Subtle dot decoration -->
-    <circle cx="1480" cy="780" r="1.5" fill="#3b82f6" opacity="0.15"/>
-    <circle cx="1500" cy="780" r="1.5" fill="#3b82f6" opacity="0.15"/>
-    <circle cx="1520" cy="780" r="1.5" fill="#3b82f6" opacity="0.15"/>
+    
+    <circle cx="1480" cy="780" r="1.5" fill="#3B85FF" opacity="0.15" />
+    <circle cx="1500" cy="780" r="1.5" fill="#3B85FF" opacity="0.15" />
+    <circle cx="1520" cy="780" r="1.5" fill="#3B85FF" opacity="0.15" />
 
-    <!-- Bottom line on white zone -->
-    <line x1="480" y1="800" x2="800" y2="800" stroke="#3b82f6" stroke-width="0.5" opacity="0.1"/>
+    
+    <line x1="480" y1="800" x2="800" y2="800" stroke="#3B85FF" stroke-width="0.5" opacity="0.1" />
   </g>
-</svg>
+</g></svg>

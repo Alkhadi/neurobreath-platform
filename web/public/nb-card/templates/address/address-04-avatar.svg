@@ -3,11 +3,11 @@
   <desc id="address-04-avatar-desc">Professional address avatar with clean postcode style</desc>
   <defs>
     <linearGradient id="address-04-avatar-bg" x1="50%" y1="0%" x2="50%" y2="100%">
-      <stop offset="0%" style="stop-color:#E7F0F8;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#A7C3D9;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#F1F6FB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ACC8DF;stop-opacity:1" />
     </linearGradient>
-  </defs>
-  <rect width="1000" height="1000" fill="url(#address-04-avatar-bg)" />
-  <circle cx="500" cy="380" r="160" fill="#6D8AA8" opacity="0.22" />
-  <ellipse cx="500" cy="720" rx="280" ry="200" fill="#6D8AA8" opacity="0.22" />
-</svg>
+  <clipPath id="nb-premium-address-04-avatar-clip"><rect x="0.0" y="0.0" width="1000.0" height="1000.0" rx="40.0" ry="40.0" /></clipPath><filter id="nb-premium-address-04-avatar-bevel" x="-2%" y="-2%" width="104%" height="104%" color-interpolation-filters="sRGB"><feDropShadow dx="-1" dy="-1" stdDeviation="1.5" flood-color="#FFFFFF" flood-opacity="0.12" result="highlight" /><feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.10" result="shadow" /><feMerge><feMergeNode in="shadow" /><feMergeNode in="highlight" /><feMergeNode in="SourceGraphic" /></feMerge></filter></defs>
+  <g clip-path="url(#nb-premium-address-04-avatar-clip)" filter="url(#nb-premium-address-04-avatar-bevel)"><rect width="1000" height="1000" fill="url(#address-04-avatar-bg)" />
+  <circle cx="500" cy="380" r="160" fill="#6E8EAE" opacity="0.22" />
+  <ellipse cx="500" cy="720" rx="280" ry="200" fill="#6E8EAE" opacity="0.22" />
+</g></svg>

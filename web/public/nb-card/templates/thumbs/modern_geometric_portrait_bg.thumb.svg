@@ -2,29 +2,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="180" height="280" viewBox="0 0 1080 1680">
   <defs>
     <linearGradient id="t-mg-p-g1" x1="0" y1="0" x2="0.5" y2="1">
-      <stop offset="0%" stop-color="#0b1220"/>
-      <stop offset="100%" stop-color="#1e293b"/>
+      <stop offset="0%" stop-color="#091120" />
+      <stop offset="100%" stop-color="#1B273A" />
     </linearGradient>
     <linearGradient id="t-mg-p-g2" x1="0" y1="0" x2="1" y2="0.8">
-      <stop offset="0%" stop-color="#3b82f6"/>
-      <stop offset="100%" stop-color="#06b6d4"/>
+      <stop offset="0%" stop-color="#3B85FF" />
+      <stop offset="100%" stop-color="#00B4D3" />
     </linearGradient>
     <linearGradient id="t-mg-p-g3" x1="0.2" y1="0" x2="0.8" y2="1">
-      <stop offset="0%" stop-color="#f59e0b"/>
-      <stop offset="100%" stop-color="#f97316"/>
+      <stop offset="0%" stop-color="#FFA308" />
+      <stop offset="100%" stop-color="#FF7618" />
     </linearGradient>
     <clipPath id="t-mg-p-c">
-      <rect x="16" y="16" width="1048" height="1648" rx="24"/>
+      <rect x="16" y="16" width="1048" height="1648" rx="24" />
     </clipPath>
-  </defs>
-  <rect x="16" y="16" width="1048" height="1648" rx="24" fill="url(#t-mg-p-g1)"/>
+  <clipPath id="nb-premium-modern-geometric-portrait-bg-thumb-clip"><rect x="0.0" y="0.0" width="1080.0" height="1680.0" rx="43.2" ry="43.2" /></clipPath><filter id="nb-premium-modern-geometric-portrait-bg-thumb-bevel" x="-2%" y="-2%" width="104%" height="104%" color-interpolation-filters="sRGB"><feDropShadow dx="-1" dy="-1" stdDeviation="1.5" flood-color="#FFFFFF" flood-opacity="0.12" result="highlight" /><feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.10" result="shadow" /><feMerge><feMergeNode in="shadow" /><feMergeNode in="highlight" /><feMergeNode in="SourceGraphic" /></feMerge></filter></defs>
+  <g clip-path="url(#nb-premium-modern-geometric-portrait-bg-thumb-clip)" filter="url(#nb-premium-modern-geometric-portrait-bg-thumb-bevel)"><rect x="16" y="16" width="1048" height="1648" rx="24" fill="url(#t-mg-p-g1)" />
   <g clip-path="url(#t-mg-p-c)">
-    <polygon points="0,0 1080,0 1080,600 0,1100" fill="url(#t-mg-p-g2)" opacity="0.15"/>
-    <polygon points="0,900 1080,400 1080,500 0,1000" fill="url(#t-mg-p-g3)" opacity="0.3"/>
-    <rect x="60" y="60" width="960" height="480" rx="16" fill="rgba(255,255,255,0.04)"/>
-    <polygon points="16,16 200,16 16,200" fill="#3b82f6" opacity="0.1"/>
-    <polygon points="1064,1664 1064,1500 900,1664" fill="#06b6d4" opacity="0.08"/>
-    <rect x="80" y="600" width="920" height="700" rx="16" fill="rgba(255,255,255,0.06)"/>
-    <rect x="400" y="1400" width="260" height="260" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="6 4"/>
+    <polygon points="0,0 1080,0 1080,600 0,1100" fill="url(#t-mg-p-g2)" opacity="0.15" />
+    <polygon points="0,900 1080,400 1080,500 0,1000" fill="url(#t-mg-p-g3)" opacity="0.3" />
+    <rect x="60" y="60" width="960" height="480" rx="16" fill="rgba(255,255,255,0.04)" />
+    <polygon points="16,16 200,16 16,200" fill="#3B85FF" opacity="0.1" />
+    <polygon points="1064,1664 1064,1500 900,1664" fill="#00B4D3" opacity="0.08" />
+    <rect x="80" y="600" width="920" height="700" rx="16" fill="rgba(255,255,255,0.06)" />
+    <rect x="400" y="1400" width="260" height="260" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="6 4" />
   </g>
-</svg>
+</g></svg>

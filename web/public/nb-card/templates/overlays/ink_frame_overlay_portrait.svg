@@ -14,60 +14,60 @@
       }
     </style>
     <linearGradient id="if-grad1" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1e293b"/>
-      <stop offset="100%" stop-color="#0f172a"/>
+      <stop offset="0%" stop-color="#1B273A" />
+      <stop offset="100%" stop-color="#0C152A" />
     </linearGradient>
-  </defs>
+  <clipPath id="nb-premium-ink-frame-overlay-portrait-clip"><rect x="0.0" y="0.0" width="1080.0" height="1680.0" rx="43.2" ry="43.2" /></clipPath><filter id="nb-premium-ink-frame-overlay-portrait-bevel" x="-2%" y="-2%" width="104%" height="104%" color-interpolation-filters="sRGB"><feDropShadow dx="-1" dy="-1" stdDeviation="1.5" flood-color="#FFFFFF" flood-opacity="0.12" result="highlight" /><feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.10" result="shadow" /><feMerge><feMergeNode in="shadow" /><feMergeNode in="highlight" /><feMergeNode in="SourceGraphic" /></feMerge></filter></defs>
 
-  <!-- Transparent center - this is an overlay -->
-  <!-- Outer frame border -->
-  <rect x="24" y="24" width="1032" height="1632" rx="20" fill="none" stroke="#1e293b" stroke-width="4"/>
+  
+  
+  <g clip-path="url(#nb-premium-ink-frame-overlay-portrait-clip)" filter="url(#nb-premium-ink-frame-overlay-portrait-bevel)"><rect x="24" y="24" width="1032" height="1632" rx="20" fill="none" stroke="#1B273A" stroke-width="4" />
 
-  <!-- Inner frame border -->
-  <rect x="48" y="48" width="984" height="1584" rx="14" fill="none" stroke="#94a3b8" stroke-width="1.5" opacity="0.3"/>
+  
+  <rect x="48" y="48" width="984" height="1584" rx="14" fill="none" stroke="#97A7BE" stroke-width="1.5" opacity="0.3" />
 
-  <!-- Decorative double-line frame -->
-  <rect x="64" y="64" width="952" height="1552" rx="10" fill="none" stroke="#94a3b8" stroke-width="0.8" opacity="0.15"/>
+  
+  <rect x="64" y="64" width="952" height="1552" rx="10" fill="none" stroke="#97A7BE" stroke-width="0.8" opacity="0.15" />
 
-  <!-- Corner ornaments - top left -->
-  <line x1="48" y1="120" x2="120" y2="48" stroke="#94a3b8" stroke-width="1" opacity="0.2"/>
-  <line x1="48" y1="100" x2="100" y2="48" stroke="#3b82f6" stroke-width="0.8" opacity="0.15"/>
-  <circle cx="70" cy="70" r="3" fill="none" stroke="#94a3b8" stroke-width="0.8" opacity="0.2"/>
+  
+  <line x1="48" y1="120" x2="120" y2="48" stroke="#97A7BE" stroke-width="1" opacity="0.2" />
+  <line x1="48" y1="100" x2="100" y2="48" stroke="#3B85FF" stroke-width="0.8" opacity="0.15" />
+  <circle cx="70" cy="70" r="3" fill="none" stroke="#97A7BE" stroke-width="0.8" opacity="0.2" />
 
-  <!-- Corner ornaments - top right -->
-  <line x1="1032" y1="120" x2="960" y2="48" stroke="#94a3b8" stroke-width="1" opacity="0.2"/>
-  <line x1="1032" y1="100" x2="980" y2="48" stroke="#3b82f6" stroke-width="0.8" opacity="0.15"/>
-  <circle cx="1010" cy="70" r="3" fill="none" stroke="#94a3b8" stroke-width="0.8" opacity="0.2"/>
+  
+  <line x1="1032" y1="120" x2="960" y2="48" stroke="#97A7BE" stroke-width="1" opacity="0.2" />
+  <line x1="1032" y1="100" x2="980" y2="48" stroke="#3B85FF" stroke-width="0.8" opacity="0.15" />
+  <circle cx="1010" cy="70" r="3" fill="none" stroke="#97A7BE" stroke-width="0.8" opacity="0.2" />
 
-  <!-- Corner ornaments - bottom left -->
-  <line x1="48" y1="1560" x2="120" y2="1632" stroke="#94a3b8" stroke-width="1" opacity="0.2"/>
-  <line x1="48" y1="1580" x2="100" y2="1632" stroke="#3b82f6" stroke-width="0.8" opacity="0.15"/>
-  <circle cx="70" cy="1610" r="3" fill="none" stroke="#94a3b8" stroke-width="0.8" opacity="0.2"/>
+  
+  <line x1="48" y1="1560" x2="120" y2="1632" stroke="#97A7BE" stroke-width="1" opacity="0.2" />
+  <line x1="48" y1="1580" x2="100" y2="1632" stroke="#3B85FF" stroke-width="0.8" opacity="0.15" />
+  <circle cx="70" cy="1610" r="3" fill="none" stroke="#97A7BE" stroke-width="0.8" opacity="0.2" />
 
-  <!-- Corner ornaments - bottom right -->
-  <line x1="1032" y1="1560" x2="960" y2="1632" stroke="#94a3b8" stroke-width="1" opacity="0.2"/>
-  <line x1="1032" y1="1580" x2="980" y2="1632" stroke="#3b82f6" stroke-width="0.8" opacity="0.15"/>
-  <circle cx="1010" cy="1610" r="3" fill="none" stroke="#94a3b8" stroke-width="0.8" opacity="0.2"/>
+  
+  <line x1="1032" y1="1560" x2="960" y2="1632" stroke="#97A7BE" stroke-width="1" opacity="0.2" />
+  <line x1="1032" y1="1580" x2="980" y2="1632" stroke="#3B85FF" stroke-width="0.8" opacity="0.15" />
+  <circle cx="1010" cy="1610" r="3" fill="none" stroke="#97A7BE" stroke-width="0.8" opacity="0.2" />
 
-  <!-- Top edge ornament - centered diamond -->
-  <polygon points="540,32 556,48 540,64 524,48" fill="none" stroke="#94a3b8" stroke-width="0.8" opacity="0.2"/>
-  <line x1="200" y1="48" x2="510" y2="48" stroke="#94a3b8" stroke-width="0.4" opacity="0.1"/>
-  <line x1="570" y1="48" x2="880" y2="48" stroke="#94a3b8" stroke-width="0.4" opacity="0.1"/>
+  
+  <polygon points="540,32 556,48 540,64 524,48" fill="none" stroke="#97A7BE" stroke-width="0.8" opacity="0.2" />
+  <line x1="200" y1="48" x2="510" y2="48" stroke="#97A7BE" stroke-width="0.4" opacity="0.1" />
+  <line x1="570" y1="48" x2="880" y2="48" stroke="#97A7BE" stroke-width="0.4" opacity="0.1" />
 
-  <!-- Bottom edge ornament - centered diamond -->
-  <polygon points="540,1616 556,1632 540,1648 524,1632" fill="none" stroke="#94a3b8" stroke-width="0.8" opacity="0.2"/>
-  <line x1="200" y1="1632" x2="510" y2="1632" stroke="#94a3b8" stroke-width="0.4" opacity="0.1"/>
-  <line x1="570" y1="1632" x2="880" y2="1632" stroke="#94a3b8" stroke-width="0.4" opacity="0.1"/>
+  
+  <polygon points="540,1616 556,1632 540,1648 524,1632" fill="none" stroke="#97A7BE" stroke-width="0.8" opacity="0.2" />
+  <line x1="200" y1="1632" x2="510" y2="1632" stroke="#97A7BE" stroke-width="0.4" opacity="0.1" />
+  <line x1="570" y1="1632" x2="880" y2="1632" stroke="#97A7BE" stroke-width="0.4" opacity="0.1" />
 
-  <!-- Side ornaments - left midpoint -->
-  <line x1="48" y1="780" x2="48" y2="900" stroke="#3b82f6" stroke-width="1.5" opacity="0.12"/>
-  <circle cx="48" cy="840" r="4" fill="none" stroke="#94a3b8" stroke-width="0.8" opacity="0.15"/>
+  
+  <line x1="48" y1="780" x2="48" y2="900" stroke="#3B85FF" stroke-width="1.5" opacity="0.12" />
+  <circle cx="48" cy="840" r="4" fill="none" stroke="#97A7BE" stroke-width="0.8" opacity="0.15" />
 
-  <!-- Side ornaments - right midpoint -->
-  <line x1="1032" y1="780" x2="1032" y2="900" stroke="#3b82f6" stroke-width="1.5" opacity="0.12"/>
-  <circle cx="1032" cy="840" r="4" fill="none" stroke="#94a3b8" stroke-width="0.8" opacity="0.15"/>
+  
+  <line x1="1032" y1="780" x2="1032" y2="900" stroke="#3B85FF" stroke-width="1.5" opacity="0.12" />
+  <circle cx="1032" cy="840" r="4" fill="none" stroke="#97A7BE" stroke-width="0.8" opacity="0.15" />
 
-  <!-- Inner shadow vignette - subtle frame edges -->
-  <rect x="48" y="48" width="984" height="80" fill="url(#if-grad1)" opacity="0.03"/>
-  <rect x="48" y="1552" width="984" height="-80" fill="url(#if-grad1)" opacity="0.03"/>
-</svg>
+  
+  <rect x="48" y="48" width="984" height="80" fill="url(#if-grad1)" opacity="0.03" />
+  <rect x="48" y="1552" width="984" height="-80" fill="url(#if-grad1)" opacity="0.03" />
+</g></svg>
