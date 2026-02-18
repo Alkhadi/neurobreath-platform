@@ -890,6 +890,7 @@ function CardLayerRenderer({
         /* eslint-disable-next-line react/forbid-dom-props */
         <div
           data-html2canvas-ignore="true"
+          data-nb-ui="true"
           style={{
             position: 'absolute',
             inset: 0,
@@ -935,6 +936,7 @@ function CardLayerRenderer({
         /* eslint-disable-next-line react/forbid-dom-props */
         <div
           data-html2canvas-ignore="true"
+          data-nb-ui="true"
           style={{
             position: "absolute",
             right: -4,
@@ -1405,8 +1407,8 @@ export function ProfileCard({
         </div>
       ) : null}
 
-      {/* CARD CONTENT (z=10) */}
-      {isWalletTemplate ? null : (
+      {/* CARD CONTENT (z=10) — hidden in canvas edit mode when user has custom layers */}
+      {isWalletTemplate || (canvasEditMode && profile.layers && profile.layers.length > 0) ? null : (
       <div className={cn("relative z-10 p-8", contentTextClass)}>
         {isFlyerPromoPortrait ? (
                 <div className="space-y-4">

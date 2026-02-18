@@ -438,13 +438,7 @@ export function EditorToolbar({
                       ...profile,
                       layers: profile.layers?.map((l) =>
                         l.id === selectedLayer.id && l.type === "text"
-                          ? {
-                              ...l,
-                              style: {
-                                ...l.style,
-                                fontFamily: e.target.value,
-                              },
-                            }
+                          ? { ...l, style: { ...l.style, fontFamily: e.target.value } }
                           : l
                       ),
                     };
@@ -465,12 +459,22 @@ export function EditorToolbar({
                   <input
                     type="number"
                     value={selectedLayer.style.fontSize}
-                    onChange={(_e) => {
-                      // This will be wired up via onProfileUpdate in parent
+                    onChange={(e) => {
+                      const v = parseInt(e.target.value, 10);
+                      if (!Number.isFinite(v) || v < 8 || v > 200) return;
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "text"
+                            ? { ...l, style: { ...l.style, fontSize: v } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
                     }}
                     className="w-full px-2 py-1 text-sm border rounded"
                     min="8"
-                    max="120"
+                    max="200"
                   />
                 </div>
                 <div>
@@ -478,10 +482,167 @@ export function EditorToolbar({
                   <input
                     type="color"
                     value={selectedLayer.style.color}
-                    onChange={(_e) => {
-                      // This will be wired up via onProfileUpdate in parent
+                    onChange={(e) => {
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "text"
+                            ? { ...l, style: { ...l.style, color: e.target.value } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
                     }}
                     className="w-full h-8 border rounded cursor-pointer"
+                  />
+                </div>
+              </div>
+              {/* Bold / Italic / Align */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <Button
+                  onClick={() => {
+                    const next = selectedLayer.style.fontWeight === "bold" ? "normal" : "bold";
+                    const updated = {
+                      ...profile,
+                      layers: profile.layers?.map((l) =>
+                        l.id === selectedLayer.id && l.type === "text"
+                          ? { ...l, style: { ...l.style, fontWeight: next as "normal" | "bold" } }
+                          : l
+                      ),
+                    };
+                    onProfileUpdate(updated);
+                  }}
+                  size="sm"
+                  variant={selectedLayer.style.fontWeight === "bold" ? "default" : "outline"}
+                  className="h-8 w-8 p-0 font-bold"
+                  title="Bold"
+                >
+                  B
+                </Button>
+                <span className="text-gray-300">|</span>
+                <Button
+                  onClick={() => {
+                    const updated = {
+                      ...profile,
+                      layers: profile.layers?.map((l) =>
+                        l.id === selectedLayer.id && l.type === "text"
+                          ? { ...l, style: { ...l.style, align: "left" as const } }
+                          : l
+                      ),
+                    };
+                    onProfileUpdate(updated);
+                  }}
+                  size="sm"
+                  variant={selectedLayer.style.align === "left" ? "default" : "outline"}
+                  className="h-8 w-8 p-0"
+                  title="Align Left"
+                >
+                  <AlignLeft className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  onClick={() => {
+                    const updated = {
+                      ...profile,
+                      layers: profile.layers?.map((l) =>
+                        l.id === selectedLayer.id && l.type === "text"
+                          ? { ...l, style: { ...l.style, align: "center" as const } }
+                          : l
+                      ),
+                    };
+                    onProfileUpdate(updated);
+                  }}
+                  size="sm"
+                  variant={selectedLayer.style.align === "center" ? "default" : "outline"}
+                  className="h-8 w-8 p-0"
+                  title="Align Center"
+                >
+                  <AlignCenter className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  onClick={() => {
+                    const updated = {
+                      ...profile,
+                      layers: profile.layers?.map((l) =>
+                        l.id === selectedLayer.id && l.type === "text"
+                          ? { ...l, style: { ...l.style, align: "right" as const } }
+                          : l
+                      ),
+                    };
+                    onProfileUpdate(updated);
+                  }}
+                  size="sm"
+                  variant={selectedLayer.style.align === "right" ? "default" : "outline"}
+                  className="h-8 w-8 p-0"
+                  title="Align Right"
+                >
+                  <AlignRight className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+              {/* Background Color */}
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-xs text-gray-600">Background</label>
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="color"
+                      value={selectedLayer.style.backgroundColor || "#ffffff"}
+                      onChange={(e) => {
+                        const updated = {
+                          ...profile,
+                          layers: profile.layers?.map((l) =>
+                            l.id === selectedLayer.id && l.type === "text"
+                              ? { ...l, style: { ...l.style, backgroundColor: e.target.value } }
+                              : l
+                          ),
+                        };
+                        onProfileUpdate(updated);
+                      }}
+                      className="w-full h-8 border rounded cursor-pointer"
+                    />
+                    {selectedLayer.style.backgroundColor && (
+                      <Button
+                        onClick={() => {
+                          const updated = {
+                            ...profile,
+                            layers: profile.layers?.map((l) =>
+                              l.id === selectedLayer.id && l.type === "text"
+                                ? { ...l, style: { ...l.style, backgroundColor: undefined } }
+                                : l
+                            ),
+                          };
+                          onProfileUpdate(updated);
+                        }}
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 px-1 text-xs"
+                        title="Clear background"
+                      >
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs text-gray-600">Padding</label>
+                  <input
+                    type="number"
+                    value={selectedLayer.style.padding ?? 8}
+                    onChange={(e) => {
+                      const v = parseInt(e.target.value, 10);
+                      if (!Number.isFinite(v) || v < 0 || v > 100) return;
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "text"
+                            ? { ...l, style: { ...l.style, padding: v } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
+                    }}
+                    className="w-full px-2 py-1 text-sm border rounded"
+                    min="0"
+                    max="100"
                   />
                 </div>
               </div>
@@ -496,25 +657,203 @@ export function EditorToolbar({
                   <input
                     type="color"
                     value={selectedLayer.style.fill}
-                    onChange={(_e) => {
-                      // This will be wired up via onProfileUpdate in parent
+                    onChange={(e) => {
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "shape"
+                            ? { ...l, style: { ...l.style, fill: e.target.value } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
                     }}
                     className="w-full h-8 border rounded cursor-pointer"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-600">Opacity</label>
+                  <label className="text-xs text-gray-600">Opacity ({Math.round(selectedLayer.style.opacity * 100)}%)</label>
                   <input
                     type="range"
                     value={selectedLayer.style.opacity * 100}
-                    onChange={(_e) => {
-                      // This will be wired up via onProfileUpdate in parent
+                    onChange={(e) => {
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "shape"
+                            ? { ...l, style: { ...l.style, opacity: parseInt(e.target.value, 10) / 100 } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
                     }}
                     className="w-full"
                     min="0"
                     max="100"
                   />
                 </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-xs text-gray-600">Stroke</label>
+                  <input
+                    type="color"
+                    value={selectedLayer.style.stroke || "#000000"}
+                    onChange={(e) => {
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "shape"
+                            ? { ...l, style: { ...l.style, stroke: e.target.value } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
+                    }}
+                    className="w-full h-8 border rounded cursor-pointer"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-600">Stroke Width</label>
+                  <input
+                    type="number"
+                    value={selectedLayer.style.strokeWidth ?? 0}
+                    onChange={(e) => {
+                      const v = parseInt(e.target.value, 10);
+                      if (!Number.isFinite(v) || v < 0 || v > 20) return;
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "shape"
+                            ? { ...l, style: { ...l.style, strokeWidth: v } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
+                    }}
+                    className="w-full px-2 py-1 text-sm border rounded"
+                    min="0"
+                    max="20"
+                  />
+                </div>
+              </div>
+              {selectedLayer.style.shapeKind === "rect" && (
+                <div>
+                  <label className="text-xs text-gray-600">Corner Radius</label>
+                  <input
+                    type="number"
+                    value={selectedLayer.style.cornerRadius ?? 0}
+                    onChange={(e) => {
+                      const v = parseInt(e.target.value, 10);
+                      if (!Number.isFinite(v) || v < 0 || v > 200) return;
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "shape"
+                            ? { ...l, style: { ...l.style, cornerRadius: v } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
+                    }}
+                    className="w-full px-2 py-1 text-sm border rounded"
+                    min="0"
+                    max="200"
+                  />
+                </div>
+              )}
+            </div>
+          )}
+
+          {selectedLayer.type === "avatar" && (
+            <div className="space-y-2 pt-2 border-t">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-xs text-gray-600">Border Radius</label>
+                  <input
+                    type="number"
+                    value={selectedLayer.style.borderRadius}
+                    onChange={(e) => {
+                      const v = parseInt(e.target.value, 10);
+                      if (!Number.isFinite(v) || v < 0) return;
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "avatar"
+                            ? { ...l, style: { ...l.style, borderRadius: v } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
+                    }}
+                    className="w-full px-2 py-1 text-sm border rounded"
+                    min="0"
+                    max="999"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-600">Border Width</label>
+                  <input
+                    type="number"
+                    value={selectedLayer.style.borderWidth ?? 0}
+                    onChange={(e) => {
+                      const v = parseInt(e.target.value, 10);
+                      if (!Number.isFinite(v) || v < 0 || v > 20) return;
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "avatar"
+                            ? { ...l, style: { ...l.style, borderWidth: v } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
+                    }}
+                    className="w-full px-2 py-1 text-sm border rounded"
+                    min="0"
+                    max="20"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs text-gray-600">Border Color</label>
+                <input
+                  type="color"
+                  value={selectedLayer.style.borderColor || "#ffffff"}
+                  onChange={(e) => {
+                    const updated = {
+                      ...profile,
+                      layers: profile.layers?.map((l) =>
+                        l.id === selectedLayer.id && l.type === "avatar"
+                          ? { ...l, style: { ...l.style, borderColor: e.target.value } }
+                          : l
+                      ),
+                    };
+                    onProfileUpdate(updated);
+                  }}
+                  className="w-full h-8 border rounded cursor-pointer"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-gray-600">Fit</label>
+                <select
+                  value={selectedLayer.style.fit}
+                  onChange={(e) => {
+                    const updated = {
+                      ...profile,
+                      layers: profile.layers?.map((l) =>
+                        l.id === selectedLayer.id && l.type === "avatar"
+                          ? { ...l, style: { ...l.style, fit: e.target.value as "cover" | "contain" } }
+                          : l
+                      ),
+                    };
+                    onProfileUpdate(updated);
+                  }}
+                  className="w-full px-2 py-1 text-sm border rounded bg-white"
+                >
+                  <option value="cover">Cover</option>
+                  <option value="contain">Contain</option>
+                </select>
               </div>
             </div>
           )}

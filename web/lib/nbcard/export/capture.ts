@@ -72,23 +72,34 @@ export async function captureToBlob(
   // Wait for fonts and images to ensure stability
   await waitForFonts();
   await waitForImages(rootEl);
-  
+
+  // Hard guard: hide all editor UI elements during capture
+  const uiElements = Array.from(rootEl.querySelectorAll<HTMLElement>('[data-nb-ui="true"]'));
+  const savedDisplays = uiElements.map((el) => el.style.display);
+  uiElements.forEach((el) => { el.style.display = "none"; });
+
   // Flush layout (double RAF for stability)
   await new Promise((resolve) => {
     requestAnimationFrame(() => {
       requestAnimationFrame(resolve);
     });
   });
-  
-  // Capture with html2canvas
-  const canvas = await html2canvas(rootEl, {
-    scale,
-    backgroundColor,
-    useCORS: true,
-    logging: false,
-    allowTaint: false,
-    // Respect data-html2canvas-ignore attributes (edit UI will be excluded)
-  });
+
+  let canvas: HTMLCanvasElement;
+  try {
+    // Capture with html2canvas
+    canvas = await html2canvas(rootEl, {
+      scale,
+      backgroundColor,
+      useCORS: true,
+      logging: false,
+      allowTaint: false,
+      // Respect data-html2canvas-ignore attributes (edit UI will be excluded)
+    });
+  } finally {
+    // Restore editor UI elements after capture
+    uiElements.forEach((el, i) => { el.style.display = savedDisplays[i]; });
+  }
   
   // Convert canvas to PNG blob
   return new Promise<Blob>((resolve, reject) => {
