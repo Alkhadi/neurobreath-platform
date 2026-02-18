@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthedUserId } from "@/lib/auth/require-auth";
-import { prisma } from "@/lib/db";
+import { getBuiltinFrames, isSafeFrameSrc, type NbCardFrame } from "@/lib/nbcard-frames";
 
 function isAdmin(email: string | undefined): boolean {
   if (!email) return false;
@@ -13,33 +13,80 @@ async function getAdminEmail(req: NextRequest): Promise<string | null> {
   if (!auth.ok) return null;
   
   // Get user email from database
-  const user = await prisma.authUser.findUnique({
-    where: { id: auth.userId },
-    select: { email: true },
-  });
+  try {
+    const { prisma } = await import("@/lib/db");
+    const user = await prisma.authUser.findUnique({
+      where: { id: auth.userId },
+      select: { email: true },
+    });
+
+    return user?.email || null;
+  } catch {
+    return null;
+  }
   
-  return user?.email || null;
 }
 
 export async function GET(req: NextRequest) {
+  const builtins = getBuiltinFrames();
+
   try {
     const { searchParams } = new URL(req.url);
-    const category = searchParams.get("category");
+    const categoryParam = (searchParams.get("category") ?? "").trim().toLowerCase();
 
-    const frames = await prisma.nbCardFrame.findMany({
-      where: {
-        isActive: true,
-        ...(category ? { category: category.toUpperCase() } : {}),
-      },
-      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-      take: 50,
+    const builtinFiltered =
+      categoryParam === "backgrounds"
+        ? builtins.filter((f) => f.category === "backgrounds")
+        : categoryParam === "overlays"
+          ? builtins.filter((f) => f.category === "overlays")
+          : builtins;
+
+    const wantsDbFrames = categoryParam !== "backgrounds" && categoryParam !== "overlays";
+
+    let dbFrames: NbCardFrame[] = [];
+    if (wantsDbFrames) {
+      try {
+        const { prisma } = await import("@/lib/db");
+        const dbRows = await prisma.nbCardFrame.findMany({
+          where: {
+            isActive: true,
+            ...(categoryParam === "address" || categoryParam === "bank" || categoryParam === "business"
+              ? { category: categoryParam.toUpperCase() }
+              : {}),
+          },
+          orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+          take: 50,
+        });
+
+        dbFrames = dbRows
+          .map((row) => {
+            const src = row.imageUrl;
+            if (!isSafeFrameSrc(src)) return null;
+            if (!src.startsWith("/nb-card/frames/")) return null;
+            return {
+              id: `db:${row.id}`,
+              name: row.name,
+              category: row.category.toLowerCase(),
+              src,
+            } satisfies NbCardFrame;
+          })
+          .filter((f): f is NbCardFrame => Boolean(f));
+      } catch {
+        dbFrames = [];
+      }
+    }
+
+    const merged = [...builtinFiltered, ...dbFrames];
+    const seen = new Set<string>();
+    const frames = merged.filter((f) => {
+      if (seen.has(f.src)) return false;
+      seen.add(f.src);
+      return true;
     });
 
-    return NextResponse.json({ frames });
+    return Response.json({ frames }, { status: 200 });
   } catch {
-    // Table may not be migrated yet or DB unavailable — return empty list
-    // so the client falls back to built-in templates without a console error
-    return NextResponse.json({ frames: [] });
+    return Response.json({ frames: builtins }, { status: 200 });
   }
 }
 
@@ -63,6 +110,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Enforce max 50 active frames
+    const { prisma } = await import("@/lib/db");
     const activeCount = await prisma.nbCardFrame.count({ where: { isActive: true } });
     if (activeCount >= 50) {
       return NextResponse.json({ error: "Maximum 50 active frames reached" }, { status: 400 });

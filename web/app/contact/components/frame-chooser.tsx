@@ -3,34 +3,24 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Image from "next/image";
-import { filterTemplates, loadTemplateManifest, type Template } from "@/lib/nbcard-templates";
+import { getBuiltinFrames, type NbCardFrame } from "@/lib/nbcard-frames";
 
 type FrameCategory = "ADDRESS" | "BANK" | "BUSINESS" | "FLYER" | "WEDDING";
-
-interface Frame {
-  id: string;
-  name: string;
-  category: string;
-  imageUrl: string;
-  isActive: boolean;
-  sortOrder: number;
-  createdAt: string;
-}
 
 interface FrameChooserProps {
   category: FrameCategory;
   onSelect: (frameUrl: string) => void;
-  onSelectTemplate?: (template: Template) => void;
+  onSelectTemplate?: (template: { id: string }) => void;
   onClose: () => void;
 }
 
-const CACHE_KEY = "nbcard-frames-cache";
+const CACHE_KEY = "nbcard-frames-cache-v2";
 const CACHE_TTL = 1000 * 60 * 60 * 24; // 24 hours
 
-function getCachedFrames(): { frames: Frame[]; timestamp: number } | null {
+function getCachedFrames(cacheKey: string): { frames: NbCardFrame[]; timestamp: number } | null {
   if (typeof window === "undefined") return null;
   try {
-    const cached = localStorage.getItem(CACHE_KEY);
+    const cached = localStorage.getItem(cacheKey);
     if (!cached) return null;
     return JSON.parse(cached);
   } catch {
@@ -38,11 +28,11 @@ function getCachedFrames(): { frames: Frame[]; timestamp: number } | null {
   }
 }
 
-function setCachedFrames(frames: Frame[]) {
+function setCachedFrames(cacheKey: string, frames: NbCardFrame[]) {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(
-      CACHE_KEY,
+      cacheKey,
       JSON.stringify({ frames, timestamp: Date.now() })
     );
   } catch {
@@ -50,94 +40,40 @@ function setCachedFrames(frames: Frame[]) {
   }
 }
 
-/** Only allow frame-only assets: backgrounds and overlays from nb-card engine. */
-function isFrameOnlyTemplate(t: Template): boolean {
-  // Exclude nb-wallet engine templates (full card designs with text/icons)
-  if (t.engine === "nb-wallet") return false;
-  // Only allow backgrounds and overlays (not business-card type)
-  if (t.type !== "background" && t.type !== "overlay") return false;
-  // Safety net: exclude any src pointing to nb-wallet paths
-  if (t.src.includes("/templates/nb-wallet/")) return false;
-  return true;
-}
-
-export function FrameChooser({ category, onSelect, onSelectTemplate, onClose }: FrameChooserProps) {
-  const [frames, setFrames] = useState<Frame[]>([]);
+export function FrameChooser({ category, onSelect, onClose }: FrameChooserProps) {
+  const [frames, setFrames] = useState<NbCardFrame[]>([]);
   const [loading, setLoading] = useState(true);
-  const [useBuiltinOnly, setUseBuiltinOnly] = useState(false);
-  const [builtinTemplates, setBuiltinTemplates] = useState<Template[]>([]);
-
-  const matchesCategory = (template: Template, cat: FrameCategory) => {
-    if (template.cardCategory) return template.cardCategory === cat;
-    const normalized = (template.category ?? "").toString().trim().toLowerCase();
-    if (cat === "ADDRESS") return normalized === "address";
-    if (cat === "BANK") return normalized === "bank";
-    if (cat === "BUSINESS") return normalized === "business";
-    if (cat === "FLYER") return normalized === "flyer";
-    if (cat === "WEDDING") return normalized === "flyer" && /wedding/i.test(template.label ?? "");
-    return false;
-  };
 
   useEffect(() => {
     async function loadFrames() {
       setLoading(true);
 
-      const builtinOnlyCategory = category === "FLYER" || category === "WEDDING";
+      const categoryParam = category.trim().toLowerCase();
+      const categoryCacheKey = `${CACHE_KEY}:${categoryParam || "all"}`;
 
-      // Load built-in frame-only templates (backgrounds/overlays from nb-card only)
-      try {
-        const manifest = await loadTemplateManifest();
-        const backgrounds = filterTemplates(manifest.templates, { type: "background" });
-        const overlays = filterTemplates(manifest.templates, { type: "overlay" });
-        const allFrameAssets = [...backgrounds, ...overlays];
-        const categoryTemplates = allFrameAssets
-          .filter(isFrameOnlyTemplate)
-          .filter((t) => matchesCategory(t, category))
-          .sort((a, b) => a.label.localeCompare(b.label));
-        setBuiltinTemplates(categoryTemplates);
-      } catch {
-        setBuiltinTemplates([]);
-      }
-
-      if (builtinOnlyCategory) {
-        setUseBuiltinOnly(true);
-        setFrames([]);
-        setLoading(false);
-        return;
-      }
+      const builtinFallback = getBuiltinFrames();
 
       // Try cache first
-      const cached = getCachedFrames();
-      if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-        const categoryFrames = cached.frames.filter((f) => f.category === category);
-        setFrames(categoryFrames);
+      const cached = getCachedFrames(categoryCacheKey);
+      if (cached && Date.now() - cached.timestamp < CACHE_TTL && Array.isArray(cached.frames)) {
+        setFrames(cached.frames);
         setLoading(false);
         return;
       }
 
-      // Fetch from API (always returns 200 now)
+      // Fetch from API (should always return 200 + valid JSON shape)
       try {
-        const res = await fetch(`/api/nb-card/frames?category=${category}`);
-        const data = res.ok ? await res.json() : { frames: [] };
-        const apiFrames: Frame[] = data.frames || [];
-        setFrames(apiFrames);
-        if (apiFrames.length > 0) {
-          setCachedFrames(apiFrames);
-        } else {
-          setUseBuiltinOnly(true);
-        }
+        const res = await fetch(`/api/nb-card/frames?category=${encodeURIComponent(categoryParam)}`);
+        const data = res.ok ? await res.json() : null;
+        const apiFrames: NbCardFrame[] = Array.isArray(data?.frames) ? data.frames : [];
+
+        const usable = apiFrames.filter((f) => typeof f?.src === "string" && f.src.startsWith("/"));
+        const nextFrames = usable.length > 0 ? usable : builtinFallback;
+        setFrames(nextFrames);
+        setCachedFrames(categoryCacheKey, nextFrames);
       } catch {
-        // Silently fall back to built-in templates
-        if (cached) {
-          const categoryFrames = cached.frames.filter((f) => f.category === category);
-          if (categoryFrames.length > 0) {
-            setFrames(categoryFrames);
-          } else {
-            setUseBuiltinOnly(true);
-          }
-        } else {
-          setUseBuiltinOnly(true);
-        }
+        // Never throw/log: silently fall back to built-in frames.
+        setFrames(builtinFallback);
       } finally {
         setLoading(false);
       }
@@ -181,68 +117,23 @@ export function FrameChooser({ category, onSelect, onSelectTemplate, onClose }: 
             </div>
           )}
 
-          {/* Show built-in templates when API unavailable or no custom frames */}
-          {!loading && useBuiltinOnly && (
-            <div className="space-y-4">
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
-                Showing built-in professional templates (always available)
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {builtinTemplates.map((template) => (
-                  <button
-                    type="button"
-                    key={template.id}
-                    onClick={() => {
-                      if (typeof (onSelectTemplate as unknown) === "function") {
-                        (onSelectTemplate as (t: Template) => void)(template);
-                      } else {
-                        onSelect(template.src);
-                      }
-                      toast.success("Template applied");
-                      onClose();
-                    }}
-                    className="group relative rounded-lg overflow-hidden border-2 border-gray-200 hover:border-purple-500 transition-all hover:shadow-lg"
-                    style={{
-                      aspectRatio:
-                        template.exportWidth && template.exportHeight
-                          ? template.exportWidth / template.exportHeight
-                          : template.orientation === "portrait"
-                          ? 3 / 4
-                          : 8 / 5,
-                    }}
-                  >
-                    <Image
-                      src={template.thumb}
-                      alt={template.label}
-                      fill
-                      className="object-cover"
-                      unoptimized
-                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Show custom frames from API when available */}
-          {!loading && !useBuiltinOnly && frames.length > 0 && (
+          {!loading && frames.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {frames.map((frame) => (
                 <button
                   type="button"
                   key={frame.id}
                   onClick={() => {
-                    onSelect(frame.imageUrl);
+                    // Frames are always selected by src. (No overlay labels/text in thumbnails.)
+                    onSelect(frame.src);
                     toast.success("Frame applied");
                     onClose();
                   }}
                   className="group relative aspect-[3/4] rounded-lg overflow-hidden border-2 border-gray-200 hover:border-purple-500 transition-all hover:shadow-lg"
                 >
                   <Image
-                    src={frame.imageUrl}
-                    alt={frame.name}
+                    src={frame.src}
+                    alt={frame.name || "Frame"}
                     fill
                     className="object-cover"
                     unoptimized
@@ -252,6 +143,10 @@ export function FrameChooser({ category, onSelect, onSelectTemplate, onClose }: 
                 </button>
               ))}
             </div>
+          )}
+
+          {!loading && frames.length === 0 && (
+            <div className="text-center py-8 text-gray-600">No frames available.</div>
           )}
         </div>
       </div>
