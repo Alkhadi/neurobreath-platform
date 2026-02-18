@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { FaTimes } from "react-icons/fa";
 import Image from "next/image";
 import { filterTemplates, loadTemplateManifest, type Template } from "@/lib/nbcard-templates";
 
@@ -46,9 +45,20 @@ function setCachedFrames(frames: Frame[]) {
       CACHE_KEY,
       JSON.stringify({ frames, timestamp: Date.now() })
     );
-  } catch (err) {
-    console.error("Failed to cache frames:", err);
+  } catch {
+    // Silently ignore cache failures
   }
+}
+
+/** Only allow frame-only assets: backgrounds and overlays from nb-card engine. */
+function isFrameOnlyTemplate(t: Template): boolean {
+  // Exclude nb-wallet engine templates (full card designs with text/icons)
+  if (t.engine === "nb-wallet") return false;
+  // Only allow backgrounds and overlays (not business-card type)
+  if (t.type !== "background" && t.type !== "overlay") return false;
+  // Safety net: exclude any src pointing to nb-wallet paths
+  if (t.src.includes("/templates/nb-wallet/")) return false;
+  return true;
 }
 
 export function FrameChooser({ category, onSelect, onSelectTemplate, onClose }: FrameChooserProps) {
@@ -74,16 +84,18 @@ export function FrameChooser({ category, onSelect, onSelectTemplate, onClose }: 
 
       const builtinOnlyCategory = category === "FLYER" || category === "WEDDING";
 
-      // Always load the current template manifests for built-in fallback
+      // Load built-in frame-only templates (backgrounds/overlays from nb-card only)
       try {
         const manifest = await loadTemplateManifest();
         const backgrounds = filterTemplates(manifest.templates, { type: "background" });
-        const categoryTemplates = backgrounds
+        const overlays = filterTemplates(manifest.templates, { type: "overlay" });
+        const allFrameAssets = [...backgrounds, ...overlays];
+        const categoryTemplates = allFrameAssets
+          .filter(isFrameOnlyTemplate)
           .filter((t) => matchesCategory(t, category))
           .sort((a, b) => a.label.localeCompare(b.label));
         setBuiltinTemplates(categoryTemplates);
-      } catch (err) {
-        console.error("Failed to load built-in templates:", err);
+      } catch {
         setBuiltinTemplates([]);
       }
 
@@ -103,22 +115,19 @@ export function FrameChooser({ category, onSelect, onSelectTemplate, onClose }: 
         return;
       }
 
-      // Fetch from API
+      // Fetch from API (always returns 200 now)
       try {
         const res = await fetch(`/api/nb-card/frames?category=${category}`);
-        if (!res.ok) throw new Error("Failed to fetch frames");
-        const data = await res.json();
-        const apiFrames = data.frames || [];
+        const data = res.ok ? await res.json() : { frames: [] };
+        const apiFrames: Frame[] = data.frames || [];
         setFrames(apiFrames);
-        setCachedFrames(apiFrames);
-        
-        // If API returns no frames, use built-in templates
-        if (apiFrames.length === 0) {
+        if (apiFrames.length > 0) {
+          setCachedFrames(apiFrames);
+        } else {
           setUseBuiltinOnly(true);
         }
-      } catch (err) {
-        console.error("Failed to fetch frames:", err);
-        // Fallback to cached frames or built-in templates
+      } catch {
+        // Silently fall back to built-in templates
         if (cached) {
           const categoryFrames = cached.frames.filter((f) => f.category === category);
           if (categoryFrames.length > 0) {
@@ -156,11 +165,12 @@ export function FrameChooser({ category, onSelect, onSelectTemplate, onClose }: 
             </p>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="p-2 hover:bg-white/20 rounded-full transition-colors"
+            className="px-4 py-2 text-sm font-medium bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
             aria-label="Close"
           >
-            <FaTimes className="text-xl" />
+            Close
           </button>
         </div>
 
@@ -180,6 +190,7 @@ export function FrameChooser({ category, onSelect, onSelectTemplate, onClose }: 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {builtinTemplates.map((template) => (
                   <button
+                    type="button"
                     key={template.id}
                     onClick={() => {
                       if (typeof (onSelectTemplate as unknown) === "function") {
@@ -209,9 +220,6 @@ export function FrameChooser({ category, onSelect, onSelectTemplate, onClose }: 
                       sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-                      <p className="text-white text-sm font-semibold">{template.label}</p>
-                    </div>
                   </button>
                 ))}
               </div>
@@ -223,6 +231,7 @@ export function FrameChooser({ category, onSelect, onSelectTemplate, onClose }: 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {frames.map((frame) => (
                 <button
+                  type="button"
                   key={frame.id}
                   onClick={() => {
                     onSelect(frame.imageUrl);
@@ -240,9 +249,6 @@ export function FrameChooser({ category, onSelect, onSelectTemplate, onClose }: 
                     sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-                    <p className="text-white text-sm font-semibold">{frame.name}</p>
-                  </div>
                 </button>
               ))}
             </div>

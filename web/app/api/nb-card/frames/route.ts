@@ -36,9 +36,10 @@ export async function GET(req: NextRequest) {
     });
 
     return NextResponse.json({ frames });
-  } catch (error) {
-    console.error("Failed to fetch frames:", error);
-    return NextResponse.json({ error: "Failed to fetch frames" }, { status: 500 });
+  } catch {
+    // Table may not be migrated yet or DB unavailable — return empty list
+    // so the client falls back to built-in templates without a console error
+    return NextResponse.json({ frames: [] });
   }
 }
 
