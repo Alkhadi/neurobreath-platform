@@ -130,6 +130,38 @@
       "exportWidth": 1600,
       "exportHeight": 900,
       "side": "back"
+    },
+    {
+      "id": "ink-frame-overlay-portrait",
+      "label": "Ink Frame Overlay",
+      "category": "Overlay",
+      "type": "overlay",
+      "orientation": "portrait",
+      "src": "/nb-card/templates/overlays/ink_frame_overlay_portrait.svg",
+      "thumb": "/nb-card/templates/thumbs/ink_frame_overlay_portrait.thumb.svg",
+      "recommendedWidth": 900,
+      "recommendedHeight": 1200,
+      "recommendedFor": ["BANK", "PROFILE", "BUSINESS"],
+      "notes": "Decorative blue ink frame overlay with transparent center. Layer over any background.",
+      "cardCategory": "PROFILE",
+      "exportWidth": 900,
+      "exportHeight": 1200
+    },
+    {
+      "id": "ink-frame-overlay-landscape",
+      "label": "Ink Frame Overlay",
+      "category": "Overlay",
+      "type": "overlay",
+      "orientation": "landscape",
+      "src": "/nb-card/templates/overlays/ink_frame_overlay_landscape.svg",
+      "thumb": "/nb-card/templates/thumbs/ink_frame_overlay_landscape.thumb.svg",
+      "recommendedWidth": 1600,
+      "recommendedHeight": 900,
+      "recommendedFor": ["BUSINESS", "PROFILE"],
+      "notes": "Decorative blue ink frame overlay with transparent center. Layer over any background.",
+      "cardCategory": "BUSINESS",
+      "exportWidth": 1600,
+      "exportHeight": 900
     }
   ]
 }
