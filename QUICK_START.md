@@ -162,4 +162,3 @@ npx prisma generate
 ---
 
 **Ready to go!** 🚀
-
