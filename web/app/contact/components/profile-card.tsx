@@ -1111,9 +1111,7 @@ export function ProfileCard({
   const templateBackgroundSrc = useTemplateMode && templateSelection?.backgroundId
     ? (isWalletTemplate || looksLikeWalletTemplate ? null : (resolvedTemplate?.src ?? getTemplatePath(templateSelection.backgroundId, 'background')))
     : null;
-  const templateOverlaySrc = useTemplateMode && templateSelection?.overlayId
-    ? (isWalletTemplate ? null : getTemplatePath(templateSelection.overlayId, 'overlay'))
-    : null;
+  // templateOverlaySrc removed — template overlays are no longer rendered (user-added layers only)
 
   const shareUrl = getProfileShareUrl(profile.id);
   const walletQrValue = isWalletTemplate ? computeWalletQrValue(profile, shareUrl) : null;
@@ -1374,15 +1372,8 @@ export function ProfileCard({
         </div>
       )}
 
-      {/* OPTIONAL PALETTE TINT (z=1) */}
-      {!isWalletTemplate && hasTemplateBackground && templateSelection?.backgroundColor ? (
-        <div className={cn("absolute inset-0 z-[1] pointer-events-none", styles.templateTint)} aria-hidden="true" />
-      ) : null}
-
-      {/* LIGHTEN HARSH TEMPLATES (z=1) */}
-      {!isWalletTemplate && hasTemplateBackground && templateTheme?.lightenOverlayAlpha && templateTheme.lightenOverlayAlpha > 0 ? (
-        <div className={cn("absolute inset-0 z-[1] pointer-events-none", styles.templateLighten)} aria-hidden="true" />
-      ) : null}
+      {/* OPTIONAL PALETTE TINT (z=1) — removed: user-added layers only */}
+      {/* LIGHTEN HARSH TEMPLATES (z=1) — removed: user-added layers only */}
 
       {/* LEGACY BACKGROUND LAYER (z=0, only if no template) */}
       {!useTemplateMode && hasLegacyBackground && resolvedBackgroundUrl && (
@@ -1395,17 +1386,8 @@ export function ProfileCard({
         </div>
       )}
 
-      {/* Readability overlay for readability (z=1) */}
-      {!isWalletTemplate && hasAnyBackground && (templateTheme?.readabilityOverlayAlpha ?? 0.35) > 0 ? (
-        <div className={cn("absolute inset-0 z-[1] pointer-events-none", styles.templateReadability)} aria-hidden="true" />
-      ) : null}
-
-      {/* TEMPLATE OVERLAY LAYER (z=2) */}
-      {!isWalletTemplate && hasTemplateBackground && templateOverlaySrc ? (
-        <div className="absolute inset-0 z-[2] pointer-events-none select-none">
-          <CaptureImage src={templateOverlaySrc} alt="Card overlay" className="w-full h-full object-cover" />
-        </div>
-      ) : null}
+      {/* Readability overlay (z=1) — removed: user-added layers only */}
+      {/* TEMPLATE OVERLAY LAYER (z=2) — removed: user-added layers only */}
 
       {/* CARD CONTENT (z=10) — hidden in canvas edit mode when user has custom layers */}
       {isWalletTemplate || (canvasEditMode && profile.layers && profile.layers.length > 0) ? null : (
@@ -1845,7 +1827,7 @@ export function ProfileCard({
 
       {/* FREE LAYOUT EDITOR: CUSTOM LAYERS (z=15) */}
       {profile.layers && profile.layers.length > 0 && (
-        <div className="absolute inset-0 z-[15] pointer-events-none">
+        <div className={cn("absolute inset-0 z-[15]", !(editMode || canvasEditMode) && "pointer-events-none")}>
           {profile.layers
             .filter((l) => l.visible)
             .sort((a, b) => a.zIndex - b.zIndex)

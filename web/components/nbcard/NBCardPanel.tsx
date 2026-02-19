@@ -1311,10 +1311,12 @@ export function NBCardPanel() {
               <FaPlus /> New Profile
             </button>
             <button
+              type="button"
               onClick={() => {
                 const el = document.getElementById("share-your-profile");
                 el?.scrollIntoView({ behavior: "smooth", block: "start" });
-                toast.message("Share Your Profile", { description: "Choose a share option on the right." });
+                // Open the share dialog in ShareButtons via custom event
+                window.dispatchEvent(new CustomEvent("nb-share-request", { detail: { action: "share" } }));
               }}
               className="flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold"
             >
