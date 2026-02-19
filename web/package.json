@@ -1,6 +1,10 @@
 {
   "name": "app",
   "private": true,
+  "packageManager": "yarn@1.22.22",
+  "engines": {
+    "node": ">=20 <21"
+  },
   "scripts": {
     "routes:generate": "tsx scripts/generateRoutesMap.ts",
     "predev": "tsx scripts/generateRoutesMap.ts",

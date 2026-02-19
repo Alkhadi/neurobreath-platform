@@ -3,6 +3,10 @@
 .cache
 .build
 *.nfs*
+
+# Vercel local state (never commit)
+.vercel
+**/.vercel
 **/.yarn/
 !**/.yarn/patches
 !**/.yarn/plugins
