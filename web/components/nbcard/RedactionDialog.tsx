@@ -261,9 +261,12 @@ export function RedactionDialog({ isOpen, profile, onClose, onConfirm }: Redacti
           )}
 
           {populatedFields.length === 0 && (
-            <p className="text-sm text-gray-500 text-center py-4">
-              No fields available to share. Please add some information to your profile first.
-            </p>
+            <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+              <h4 className="text-sm font-semibold text-purple-900 mb-2">Manual Canvas Sharing</h4>
+              <p className="text-sm text-purple-800">
+                Your card uses custom layout. When you share, the exact canvas preview (background + layers) will be captured and shared.
+              </p>
+            </div>
           )}
         </div>
 
@@ -279,7 +282,6 @@ export function RedactionDialog({ isOpen, profile, onClose, onConfirm }: Redacti
           </Button>
           <Button
             onClick={handleConfirm}
-            disabled={populatedFields.length === 0}
             className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
           >
             Continue to Share

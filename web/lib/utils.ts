@@ -123,6 +123,7 @@ export type TextAlign = "left" | "center" | "right";
 export interface CardLayerBase {
   id: string;
   type: LayerType;
+  name?: string; // user-defined layer name (for professional renaming)
   x: number; // percentage 0-100
   y: number; // percentage 0-100
   w: number; // percentage 0-100
@@ -131,6 +132,7 @@ export interface CardLayerBase {
   zIndex: number;
   locked: boolean;
   visible: boolean;
+  href?: string; // optional clickable link (for PDF/web exports)
 }
 
 export interface TextLayer extends CardLayerBase {

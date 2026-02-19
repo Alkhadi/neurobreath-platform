@@ -779,6 +779,7 @@ function CardLayerRenderer({
             alignItems: "center",
             justifyContent: layer.style.align === "center" ? "center" : layer.style.align === "right" ? "flex-end" : "flex-start",
             wordBreak: "break-word",
+            whiteSpace: "pre-wrap",
             overflow: "hidden",
             fontStyle: showPlaceholder ? "italic" : undefined,
           }}
@@ -905,7 +906,7 @@ function CardLayerRenderer({
             onChange={(e) => setEditValue(e.target.value)}
             onBlur={commitEdit}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
+              if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
                 e.preventDefault();
                 commitEdit();
               } else if (e.key === 'Escape') {
@@ -1389,8 +1390,8 @@ export function ProfileCard({
       {/* Readability overlay (z=1) — removed: user-added layers only */}
       {/* TEMPLATE OVERLAY LAYER (z=2) — removed: user-added layers only */}
 
-      {/* CARD CONTENT (z=10) — hidden in canvas edit mode when user has custom layers */}
-      {isWalletTemplate || (canvasEditMode && profile.layers && profile.layers.length > 0) ? null : (
+      {/* CARD CONTENT (z=10) — hidden in edit mode (layout or canvas) or wallet template */}
+      {isWalletTemplate || editMode || canvasEditMode ? null : (
       <div className={cn("relative z-10 p-8", contentTextClass)}>
         {isFlyerPromoPortrait ? (
                 <div className="space-y-4">
