@@ -1,5 +1,20 @@
 # Quick Start Guide
 
+## Prerequisites (Node version)
+
+This repo requires **Node 20** (see `engines.node` in `package.json`). Node is pinned via `.nvmrc`.
+
+```bash
+nvm install
+nvm use
+```
+
+If `nvm use` complains about `~/.npmrc` having `prefix` / `globalconfig`, either temporarily move `~/.npmrc` aside (see `README_DEV.md`) or run:
+
+```bash
+nvm use --delete-prefix --silent
+```
+
 ## 🚀 Get Started in 3 Steps
 
 ### 1. Run Database Migration
