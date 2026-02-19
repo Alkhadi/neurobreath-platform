@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { FaChevronDown, FaEdit, FaPlus, FaUsers } from "react-icons/fa";
 import { X } from "lucide-react";
@@ -15,11 +15,11 @@ import {
   redo as redoHistory,
   canUndo,
   canRedo,
-  createTextLayer,
+  createTextLayer as leCreateTextLayer,
   createAvatarLayer,
   createShapeLayer,
-  updateLayer,
-  deleteLayer,
+  updateLayer as leUpdateLayer,
+  deleteLayer as leDeleteLayer,
   duplicateLayer,
   bringLayerForward,
   sendLayerBackward,
@@ -29,6 +29,8 @@ import {
   alignLayersTop,
   alignLayersMiddle,
   alignLayersBottom,
+  clearLayers as leClearLayers,
+  resetLayers as leResetLayers,
   type LayerHistory,
 } from "@/lib/nb-card/layer-editor";
 import { EditorToolbar, LayersPanel } from "./EditorToolbar";
@@ -135,6 +137,11 @@ export function NBCardPanel() {
     }
   });
   
+  // Initial layers snapshot per profile — used by resetLayers()
+  const initialLayersByProfileRef = useRef<Record<string, import("@/lib/utils").CardLayer[]>>({});
+  // Debounce timer for layers-specific localStorage write
+  const layersLsTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   // Free Layout Editor state (lifted from TemplatePicker)
   const [layoutEditMode, setLayoutEditMode] = useState(false);
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
@@ -251,6 +258,11 @@ export function NBCardPanel() {
       setProfiles(sanitizedProfiles);
       setContacts(state.contacts);
 
+      // Snapshot initial layers for reset() — captured once at session start
+      sanitizedProfiles.forEach((p) => {
+        initialLayersByProfileRef.current[p.id] = p.layers || [];
+      });
+
       // Load template selection for the first profile
       const savedTemplateSelection = loadTemplateSelection(sanitizedProfiles[0]?.id);
       if (savedTemplateSelection) {
@@ -322,6 +334,25 @@ export function NBCardPanel() {
         .catch((e) => console.error("Failed to persist NBCard state", e));
     }
   }, [profiles, contacts, mounted]);
+
+  // Debounced layers-only localStorage save (nb_free_layer_editor_layers_v1)
+  useEffect(() => {
+    if (!mounted) return;
+    if (layersLsTimerRef.current) clearTimeout(layersLsTimerRef.current);
+    const profileId = profiles[currentProfileIndex]?.id;
+    const layers = profiles[currentProfileIndex]?.layers ?? [];
+    layersLsTimerRef.current = setTimeout(() => {
+      try {
+        localStorage.setItem(
+          "nb_free_layer_editor_layers_v1",
+          JSON.stringify({ profileId, layers })
+        );
+      } catch { /* ignore */ }
+    }, 300);
+    return () => {
+      if (layersLsTimerRef.current) clearTimeout(layersLsTimerRef.current);
+    };
+  }, [profiles, currentProfileIndex, mounted]);
 
   const currentProfile = useMemo(() => profiles?.[currentProfileIndex] ?? defaultProfile, [profiles, currentProfileIndex]);
 
@@ -658,7 +689,7 @@ export function NBCardPanel() {
 
   // Pro Editor: Layer management
   const handleAddText = () => {
-    const layer = createTextLayer(10, 10, "Double-click to edit");
+    const layer = leCreateTextLayer(10, 10, "Double-click to edit");
     const updatedProfile = {
       ...currentProfile,
       layers: [...(currentProfile.layers || []), layer],
@@ -755,7 +786,7 @@ export function NBCardPanel() {
   const handleDeleteLayer = useCallback(() => {
     if (!selectedLayerId) return;
     if (!confirm("Delete this layer?")) return;
-    const updatedProfile = deleteLayer(currentProfile, selectedLayerId);
+    const updatedProfile = leDeleteLayer(currentProfile, selectedLayerId);
     setProfiles((prev) =>
       prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
     );
@@ -768,7 +799,7 @@ export function NBCardPanel() {
     if (!selectedLayerId) return;
     const layer = currentProfile.layers?.find((l) => l.id === selectedLayerId);
     if (!layer) return;
-    const updatedProfile = updateLayer(currentProfile, selectedLayerId, {
+    const updatedProfile = leUpdateLayer(currentProfile, selectedLayerId, {
       locked: !layer.locked,
     });
     setProfiles((prev) =>
@@ -781,7 +812,7 @@ export function NBCardPanel() {
     if (!selectedLayerId) return;
     const layer = currentProfile.layers?.find((l) => l.id === selectedLayerId);
     if (!layer) return;
-    const updatedProfile = updateLayer(currentProfile, selectedLayerId, {
+    const updatedProfile = leUpdateLayer(currentProfile, selectedLayerId, {
       visible: !layer.visible,
     });
     setProfiles((prev) =>
@@ -854,7 +885,7 @@ export function NBCardPanel() {
   const handleToggleLayerVisibilityById = (layerId: string) => {
     const layer = currentProfile.layers?.find((l) => l.id === layerId);
     if (!layer) return;
-    const updatedProfile = updateLayer(currentProfile, layerId, {
+    const updatedProfile = leUpdateLayer(currentProfile, layerId, {
       visible: !layer.visible,
     });
     setProfiles((prev) =>
@@ -866,7 +897,7 @@ export function NBCardPanel() {
   const handleToggleLayerLockById = (layerId: string) => {
     const layer = currentProfile.layers?.find((l) => l.id === layerId);
     if (!layer) return;
-    const updatedProfile = updateLayer(currentProfile, layerId, {
+    const updatedProfile = leUpdateLayer(currentProfile, layerId, {
       locked: !layer.locked,
     });
     setProfiles((prev) =>
@@ -874,6 +905,111 @@ export function NBCardPanel() {
     );
     commitToHistory(updatedProfile);
   };
+
+  // ─── Function-name contract (spec requirement) ───────────────────────────
+
+  /** applyLayersToCanvas: apply a layers array to the live canvas instantly. */
+  const applyLayersToCanvas = useCallback((layers: CardLayer[]) => {
+    const updatedProfile = { ...currentProfile, layers };
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+  }, [currentProfile, currentProfileIndex]);
+
+  /** createTextLayer: factory wrapper with spec signature. */
+  const createTextLayer = useCallback((text?: string): CardLayer =>
+    leCreateTextLayer(10, 10, text ?? "New text"),
+  []);
+
+  /** addLayer: add a layer to the canvas instantly. */
+  const addLayer = useCallback((layer: CardLayer): void => {
+    const layers = [...(currentProfile.layers || []), layer];
+    applyLayersToCanvas(layers);
+    commitToHistory({ ...currentProfile, layers });
+  }, [currentProfile, applyLayersToCanvas, commitToHistory]);
+
+  /** updateLayer: patch a layer by id and update canvas instantly. */
+  const updateLayer = useCallback((layerId: string, patch: Partial<CardLayer>): void => {
+    const updatedProfile = leUpdateLayer(currentProfile, layerId, patch);
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+  }, [currentProfile, currentProfileIndex]);
+
+  /** deleteLayer: remove a layer by id and update canvas instantly. */
+  const deleteLayer = useCallback((layerId: string): void => {
+    const updatedProfile = leDeleteLayer(currentProfile, layerId);
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    if (selectedLayerId === layerId) setSelectedLayerId(null);
+  }, [currentProfile, currentProfileIndex, commitToHistory, selectedLayerId]);
+
+  /** reorderLayers: move layer from one index to another and update canvas. */
+  const reorderLayers = useCallback((fromIndex: number, toIndex: number): void => {
+    const arr = [...(currentProfile.layers || [])];
+    const [item] = arr.splice(fromIndex, 1);
+    arr.splice(toIndex, 0, item);
+    applyLayersToCanvas(arr);
+  }, [currentProfile, applyLayersToCanvas]);
+
+  /** resetLayers: restore initial session snapshot for this profile. */
+  const resetLayers = useCallback((): void => {
+    const initial = initialLayersByProfileRef.current[currentProfile.id] ?? [];
+    const updatedProfile = leResetLayers(currentProfile, initial);
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    toast.info("Layers reset to defaults");
+  }, [currentProfile, currentProfileIndex, commitToHistory]);
+
+  /** clearLayers: remove all layers and clear canvas instantly. */
+  const clearLayers = useCallback((): void => {
+    if (!confirm("Remove all layers from the canvas?")) return;
+    const updatedProfile = leClearLayers(currentProfile);
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    setSelectedLayerId(null);
+    toast.info("All layers cleared");
+  }, [currentProfile, currentProfileIndex, commitToHistory]);
+
+  // Layer text edit handlers (Layers panel inline edit)
+
+  /** Instant canvas update on every keystroke — no history commit yet. */
+  const handleUpdateLayerText = useCallback((layerId: string, text: string): void => {
+    setProfiles((prev) =>
+      prev.map((p, idx) => {
+        if (idx !== currentProfileIndex) return p;
+        return {
+          ...p,
+          layers: (p.layers || []).map((l) =>
+            l.id === layerId && l.type === "text"
+              ? ({ ...l, style: { ...l.style, content: text } } as CardLayer)
+              : l
+          ),
+        };
+      })
+    );
+  }, [currentProfileIndex]);
+
+  /** Commit text edit to history when editing ends (blur / Enter). */
+  const handleCommitLayerTextEdit = useCallback((): void => {
+    commitToHistory(currentProfile);
+  }, [currentProfile, commitToHistory]);
+
+  /** Add a text layer from the Layers panel (custom text). */
+  const handleAddTextFromPanel = useCallback((text?: string): void => {
+    const layer = createTextLayer(text);
+    addLayer(layer);
+    setSelectedLayerId(layer.id);
+    setLayoutEditMode(true);
+  }, [createTextLayer, addLayer]);
+
+  // ─────────────────────────────────────────────────────────────────────────
 
   // Keyboard shortcuts for pro editor
   useEffect(() => {
@@ -1256,53 +1392,55 @@ export function NBCardPanel() {
 
       {/* Professional Editor Toolbar (when Layout Edit Mode is active) */}
       {layoutEditMode && (
-        <div className="mb-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2">
-            <EditorToolbar
-              canUndo={canUndo(history)}
-              canRedo={canRedo(history)}
-              onUndo={handleUndo}
-              onRedo={handleRedo}
-              zoom={zoom}
-              onZoomIn={handleZoomIn}
-              onZoomOut={handleZoomOut}
-              onZoomFit={handleZoomFit}
-              gridEnabled={gridEnabled}
-              onToggleGrid={handleToggleGrid}
-              snapEnabled={snapEnabled}
-              onToggleSnap={handleToggleSnap}
-              selectedLayerId={selectedLayerId}
-              selectedLayer={selectedLayer}
-              onAddText={handleAddText}
-              onAddShape={handleAddShape}
-              onAddAvatar={handleAddAvatar}
-              onAddImage={handleAddImage}
-              onDuplicate={handleDuplicateLayer}
-              onDelete={handleDeleteLayer}
-              onToggleLock={handleToggleLayerLock}
-              onToggleVisibility={handleToggleLayerVisibility}
-              onBringForward={handleBringForward}
-              onSendBackward={handleSendBackward}
-              onAlign={handleAlign}
-              profile={currentProfile}
-              onProfileUpdate={(updatedProfile) => {
-                const updated = [...profiles];
-                updated[currentProfileIndex] = updatedProfile;
-                setProfiles(updated);
-                commitToHistory(updatedProfile);
-              }}
-            />
-          </div>
-          <div>
-            <LayersPanel
-              layers={currentProfile.layers || []}
-              selectedLayerId={selectedLayerId}
-              onSelectLayer={setSelectedLayerId}
-              onReorderLayers={handleReorderLayers}
-              onToggleLayerVisibility={handleToggleLayerVisibilityById}
-              onToggleLayerLock={handleToggleLayerLockById}
-            />
-          </div>
+        <div className="mb-6 space-y-4">
+          <EditorToolbar
+            canUndo={canUndo(history)}
+            canRedo={canRedo(history)}
+            onUndo={handleUndo}
+            onRedo={handleRedo}
+            zoom={zoom}
+            onZoomIn={handleZoomIn}
+            onZoomOut={handleZoomOut}
+            onZoomFit={handleZoomFit}
+            gridEnabled={gridEnabled}
+            onToggleGrid={handleToggleGrid}
+            snapEnabled={snapEnabled}
+            onToggleSnap={handleToggleSnap}
+            selectedLayerId={selectedLayerId}
+            selectedLayer={selectedLayer}
+            onAddText={handleAddText}
+            onAddShape={handleAddShape}
+            onAddAvatar={handleAddAvatar}
+            onAddImage={handleAddImage}
+            onDuplicate={handleDuplicateLayer}
+            onDelete={handleDeleteLayer}
+            onToggleLock={handleToggleLayerLock}
+            onToggleVisibility={handleToggleLayerVisibility}
+            onBringForward={handleBringForward}
+            onSendBackward={handleSendBackward}
+            onAlign={handleAlign}
+            profile={currentProfile}
+            onProfileUpdate={(updatedProfile) => {
+              const updated = [...profiles];
+              updated[currentProfileIndex] = updatedProfile;
+              setProfiles(updated);
+              commitToHistory(updatedProfile);
+            }}
+          />
+          <LayersPanel
+            layers={currentProfile.layers || []}
+            selectedLayerId={selectedLayerId}
+            onSelectLayer={setSelectedLayerId}
+            onReorderLayers={handleReorderLayers}
+            onToggleLayerVisibility={handleToggleLayerVisibilityById}
+            onToggleLayerLock={handleToggleLayerLockById}
+            onAddText={handleAddTextFromPanel}
+            onDeleteLayer={deleteLayer}
+            onUpdateLayerText={handleUpdateLayerText}
+            onEditEnd={handleCommitLayerTextEdit}
+            onResetLayers={resetLayers}
+            onClearLayers={clearLayers}
+          />
         </div>
       )}
 

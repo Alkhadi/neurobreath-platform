@@ -33,6 +33,8 @@ import {
   AlignVerticalJustifyStart,
   AlignVerticalJustifyCenter,
   AlignVerticalJustifyEnd,
+  RotateCcw,
+  Clipboard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { CardLayer, Profile } from "@/lib/utils";
@@ -864,7 +866,9 @@ export function EditorToolbar({
 }
 
 /**
- * Layers Panel - Drag to reorder, show/hide/lock
+ * Layers Panel — full CRUD: inline edit, add, paste, delete, reset, clear,
+ * drag-reorder, show/hide, lock/unlock. Canvas updates are instant (driven by
+ * state); localStorage writes are debounced by the parent.
  */
 export interface LayersPanelProps {
   layers: CardLayer[];
@@ -873,6 +877,13 @@ export interface LayersPanelProps {
   onReorderLayers: (newOrder: CardLayer[]) => void;
   onToggleLayerVisibility: (id: string) => void;
   onToggleLayerLock: (id: string) => void;
+  // CRUD additions
+  onAddText: (text?: string) => void;
+  onDeleteLayer: (id: string) => void;
+  onUpdateLayerText: (id: string, text: string) => void;
+  onEditEnd: () => void;
+  onResetLayers: () => void;
+  onClearLayers: () => void;
 }
 
 export function LayersPanel({
@@ -882,17 +893,53 @@ export function LayersPanel({
   onReorderLayers,
   onToggleLayerVisibility,
   onToggleLayerLock,
+  onAddText,
+  onDeleteLayer,
+  onUpdateLayerText,
+  onEditEnd,
+  onResetLayers,
+  onClearLayers,
 }: LayersPanelProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editText, setEditText] = useState("");
+  const [editOriginal, setEditOriginal] = useState("");
 
-  const handleDragStart = (index: number) => {
+  const startEdit = (layer: CardLayer) => {
+    if (layer.locked || layer.type !== "text") return;
+    const content = layer.style.content || "";
+    setEditingId(layer.id);
+    setEditText(content);
+    setEditOriginal(content);
+  };
+
+  const commitEdit = () => {
+    onEditEnd();
+    setEditingId(null);
+  };
+
+  const cancelEdit = () => {
+    if (editingId) onUpdateLayerText(editingId, editOriginal);
+    setEditingId(null);
+  };
+
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      onAddText(text.trim() || "Pasted text");
+    } catch {
+      onAddText("Pasted text");
+    }
+  };
+
+  const handleDragStart = (index: number, locked: boolean) => {
+    if (locked) return;
     setDraggedIndex(index);
   };
 
   const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
     if (draggedIndex === null || draggedIndex === index) return;
-
     const newLayers = [...layers];
     const [removed] = newLayers.splice(draggedIndex, 1);
     newLayers.splice(index, 0, removed);
@@ -900,78 +947,183 @@ export function LayersPanel({
     setDraggedIndex(index);
   };
 
-  const handleDragEnd = () => {
-    setDraggedIndex(null);
-  };
+  const handleDragEnd = () => setDraggedIndex(null);
 
   const sortedLayers = [...layers].sort((a, b) => b.zIndex - a.zIndex);
 
+  const getLayerLabel = (layer: CardLayer): string => {
+    if (layer.type === "text") {
+      const c = layer.style.content || "";
+      return c.length > 22 ? `${c.slice(0, 22)}\u2026` : c || "Text";
+    }
+    return layer.type.charAt(0).toUpperCase() + layer.type.slice(1);
+  };
+
+  const typePrefix = (layer: CardLayer) => {
+    if (layer.type === "text") return "T";
+    if (layer.type === "avatar") return "A";
+    return "S";
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md p-3">
-      <h3 className="text-sm font-semibold text-gray-700 mb-2">Layers</h3>
+      {/* Header row */}
+      <div className="flex items-center justify-between mb-2 gap-1 flex-wrap">
+        <h3 className="text-sm font-semibold text-gray-700">Layers</h3>
+        <div className="flex items-center gap-1 flex-wrap">
+          <button
+            type="button"
+            onClick={() => onAddText("New text")}
+            className="flex items-center gap-0.5 px-2 py-1 text-xs bg-purple-100 hover:bg-purple-200 text-purple-700 rounded transition-colors"
+            title="Add text layer"
+            aria-label="Add text layer"
+          >
+            <Type className="h-3 w-3" />
+            +&nbsp;Text
+          </button>
+          <button
+            type="button"
+            onClick={handlePaste}
+            className="flex items-center gap-0.5 px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded transition-colors"
+            title="Paste clipboard as text layer"
+            aria-label="Paste clipboard as text layer"
+          >
+            <Clipboard className="h-3 w-3" />
+            Paste
+          </button>
+          <button
+            type="button"
+            onClick={onResetLayers}
+            className="flex items-center gap-0.5 px-2 py-1 text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 rounded transition-colors"
+            title="Reset layers to session defaults"
+            aria-label="Reset layers to session defaults"
+          >
+            <RotateCcw className="h-3 w-3" />
+            Reset
+          </button>
+          <button
+            type="button"
+            onClick={onClearLayers}
+            className="flex items-center gap-0.5 px-2 py-1 text-xs bg-red-100 hover:bg-red-200 text-red-700 rounded transition-colors"
+            title="Clear all layers"
+            aria-label="Clear all layers"
+          >
+            <Trash2 className="h-3 w-3" />
+            Clear
+          </button>
+        </div>
+      </div>
+
+      {/* Layer rows */}
       <div className="space-y-1 max-h-64 overflow-y-auto">
         {sortedLayers.length === 0 ? (
           <p className="text-xs text-gray-500 text-center py-4">
             No layers yet. Add text, shapes, or images.
           </p>
         ) : (
-          sortedLayers.map((layer, _sortedIndex) => {
+          sortedLayers.map((layer) => {
             const originalIndex = layers.findIndex((l) => l.id === layer.id);
+            const isEditing = editingId === layer.id;
+            const isSelected = selectedLayerId === layer.id;
             return (
               <div
                 key={layer.id}
-                draggable
-                onDragStart={() => handleDragStart(originalIndex)}
+                draggable={!layer.locked && !isEditing}
+                onDragStart={() => handleDragStart(originalIndex, layer.locked)}
                 onDragOver={(e) => handleDragOver(e, originalIndex)}
                 onDragEnd={handleDragEnd}
-                onClick={() => onSelectLayer(layer.id)}
+                onClick={() => { if (!isEditing) onSelectLayer(layer.id); }}
+                onDoubleClick={() => startEdit(layer)}
                 className={cn(
-                  "flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition-colors",
-                  selectedLayerId === layer.id
-                    ? "bg-purple-100 border border-purple-300"
-                    : "hover:bg-gray-100 border border-transparent"
+                  "flex items-center gap-1 px-2 py-1.5 rounded transition-colors",
+                  isEditing
+                    ? "cursor-text bg-purple-50 border border-purple-300"
+                    : layer.locked
+                      ? "cursor-default opacity-70 hover:bg-gray-50 border border-transparent"
+                      : isSelected
+                        ? "cursor-pointer bg-purple-100 border border-purple-300"
+                        : "cursor-pointer hover:bg-gray-100 border border-transparent"
                 )}
               >
-                <div className="flex-1 text-sm truncate">
-                  {layer.type === "text" && layer.style.content
-                    ? `Text: ${layer.style.content.slice(0, 20)}${
-                        layer.style.content.length > 20 ? "..." : ""
-                      }`
-                    : layer.type.charAt(0).toUpperCase() + layer.type.slice(1)}
-                </div>
+                {/* Type badge */}
+                <span className="text-xs text-gray-400 font-mono flex-shrink-0 w-4 text-center select-none">
+                  {typePrefix(layer)}
+                </span>
+
+                {/* Label or inline input */}
+                {isEditing ? (
+                  <input
+                    autoFocus
+                    type="text"
+                    value={editText}
+                    aria-label="Edit layer text"
+                    onChange={(e) => {
+                      setEditText(e.target.value);
+                      onUpdateLayerText(layer.id, e.target.value);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") { e.preventDefault(); commitEdit(); }
+                      if (e.key === "Escape") { e.preventDefault(); cancelEdit(); }
+                    }}
+                    onBlur={() => commitEdit()}
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex-1 min-w-0 text-sm border border-purple-400 rounded px-1 py-0.5 bg-white focus:outline-none focus:ring-1 focus:ring-purple-400"
+                  />
+                ) : (
+                  <div
+                    className="flex-1 min-w-0 text-sm truncate"
+                    title={
+                      layer.type === "text" ? layer.style.content : undefined
+                    }
+                  >
+                    {getLayerLabel(layer)}
+                  </div>
+                )}
+
+                {/* Visibility */}
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onToggleLayerVisibility(layer.id);
-                  }}
-                  className="p-1 hover:bg-gray-200 rounded"
-                  title={layer.visible ? "Hide" : "Show"}
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onToggleLayerVisibility(layer.id); }}
+                  className="p-1 hover:bg-gray-200 rounded flex-shrink-0"
+                  title={layer.visible ? "Hide layer" : "Show layer"}
+                  aria-label={layer.visible ? "Hide layer" : "Show layer"}
                 >
-                  {layer.visible ? (
-                    <Eye className="h-3.5 w-3.5 text-gray-600" />
-                  ) : (
-                    <EyeOff className="h-3.5 w-3.5 text-gray-400" />
-                  )}
+                  {layer.visible
+                    ? <Eye className="h-3.5 w-3.5 text-gray-600" />
+                    : <EyeOff className="h-3.5 w-3.5 text-gray-400" />}
                 </button>
+
+                {/* Lock */}
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onToggleLayerLock(layer.id);
-                  }}
-                  className="p-1 hover:bg-gray-200 rounded"
-                  title={layer.locked ? "Unlock" : "Lock"}
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onToggleLayerLock(layer.id); }}
+                  className="p-1 hover:bg-gray-200 rounded flex-shrink-0"
+                  title={layer.locked ? "Unlock layer" : "Lock layer"}
+                  aria-label={layer.locked ? "Unlock layer" : "Lock layer"}
                 >
-                  {layer.locked ? (
-                    <Lock className="h-3.5 w-3.5 text-gray-600" />
-                  ) : (
-                    <Unlock className="h-3.5 w-3.5 text-gray-400" />
-                  )}
+                  {layer.locked
+                    ? <Lock className="h-3.5 w-3.5 text-gray-600" />
+                    : <Unlock className="h-3.5 w-3.5 text-gray-400" />}
+                </button>
+
+                {/* Delete */}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onDeleteLayer(layer.id); }}
+                  className="p-1 hover:bg-red-100 rounded flex-shrink-0"
+                  title="Delete layer"
+                  aria-label="Delete layer"
+                >
+                  <Trash2 className="h-3.5 w-3.5 text-red-400" />
                 </button>
               </div>
             );
           })
         )}
       </div>
+      <p className="mt-2 text-xs text-gray-400">
+        Double-click a text layer to edit inline. Drag to reorder.
+      </p>
     </div>
   );
 }

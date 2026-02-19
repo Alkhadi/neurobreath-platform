@@ -195,10 +195,12 @@ export function generateBreadcrumbsFromPath(pathname: string): Array<{ name: str
     { name: 'Home', url: SITE_CONFIG.canonicalBase },
   ];
   
+  const SEGMENT_LABELS: Record<string, string> = { uk: 'UK', us: 'US' };
+
   let currentPath = '';
   for (const path of paths) {
     currentPath += `/${path}`;
-    const name = path
+    const name = SEGMENT_LABELS[path] ?? path
       .split('-')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
