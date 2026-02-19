@@ -283,6 +283,14 @@ export function createShapeLayer(
   };
 }
 
+export function clearLayers(profile: Profile): Profile {
+  return { ...profile, layers: [] };
+}
+
+export function resetLayers(profile: Profile, initialLayers: CardLayer[]): Profile {
+  return { ...profile, layers: initialLayers };
+}
+
 // Grid and snap utilities
 
 export interface SnapPoint {

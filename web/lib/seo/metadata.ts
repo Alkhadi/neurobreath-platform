@@ -39,6 +39,9 @@ export function generatePageMetadata(config: PageMetadataConfig): Metadata {
     author,
   } = config;
 
+  // fullTitle is used for OG/Twitter only; the Next.js layout template
+  // already appends "| NeuroBreath" to the page <title>, so we pass the
+  // raw title there to avoid "Title | NeuroBreath | NeuroBreath".
   const fullTitle = generatePageTitle(title);
   const canonical = generateCanonicalUrl(path);
   const fullImageUrl = image.startsWith('http') ? image : `${SITE_CONFIG.canonicalBase}${image}`;
@@ -48,7 +51,7 @@ export function generatePageMetadata(config: PageMetadataConfig): Metadata {
   const resolvedNoindex = IS_PUBLIC_DEPLOYMENT ? (noindex ?? !getIndexingDecision(path).index) : true;
 
   return {
-    title: fullTitle,
+    title,
     description,
     keywords: allKeywords,
     authors: author ? [{ name: author }] : [{ name: SITE_CONFIG.organisation.name }],

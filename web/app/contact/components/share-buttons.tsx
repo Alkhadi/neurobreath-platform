@@ -133,6 +133,15 @@ async function dataUrlToPngBlob(dataUrl: string): Promise<Blob> {
   return await res.blob();
 }
 
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = document.createElement("img");
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error(`Failed to load image: ${src.slice(0, 60)}`));
+    img.src = src;
+  });
+}
+
 // UNIFIED EXPORT PIPELINE: Guarantees Download and Share use identical assets
 async function buildExportAssets(
   profile: Profile,
@@ -544,6 +553,10 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
   const NAMESPACED_STATE_KEY_PREFIX = "nbcard:namespacedState:v1:";
 
+  // Ref to latest handleShareNative — allows the global event listener to call it
+  // without re-registering the listener on every render.
+  const shareNativeRef = React.useRef<() => void>(() => undefined);
+
   React.useEffect(() => {
     let cancelled = false;
     getSession()
@@ -648,6 +661,14 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
   const shareUrl = React.useMemo(() => getProfileShareUrl(profile.id), [profile.id]);
 
+  // Event listener for "Share Your Profile" button in NBCardPanel.
+  // Stable effect; ref is kept current via assignment during render (below).
+  React.useEffect(() => {
+    const handler = () => { shareNativeRef.current(); };
+    window.addEventListener("nb-share-request", handler);
+    return () => window.removeEventListener("nb-share-request", handler);
+  }, []);
+
   const qrValue = React.useMemo(() => {
     const fields = lastRedactionFields ?? getDefaultIncludedFields(profile);
     const redacted = applyRedaction(profile, fields);
@@ -711,6 +732,72 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           }
 
           setIsShareFallbackOpen(true);
+        } finally {
+          setExportCaptureProfile(null);
+        }
+      });
+    });
+  }
+
+  // Keep ref current so the stable event listener always calls the latest version.
+  shareNativeRef.current = handleShareNative;
+
+  async function handleDownloadQrCardImage() {
+    requestRedactionAndRun(async (redacted) => {
+      await withBusy("qr-card", async () => {
+        setExportCaptureProfile(redacted);
+        try {
+          // Wait for the export card to render
+          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+          // 1. Capture the card preview as a high-DPI PNG
+          const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
+
+          // 2. Get the hidden QR SVG element and convert to an image
+          const qrSvg = document.getElementById("nbcard-qr-composite");
+          if (!qrSvg) throw new Error("QR composite element not found");
+          const xml = new XMLSerializer().serializeToString(qrSvg);
+          const svgDataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(xml)}`;
+
+          // 3. Load both images
+          const cardObjUrl = URL.createObjectURL(pngBlob);
+          try {
+            const [cardImg, qrImg] = await Promise.all([loadImage(cardObjUrl), loadImage(svgDataUrl)]);
+
+            // 4. Composite on an offscreen canvas
+            const canvas = document.createElement("canvas");
+            canvas.width = cardImg.naturalWidth;
+            canvas.height = cardImg.naturalHeight;
+            const ctx = canvas.getContext("2d");
+            if (!ctx) throw new Error("Canvas 2d context unavailable");
+
+            ctx.drawImage(cardImg, 0, 0);
+
+            // Place QR in bottom-right corner (22% of card width) with white background
+            const qrSize = Math.round(canvas.width * 0.22);
+            const margin = Math.round(canvas.width * 0.03);
+            const qrX = canvas.width - qrSize - margin;
+            const qrY = canvas.height - qrSize - margin;
+            const pad = Math.round(qrSize * 0.07);
+            ctx.fillStyle = "rgba(255,255,255,0.94)";
+            ctx.fillRect(qrX - pad, qrY - pad, qrSize + pad * 2, qrSize + pad * 2);
+            ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+
+            // 5. Export composite
+            const composite = await new Promise<Blob>((resolve, reject) => {
+              canvas.toBlob(
+                (b) => { if (!b) reject(new Error("Failed to create QR card blob")); else resolve(b); },
+                "image/png",
+                1.0
+              );
+            });
+
+            const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+            downloadBlob(composite, `${safeName}_QRCard.png`);
+            toast.success("QR Card image downloaded");
+          } finally {
+            URL.revokeObjectURL(cardObjUrl);
+          }
         } finally {
           setExportCaptureProfile(null);
         }
@@ -1362,6 +1449,11 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
         </div>
       ) : null}
 
+      {/* Hidden QR element used exclusively for QR Card image composite export */}
+      <div className="fixed left-[-10000px] top-0 pointer-events-none select-none" aria-hidden="true">
+        <QRCodeSVG id="nbcard-qr-composite" value={qrValue} size={256} level="M" />
+      </div>
+
       <RedactionDialog
         isOpen={isRedactionOpen}
         profile={profile}
@@ -1411,6 +1503,10 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
               <DropdownMenuItem onClick={() => setIsQrOpen(true)}>
                 <QrCode className="mr-2 h-4 w-4" />
                 QR Code
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDownloadQrCardImage} disabled={!!busyKey}>
+                <QrCode className="mr-2 h-4 w-4" />
+                QR Card Image
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handlePrint} disabled={!!busyKey}>
                 <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
