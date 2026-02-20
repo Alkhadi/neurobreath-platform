@@ -1,6 +1,6 @@
 "use client";
 
-import { Profile, cn, CardLayer, type TextLayer } from "@/lib/utils";
+import { Profile, cn, CardLayer, type TextLayer, type QrLayer } from "@/lib/utils";
 import { buildMapHref } from "@/lib/nbcard/mapHref";
 import { stripUrls, clamp } from "@/lib/nbcard/sanitize";
 import { FaInstagram, FaFacebook, FaTiktok, FaLinkedin, FaTwitter, FaGlobe, FaPhone, FaEnvelope, FaHome } from "react-icons/fa";
@@ -871,6 +871,34 @@ function CardLayerRenderer({
       }
     }
 
+    if (layer.type === "qr") {
+      const qrLayer = layer as QrLayer;
+      const qrValue = qrLayer.style.value || "https://neurobreath.app";
+      return (
+        /* eslint-disable-next-line react/forbid-dom-props */
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: qrLayer.style.background,
+          }}
+        >
+          <QRCodeSVG
+            value={qrValue || " "}
+            size={256}
+            marginSize={qrLayer.style.marginSize ?? 1}
+            level={qrLayer.style.level}
+            fgColor={qrLayer.style.fill}
+            bgColor={qrLayer.style.background}
+            style={{ width: "100%", height: "100%" }}
+          />
+        </div>
+      );
+    }
+
     return null;
   };
 
@@ -932,7 +960,7 @@ function CardLayerRenderer({
         </div>
       )}
       
-      {/* Resize handle (bottom-right corner) */}
+      {/* Resize handle (bottom-right corner) — 44px touch target wrapping 12px visual dot */}
       {editMode && isSelected && !layer.locked && (
         /* eslint-disable-next-line react/forbid-dom-props */
         <div
@@ -940,20 +968,32 @@ function CardLayerRenderer({
           data-nb-ui="true"
           style={{
             position: "absolute",
-            right: -4,
-            bottom: -4,
-            width: 12,
-            height: 12,
-            backgroundColor: "#A855F7",
-            border: "2px solid white",
-            borderRadius: "50%",
+            right: -22,
+            bottom: -22,
+            width: 44,
+            height: 44,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             cursor: "nwse-resize",
-            zIndex: 1,
+            zIndex: 10,
+            touchAction: "none",
           }}
           onPointerDown={(e) => handleResizePointerDown(e, "br")}
           onPointerMove={handleResizePointerMove}
           onPointerUp={handleResizePointerUp}
-        />
+        >
+          {/* eslint-disable-next-line react/forbid-dom-props */}
+          <div
+            style={{
+              width: 12,
+              height: 12,
+              backgroundColor: "#A855F7",
+              border: "2px solid white",
+              borderRadius: "50%",
+            }}
+          />
+        </div>
       )}
     </div>
   );
@@ -1371,7 +1411,7 @@ export function ProfileCard({
     >
       {isWalletTemplate && walletQrValue ? (
         <div ref={walletQrSourceRef} className="fixed left-[-10000px] top-0 opacity-0 pointer-events-none select-none" aria-hidden="true">
-          <QRCodeSVG value={walletQrValue} size={512} includeMargin level="M" />
+          <QRCodeSVG value={walletQrValue} size={512} marginSize={1} level="M" />
         </div>
       ) : null}
 
@@ -1468,7 +1508,7 @@ export function ProfileCard({
 
                       <div className="flex items-center justify-center">
                         <div className="rounded-xl bg-white p-2 shadow-md">
-                          <QRCodeSVG value={renderFlyerQrText(profile, shareUrl)} size={120} includeMargin level="M" />
+                          <QRCodeSVG value={renderFlyerQrText(profile, shareUrl)} size={120} marginSize={1} level="M" />
                         </div>
                       </div>
                     </div>

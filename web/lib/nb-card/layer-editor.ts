@@ -283,6 +283,32 @@ export function createShapeLayer(
   };
 }
 
+export function createQrLayer(
+  x: number = 10,
+  y: number = 10,
+  value: string = ""
+): CardLayer {
+  return {
+    id: `layer-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+    type: "qr",
+    x,
+    y,
+    w: 20,
+    h: 20,
+    rotation: 0,
+    zIndex: 100,
+    locked: false,
+    visible: true,
+    style: {
+      value,
+      fill: "#000000",
+      background: "#ffffff",
+      level: "M",
+      marginSize: 1,
+    },
+  };
+}
+
 export function clearLayers(profile: Profile): Profile {
   return { ...profile, layers: [] };
 }

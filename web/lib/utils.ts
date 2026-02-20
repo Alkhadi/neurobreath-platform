@@ -116,8 +116,9 @@ export interface Profile {
 }
 
 // NB-Card Free Layout Editor: Layer Types
-export type LayerType = "text" | "avatar" | "shape";
+export type LayerType = "text" | "avatar" | "shape" | "qr";
 export type ShapeKind = "rect" | "circle" | "line";
+export type QrErrorLevel = "L" | "M" | "Q" | "H";
 export type TextAlign = "left" | "center" | "right";
 
 export interface CardLayerBase {
@@ -172,7 +173,18 @@ export interface ShapeLayer extends CardLayerBase {
   };
 }
 
-export type CardLayer = TextLayer | AvatarLayer | ShapeLayer;
+export interface QrLayer extends CardLayerBase {
+  type: "qr";
+  style: {
+    value: string; // URL or text to encode
+    fill: string; // hex — foreground color
+    background: string; // hex — background color
+    level: QrErrorLevel; // error correction level
+    marginSize?: number; // quiet zone cells (default 1)
+  };
+}
+
+export type CardLayer = TextLayer | AvatarLayer | ShapeLayer | QrLayer;
 
 // NB-Card guest namespace: shared with `web/app/contact/lib/nbcard-assets.ts`
 const NBCARD_DEVICE_ID_KEY = "nbcard-device-id";

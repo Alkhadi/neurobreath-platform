@@ -19,6 +19,7 @@ import {
   Circle,
   User,
   Image as ImageIcon,
+  QrCode,
   Copy,
   Trash2,
   Lock,
@@ -26,7 +27,7 @@ import {
   Eye,
   EyeOff,
   ChevronUp,
- ChevronDown,
+  ChevronDown,
   AlignLeft,
   AlignCenter,
   AlignRight,
@@ -35,6 +36,10 @@ import {
   AlignVerticalJustifyEnd,
   RotateCcw,
   Clipboard,
+  ArrowUp,
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { CardLayer, Profile } from "@/lib/utils";
@@ -82,6 +87,7 @@ export interface EditorToolbarProps {
   onAddShape: (kind: "rect" | "circle" | "line") => void;
   onAddAvatar: () => void;
   onAddImage: () => void;
+  onAddQR: () => void;
   onDuplicate: () => void;
   onDelete: () => void;
   onToggleLock: () => void;
@@ -112,6 +118,7 @@ export function EditorToolbar({
   onAddShape,
   onAddAvatar,
   onAddImage,
+  onAddQR,
   onDuplicate,
   onDelete,
   onToggleLock,
@@ -286,6 +293,17 @@ export function EditorToolbar({
         >
           <ImageIcon className="h-4 w-4 mr-1" />
           Image
+        </Button>
+
+        <Button
+          onClick={onAddQR}
+          size="sm"
+          variant="outline"
+          className="h-8 px-2"
+          title="Add QR Code layer"
+        >
+          <QrCode className="h-4 w-4 mr-1" />
+          QR Code
         </Button>
       </div>
 
@@ -859,6 +877,103 @@ export function EditorToolbar({
               </div>
             </div>
           )}
+
+          {/* QR Layer Inspector */}
+          {selectedLayer.type === "qr" && (
+            <div className="grid grid-cols-2 gap-2">
+              <div className="col-span-2">
+                <label className="text-xs text-gray-600">QR Value (URL or text)</label>
+                <input
+                  type="text"
+                  aria-label="QR value"
+                  value={selectedLayer.style.value}
+                  onChange={(e) => {
+                    const updated = {
+                      ...profile,
+                      layers: profile.layers?.map((l) =>
+                        l.id === selectedLayer.id && l.type === "qr"
+                          ? { ...l, style: { ...l.style, value: e.target.value } }
+                          : l
+                      ),
+                    };
+                    onProfileUpdate(updated);
+                  }}
+                  placeholder="https://example.com"
+                  className="w-full px-2 py-1 text-sm border rounded bg-white"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-gray-600">Foreground</label>
+                <div className="flex items-center gap-1">
+                  <input
+                    type="color"
+                    aria-label="QR foreground color"
+                    value={selectedLayer.style.fill}
+                    onChange={(e) => {
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "qr"
+                            ? { ...l, style: { ...l.style, fill: e.target.value } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
+                    }}
+                    className="w-8 h-8 rounded border cursor-pointer"
+                  />
+                  <span className="text-xs text-gray-500">{selectedLayer.style.fill}</span>
+                </div>
+              </div>
+              <div>
+                <label className="text-xs text-gray-600">Background</label>
+                <div className="flex items-center gap-1">
+                  <input
+                    type="color"
+                    aria-label="QR background color"
+                    value={selectedLayer.style.background}
+                    onChange={(e) => {
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "qr"
+                            ? { ...l, style: { ...l.style, background: e.target.value } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
+                    }}
+                    className="w-8 h-8 rounded border cursor-pointer"
+                  />
+                  <span className="text-xs text-gray-500">{selectedLayer.style.background}</span>
+                </div>
+              </div>
+              <div>
+                <label className="text-xs text-gray-600">Error Correction</label>
+                <select
+                  aria-label="QR error correction level"
+                  value={selectedLayer.style.level}
+                  onChange={(e) => {
+                    const updated = {
+                      ...profile,
+                      layers: profile.layers?.map((l) =>
+                        l.id === selectedLayer.id && l.type === "qr"
+                          ? { ...l, style: { ...l.style, level: e.target.value as "L" | "M" | "Q" | "H" } }
+                          : l
+                      ),
+                    };
+                    onProfileUpdate(updated);
+                  }}
+                  className="w-full px-2 py-1 text-sm border rounded bg-white"
+                >
+                  <option value="L">L — Low</option>
+                  <option value="M">M — Medium</option>
+                  <option value="Q">Q — Quartile</option>
+                  <option value="H">H — High</option>
+                </select>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -884,6 +999,8 @@ export interface LayersPanelProps {
   onEditEnd: () => void;
   onResetLayers: () => void;
   onClearLayers: () => void;
+  // Mobile nudge
+  onNudgeLayer?: (direction: "up" | "down" | "left" | "right", fine: boolean) => void;
 }
 
 export function LayersPanel({
@@ -899,6 +1016,7 @@ export function LayersPanel({
   onEditEnd,
   onResetLayers,
   onClearLayers,
+  onNudgeLayer,
 }: LayersPanelProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -962,6 +1080,7 @@ export function LayersPanel({
   const typePrefix = (layer: CardLayer) => {
     if (layer.type === "text") return "T";
     if (layer.type === "avatar") return "A";
+    if (layer.type === "qr") return "Q";
     return "S";
   };
 
@@ -1124,6 +1243,53 @@ export function LayersPanel({
           })
         )}
       </div>
+      {/* Nudge pad — shown when a layer is selected */}
+      {selectedLayerId && onNudgeLayer && (
+        <div className="mt-2 border-t pt-2">
+          <p className="text-xs text-gray-500 mb-1">Nudge selected layer</p>
+          <div className="flex flex-col items-center gap-0.5 w-fit mx-auto">
+            <button
+              type="button"
+              aria-label="Nudge up"
+              onPointerDown={() => onNudgeLayer("up", false)}
+              className="w-9 h-9 flex items-center justify-center rounded bg-gray-100 hover:bg-purple-100 active:bg-purple-200 touch-none"
+            >
+              <ArrowUp className="h-4 w-4 text-gray-600" />
+            </button>
+            <div className="flex items-center gap-0.5">
+              <button
+                type="button"
+                aria-label="Nudge left"
+                onPointerDown={() => onNudgeLayer("left", false)}
+                className="w-9 h-9 flex items-center justify-center rounded bg-gray-100 hover:bg-purple-100 active:bg-purple-200 touch-none"
+              >
+                <ArrowLeft className="h-4 w-4 text-gray-600" />
+              </button>
+              <div className="w-9 h-9 flex items-center justify-center rounded bg-gray-50 text-[9px] text-gray-400 select-none">
+                1%
+              </div>
+              <button
+                type="button"
+                aria-label="Nudge right"
+                onPointerDown={() => onNudgeLayer("right", false)}
+                className="w-9 h-9 flex items-center justify-center rounded bg-gray-100 hover:bg-purple-100 active:bg-purple-200 touch-none"
+              >
+                <ArrowRight className="h-4 w-4 text-gray-600" />
+              </button>
+            </div>
+            <button
+              type="button"
+              aria-label="Nudge down"
+              onPointerDown={() => onNudgeLayer("down", false)}
+              className="w-9 h-9 flex items-center justify-center rounded bg-gray-100 hover:bg-purple-100 active:bg-purple-200 touch-none"
+            >
+              <ArrowDown className="h-4 w-4 text-gray-600" />
+            </button>
+          </div>
+          <p className="text-[10px] text-gray-400 text-center mt-1">Arrow keys also work (&frac14; = hold Shift)</p>
+        </div>
+      )}
+
       <p className="mt-2 text-xs text-gray-400">
         Double-click a text layer to edit. Enter for line breaks, Ctrl+Enter to finish. Drag to reorder.
       </p>

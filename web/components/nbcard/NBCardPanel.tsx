@@ -7,7 +7,7 @@ import { X } from "lucide-react";
 import { getSession } from "next-auth/react";
 
 import type { Contact, Profile, CardLayer, NbcardSavedCard } from "@/lib/utils";
-import { defaultProfile, getNbcardSavedNamespace, upsertNbcardSavedCard } from "@/lib/utils";
+import { defaultProfile, getNbcardSavedNamespace, upsertNbcardSavedCard, loadNbcardSavedCards, deleteNbcardSavedCard } from "@/lib/utils";
 import { generateProfileId, getCategoryFromProfile } from "@/lib/nbcard-saved-cards";
 import {
   Dialog,
@@ -28,6 +28,7 @@ import {
   createTextLayer as leCreateTextLayer,
   createAvatarLayer,
   createShapeLayer,
+  createQrLayer,
   updateLayer as leUpdateLayer,
   deleteLayer as leDeleteLayer,
   duplicateLayer,
@@ -46,6 +47,7 @@ import {
 import { EditorToolbar, LayersPanel } from "./EditorToolbar";
 
 import { exportNbcardLocalState, loadNbcardLocalState, saveNbcardLocalState } from "@/app/contact/lib/nbcard-storage";
+import { getProfileShareUrl } from "@/app/contact/lib/nbcard-share";
 import { ContactCapture } from "@/app/contact/components/contact-capture";
 import { ProfileCard } from "@/app/contact/components/profile-card";
 import { ProfileManager } from "@/app/contact/components/profile-manager";
@@ -161,6 +163,12 @@ export function NBCardPanel() {
   const [saveAsName, setSaveAsName] = useState('');
   const [autosaveIndicator, setAutosaveIndicator] = useState(false);
   const autosaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Phase 2: Card Details panel (canvas-only cards)
+  const [showCardDetails, setShowCardDetails] = useState(false);
+
+  // Phase 4: Saved Layouts list
+  const [showSavedLayouts, setShowSavedLayouts] = useState(false);
   
   // Canvas Edit Mode - inline editing on the canvas preview
   const [canvasEditMode, setCanvasEditMode] = useState(() => {
@@ -789,6 +797,41 @@ export function NBCardPanel() {
     input.click();
   };
 
+  const handleAddQR = () => {
+    const shareUrl = getProfileShareUrl(currentProfile.id);
+    const layer = createQrLayer(10, 10, shareUrl);
+    const updatedProfile = {
+      ...currentProfile,
+      layers: [...(currentProfile.layers || []), layer],
+    };
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    setSelectedLayerId(layer.id);
+    setLayoutEditMode(true);
+    toast.success("QR Code layer added");
+  };
+
+  const handleNudgeLayer = useCallback((direction: "up" | "down" | "left" | "right", fine: boolean) => {
+    if (!selectedLayerId) return;
+    const step = fine ? 0.25 : 1;
+    const updatedProfile = {
+      ...currentProfile,
+      layers: (currentProfile.layers || []).map((l) => {
+        if (l.id !== selectedLayerId) return l;
+        return {
+          ...l,
+          x: direction === "left" ? Math.max(0, l.x - step) : direction === "right" ? Math.min(100, l.x + step) : l.x,
+          y: direction === "up" ? Math.max(0, l.y - step) : direction === "down" ? Math.min(100, l.y + step) : l.y,
+        };
+      }),
+    };
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+  }, [selectedLayerId, currentProfile, currentProfileIndex]);
+
   const handleDuplicateLayer = useCallback(() => {
     if (!selectedLayerId) return;
     const updatedProfile = duplicateLayer(currentProfile, selectedLayerId);
@@ -1091,6 +1134,15 @@ export function NBCardPanel() {
         e.preventDefault();
         handleDuplicateLayer();
       }
+      // Arrow nudge: 1% per press, 0.25% with Shift
+      if (selectedLayerId && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        e.preventDefault();
+        const fine = e.shiftKey;
+        if (e.key === "ArrowUp") handleNudgeLayer("up", fine);
+        if (e.key === "ArrowDown") handleNudgeLayer("down", fine);
+        if (e.key === "ArrowLeft") handleNudgeLayer("left", fine);
+        if (e.key === "ArrowRight") handleNudgeLayer("right", fine);
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -1103,10 +1155,54 @@ export function NBCardPanel() {
     handleRedo,
     handleDeleteLayer,
     handleDuplicateLayer,
+    handleNudgeLayer,
   ]);
 
   const selectedLayer =
     currentProfile.layers?.find((l) => l.id === selectedLayerId) || null;
+
+  // Phase 2: detect canvas-only card (has layers but no form fields)
+  const hasProfileFormData = !!(
+    currentProfile.fullName?.trim() || currentProfile.phone?.trim() ||
+    currentProfile.email?.trim() || currentProfile.jobTitle?.trim() ||
+    currentProfile.website?.trim()
+  );
+  const isCanvasOnly = !hasProfileFormData && (currentProfile.layers?.length ?? 0) > 0;
+
+  // Phase 2: auto-fill Card Details from text layer content
+  const autoFillFromLayers = useCallback(() => {
+    const textContents = (currentProfile.layers || [])
+      .filter((l) => l.type === "text")
+      .map((l) => (l.type === "text" ? l.style.content : ""));
+
+    const emailMatch = textContents.join("\n").match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+    const phoneMatch = textContents.join("\n").match(/(\+?[\d\s\-().]{7,})/);
+    const urlMatch = textContents.join("\n").match(/https?:\/\/[^\s]+/);
+
+    const patch: Partial<Profile> = {};
+    if (emailMatch && !currentProfile.email) patch.email = emailMatch[0];
+    if (phoneMatch && !currentProfile.phone) patch.phone = phoneMatch[0].trim();
+    if (urlMatch && !currentProfile.website) patch.website = urlMatch[0];
+
+    if (Object.keys(patch).length === 0) {
+      toast.info("No contact info found in text layers");
+      return;
+    }
+    const updatedProfile = { ...currentProfile, ...patch };
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    toast.success("Auto-filled from layers");
+  }, [currentProfile, currentProfileIndex, commitToHistory]);
+
+  // Phase 4: compute saved layouts for current namespace
+  const savedLayouts = useMemo((): NbcardSavedCard[] => {
+    if (typeof window === "undefined") return [];
+    const namespace = getNbcardSavedNamespace(sessionEmail ?? undefined);
+    return loadNbcardSavedCards(namespace).sort((a, b) => b.updatedAt - a.updatedAt);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionEmail, autosaveIndicator]); // re-compute after each autosave / Save As
 
   return (
     <>
@@ -1434,6 +1530,7 @@ export function NBCardPanel() {
             onAddShape={handleAddShape}
             onAddAvatar={handleAddAvatar}
             onAddImage={handleAddImage}
+            onAddQR={handleAddQR}
             onDuplicate={handleDuplicateLayer}
             onDelete={handleDeleteLayer}
             onToggleLock={handleToggleLayerLock}
@@ -1462,6 +1559,7 @@ export function NBCardPanel() {
             onEditEnd={handleCommitLayerTextEdit}
             onResetLayers={resetLayers}
             onClearLayers={clearLayers}
+            onNudgeLayer={handleNudgeLayer}
           />
         </div>
       )}
@@ -1511,6 +1609,141 @@ export function NBCardPanel() {
               </button>
             </div>
           </div>
+
+          {/* Phase 2: Card Details — shown for canvas-only cards */}
+          {isCanvasOnly && (
+            <div className="mt-3 border-t pt-3">
+              <button
+                type="button"
+                onClick={() => setShowCardDetails((v) => !v)}
+                className="flex items-center gap-1 text-xs font-semibold text-gray-600 hover:text-purple-700 transition-colors w-full text-left"
+              >
+                <span className={`transition-transform ${showCardDetails ? "rotate-90" : ""}`}>&#9654;</span>
+                Card Details (for sharing)
+              </button>
+              {showCardDetails && (
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-xs text-gray-500" htmlFor="fle-name">Name</label>
+                    <input
+                      id="fle-name"
+                      type="text"
+                      value={currentProfile.fullName || ""}
+                      onChange={(e) => {
+                        const up = { ...currentProfile, fullName: e.target.value };
+                        setProfiles((prev) => prev.map((p, i) => i === currentProfileIndex ? up : p));
+                      }}
+                      placeholder="Your name"
+                      className="w-full px-2 py-1 text-sm border rounded bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-500" htmlFor="fle-phone">Phone</label>
+                    <input
+                      id="fle-phone"
+                      type="tel"
+                      value={currentProfile.phone || ""}
+                      onChange={(e) => {
+                        const up = { ...currentProfile, phone: e.target.value };
+                        setProfiles((prev) => prev.map((p, i) => i === currentProfileIndex ? up : p));
+                      }}
+                      placeholder="+1 555 000 0000"
+                      className="w-full px-2 py-1 text-sm border rounded bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-500" htmlFor="fle-email">Email</label>
+                    <input
+                      id="fle-email"
+                      type="email"
+                      value={currentProfile.email || ""}
+                      onChange={(e) => {
+                        const up = { ...currentProfile, email: e.target.value };
+                        setProfiles((prev) => prev.map((p, i) => i === currentProfileIndex ? up : p));
+                      }}
+                      placeholder="you@example.com"
+                      className="w-full px-2 py-1 text-sm border rounded bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-500" htmlFor="fle-website">Website</label>
+                    <input
+                      id="fle-website"
+                      type="url"
+                      value={currentProfile.website || ""}
+                      onChange={(e) => {
+                        const up = { ...currentProfile, website: e.target.value };
+                        setProfiles((prev) => prev.map((p, i) => i === currentProfileIndex ? up : p));
+                      }}
+                      placeholder="https://example.com"
+                      className="w-full px-2 py-1 text-sm border rounded bg-white"
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <button
+                      type="button"
+                      onClick={autoFillFromLayers}
+                      className="px-3 py-1.5 text-xs font-semibold rounded border border-purple-300 text-purple-700 hover:bg-purple-50 transition-colors"
+                    >
+                      Auto-fill from text layers
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Phase 4: Saved Layouts list */}
+          {savedLayouts.length > 0 && (
+            <div className="mt-3 border-t pt-3">
+              <button
+                type="button"
+                onClick={() => setShowSavedLayouts((v) => !v)}
+                className="flex items-center gap-1 text-xs font-semibold text-gray-600 hover:text-purple-700 transition-colors w-full text-left"
+              >
+                <span className={`transition-transform ${showSavedLayouts ? "rotate-90" : ""}`}>&#9654;</span>
+                My Saved Layouts ({savedLayouts.length})
+              </button>
+              {showSavedLayouts && (
+                <div className="mt-2 space-y-1 max-h-52 overflow-y-auto">
+                  {savedLayouts.map((card) => (
+                    <div key={card.id} className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-50 border border-transparent hover:border-gray-200">
+                      <span className="flex-1 text-xs text-gray-700 truncate" title={card.title}>{card.title}</span>
+                      <span className="text-[10px] text-gray-400 shrink-0">{new Date(card.updatedAt).toLocaleDateString()}</span>
+                      <button
+                        type="button"
+                        aria-label={`Load layout ${card.title}`}
+                        onClick={() => {
+                          const loaded = { ...card.snapshot, id: currentProfile.id };
+                          setProfiles((prev) => prev.map((p, i) => i === currentProfileIndex ? loaded : p));
+                          commitToHistory(loaded);
+                          toast.success(`Loaded "${card.title}"`);
+                        }}
+                        className="shrink-0 px-2 py-0.5 text-[10px] font-semibold rounded bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors"
+                      >
+                        Load
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={`Delete layout ${card.title}`}
+                        onClick={() => {
+                          if (!confirm(`Delete "${card.title}"?`)) return;
+                          const namespace = getNbcardSavedNamespace(sessionEmail ?? undefined);
+                          deleteNbcardSavedCard(namespace, card.id);
+                          // Trigger re-render via autosaveIndicator toggle
+                          setAutosaveIndicator((v) => !v);
+                          toast.success(`Deleted "${card.title}"`);
+                        }}
+                        className="shrink-0 px-2 py-0.5 text-[10px] font-semibold rounded bg-red-100 text-red-600 hover:bg-red-200 transition-colors"
+                      >
+                        Del
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
