@@ -1036,6 +1036,24 @@ export function ProfileCard({
       resolvedTemplate.fieldsSrc.trim()
   );
 
+  // A "canvas-only" card has user-placed layers but no form data filled in.
+  // In this mode, the system-generated default content (avatar circle, contact
+  // rows, gradient placeholder) must be suppressed so only the user's layers
+  // are visible — both in the live preview AND in exports.
+  const hasProfileData = !!(
+    profile.fullName?.trim() ||
+    profile.phone?.trim() ||
+    profile.email?.trim() ||
+    profile.jobTitle?.trim() ||
+    profile.website?.trim() ||
+    (profile.addressCard as { addressLine1?: string } | undefined)?.addressLine1?.trim() ||
+    (profile.bankCard as { accountNumber?: string } | undefined)?.accountNumber?.trim() ||
+    (profile.businessCard as { companyName?: string } | undefined)?.companyName?.trim() ||
+    (profile.flyerCard as { headline?: string } | undefined)?.headline?.trim() ||
+    (profile.weddingCard as { headline?: string } | undefined)?.headline?.trim()
+  );
+  const isCanvasOnly = !hasProfileData && (profile.layers?.length ?? 0) > 0;
+
   // Phase 2: Get export dimensions from template metadata
   const exportDimensions = resolvedTemplate ? getTemplateExportDimensions(resolvedTemplate) : { width: 1600, height: 900 };
   const aspectRatioValue = exportDimensions.width / exportDimensions.height;
@@ -1065,14 +1083,15 @@ export function ProfileCard({
     // Template background filter (nb-wallet templates render their own styling)
     el.style.setProperty("--nbcard-template-bg-filter", theme?.backgroundFilter ?? "none");
 
-    // Overlays (keep consistent for UI + exports)
+    // Overlays (keep consistent for UI + exports).
+    // Canvas-only cards suppress these so system overlays don't obscure user layers.
     el.style.setProperty(
       "--nbcard-template-readability-alpha",
-      String(isWalletTemplate ? 0 : typeof theme?.readabilityOverlayAlpha === "number" ? theme.readabilityOverlayAlpha : 0.35)
+      String(isWalletTemplate || isCanvasOnly ? 0 : typeof theme?.readabilityOverlayAlpha === "number" ? theme.readabilityOverlayAlpha : 0.35)
     );
     el.style.setProperty(
       "--nbcard-template-lighten-alpha",
-      String(isWalletTemplate ? 0 : typeof theme?.lightenOverlayAlpha === "number" ? theme.lightenOverlayAlpha : 0)
+      String(isWalletTemplate || isCanvasOnly ? 0 : typeof theme?.lightenOverlayAlpha === "number" ? theme.lightenOverlayAlpha : 0)
     );
 
     // Palette tint
@@ -1092,7 +1111,7 @@ export function ProfileCard({
     } else {
       el.style.removeProperty("--nb-accent");
     }
-  }, [profile, isWalletTemplate, templateSelection?.backgroundColor, templateSelection?.backgroundId, templateTheme]);
+  }, [profile, isWalletTemplate, isCanvasOnly, templateSelection?.backgroundColor, templateSelection?.backgroundId, templateTheme]);
   
   // Build template paths from IDs
   // New naming: "modern-geometric-landscape" -> "modern-geometric-landscape.svg"
@@ -1390,8 +1409,9 @@ export function ProfileCard({
       {/* Readability overlay (z=1) — removed: user-added layers only */}
       {/* TEMPLATE OVERLAY LAYER (z=2) — removed: user-added layers only */}
 
-      {/* CARD CONTENT (z=10) — hidden in edit mode (layout or canvas) or wallet template */}
-      {isWalletTemplate || editMode || canvasEditMode ? null : (
+      {/* CARD CONTENT (z=10) — hidden in edit mode (layout or canvas), wallet template,
+          or canvas-only cards (layers present but no form data filled in) */}
+      {isWalletTemplate || editMode || canvasEditMode || isCanvasOnly ? null : (
       <div className={cn("relative z-10 p-8", contentTextClass)}>
         {isFlyerPromoPortrait ? (
                 <div className="space-y-4">
