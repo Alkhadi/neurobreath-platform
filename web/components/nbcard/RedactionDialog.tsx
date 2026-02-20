@@ -48,18 +48,19 @@ export function RedactionDialog({ isOpen, profile, onClose, onConfirm }: Redacti
     });
   };
 
+  // Group fields by category
+  const populatedFields = getPopulatedFields(profile);
+
   const handleConfirm = () => {
-    if (includedFields.size === 0) {
-      // Warn if no fields selected
+    // When no profile fields are populated the user is sharing a canvas-only card.
+    // Proceed immediately without a confirmation dialog.
+    if (includedFields.size === 0 && populatedFields.length > 0) {
       if (!confirm("You haven't selected any fields to share. Are you sure?")) {
         return;
       }
     }
     onConfirm(includedFields);
   };
-
-  // Group fields by category
-  const populatedFields = getPopulatedFields(profile);
   const essentialFields = populatedFields.filter((f) =>
     ["fullName", "phone", "email", "jobTitle"].includes(f)
   );

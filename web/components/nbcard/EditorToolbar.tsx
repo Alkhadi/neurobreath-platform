@@ -1050,11 +1050,11 @@ export function LayersPanel({
                   {typePrefix(layer)}
                 </span>
 
-                {/* Label or inline input */}
+                {/* Label or inline textarea (multiline) */}
                 {isEditing ? (
-                  <input
+                  <textarea
                     autoFocus
-                    type="text"
+                    rows={3}
                     value={editText}
                     aria-label="Edit layer text"
                     onChange={(e) => {
@@ -1062,11 +1062,14 @@ export function LayersPanel({
                       onUpdateLayerText(layer.id, e.target.value);
                     }}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") { e.preventDefault(); commitEdit(); }
+                      // Escape cancels; Enter adds a newline (natural textarea behaviour)
                       if (e.key === "Escape") { e.preventDefault(); cancelEdit(); }
+                      // Ctrl/Cmd+Enter commits
+                      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); commitEdit(); }
                     }}
                     onBlur={() => commitEdit()}
                     onClick={(e) => e.stopPropagation()}
+                    style={{ resize: "none" }}
                     className="flex-1 min-w-0 text-sm border border-purple-400 rounded px-1 py-0.5 bg-white focus:outline-none focus:ring-1 focus:ring-purple-400"
                   />
                 ) : (
@@ -1122,7 +1125,7 @@ export function LayersPanel({
         )}
       </div>
       <p className="mt-2 text-xs text-gray-400">
-        Double-click a text layer to edit inline. Drag to reorder.
+        Double-click a text layer to edit. Enter for line breaks, Ctrl+Enter to finish. Drag to reorder.
       </p>
     </div>
   );

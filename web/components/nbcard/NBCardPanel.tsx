@@ -6,8 +6,18 @@ import { FaChevronDown, FaEdit, FaPlus, FaUsers } from "react-icons/fa";
 import { X } from "lucide-react";
 import { getSession } from "next-auth/react";
 
-import type { Contact, Profile, CardLayer } from "@/lib/utils";
-import { defaultProfile } from "@/lib/utils";
+import type { Contact, Profile, CardLayer, NbcardSavedCard } from "@/lib/utils";
+import { defaultProfile, getNbcardSavedNamespace, upsertNbcardSavedCard } from "@/lib/utils";
+import { generateProfileId, getCategoryFromProfile } from "@/lib/nbcard-saved-cards";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   createLayerHistory,
   pushHistory,
@@ -145,6 +155,12 @@ export function NBCardPanel() {
   // Free Layout Editor state (lifted from TemplatePicker)
   const [layoutEditMode, setLayoutEditMode] = useState(false);
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
+
+  // Save As dialog for named layouts
+  const [showSaveAsDialog, setShowSaveAsDialog] = useState(false);
+  const [saveAsName, setSaveAsName] = useState('');
+  const [autosaveIndicator, setAutosaveIndicator] = useState(false);
+  const autosaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
   // Canvas Edit Mode - inline editing on the canvas preview
   const [canvasEditMode, setCanvasEditMode] = useState(() => {
@@ -348,6 +364,10 @@ export function NBCardPanel() {
           JSON.stringify({ profileId, layers })
         );
       } catch { /* ignore */ }
+      // Flash autosave indicator for 2s
+      setAutosaveIndicator(true);
+      if (autosaveTimerRef.current) clearTimeout(autosaveTimerRef.current);
+      autosaveTimerRef.current = setTimeout(() => setAutosaveIndicator(false), 2000);
     }, 300);
     return () => {
       if (layersLsTimerRef.current) clearTimeout(layersLsTimerRef.current);
@@ -929,7 +949,7 @@ export function NBCardPanel() {
   }, [currentProfile, applyLayersToCanvas, commitToHistory]);
 
   /** updateLayer: patch a layer by id and update canvas instantly. */
-  const updateLayer = useCallback((layerId: string, patch: Partial<CardLayer>): void => {
+  const _updateLayer = useCallback((layerId: string, patch: Partial<CardLayer>): void => {
     const updatedProfile = leUpdateLayer(currentProfile, layerId, patch);
     setProfiles((prev) =>
       prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
@@ -947,7 +967,7 @@ export function NBCardPanel() {
   }, [currentProfile, currentProfileIndex, commitToHistory, selectedLayerId]);
 
   /** reorderLayers: move layer from one index to another and update canvas. */
-  const reorderLayers = useCallback((fromIndex: number, toIndex: number): void => {
+  const _reorderLayers = useCallback((fromIndex: number, toIndex: number): void => {
     const arr = [...(currentProfile.layers || [])];
     const [item] = arr.splice(fromIndex, 1);
     arr.splice(toIndex, 0, item);
@@ -1000,6 +1020,26 @@ export function NBCardPanel() {
   const handleCommitLayerTextEdit = useCallback((): void => {
     commitToHistory(currentProfile);
   }, [currentProfile, commitToHistory]);
+
+  /** Save current canvas layers as a named card in the saved-cards store. */
+  const handleSaveAsLayout = useCallback(() => {
+    const name = saveAsName.trim() || `Layout — ${new Date().toLocaleDateString()}`;
+    const namespace = getNbcardSavedNamespace(sessionEmail ?? undefined);
+    const id = generateProfileId();
+    const category = getCategoryFromProfile(currentProfile);
+    const record: NbcardSavedCard = {
+      id,
+      title: name,
+      category,
+      snapshot: { ...currentProfile, id },
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    };
+    upsertNbcardSavedCard(namespace, record);
+    setShowSaveAsDialog(false);
+    setSaveAsName('');
+    toast.success(`Saved as "${name}"`);
+  }, [saveAsName, sessionEmail, currentProfile]);
 
   /** Add a text layer from the Layers panel (custom text). */
   const handleAddTextFromPanel = useCallback((text?: string): void => {
@@ -1248,16 +1288,17 @@ export function NBCardPanel() {
                 : "Use the buttons below to edit your profile or layout"}
           </p>
 
-          {/* Canvas Edit Mode & Layout Edit Mode Toggles */}
+          {/* Canvas Edit Mode Toggle */}
           {currentProfile && (
             <div className="flex justify-center gap-3 mb-4">
               <button
+                type="button"
                 onClick={() => {
                   const newMode = !canvasEditMode;
                   setCanvasEditMode(newMode);
                   try {
                     localStorage.setItem('nb-card:canvas-edit-mode', newMode ? '1' : '0');
-                  } catch {}
+                  } catch { /* ignore */ }
                   if (newMode) {
                     setLayoutEditMode(false);
                     setSelectedLayerId(null);
@@ -1271,27 +1312,6 @@ export function NBCardPanel() {
                 }`}
               >
                 {canvasEditMode ? 'Exit Canvas Edit' : 'Canvas Edit'}
-              </button>
-              <button
-                onClick={() => {
-                  setLayoutEditMode(!layoutEditMode);
-                  if (!layoutEditMode) {
-                    setCanvasEditMode(false);
-                    try {
-                      localStorage.setItem('nb-card:canvas-edit-mode', '0');
-                    } catch {}
-                    toast.info("Layout Edit Mode enabled. Click layers to select and drag to reposition.");
-                  } else {
-                    setSelectedLayerId(null);
-                  }
-                }}
-                className={`px-4 py-2 rounded-lg font-semibold transition-all ${
-                  layoutEditMode
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:border-purple-400'
-                }`}
-              >
-                {layoutEditMode ? 'Exit Edit Layout' : 'Edit Layout'}
               </button>
             </div>
           )}
@@ -1446,6 +1466,54 @@ export function NBCardPanel() {
         </div>
       )}
 
+      {/* Free Layout Editor card — above Card Templates */}
+      <div className="mb-4">
+        <div className="rounded-lg border bg-muted/20 p-4">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <div>
+              <h3 className="text-sm font-semibold">Free Layout Editor</h3>
+              <p className="text-xs text-muted-foreground">Add text, shapes, and images that you can drag and resize</p>
+            </div>
+            <div className="flex items-center gap-2">
+              {autosaveIndicator && (
+                <span className="text-xs text-emerald-600 font-medium">Saved &#10003;</span>
+              )}
+              {(currentProfile.layers?.length ?? 0) > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSaveAsName(currentProfile.fullName ? `${currentProfile.fullName}'s Layout` : 'My Layout');
+                    setShowSaveAsDialog(true);
+                  }}
+                  className="px-3 py-1.5 rounded-md text-xs font-semibold bg-white border border-gray-200 text-gray-700 hover:border-purple-400 hover:text-purple-700 transition-all"
+                >
+                  Save As...
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  setLayoutEditMode(!layoutEditMode);
+                  if (!layoutEditMode) {
+                    setCanvasEditMode(false);
+                    try { localStorage.setItem('nb-card:canvas-edit-mode', '0'); } catch { /* ignore */ }
+                  } else {
+                    setSelectedLayerId(null);
+                  }
+                }}
+                className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
+                  layoutEditMode
+                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:border-purple-400'
+                }`}
+              >
+                {layoutEditMode ? 'Exit Edit Layout' : 'Edit Layout'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Template Picker Section */}
       <div className="mb-8">
         <TemplatePicker
@@ -1453,16 +1521,6 @@ export function NBCardPanel() {
           orientation={templateSelection.orientation || 'landscape'}
           onSelectionChange={handleTemplateSelectionChange}
           onCreateFromTemplate={handleCreateFromTemplate}
-          profile={currentProfile}
-          onProfileUpdate={(updatedProfile) => {
-            const updated = [...profiles];
-            updated[currentProfileIndex] = updatedProfile;
-            setProfiles(updated);
-          }}
-          editMode={layoutEditMode}
-          selectedLayerId={selectedLayerId}
-          onEditModeChange={setLayoutEditMode}
-          onSelectedLayerChange={setSelectedLayerId}
         />
       </div>
 
@@ -1528,6 +1586,41 @@ export function NBCardPanel() {
           </div>
         </div>
       </div>
+
+      {/* Save As Named Layout Dialog */}
+      <Dialog open={showSaveAsDialog} onOpenChange={(open) => !open && setShowSaveAsDialog(false)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Save layout as...</DialogTitle>
+            <DialogDescription>
+              Give your canvas layout a name. It will appear in the Saved Cards section where you can load it later.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-3">
+            <Input
+              aria-label="Layout name"
+              placeholder="e.g. My business card layout"
+              value={saveAsName}
+              onChange={(e) => setSaveAsName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') { e.preventDefault(); handleSaveAsLayout(); }
+                if (e.key === 'Escape') { e.preventDefault(); setShowSaveAsDialog(false); }
+              }}
+              autoFocus
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" type="button" onClick={() => setShowSaveAsDialog(false)}>Cancel</Button>
+            <Button
+              type="button"
+              onClick={handleSaveAsLayout}
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Profile Manager Modal */}
       {showProfileManager && editingProfile && (
