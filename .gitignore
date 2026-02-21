@@ -60,3 +60,4 @@ playwright-report
 # Keep baselines committed
 !web/perf/baseline/
 !web/tests/visual/__screenshots__/
+.claude/
