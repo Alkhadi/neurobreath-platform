@@ -28,6 +28,8 @@ import {
   EyeOff,
   ChevronUp,
   ChevronDown,
+  ChevronsUp,
+  ChevronsDown,
   AlignLeft,
   AlignCenter,
   AlignRight,
@@ -41,6 +43,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Link2,
+  Upload,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { CardLayer, Profile } from "@/lib/utils";
@@ -95,6 +98,9 @@ export interface EditorToolbarProps {
   onToggleVisibility: () => void;
   onBringForward: () => void;
   onSendBackward: () => void;
+  onBringToFront: () => void;
+  onSendToBack: () => void;
+  onAvatarUpload?: (layerId: string) => void;
   onAlign: (direction: "left" | "center" | "right" | "top" | "middle" | "bottom") => void;
   profile: Profile;
   onProfileUpdate: (profile: Profile) => void;
@@ -126,6 +132,9 @@ export function EditorToolbar({
   onToggleVisibility,
   onBringForward,
   onSendBackward,
+  onBringToFront,
+  onSendToBack,
+  onAvatarUpload,
   onAlign,
   profile,
   onProfileUpdate,
@@ -364,8 +373,26 @@ export function EditorToolbar({
           </div>
 
           {/* Arrange */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs text-gray-600">Arrange:</span>
+            <Button
+              onClick={onSendToBack}
+              size="sm"
+              variant="outline"
+              className="h-7 px-2"
+              title="Send to Back"
+            >
+              <ChevronsDown className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              onClick={onSendBackward}
+              size="sm"
+              variant="outline"
+              className="h-7 px-2"
+              title="Send Backward"
+            >
+              <ChevronDown className="h-3.5 w-3.5" />
+            </Button>
             <Button
               onClick={onBringForward}
               size="sm"
@@ -376,13 +403,13 @@ export function EditorToolbar({
               <ChevronUp className="h-3.5 w-3.5" />
             </Button>
             <Button
-              onClick={onSendBackward}
+              onClick={onBringToFront}
               size="sm"
               variant="outline"
               className="h-7 px-2"
-              title="Send Backward"
+              title="Bring to Front"
             >
-              <ChevronDown className="h-3.5 w-3.5" />
+              <ChevronsUp className="h-3.5 w-3.5" />
             </Button>
           </div>
 
@@ -449,10 +476,13 @@ export function EditorToolbar({
           {/* Layer-specific controls */}
           {selectedLayer.type === "text" && (
             <div className="space-y-2 pt-2 border-t">
-              {/* Font Family */}
+              {/* Font Family — text input with datalist for direct typing on all devices */}
               <div>
-                <label className="text-xs text-gray-600">Font Family</label>
-                <select
+                <label className="text-xs text-gray-600" htmlFor="nb-editor-font-family">Font Family</label>
+                <input
+                  id="nb-editor-font-family"
+                  type="text"
+                  list="nb-editor-font-family-list"
                   value={selectedLayer.style.fontFamily || "Inter"}
                   onChange={(e) => {
                     const updated = {
@@ -465,14 +495,14 @@ export function EditorToolbar({
                     };
                     onProfileUpdate(updated);
                   }}
+                  autoComplete="off"
                   className="w-full px-2 py-1 text-sm border rounded bg-white"
-                >
+                />
+                <datalist id="nb-editor-font-family-list">
                   {AVAILABLE_FONTS.map((font) => (
-                    <option key={font} value={font}>
-                      {font}
-                    </option>
+                    <option key={font} value={font} />
                   ))}
-                </select>
+                </datalist>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
@@ -500,22 +530,47 @@ export function EditorToolbar({
                 </div>
                 <div>
                   <label className="text-xs text-gray-600">Color</label>
-                  <input
-                    type="color"
-                    value={selectedLayer.style.color}
-                    onChange={(e) => {
-                      const updated = {
-                        ...profile,
-                        layers: profile.layers?.map((l) =>
-                          l.id === selectedLayer.id && l.type === "text"
-                            ? { ...l, style: { ...l.style, color: e.target.value } }
-                            : l
-                        ),
-                      };
-                      onProfileUpdate(updated);
-                    }}
-                    className="w-full h-8 border rounded cursor-pointer"
-                  />
+                  <div className="flex gap-1">
+                    <input
+                      type="color"
+                      aria-label="Text color picker"
+                      value={selectedLayer.style.color}
+                      onChange={(e) => {
+                        const updated = {
+                          ...profile,
+                          layers: profile.layers?.map((l) =>
+                            l.id === selectedLayer.id && l.type === "text"
+                              ? { ...l, style: { ...l.style, color: e.target.value } }
+                              : l
+                          ),
+                        };
+                        onProfileUpdate(updated);
+                      }}
+                      className="h-8 w-10 flex-shrink-0 border rounded cursor-pointer"
+                    />
+                    <input
+                      type="text"
+                      aria-label="Text color hex"
+                      value={selectedLayer.style.color}
+                      maxLength={7}
+                      placeholder="#000000"
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+                          const updated = {
+                            ...profile,
+                            layers: profile.layers?.map((l) =>
+                              l.id === selectedLayer.id && l.type === "text"
+                                ? { ...l, style: { ...l.style, color: val } }
+                                : l
+                            ),
+                          };
+                          onProfileUpdate(updated);
+                        }
+                      }}
+                      className="flex-1 px-2 py-1 text-sm border rounded font-mono"
+                    />
+                  </div>
                 </div>
               </div>
               {/* Bold / Italic / Align */}
@@ -606,6 +661,7 @@ export function EditorToolbar({
                   <div className="flex items-center gap-1">
                     <input
                       type="color"
+                      aria-label="Background color picker"
                       value={selectedLayer.style.backgroundColor || "#ffffff"}
                       onChange={(e) => {
                         const updated = {
@@ -618,7 +674,29 @@ export function EditorToolbar({
                         };
                         onProfileUpdate(updated);
                       }}
-                      className="w-full h-8 border rounded cursor-pointer"
+                      className="h-8 w-10 flex-shrink-0 border rounded cursor-pointer"
+                    />
+                    <input
+                      type="text"
+                      aria-label="Background color hex"
+                      value={selectedLayer.style.backgroundColor || ""}
+                      maxLength={7}
+                      placeholder="#ffffff"
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === "" || /^#[0-9a-fA-F]{6}$/.test(val)) {
+                          const updated = {
+                            ...profile,
+                            layers: profile.layers?.map((l) =>
+                              l.id === selectedLayer.id && l.type === "text"
+                                ? { ...l, style: { ...l.style, backgroundColor: val || undefined } }
+                                : l
+                            ),
+                          };
+                          onProfileUpdate(updated);
+                        }
+                      }}
+                      className="flex-1 min-w-0 px-1 py-1 text-xs border rounded font-mono"
                     />
                     {selectedLayer.style.backgroundColor && (
                       <Button
@@ -635,7 +713,7 @@ export function EditorToolbar({
                         }}
                         size="sm"
                         variant="ghost"
-                        className="h-8 px-1 text-xs"
+                        className="h-8 px-1 text-xs flex-shrink-0"
                         title="Clear background"
                       >
                         Clear
@@ -788,6 +866,18 @@ export function EditorToolbar({
 
           {selectedLayer.type === "avatar" && (
             <div className="space-y-2 pt-2 border-t">
+              {/* Upload / replace image from device */}
+              <Button
+                type="button"
+                onClick={() => onAvatarUpload?.(selectedLayer.id)}
+                size="sm"
+                variant="outline"
+                className="w-full h-8"
+                title="Upload image from device"
+              >
+                <Upload className="h-3.5 w-3.5 mr-1" />
+                Change Image
+              </Button>
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="text-xs text-gray-600">Border Radius</label>

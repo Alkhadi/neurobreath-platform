@@ -157,6 +157,30 @@ export function sendLayerBackward(
   return updateLayer(profile, layerId, { zIndex: minZ - 1 });
 }
 
+export function bringLayerToFront(
+  profile: Profile,
+  layerId: string
+): Profile {
+  const layers = profile.layers || [];
+  const layer = layers.find((l) => l.id === layerId);
+  if (!layer) return profile;
+
+  const maxZ = Math.max(...layers.map((l) => l.zIndex), 0);
+  return updateLayer(profile, layerId, { zIndex: maxZ + 1 });
+}
+
+export function sendLayerToBack(
+  profile: Profile,
+  layerId: string
+): Profile {
+  const layers = profile.layers || [];
+  const layer = layers.find((l) => l.id === layerId);
+  if (!layer) return profile;
+
+  const minZ = Math.min(...layers.map((l) => l.zIndex), 0);
+  return updateLayer(profile, layerId, { zIndex: minZ - 1 });
+}
+
 export function moveLayerUp(
   profile: Profile,
   layerIndex: number

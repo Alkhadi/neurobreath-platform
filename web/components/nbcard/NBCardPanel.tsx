@@ -34,6 +34,8 @@ import {
   duplicateLayer,
   bringLayerForward,
   sendLayerBackward,
+  bringLayerToFront,
+  sendLayerToBack,
   alignLayersLeft,
   alignLayersCenter,
   alignLayersRight,
@@ -935,6 +937,56 @@ export function NBCardPanel() {
     toast.success("Sent backward");
   };
 
+  const handleBringToFront = () => {
+    if (!selectedLayerId) return;
+    const updatedProfile = bringLayerToFront(currentProfile, selectedLayerId);
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    toast.success("Brought to front");
+  };
+
+  const handleSendToBack = () => {
+    if (!selectedLayerId) return;
+    const updatedProfile = sendLayerToBack(currentProfile, selectedLayerId);
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    toast.success("Sent to back");
+  };
+
+  const handleAvatarUploadFromInspector = useCallback((layerId: string) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = (evt: Event) => {
+      const file = (evt.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const src = e.target?.result as string;
+        if (!src) return;
+        const updatedProfile = {
+          ...currentProfile,
+          layers: (currentProfile.layers || []).map((l) =>
+            l.id === layerId && l.type === "avatar"
+              ? { ...l, style: { ...l.style, src } }
+              : l
+          ),
+        };
+        setProfiles((prev) =>
+          prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+        );
+        commitToHistory(updatedProfile);
+        toast.success("Image updated");
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  }, [currentProfile, currentProfileIndex, commitToHistory]);
+
   const handleAlign = (
     direction: "left" | "center" | "right" | "top" | "middle" | "bottom"
   ) => {
@@ -1611,9 +1663,26 @@ export function NBCardPanel() {
         </div>
       )}
 
-      {/* Professional Editor Toolbar (when Layout Edit Mode is active) */}
+      {/* Pro Editor panels (when Layout Edit Mode is active) — Layers above Tools */}
       {layoutEditMode && (
         <div className="mb-6 space-y-4">
+          <LayersPanel
+            layers={currentProfile.layers || []}
+            selectedLayerId={selectedLayerId}
+            onSelectLayer={setSelectedLayerId}
+            onReorderLayers={handleReorderLayers}
+            onToggleLayerVisibility={handleToggleLayerVisibilityById}
+            onToggleLayerLock={handleToggleLayerLockById}
+            onAddText={handleAddTextFromPanel}
+            onDeleteLayer={deleteLayer}
+            onUpdateLayerText={handleUpdateLayerText}
+            onEditEnd={handleCommitLayerTextEdit}
+            onResetLayers={resetLayers}
+            onClearLayers={clearLayers}
+            onNudgeLayer={handleNudgeLayer}
+            onSetFieldLink={handleSetFieldLink}
+            availableFieldLinks={availableFieldLinks}
+          />
           <EditorToolbar
             canUndo={canUndo(history)}
             canRedo={canRedo(history)}
@@ -1640,6 +1709,9 @@ export function NBCardPanel() {
             onToggleVisibility={handleToggleLayerVisibility}
             onBringForward={handleBringForward}
             onSendBackward={handleSendBackward}
+            onBringToFront={handleBringToFront}
+            onSendToBack={handleSendToBack}
+            onAvatarUpload={handleAvatarUploadFromInspector}
             onAlign={handleAlign}
             profile={currentProfile}
             onProfileUpdate={(updatedProfile) => {
@@ -1648,23 +1720,6 @@ export function NBCardPanel() {
               setProfiles(updated);
               commitToHistory(updatedProfile);
             }}
-          />
-          <LayersPanel
-            layers={currentProfile.layers || []}
-            selectedLayerId={selectedLayerId}
-            onSelectLayer={setSelectedLayerId}
-            onReorderLayers={handleReorderLayers}
-            onToggleLayerVisibility={handleToggleLayerVisibilityById}
-            onToggleLayerLock={handleToggleLayerLockById}
-            onAddText={handleAddTextFromPanel}
-            onDeleteLayer={deleteLayer}
-            onUpdateLayerText={handleUpdateLayerText}
-            onEditEnd={handleCommitLayerTextEdit}
-            onResetLayers={resetLayers}
-            onClearLayers={clearLayers}
-            onNudgeLayer={handleNudgeLayer}
-            onSetFieldLink={handleSetFieldLink}
-            availableFieldLinks={availableFieldLinks}
           />
         </div>
       )}
