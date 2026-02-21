@@ -148,6 +148,9 @@ export interface TextLayer extends CardLayerBase {
     backgroundColor?: string; // hex, optional
     padding?: number; // px
   };
+  /** Optional: links this text layer to a profile form field (e.g. "bankCard.bankName").
+   *  When set, editing the layer text in the Layers panel also updates the linked field. */
+  fieldLink?: string;
 }
 
 export interface AvatarLayer extends CardLayerBase {

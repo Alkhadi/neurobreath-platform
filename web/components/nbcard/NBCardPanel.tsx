@@ -104,6 +104,37 @@ function detectStandalone(): boolean {
   return mediaStandalone || iosStandalone;
 }
 
+/**
+ * Apply a form field update from a layer's fieldLink dot-path key.
+ * e.g. fieldLink="bankCard.bankName" sets profile.bankCard.bankName = value.
+ * Pure function — returns a new Profile with the field updated.
+ */
+function applyFieldLinkUpdate(profile: Profile, fieldLink: string, value: string): Profile {
+  const dotIdx = fieldLink.indexOf(".");
+  if (dotIdx < 0) {
+    // Top-level profile field (e.g. "fullName", "email")
+    return { ...profile, [fieldLink]: value } as Profile;
+  }
+  const category = fieldLink.slice(0, dotIdx);
+  const field = fieldLink.slice(dotIdx + 1);
+  if (category === "bankCard") {
+    return { ...profile, bankCard: { ...(profile.bankCard ?? {}), [field]: value } } as Profile;
+  }
+  if (category === "addressCard") {
+    return { ...profile, addressCard: { ...(profile.addressCard ?? {}), [field]: value } } as Profile;
+  }
+  if (category === "businessCard") {
+    return { ...profile, businessCard: { ...(profile.businessCard ?? {}), [field]: value } } as Profile;
+  }
+  if (category === "flyerCard") {
+    return { ...profile, flyerCard: { ...(profile.flyerCard ?? {}), [field]: value } } as Profile;
+  }
+  if (category === "weddingCard") {
+    return { ...profile, weddingCard: { ...(profile.weddingCard ?? {}), [field]: value } } as Profile;
+  }
+  return profile;
+}
+
 export function NBCardPanel() {
   const [mounted, setMounted] = useState(false);
   const [sessionEmail, setSessionEmail] = useState<string | null>(null);
@@ -1042,19 +1073,26 @@ export function NBCardPanel() {
 
   // Layer text edit handlers (Layers panel inline edit)
 
-  /** Instant canvas update on every keystroke — no history commit yet. */
+  /** Instant canvas update on every keystroke — no history commit yet.
+   *  If the layer has a fieldLink, also updates the linked profile form field. */
   const handleUpdateLayerText = useCallback((layerId: string, text: string): void => {
     setProfiles((prev) =>
       prev.map((p, idx) => {
         if (idx !== currentProfileIndex) return p;
-        return {
-          ...p,
-          layers: (p.layers || []).map((l) =>
-            l.id === layerId && l.type === "text"
-              ? ({ ...l, style: { ...l.style, content: text } } as CardLayer)
-              : l
-          ),
-        };
+        // Detect fieldLink on the target layer before mutating
+        const targetLayer = (p.layers || []).find((l) => l.id === layerId);
+        const fieldLink = (targetLayer && targetLayer.type === "text")
+          ? targetLayer.fieldLink
+          : undefined;
+        const updatedLayers = (p.layers || []).map((l) =>
+          l.id === layerId && l.type === "text"
+            ? ({ ...l, style: { ...l.style, content: text } } as CardLayer)
+            : l
+        );
+        const next: Profile = { ...p, layers: updatedLayers };
+        // Bidirectional sync: update the linked form field when present
+        if (fieldLink) return applyFieldLinkUpdate(next, fieldLink, text);
+        return next;
       })
     );
   }, [currentProfileIndex]);
@@ -1063,6 +1101,71 @@ export function NBCardPanel() {
   const handleCommitLayerTextEdit = useCallback((): void => {
     commitToHistory(currentProfile);
   }, [currentProfile, commitToHistory]);
+
+  /** Set (or clear) a fieldLink on a text layer so edits sync back to a form field. */
+  const handleSetFieldLink = useCallback((layerId: string, fieldLink: string | undefined): void => {
+    const updatedLayers = (currentProfile.layers || []).map((l) => {
+      if (l.id !== layerId || l.type !== "text") return l;
+      return { ...l, fieldLink } as CardLayer;
+    });
+    const updatedProfile = { ...currentProfile, layers: updatedLayers };
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+  }, [currentProfile, currentProfileIndex, commitToHistory]);
+
+  /** Available field links for the current profile category, shown in the Layers panel. */
+  const availableFieldLinks = useMemo((): Array<{ key: string; label: string }> => {
+    const category = getCategoryFromProfile(currentProfile);
+    const fields: Array<{ key: string; label: string }> = [
+      { key: "fullName", label: "Full Name" },
+      { key: "email", label: "Email" },
+      { key: "phone", label: "Phone" },
+      { key: "jobTitle", label: "Job Title" },
+      { key: "website", label: "Website" },
+    ];
+    if (category === "BANK") {
+      fields.push(
+        { key: "bankCard.accountName", label: "Account Name" },
+        { key: "bankCard.bankName", label: "Bank Name" },
+        { key: "bankCard.sortCode", label: "Sort Code" },
+        { key: "bankCard.accountNumber", label: "Account Number" },
+        { key: "bankCard.iban", label: "IBAN" },
+        { key: "bankCard.swiftBic", label: "SWIFT/BIC" },
+      );
+    }
+    if (category === "ADDRESS") {
+      fields.push(
+        { key: "addressCard.addressLine1", label: "Address Line 1" },
+        { key: "addressCard.addressLine2", label: "Address Line 2" },
+        { key: "addressCard.city", label: "City" },
+        { key: "addressCard.postcode", label: "Postcode" },
+        { key: "addressCard.country", label: "Country" },
+      );
+    }
+    if (category === "BUSINESS") {
+      fields.push(
+        { key: "businessCard.companyName", label: "Company Name" },
+        { key: "businessCard.tagline", label: "Tagline" },
+        { key: "businessCard.websiteUrl", label: "Website URL" },
+        { key: "businessCard.services", label: "Services" },
+      );
+    }
+    if (category === "FLYER") {
+      fields.push(
+        { key: "flyerCard.headline", label: "Headline" },
+        { key: "flyerCard.subheadline", label: "Subheadline" },
+      );
+    }
+    if (category === "WEDDING") {
+      fields.push(
+        { key: "weddingCard.headline", label: "Headline" },
+        { key: "weddingCard.subheadline", label: "Subheadline" },
+      );
+    }
+    return fields;
+  }, [currentProfile]);
 
   /** Save current canvas layers as a named card in the saved-cards store. */
   const handleSaveAsLayout = useCallback(() => {
@@ -1560,6 +1663,8 @@ export function NBCardPanel() {
             onResetLayers={resetLayers}
             onClearLayers={clearLayers}
             onNudgeLayer={handleNudgeLayer}
+            onSetFieldLink={handleSetFieldLink}
+            availableFieldLinks={availableFieldLinks}
           />
         </div>
       )}

@@ -1436,8 +1436,9 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
   return (
     <div className="rounded-2xl border bg-card p-4 md:p-6">
+      {/* Off-screen clean-mode export card: no editor UI (editMode=false, no selected layer) */}
       {exportCaptureProfile ? (
-        <div className="fixed left-[-10000px] top-0 w-[448px]">
+        <div className="fixed left-[-10000px] top-0 w-[448px]" aria-hidden="true">
           <ProfileCard
             profile={exportCaptureProfile}
             showEditButton={false}
@@ -1445,6 +1446,8 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
             templateSelection={templateSelection}
             selectedTemplate={selectedTemplate}
             captureId={EXPORT_CAPTURE_ID}
+            editMode={false}
+            selectedLayerId={null}
           />
         </div>
       ) : null}
@@ -2943,40 +2946,88 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
       ) : null}
 
       <Dialog open={isShareFallbackOpen} onOpenChange={setIsShareFallbackOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-sm">
           <DialogHeader>
             <DialogTitle>Share your card</DialogTitle>
             <DialogDescription>
-              File sharing isn’t supported in this browser. Use one of these options instead.
+              File sharing isn&apos;t supported in this browser. Use one of these options instead.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid grid-cols-1 gap-2">
-            <Button variant="default" onClick={handleDownloadPng} disabled={!!busyKey}>
-              <Download className="mr-2 h-4 w-4" /> Download PNG
-            </Button>
-            <Button variant="secondary" onClick={handleDownloadPdf} disabled={!!busyKey}>
-              <Download className="mr-2 h-4 w-4" /> Download PDF
-            </Button>
-            <Button variant="outline" onClick={handleCopyLink} disabled={!!busyKey}>
-              <LinkIcon className="mr-2 h-4 w-4" /> Copy link
-            </Button>
+          <div className="space-y-3 max-h-[70vh] overflow-y-auto pr-1">
+            {/* Downloads */}
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Downloads</p>
+              <div className="grid grid-cols-2 gap-2">
+                <Button size="sm" variant="default" onClick={handleDownloadPng} disabled={!!busyKey}>
+                  <Download className="mr-1.5 h-3.5 w-3.5" /> PNG
+                </Button>
+                <Button size="sm" variant="secondary" onClick={handleDownloadPdf} disabled={!!busyKey}>
+                  <Download className="mr-1.5 h-3.5 w-3.5" /> PDF
+                </Button>
+                <Button size="sm" variant="outline" onClick={handleDownloadVcard} disabled={!!busyKey}>
+                  <Download className="mr-1.5 h-3.5 w-3.5" /> vCard
+                </Button>
+                <Button size="sm" variant="outline" onClick={handleDownloadQrCardImage} disabled={!!busyKey}>
+                  <QrCode className="mr-1.5 h-3.5 w-3.5" /> QR Card
+                </Button>
+              </div>
+            </div>
 
-            <div className="grid grid-cols-3 gap-2 pt-2">
-              <Button variant="outline" onClick={openWhatsapp}>
-                WhatsApp
-              </Button>
-              <Button variant="outline" onClick={openEmail}>
-                <Mail className="mr-2 h-4 w-4" /> Email
-              </Button>
-              <Button variant="outline" onClick={openSms}>
-                <MessageSquare className="mr-2 h-4 w-4" /> SMS
+            {/* Share files */}
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Share files</p>
+              <div className="grid grid-cols-2 gap-2">
+                <Button size="sm" variant="outline" onClick={handleSharePng} disabled={!!busyKey}>Share PNG</Button>
+                <Button size="sm" variant="outline" onClick={handleSharePdf} disabled={!!busyKey}>Share PDF</Button>
+                <Button size="sm" variant="outline" onClick={handleShareVcardFile} disabled={!!busyKey}>Share vCard</Button>
+                <Button size="sm" variant="outline" onClick={handleShareAsText} disabled={!!busyKey}>Share Text</Button>
+              </div>
+            </div>
+
+            {/* Copy & QR */}
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Copy &amp; QR</p>
+              <div className="grid grid-cols-2 gap-2">
+                <Button size="sm" variant="outline" onClick={handleCopyLink} disabled={!!busyKey}>
+                  <LinkIcon className="mr-1.5 h-3.5 w-3.5" /> Copy link
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => { setIsShareFallbackOpen(false); setIsQrOpen(true); }}>
+                  <QrCode className="mr-1.5 h-3.5 w-3.5" /> QR Code
+                </Button>
+              </div>
+            </div>
+
+            {/* Send via */}
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Send via</p>
+              <div className="grid grid-cols-3 gap-2">
+                <Button size="sm" variant="outline" onClick={openWhatsapp}>WhatsApp</Button>
+                <Button size="sm" variant="outline" onClick={handleShareViaEmail} disabled={!!busyKey}>
+                  <Mail className="mr-1 h-3.5 w-3.5" /> Email
+                </Button>
+                <Button size="sm" variant="outline" onClick={openSms}>
+                  <MessageSquare className="mr-1 h-3.5 w-3.5" /> SMS
+                </Button>
+              </div>
+            </div>
+
+            {/* Print */}
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Print</p>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full"
+                onClick={() => { setIsShareFallbackOpen(false); setIsPrintOpen(true); }}
+              >
+                Print card
               </Button>
             </div>
           </div>
 
           <DialogFooter>
-            <Button variant="secondary" onClick={() => setIsShareFallbackOpen(false)}>
+            <Button type="button" variant="secondary" onClick={() => setIsShareFallbackOpen(false)}>
               Close
             </Button>
           </DialogFooter>
@@ -2988,51 +3039,70 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           <DialogHeader>
             <DialogTitle>Print your card</DialogTitle>
             <DialogDescription>
-              Select a paper size and print your business card.
+              Download a high-quality PDF then open it in any PDF viewer to print, or use browser print.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid grid-cols-2 gap-2">
-            <Button
-              variant="outline"
-              onClick={() => {
-                setIsPrintOpen(false);
-                window.print();
-              }}
-            >
-              A4 (210×297mm)
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setIsPrintOpen(false);
-                window.print();
-              }}
-            >
-              A3 (297×420mm)
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setIsPrintOpen(false);
-                window.print();
-              }}
-            >
-              A2 (420×594mm)
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setIsPrintOpen(false);
-                window.print();
-              }}
-            >
-              Letter (8.5×11in)
-            </Button>
+          <div className="space-y-4">
+            {/* Recommended: PDF download for best quality */}
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Recommended</p>
+              <Button
+                className="w-full"
+                onClick={() => {
+                  setIsPrintOpen(false);
+                  handleDownloadPdf();
+                }}
+                disabled={!!busyKey}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Download PDF for printing
+              </Button>
+              <p className="text-xs text-muted-foreground mt-1">
+                Best quality &#8212; open the PDF in any viewer and set paper size when printing.
+              </p>
+            </div>
+
+            {/* Business card front + back guidance */}
+            {getCategoryFromProfile(profile) === "BUSINESS" ? (
+              <div className="rounded-lg bg-blue-50 border border-blue-100 p-3">
+                <p className="text-xs font-semibold text-blue-900 mb-1">Printing front &amp; back</p>
+                <ol className="text-xs text-blue-800 list-decimal list-inside space-y-1">
+                  <li>Download PDF of the front side (above)</li>
+                  <li>Switch to the back template using the template picker</li>
+                  <li>Download PDF of the back side</li>
+                  <li>Print both at business card size (85&#215;55&nbsp;mm / 3.5&#215;2&nbsp;in)</li>
+                </ol>
+              </div>
+            ) : null}
+
+            {/* Browser print fallback */}
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Browser print</p>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => { setIsPrintOpen(false); window.print(); }}
+                >
+                  A4 (210&#215;297&nbsp;mm)
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => { setIsPrintOpen(false); window.print(); }}
+                >
+                  Letter (8.5&#215;11&nbsp;in)
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Browser print captures the visible page; use PDF download for exact card output.
+              </p>
+            </div>
           </div>
 
           <DialogFooter>
-            <Button variant="secondary" onClick={() => setIsPrintOpen(false)}>
+            <Button type="button" variant="secondary" onClick={() => setIsPrintOpen(false)}>
               Cancel
             </Button>
           </DialogFooter>

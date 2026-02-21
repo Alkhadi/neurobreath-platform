@@ -40,6 +40,7 @@ import {
   ArrowDown,
   ArrowLeft,
   ArrowRight,
+  Link2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { CardLayer, Profile } from "@/lib/utils";
@@ -1001,6 +1002,9 @@ export interface LayersPanelProps {
   onClearLayers: () => void;
   // Mobile nudge
   onNudgeLayer?: (direction: "up" | "down" | "left" | "right", fine: boolean) => void;
+  // Field link: bidirectional sync between text layers and profile form fields
+  onSetFieldLink?: (layerId: string, fieldLink: string | undefined) => void;
+  availableFieldLinks?: Array<{ key: string; label: string }>;
 }
 
 export function LayersPanel({
@@ -1017,6 +1021,8 @@ export function LayersPanel({
   onResetLayers,
   onClearLayers,
   onNudgeLayer,
+  onSetFieldLink,
+  availableFieldLinks = [],
 }: LayersPanelProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -1171,34 +1177,64 @@ export function LayersPanel({
 
                 {/* Label or inline textarea (multiline) */}
                 {isEditing ? (
-                  <textarea
-                    autoFocus
-                    rows={3}
-                    value={editText}
-                    aria-label="Edit layer text"
-                    onChange={(e) => {
-                      setEditText(e.target.value);
-                      onUpdateLayerText(layer.id, e.target.value);
-                    }}
-                    onKeyDown={(e) => {
-                      // Escape cancels; Enter adds a newline (natural textarea behaviour)
-                      if (e.key === "Escape") { e.preventDefault(); cancelEdit(); }
-                      // Ctrl/Cmd+Enter commits
-                      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); commitEdit(); }
-                    }}
-                    onBlur={() => commitEdit()}
-                    onClick={(e) => e.stopPropagation()}
-                    style={{ resize: "none" }}
-                    className="flex-1 min-w-0 text-sm border border-purple-400 rounded px-1 py-0.5 bg-white focus:outline-none focus:ring-1 focus:ring-purple-400"
-                  />
+                  <div className="flex-1 min-w-0 flex flex-col gap-1">
+                    <textarea
+                      autoFocus
+                      rows={3}
+                      value={editText}
+                      aria-label="Edit layer text"
+                      onChange={(e) => {
+                        setEditText(e.target.value);
+                        onUpdateLayerText(layer.id, e.target.value);
+                      }}
+                      onKeyDown={(e) => {
+                        // Escape cancels; Enter adds a newline (natural textarea behaviour)
+                        if (e.key === "Escape") { e.preventDefault(); cancelEdit(); }
+                        // Ctrl/Cmd+Enter commits
+                        if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); commitEdit(); }
+                      }}
+                      onBlur={() => commitEdit()}
+                      onClick={(e) => e.stopPropagation()}
+                      style={{ resize: "none" }}
+                      className="w-full text-sm border border-purple-400 rounded px-1 py-0.5 bg-white focus:outline-none focus:ring-1 focus:ring-purple-400"
+                    />
+                    {/* Field link selector — shown when available */}
+                    {onSetFieldLink && availableFieldLinks.length > 0 ? (
+                      <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                        <Link2 className="h-2.5 w-2.5 text-purple-400 flex-shrink-0" aria-hidden="true" />
+                        <select
+                          aria-label="Link layer to form field"
+                          className="flex-1 text-xs border border-gray-200 rounded px-1 py-0.5 bg-white focus:outline-none focus:ring-1 focus:ring-purple-400"
+                          value={layer.type === "text" ? (layer.fieldLink ?? "") : ""}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            onSetFieldLink(layer.id, val || undefined);
+                          }}
+                          onBlur={(e) => e.stopPropagation()}
+                        >
+                          <option value="">None (free text)</option>
+                          {availableFieldLinks.map((f) => (
+                            <option key={f.key} value={f.key}>{f.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    ) : null}
+                  </div>
                 ) : (
                   <div
-                    className="flex-1 min-w-0 text-sm truncate"
-                    title={
-                      layer.type === "text" ? layer.style.content : undefined
-                    }
+                    className="flex-1 min-w-0 flex items-center gap-1 overflow-hidden"
+                    title={layer.type === "text" ? layer.style.content : undefined}
                   >
-                    {getLayerLabel(layer)}
+                    <span className="text-sm truncate">{getLayerLabel(layer)}</span>
+                    {/* Field link badge */}
+                    {layer.type === "text" && layer.fieldLink ? (
+                      <span
+                        title={`Linked to: ${availableFieldLinks.find(f => f.key === layer.fieldLink)?.label ?? layer.fieldLink}`}
+                        aria-label={`Linked to ${layer.fieldLink}`}
+                      >
+                        <Link2 className="h-2.5 w-2.5 text-purple-400 flex-shrink-0" aria-hidden="true" />
+                      </span>
+                    ) : null}
                   </div>
                 )}
 
