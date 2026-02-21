@@ -946,9 +946,40 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
   function openWhatsapp() {
     requestRedactionAndRun(async (redacted) => {
-      const text = renderShareText(redacted, shareUrl);
-      const url = buildWhatsappUrl(text);
-      window.open(url, "_blank", "noopener,noreferrer");
+      await withBusy("whatsapp-share", async () => {
+        // Render the hidden export clone then capture it as a PNG (same pipeline as handleSharePng)
+        setExportCaptureProfile(redacted);
+        try {
+          await new Promise((resolve) =>
+            requestAnimationFrame(() => requestAnimationFrame(resolve))
+          );
+          const { pngBlob } = await buildExportAssets(
+            redacted,
+            shareUrl,
+            {},
+            EXPORT_CAPTURE_ID
+          );
+          const safeName = (redacted.fullName || profile.fullName || "nbcard")
+            .trim()
+            .replace(/\s+/g, "_");
+          const fileName = `${safeName}_NBCard.png`;
+          // Try native file share — on mobile this opens the share sheet so user can pick WhatsApp
+          const ok = await shareViaWebShare({
+            title: `NBCard — ${redacted.fullName || profile.fullName}`,
+            files: [new File([pngBlob], fileName, { type: "image/png" })],
+          });
+          if (ok) {
+            toast.success("Card image ready to share");
+          } else {
+            // Fallback for desktop browsers that don't support file sharing via Web Share API
+            const text = renderShareText(redacted, shareUrl);
+            const url = buildWhatsappUrl(text);
+            window.open(url, "_blank", "noopener,noreferrer");
+          }
+        } finally {
+          setExportCaptureProfile(null);
+        }
+      });
     });
   }
 
