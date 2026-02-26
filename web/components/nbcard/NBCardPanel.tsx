@@ -1496,6 +1496,8 @@ export function NBCardPanel() {
                 selectedTemplate={selectedTemplate}
                 editMode={layoutEditMode}
                 canvasEditMode={canvasEditMode}
+                gridEnabled={gridEnabled}
+                snapEnabled={snapEnabled}
                 selectedLayerId={selectedLayerId}
                 onLayerSelect={setSelectedLayerId}
                 onLayerUpdate={(layerId, updates) => {

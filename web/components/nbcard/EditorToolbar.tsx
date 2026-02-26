@@ -5,7 +5,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Undo2,
   Redo2,
@@ -71,6 +71,46 @@ const AVAILABLE_FONTS = [
   "Beardsons Extras",
   "Monday",
 ];
+
+const FONT_SIZE_PRESETS = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64, 72, 96, 120, 144, 160, 200] as const;
+const PADDING_PRESETS = [0, 2, 4, 6, 8, 10, 12, 16, 20, 24, 32, 40] as const;
+
+function clampNumber(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  const to = (n: number) => clampNumber(Math.round(n), 0, 255).toString(16).padStart(2, "0");
+  return `#${to(r)}${to(g)}${to(b)}`;
+}
+
+function normalizeCssColorToHex(input: string): string | null {
+  const raw = input.trim();
+  if (!raw) return null;
+  if (/^#[0-9a-fA-F]{6}$/.test(raw)) return raw.toLowerCase();
+
+  if (typeof window === "undefined" || typeof document === "undefined") return null;
+  // Allow CSS names (white/black), rgb(), hsl(), etc.
+  // Use CSS.supports when available to avoid accepting invalid strings.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const cssAny = (globalThis as any).CSS as undefined | { supports?: (prop: string, value: string) => boolean };
+  if (cssAny?.supports && !cssAny.supports("color", raw)) return null;
+
+  const probe = document.createElement("span");
+  probe.style.color = raw;
+  // If the browser rejected it, the style will be empty.
+  if (!probe.style.color) return null;
+
+  // Need computed style to normalize names -> rgb(...)
+  if (!document.body) return null;
+  document.body.appendChild(probe);
+  const computed = window.getComputedStyle(probe).color;
+  document.body.removeChild(probe);
+
+  const m = computed.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+  if (!m) return null;
+  return rgbToHex(Number(m[1]), Number(m[2]), Number(m[3]));
+}
 
 export interface EditorToolbarProps {
   canUndo: boolean;
@@ -140,6 +180,72 @@ export function EditorToolbar({
   onProfileUpdate,
 }: EditorToolbarProps) {
   const [shapeMenuOpen, setShapeMenuOpen] = useState(false);
+
+  const selectedTextColor = useMemo(
+    () => (selectedLayer && selectedLayer.type === "text" ? selectedLayer.style.color : ""),
+    [selectedLayer]
+  );
+  const selectedTextBg = useMemo(
+    () => (selectedLayer && selectedLayer.type === "text" ? selectedLayer.style.backgroundColor || "" : ""),
+    [selectedLayer]
+  );
+
+  const selectedShapeFill = useMemo(
+    () => (selectedLayer && selectedLayer.type === "shape" ? selectedLayer.style.fill : ""),
+    [selectedLayer]
+  );
+  const selectedShapeStroke = useMemo(
+    () => (selectedLayer && selectedLayer.type === "shape" ? selectedLayer.style.stroke || "" : ""),
+    [selectedLayer]
+  );
+  const selectedAvatarBorderColor = useMemo(
+    () => (selectedLayer && selectedLayer.type === "avatar" ? selectedLayer.style.borderColor || "" : ""),
+    [selectedLayer]
+  );
+  const selectedQrFill = useMemo(
+    () => (selectedLayer && selectedLayer.type === "qr" ? selectedLayer.style.fill : ""),
+    [selectedLayer]
+  );
+  const selectedQrBg = useMemo(
+    () => (selectedLayer && selectedLayer.type === "qr" ? selectedLayer.style.background : ""),
+    [selectedLayer]
+  );
+
+  const [textColorDraft, setTextColorDraft] = useState("");
+  const [textBgDraft, setTextBgDraft] = useState("");
+  const [shapeFillDraft, setShapeFillDraft] = useState("");
+  const [shapeStrokeDraft, setShapeStrokeDraft] = useState("");
+  const [avatarBorderColorDraft, setAvatarBorderColorDraft] = useState("");
+  const [qrFillDraft, setQrFillDraft] = useState("");
+  const [qrBgDraft, setQrBgDraft] = useState("");
+
+  useEffect(() => {
+    setTextColorDraft(selectedTextColor);
+  }, [selectedLayer?.id, selectedTextColor]);
+
+  useEffect(() => {
+    setTextBgDraft(selectedTextBg);
+  }, [selectedLayer?.id, selectedTextBg]);
+
+  useEffect(() => {
+    setShapeFillDraft(selectedShapeFill);
+  }, [selectedLayer?.id, selectedShapeFill]);
+
+  useEffect(() => {
+    setShapeStrokeDraft(selectedShapeStroke);
+  }, [selectedLayer?.id, selectedShapeStroke]);
+
+  useEffect(() => {
+    setAvatarBorderColorDraft(selectedAvatarBorderColor);
+  }, [selectedLayer?.id, selectedAvatarBorderColor]);
+
+  useEffect(() => {
+    setQrFillDraft(selectedQrFill);
+  }, [selectedLayer?.id, selectedQrFill]);
+
+  useEffect(() => {
+    setQrBgDraft(selectedQrBg);
+  }, [selectedLayer?.id, selectedQrBg]);
 
   return (
     <div className="bg-white rounded-lg shadow-md p-3 space-y-3">
@@ -479,25 +585,47 @@ export function EditorToolbar({
               {/* Font Family — text input with datalist for direct typing on all devices */}
               <div>
                 <label className="text-xs text-gray-600" htmlFor="nb-editor-font-family">Font Family</label>
-                <input
-                  id="nb-editor-font-family"
-                  type="text"
-                  list="nb-editor-font-family-list"
-                  value={selectedLayer.style.fontFamily || "Inter"}
-                  onChange={(e) => {
-                    const updated = {
-                      ...profile,
-                      layers: profile.layers?.map((l) =>
-                        l.id === selectedLayer.id && l.type === "text"
-                          ? { ...l, style: { ...l.style, fontFamily: e.target.value } }
-                          : l
-                      ),
-                    };
-                    onProfileUpdate(updated);
-                  }}
-                  autoComplete="off"
-                  className="w-full px-2 py-1 text-sm border rounded bg-white"
-                />
+                <div className="grid grid-cols-2 gap-2">
+                  <select
+                    aria-label="Font family dropdown"
+                    value={selectedLayer.style.fontFamily || "Inter"}
+                    onChange={(e) => {
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "text"
+                            ? { ...l, style: { ...l.style, fontFamily: e.target.value } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
+                    }}
+                    className="w-full px-2 py-1 text-sm border rounded bg-white"
+                  >
+                    {AVAILABLE_FONTS.map((font) => (
+                      <option key={font} value={font}>{font}</option>
+                    ))}
+                  </select>
+                  <input
+                    id="nb-editor-font-family"
+                    type="text"
+                    list="nb-editor-font-family-list"
+                    value={selectedLayer.style.fontFamily || "Inter"}
+                    onChange={(e) => {
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "text"
+                            ? { ...l, style: { ...l.style, fontFamily: e.target.value } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
+                    }}
+                    autoComplete="off"
+                    className="w-full px-2 py-1 text-sm border rounded bg-white"
+                  />
+                </div>
                 <datalist id="nb-editor-font-family-list">
                   {AVAILABLE_FONTS.map((font) => (
                     <option key={font} value={font} />
@@ -507,26 +635,57 @@ export function EditorToolbar({
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="text-xs text-gray-600">Font Size</label>
-                  <input
-                    type="number"
-                    value={selectedLayer.style.fontSize}
-                    onChange={(e) => {
-                      const v = parseInt(e.target.value, 10);
-                      if (!Number.isFinite(v) || v < 8 || v > 200) return;
-                      const updated = {
-                        ...profile,
-                        layers: profile.layers?.map((l) =>
-                          l.id === selectedLayer.id && l.type === "text"
-                            ? { ...l, style: { ...l.style, fontSize: v } }
-                            : l
-                        ),
-                      };
-                      onProfileUpdate(updated);
-                    }}
-                    className="w-full px-2 py-1 text-sm border rounded"
-                    min="8"
-                    max="200"
-                  />
+                  <div className="flex gap-1">
+                    <select
+                      aria-label="Font size presets"
+                      value={String(selectedLayer.style.fontSize)}
+                      onChange={(e) => {
+                        const v = parseInt(e.target.value, 10);
+                        if (!Number.isFinite(v)) return;
+                        const updated = {
+                          ...profile,
+                          layers: profile.layers?.map((l) =>
+                            l.id === selectedLayer.id && l.type === "text"
+                              ? { ...l, style: { ...l.style, fontSize: clampNumber(v, 8, 200) } }
+                              : l
+                          ),
+                        };
+                        onProfileUpdate(updated);
+                      }}
+                      className="w-[6.5rem] px-2 py-1 text-sm border rounded bg-white"
+                    >
+                      {FONT_SIZE_PRESETS.map((s) => (
+                        <option key={s} value={s}>{s}px</option>
+                      ))}
+                    </select>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      value={selectedLayer.style.fontSize}
+                      onChange={(e) => {
+                        const v = parseInt(e.target.value, 10);
+                        if (!Number.isFinite(v)) return;
+                        const updated = {
+                          ...profile,
+                          layers: profile.layers?.map((l) =>
+                            l.id === selectedLayer.id && l.type === "text"
+                              ? { ...l, style: { ...l.style, fontSize: clampNumber(v, 8, 200) } }
+                              : l
+                          ),
+                        };
+                        onProfileUpdate(updated);
+                      }}
+                      className="flex-1 px-2 py-1 text-sm border rounded"
+                      min="8"
+                      max="200"
+                      list="nb-editor-font-size-list"
+                    />
+                    <datalist id="nb-editor-font-size-list">
+                      {FONT_SIZE_PRESETS.map((s) => (
+                        <option key={s} value={s} />
+                      ))}
+                    </datalist>
+                  </div>
                 </div>
                 <div>
                   <label className="text-xs text-gray-600">Color</label>
@@ -534,7 +693,7 @@ export function EditorToolbar({
                     <input
                       type="color"
                       aria-label="Text color picker"
-                      value={selectedLayer.style.color}
+                      value={normalizeCssColorToHex(selectedLayer.style.color) || "#000000"}
                       onChange={(e) => {
                         const updated = {
                           ...profile,
@@ -551,22 +710,31 @@ export function EditorToolbar({
                     <input
                       type="text"
                       aria-label="Text color hex"
-                      value={selectedLayer.style.color}
-                      maxLength={7}
-                      placeholder="#000000"
+                      value={textColorDraft}
+                      placeholder="#000000 or white"
                       onChange={(e) => {
-                        const val = e.target.value;
-                        if (/^#[0-9a-fA-F]{6}$/.test(val)) {
-                          const updated = {
-                            ...profile,
-                            layers: profile.layers?.map((l) =>
-                              l.id === selectedLayer.id && l.type === "text"
-                                ? { ...l, style: { ...l.style, color: val } }
-                                : l
-                            ),
-                          };
-                          onProfileUpdate(updated);
+                        setTextColorDraft(e.target.value);
+                      }}
+                      onBlur={() => {
+                        const hex = normalizeCssColorToHex(textColorDraft);
+                        if (!hex) {
+                          setTextColorDraft(selectedLayer.style.color);
+                          return;
                         }
+                        if (hex === selectedLayer.style.color) {
+                          setTextColorDraft(hex);
+                          return;
+                        }
+                        const updated = {
+                          ...profile,
+                          layers: profile.layers?.map((l) =>
+                            l.id === selectedLayer.id && l.type === "text"
+                              ? { ...l, style: { ...l.style, color: hex } }
+                              : l
+                          ),
+                        };
+                        onProfileUpdate(updated);
+                        setTextColorDraft(hex);
                       }}
                       className="flex-1 px-2 py-1 text-sm border rounded font-mono"
                     />
@@ -662,7 +830,7 @@ export function EditorToolbar({
                     <input
                       type="color"
                       aria-label="Background color picker"
-                      value={selectedLayer.style.backgroundColor || "#ffffff"}
+                      value={normalizeCssColorToHex(selectedLayer.style.backgroundColor || "#ffffff") || "#ffffff"}
                       onChange={(e) => {
                         const updated = {
                           ...profile,
@@ -679,22 +847,61 @@ export function EditorToolbar({
                     <input
                       type="text"
                       aria-label="Background color hex"
-                      value={selectedLayer.style.backgroundColor || ""}
-                      maxLength={7}
-                      placeholder="#ffffff"
+                      value={textBgDraft}
+                      placeholder="#ffffff or transparent"
                       onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === "" || /^#[0-9a-fA-F]{6}$/.test(val)) {
+                        setTextBgDraft(e.target.value);
+                      }}
+                      onBlur={() => {
+                        const raw = textBgDraft.trim();
+                        if (raw === "") {
+                          if (!selectedLayer.style.backgroundColor) return;
                           const updated = {
                             ...profile,
                             layers: profile.layers?.map((l) =>
                               l.id === selectedLayer.id && l.type === "text"
-                                ? { ...l, style: { ...l.style, backgroundColor: val || undefined } }
+                                ? { ...l, style: { ...l.style, backgroundColor: undefined } }
                                 : l
                             ),
                           };
                           onProfileUpdate(updated);
+                          return;
                         }
+
+                        if (raw.toLowerCase() === "transparent") {
+                          if (!selectedLayer.style.backgroundColor) return;
+                          const updated = {
+                            ...profile,
+                            layers: profile.layers?.map((l) =>
+                              l.id === selectedLayer.id && l.type === "text"
+                                ? { ...l, style: { ...l.style, backgroundColor: undefined } }
+                                : l
+                            ),
+                          };
+                          onProfileUpdate(updated);
+                          setTextBgDraft("");
+                          return;
+                        }
+
+                        const hex = normalizeCssColorToHex(raw);
+                        if (!hex) {
+                          setTextBgDraft(selectedLayer.style.backgroundColor || "");
+                          return;
+                        }
+                        if (hex === (selectedLayer.style.backgroundColor || "")) {
+                          setTextBgDraft(hex);
+                          return;
+                        }
+                        const updated = {
+                          ...profile,
+                          layers: profile.layers?.map((l) =>
+                            l.id === selectedLayer.id && l.type === "text"
+                              ? { ...l, style: { ...l.style, backgroundColor: hex } }
+                              : l
+                          ),
+                        };
+                        onProfileUpdate(updated);
+                        setTextBgDraft(hex);
                       }}
                       className="flex-1 min-w-0 px-1 py-1 text-xs border rounded font-mono"
                     />
@@ -723,26 +930,57 @@ export function EditorToolbar({
                 </div>
                 <div>
                   <label className="text-xs text-gray-600">Padding</label>
-                  <input
-                    type="number"
-                    value={selectedLayer.style.padding ?? 8}
-                    onChange={(e) => {
-                      const v = parseInt(e.target.value, 10);
-                      if (!Number.isFinite(v) || v < 0 || v > 100) return;
-                      const updated = {
-                        ...profile,
-                        layers: profile.layers?.map((l) =>
-                          l.id === selectedLayer.id && l.type === "text"
-                            ? { ...l, style: { ...l.style, padding: v } }
-                            : l
-                        ),
-                      };
-                      onProfileUpdate(updated);
-                    }}
-                    className="w-full px-2 py-1 text-sm border rounded"
-                    min="0"
-                    max="100"
-                  />
+                  <div className="flex gap-1">
+                    <select
+                      aria-label="Padding presets"
+                      value={String(selectedLayer.style.padding ?? 8)}
+                      onChange={(e) => {
+                        const v = parseInt(e.target.value, 10);
+                        if (!Number.isFinite(v)) return;
+                        const updated = {
+                          ...profile,
+                          layers: profile.layers?.map((l) =>
+                            l.id === selectedLayer.id && l.type === "text"
+                              ? { ...l, style: { ...l.style, padding: clampNumber(v, 0, 100) } }
+                              : l
+                          ),
+                        };
+                        onProfileUpdate(updated);
+                      }}
+                      className="w-[6.5rem] px-2 py-1 text-sm border rounded bg-white"
+                    >
+                      {PADDING_PRESETS.map((p) => (
+                        <option key={p} value={p}>{p}px</option>
+                      ))}
+                    </select>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      value={selectedLayer.style.padding ?? 8}
+                      onChange={(e) => {
+                        const v = parseInt(e.target.value, 10);
+                        if (!Number.isFinite(v)) return;
+                        const updated = {
+                          ...profile,
+                          layers: profile.layers?.map((l) =>
+                            l.id === selectedLayer.id && l.type === "text"
+                              ? { ...l, style: { ...l.style, padding: clampNumber(v, 0, 100) } }
+                              : l
+                          ),
+                        };
+                        onProfileUpdate(updated);
+                      }}
+                      className="flex-1 px-2 py-1 text-sm border rounded"
+                      min="0"
+                      max="100"
+                      list="nb-editor-padding-list"
+                    />
+                    <datalist id="nb-editor-padding-list">
+                      {PADDING_PRESETS.map((p) => (
+                        <option key={p} value={p} />
+                      ))}
+                    </datalist>
+                  </div>
                 </div>
               </div>
             </div>
@@ -753,22 +991,54 @@ export function EditorToolbar({
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="text-xs text-gray-600">Fill</label>
-                  <input
-                    type="color"
-                    value={selectedLayer.style.fill}
-                    onChange={(e) => {
-                      const updated = {
-                        ...profile,
-                        layers: profile.layers?.map((l) =>
-                          l.id === selectedLayer.id && l.type === "shape"
-                            ? { ...l, style: { ...l.style, fill: e.target.value } }
-                            : l
-                        ),
-                      };
-                      onProfileUpdate(updated);
-                    }}
-                    className="w-full h-8 border rounded cursor-pointer"
-                  />
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="color"
+                      value={normalizeCssColorToHex(selectedLayer.style.fill) || "#000000"}
+                      onChange={(e) => {
+                        const updated = {
+                          ...profile,
+                          layers: profile.layers?.map((l) =>
+                            l.id === selectedLayer.id && l.type === "shape"
+                              ? { ...l, style: { ...l.style, fill: e.target.value } }
+                              : l
+                          ),
+                        };
+                        onProfileUpdate(updated);
+                      }}
+                      className="h-8 w-10 flex-shrink-0 border rounded cursor-pointer"
+                      aria-label="Shape fill picker"
+                    />
+                    <input
+                      type="text"
+                      value={shapeFillDraft}
+                      placeholder="#000000 or white"
+                      onChange={(e) => setShapeFillDraft(e.target.value)}
+                      onBlur={() => {
+                        const hex = normalizeCssColorToHex(shapeFillDraft);
+                        if (!hex) {
+                          setShapeFillDraft(selectedLayer.style.fill);
+                          return;
+                        }
+                        if (hex === selectedLayer.style.fill) {
+                          setShapeFillDraft(hex);
+                          return;
+                        }
+                        const updated = {
+                          ...profile,
+                          layers: profile.layers?.map((l) =>
+                            l.id === selectedLayer.id && l.type === "shape"
+                              ? { ...l, style: { ...l.style, fill: hex } }
+                              : l
+                          ),
+                        };
+                        onProfileUpdate(updated);
+                        setShapeFillDraft(hex);
+                      }}
+                      className="flex-1 px-2 py-1 text-sm border rounded font-mono"
+                      aria-label="Shape fill"
+                    />
+                  </div>
                 </div>
                 <div>
                   <label className="text-xs text-gray-600">Opacity ({Math.round(selectedLayer.style.opacity * 100)}%)</label>
@@ -795,22 +1065,65 @@ export function EditorToolbar({
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="text-xs text-gray-600">Stroke</label>
-                  <input
-                    type="color"
-                    value={selectedLayer.style.stroke || "#000000"}
-                    onChange={(e) => {
-                      const updated = {
-                        ...profile,
-                        layers: profile.layers?.map((l) =>
-                          l.id === selectedLayer.id && l.type === "shape"
-                            ? { ...l, style: { ...l.style, stroke: e.target.value } }
-                            : l
-                        ),
-                      };
-                      onProfileUpdate(updated);
-                    }}
-                    className="w-full h-8 border rounded cursor-pointer"
-                  />
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="color"
+                      value={normalizeCssColorToHex(selectedLayer.style.stroke || "#000000") || "#000000"}
+                      onChange={(e) => {
+                        const updated = {
+                          ...profile,
+                          layers: profile.layers?.map((l) =>
+                            l.id === selectedLayer.id && l.type === "shape"
+                              ? { ...l, style: { ...l.style, stroke: e.target.value } }
+                              : l
+                          ),
+                        };
+                        onProfileUpdate(updated);
+                      }}
+                      className="h-8 w-10 flex-shrink-0 border rounded cursor-pointer"
+                      aria-label="Shape stroke picker"
+                    />
+                    <input
+                      type="text"
+                      value={shapeStrokeDraft}
+                      placeholder="#000000 or none"
+                      onChange={(e) => setShapeStrokeDraft(e.target.value)}
+                      onBlur={() => {
+                        const raw = shapeStrokeDraft.trim();
+                        if (raw === "" || raw.toLowerCase() === "none" || raw.toLowerCase() === "transparent") {
+                          const updated = {
+                            ...profile,
+                            layers: profile.layers?.map((l) =>
+                              l.id === selectedLayer.id && l.type === "shape"
+                                ? { ...l, style: { ...l.style, stroke: undefined } }
+                                : l
+                            ),
+                          };
+                          onProfileUpdate(updated);
+                          setShapeStrokeDraft("");
+                          return;
+                        }
+
+                        const hex = normalizeCssColorToHex(raw);
+                        if (!hex) {
+                          setShapeStrokeDraft(selectedLayer.style.stroke || "");
+                          return;
+                        }
+                        const updated = {
+                          ...profile,
+                          layers: profile.layers?.map((l) =>
+                            l.id === selectedLayer.id && l.type === "shape"
+                              ? { ...l, style: { ...l.style, stroke: hex } }
+                              : l
+                          ),
+                        };
+                        onProfileUpdate(updated);
+                        setShapeStrokeDraft(hex);
+                      }}
+                      className="flex-1 px-2 py-1 text-sm border rounded font-mono"
+                      aria-label="Shape stroke"
+                    />
+                  </div>
                 </div>
                 <div>
                   <label className="text-xs text-gray-600">Stroke Width</label>
@@ -928,22 +1241,64 @@ export function EditorToolbar({
               </div>
               <div>
                 <label className="text-xs text-gray-600">Border Color</label>
-                <input
-                  type="color"
-                  value={selectedLayer.style.borderColor || "#ffffff"}
-                  onChange={(e) => {
-                    const updated = {
-                      ...profile,
-                      layers: profile.layers?.map((l) =>
-                        l.id === selectedLayer.id && l.type === "avatar"
-                          ? { ...l, style: { ...l.style, borderColor: e.target.value } }
-                          : l
-                      ),
-                    };
-                    onProfileUpdate(updated);
-                  }}
-                  className="w-full h-8 border rounded cursor-pointer"
-                />
+                <div className="flex items-center gap-1">
+                  <input
+                    type="color"
+                    value={normalizeCssColorToHex(selectedLayer.style.borderColor || "#ffffff") || "#ffffff"}
+                    onChange={(e) => {
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "avatar"
+                            ? { ...l, style: { ...l.style, borderColor: e.target.value } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
+                    }}
+                    className="h-8 w-10 flex-shrink-0 border rounded cursor-pointer"
+                    aria-label="Avatar border color picker"
+                  />
+                  <input
+                    type="text"
+                    value={avatarBorderColorDraft}
+                    placeholder="#ffffff or black"
+                    onChange={(e) => setAvatarBorderColorDraft(e.target.value)}
+                    onBlur={() => {
+                      const raw = avatarBorderColorDraft.trim();
+                      if (raw === "" || raw.toLowerCase() === "none" || raw.toLowerCase() === "transparent") {
+                        const updated = {
+                          ...profile,
+                          layers: profile.layers?.map((l) =>
+                            l.id === selectedLayer.id && l.type === "avatar"
+                              ? { ...l, style: { ...l.style, borderColor: undefined } }
+                              : l
+                          ),
+                        };
+                        onProfileUpdate(updated);
+                        setAvatarBorderColorDraft("");
+                        return;
+                      }
+                      const hex = normalizeCssColorToHex(raw);
+                      if (!hex) {
+                        setAvatarBorderColorDraft(selectedLayer.style.borderColor || "");
+                        return;
+                      }
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "avatar"
+                            ? { ...l, style: { ...l.style, borderColor: hex } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
+                      setAvatarBorderColorDraft(hex);
+                    }}
+                    className="flex-1 px-2 py-1 text-sm border rounded font-mono"
+                    aria-label="Avatar border color"
+                  />
+                </div>
               </div>
               <div>
                 <label className="text-xs text-gray-600">Fit</label>
@@ -999,7 +1354,7 @@ export function EditorToolbar({
                   <input
                     type="color"
                     aria-label="QR foreground color"
-                    value={selectedLayer.style.fill}
+                    value={normalizeCssColorToHex(selectedLayer.style.fill) || "#000000"}
                     onChange={(e) => {
                       const updated = {
                         ...profile,
@@ -1013,7 +1368,31 @@ export function EditorToolbar({
                     }}
                     className="w-8 h-8 rounded border cursor-pointer"
                   />
-                  <span className="text-xs text-gray-500">{selectedLayer.style.fill}</span>
+                  <input
+                    type="text"
+                    value={qrFillDraft}
+                    placeholder="#000000 or black"
+                    onChange={(e) => setQrFillDraft(e.target.value)}
+                    onBlur={() => {
+                      const hex = normalizeCssColorToHex(qrFillDraft);
+                      if (!hex) {
+                        setQrFillDraft(selectedLayer.style.fill);
+                        return;
+                      }
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "qr"
+                            ? { ...l, style: { ...l.style, fill: hex } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
+                      setQrFillDraft(hex);
+                    }}
+                    className="flex-1 min-w-0 px-2 py-1 text-xs border rounded font-mono"
+                    aria-label="QR foreground"
+                  />
                 </div>
               </div>
               <div>
@@ -1022,7 +1401,7 @@ export function EditorToolbar({
                   <input
                     type="color"
                     aria-label="QR background color"
-                    value={selectedLayer.style.background}
+                    value={normalizeCssColorToHex(selectedLayer.style.background) || "#ffffff"}
                     onChange={(e) => {
                       const updated = {
                         ...profile,
@@ -1036,7 +1415,31 @@ export function EditorToolbar({
                     }}
                     className="w-8 h-8 rounded border cursor-pointer"
                   />
-                  <span className="text-xs text-gray-500">{selectedLayer.style.background}</span>
+                  <input
+                    type="text"
+                    value={qrBgDraft}
+                    placeholder="#ffffff or white"
+                    onChange={(e) => setQrBgDraft(e.target.value)}
+                    onBlur={() => {
+                      const hex = normalizeCssColorToHex(qrBgDraft);
+                      if (!hex) {
+                        setQrBgDraft(selectedLayer.style.background);
+                        return;
+                      }
+                      const updated = {
+                        ...profile,
+                        layers: profile.layers?.map((l) =>
+                          l.id === selectedLayer.id && l.type === "qr"
+                            ? { ...l, style: { ...l.style, background: hex } }
+                            : l
+                        ),
+                      };
+                      onProfileUpdate(updated);
+                      setQrBgDraft(hex);
+                    }}
+                    className="flex-1 min-w-0 px-2 py-1 text-xs border rounded font-mono"
+                    aria-label="QR background"
+                  />
                 </div>
               </div>
               <div>

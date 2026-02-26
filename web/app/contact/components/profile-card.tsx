@@ -3,6 +3,7 @@
 import { Profile, cn, CardLayer, type TextLayer, type QrLayer } from "@/lib/utils";
 import { buildMapHref } from "@/lib/nbcard/mapHref";
 import { stripUrls, clamp } from "@/lib/nbcard/sanitize";
+import { findSnapPoints, snapToGrid } from "@/lib/nb-card/layer-editor";
 import { FaInstagram, FaFacebook, FaTiktok, FaLinkedin, FaTwitter, FaGlobe, FaPhone, FaEnvelope, FaHome } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 import { getSession } from "next-auth/react";
@@ -569,6 +570,8 @@ interface ProfileCardProps {
   captureId?: string;
   editMode?: boolean; // Free Layout Editor: enable drag/resize
   canvasEditMode?: boolean; // Canvas Edit Mode: inline editing on preview
+  gridEnabled?: boolean; // Free Layout Editor: grid snap
+  snapEnabled?: boolean; // Free Layout Editor: smart snapping (edges/centers)
   suppressDefaultCardContent?: boolean; // Hide system-generated avatar/contact rows (user layers only)
   selectedLayerId?: string | null; // Free Layout Editor: currently selected layer
   onLayerUpdate?: (layerId: string, updates: Partial<CardLayer>) => void; // Free Layout Editor: update layer
@@ -580,18 +583,24 @@ function CardLayerRenderer({
   layer,
   editMode,
   canvasEditMode,
+  gridEnabled,
+  snapEnabled,
   isSelected,
   onSelect,
   onUpdate,
   containerRef,
+  allLayers,
 }: {
   layer: CardLayer;
   editMode?: boolean;
   canvasEditMode?: boolean;
+  gridEnabled?: boolean;
+  snapEnabled?: boolean;
   isSelected?: boolean;
   onSelect?: (id: string) => void;
   onUpdate?: (id: string, updates: Partial<CardLayer>) => void;
   containerRef: React.RefObject<HTMLDivElement>;
+  allLayers: CardLayer[];
 }) {
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
@@ -672,7 +681,7 @@ function CardLayerRenderer({
       layerY: layer.y,
     });
     setIsDragging(true);
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
@@ -685,10 +694,29 @@ function CardLayerRenderer({
     const rect = container.getBoundingClientRect();
     const deltaX = (e.clientX - dragStart.x) / rect.width * 100;
     const deltaY = (e.clientY - dragStart.y) / rect.height * 100;
-    
-    const newX = Math.max(0, Math.min(100 - layer.w, dragStart.layerX + deltaX));
-    const newY = Math.max(0, Math.min(100 - layer.h, dragStart.layerY + deltaY));
-    
+
+    let newX = Math.max(0, Math.min(100 - layer.w, dragStart.layerX + deltaX));
+    let newY = Math.max(0, Math.min(100 - layer.h, dragStart.layerY + deltaY));
+
+    // Grid snapping (tight control)
+    if (gridEnabled) {
+      const grid = 0.25; // quarter-percent increments for precise placement
+      newX = snapToGrid(newX, grid);
+      newY = snapToGrid(newY, grid);
+      newX = Math.max(0, Math.min(100 - layer.w, newX));
+      newY = Math.max(0, Math.min(100 - layer.h, newY));
+    }
+
+    // Smart snapping to edges/centers/other layers
+    if (snapEnabled) {
+      const target: CardLayer = { ...layer, x: newX, y: newY };
+      const snapPoint = findSnapPoints(target, allLayers, 1);
+      if (typeof snapPoint.x === "number") newX = snapPoint.x;
+      if (typeof snapPoint.y === "number") newY = snapPoint.y;
+      newX = Math.max(0, Math.min(100 - layer.w, newX));
+      newY = Math.max(0, Math.min(100 - layer.h, newY));
+    }
+
     onUpdate?.(layer.id, { x: newX, y: newY });
   };
 
@@ -696,7 +724,7 @@ function CardLayerRenderer({
     if (isDragging) {
       e.stopPropagation();
       setIsDragging(false);
-      (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
     }
   };
 
@@ -714,7 +742,7 @@ function CardLayerRenderer({
       layerH: layer.h,
     });
     setIsResizing(true);
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   };
 
   const handleResizePointerMove = (e: React.PointerEvent) => {
@@ -727,10 +755,18 @@ function CardLayerRenderer({
     const rect = container.getBoundingClientRect();
     const deltaX = (e.clientX - resizeStart.x) / rect.width * 100;
     const deltaY = (e.clientY - resizeStart.y) / rect.height * 100;
-    
-    const newW = Math.max(5, Math.min(100 - layer.x, resizeStart.layerW + deltaX));
-    const newH = Math.max(5, Math.min(100 - layer.y, resizeStart.layerH + deltaY));
-    
+
+    let newW = Math.max(5, Math.min(100 - layer.x, resizeStart.layerW + deltaX));
+    let newH = Math.max(5, Math.min(100 - layer.y, resizeStart.layerH + deltaY));
+
+    if (gridEnabled) {
+      const grid = 0.25;
+      newW = snapToGrid(newW, grid);
+      newH = snapToGrid(newH, grid);
+      newW = Math.max(5, Math.min(100 - layer.x, newW));
+      newH = Math.max(5, Math.min(100 - layer.y, newH));
+    }
+
     onUpdate?.(layer.id, { w: newW, h: newH });
   };
 
@@ -738,7 +774,7 @@ function CardLayerRenderer({
     if (isResizing) {
       e.stopPropagation();
       setIsResizing(false);
-      (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
     }
   };
 
@@ -756,6 +792,8 @@ function CardLayerRenderer({
       : (editMode && !layer.locked ? (isDragging ? "grabbing" : "grab") : undefined),
     outline: editMode && isSelected ? "2px solid #A855F7" : undefined,
     outlineOffset: "2px",
+    touchAction: editMode ? "none" : undefined,
+    userSelect: editMode ? "none" : undefined,
   };
 
   const renderContent = () => {
@@ -1010,6 +1048,8 @@ export function ProfileCard({
   captureId,
   editMode = false,
   canvasEditMode = false,
+  gridEnabled = false,
+  snapEnabled = true,
   suppressDefaultCardContent = false,
   selectedLayerId = null,
   onLayerUpdate,
@@ -1901,10 +1941,13 @@ export function ProfileCard({
                 layer={layer}
                 editMode={editMode}
                 canvasEditMode={canvasEditMode}
+                gridEnabled={gridEnabled}
+                snapEnabled={snapEnabled}
                 isSelected={selectedLayerId === layer.id}
                 onSelect={onLayerSelect}
                 onUpdate={onLayerUpdate}
                 containerRef={rootRef}
+                allLayers={profile.layers || []}
               />
             ))}
         </div>
