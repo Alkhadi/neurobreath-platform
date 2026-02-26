@@ -2,7 +2,7 @@
 
 ## Prerequisites (Node version)
 
-This repo requires **Node 20** (see `engines.node` in `package.json`). Node is pinned via `.nvmrc`.
+This repo requires **Node >= 20** (see `engines.node` in `package.json`). Node is pinned via `.nvmrc` (20.20.0) if you want to match the pinned version.
 
 ```bash
 nvm install

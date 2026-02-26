@@ -36,7 +36,7 @@ Key modules:
 
 ### Prerequisites
 
-- Node.js 20 LTS recommended
+- Node.js >= 20 (20 LTS recommended)
 - Yarn classic (v1)
 - Docker (optional, for local Postgres)
 

@@ -1484,6 +1484,7 @@ export function NBCardPanel() {
               <ProfileCard
                 profile={currentProfile}
                 showEditButton={false}
+                suppressDefaultCardContent={true}
                 onPhotoClick={(e) => {
                   e?.stopPropagation();
                   if (!canvasEditMode) {

@@ -11,7 +11,7 @@ This repo is a monorepo. The Next.js app lives in `web/`.
 
 ### 1) Pin Node version
 
-Node is pinned via `.nvmrc`.
+Node is pinned via `.nvmrc` (recommended), and the repo requires Node >= 20.
 
 ```bash
 nvm install

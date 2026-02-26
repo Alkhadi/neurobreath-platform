@@ -3,7 +3,7 @@
   "private": true,
   "packageManager": "yarn@1.22.22",
   "engines": {
-    "node": ">=20 <21"
+    "node": ">=20"
   },
   "scripts": {
     "dev": "yarn --cwd web dev",

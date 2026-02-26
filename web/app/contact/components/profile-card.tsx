@@ -569,6 +569,7 @@ interface ProfileCardProps {
   captureId?: string;
   editMode?: boolean; // Free Layout Editor: enable drag/resize
   canvasEditMode?: boolean; // Canvas Edit Mode: inline editing on preview
+  suppressDefaultCardContent?: boolean; // Hide system-generated avatar/contact rows (user layers only)
   selectedLayerId?: string | null; // Free Layout Editor: currently selected layer
   onLayerUpdate?: (layerId: string, updates: Partial<CardLayer>) => void; // Free Layout Editor: update layer
   onLayerSelect?: (layerId: string | null) => void; // Free Layout Editor: select layer
@@ -1009,6 +1010,7 @@ export function ProfileCard({
   captureId,
   editMode = false,
   canvasEditMode = false,
+  suppressDefaultCardContent = false,
   selectedLayerId = null,
   onLayerUpdate,
   onLayerSelect,
@@ -1093,6 +1095,7 @@ export function ProfileCard({
     (profile.weddingCard as { headline?: string } | undefined)?.headline?.trim()
   );
   const isCanvasOnly = !hasProfileData && (profile.layers?.length ?? 0) > 0;
+  const suppressSystemContent = suppressDefaultCardContent || isCanvasOnly;
 
   // Phase 2: Get export dimensions from template metadata
   const exportDimensions = resolvedTemplate ? getTemplateExportDimensions(resolvedTemplate) : { width: 1600, height: 900 };
@@ -1127,11 +1130,11 @@ export function ProfileCard({
     // Canvas-only cards suppress these so system overlays don't obscure user layers.
     el.style.setProperty(
       "--nbcard-template-readability-alpha",
-      String(isWalletTemplate || isCanvasOnly ? 0 : typeof theme?.readabilityOverlayAlpha === "number" ? theme.readabilityOverlayAlpha : 0.35)
+      String(isWalletTemplate || suppressSystemContent ? 0 : typeof theme?.readabilityOverlayAlpha === "number" ? theme.readabilityOverlayAlpha : 0.35)
     );
     el.style.setProperty(
       "--nbcard-template-lighten-alpha",
-      String(isWalletTemplate || isCanvasOnly ? 0 : typeof theme?.lightenOverlayAlpha === "number" ? theme.lightenOverlayAlpha : 0)
+      String(isWalletTemplate || suppressSystemContent ? 0 : typeof theme?.lightenOverlayAlpha === "number" ? theme.lightenOverlayAlpha : 0)
     );
 
     // Palette tint
@@ -1151,7 +1154,7 @@ export function ProfileCard({
     } else {
       el.style.removeProperty("--nb-accent");
     }
-  }, [profile, isWalletTemplate, isCanvasOnly, templateSelection?.backgroundColor, templateSelection?.backgroundId, templateTheme]);
+  }, [profile, isWalletTemplate, suppressSystemContent, templateSelection?.backgroundColor, templateSelection?.backgroundId, templateTheme]);
   
   // Build template paths from IDs
   // New naming: "modern-geometric-landscape" -> "modern-geometric-landscape.svg"
@@ -1451,7 +1454,7 @@ export function ProfileCard({
 
       {/* CARD CONTENT (z=10) — hidden in edit mode (layout or canvas), wallet template,
           or canvas-only cards (layers present but no form data filled in) */}
-      {isWalletTemplate || editMode || canvasEditMode || isCanvasOnly ? null : (
+      {isWalletTemplate || editMode || canvasEditMode || suppressSystemContent ? null : (
       <div className={cn("relative z-10 p-8", contentTextClass)}>
         {isFlyerPromoPortrait ? (
                 <div className="space-y-4">
