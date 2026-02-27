@@ -45,6 +45,15 @@ const nextConfig = {
           },
         ],
       },
+      // CORS headers for NB-Card template assets so html2canvas can paint them
+      // without a SecurityError when crossOrigin="anonymous" is set on <img>.
+      {
+        source: '/nb-card/templates/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
     ];
   },
   images: {

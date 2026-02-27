@@ -50,6 +50,7 @@ import {
 } from "@/lib/nb-card/backup";
 
 import { RedactionDialog } from "@/components/nbcard/RedactionDialog";
+import { ShareModeDialog, type ShareMode } from "@/components/nbcard/ShareModeDialog";
 import {
   applyRedaction,
   getDefaultIncludedFieldsForProfile,
@@ -489,6 +490,22 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   const [exportCaptureProfile, setExportCaptureProfile] = React.useState<Profile | null>(null);
   const [selectedTemplate, setSelectedTemplate] = React.useState<Template | undefined>(undefined);
 
+  type PendingShareAction = {
+    channel: string;
+    onImage: () => Promise<void>;
+    onText: () => Promise<void>;
+  };
+  const [pendingShare, setPendingShare] = React.useState<PendingShareAction | null>(null);
+
+  function requestShareMode(
+    channel: string,
+    onImage: () => Promise<void>,
+    onText: () => Promise<void>
+  ) {
+    if (busyKey) return;
+    setPendingShare({ channel, onImage, onText });
+  }
+
   // Load template when templateSelection changes
   React.useEffect(() => {
     if (!templateSelection?.backgroundId) {
@@ -711,31 +728,46 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
   async function handleShareNative() {
     requestRedactionAndRun(async (redacted) => {
-      await withBusy("share", async () => {
-        setExportCaptureProfile(redacted);
-        try {
-          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-          const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
-          const fileName = `${safeName}.png`;
-          const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
-          const pngFile = new File([pngBlob], fileName, { type: "image/png" });
-
-          const ok = await shareViaWebShare({
-            title: `NBCard — ${redacted.fullName || profile.fullName}`,
-            text: `Here’s my contact card: ${shareUrl}`,
-            files: [pngFile],
+      requestShareMode(
+        "Share",
+        // IMAGE path
+        async () => {
+          await withBusy("share", async () => {
+            setExportCaptureProfile(redacted);
+            try {
+              await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+              const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
+              const ok = await shareViaWebShare({
+                title: `NBCard — ${redacted.fullName || profile.fullName}`,
+                text: `Here’s my contact card: ${shareUrl}`,
+                files: [new File([pngBlob], `${safeName}.png`, { type: "image/png" })],
+              });
+              if (!ok) setIsShareFallbackOpen(true);
+              else toast.success("Shared");
+            } finally {
+              setExportCaptureProfile(null);
+            }
           });
-
-          if (ok) {
-            toast.success("Shared");
-            return;
-          }
-
-          setIsShareFallbackOpen(true);
-        } finally {
-          setExportCaptureProfile(null);
+        },
+        // TEXT path
+        async () => {
+          await withBusy("share-text", async () => {
+            const text = renderShareText(redacted, shareUrl);
+            const ok = await shareViaWebShare({
+              title: `NBCard — ${redacted.fullName || profile.fullName}`,
+              text,
+              url: shareUrl,
+            });
+            if (!ok) {
+              await copyTextToClipboard(text);
+              toast.success("Text copied to clipboard");
+            } else {
+              toast.success("Shared as text");
+            }
+          });
         }
-      });
+      );
     });
   }
 
@@ -846,97 +878,189 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
     });
   }
 
-  async function handleDownloadPng() {
+  function handleDownloadPng() {
     requestRedactionAndRun(async (redacted) => {
-      await withBusy("png", async () => {
-        setExportCaptureProfile(redacted);
-        try {
-          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-          const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
-          const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
-          downloadBlob(pngBlob, `${safeName}_NBCard.png`);
-          toast.success("PNG downloaded");
-        } finally {
-          setExportCaptureProfile(null);
-        }
-      });
-    });
-  }
-
-  async function handleSharePng() {
-    requestRedactionAndRun(async (redacted) => {
-      await withBusy("png-share", async () => {
-        setExportCaptureProfile(redacted);
-        try {
-          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-          const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
-          const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
-          const fileName = `${safeName}.png`;
-          const ok = await shareViaWebShare({
-            title: `NBCard — ${redacted.fullName || profile.fullName}`,
-            files: [new File([pngBlob], fileName, { type: "image/png" })],
+      requestShareMode(
+        "Image Export",
+        // IMAGE with background
+        async () => {
+          await withBusy("png", async () => {
+            setExportCaptureProfile(redacted);
+            try {
+              await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
+              const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+              const ok = await shareViaWebShare({
+                title: `NBCard — ${redacted.fullName || profile.fullName}`,
+                files: [new File([pngBlob], `${safeName}.png`, { type: "image/png" })],
+              });
+              if (!ok) {
+                downloadBlob(pngBlob, `${safeName}_NBCard.png`);
+                toast.success("PNG downloaded");
+              } else {
+                toast.success("Image shared");
+              }
+            } finally {
+              setExportCaptureProfile(null);
+            }
           });
-          if (ok) {
-            toast.success("Shared image");
-          } else {
-            downloadBlob(pngBlob, `${safeName}_NBCard.png`);
-            toast.message("Sharing not supported here", { description: "Image downloaded instead." });
-          }
-        } finally {
-          setExportCaptureProfile(null);
-        }
-      });
-    });
-  }
-
-  async function handleDownloadPdf() {
-    requestRedactionAndRun(async (redacted) => {
-      await withBusy("pdf", async () => {
-        setExportCaptureProfile(redacted);
-        try {
-          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-          const { pdfBytes } = await buildExportAssets(redacted, shareUrl, { includePdf: true }, EXPORT_CAPTURE_ID);
-          if (!pdfBytes) throw new Error("Failed to generate PDF");
-          const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
-          downloadBlob(new Blob([pdfBytes], { type: "application/pdf" }), `${safeName}_NBCard.pdf`);
-          toast.success("PDF downloaded");
-        } finally {
-          setExportCaptureProfile(null);
-        }
-      });
-    });
-  }
-
-  async function handleSharePdf() {
-    requestRedactionAndRun(async (redacted) => {
-      await withBusy("pdf-share", async () => {
-        setExportCaptureProfile(redacted);
-        try {
-          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-          const { pdfBytes } = await buildExportAssets(redacted, shareUrl, { includePdf: true }, EXPORT_CAPTURE_ID);
-          if (!pdfBytes) throw new Error("Failed to generate PDF");
-          const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
-          const fileName = `${safeName}.pdf`;
-          const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
-          const pdfFile = blobToFile(pdfBlob, fileName);
-          
-          const shared = await shareFileOrFallback({
-            file: pdfFile,
-            title: `NBCard — ${redacted.fullName || profile.fullName || "NB-Card"}`,
-            text: "Here's my NBCard profile",
-            fallbackDownload: true,
+        },
+        // TEXT only
+        async () => {
+          await withBusy("text-share", async () => {
+            const text = renderShareText(redacted, shareUrl);
+            const ok = await shareViaWebShare({
+              title: `NBCard — ${redacted.fullName || profile.fullName}`,
+              text,
+            });
+            if (!ok) {
+              await copyTextToClipboard(text);
+              toast.success("Text copied to clipboard");
+            } else {
+              toast.success("Shared as text");
+            }
           });
-          
-          if (shared) {
-            toast.success("PDF shared");
-          }
-        } catch (error) {
-          toast.error("Failed to share PDF");
-          console.error(error);
-        } finally {
-          setExportCaptureProfile(null);
         }
-      });
+      );
+    });
+  }
+
+  function handleSharePng() {
+    requestRedactionAndRun(async (redacted) => {
+      requestShareMode(
+        "Share PNG",
+        // IMAGE path
+        async () => {
+          await withBusy("png-share", async () => {
+            setExportCaptureProfile(redacted);
+            try {
+              await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
+              const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+              const ok = await shareViaWebShare({
+                title: `NBCard — ${redacted.fullName || profile.fullName}`,
+                files: [new File([pngBlob], `${safeName}.png`, { type: "image/png" })],
+              });
+              if (ok) {
+                toast.success("Shared image");
+              } else {
+                downloadBlob(pngBlob, `${safeName}_NBCard.png`);
+                toast.message("Sharing not supported here", { description: "Image downloaded instead." });
+              }
+            } finally {
+              setExportCaptureProfile(null);
+            }
+          });
+        },
+        // TEXT path
+        async () => {
+          await withBusy("text-share", async () => {
+            const text = renderShareText(redacted, shareUrl);
+            const ok = await shareViaWebShare({
+              title: `NBCard — ${redacted.fullName || profile.fullName}`,
+              text,
+            });
+            if (!ok) {
+              await copyTextToClipboard(text);
+              toast.success("Text copied to clipboard");
+            } else {
+              toast.success("Shared as text");
+            }
+          });
+        }
+      );
+    });
+  }
+
+  function handleDownloadPdf() {
+    requestRedactionAndRun(async (redacted) => {
+      requestShareMode(
+        "PDF Export",
+        // IMAGE (PDF with embedded canvas)
+        async () => {
+          await withBusy("pdf", async () => {
+            setExportCaptureProfile(redacted);
+            try {
+              await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              const { pdfBytes } = await buildExportAssets(redacted, shareUrl, { includePdf: true }, EXPORT_CAPTURE_ID);
+              if (!pdfBytes) throw new Error("Failed to generate PDF");
+              const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+              downloadBlob(new Blob([pdfBytes], { type: "application/pdf" }), `${safeName}_NBCard.pdf`);
+              toast.success("PDF downloaded");
+            } finally {
+              setExportCaptureProfile(null);
+            }
+          });
+        },
+        // TEXT path
+        async () => {
+          await withBusy("text-share", async () => {
+            const text = renderShareText(redacted, shareUrl);
+            const ok = await shareViaWebShare({
+              title: `NBCard — ${redacted.fullName || profile.fullName}`,
+              text,
+            });
+            if (!ok) {
+              await copyTextToClipboard(text);
+              toast.success("Text copied to clipboard");
+            } else {
+              toast.success("Shared as text");
+            }
+          });
+        }
+      );
+    });
+  }
+
+  function handleSharePdf() {
+    requestRedactionAndRun(async (redacted) => {
+      requestShareMode(
+        "Share PDF",
+        // IMAGE (PDF with embedded canvas)
+        async () => {
+          await withBusy("pdf-share", async () => {
+            setExportCaptureProfile(redacted);
+            try {
+              await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              const { pdfBytes } = await buildExportAssets(redacted, shareUrl, { includePdf: true }, EXPORT_CAPTURE_ID);
+              if (!pdfBytes) throw new Error("Failed to generate PDF");
+              const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+              const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
+              const pdfFile = blobToFile(pdfBlob, `${safeName}.pdf`);
+              const shared = await shareFileOrFallback({
+                file: pdfFile,
+                title: `NBCard — ${redacted.fullName || profile.fullName || "NB-Card"}`,
+                text: "Here's my NBCard profile",
+                fallbackDownload: true,
+              });
+              if (shared) {
+                toast.success("PDF shared");
+              }
+            } catch (error) {
+              toast.error("Failed to share PDF");
+              console.error(error);
+            } finally {
+              setExportCaptureProfile(null);
+            }
+          });
+        },
+        // TEXT path
+        async () => {
+          await withBusy("text-share", async () => {
+            const text = renderShareText(redacted, shareUrl);
+            const ok = await shareViaWebShare({
+              title: `NBCard — ${redacted.fullName || profile.fullName}`,
+              text,
+            });
+            if (!ok) {
+              await copyTextToClipboard(text);
+              toast.success("Text copied to clipboard");
+            } else {
+              toast.success("Shared as text");
+            }
+          });
+        }
+      );
     });
   }
 
@@ -946,52 +1070,134 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
   function openWhatsapp() {
     requestRedactionAndRun(async (redacted) => {
-      await withBusy("whatsapp-share", async () => {
-        // Render the hidden export clone then capture it as a PNG (same pipeline as handleSharePng)
-        setExportCaptureProfile(redacted);
-        try {
-          await new Promise((resolve) =>
-            requestAnimationFrame(() => requestAnimationFrame(resolve))
-          );
-          const { pngBlob } = await buildExportAssets(
-            redacted,
-            shareUrl,
-            {},
-            EXPORT_CAPTURE_ID
-          );
-          const safeName = (redacted.fullName || profile.fullName || "nbcard")
-            .trim()
-            .replace(/\s+/g, "_");
-          const fileName = `${safeName}_NBCard.png`;
-          // Try native file share — on mobile this opens the share sheet so user can pick WhatsApp
-          const ok = await shareViaWebShare({
-            title: `NBCard — ${redacted.fullName || profile.fullName}`,
-            files: [new File([pngBlob], fileName, { type: "image/png" })],
+      requestShareMode(
+        "WhatsApp",
+        // IMAGE path
+        async () => {
+          await withBusy("whatsapp-share", async () => {
+            setExportCaptureProfile(redacted);
+            try {
+              await new Promise((resolve) =>
+                requestAnimationFrame(() => requestAnimationFrame(resolve))
+              );
+              const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
+              const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+              const file = new File([pngBlob], `${safeName}_NBCard.png`, { type: "image/png" });
+              // On mobile the share sheet lets the user pick WhatsApp directly
+              const ok = await shareViaWebShare({
+                title: `NBCard — ${redacted.fullName || profile.fullName}`,
+                text: shareUrl,
+                files: [file],
+              });
+              if (ok) {
+                toast.success("Card image ready to share");
+              } else {
+                // Web Share API with files requires HTTPS + a modern browser.
+                // On localhost/HTTP/unsupported browsers: download the PNG only.
+                // IMPORTANT: do NOT open WhatsApp with text — user chose Image.
+                downloadBlob(pngBlob, `${safeName}_NBCard.png`);
+                toast.message("Card image saved", {
+                  description: "Open WhatsApp and attach the downloaded image to share your card.",
+                });
+              }
+            } finally {
+              setExportCaptureProfile(null);
+            }
           });
-          if (ok) {
-            toast.success("Card image ready to share");
-          } else {
-            // Fallback for desktop browsers that don't support file sharing via Web Share API
+        },
+        // TEXT path
+        async () => {
+          await withBusy("whatsapp-text", async () => {
             const text = renderShareText(redacted, shareUrl);
-            const url = buildWhatsappUrl(text);
-            window.open(url, "_blank", "noopener,noreferrer");
-          }
-        } finally {
-          setExportCaptureProfile(null);
+            const ok = await shareViaWebShare({
+              title: `NBCard — ${redacted.fullName || profile.fullName}`,
+              text,
+            });
+            if (!ok) {
+              window.open(buildWhatsappUrl(text), "_blank", "noopener,noreferrer");
+            }
+          });
         }
-      });
+      );
     });
   }
 
   function openEmail() {
     requestRedactionAndRun(async (redacted) => {
-      window.location.href = buildMailtoUrl(redacted);
+      requestShareMode(
+        "Email",
+        // IMAGE path — share via Web Share API with PDF attachment (contains embedded canvas)
+        async () => {
+          await withBusy("email-image", async () => {
+            setExportCaptureProfile(redacted);
+            try {
+              await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              const { pdfBytes } = await buildExportAssets(redacted, shareUrl, { includePdf: true }, EXPORT_CAPTURE_ID);
+              if (pdfBytes) {
+                const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+                const pdfFile = new File([pdfBytes], `${safeName}_NBCard.pdf`, { type: "application/pdf" });
+                const ok = await shareViaWebShare({
+                  title: `NBCard — ${redacted.fullName || profile.fullName}`,
+                  text: `My NBCard: ${shareUrl}`,
+                  files: [pdfFile],
+                });
+                if (ok) {
+                  toast.success("PDF ready to attach in email");
+                  return;
+                }
+                // Fallback: download PDF then open mailto
+                downloadBlob(new Blob([pdfBytes], { type: "application/pdf" }), `${safeName}_NBCard.pdf`);
+                toast.message("PDF downloaded — attach it to your email");
+              }
+              window.location.href = buildMailtoUrl(redacted);
+            } finally {
+              setExportCaptureProfile(null);
+            }
+          });
+        },
+        // TEXT path
+        async () => {
+          window.location.href = buildMailtoUrl(redacted);
+        }
+      );
     });
   }
 
   function openSms() {
     requestRedactionAndRun(async (redacted) => {
-      window.location.href = buildSmsUrl(redacted);
+      requestShareMode(
+        "SMS / Messages",
+        // IMAGE path
+        async () => {
+          await withBusy("sms-image", async () => {
+            setExportCaptureProfile(redacted);
+            try {
+              await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
+              const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+              const file = new File([pngBlob], `${safeName}_NBCard.png`, { type: "image/png" });
+              const ok = await shareViaWebShare({
+                title: `NBCard — ${redacted.fullName || profile.fullName}`,
+                text: shareUrl,
+                files: [file],
+              });
+              if (ok) {
+                toast.success("Card image ready to share");
+              } else {
+                downloadBlob(pngBlob, `${safeName}_NBCard.png`);
+                toast.message("Image downloaded", { description: "Attach it to your message." });
+                window.location.href = buildSmsUrl(redacted);
+              }
+            } finally {
+              setExportCaptureProfile(null);
+            }
+          });
+        },
+        // TEXT path
+        async () => {
+          window.location.href = buildSmsUrl(redacted);
+        }
+      );
     });
   }
 
@@ -1501,6 +1707,19 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           setPendingRedactionAction(null);
           action?.(fields);
         }}
+      />
+
+      <ShareModeDialog
+        open={!!pendingShare}
+        channel={pendingShare?.channel ?? "Share"}
+        onSelect={async (mode: ShareMode) => {
+          const action = pendingShare;
+          setPendingShare(null);
+          if (!action) return;
+          if (mode === "image") await action.onImage();
+          else await action.onText();
+        }}
+        onCancel={() => setPendingShare(null)}
       />
 
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">

@@ -6,6 +6,51 @@
 import html2canvas from "html2canvas";
 
 /**
+ * Inline all cross-origin <img> srcs as data URIs so html2canvas can paint
+ * them without a CORS SecurityError when allowTaint: false is set.
+ *
+ * Only processes images that have a crossorigin attribute and whose src is
+ * not already a data: or blob: URI (those are already local).
+ *
+ * Returns a restore function — call it after captureToBlob() finishes to
+ * put the original src values back (avoids polluting the live DOM).
+ */
+export async function inlineImages(rootEl: HTMLElement): Promise<() => void> {
+  const imgs = Array.from(
+    rootEl.querySelectorAll<HTMLImageElement>("img[crossorigin]")
+  );
+  const originals: Array<{ el: HTMLImageElement; src: string }> = [];
+
+  await Promise.all(
+    imgs.map(async (img) => {
+      const src = img.getAttribute("src") ?? "";
+      if (!src || src.startsWith("data:") || src.startsWith("blob:")) return;
+      try {
+        const res = await fetch(src, { mode: "cors", cache: "force-cache" });
+        if (!res.ok) return;
+        const buf = await res.arrayBuffer();
+        const mime = res.headers.get("content-type") ?? "image/png";
+        // btoa on large buffers: chunk to avoid call-stack overflow
+        const bytes = new Uint8Array(buf);
+        let b64 = "";
+        const CHUNK = 8192;
+        for (let i = 0; i < bytes.length; i += CHUNK) {
+          b64 += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
+        }
+        b64 = btoa(b64);
+        originals.push({ el: img, src });
+        img.src = `data:${mime};base64,${b64}`;
+        await img.decode().catch(() => undefined);
+      } catch {
+        // Silently skip — html2canvas will render what it can
+      }
+    })
+  );
+
+  return () => originals.forEach(({ el, src }) => { el.src = src; });
+}
+
+/**
  * Wait for fonts to load (defensive check for document.fonts API)
  */
 export async function waitForFonts(): Promise<void> {
@@ -85,6 +130,10 @@ export async function captureToBlob(
     });
   });
 
+  // Inline cross-origin images as data URIs so html2canvas can paint them
+  // without a SecurityError (allowTaint: false would otherwise blank them).
+  const restoreImages = await inlineImages(rootEl);
+
   let canvas: HTMLCanvasElement;
   try {
     // Capture with html2canvas
@@ -97,7 +146,8 @@ export async function captureToBlob(
       // Respect data-html2canvas-ignore attributes (edit UI will be excluded)
     });
   } finally {
-    // Restore editor UI elements after capture
+    // Restore inlined image srcs and editor UI elements after capture
+    restoreImages();
     uiElements.forEach((el, i) => { el.style.display = savedDisplays[i]; });
   }
   
