@@ -49,7 +49,7 @@ export function ShareModeDialog({
             <span className="flex flex-col">
               <span className="font-semibold">Share as Image</span>
               <span className="text-xs text-muted-foreground font-normal">
-                Full card visual with background &amp; active link
+                Exact canvas capture (background + avatar + all layers). On desktop the image will be downloaded.
               </span>
             </span>
           </Button>
@@ -65,7 +65,7 @@ export function ShareModeDialog({
             <span className="flex flex-col">
               <span className="font-semibold">Share as Text</span>
               <span className="text-xs text-muted-foreground font-normal">
-                Contact details and profile link as plain text
+                Professionally formatted contact details + card preview link (works everywhere)
               </span>
             </span>
           </Button>

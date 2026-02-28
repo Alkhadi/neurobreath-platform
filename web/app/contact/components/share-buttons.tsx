@@ -91,9 +91,8 @@ import {
   buildMailtoUrl,
   buildSmsUrl,
   buildWhatsappUrl,
-  renderBankQrText,
-  renderFlyerQrText,
 } from "../lib/nbcard-share";
+import { uploadCardOgImage } from "@/lib/nb-card/og-upload";
 import {
   importNbcardLocalState,
   resetNbcardContacts,
@@ -480,7 +479,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   const [isQrOpen, setIsQrOpen] = React.useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = React.useState(false);
   const [isShareFallbackOpen, setIsShareFallbackOpen] = React.useState(false);
-  const [isQrVcard, setIsQrVcard] = React.useState(true);
+  const [isQrVcard, setIsQrVcard] = React.useState(false);
   const [isPrintOpen, setIsPrintOpen] = React.useState(false);
   const [busyKey, setBusyKey] = React.useState<string | null>(null);
 
@@ -687,18 +686,22 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   }, []);
 
   const qrValue = React.useMemo(() => {
+    // Default: encode the share URL so scanning always opens the full card
+    // with background + all layers (correct for all card categories).
+    if (!isQrVcard) return shareUrl;
+
+    // Optional vCard mode: encode contact fields directly into the QR.
+    // Not meaningful for BANK / FLYER / WEDDING — fall back to URL.
+    const category = getCategoryFromProfile(profile);
+    if (category === "BANK" || category === "FLYER" || category === "WEDDING") return shareUrl;
+
     const fields = lastRedactionFields ?? getDefaultIncludedFields(profile);
     const redacted = applyRedaction(profile, fields);
-    const category = getCategoryFromProfile(profile);
-
-    if (category === "BANK") return renderBankQrText(redacted, shareUrl);
-    if (category === "FLYER" || category === "WEDDING") return renderFlyerQrText(redacted, shareUrl);
-
-    if (!isQrVcard) return shareUrl;
     const vcard = generateProfileVCard(redacted, {
       includeAddress: category === "ADDRESS",
       includeBusiness: category === "BUSINESS" || category === "PROFILE",
     });
+    // Fall back to URL if vCard exceeds QR capacity
     if (vcard.length > 1200) return shareUrl;
     return vcard;
   }, [isQrVcard, lastRedactionFields, profile, shareUrl]);
@@ -738,6 +741,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
               await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
               const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
               const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
+              void uploadCardOgImage(pngBlob, redacted, deviceId).catch(() => undefined);
               const ok = await shareViaWebShare({
                 title: `NBCard — ${redacted.fullName || profile.fullName}`,
                 text: `Here’s my contact card: ${shareUrl}`,
@@ -889,6 +893,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
             try {
               await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
               const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
+              void uploadCardOgImage(pngBlob, redacted, deviceId).catch(() => undefined);
               const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
               const ok = await shareViaWebShare({
                 title: `NBCard — ${redacted.fullName || profile.fullName}`,
@@ -1081,6 +1086,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                 requestAnimationFrame(() => requestAnimationFrame(resolve))
               );
               const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
+              void uploadCardOgImage(pngBlob, redacted, deviceId).catch(() => undefined);
               const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
               const file = new File([pngBlob], `${safeName}_NBCard.png`, { type: "image/png" });
               // On mobile the share sheet lets the user pick WhatsApp directly
@@ -1092,12 +1098,18 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
               if (ok) {
                 toast.success("Card image ready to share");
               } else {
-                // Web Share API with files requires HTTPS + a modern browser.
-                // On localhost/HTTP/unsupported browsers: download the PNG only.
-                // IMPORTANT: do NOT open WhatsApp with text — user chose Image.
+                // File sharing not supported (desktop / HTTP). Download the PNG
+                // AND open WhatsApp with the share link so the recipient sees a
+                // branded card preview (og:image) even without the file attachment.
                 downloadBlob(pngBlob, `${safeName}_NBCard.png`);
-                toast.message("Card image saved", {
-                  description: "Open WhatsApp and attach the downloaded image to share your card.",
+                window.open(
+                  buildWhatsappUrl(`Check out my card: ${shareUrl}`),
+                  "_blank",
+                  "noopener,noreferrer"
+                );
+                toast.message("Image downloaded + WhatsApp opened", {
+                  description:
+                    "Attach the downloaded image to your WhatsApp chat for the full card design.",
                 });
               }
             } finally {
@@ -3066,19 +3078,17 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           <DialogHeader>
             <DialogTitle>QR Code</DialogTitle>
             <DialogDescription>
-              {getCategoryFromProfile(profile) === "BANK"
-                ? "Encodes your bank card details as structured text."
-                : getCategoryFromProfile(profile) === "FLYER" || getCategoryFromProfile(profile) === "WEDDING"
-                  ? "Encodes your flyer/wedding text (and optional CTA link)."
-                  : "Encode a vCard (full contact data). If too large, we fall back to a link."}
+              Scan to open your full card (background + all details). For
+              profile/address/business cards you can optionally enable vCard mode
+              to encode contact fields directly into the QR.
             </DialogDescription>
           </DialogHeader>
 
           {getCategoryFromProfile(profile) === "BANK" || getCategoryFromProfile(profile) === "FLYER" || getCategoryFromProfile(profile) === "WEDDING" ? null : (
             <div className="flex items-center justify-between rounded-lg border p-3">
               <div className="text-sm">
-                <div className="font-medium">Encode vCard</div>
-                <div className="text-muted-foreground">If too large, we fall back to link.</div>
+                <div className="font-medium">vCard mode</div>
+                <div className="text-muted-foreground">Encodes contact fields directly (falls back to link if too large).</div>
               </div>
               <Button
                 type="button"

@@ -128,12 +128,18 @@ model NBCardProfile {
   version          Int      @default(1)      // Increments on each update for optimistic locking
   createdAt        DateTime @default(now())
   updatedAt        DateTime @default(now()) @updatedAt
-  
+
+  // OG image cache (personalised share preview)
+  ogImageUrl       String?   @map("og_image_url")
+  ogImageHash      String?   @map("og_image_hash")
+  ogImageAt        DateTime? @map("og_image_at")
+
   // Allow querying by either email or deviceId + profileId
   @@unique([userEmail, profileId])
   @@unique([deviceId, profileId])
   @@index([userEmail, updatedAt])
   @@index([deviceId, updatedAt])
+  @@index([profileId])
 }
 
 model NBCardContact {

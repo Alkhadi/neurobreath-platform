@@ -3,6 +3,7 @@ import { Inter, Roboto, Open_Sans, Lato, Montserrat, Poppins, Raleway, Nunito, S
 
 import { NBCardPanel } from "@/components/nbcard/NBCardPanel";
 import { NBCardInstallCTA } from "@/components/nbcard/NBCardInstallCTA";
+import { prisma, isDbDown } from "@/lib/db";
 
 // Load fonts with Next.js next/font/google (NO new dependencies)
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -24,11 +25,69 @@ const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--fon
 // Combined font classes
 const fontClasses = `${inter.variable} ${roboto.variable} ${openSans.variable} ${lato.variable} ${montserrat.variable} ${poppins.variable} ${raleway.variable} ${nunito.variable} ${sourceSans3.variable} ${merriweather.variable} ${playfairDisplay.variable} ${ubuntu.variable} ${firaSans.variable} ${manrope.variable} ${plusJakartaSans.variable}`;
 
-export const metadata: Metadata = {
-  title: "NB-Card — Digital Business Card",
-  description: "Create, manage, and share your NB-Card profile. Installable PWA with on-device storage for profiles and captured contacts.",
-  manifest: "/resources/nb-card/manifest.webmanifest",
+// Minimal delegate type to avoid stale Prisma TS squiggles
+type OgImageRow = { ogImageUrl: string | null };
+type NBCardOgMetaDelegate = {
+  nBCardProfile: {
+    findFirst(args: {
+      where: { profileId: string };
+      select: { ogImageUrl: true };
+      orderBy: { ogImageAt: "desc" };
+    }): Promise<OgImageRow | null>;
+  };
 };
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}): Promise<Metadata> {
+  const params = await searchParams;
+  const profileId = typeof params.profile === "string" ? params.profile : undefined;
+
+  // Try to load a personalised OG image for this profile
+  let ogImageUrl: string | null = null;
+  if (profileId && !isDbDown()) {
+    try {
+      const nbPrisma = prisma as unknown as NBCardOgMetaDelegate;
+      const row = await nbPrisma.nBCardProfile.findFirst({
+        where: { profileId },
+        select: { ogImageUrl: true },
+        orderBy: { ogImageAt: "desc" },
+      });
+      ogImageUrl = row?.ogImageUrl ?? null;
+    } catch {
+      // Non-fatal: fall back to branded image
+    }
+  }
+
+  const ogImage = ogImageUrl ?? "/api/og/nb-card";
+
+  return {
+    title: "NB-Card — Digital Business Card",
+    description: "Create, manage, and share your NB-Card profile. Installable PWA with on-device storage for profiles and captured contacts.",
+    manifest: "/resources/nb-card/manifest.webmanifest",
+    openGraph: {
+      title: "NB-Card — Digital Business Card",
+      description: "View and download this digital business card. Works with address, bank, business, flyer, and wedding cards.",
+      type: "website",
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: "NB-Card Digital Business Card",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "NB-Card — Digital Business Card",
+      description: "View and download this digital business card.",
+      images: [ogImage],
+    },
+  };
+}
 
 export default function NBCardPage() {
   return (
