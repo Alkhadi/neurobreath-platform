@@ -75,7 +75,7 @@ export default function AutismCarerSupportPage() {
           </div>
 
           {/* Hero Cards */}
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur">
               <CardHeader>
                 <Badge className="w-fit mb-2" variant="secondary">Self-care</Badge>
@@ -129,7 +129,7 @@ export default function AutismCarerSupportPage() {
               <CardTitle>Key principles for autism carers</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                 <div>
                   <h4 className="font-semibold mb-1 flex items-center gap-2">
                     <Heart className="w-4 h-4 text-teal-600" />
@@ -179,7 +179,7 @@ export default function AutismCarerSupportPage() {
             </AlertDescription>
           </Alert>
 
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full lg:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card className="border-2 border-teal-200 dark:border-teal-800">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -321,7 +321,7 @@ export default function AutismCarerSupportPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                   <div>
                     <h4 className="font-semibold mb-3">Understanding sensory needs</h4>
                     <ul className="space-y-2 text-sm">
@@ -355,7 +355,7 @@ export default function AutismCarerSupportPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                   <div>
                     <h4 className="font-semibold mb-3">Supporting verbal communication</h4>
                     <ul className="space-y-2 text-sm">
@@ -390,7 +390,7 @@ export default function AutismCarerSupportPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                   <div>
                     <h4 className="font-semibold text-sm mb-2">Visual schedules</h4>
                     <ul className="space-y-1 text-sm text-muted-foreground list-disc list-inside ml-4">
@@ -443,7 +443,7 @@ export default function AutismCarerSupportPage() {
                     </AlertDescription>
                   </Alert>
 
-                  <div className="grid gap-6 md:grid-cols-2">
+                  <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                     <div>
                       <h4 className="font-semibold mb-3">ABC approach (Antecedent-Behavior-Consequence)</h4>
                       <ul className="space-y-2 text-sm">
@@ -479,7 +479,7 @@ export default function AutismCarerSupportPage() {
         <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Later Life & Ageing with Autism</h2>
           
-          <div className="grid gap-6 lg:grid-cols-3 mb-6">
+          <div className="flex flex-wrap gap-6 mb-6 [&>*]:basis-full lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card className="border-2 border-amber-200 dark:border-amber-800">
               <CardHeader>
                 <Badge className="w-fit mb-2" variant="secondary">Sensory changes</Badge>
@@ -549,7 +549,7 @@ export default function AutismCarerSupportPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div>
                   <h4 className="font-semibold mb-3">Legal & financial planning</h4>
                   <ul className="space-y-2 text-sm">
@@ -625,7 +625,7 @@ export default function AutismCarerSupportPage() {
                     A hospital passport (or health profile) is a document that tells healthcare professionals 
                     about the autistic person's communication, sensory needs, and preferences.
                   </p>
-                  <div className="grid gap-6 md:grid-cols-2">
+                  <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                     <div>
                       <h4 className="font-semibold mb-2">What to include</h4>
                       <ul className="space-y-1 text-sm text-muted-foreground list-disc list-inside ml-4">
@@ -733,7 +733,7 @@ export default function AutismCarerSupportPage() {
             </AlertDescription>
           </Alert>
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle>Crisis contacts</CardTitle>
@@ -808,7 +808,7 @@ export default function AutismCarerSupportPage() {
         <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Carer Support Organizations</h2>
           
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">National Autistic Society (UK)</CardTitle>
@@ -929,7 +929,7 @@ export default function AutismCarerSupportPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                 <div>
                   <h4 className="font-semibold mb-3">When to use breathing</h4>
                   <ul className="space-y-2 text-sm">
@@ -954,7 +954,7 @@ export default function AutismCarerSupportPage() {
                 </div>
               </div>
 
-              <div className="mt-6 grid gap-3 grid-cols-2 md:grid-cols-4">
+              <div className="flex flex-wrap mt-6 gap-3 [&>*]:basis-[calc(50%-6px)] md:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
                 <Link href="/techniques/sos">
                   <Button variant="default" className="w-full h-auto py-3" size="sm">
                     <div className="text-center">

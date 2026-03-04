@@ -72,7 +72,7 @@ export default function TrustLayout({ children }: TrustLayoutProps) {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="flex flex-wrap gap-8 [&>*]:basis-full lg:[&>*]:basis-[calc(25%-24px)] [&>*]:min-w-0">
           {/* Navigation Sidebar */}
           <nav className="lg:col-span-1">
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4 sticky top-4">

@@ -88,20 +88,20 @@ export default async function RegionAboutPage({ params }: RegionAboutPageProps) 
       title="About NeuroBreath"
       summary={copy.hero}
     >
-      <section className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
+      <section className="flex flex-wrap gap-6">
+        <div className="nb-surface p-5 basis-full md:basis-[calc(50%-12px)] min-w-0">
           <h2 className="text-lg font-semibold text-slate-900">Practical tools</h2>
           <p className="mt-2 text-sm text-slate-600">{copy.proof.tools}</p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="nb-surface p-5 basis-full md:basis-[calc(50%-12px)] min-w-0">
           <h2 className="text-lg font-semibold text-slate-900">Clear learning resources</h2>
           <p className="mt-2 text-sm text-slate-600">{copy.proof.learning}</p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="nb-surface p-5 basis-full md:basis-[calc(50%-12px)] min-w-0">
           <h2 className="text-lg font-semibold text-slate-900">Trust &amp; safety</h2>
           <p className="mt-2 text-sm text-slate-600">{copy.proof.trust}</p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="nb-surface p-5 basis-full md:basis-[calc(50%-12px)] min-w-0">
           <h2 className="text-lg font-semibold text-slate-900">Localised support</h2>
           <p className="mt-2 text-sm text-slate-600">{copy.proof.local}</p>
         </div>
@@ -150,15 +150,15 @@ export default async function RegionAboutPage({ params }: RegionAboutPageProps) 
 
       <section className="rounded-2xl border border-slate-200 bg-slate-50/70 p-5">
         <h2 className="text-lg font-semibold text-slate-900">Explore the authority stack</h2>
-        <div className="mt-3 grid gap-2 text-sm text-slate-600 md:grid-cols-2">
-          <Link href={`/${regionKey}/about/mission`} className="hover:underline">Mission &amp; values</Link>
-          <Link href={`/${regionKey}/about/methodology`} className="hover:underline">Methodology</Link>
-          <Link href={`/${regionKey}/about/who-its-for`} className="hover:underline">Who it’s for</Link>
-          <Link href={`/${regionKey}/about/use-responsibly`} className="hover:underline">Use tools responsibly</Link>
-          <Link href={`/${regionKey}/about/how-we-update`} className="hover:underline">How we update content</Link>
-          <Link href={`/${regionKey}/about/faq`} className="hover:underline">FAQ</Link>
-          <Link href={`/${regionKey}/about/language`} className="hover:underline">Our language approach</Link>
-          <Link href={`/${regionKey}/editorial`} className="hover:underline">Editorial team</Link>
+        <div className="mt-3 flex flex-wrap gap-2 text-sm text-slate-600">
+          <Link href={`/${regionKey}/about/mission`} className="basis-full md:basis-[calc(50%-4px)] min-w-0 hover:underline">Mission &amp; values</Link>
+          <Link href={`/${regionKey}/about/methodology`} className="basis-full md:basis-[calc(50%-4px)] min-w-0 hover:underline">Methodology</Link>
+          <Link href={`/${regionKey}/about/who-its-for`} className="basis-full md:basis-[calc(50%-4px)] min-w-0 hover:underline">Who it’s for</Link>
+          <Link href={`/${regionKey}/about/use-responsibly`} className="basis-full md:basis-[calc(50%-4px)] min-w-0 hover:underline">Use tools responsibly</Link>
+          <Link href={`/${regionKey}/about/how-we-update`} className="basis-full md:basis-[calc(50%-4px)] min-w-0 hover:underline">How we update content</Link>
+          <Link href={`/${regionKey}/about/faq`} className="basis-full md:basis-[calc(50%-4px)] min-w-0 hover:underline">FAQ</Link>
+          <Link href={`/${regionKey}/about/language`} className="basis-full md:basis-[calc(50%-4px)] min-w-0 hover:underline">Our language approach</Link>
+          <Link href={`/${regionKey}/editorial`} className="basis-full md:basis-[calc(50%-4px)] min-w-0 hover:underline">Editorial team</Link>
         </div>
       </section>
 

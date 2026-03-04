@@ -536,7 +536,7 @@ export default function DailyPracticePlayer() {
           </div>
 
           {/* Split grid: Quickstart / Goals & Duration / Onboarding */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+          <div className="flex flex-wrap gap-4 mt-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
             {/* Col 1: Quickstart */}
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
               <h3 className="font-bold mb-2">Start in 60 seconds</h3>
@@ -555,7 +555,7 @@ export default function DailyPracticePlayer() {
             {/* Col 2: Goals + Duration */}
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
               <h3 className="font-bold mb-2">Pick your goal</h3>
-              <div className="grid grid-cols-3 gap-2 mb-3">
+              <div className="flex flex-wrap gap-2 mb-3 [&>*]:basis-[calc(33.333%-5px)] [&>*]:min-w-0">
                 <button onClick={() => launchSession('box')} className="text-center py-1 px-2 bg-white/20 hover:bg-white/30 rounded text-xs">Calm</button>
                 <button onClick={() => launchSession('478')} className="text-center py-1 px-2 bg-white/20 hover:bg-white/30 rounded text-xs">Sleep</button>
                 <button onClick={() => launchSession('coherent')} className="text-center py-1 px-2 bg-white/20 hover:bg-white/30 rounded text-xs">Focus</button>
@@ -627,7 +627,7 @@ export default function DailyPracticePlayer() {
                 </Button>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
                 {/* Voice Settings */}
                 <div className="space-y-4">
                   <h4 className="font-semibold text-gray-700 flex items-center gap-2">
@@ -787,7 +787,7 @@ export default function DailyPracticePlayer() {
           {/* Quick Technique Selection */}
           <div className="mb-6">
             <p className="block text-sm font-medium text-gray-700 mb-3">Choose a technique:</p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] md:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
               <button
                 onClick={() => launchSession('box')}
                 className="p-4 rounded-xl border-2 border-green-200 bg-green-50 hover:bg-green-100 hover:border-green-400 transition-all text-left"
@@ -824,7 +824,7 @@ export default function DailyPracticePlayer() {
           </div>
 
           {/* Inline Settings */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="flex flex-wrap gap-6 mb-8 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <div>
               <label htmlFor="technique-dropdown" className="block text-sm font-medium text-gray-700 mb-2">Technique</label>
               <select
@@ -903,7 +903,7 @@ export default function DailyPracticePlayer() {
           </div>
 
           {/* Session Stats */}
-          <div className="grid grid-cols-4 gap-4 mb-8">
+          <div className="flex flex-wrap gap-4 mb-8 [&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
             <div className="bg-gray-50 rounded-lg p-4 text-center">
               <p className="text-sm text-gray-500 mb-1">Round</p>
               <p className="text-2xl font-bold text-gray-900">{currentRound}/{totalRounds}</p>

@@ -279,7 +279,7 @@ export function EnergyAccountingTracker() {
               {/* Energy Level Selection */}
               <div className="space-y-2">
                 <Label>Energy Type</Label>
-                <div className="grid grid-cols-1 gap-2">
+                <div className="flex flex-col gap-2">
                   {(Object.keys(ENERGY_LEVELS) as Array<keyof typeof ENERGY_LEVELS>).map((level) => {
                     const levelInfo = ENERGY_LEVELS[level];
                     const Icon = levelInfo.icon;

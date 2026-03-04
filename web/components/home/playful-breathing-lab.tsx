@@ -221,7 +221,7 @@ export default function PlayfulBreathingLab() {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
+        <div className="flex flex-wrap gap-8 mb-12 [&>*]:basis-full md:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
           {/* Breath Ladder */}
           <Card className="border-2 hover:shadow-lg transition-shadow">
             <CardHeader>
@@ -258,7 +258,7 @@ export default function PlayfulBreathingLab() {
               {/* Instructions */}
               <div className="bg-muted/50 p-4 rounded-lg mb-4">
                 <p className="text-sm font-medium mb-2">🧗 Follow this pattern:</p>
-                <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="flex flex-wrap gap-2 text-sm [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="font-bold">Inhale</span>
                     <Badge variant="outline">{rung.inhale}s</Badge>
@@ -366,7 +366,7 @@ export default function PlayfulBreathingLab() {
               </div>
               
               {/* Pattern Guide */}
-              <div className="grid grid-cols-3 gap-2 mb-4 text-center text-sm">
+              <div className="flex flex-wrap gap-2 mb-4 text-center text-sm [&>*]:basis-[calc(33.333%-5px)] [&>*]:min-w-0">
                 <div>
                   <div className="w-8 h-8 bg-blue-500 rounded-full mx-auto mb-1" />
                   <p className="font-medium">Inhale</p>
@@ -412,7 +412,7 @@ export default function PlayfulBreathingLab() {
           </Card>
         </div>
         
-        <div className="grid md:grid-cols-2 gap-8 mb-8">
+        <div className="flex flex-wrap gap-8 mb-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
           {/* Micro-Reset Roulette */}
           <Card className="border-2 hover:shadow-lg transition-shadow">
             <CardHeader>
@@ -610,7 +610,7 @@ export default function PlayfulBreathingLab() {
               {/* Context Tiles with existing functionality */}
               <div>
                 <h4 className="font-bold mb-3">Choose your context</h4>
-                <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="flex flex-wrap gap-3 mb-4 [&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                   {FOCUS_CONTEXTS.map((context) => (
                     <button
                       key={context.id}

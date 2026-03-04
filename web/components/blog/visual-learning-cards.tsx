@@ -92,7 +92,7 @@ export default function VisualLearningCards({ cards, title }: VisualLearningCard
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 print:grid-cols-2">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           {cards.map(card => {
             const isFlipped = flippedCards.has(card.id)
             const hasBack = !!card.back

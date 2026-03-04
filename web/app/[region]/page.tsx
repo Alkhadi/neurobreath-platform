@@ -293,7 +293,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 	];
 
 	return (
-		<main className="min-h-screen bg-gradient-to-b from-muted/25 via-background to-muted/20 dark:from-gray-950 dark:via-gray-950 dark:to-gray-950">
+		<main className="min-h-screen bg-[#F9FAFB] dark:bg-[#0B1220] text-[#0F172A] dark:text-white">
 			<HomeHero region={region} copy={copy} recommendations={recommendations} />
 
 			<HomeSection
@@ -456,20 +456,20 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 				/>
 			</HomeSection>
 
-			<footer className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-14">
-				<div className="rounded-2xl border border-border/60 bg-card p-6 shadow-sm">
-					<div className="text-sm text-muted-foreground">
-						<span className="font-semibold text-foreground">Privacy note:</span> Event counts are stored locally (no personal data). See{' '}
-						<Link
-							href={`/${regionKey}/trust/privacy`}
-							className="font-semibold text-foreground/80 hover:text-foreground underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
-						>
-							Privacy
-						</Link>
-						.
-					</div>
+		<footer className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-14">
+			<div className="rounded-[30px] border border-black/5 dark:border-white/10 bg-white/90 dark:bg-white/5 p-6 shadow-xl">
+				<div className="text-sm text-slate-600 dark:text-slate-300">
+					<span className="font-semibold text-[#0F172A] dark:text-white">Privacy note:</span> Event counts are stored locally (no personal data). See{' '}
+					<Link
+						href={`/${regionKey}/trust/privacy`}
+						className="font-semibold text-[#4ECDC4] hover:text-[#3ab8b0] underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60 rounded-sm"
+					>
+						Privacy
+					</Link>
+					.
 				</div>
-			</footer>
+			</div>
+		</footer>
 
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteSchema) }} />
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />

@@ -161,7 +161,7 @@ export function MoodTracker() {
         {/* Mood Selection */}
         <div>
           <Label className="mb-3 block">How are you feeling?</Label>
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+          <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(33.333%-8px)] md:[&>*]:basis-[calc(16.667%-10px)] [&>*]:min-w-0">
             {MOODS.map(mood => (
               <button
                 key={mood?.label}
@@ -260,7 +260,7 @@ export function MoodTracker() {
       {/* Statistics */}
       <Card className="p-6">
         <h3 className="font-semibold text-lg mb-4">Statistics</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
           <div>
             <div className="text-2xl font-bold text-primary">{entries?.length ?? 0}</div>
             <div className="text-sm text-muted-foreground">Total Entries</div>

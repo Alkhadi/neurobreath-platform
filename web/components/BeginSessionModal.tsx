@@ -614,7 +614,7 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
             </p>
 
             {/* Technique Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6" role="group" aria-label="Breathing technique options">
+            <div className="flex flex-wrap gap-3 mb-6 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0" role="group" aria-label="Breathing technique options">
               {techniques.map(tech => (
                 <button
                   key={tech.id}

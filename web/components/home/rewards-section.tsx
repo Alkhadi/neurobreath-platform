@@ -56,15 +56,15 @@ export default function RewardsSection() {
   return (
     <section
       id="rewards-lab"
-      className="py-16 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50"
+      className="py-16 md:py-24 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-[#0B1220] dark:via-[#0F172A] dark:to-[#0B1220]"
     >
-      <div className="px-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
+      <div className="px-4 sm:px-6 lg:px-8">
+        <div className="bg-white dark:bg-slate-800/80 rounded-3xl shadow-xl p-8 md:p-12">
           <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Rewards & Milestones
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 dark:text-slate-300 max-w-2xl mx-auto">
               Badges celebrate consistency, curiosity, and kindness to yourself. Nothing here is a competition.
             </p>
           </div>
@@ -76,7 +76,7 @@ export default function RewardsSection() {
               {[...Array(6)].map((_, i) => (
                 <div
                   key={i}
-                  className="bg-gray-100 rounded-lg p-6 animate-pulse min-h-[180px]"
+                  className="bg-gray-100 dark:bg-slate-700/50 rounded-3xl p-6 animate-pulse min-h-[180px]"
                 />
               ))}
             </HomeCardGrid>
@@ -85,10 +85,10 @@ export default function RewardsSection() {
               {badges.map((badge) => (
                 <div
                   key={badge.badgeKey}
-                  className={`rounded-lg p-6 text-center transition-all duration-300 ${
+                  className={`rounded-3xl p-6 text-center transition-all duration-300 ${
                     badge.isUnlocked
-                      ? 'bg-gradient-to-br from-green-50 to-emerald-100 border-2 border-green-400 hover:scale-105 hover:shadow-lg'
-                      : 'bg-gray-100 border-2 border-dashed border-gray-300 opacity-60'
+                      ? 'bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-950/40 dark:to-emerald-900/30 border-2 border-green-400 dark:border-green-600 hover:shadow-2xl hover:-translate-y-0.5 hover:scale-[1.015] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60'
+                      : 'bg-gray-100 dark:bg-slate-700/30 border-2 border-dashed border-gray-300 dark:border-slate-600 opacity-60'
                   }`}
                 >
                   <div
@@ -136,7 +136,7 @@ export default function RewardsSection() {
             </HomeCardGrid>
           )}
 
-          <p className="text-center text-gray-600 mt-8">
+          <p className="text-center text-gray-600 dark:text-slate-300 mt-8">
             Badges unlock gently and stay visible even if you take a break. You can reset them any time in
             the progress section.
           </p>

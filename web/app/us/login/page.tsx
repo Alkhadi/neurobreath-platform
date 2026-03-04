@@ -496,13 +496,13 @@ export default function UsLoginPage() {
               <>
                 {/* Social login buttons - only show if providers are configured */}
                 {(availableProviders?.google || availableProviders?.apple || availableProviders?.['azure-ad']) && (
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="flex gap-3">
                     {availableProviders?.google && (
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
                             variant="outline"
-                            className="w-full"
+                            className="flex-1"
                             onClick={() => handleSocialSignIn('google')}
                             disabled={isLocked || loading || socialLoading !== null}
                           >
@@ -523,7 +523,7 @@ export default function UsLoginPage() {
                         <TooltipTrigger asChild>
                           <Button
                             variant="outline"
-                            className="w-full"
+                            className="flex-1"
                             onClick={() => handleSocialSignIn('apple')}
                             disabled={isLocked || loading || socialLoading !== null}
                           >
@@ -544,7 +544,7 @@ export default function UsLoginPage() {
                         <TooltipTrigger asChild>
                           <Button
                             variant="outline"
-                            className="w-full"
+                            className="flex-1"
                             onClick={() => handleSocialSignIn('azure-ad')}
                             disabled={isLocked || loading || socialLoading !== null}
                           >

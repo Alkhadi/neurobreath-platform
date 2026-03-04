@@ -108,7 +108,7 @@ export function SupportResources() {
             <p className="text-red-800 leading-relaxed">
               If you or someone you know is in immediate danger of self-harm or suicide, please call emergency services immediately:
             </p>
-            <div className="grid sm:grid-cols-2 gap-4 mt-4">
+            <div className="flex flex-wrap gap-4 mt-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               <div className="bg-white rounded-lg p-4 shadow-md">
                 <p className="font-bold text-red-900 text-lg">🇬🇧 UK: 999 or 112</p>
                 <p className="text-sm text-gray-700 mt-1">Emergency services</p>
@@ -128,7 +128,7 @@ export function SupportResources() {
           <span className="text-3xl">🇬🇧</span>
           <h3 className="text-2xl font-bold text-gray-900">United Kingdom Resources</h3>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           {ukResources?.map?.((resource, index) => {
             const Icon = resource?.icon ?? Phone;
             return (
@@ -156,7 +156,7 @@ export function SupportResources() {
           <span className="text-3xl">🇺🇸</span>
           <h3 className="text-2xl font-bold text-gray-900">United States Resources</h3>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           {usResources?.map?.((resource, index) => {
             const Icon = resource?.icon ?? Phone;
             return (
@@ -184,7 +184,7 @@ export function SupportResources() {
         <p className="text-gray-700 mb-4 leading-relaxed">
           You should reach out to a healthcare provider if:
         </p>
-        <div className="grid sm:grid-cols-2 gap-3 text-sm text-gray-700">
+        <div className="flex flex-wrap gap-3 text-sm text-gray-700 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
           <div className="flex items-start space-x-2">
             <div className="w-2 h-2 rounded-full bg-blue-600 flex-shrink-0 mt-1.5"></div>
             <p>Symptoms persist for <span className="font-semibold">more than two weeks</span></p>

@@ -146,7 +146,7 @@ export default function VocabularyRecognition() {
         </div>
 
         {/* Grade Selector */}
-        <div className="grid grid-cols-4 gap-2">
+        <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(25%-6px)] [&>*]:min-w-0">
           {['9th Grade', '10th Grade', '11th Grade', '12th Grade'].map((grade) => (
             <button
               key={grade}
@@ -167,7 +167,7 @@ export default function VocabularyRecognition() {
         </div>
 
         {/* Progress Stats */}
-        <div className="grid grid-cols-3 gap-2 text-sm">
+        <div className="flex flex-wrap gap-2 text-sm [&>*]:basis-[calc(33.333%-5px)] [&>*]:min-w-0">
           <div className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg p-2 text-center">
             <div className="font-bold">{statusCounts.mastered}</div>
             <div className="text-xs">mastered</div>
@@ -248,7 +248,7 @@ export default function VocabularyRecognition() {
 
         {/* Action Buttons */}
         {isFlipped && (
-          <div className="grid grid-cols-3 gap-2">
+          <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(33.333%-5px)] [&>*]:min-w-0">
             <Button
               onClick={(e) => {
                 e.stopPropagation();
@@ -304,7 +304,7 @@ export default function VocabularyRecognition() {
           <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
             Word List Progress
           </h4>
-          <div className="grid grid-cols-2 gap-1 text-xs">
+          <div className="flex flex-wrap gap-1 text-xs [&>*]:basis-[calc(50%-2px)] [&>*]:min-w-0">
             {vocabulary.map((word, index) => (
               <div
                 key={index}
@@ -323,7 +323,7 @@ export default function VocabularyRecognition() {
         </div>
 
         {/* Action Tabs */}
-        <div className="grid grid-cols-4 gap-2">
+        <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(25%-6px)] [&>*]:min-w-0">
           <Button 
             variant="outline" 
             size="sm" 

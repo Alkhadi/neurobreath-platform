@@ -164,7 +164,7 @@ Evidence:
 
       <CardContent className="space-y-6">
         {/* Personal Info */}
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           <div>
             <Label htmlFor="employeeName">Your Name</Label>
             <Input

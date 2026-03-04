@@ -99,7 +99,7 @@ export function ResourcesHub() {
                 <h3 className="text-xl font-bold text-foreground">{category.category}</h3>
               </div>
 
-              <div className="grid gap-3 md:grid-cols-2">
+              <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                 {category.items.map((item) => (
                   <div
                     key={item.title}
@@ -142,7 +142,7 @@ export function ResourcesHub() {
             <h3 className="text-xl font-bold text-foreground">External Resources & Organizations</h3>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="flex flex-wrap gap-3 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
             {externalLinks.map((link) => (
               <a
                 key={link.name}

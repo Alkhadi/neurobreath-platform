@@ -164,7 +164,7 @@ export function SightWordFlashCards() {
             )}
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
             <Button
               size="lg"
               onClick={handleKnow}

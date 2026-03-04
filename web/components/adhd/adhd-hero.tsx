@@ -80,7 +80,7 @@ export function ADHDHero() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-purple-200">
+        <div className="flex flex-wrap gap-4 pt-6 border-t border-purple-200 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
           <div>
             <div className="text-3xl font-bold text-purple-600">15</div>
             <div className="text-sm text-muted-foreground">Evidence Sources</div>

@@ -271,7 +271,7 @@ function CrisisResources() {
         </div>
       </Card>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
         <Card className="p-6">
           <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
             <span>🇬🇧</span> UK Crisis Support
@@ -346,7 +346,7 @@ export default function DepressionToolsPage() {
           {/* Quick Stats */}
           <Card className="p-8 bg-gradient-to-r from-blue-50 to-purple-50">
             <h2 className="text-2xl font-bold text-center mb-8">Understanding Depression</h2>
-            <div className="grid md:grid-cols-4 gap-6">
+            <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
               <div className="text-center">
                 <div className="text-4xl font-bold text-primary mb-2">280M+</div>
                 <div className="text-sm text-muted-foreground">People globally affected by depression</div>
@@ -372,7 +372,7 @@ export default function DepressionToolsPage() {
       <section className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold mb-6 text-center">What is Depression?</h2>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card className="p-6">
               <h3 className="font-semibold text-lg mb-3">Clinical Depression (MDD)</h3>
               <p className="text-sm text-muted-foreground mb-4">
@@ -488,7 +488,7 @@ export default function DepressionToolsPage() {
                     <p className="text-sm text-muted-foreground">
                       Antidepressants modulate neurotransmitter activity. First-line treatment for moderate to severe depression.
                     </p>
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                       <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4">
                         <h4 className="font-bold text-blue-900 mb-2">SSRIs</h4>
                         <p className="text-xs text-blue-800 mb-2"><strong>Examples:</strong> Fluoxetine, Sertraline, Citalopram, Escitalopram</p>
@@ -580,7 +580,7 @@ export default function DepressionToolsPage() {
                       These evidence-based lifestyle changes support recovery and enhance treatment effectiveness:
                     </p>
                     
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                       <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg p-4">
                         <Dumbbell className="h-8 w-8 text-red-600 mb-2" />
                         <h4 className="font-bold mb-2">Physical Activity</h4>
@@ -652,7 +652,7 @@ export default function DepressionToolsPage() {
                     </div>
                     <div>
                       <h4 className="font-semibold mb-2">Finding Support</h4>
-                      <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                         <div>
                           <p className="text-sm font-semibold mb-2">🇬🇧 UK:</p>
                           <ul className="text-sm text-muted-foreground space-y-1">
@@ -737,7 +737,7 @@ export default function DepressionToolsPage() {
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <div className="px-6 pb-6 space-y-4">
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                       <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4">
                         <h4 className="font-bold text-blue-900 mb-2">Global Impact</h4>
                         <ul className="text-sm text-blue-800 space-y-1">

@@ -16,7 +16,7 @@ export function DonationDisclosure() {
               Your contribution is a voluntary donation to support NeuroBreath's development and research. It is not a purchase and does not provide special access, priority support, or guaranteed features beyond what is publicly available.
             </p>
 
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="flex flex-wrap gap-3 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
               <div className="flex gap-3 items-start">
                 <span className="mt-1 h-2.5 w-2.5 rounded-full bg-blue-500 flex-shrink-0" aria-hidden="true" />
                 <p className="text-sm sm:text-base">

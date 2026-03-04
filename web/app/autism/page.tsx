@@ -126,7 +126,7 @@ export default function AutismHubPage() {
       {/* Quick Navigation Cards - Full Width Background with Contained Content */}
       <section className="w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 py-8">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] lg:[&>*]:basis-[calc(12.5%-14px)] [&>*]:min-w-0">
             {[
               { icon: Shield, label: 'Evidence', href: '#evidence' },
               { icon: TrendingUp, label: 'Progress', href: '#progress' },

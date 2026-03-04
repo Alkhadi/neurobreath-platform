@@ -109,9 +109,9 @@ export default async function TrustCentrePage({ params }: PageProps) {
         </div>
       </header>
 
-      <section className="grid gap-5 md:grid-cols-2">
+      <section className="flex flex-wrap gap-6">
         {links.map((item) => (
-          <Card key={item.href} className="hover:shadow-sm transition-shadow">
+          <Card key={item.href} className="basis-full md:basis-[calc(50%-12px)] min-w-0 nb-surface-interactive transition-shadow">
             <CardHeader>
               <CardTitle>{item.title}</CardTitle>
               <CardDescription>{item.description}</CardDescription>

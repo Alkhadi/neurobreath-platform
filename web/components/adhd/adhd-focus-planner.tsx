@@ -22,7 +22,7 @@ export function ADHDFocusPlanner({ onProgressUpdate: _onProgressUpdate }: ADHDFo
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
         <Card className="border-2 border-blue-200 dark:border-blue-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -32,7 +32,7 @@ export function ADHDFocusPlanner({ onProgressUpdate: _onProgressUpdate }: ADHDFo
             <CardDescription>Choose your sprint length and start the timer</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-3 gap-3">
+            <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
               <Button className="h-16">10 min</Button>
               <Button className="h-16">25 min</Button>
               <Button className="h-16">50 min</Button>

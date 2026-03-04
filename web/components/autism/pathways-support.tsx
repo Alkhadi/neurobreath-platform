@@ -101,7 +101,7 @@ export function PathwaysSupport() {
           <p className="text-gray-600">Practical signposting and what to do next.</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
           {data.sections.map((section, i) => (
             <Card key={i} className="p-6 bg-white/80 backdrop-blur shadow-sm">
               <h3 className="text-xl font-semibold text-gray-900 mb-4">{section.heading}</h3>

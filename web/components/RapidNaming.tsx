@@ -72,7 +72,7 @@ export function RapidNaming() {
         </div>
 
         {/* Category Tabs */}
-        <div className="grid grid-cols-4 gap-2">
+        <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(25%-6px)] [&>*]:min-w-0">
           {Object.keys(GAME_ITEMS).map((cat) => (
             <Button
               key={cat}
@@ -101,7 +101,7 @@ export function RapidNaming() {
         </div>
 
         {/* Game Items Grid */}
-        <div className="grid grid-cols-4 gap-3 p-4 bg-muted/30 rounded-lg min-h-[200px]">
+        <div className="flex flex-wrap gap-3 p-4 bg-muted/30 rounded-lg min-h-[200px] [&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
           {items.map((item, idx) => (
             <button
               key={idx}

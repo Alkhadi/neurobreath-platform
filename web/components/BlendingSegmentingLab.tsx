@@ -171,7 +171,7 @@ export function BlendingSegmentingLab() {
         </div>
 
         {/* Mode Selection */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
           {[
             { value: 'blending' as Mode, label: 'Blending', emoji: '🔗', desc: 'Put sounds together' },
             { value: 'segmenting' as Mode, label: 'Segmenting', emoji: '✂️', desc: 'Break words apart' }
@@ -195,7 +195,7 @@ export function BlendingSegmentingLab() {
         {/* Difficulty Selection */}
         <div className="space-y-3">
           <label className="text-sm font-medium">Difficulty Level:</label>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
             {(['Beginner', 'Intermediate', 'Advanced'] as const).map((level) => (
               <button
                 key={level}
@@ -248,7 +248,7 @@ export function BlendingSegmentingLab() {
                     <Volume2 className="h-4 w-4" />
                   </Button>
                 </div>
-                <div className="grid grid-cols-3 md:grid-cols-4 gap-2 mt-4">
+                <div className="flex flex-wrap gap-2 mt-4 [&>*]:basis-[calc(33.333%-5px)] md:[&>*]:basis-[calc(25%-6px)] [&>*]:min-w-0">
                   {currentWord.phonemes.map((phoneme, idx) => (
                     <button
                       key={idx}
@@ -331,7 +331,7 @@ export function BlendingSegmentingLab() {
         )}
 
         {/* Stats */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
             <div className="text-2xl font-bold text-emerald-500">{score.blending}</div>
             <div className="text-sm text-gray-600 dark:text-gray-400">Blending Points</div>

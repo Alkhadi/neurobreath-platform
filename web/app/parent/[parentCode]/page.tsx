@@ -58,7 +58,7 @@ export default async function ParentViewPage({ params }: ParentViewPageProps) {
         </div>
         
         {/* Summary Stats */}
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Sessions</CardTitle>

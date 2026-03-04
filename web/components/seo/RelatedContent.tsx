@@ -28,7 +28,7 @@ export function RelatedContent({ title = 'Related content', items, className }: 
         <span className="text-xs text-muted-foreground">Suggested next steps</span>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
         {items.map(item => (
           <Link key={item.href} href={item.href} className="group h-full">
             <Card className="h-full p-5 transition-all group-hover:shadow-md group-hover:-translate-y-0.5">

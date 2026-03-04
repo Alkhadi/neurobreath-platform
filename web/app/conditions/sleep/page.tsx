@@ -22,7 +22,7 @@ export default function SleepSupportPage() {
               <p className="text-lg text-slate-700 mb-4">
                 Better sleep means better focus, mood, and stress management. Science-backed strategies for neurodivergent sleep.
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] sm:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
                 <div className="bg-white rounded-lg p-3 shadow-sm">
                   <div className="text-sm font-medium text-slate-600">Sleep Impact</div>
                   <div className="text-lg font-bold text-indigo-600">Most Effective</div>
@@ -124,7 +124,7 @@ export default function SleepSupportPage() {
                     <CardDescription>How poor sleep worsens ADHD/autism symptoms</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                       <div className="bg-slate-50 p-4 rounded-lg">
                         <h4 className="font-semibold text-slate-900 mb-2">Without Adequate Sleep</h4>
                         <ul className="text-sm text-slate-700 space-y-1">

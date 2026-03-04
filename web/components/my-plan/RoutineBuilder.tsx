@@ -121,7 +121,7 @@ export function RoutineBuilder() {
           <CardDescription>Apply a pre-built routine template</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="flex flex-wrap gap-3 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
             {PRESETS.map((preset) => (
               <Card key={preset.name} className="border-2 hover:border-primary/50 transition-colors cursor-pointer">
                 <CardHeader>
@@ -154,7 +154,7 @@ export function RoutineBuilder() {
           <CardDescription>Schedule a saved item in your routine</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
             <div className="space-y-2">
               <Label htmlFor="day">Day</Label>
               <Select value={selectedDay} onValueChange={(v) => setSelectedDay(v as DayOfWeek)}>

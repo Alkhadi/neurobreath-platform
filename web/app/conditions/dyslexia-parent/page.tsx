@@ -47,7 +47,7 @@ export default function DyslexiaParentPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="flex flex-wrap gap-3 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] lg:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
               <Button asChild className="w-full gap-2 bg-blue-600 hover:bg-blue-700">
                 <a href="#quick-start">
                   <BookOpen className="w-5 h-5" />
@@ -74,7 +74,7 @@ export default function DyslexiaParentPage() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+            <div className="flex flex-wrap gap-4 pt-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
               <a
                 href="#evidence"
                 className="flex items-start gap-3 p-4 rounded-lg bg-white/50 dark:bg-gray-900/50 border border-blue-200 dark:border-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
@@ -136,7 +136,7 @@ export default function DyslexiaParentPage() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
               <div className="p-4 rounded-lg bg-white dark:bg-gray-900/50 border">
                 <h3 className="font-semibold text-foreground mb-2">1) Protect confidence</h3>
                 <p className="text-sm text-muted-foreground">Separate reading effort from intelligence. Praise strategies, persistence, and small wins.</p>
@@ -197,7 +197,7 @@ export default function DyslexiaParentPage() {
               </AlertDescription>
             </Alert>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               <div className="p-4 rounded-lg bg-white dark:bg-gray-900/50 border">
                 <h4 className="font-semibold mb-2 flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-green-600" />
@@ -362,7 +362,7 @@ export default function DyslexiaParentPage() {
                     </AlertDescription>
                   </Alert>
 
-                  <div className="grid gap-3 md:grid-cols-2">
+                  <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                     <div className="p-4 border rounded-lg">
                       <h5 className="font-medium mb-2">✨ Celebrate Strengths</h5>
                       <p className="text-sm text-muted-foreground">
@@ -420,7 +420,7 @@ export default function DyslexiaParentPage() {
               </AlertDescription>
             </Alert>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               <div className="p-4 rounded-lg bg-white dark:bg-gray-900/50 border">
                 <h3 className="font-semibold text-foreground mb-2">Language that helps</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
@@ -472,7 +472,7 @@ export default function DyslexiaParentPage() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               <div className="p-4 border rounded-lg">
                 <h4 className="font-semibold mb-3">📋 Request These Accommodations</h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
@@ -623,7 +623,7 @@ export default function DyslexiaParentPage() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid gap-3 md:grid-cols-2">
+            <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
               <Button asChild variant="outline" className="justify-start gap-3 h-auto p-4">
                 <a
                   href="/legacy-assets/assets/downloads/dyslexia-parent-support-guide.pdf"
@@ -683,7 +683,7 @@ export default function DyslexiaParentPage() {
 
             <div id="evidence" className="pt-4 border-t">
               <h4 className="font-semibold mb-3">Recommended UK Organizations</h4>
-              <div className="grid gap-2 md:grid-cols-2 text-sm">
+              <div className="flex flex-wrap gap-2 text-sm [&>*]:basis-full md:[&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 <a href="https://www.bdadyslexia.org.uk/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
                   • British Dyslexia Association
                 </a>
@@ -721,7 +721,7 @@ export default function DyslexiaParentPage() {
               Children with dyslexia may experience stress, anxiety, or frustration around reading and school. Simple breathing exercises can help regulate emotions and improve focus.
             </p>
 
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
               <div className="p-4 border rounded-lg bg-white dark:bg-gray-900/50">
                 <h4 className="font-semibold mb-2">🟦 Box Breathing</h4>
                 <p className="text-sm text-muted-foreground mb-2">

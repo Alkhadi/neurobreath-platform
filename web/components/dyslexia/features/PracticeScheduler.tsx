@@ -134,7 +134,7 @@ export function PracticeScheduler() {
         <div className="space-y-4 p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg">
           <h4 className="text-lg font-semibold">Add Practice Session</h4>
           
-          <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
             <div className="space-y-1">
               <label htmlFor="practice-day" className="text-xs font-semibold">Day</label>
               <select

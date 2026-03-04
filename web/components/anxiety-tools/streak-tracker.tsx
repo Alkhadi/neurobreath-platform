@@ -80,7 +80,7 @@ export function StreakTracker() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-3 gap-4 text-center">
+        <div className="flex flex-wrap gap-4 text-center [&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           <div>
             <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 flex items-center justify-center gap-1">
               <Flame className="h-8 w-8" />

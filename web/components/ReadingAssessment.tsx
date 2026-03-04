@@ -1104,7 +1104,7 @@ export function ReadingAssessment() {
             </div>
 
             {/* Score Breakdown */}
-            <div className="grid grid-cols-3 gap-4">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
               <div className="bg-white/10 rounded-lg p-4 text-center border border-white/20">
                 <p className="text-white/60 text-sm font-semibold uppercase">Score</p>
                 <p className="text-3xl font-bold text-white mt-2">{score}/{totalQuestions}</p>
@@ -1132,7 +1132,7 @@ export function ReadingAssessment() {
           {/* Section Performance */}
           <div className="space-y-4">
             <h3 className="text-xl font-bold text-white">Performance by Section</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               {ASSESSMENT_SECTIONS.map((section) => {
                 const sectionQCount = section.questions;
                 const sectionScore = sectionScores[section.title] || 0;
@@ -1180,7 +1180,7 @@ export function ReadingAssessment() {
 
         {/* Action Buttons - Fixed at bottom */}
         <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 to-black/80 p-4 z-52">
-          <div className="w-full max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <div className="flex flex-wrap w-full max-w-2xl mx-auto gap-3 [&>*]:basis-full sm:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
             <Button
               onClick={handlePrint}
               variant="outline"
@@ -1340,7 +1340,7 @@ export function ReadingAssessment() {
           Take this quick assessment to find out your reading level and get personalized activity recommendations.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="flex flex-wrap gap-3 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
           {ASSESSMENT_SECTIONS.map((section, idx) => (
             <div key={idx} className="p-4 border rounded-lg space-y-2">
               <div className="flex items-center justify-between">

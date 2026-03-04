@@ -94,7 +94,7 @@ export default function CalmChallenge() {
         </p>
       </CardHeader>
       <CardContent>
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="flex flex-wrap gap-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
           {/* How it works */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">How it works</h3>
@@ -167,7 +167,7 @@ export default function CalmChallenge() {
               <Link href="/progress">
                 <Button className="w-full">Start tracking your progress</Button>
               </Link>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 <Link href="/breathing/techniques" className="w-full">
                   <Button variant="outline" className="w-full">Try breathing</Button>
                 </Link>

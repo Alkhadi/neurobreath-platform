@@ -31,7 +31,7 @@ export default function PTSDPage() {
 
       <div className="max-w-4xl mx-auto px-4 py-12">
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="flex flex-wrap gap-4 mb-8 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-slate-600">Neurodivergent Risk</CardTitle>
@@ -136,7 +136,7 @@ export default function PTSDPage() {
                 <CardTitle>PTSD in Autism vs ADHD</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                   <div className="bg-purple-50 p-4 rounded-lg">
                     <h4 className="font-semibold text-purple-900 mb-3">In Autistic Individuals</h4>
                     <ul className="space-y-1 text-sm text-purple-800">
@@ -460,7 +460,7 @@ export default function PTSDPage() {
             <CardDescription>NeuroBreath is here to support you with evidence-based tools and tracking.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
               <Link href="/techniques">
                 <Button className="w-full">Explore Breathing Techniques</Button>
               </Link>

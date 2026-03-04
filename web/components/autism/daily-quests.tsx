@@ -80,7 +80,7 @@ export function DailyQuests({ onUpdate: _onUpdate }: DailyQuestsProps) {
           </div>
         )}
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+        <div className="flex flex-wrap gap-6 max-w-5xl mx-auto [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
           {quests.map(quest => {
             const progressPercent = (quest.current / quest.target) * 100;
             

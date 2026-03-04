@@ -63,7 +63,7 @@ export default function BreathingExercisesPage() {
 
           {/* Quick Stats */}
           <Card className="p-8 bg-white/80 backdrop-blur">
-            <div className="grid md:grid-cols-4 gap-6">
+            <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
               <div className="text-center">
                 <div className="text-4xl font-bold text-primary mb-2">6</div>
                 <div className="text-sm text-muted-foreground">Breathing Techniques</div>
@@ -97,7 +97,7 @@ export default function BreathingExercisesPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             {/* Box Breathing */}
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <div className="bg-blue-100 p-3 rounded-lg inline-block mb-4">
@@ -268,7 +268,7 @@ export default function BreathingExercisesPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="flex flex-wrap gap-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
             <Card className="p-6">
               <h3 className="text-xl font-bold mb-4">Mental Health Benefits</h3>
               <ul className="space-y-3 text-sm text-muted-foreground">
@@ -324,7 +324,7 @@ export default function BreathingExercisesPage() {
 
           <Card className="p-6 mt-8 bg-white">
             <h3 className="text-xl font-bold mb-4">Clinical Evidence</h3>
-            <div className="grid md:grid-cols-2 gap-6 text-sm text-muted-foreground">
+            <div className="flex flex-wrap gap-6 text-sm text-muted-foreground [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
               <div>
                 <p className="mb-2"><strong>Research Sources:</strong></p>
                 <ul className="space-y-1 ml-4">
@@ -352,7 +352,7 @@ export default function BreathingExercisesPage() {
       <section className="py-16 px-4 bg-white">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-bold mb-8 text-center">How to Get Started</h2>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card className="p-6 text-center">
               <div className="bg-blue-100 p-3 rounded-full inline-block mb-4">
                 <span className="text-2xl font-bold text-blue-600">1</span>
@@ -435,7 +435,7 @@ export default function BreathingExercisesPage() {
       <section className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold mb-8 text-center">Related Tools & Resources</h2>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card className="p-6">
               <Heart className="h-8 w-8 text-pink-600 mb-4" />
               <h3 className="text-lg font-bold mb-2">Anxiety Tools</h3>

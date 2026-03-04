@@ -101,7 +101,7 @@ export function PrintablesHub({ region }: PrintablesHubProps) {
         </div>
       </header>
 
-      <section className="grid gap-4 md:grid-cols-3">
+      <section className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
         {FEATURED_COLLECTIONS.map(collection => (
           <div key={collection.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <h2 className="text-lg font-semibold text-slate-900">{collection.title}</h2>
@@ -133,7 +133,7 @@ export function PrintablesHub({ region }: PrintablesHubProps) {
           </div>
           <div className="text-sm text-slate-500">Showing {filtered.length} of {PRINTABLES.length}</div>
         </div>
-        <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-5">
+        <div className="flex flex-wrap mt-4 gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] lg:[&>*]:basis-[calc(20%-10px)] [&>*]:min-w-0">
           <label className="flex flex-col text-xs font-semibold text-slate-500 uppercase">
             Search
             <input
@@ -226,7 +226,7 @@ export function PrintablesHub({ region }: PrintablesHubProps) {
           No matches yet. Try clearing a filter or searching by a different term.
         </section>
       ) : (
-        <section className="grid gap-4 md:grid-cols-2">
+        <section className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           {filtered.map(item => (
             <Link
               key={item.id}

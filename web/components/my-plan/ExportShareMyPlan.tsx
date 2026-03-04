@@ -227,7 +227,7 @@ export function ExportShareMyPlan() {
           </DialogHeader>
 
           <div className="space-y-5 py-2">
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="flex flex-wrap gap-3 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
               <Button onClick={handleDownloadBackup} className="w-full" variant="outline">
                 <Download className="w-4 h-4 mr-2" />
                 Download backup (.nbx)

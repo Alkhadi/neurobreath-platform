@@ -279,6 +279,16 @@ export function SiteHeader() {
     setActiveMegaMenu(null)
   }
 
+  const closeMobileMenu = () => {
+    mobileClosingRef.current = true
+    setActiveMegaMenu(null)
+    setMobileMenuOpen(false)
+    requestAnimationFrame(() => {
+      mobileToggleRef.current?.focus()
+      mobileClosingRef.current = false
+    })
+  }
+
   const navContent = (
     <>
       {/* Conditions Mega Menu */}
@@ -377,7 +387,7 @@ export function SiteHeader() {
             <Link href="/tools/sleep-tools" onClick={closeMegaMenu}>💤 Sleep Tools</Link>
           </div>
           <div className="nb-mega-menu-section">
-            <h4 className="nb-mega-menu-heading">Games & Challenges</h4>
+            <h4 className="nb-mega-menu-heading">Games &amp; Challenges</h4>
             <Link href="/tools/breath-ladder" onClick={closeMegaMenu}>🪜 Breath Ladder</Link>
             <Link href="/tools/colour-path" onClick={closeMegaMenu}>🎨 Colour Path</Link>
             <Link href="/tools/focus-tiles" onClick={closeMegaMenu}>🧩 Focus Tiles</Link>
@@ -500,65 +510,99 @@ export function SiteHeader() {
   )
 
   return (
-    <header className="nb-header">
-      <div className="nb-header-container">
-        <Link
-          href={regionPrefix}
-          className="nb-brand"
-          id="brandLink"
-          onClick={closeMegaMenu}
-          aria-label={`NeuroBreath — ${SITE_CONFIG.siteSlogan}`}
-        >
-          <span className="nb-brand-tile">
-            <span className="nb-brand-mark">
-              <Image
-                src="/icons/neurobreath-logo-square-128.png"
-                alt="NeuroBreath"
-                width={56}
-                height={56}
-                className="nb-brand-logo"
-                priority
-              />
+    <>
+      <header className="nb-header">
+        <div className="nb-header-container">
+          <Link
+            href={regionPrefix}
+            className="nb-brand"
+            id="brandLink"
+            onClick={closeMegaMenu}
+            aria-label={`NeuroBreath — ${SITE_CONFIG.siteSlogan}`}
+          >
+            <span className="nb-brand-tile">
+              <span className="nb-brand-mark">
+                <Image
+                  src="/icons/neurobreath-logo-square-128.png"
+                  alt="NeuroBreath"
+                  width={56}
+                  height={56}
+                  className="nb-brand-logo"
+                  priority
+                />
+              </span>
             </span>
-          </span>
-          <span className="nb-brand-copy">
-            <span className="nb-brand-text">NeuroBreath</span>
-            <span className="nb-brand-tagline">{SITE_CONFIG.siteSlogan}</span>
-          </span>
-        </Link>
+            <span className="nb-brand-copy">
+              <span className="nb-brand-text">NeuroBreath</span>
+              <span className="nb-brand-tagline">{SITE_CONFIG.siteSlogan}</span>
+            </span>
+          </Link>
 
-        {/* Mobile Menu Toggle */}
-        {mobileMenuOpen ? (
-          <button
-            ref={mobileToggleRef}
-            type="button"
-            className="nb-mobile-toggle"
-            onClick={() => setMobileMenuOpen(false)}
-            aria-label="Close menu"
-            aria-controls="mainNav"
-            aria-expanded="true"
-            data-expanded={mobileMenuOpen}
-          >
-            <X size={24} />
-          </button>
-        ) : (
-          <button
-            ref={mobileToggleRef}
-            type="button"
-            className="nb-mobile-toggle"
-            onClick={() => setMobileMenuOpen(true)}
-            aria-label="Open menu"
-            aria-controls="mainNav"
-            aria-expanded="false"
-            data-expanded={mobileMenuOpen}
-          >
-            <Menu size={24} />
-          </button>
+          {/* Mobile Menu Toggle */}
+          {mobileMenuOpen ? (
+            <button
+              ref={mobileToggleRef}
+              type="button"
+              className="nb-mobile-toggle"
+              onClick={() => setMobileMenuOpen(false)}
+              aria-label="Close menu"
+              aria-controls="mainNav"
+              aria-expanded="true"
+              data-expanded={mobileMenuOpen}
+            >
+              <X size={24} />
+            </button>
+          ) : (
+            <button
+              ref={mobileToggleRef}
+              type="button"
+              className="nb-mobile-toggle"
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open menu"
+              aria-controls="mainNav"
+              aria-expanded="false"
+              data-expanded={mobileMenuOpen}
+            >
+              <Menu size={24} />
+            </button>
+          )}
+
+          {/* Desktop Navigation — stays inside header (no backdrop-filter containment issue on desktop) */}
+          {!isMobile && (
+            <nav ref={navRef} className="nb-main-nav" id="mainNav" role="navigation" aria-label="Primary">
+              {navContent}
+            </nav>
+          )}
+        </div>
+
+        {/* Desktop mega-menu backdrop */}
+        {activeMegaMenu && !isMobile && (
+          <div
+            className="nb-mega-menu-backdrop"
+            onClick={closeMegaMenu}
+            aria-hidden="true"
+          />
         )}
+      </header>
 
-        {/* Main Navigation */}
-        {isMobile ? (
-          mobileMenuOpen ? (
+      {/*
+        Mobile overlay + drawer rendered OUTSIDE <header>.
+        This prevents the header's backdrop-filter from creating a containing block
+        that traps fixed descendants, which caused the drawer to appear behind hero content.
+      */}
+      {isMobile && (
+        <>
+          {/* Dimmed overlay — covers page content, sits below header (z-[100] < header z-[1000]) */}
+          <div
+            aria-hidden="true"
+            className={`fixed inset-0 bg-black/40 z-[100] transition-opacity duration-300 ${
+              mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            }`}
+            onClick={closeMobileMenu}
+          />
+
+          {/* Drawer panel — right-side, above overlay (z-[110]) */}
+          {mobileMenuOpen ? (
             <nav
               ref={navRef}
               className="nb-main-nav nb-main-nav--open"
@@ -580,22 +624,9 @@ export function SiteHeader() {
             >
               {navContent}
             </nav>
-          )
-        ) : (
-          <nav ref={navRef} className="nb-main-nav" id="mainNav" role="navigation" aria-label="Primary">
-            {navContent}
-          </nav>
-        )}
-      </div>
-
-      {/* Mega Menu Backdrop */}
-      {activeMegaMenu && (
-        <div 
-          className="nb-mega-menu-backdrop" 
-          onClick={closeMegaMenu}
-          aria-hidden="true"
-        />
+          )}
+        </>
       )}
-    </header>
+    </>
   )
 }

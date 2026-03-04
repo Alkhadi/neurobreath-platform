@@ -31,7 +31,7 @@ export const CalmToolkit = () => {
           </TabsList>
 
           <TabsContent value="breathing">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
               {breathingExercises?.map?.(exercise => (
                 <BreathingExerciseCard key={exercise?.id} exercise={exercise} />
               ))}
@@ -39,7 +39,7 @@ export const CalmToolkit = () => {
           </TabsContent>
 
           <TabsContent value="calming">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
               {calmingTechniques?.map?.(technique => (
                 <CalmingTechniqueCard key={technique?.id} technique={technique} />
               ))}

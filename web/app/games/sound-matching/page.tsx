@@ -240,13 +240,13 @@ export default function SoundMatchingGamePage() {
               </p>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               <div className="space-y-3">
                 <h2 className="font-semibold flex items-center gap-2">
                   <Star className="w-4 h-4 text-yellow-500" />
                   Difficulty
                 </h2>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                   <Button
                     variant={difficulty === 'beginner' ? 'default' : 'outline'}
                     onClick={() => setDifficulty('beginner')}
@@ -370,7 +370,7 @@ export default function SoundMatchingGamePage() {
               </p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div className="flex flex-wrap gap-3 [&>*]:basis-full sm:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
               <Card>
                 <CardContent className="p-4">
                   <div className="text-xs text-muted-foreground">Accuracy</div>
@@ -495,7 +495,7 @@ export default function SoundMatchingGamePage() {
             <Progress value={total > 0 ? ((index + 1) / total) * 100 : 0} />
 
             {current ? (
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div className="space-y-3">
                   <div className="rounded-xl border p-4 bg-white/60 dark:bg-white/5">
                     <div className="text-xs text-muted-foreground">Listen to this word</div>
@@ -550,7 +550,7 @@ export default function SoundMatchingGamePage() {
 
                 <div className="space-y-3">
                   <div className="text-sm font-medium">Which letters match the sound?</div>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                     {current.options.map(option => (
                       <Button
                         key={option}

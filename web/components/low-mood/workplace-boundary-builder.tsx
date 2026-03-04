@@ -208,7 +208,7 @@ export function WorkplaceBoundaryBuilder() {
             {/* Category Selection */}
             <div className="space-y-2">
               <Label>Boundary Type</Label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-full md:[&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 {(Object.keys(BOUNDARY_CATEGORIES) as Array<keyof typeof BOUNDARY_CATEGORIES>).map((cat) => {
                   const catInfo = BOUNDARY_CATEGORIES[cat];
                   const Icon = catInfo.icon;

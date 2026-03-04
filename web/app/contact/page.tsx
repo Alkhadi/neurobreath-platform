@@ -317,7 +317,7 @@ export default function ContactPage() {
                 >
                 <div className="rounded-2xl p-4 sm:p-6 md:p-8 mb-8 bg-white shadow-xl xl:bg-white/72 xl:dark:bg-zinc-950/55 xl:backdrop-blur-2xl xl:border xl:border-white/40 xl:dark:border-white/12 xl:shadow-[0_26px_80px_rgba(0,0,0,0.22)] xl:ring-1 xl:ring-black/10 xl:dark:ring-white/10">
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="flex flex-wrap gap-8 [&>*]:basis-full lg:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
             {/* Contact Form */}
             <form
               onSubmit={handleContactFormSubmit}

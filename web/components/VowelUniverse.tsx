@@ -277,7 +277,7 @@ export function VowelUniverse() {
               </div>
 
               {/* Patterns Grid */}
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 mb-4">
+              <div className="flex flex-wrap gap-2 mb-4 [&>*]:basis-[calc(33.333%-5px)] sm:[&>*]:basis-[calc(25%-6px)] md:[&>*]:basis-[calc(20%-6px)] lg:[&>*]:basis-[calc(16.667%-7px)] [&>*]:min-w-0">
                 {zone.patterns.map((pattern) => {
                   const isCompleted = completedPatterns.has(pattern.id);
                   return (

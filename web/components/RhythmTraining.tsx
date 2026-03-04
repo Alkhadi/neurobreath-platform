@@ -251,7 +251,7 @@ export function RhythmTraining() {
         {/* Pattern Selection */}
         <div className="space-y-3">
           <label className="text-sm font-medium">Choose a Pattern:</label>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] lg:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
             {PATTERNS.map((pattern) => (
               <button
                 key={pattern.id}
@@ -384,7 +384,7 @@ export function RhythmTraining() {
         )}
 
         {/* Progress Stats */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
             <div className="text-2xl font-bold text-purple-500">{score}</div>
             <div className="text-sm text-gray-600 dark:text-gray-400">Total Score</div>

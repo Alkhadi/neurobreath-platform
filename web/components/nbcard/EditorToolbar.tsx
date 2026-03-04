@@ -585,7 +585,7 @@ export function EditorToolbar({
               {/* Font Family — text input with datalist for direct typing on all devices */}
               <div>
                 <label className="text-xs text-gray-600" htmlFor="nb-editor-font-family">Font Family</label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                   <select
                     aria-label="Font family dropdown"
                     value={selectedLayer.style.fontFamily || "Inter"}
@@ -632,7 +632,7 @@ export function EditorToolbar({
                   ))}
                 </datalist>
               </div>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 <div>
                   <label className="text-xs text-gray-600">Font Size</label>
                   <div className="flex gap-1">
@@ -823,7 +823,7 @@ export function EditorToolbar({
                 </Button>
               </div>
               {/* Background Color */}
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 <div>
                   <label className="text-xs text-gray-600">Background</label>
                   <div className="flex items-center gap-1">
@@ -988,7 +988,7 @@ export function EditorToolbar({
 
           {selectedLayer.type === "shape" && (
             <div className="space-y-2 pt-2 border-t">
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 <div>
                   <label className="text-xs text-gray-600">Fill</label>
                   <div className="flex items-center gap-1">
@@ -1062,7 +1062,7 @@ export function EditorToolbar({
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 <div>
                   <label className="text-xs text-gray-600">Stroke</label>
                   <div className="flex items-center gap-1">
@@ -1191,7 +1191,7 @@ export function EditorToolbar({
                 <Upload className="h-3.5 w-3.5 mr-1" />
                 Change Image
               </Button>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 <div>
                   <label className="text-xs text-gray-600">Border Radius</label>
                   <input
@@ -1326,7 +1326,7 @@ export function EditorToolbar({
 
           {/* QR Layer Inspector */}
           {selectedLayer.type === "qr" && (
-            <div className="grid grid-cols-2 gap-2">
+            <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
               <div className="col-span-2">
                 <label className="text-xs text-gray-600">QR Value (URL or text)</label>
                 <input

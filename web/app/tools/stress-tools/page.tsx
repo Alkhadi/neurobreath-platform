@@ -53,7 +53,7 @@ export default function StressPage() {
           {/* Quick Stats */}
           <Card className="p-8 bg-gradient-to-r from-teal-50 to-purple-50">
             <h2 className="text-2xl font-bold text-center mb-8">You're Not Alone</h2>
-            <div className="grid md:grid-cols-4 gap-6">
+            <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
               <div className="text-center">
                 <div className="text-4xl font-bold text-primary mb-2">74%</div>
                 <div className="text-sm text-muted-foreground">UK adults felt overwhelmed by stress in the past year</div>
@@ -79,7 +79,7 @@ export default function StressPage() {
       <section className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold mb-6 text-center">What is Stress?</h2>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card className="p-6">
               <h3 className="font-semibold text-lg mb-3">Normal Stress vs. Chronic Stress</h3>
               <p className="text-sm text-muted-foreground mb-4">

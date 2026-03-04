@@ -14,7 +14,7 @@ export const MythsFacts = () => {
           <h2 className="text-3xl font-bold">Myths & Facts</h2>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
           {mythsFacts?.map?.((item, index) => (
             <Card key={index} className="p-6">
               <div className="mb-4">

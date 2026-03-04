@@ -1526,7 +1526,7 @@ export function ProfileCard({
                       </p>
                     ) : null}
 
-                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                    <div className="flex flex-wrap mt-4 gap-4 items-center [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                       <div className="flex flex-col gap-2">
                         <a
                           href={(profile.cardCategory === "WEDDING" ? profile.weddingCard?.ctaUrl : profile.flyerCard?.ctaUrl) || shareUrl}

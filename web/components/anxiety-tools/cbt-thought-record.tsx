@@ -175,7 +175,7 @@ export function CBTThoughtRecord() {
             {/* Emotion & Intensity */}
             <Card className="p-6 space-y-4">
               <Label className="text-base font-semibold">3. What did you feel? Emotion & intensity</Label>
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div>
                   <Label htmlFor="emotion" className="text-sm mb-2 block">Emotion</Label>
                   <Select value={emotion} onValueChange={setEmotion}>
@@ -369,7 +369,7 @@ export function CBTThoughtRecord() {
       {/* Stats */}
       <Card className="p-6">
         <h3 className="font-semibold mb-4">Your CBT Practice</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           <div>
             <div className="text-2xl font-bold text-primary">{records?.length ?? 0}</div>
             <div className="text-sm text-muted-foreground">Thought Records</div>

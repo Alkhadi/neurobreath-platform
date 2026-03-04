@@ -320,7 +320,7 @@ export function MorphologyMaster() {
         {/* Type Selection */}
         <div className="space-y-3">
           <label className="text-sm font-medium">Select Morpheme Type:</label>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
             {[
               { type: 'prefix' as const, label: 'Prefixes', emoji: '🎯', desc: 'Beginning' },
               { type: 'suffix' as const, label: 'Suffixes', emoji: '🎯', desc: 'Ending' },
@@ -347,7 +347,7 @@ export function MorphologyMaster() {
         {!showChallenge && (
           <div className="space-y-3">
             <label className="text-sm font-medium">Available {selectedType.charAt(0).toUpperCase() + selectedType.slice(1)}es:</label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
               {MORPHEME_SETS.filter(set => set.type === selectedType).map((set) => (
                 <button
                   key={set.id}
@@ -418,7 +418,7 @@ export function MorphologyMaster() {
             <div className="bg-indigo-100 dark:bg-indigo-900 p-4 rounded-lg">
               <h3 className="font-bold text-lg mb-2">{currentChallenge.question}</h3>
             </div>
-            <div className="grid grid-cols-1 gap-3">
+            <div className="flex flex-col gap-3">
               {currentChallenge.options.map((option, idx) => (
                 <button
                   key={idx}

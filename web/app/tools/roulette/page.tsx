@@ -106,7 +106,7 @@ export default function RoulettePage() {
           </div>
 
           {/* Technique Options */}
-          <div className="grid grid-cols-2 gap-4 mb-8">
+          <div className="flex flex-wrap gap-4 mb-8 [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
             {techniques?.map((tech) => (
               <div
                 key={tech?.id}

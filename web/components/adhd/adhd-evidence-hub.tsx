@@ -21,7 +21,7 @@ export function ADHDEvidenceHub() {
         </AlertDescription>
       </Alert>
 
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
         {[
           { title: 'NICE — NG87', subtitle: 'Adult meds choice', icon: FileText },
           { title: 'Acas', subtitle: 'Adjustments for neurodiversity', icon: ExternalLink },

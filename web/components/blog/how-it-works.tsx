@@ -10,7 +10,7 @@ export default function HowItWorks() {
         <CardTitle className="text-2xl">How the hub works</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
           <Card className="border-2">
             <CardHeader>
               <FileText className="w-8 h-8 text-primary mb-2" />

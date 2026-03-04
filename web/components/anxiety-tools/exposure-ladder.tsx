@@ -297,7 +297,7 @@ export function ExposureLadder() {
               
               {selectedStepId && (
                 <>
-                  <div className="grid md:grid-cols-3 gap-4">
+                  <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                     <div>
                       <Label>Anxiety Before: {anxietyBefore?.[0] ?? 5}/10</Label>
                       <Slider value={anxietyBefore} onValueChange={setAnxietyBefore} min={0} max={10} step={1} />

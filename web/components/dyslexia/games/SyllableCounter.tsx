@@ -123,7 +123,7 @@ export function SyllableCounter() {
             <p className="text-lg font-semibold">How many syllables (parts) in this word?</p>
           </div>
 
-          <div className="grid grid-cols-4 gap-4">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
             {[1, 2, 3, 4].map((count) => (
               <Button
                 key={count}

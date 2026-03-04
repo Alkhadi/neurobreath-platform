@@ -126,7 +126,7 @@ export function EmergingTherapies() {
                 <Icon className="w-8 h-8 text-primary" />
                 <h3 className="text-2xl font-bold text-gray-900">{category?.category}</h3>
               </div>
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 {category?.treatments?.map?.((treatment, treatIndex) => (
                   <div
                     key={treatIndex}

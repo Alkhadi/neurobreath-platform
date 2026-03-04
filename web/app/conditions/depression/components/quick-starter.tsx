@@ -56,7 +56,7 @@ export function QuickStarter() {
         <p className="text-lg text-gray-600">Essential information to help you understand and respond to depression</p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
         {cards?.map?.((card, index) => {
           const Icon = card?.icon ?? Lightbulb;
           return (
@@ -91,7 +91,7 @@ export function QuickStarter() {
             <p className="text-red-800">
               If you are in crisis or experiencing thoughts of suicide, please reach out immediately:
             </p>
-            <div className="grid sm:grid-cols-2 gap-4 mt-4">
+            <div className="flex flex-wrap gap-4 mt-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               <div className="bg-white rounded-lg p-4 shadow-sm">
                 <p className="font-bold text-gray-900 mb-1">🇬🇧 UK Crisis Lines</p>
                 <p className="text-sm text-gray-700">Samaritans: <a href="tel:116123" className="font-bold text-primary hover:underline">116 123</a> (24/7)</p>

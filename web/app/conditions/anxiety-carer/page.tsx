@@ -65,7 +65,7 @@ export default function AnxietyCarerSupportPage() {
           </div>
           
           {/* Stats Card */}
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="flex flex-wrap mt-12 gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card className="bg-white/10 backdrop-blur border-white/20">
               <CardContent className="pt-6">
                 <div className="text-3xl font-bold text-white mb-1">19.1%</div>
@@ -90,7 +90,7 @@ export default function AnxietyCarerSupportPage() {
 
       {/* Interactive Dashboard */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+        <div className="flex flex-wrap gap-6 mb-12 [&>*]:basis-full lg:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
           <StreakTracker />
           <SupportQuiz />
           <DailyChallenges />
@@ -113,7 +113,7 @@ export default function AnxietyCarerSupportPage() {
           </CardHeader>
           <CardContent>
             <div className="bg-teal-50 dark:bg-teal-950/20 p-6 rounded-lg border border-teal-200 dark:border-teal-800 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div>
                   <h4 className="font-semibold mb-2 flex items-center gap-2">
                     <Stethoscope className="h-5 w-5 text-teal-600" />
@@ -208,7 +208,7 @@ export default function AnxietyCarerSupportPage() {
                   <p className="text-sm text-muted-foreground">
                     Let them express worries without judgment. Your role is to listen, not immediately fix.
                   </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                     <div className="p-3 bg-green-50 dark:bg-green-950/20 rounded border border-green-200 dark:border-green-800">
                       <p className="font-semibold text-sm mb-2 text-green-900 dark:text-green-100 flex items-center gap-2">
                         <CheckCircle2 className="h-4 w-4" />
@@ -344,7 +344,7 @@ export default function AnxietyCarerSupportPage() {
                         <li>Cycle repeats, dependency grows</li>
                       </ol>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                       <div className="p-3 bg-green-50 dark:bg-green-950/20 rounded border border-green-200 dark:border-green-800">
                         <p className="font-semibold text-sm mb-2 text-green-900 dark:text-green-100">✅ Better Response</p>
                         <p className="text-sm">
@@ -378,7 +378,7 @@ export default function AnxietyCarerSupportPage() {
                   <p className="text-sm text-muted-foreground">
                     Support them in maintaining healthy habits that reduce anxiety (exercise, sleep, nutrition, social connection).
                   </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                     <div className="p-3 bg-indigo-50 dark:bg-indigo-950/20 rounded">
                       <p className="font-semibold text-sm mb-2">Physical Health:</p>
                       <ul className="text-sm space-y-1 list-disc list-inside">
@@ -543,7 +543,7 @@ export default function AnxietyCarerSupportPage() {
             <div className="bg-pink-50 dark:bg-pink-950/20 p-6 rounded-lg border border-pink-200 dark:border-pink-800 space-y-4">
               <div className="p-4 bg-red-100 dark:bg-red-900/30 rounded border border-red-300 dark:border-red-700">
                 <p className="font-semibold mb-2 text-red-900 dark:text-red-100">Signs of Caregiver Burnout:</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                <div className="flex flex-wrap gap-2 text-sm [&>*]:basis-full md:[&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                   <ul className="space-y-1 list-disc list-inside">
                     <li>Chronic fatigue, exhaustion</li>
                     <li>Withdrawal from friends, activities</li>

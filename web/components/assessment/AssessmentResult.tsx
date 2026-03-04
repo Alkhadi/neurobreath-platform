@@ -255,7 +255,7 @@ export function AssessmentResult({
           </Card>
           
           {/* Strengths & Needs */}
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2 text-green-600">
@@ -321,7 +321,7 @@ export function AssessmentResult({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
                   <div className="text-center p-3 bg-muted rounded-lg">
                     <div className="text-2xl font-bold text-primary">{data.orf.metrics.wcpm}</div>
                     <div className="text-xs text-muted-foreground">Words Correct/Min</div>
@@ -353,7 +353,7 @@ export function AssessmentResult({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                   <div className="text-center p-3 bg-muted rounded-lg">
                     <div className="text-2xl font-bold text-green-600">{data.wordList.correctItems}</div>
                     <div className="text-xs text-muted-foreground">Correct</div>
@@ -383,7 +383,7 @@ export function AssessmentResult({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                   <div className="text-center p-3 bg-muted rounded-lg">
                     <div className="text-2xl font-bold text-green-600">{data.pseudowords.correctItems}</div>
                     <div className="text-xs text-muted-foreground">Correct</div>
@@ -413,7 +413,7 @@ export function AssessmentResult({
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-3 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                   <div className="text-center p-3 bg-muted rounded-lg">
                     <div className="text-2xl font-bold text-green-600">{data.comprehension.correctAnswers}</div>
                     <div className="text-xs text-muted-foreground">Correct</div>
@@ -457,7 +457,7 @@ export function AssessmentResult({
               <CardTitle className="text-lg">Assessment Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="flex flex-wrap gap-4 text-sm [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div>
                   <span className="text-muted-foreground">Assessment ID:</span>
                   <span className="ml-2 font-mono">{attemptId || 'Not saved'}</span>

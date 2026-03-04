@@ -102,10 +102,10 @@ export function BreathingExercise() {
         <h3 className="text-xl font-semibold">Breathing Exercise</h3>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
         <div className="space-y-4">
           <div className="text-sm font-medium mb-2">Select Technique</div>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
             {techniques.map((t, idx) => (
               <button
                 key={t.name}

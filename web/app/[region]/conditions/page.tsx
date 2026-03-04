@@ -188,7 +188,7 @@ export default async function RegionConditionsPage({ params }: RegionConditionsP
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
-      <div className="mx-auto w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1200px] py-12 space-y-10">
+      <div className="nb-container py-12 space-y-10">
         <header className="space-y-4">
           <p className="text-sm uppercase tracking-wide text-slate-500">Conditions we cover</p>
           <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900">
@@ -220,13 +220,13 @@ export default async function RegionConditionsPage({ params }: RegionConditionsP
           </div>
         </header>
 
-        <div className="grid gap-4 lg:grid-cols-2">
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="flex flex-wrap gap-6">
+          <section className="nb-surface p-6 basis-full lg:basis-[calc(50%-12px)] min-w-0">
             <h2 className="text-xl font-semibold text-slate-900">Key tools (try now)</h2>
             <p className="mt-1 text-sm text-slate-600">
               Start with a low-friction tool, then return to conditions to refine your plan.
             </p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div className="mt-4 flex flex-wrap gap-3">
               {[
                 { label: 'SOS 60-second calm', href: '/techniques/sos' },
                 { label: 'Breath tools', href: '/tools/breath-tools' },
@@ -236,14 +236,16 @@ export default async function RegionConditionsPage({ params }: RegionConditionsP
                 <Link
                   key={item.href + item.label}
                   href={item.href}
-                  className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:border-slate-300"
+                  className="basis-full sm:basis-[calc(50%-6px)] min-w-0 rounded-xl border border-slate-200 bg-white/60 dark:bg-white/5 px-4 py-3 text-sm font-semibold text-slate-900 dark:text-white hover:border-slate-300"
                 >
                   {item.label}
                 </Link>
               ))}
             </div>
           </section>
-          <TrustMiniPanel region={region} />
+          <div className="basis-full lg:basis-[calc(50%-12px)] min-w-0">
+            <TrustMiniPanel region={region} />
+          </div>
         </div>
 
         <section className="space-y-4">
@@ -251,9 +253,9 @@ export default async function RegionConditionsPage({ params }: RegionConditionsP
             <h2 className="text-xl font-semibold text-slate-900">Start here by audience</h2>
             <p className="text-sm text-slate-600">Pick the support context that fits you best.</p>
           </div>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-wrap gap-6">
             {audienceFlows.map(flow => (
-              <article key={flow.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <article key={flow.id} className="nb-surface nb-surface-interactive p-5 basis-full md:basis-[calc(50%-12px)] lg:basis-[calc(33.333%-16px)] min-w-0">
                 <h3 className="text-base font-semibold text-slate-900">{flow.label}</h3>
                 <p className="mt-2 text-sm text-slate-600">{flow.description}</p>
                 <div className="mt-4 flex flex-col gap-2 text-sm">
@@ -268,7 +270,7 @@ export default async function RegionConditionsPage({ params }: RegionConditionsP
           </div>
         </section>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-6">
+        <section className="nb-surface p-6">
           <h2 className="text-xl font-semibold text-slate-900">Key terms</h2>
           <p className="text-sm text-slate-600">Plain‑English explanations for common terms.</p>
           <div className="mt-4 flex flex-wrap gap-2">

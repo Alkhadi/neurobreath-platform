@@ -144,7 +144,7 @@ export function ReadingFluencyRace() {
 
         {attempts.length > 0 && (
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               <div className="p-4 bg-purple-50 dark:bg-purple-950/30 rounded-lg text-center">
                 <p className="text-sm text-muted-foreground">Current WPM</p>
                 <p className="text-3xl font-bold text-purple-600">{wpm}</p>

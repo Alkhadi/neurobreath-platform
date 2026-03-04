@@ -200,7 +200,7 @@ export function ValuesCompass() {
             {selectedValues.length > 0 && (
               <div className="space-y-2">
                 <h3 className="font-semibold">Your Core Values ({selectedValues.length})</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div className="flex flex-wrap gap-2 [&>*]:basis-full md:[&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                   {selectedValues.map((value) => {
                     const categoryInfo = VALUE_CATEGORIES[value.category as keyof typeof VALUE_CATEGORIES];
                     const Icon = categoryInfo.icon;
@@ -292,7 +292,7 @@ export function ValuesCompass() {
                 </div>
                 <div>
                   <Label htmlFor="customCategory">Category</Label>
-                  <div className="grid grid-cols-3 gap-2 mt-2">
+                  <div className="flex flex-wrap gap-2 mt-2 [&>*]:basis-[calc(33.333%-5px)] [&>*]:min-w-0">
                     {(Object.keys(VALUE_CATEGORIES) as Array<keyof typeof VALUE_CATEGORIES>).map((cat) => {
                       const Icon = VALUE_CATEGORIES[cat].icon;
                       return (
@@ -344,7 +344,7 @@ export function ValuesCompass() {
                   </div>
                   <div>
                     <Label>Which values does this activity honor?</Label>
-                    <div className="grid grid-cols-1 gap-2 mt-2">
+                    <div className="flex flex-col gap-2 mt-2">
                       {selectedValues.map((value) => (
                         <div key={value.id} className="flex items-center space-x-2">
                           <Checkbox

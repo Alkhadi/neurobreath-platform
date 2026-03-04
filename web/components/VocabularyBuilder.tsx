@@ -123,7 +123,7 @@ export default function VocabularyBuilder() {
         </div>
 
         {/* Difficulty Selector */}
-        <div className="grid grid-cols-3 gap-2">
+        <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(33.333%-5px)] [&>*]:min-w-0">
           {(['easy', 'medium', 'hard'] as const).map((difficulty) => (
             <button
               key={difficulty}

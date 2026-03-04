@@ -34,7 +34,7 @@ export function GradientSelector({ selectedGradient, onSelect, onClearBackground
           </button>
         )}
       </div>
-      <div className="grid grid-cols-4 gap-3">
+      <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
         {gradientOptions.map((option, index) => (
           <button
             key={index}

@@ -511,7 +511,7 @@ function BreathingSessionModal({
 
           {sensoryOpen && (
             <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div>
                   <p className="text-sm font-semibold text-slate-700 mb-2">Soundscape</p>
                   <Select
@@ -1163,7 +1163,7 @@ export default function FocusGardenPage() {
                 </ol>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div className="bg-orange-50 p-4 rounded-xl border border-orange-200">
                   <div className="flex items-center gap-2 mb-2">
                     <Flame className="w-5 h-5 text-orange-500" />
@@ -1441,7 +1441,7 @@ export default function FocusGardenPage() {
 
           {/* Stats Dashboard */}
           <div className="p-8 bg-gradient-to-br from-slate-50 to-blue-50">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+            <div className="flex flex-wrap gap-4 mb-6 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(20%-13px)] [&>*]:min-w-0">
               {/* Garden Level */}
               <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
                 <div className="flex items-center gap-2 mb-2">
@@ -1596,7 +1596,7 @@ export default function FocusGardenPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(33.333%-11px)] xl:[&>*]:basis-[calc(20%-13px)] [&>*]:min-w-0">
                 {(Object.keys(GARDEN_CATEGORIES) as GardenCategory[]).map((key) => {
                   const category = GARDEN_CATEGORIES[key]
                   const isSelected = selectedCategory === key
@@ -1667,7 +1667,7 @@ export default function FocusGardenPage() {
                 </div>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div className="space-y-2">
                   <label htmlFor="seed-title" className="text-sm font-semibold text-slate-800">Seed name</label>
                   <input
@@ -1771,7 +1771,7 @@ export default function FocusGardenPage() {
                   </Button>
                 </div>
               ) : (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
+                <div className="flex flex-wrap gap-5 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-10px)] lg:[&>*]:basis-[calc(33.333%-13px)] xl:[&>*]:basis-[calc(20%-16px)] [&>*]:min-w-0">
                   {Array.from({ length: 5 }).map((_, i) => {
                     const requiredLevel = plotUnlockLevels[i]
                     const isUnlocked = currentGardenLevel.level >= requiredLevel
@@ -1939,7 +1939,7 @@ export default function FocusGardenPage() {
                   </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                   {getActiveQuests().map(quest => (
                     <div
                       key={quest.id}
@@ -2026,7 +2026,7 @@ export default function FocusGardenPage() {
                   <p className="text-slate-600">Check back later for new adventures</p>
                 </div>
               ) : (
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                   {getAvailableQuests().map(quest => (
                     <div
                       key={quest.id}
@@ -2073,7 +2073,7 @@ export default function FocusGardenPage() {
                   </div>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                   {progress.completedQuests.map(questId => {
                     const quest = MULTI_DAY_QUESTS.find(q => q.id === questId)
                     if (!quest) return null
@@ -2114,7 +2114,7 @@ export default function FocusGardenPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] lg:[&>*]:basis-[calc(16.667%-13px)] [&>*]:min-w-0">
                   {progress.earnedBadges.map(badgeId => {
                     const badge = getBadgeInfo(badgeId)
                     if (!badge) return null
@@ -2171,7 +2171,7 @@ export default function FocusGardenPage() {
                       <h3 className="font-bold text-lg text-slate-900">{categoryNames[category].name}</h3>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] lg:[&>*]:basis-[calc(16.667%-13px)] [&>*]:min-w-0">
                       {categoryBadges.map(badge => {
                         const isEarned = progress.earnedBadges.includes(badge.id)
                         return (
@@ -2221,7 +2221,7 @@ export default function FocusGardenPage() {
             Explore More Tools
           </h3>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
             <Link
               href="/breathing/breath"
               className="group p-5 rounded-2xl border-2 border-slate-200 hover:border-blue-400 hover:bg-gradient-to-br hover:from-blue-50 hover:to-indigo-50 transition-all hover:shadow-lg hover:scale-[1.02]"

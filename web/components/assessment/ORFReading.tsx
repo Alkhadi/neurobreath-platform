@@ -269,7 +269,7 @@ export function ORFReading({ passage, onComplete, onCancel }: ORFReadingProps) {
           {/* Accessibility Settings */}
           <div className="space-y-4">
             <h4 className="font-medium">Display Settings</h4>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
               <div>
                 <label className="text-sm text-muted-foreground">Font Size</label>
                 <div className="flex gap-2 mt-1">
@@ -551,7 +551,7 @@ export function ORFReading({ passage, onComplete, onCancel }: ORFReadingProps) {
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Metrics Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
             <div className="p-4 bg-muted rounded-lg text-center">
               <div className="text-3xl font-bold text-primary">{currentMetrics.wcpm}</div>
               <div className="text-sm text-muted-foreground">WCPM</div>
@@ -571,7 +571,7 @@ export function ORFReading({ passage, onComplete, onCancel }: ORFReadingProps) {
           </div>
           
           {/* Details */}
-          <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="flex flex-wrap gap-4 text-sm [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Total Words:</span>
               <span className="font-medium">{currentMetrics.totalWords}</span>

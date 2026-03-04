@@ -100,7 +100,7 @@ export function GlossaryHub({ terms, region }: GlossaryHubProps) {
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-xl font-semibold text-slate-900">Popular terms</h2>
         <p className="text-sm text-slate-600">A quick start for the most searched concepts.</p>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="flex flex-wrap mt-4 gap-3 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] lg:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
           {popularTerms.map(term => (
             <Link
               key={term.id}
@@ -127,7 +127,7 @@ export function GlossaryHub({ terms, region }: GlossaryHubProps) {
           {grouped.map(([letter, list]) => (
             <div key={letter} id={`glossary-${letter}`} className="space-y-3">
               <h3 className="text-lg font-semibold text-slate-900">{letter}</h3>
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="flex flex-wrap gap-3 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] lg:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
                 {list.map(term => (
                   <Link
                     key={term.id}

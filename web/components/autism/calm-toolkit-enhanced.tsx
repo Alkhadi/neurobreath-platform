@@ -337,7 +337,7 @@ export function CalmToolkitEnhanced({ onProgressUpdate }: CalmToolkitEnhancedPro
           </TabsList>
 
           <TabsContent value="breathing" className="relative z-10">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
               {breathingExercises?.map(exercise => (
                 <BreathingExerciseCard 
                   key={exercise?.id} 
@@ -353,7 +353,7 @@ export function CalmToolkitEnhanced({ onProgressUpdate }: CalmToolkitEnhancedPro
           </TabsContent>
 
           <TabsContent value="calming" className="relative z-10">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
               {calmingTechniques?.map(technique => (
                 <CalmingTechniqueCard 
                   key={technique?.id} 

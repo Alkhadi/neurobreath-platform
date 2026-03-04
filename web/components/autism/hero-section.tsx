@@ -207,7 +207,7 @@ export function HeroSection() {
           </div>
 
           <h2 className="text-lg font-semibold mb-4 text-center">Quick Navigation</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] sm:[&>*]:basis-[calc(33.333%-8px)] lg:[&>*]:basis-[calc(16.667%-10px)] [&>*]:min-w-0">
             {quickNavItems.map((item) => {
               const Icon = item.icon;
               return (

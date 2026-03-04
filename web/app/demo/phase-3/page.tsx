@@ -135,7 +135,7 @@ export default function Phase3DemoPage() {
               All your saved items are stored locally on your device—no account required.
             </p>
             
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               <Card className="border-2">
                 <CardHeader>
                   <CardTitle className="text-base">Your Saved Items</CardTitle>
@@ -219,7 +219,7 @@ export default function Phase3DemoPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid sm:grid-cols-2 gap-4 text-sm">
+            <div className="flex flex-wrap gap-4 text-sm [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               <div>
                 <h4 className="font-semibold mb-2">Visual Preferences</h4>
                 <ul className="space-y-1 text-muted-foreground">

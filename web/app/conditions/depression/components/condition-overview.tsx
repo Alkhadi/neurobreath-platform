@@ -95,7 +95,7 @@ export function ConditionOverview() {
         <p className="text-gray-700 mb-6">
           The DSM-5-TR requires at least <span className="font-semibold text-primary">five of these nine symptoms</span> to be present most of the day, nearly every day, for at least two weeks:
         </p>
-        <div className="grid sm:grid-cols-2 gap-3">
+        <div className="flex flex-wrap gap-3 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
           {symptoms?.map?.((symptom, index) => (
             <motion.div
               key={index}
@@ -116,7 +116,7 @@ export function ConditionOverview() {
       {/* Types of Depression */}
       <div className="space-y-4">
         <h3 className="text-2xl font-bold text-gray-900 text-center">Types of Depression</h3>
-        <div className="grid sm:grid-cols-2 gap-6">
+        <div className="flex flex-wrap gap-6 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
           {types?.map?.((type, index) => {
             const Icon = type?.icon ?? Brain;
             return (

@@ -72,7 +72,7 @@ export function GlossaryTermView({ term, region, relatedTerms, nextLinks }: Glos
 
       <section className="space-y-3">
         <h2 className="text-xl font-semibold text-slate-900">In NeuroBreath you can use this term for…</h2>
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
           {nextLinks.journey && (
             <Link
               href={nextLinks.journey.href}
@@ -93,7 +93,7 @@ export function GlossaryTermView({ term, region, relatedTerms, nextLinks }: Glos
           )}
         </div>
         {nextLinks.guides.length > 0 && (
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
             {nextLinks.guides.map(guide => (
               <Link
                 key={guide.id}

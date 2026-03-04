@@ -183,14 +183,14 @@ export default async function RegionToolsPage({ params }: RegionToolsPageProps) 
                 </Link>
               </div>
 
-              <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-4 flex flex-wrap gap-6">
                 {group.tools.map(tool => (
                   <TrackedLink
                     key={tool.href + tool.label}
                     href={tool.href}
                     event="tool_try_now_click"
                     payload={{ href: tool.href, label: tool.label, source: path }}
-                    className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+                    className="group basis-full md:basis-[calc(50%-12px)] lg:basis-[calc(33.333%-16px)] min-w-0 rounded-2xl border border-slate-200 bg-white dark:bg-white/5 dark:border-white/10 p-5 shadow-sm hover:border-slate-300 nb-focus"
                   >
                     <div className="text-base font-semibold text-slate-900 group-hover:text-slate-950">{tool.label}</div>
                     <p className="mt-2 text-sm text-slate-600">{tool.summary}</p>

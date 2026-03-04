@@ -129,7 +129,7 @@ export function WordFamilySorting() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] sm:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
             {shuffledWords.map((word) => {
               const isSelected = selectedWords.includes(word);
               const isCorrectWord = family.words.includes(word);

@@ -671,7 +671,7 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
         </Tabs>
 
         {/* Voice Mode & Ambient Sound */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           <div className="space-y-2">
             <label className="text-sm font-medium flex items-center gap-2">
               <Music className="w-4 h-4" />

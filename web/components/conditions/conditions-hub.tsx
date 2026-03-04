@@ -91,7 +91,7 @@ export default function ConditionsHub({ conditions, regionKey, supportNeedLabels
           </div>
           <div className="text-sm text-slate-500">Showing {filtered.length} of {conditions.length}</div>
         </div>
-        <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+        <div className="flex flex-wrap mt-4 gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] lg:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
           <label className="flex flex-col text-xs font-semibold text-slate-500 uppercase">
             Search
             <input
@@ -168,7 +168,7 @@ export default function ConditionsHub({ conditions, regionKey, supportNeedLabels
           No matches yet. Try clearing a filter or searching by a different term.
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           {filtered.map(condition => (
             <article key={condition.conditionId} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
               <div className="space-y-2">

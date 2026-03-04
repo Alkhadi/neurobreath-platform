@@ -60,7 +60,7 @@ export default function FocusLabPreview() {
       </CardHeader>
 
       <CardContent className="space-y-6">
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           {FOCUS_TOOLS.map(tool => (
             <Card key={tool.id} className={`border-2 ${tool.color}`}>
               <CardHeader>
@@ -82,7 +82,7 @@ export default function FocusLabPreview() {
 
         <div className="border-t pt-6">
           <h3 className="font-semibold mb-3">Why these tools?</h3>
-          <div className="grid md:grid-cols-2 gap-4 text-sm text-muted-foreground">
+          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
             <ul className="space-y-2">
               <li className="flex gap-2">
                 <span className="text-primary">✓</span>

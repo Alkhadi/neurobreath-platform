@@ -206,7 +206,7 @@ export function ResourcesLibrary() {
 
             {/* Parents/Carers Templates */}
             <TabsContent value="parents" className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 {parentsTemplates.map((template) => (
                   <Card
                     key={template.id}
@@ -240,7 +240,7 @@ export function ResourcesLibrary() {
 
             {/* Teachers Templates */}
             <TabsContent value="teachers" className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 {teachersTemplates.map((template) => (
                   <Card
                     key={template.id}
@@ -280,7 +280,7 @@ export function ResourcesLibrary() {
                   Looking for workplace adjustment templates? Check the <strong>Workplace Adjustments Generator</strong> in the Interactive Tools section above for a comprehensive tool with 15+ accommodation templates.
                 </AlertDescription>
               </Alert>
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 {employersTemplates.map((template) => (
                   <Card
                     key={template.id}

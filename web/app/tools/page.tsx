@@ -34,7 +34,7 @@ export default function ToolsPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div className="flex flex-wrap gap-8 mb-12 [&>*]:basis-full md:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
           {/* Breath Ladder */}
           <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow">
             <div className="flex items-center gap-3 mb-4">

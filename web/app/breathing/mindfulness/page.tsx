@@ -127,7 +127,7 @@ export default function MindfulnessPage() {
           </Card>
 
           {/* Three Technique Cards */}
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <div className="flex flex-wrap gap-6 mb-8 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             {/* 3-minute breathing space */}
             <Card className="p-6 hover:shadow-xl transition-shadow">
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">

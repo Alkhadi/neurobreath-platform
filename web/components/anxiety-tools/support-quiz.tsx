@@ -247,7 +247,7 @@ export function SupportQuiz() {
           
           {totalQuizzes > 0 && (
             <div className="bg-white dark:bg-gray-900 p-4 rounded-lg border">
-              <div className="grid grid-cols-2 gap-4 text-center">
+              <div className="flex flex-wrap gap-4 text-center [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div>
                   <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{totalQuizzes}</div>
                   <div className="text-sm text-muted-foreground">Quizzes Taken</div>

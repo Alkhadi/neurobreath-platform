@@ -39,7 +39,7 @@ export function TrustHubPage({ region }: { region: Region }) {
       lastReviewed={LAST_REVIEWED}
       reviewIntervalDays={180}
     >
-      <section className="grid gap-4 md:grid-cols-2">
+      <section className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
         {trustLinks.map(link => (
           <Link
             key={link.href}
@@ -376,7 +376,7 @@ export function TrustLastReviewedPage({ region }: { region: Region }) {
         <p className="mt-2 text-sm text-slate-600">
           {recentPercent}% of tracked pages were reviewed in the last {Math.round(freshnessWindowDays / 30)} months.
         </p>
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <div className="flex flex-wrap mt-4 gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
           {sectionSummaries.map(section => (
             <div key={section.label} className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
               <p className="font-semibold text-slate-900">{section.label}</p>

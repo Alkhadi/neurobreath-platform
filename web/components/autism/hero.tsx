@@ -125,7 +125,7 @@ export const Hero = ({ onStartCalm, onBrowseSkills, AudienceSwitcher, CountrySwi
         {/* Quick Navigation Grid */}
         <Card className="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg">
           <h2 className="text-lg font-semibold mb-4 text-center">Quick Navigation</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] sm:[&>*]:basis-[calc(33.333%-8px)] lg:[&>*]:basis-[calc(20%-10px)] [&>*]:min-w-0">
             {navigationButtons.map((btn) => {
               const Icon = btn.icon;
               return (

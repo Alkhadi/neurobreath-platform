@@ -184,7 +184,7 @@ export default function AutismToolsPage() {
               </div>
             </CardHeader>
             <CardContent className="p-6 space-y-6">
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
                 <div className="space-y-3">
                   <h4 className="font-semibold text-lg flex items-center gap-2">
                     <Brain className="w-5 h-5 text-purple-600" />
@@ -377,7 +377,7 @@ export default function AutismToolsPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
             {[
               {
                 title: "Beginner Bundle",
@@ -465,7 +465,7 @@ export default function AutismToolsPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             {/* Sensory Profile */}
             <Card className="border-2">
               <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30">

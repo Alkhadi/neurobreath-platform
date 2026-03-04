@@ -102,7 +102,7 @@ export function SpecialPopulations() {
       </div>
 
       {/* Populations Grid */}
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
         {populations?.map?.((pop, index) => {
           const Icon = pop?.icon ?? Baby;
           return (

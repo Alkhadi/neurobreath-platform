@@ -274,7 +274,7 @@ export default function SleepPage() {
           />
           
           {/* Quick Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+          <div className="flex flex-wrap gap-4 mt-6 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
             <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-200">
               <Flame className="w-6 h-6 mx-auto mb-1 text-orange-500" />
               <p className="text-2xl font-bold text-slate-900">{streak}</p>
@@ -316,7 +316,7 @@ export default function SleepPage() {
             {/* Log Entry Form */}
             <div className="bg-indigo-50 rounded-xl p-5 mb-6">
               <h3 className="font-semibold text-gray-900 mb-4">Log Today's Sleep</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
                 <div>
                   <label className="block text-sm text-gray-600 mb-1">Bedtime</label>
                   <input 
@@ -402,7 +402,7 @@ export default function SleepPage() {
               <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
                 <Award className="w-5 h-5 text-yellow-500" /> Achievements
               </h3>
-              <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
+              <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(25%-9px)] md:[&>*]:basis-[calc(12.5%-10px)] [&>*]:min-w-0">
                 {badges.map(badge => (
                   <div 
                     key={badge.id}
@@ -421,7 +421,7 @@ export default function SleepPage() {
               <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-purple-500" /> Sleep Hygiene Checklist
               </h3>
-              <div className="grid md:grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-full md:[&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 {checklist.map(item => (
                   <label 
                     key={item.id}
@@ -552,7 +552,7 @@ export default function SleepPage() {
 
               <div className="bg-gray-100 rounded-lg p-4 mt-6">
                 <h4 className="font-semibold text-gray-900 mb-2">💡 Recommended Sleep Duration</h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                <div className="flex flex-wrap gap-3 text-sm [&>*]:basis-[calc(50%-6px)] md:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
                   <div className="bg-white p-3 rounded-lg">
                     <p className="font-medium">Children (6-12)</p>
                     <p className="text-indigo-600 font-bold">9-12 hours</p>
@@ -581,7 +581,7 @@ export default function SleepPage() {
                 <Heart className="w-6 h-6 text-red-500" /> Signs & Symptoms
               </h2>
 
-              <div className="grid md:grid-cols-2 gap-4 mb-6">
+              <div className="flex flex-wrap gap-4 mb-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div className="bg-indigo-50 rounded-lg p-5">
                   <h3 className="font-semibold text-gray-900 mb-3">🌙 Sleep Difficulties</h3>
                   <ul className="list-disc pl-5 text-gray-600 space-y-1 text-sm">
@@ -657,7 +657,7 @@ export default function SleepPage() {
 
               <div className="bg-red-50 border border-red-200 rounded-lg p-5 mt-6">
                 <h4 className="font-semibold text-red-800 mb-2">⚠️ Health Consequences</h4>
-                <div className="grid md:grid-cols-2 gap-4 text-sm">
+                <div className="flex flex-wrap gap-4 text-sm [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                   <div>
                     <p className="font-medium text-gray-800 mb-1">Physical:</p>
                     <ul className="list-disc pl-5 text-gray-600">
@@ -703,7 +703,7 @@ export default function SleepPage() {
               </div>
 
               <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">Screening Tools</h3>
-              <div className="grid md:grid-cols-2 gap-4 mb-6">
+              <div className="flex flex-wrap gap-4 mb-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div className="bg-indigo-50 rounded-lg p-4">
                   <h4 className="font-semibold text-gray-900">Epworth Sleepiness Scale</h4>
                   <p className="text-sm text-gray-600">Assesses daytime sleepiness. Score &gt;10 indicates excessive sleepiness.</p>
@@ -840,7 +840,7 @@ export default function SleepPage() {
               </div>
 
               <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">Lifestyle Treatments</h3>
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div className="bg-green-50 rounded-lg p-4">
                   <h4 className="font-semibold text-gray-900 mb-2">UK NHS Recommendations</h4>
                   <ul className="list-disc pl-5 text-gray-600 text-sm space-y-1">
@@ -879,7 +879,7 @@ export default function SleepPage() {
               <div className="space-y-4">
                 <div className="bg-blue-50 rounded-lg p-5">
                   <h4 className="font-semibold text-gray-900 mb-3">👶 Children</h4>
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                     <div>
                       <p className="font-medium text-gray-800 mb-2">Behavioural Strategies:</p>
                       <ul className="list-disc pl-5 text-gray-600 text-sm space-y-1">
@@ -932,7 +932,7 @@ export default function SleepPage() {
 
                 <div className="bg-orange-50 rounded-lg p-5">
                   <h4 className="font-semibold text-gray-900 mb-3">👴 Elderly</h4>
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                     <div>
                       <p className="font-medium text-gray-800 mb-2">Considerations:</p>
                       <ul className="list-disc pl-5 text-gray-600 text-sm space-y-1">
@@ -956,7 +956,7 @@ export default function SleepPage() {
               </div>
 
               <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">Condition-Specific Management</h3>
-              <div className="grid md:grid-cols-3 gap-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                 <div className="bg-purple-50 rounded-lg p-4">
                   <h4 className="font-semibold text-gray-900 mb-2">Sleep Apnoea</h4>
                   <ul className="list-disc pl-5 text-gray-600 text-sm space-y-1">
@@ -998,7 +998,7 @@ export default function SleepPage() {
               <div className="space-y-6">
                 <div className="bg-blue-50 rounded-lg p-6">
                   <h3 className="text-xl font-semibold text-gray-900 mb-4">👪 For Parents</h3>
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                     <div>
                       <h4 className="font-medium text-gray-800 mb-2">UK Resources:</h4>
                       <ul className="list-disc pl-5 text-gray-600 text-sm space-y-1">
@@ -1024,7 +1024,7 @@ export default function SleepPage() {
 
                 <div className="bg-green-50 rounded-lg p-6">
                   <h3 className="text-xl font-semibold text-gray-900 mb-4">👩‍🏫 For Teachers</h3>
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                     <div>
                       <h4 className="font-medium text-gray-800 mb-2">Role in Sleep Education:</h4>
                       <ul className="list-disc pl-5 text-gray-600 text-sm space-y-1">
@@ -1048,7 +1048,7 @@ export default function SleepPage() {
 
                 <div className="bg-purple-50 rounded-lg p-6">
                   <h3 className="text-xl font-semibold text-gray-900 mb-4">🏥 For Carers</h3>
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                     <div>
                       <h4 className="font-medium text-gray-800 mb-2">Key Areas:</h4>
                       <ul className="list-disc pl-5 text-gray-600 text-sm space-y-1">
@@ -1070,7 +1070,7 @@ export default function SleepPage() {
 
                 <div className="bg-yellow-50 rounded-lg p-6">
                   <h3 className="text-xl font-semibold text-gray-900 mb-4">🙋 For Affected Persons</h3>
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                     <div>
                       <h4 className="font-medium text-gray-800 mb-2">UK Resources:</h4>
                       <ul className="list-disc pl-5 text-gray-600 text-sm space-y-1">
@@ -1109,7 +1109,7 @@ export default function SleepPage() {
               </h2>
 
               <h3 className="text-xl font-semibold text-gray-900 mt-4 mb-4">Clinical Interventions</h3>
-              <div className="grid md:grid-cols-2 gap-4 mb-6">
+              <div className="flex flex-wrap gap-4 mb-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div className="bg-blue-50 rounded-lg p-5">
                   <h4 className="font-semibold text-gray-900 mb-3">Assessment Skills</h4>
                   <ul className="list-disc pl-5 text-gray-600 text-sm space-y-1">
@@ -1160,7 +1160,7 @@ export default function SleepPage() {
 
               <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">Environmental Interventions</h3>
               <div className="bg-gray-50 rounded-lg p-5">
-                <ul className="grid md:grid-cols-2 gap-2 text-gray-600 text-sm">
+                <ul className="flex flex-wrap gap-2 text-gray-600 text-sm [&>*]:basis-full md:[&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                   <li className="flex items-center gap-2">✓ Bedroom environment optimisation</li>
                   <li className="flex items-center gap-2">✓ Light exposure management</li>
                   <li className="flex items-center gap-2">✓ Noise reduction strategies</li>
@@ -1178,7 +1178,7 @@ export default function SleepPage() {
               </h2>
 
               <h3 className="text-xl font-semibold text-gray-900 mt-4 mb-4">Digital Therapeutics</h3>
-              <div className="grid md:grid-cols-2 gap-4 mb-6">
+              <div className="flex flex-wrap gap-4 mb-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div className="bg-green-50 rounded-lg p-5 border-2 border-green-300">
                   <h4 className="font-semibold text-gray-900 mb-2">🏆 Sleepio (NICE Recommended)</h4>
                   <p className="text-gray-600 text-sm mb-2">
@@ -1198,7 +1198,7 @@ export default function SleepPage() {
               </div>
 
               <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">Gamified Sleep Apps</h3>
-              <div className="grid md:grid-cols-3 gap-4 mb-6">
+              <div className="flex flex-wrap gap-4 mb-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                 <div className="bg-purple-50 rounded-lg p-4">
                   <h4 className="font-semibold text-gray-900">🏙️ SleepTown</h4>
                   <p className="text-gray-600 text-sm">Build virtual town by achieving sleep goals. Streaks, rewards, social features.</p>
@@ -1226,7 +1226,7 @@ export default function SleepPage() {
               </div>
 
               <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">Clinical Guidelines</h3>
-              <div className="grid md:grid-cols-3 gap-4 mb-6">
+              <div className="flex flex-wrap gap-4 mb-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                 <div className="bg-blue-50 rounded-lg p-4">
                   <h4 className="font-semibold text-gray-900 mb-2">🇬🇧 UK</h4>
                   <ul className="list-disc pl-5 text-gray-600 text-sm space-y-1">
@@ -1252,7 +1252,7 @@ export default function SleepPage() {
 
               <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-4">Educational Resources</h3>
               <div className="bg-gray-50 rounded-lg p-5">
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                   <div>
                     <h4 className="font-medium text-gray-800 mb-2">For Patients:</h4>
                     <ul className="list-disc pl-5 text-gray-600 text-sm space-y-1">

@@ -93,7 +93,7 @@ export default function LowMoodBurnoutPage() {
                 <p className="text-lg">
                   This page provides evidence-based tools and information to help you understand and recover from burnout, chronic stress, and persistent low mood. All content is sourced from NHS, WHO, PubMed, and leading mental health organisations.
                 </p>
-                <div className="grid md:grid-cols-4 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
                   <div className="flex items-start gap-3">
                     <Flame className="h-6 w-6 text-amber-600 mt-1" />
                     <div>
@@ -172,7 +172,7 @@ export default function LowMoodBurnoutPage() {
 
                 <div className="space-y-3 pt-4 border-t">
                   <h3 className="font-semibold text-lg">Common Signs & Symptoms</h3>
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                     <div>
                       <h4 className="font-semibold mb-2">Physical Symptoms</h4>
                       <ul className="text-sm space-y-1 list-disc list-inside text-muted-foreground">
@@ -223,7 +223,7 @@ export default function LowMoodBurnoutPage() {
             </Alert>
 
             {/* Quick Links to Tools */}
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setActiveTab("tools")}>
                 <CardHeader>
                   <CardTitle className="text-lg">Start Using Interactive Tools</CardTitle>
@@ -511,7 +511,7 @@ export default function LowMoodBurnoutPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                     <div className="p-4 rounded-lg border-2 border-green-200 bg-green-50">
                       <h3 className="font-semibold text-green-900 mb-2">Physical Recovery</h3>
                       <ul className="text-sm space-y-1 text-green-800">
@@ -620,7 +620,7 @@ export default function LowMoodBurnoutPage() {
                   </AlertDescription>
                 </Alert>
 
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                   {/* UK Resources */}
                   <div className="space-y-3">
                     <h3 className="font-semibold text-red-900 flex items-center gap-2">
@@ -743,7 +743,7 @@ export default function LowMoodBurnoutPage() {
 
                 <div className="bg-white p-4 rounded-lg border-2 border-blue-200">
                   <h3 className="font-semibold mb-2">Warning Signs</h3>
-                  <div className="grid md:grid-cols-2 gap-3 text-sm">
+                  <div className="flex flex-wrap gap-3 text-sm [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                     <div>
                       <p className="font-medium mb-1">Emotional:</p>
                       <ul className="list-disc list-inside text-muted-foreground space-y-1">
@@ -1541,7 +1541,7 @@ export default function LowMoodBurnoutPage() {
                   Research shows burnout results from chronic mismatches in these six areas. Organizations should address all six:
                 </p>
 
-                <div className="grid md:grid-cols-2 gap-3">
+                <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                   <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
                     <p className="font-semibold mb-1">1. Workload</p>
                     <p className="text-sm text-muted-foreground">Sustainable pace, adequate recovery time, realistic deadlines</p>
@@ -1684,7 +1684,7 @@ export default function LowMoodBurnoutPage() {
                 <CardTitle>UK-Specific Statistics</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="grid md:grid-cols-2 gap-3">
+                <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                   <div className="bg-red-50 p-4 rounded-lg border-2 border-red-200">
                     <p className="text-3xl font-bold text-red-600">875,000</p>
                     <p className="text-sm text-muted-foreground">Workers suffering from work-related stress, depression, or anxiety (HSE 2023)</p>

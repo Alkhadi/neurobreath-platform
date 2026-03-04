@@ -73,9 +73,9 @@ export default async function RegionEditorialPage({ params }: RegionEditorialPag
 
         <section className="rounded-2xl border border-slate-200 bg-white p-5">
           <h2 className="text-lg font-semibold text-slate-900">Editorial roles</h2>
-          <div className="mt-3 grid gap-3 md:grid-cols-2">
+          <div className="mt-3 flex flex-wrap gap-3">
             {EDITORIAL_ROLES.map(role => (
-              <div key={role.id} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <div key={role.id} className="basis-full md:basis-[calc(50%-6px)] min-w-0 rounded-xl border border-slate-200 bg-slate-50 dark:bg-white/5 dark:border-white/10 p-4">
                 <p className="text-sm font-semibold text-slate-900">{role.title}</p>
                 <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-slate-600">
                   {role.responsibilities.map(item => (
@@ -87,12 +87,12 @@ export default async function RegionEditorialPage({ params }: RegionEditorialPag
           </div>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-2">
+        <section className="flex flex-wrap gap-6">
           {EDITORIAL_PEOPLE.map(person => (
             <Link
               key={person.id}
               href={`/${regionKey}/editorial/${person.id}`}
-              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-indigo-300"
+              className="nb-surface nb-surface-interactive nb-focus p-5 basis-full md:basis-[calc(50%-12px)] min-w-0"
             >
               <h2 className="text-lg font-semibold text-slate-900">{person.displayName}</h2>
               <p className="mt-1 text-sm text-slate-600">{person.roleTitle}</p>

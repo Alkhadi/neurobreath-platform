@@ -96,7 +96,7 @@ export default async function BreathToolsPage() {
 
         <section id="main-content" className="space-y-4 scroll-mt-24">
           <h2 className="text-xl font-semibold text-slate-900">How to choose (fast)</h2>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
             <Card className="border-slate-200">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -148,7 +148,7 @@ export default async function BreathToolsPage() {
             </Button>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
             {tools.map(tool => (
               <Link
                 key={tool.href}
@@ -173,7 +173,7 @@ export default async function BreathToolsPage() {
           </div>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-2">
+        <section className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           <Card className="border-slate-200">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">

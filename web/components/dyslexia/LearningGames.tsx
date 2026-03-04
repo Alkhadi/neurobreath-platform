@@ -501,7 +501,7 @@ export function LearningGames() {
       </Card>
 
       {/* Games Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
         {orderedGames.map((game) => {
           const styles = colorStyles[game.color];
           const isAvailable = Boolean(game.route || game.component) && !game.comingSoon;
@@ -611,7 +611,7 @@ export function LearningGames() {
               <Sparkles className="w-5 h-5 text-blue-600" />
               Tips for Success
             </h3>
-            <ul className="grid gap-2 md:grid-cols-2 text-sm">
+            <ul className="flex flex-wrap gap-2 text-sm [&>*]:basis-full md:[&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
               <li className="flex items-start gap-2">
                 <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
                 <span className="text-muted-foreground">Practice for short sessions (10-15 minutes)</span>

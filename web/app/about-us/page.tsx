@@ -41,7 +41,7 @@ export default function AboutUsPage() {
       {/* Mission & Vision */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
+          <div className="flex flex-wrap gap-8 mb-12 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-21px)] [&>*]:min-w-0">
             <Card className="p-6 text-center">
               <div className="bg-purple-100 p-3 rounded-full inline-block mb-4">
                 <Heart className="h-8 w-8 text-purple-600" />
@@ -96,7 +96,7 @@ export default function AboutUsPage() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold mb-12 text-center">What We Offer</h2>
           
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="flex flex-wrap gap-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
             <Card className="p-6">
               <Brain className="h-10 w-10 text-blue-600 mb-4" />
               <h3 className="text-xl font-bold mb-3">Interactive Wellbeing Tools</h3>
@@ -187,7 +187,7 @@ export default function AboutUsPage() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold mb-8 text-center">Accessibility & Inclusive Design</h2>
           
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card className="p-6">
               <h3 className="font-bold mb-3">Visual Accessibility</h3>
               <ul className="text-sm text-muted-foreground space-y-2">
@@ -297,7 +297,7 @@ export default function AboutUsPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card className="p-6">
               <FileText className="h-8 w-8 text-purple-600 mb-4" />
               <h3 className="font-bold mb-2">All Resources</h3>
@@ -356,7 +356,7 @@ export default function AboutUsPage() {
             <p className="text-muted-foreground mb-6">
               Our breathing techniques and mental health information are informed by research from:
             </p>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
               <div>
                 <h3 className="font-bold mb-3">Research Institutions</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">

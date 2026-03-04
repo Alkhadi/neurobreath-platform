@@ -224,14 +224,14 @@ export default function WordMemoryMatchPage() {
               <p className="text-xs text-muted-foreground">Educational note: This is learning support and not medical advice.</p>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
               <Card className="md:col-span-2">
                 <CardContent className="p-4 space-y-3">
                   <div className="font-semibold flex items-center gap-2">
                     <Star className="w-4 h-4 text-yellow-500" />
                     Choose difficulty
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                     <Button
                       variant={difficulty === 'beginner' ? 'default' : 'outline'}
                       onClick={() => setDifficulty('beginner')}

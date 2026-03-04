@@ -22,7 +22,7 @@ export default function EvidencePage() {
               <p className="text-lg text-slate-700 mb-4">
                 How NeuroBreath is built on science, research, and expert knowledge.
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] sm:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
                 <div className="bg-white rounded-lg p-3 shadow-sm">
                   <div className="text-sm font-medium text-slate-600">Research-Backed</div>
                   <div className="text-lg font-bold text-blue-600">100%</div>

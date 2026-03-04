@@ -259,10 +259,10 @@ export function FocusGardenRoadmap() {
             <Badge variant="outline">~{clampMinutes(minutesPerDay) || 15} min/day</Badge>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
             <div className="space-y-2">
               <Label>Age group</Label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 {([
                   { id: 'children', label: 'Child' },
                   { id: 'adolescence', label: 'Teen' },
@@ -284,7 +284,7 @@ export function FocusGardenRoadmap() {
 
             <div className="space-y-2">
               <Label>Setting</Label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 {([
                   { id: 'home', label: 'Home' },
                   { id: 'school', label: 'School' },
@@ -306,7 +306,7 @@ export function FocusGardenRoadmap() {
 
             <div className="space-y-2">
               <Label>Main challenge</Label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 {([
                   { id: 'routines', label: 'Routines' },
                   { id: 'focus', label: 'Focus' },
@@ -330,7 +330,7 @@ export function FocusGardenRoadmap() {
 
             <div className="space-y-2">
               <Label>Goal</Label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 {([
                   { id: 'today', label: 'Today' },
                   { id: 'this-week', label: 'This week' },
@@ -352,7 +352,7 @@ export function FocusGardenRoadmap() {
 
           <div className="space-y-2">
             <Label>Conditions / needs</Label>
-            <div className="grid gap-2 md:grid-cols-2">
+            <div className="flex flex-wrap gap-2 [&>*]:basis-full md:[&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
               {CONDITION_OPTIONS.map((c) => (
                 <div key={c.id} className="flex items-start gap-2 rounded-md border border-border/50 p-3">
                   <Checkbox
@@ -368,7 +368,7 @@ export function FocusGardenRoadmap() {
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
             <div className="space-y-2">
               <Label>Minutes per day (5–120)</Label>
               <Textarea
@@ -429,7 +429,7 @@ export function FocusGardenRoadmap() {
             {answer.sevenDayPlan?.length ? (
               <div className="space-y-2">
                 <div className="text-sm font-semibold">7-day plan</div>
-                <div className="grid gap-2 md:grid-cols-2">
+                <div className="flex flex-wrap gap-2 [&>*]:basis-full md:[&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                   {answer.sevenDayPlan.slice(0, 7).map((d) => (
                     <div key={d.day} className="rounded-md border border-border/50 p-3">
                       <div className="text-xs font-semibold text-muted-foreground">Day {d.day}</div>

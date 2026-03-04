@@ -120,7 +120,7 @@ export function SupportCommunity() {
             <h3 className="text-xl font-bold text-foreground">Success Stories</h3>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
             {successStories.map((story, index) => (
               <div key={index} className="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800">
                 <div className="space-y-3">

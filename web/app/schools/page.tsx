@@ -48,7 +48,7 @@ export default function SchoolsPage() {
           {/* Quick Stats */}
           <Card className="p-8 bg-white/80 backdrop-blur">
             <h2 className="text-2xl font-bold text-center mb-8">Supporting Every Student</h2>
-            <div className="grid md:grid-cols-4 gap-6">
+            <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
               <div className="text-center">
                 <div className="text-4xl font-bold text-primary mb-2">1 in 7</div>
                 <div className="text-sm text-muted-foreground">Children have a mental health condition</div>
@@ -81,7 +81,7 @@ export default function SchoolsPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             {/* ADHD Quick Guide */}
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <div className="bg-blue-100 p-3 rounded-lg inline-block mb-4">
@@ -225,7 +225,7 @@ export default function SchoolsPage() {
           <div className="mt-12">
             <Card className="p-8 bg-gradient-to-br from-purple-50 to-blue-50">
               <h3 className="text-2xl font-bold mb-4 text-center">Printable Classroom Posters</h3>
-              <div className="grid md:grid-cols-3 gap-4 mb-6">
+              <div className="flex flex-wrap gap-4 mb-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                 <div className="bg-white p-4 rounded-lg">
                   <h4 className="font-semibold mb-2">Breathing Techniques Poster</h4>
                   <p className="text-sm text-muted-foreground mb-3">Visual guide to 4-4-4 Box Breathing and 4-7-8 Technique</p>
@@ -699,7 +699,7 @@ export default function SchoolsPage() {
                     <p className="text-sm text-muted-foreground mb-3">
                       UDL principles benefit ALL students, including those with diagnosed conditions and those who struggle without formal identification.
                     </p>
-                    <div className="grid md:grid-cols-3 gap-4">
+                    <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                       <div className="bg-blue-50 p-4 rounded-lg">
                         <h5 className="font-semibold mb-2">Multiple Means of Representation</h5>
                         <ul className="text-sm space-y-1">
@@ -776,7 +776,7 @@ export default function SchoolsPage() {
                 <div className="space-y-6">
                   <div>
                     <h4 className="font-semibold mb-3">Recommended Professional Learning</h4>
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                       <div className="bg-blue-50 p-4 rounded-lg">
                         <h5 className="font-semibold mb-2">Mental Health First Aid for Educators</h5>
                         <p className="text-sm text-muted-foreground mb-2">
@@ -896,7 +896,7 @@ export default function SchoolsPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card className="p-6">
               <h3 className="text-xl font-bold mb-3">Box Breathing (4-4-4-4)</h3>
               <p className="text-sm text-muted-foreground mb-4">
@@ -960,7 +960,7 @@ export default function SchoolsPage() {
           <div className="mt-8">
             <Card className="p-6 bg-gradient-to-br from-blue-50 to-green-50">
               <h3 className="text-xl font-bold mb-3 text-center">Implementation Tips</h3>
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                 <div>
                   <h4 className="font-semibold mb-2">When to Use:</h4>
                   <ul className="text-sm space-y-1">
@@ -998,7 +998,7 @@ export default function SchoolsPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card className="p-6">
               <h3 className="text-xl font-bold mb-4 text-red-600">If Student Mentions Suicide or Self-Harm:</h3>
               <ol className="text-sm space-y-3 mb-4 list-decimal list-inside">
@@ -1055,7 +1055,7 @@ export default function SchoolsPage() {
           <div className="mt-8">
             <Card className="p-6">
               <h3 className="text-xl font-bold mb-4">Crisis Hotlines (Share with Students/Parents)</h3>
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                 <div>
                   <h4 className="font-semibold mb-3">United Kingdom 🇬🇧</h4>
                   <div className="space-y-3 text-sm">

@@ -39,7 +39,7 @@ export default function Phase4DemoPage() {
       </div>
 
       {/* Features Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div className="flex flex-wrap gap-6 mb-12 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
         <Card className="border-2">
           <CardHeader>
             <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-3">
@@ -97,7 +97,7 @@ export default function Phase4DemoPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+            <div className="flex flex-wrap gap-3 text-sm [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
               <div className="rounded-lg bg-muted/40 p-3">
                 <div className="text-muted-foreground">Variant</div>
                 <div className="font-semibold">{emptyCtaExperiment.variant}</div>
@@ -156,7 +156,7 @@ export default function Phase4DemoPage() {
               <CardTitle className="text-lg">Key Features</CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+              <ul className="flex flex-wrap gap-3 text-sm [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                 <li className="flex items-start gap-2">
                   <Target className="w-4 h-4 text-primary mt-0.5 shrink-0" />
                   <span>Track saves, journey completions, and routine updates</span>
@@ -208,7 +208,7 @@ export default function Phase4DemoPage() {
               <CardTitle className="text-lg">Recommendation Engine</CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+              <ul className="flex flex-wrap gap-3 text-sm [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                 <li className="flex items-start gap-2">
                   <Target className="w-4 h-4 text-primary mt-0.5 shrink-0" />
                   <span>Tag-based content matching</span>
@@ -257,7 +257,7 @@ export default function Phase4DemoPage() {
               <CardTitle className="text-lg">Achievement Categories</CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+              <ul className="flex flex-wrap gap-3 text-sm [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                 <li className="flex items-start gap-2">
                   <Target className="w-4 h-4 text-primary mt-0.5 shrink-0" />
                   <span><strong>Getting Started:</strong> First save, journey, routine</span>

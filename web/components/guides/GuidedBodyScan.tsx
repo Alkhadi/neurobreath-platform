@@ -203,7 +203,7 @@ export function GuidedBodyScan() {
         </div>
 
         {!isRunning && !isComplete && stepTimeRemaining === 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="flex flex-wrap gap-3 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
             <button
               type="button"
               onClick={() => handleModeChange('mini')}

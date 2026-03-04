@@ -155,7 +155,7 @@ export function ADHDMythsFacts() {
       </div>
 
       {/* Myths Grid */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
         {filteredMyths.map((item) => {
           const sources = getEvidenceSources(item.evidenceIds);
           
@@ -256,7 +256,7 @@ export function ADHDMythsFacts() {
       {/* Summary Stats */}
       <Card className="bg-muted/50 border-2">
         <CardContent className="pt-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          <div className="flex flex-wrap gap-4 text-center [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
             <div>
               <div className="text-3xl font-bold text-primary">{ADHD_MYTHS.length}</div>
               <div className="text-sm text-muted-foreground">Myths Debunked</div>

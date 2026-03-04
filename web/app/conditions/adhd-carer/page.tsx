@@ -71,7 +71,7 @@ export default function ADHDCarerSupportPage() {
           </div>
 
           {/* Hero Cards */}
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur">
               <CardHeader>
                 <Badge className="w-fit mb-2" variant="secondary">Self-care</Badge>
@@ -125,7 +125,7 @@ export default function ADHDCarerSupportPage() {
               <CardTitle>Key principles for carers</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                 <div>
                   <h4 className="font-semibold mb-1 flex items-center gap-2">
                     <Heart className="w-4 h-4 text-rose-600" />
@@ -172,7 +172,7 @@ export default function ADHDCarerSupportPage() {
             </AlertDescription>
           </Alert>
 
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full lg:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -259,7 +259,7 @@ export default function ADHDCarerSupportPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                   <div>
                     <h4 className="font-semibold mb-3">Strategies that help</h4>
                     <ul className="space-y-2 text-sm">
@@ -294,7 +294,7 @@ export default function ADHDCarerSupportPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                   <div>
                     <h4 className="font-semibold text-sm mb-2">Organization</h4>
                     <ul className="space-y-1 text-sm text-muted-foreground list-disc list-inside ml-4">
@@ -379,7 +379,7 @@ export default function ADHDCarerSupportPage() {
             </AlertDescription>
           </Alert>
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle>Crisis contacts</CardTitle>
@@ -451,7 +451,7 @@ export default function ADHDCarerSupportPage() {
         <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">Respite Care & Support Services</h2>
           
-          <div className="grid gap-6 lg:grid-cols-2 mb-6">
+          <div className="flex flex-wrap gap-6 mb-6 [&>*]:basis-full lg:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -523,7 +523,7 @@ export default function ADHDCarerSupportPage() {
               <CardTitle>Financial & legal considerations</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div>
                   <h4 className="font-semibold text-sm mb-2">Financial assistance (US)</h4>
                   <ul className="space-y-1 text-sm text-muted-foreground list-disc list-inside ml-4">
@@ -562,7 +562,7 @@ export default function ADHDCarerSupportPage() {
         <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">Support Organizations</h2>
           
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">CHADD</CardTitle>
@@ -635,7 +635,7 @@ export default function ADHDCarerSupportPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                 <div>
                   <h4 className="font-semibold mb-3">When to use breathing</h4>
                   <ul className="space-y-2 text-sm">
@@ -658,7 +658,7 @@ export default function ADHDCarerSupportPage() {
                 </div>
               </div>
 
-              <div className="mt-6 grid gap-3 grid-cols-2 md:grid-cols-4">
+              <div className="flex flex-wrap mt-6 gap-3 [&>*]:basis-[calc(50%-6px)] md:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
                 <Link href="/techniques/sos">
                   <Button variant="default" className="w-full h-auto py-3" size="sm">
                     <div className="text-center">

@@ -99,7 +99,7 @@ export function TreatmentOptions() {
         <p className="text-gray-700 leading-relaxed">
           Antidepressant medications modulate neurotransmitter activity in the brain. They are typically the first-line treatment for moderate to severe depression. While no single medication is universally best, SSRIs are often preferred due to their favorable side-effect profile.
         </p>
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           {medications?.map?.((med, index) => (
             <motion.div
               key={index}
@@ -129,7 +129,7 @@ export function TreatmentOptions() {
         <p className="text-gray-700 leading-relaxed">
           Psychotherapy helps identify and change unhealthy thought patterns, behaviors, and relationship dynamics. It can be used alone for mild to moderate depression or combined with medication for more severe cases.
         </p>
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           {therapies?.map?.((therapy, index) => {
             const Icon = therapy?.icon ?? MessageSquare;
             return (
@@ -158,7 +158,7 @@ export function TreatmentOptions() {
         <p className="text-gray-700 leading-relaxed mb-4">
           For moderate to severe depression, <span className="font-semibold">combining medication and psychotherapy</span> is often the most effective approach. Research consistently shows that this dual strategy leads to:
         </p>
-        <div className="grid sm:grid-cols-2 gap-3 text-sm">
+        <div className="flex flex-wrap gap-3 text-sm [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
           <div className="flex items-start space-x-2">
             <div className="w-2 h-2 rounded-full bg-purple-600 flex-shrink-0 mt-1.5"></div>
             <p className="text-gray-700"><span className="font-semibold">Higher remission rates</span> than either treatment alone</p>

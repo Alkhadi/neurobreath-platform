@@ -204,7 +204,7 @@ export function BehavioralActivation() {
       {/* Tips */}
       <div className="bg-white rounded-xl shadow-lg p-6">
         <h3 className="text-xl font-bold text-gray-900 mb-4">Tips for Success</h3>
-        <div className="grid sm:grid-cols-2 gap-3 text-sm text-gray-700">
+        <div className="flex flex-wrap gap-3 text-sm text-gray-700 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
           <div className="flex items-start space-x-2">
             <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-1.5"></div>
             <p><span className="font-semibold">Start small:</span> Even one task is progress</p>

@@ -56,7 +56,7 @@ export default function ResourcesPage() {
 
           {/* Quick Stats */}
           <Card className="p-8 bg-white/80 backdrop-blur">
-            <div className="grid md:grid-cols-4 gap-6">
+            <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
               <div className="text-center">
                 <div className="text-4xl font-bold text-primary mb-2">60+</div>
                 <div className="text-sm text-muted-foreground">Downloadable PDFs</div>
@@ -89,7 +89,7 @@ export default function ResourcesPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <div className="bg-purple-100 p-3 rounded-lg inline-block mb-4">
                 <Users className="h-6 w-6 text-purple-600" />
@@ -212,7 +212,7 @@ export default function ResourcesPage() {
                         <p className="text-sm text-muted-foreground mb-4">
                           Tools to prepare for ADHD assessment and support diagnosis process
                         </p>
-                        <div className="grid md:grid-cols-2 gap-3">
+                        <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                           <Button 
                             variant="outline" 
                             className="justify-start"
@@ -290,7 +290,7 @@ export default function ResourcesPage() {
                         <p className="text-sm text-muted-foreground mb-4">
                           Practical tools for managing daily routines and family life with ADHD
                         </p>
-                        <div className="grid md:grid-cols-2 gap-3">
+                        <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                           <Button 
                             variant="outline" 
                             className="justify-start"
@@ -360,7 +360,7 @@ export default function ResourcesPage() {
                         <p className="text-sm text-muted-foreground mb-4">
                           Resources for advocating and implementing school accommodations
                         </p>
-                        <div className="grid md:grid-cols-2 gap-3">
+                        <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                           <Button 
                             variant="outline" 
                             className="justify-start"
@@ -406,7 +406,7 @@ export default function ResourcesPage() {
                         <p className="text-sm text-muted-foreground mb-4">
                           Resources for older students transitioning to independence and work
                         </p>
-                        <div className="grid md:grid-cols-2 gap-3">
+                        <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                           <Button 
                             variant="outline" 
                             className="justify-start"
@@ -476,7 +476,7 @@ export default function ResourcesPage() {
                         <p className="text-sm text-muted-foreground mb-4">
                           Mindfulness, focus strategies, and wellbeing tools for ADHD
                         </p>
-                        <div className="grid md:grid-cols-2 gap-3">
+                        <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                           <Button 
                             variant="outline" 
                             className="justify-start"
@@ -540,7 +540,7 @@ export default function ResourcesPage() {
                   <p className="text-sm text-muted-foreground mb-4">
                     Comprehensive resource collections
                   </p>
-                  <div className="grid md:grid-cols-2 gap-3">
+                  <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                     <Button 
                       variant="outline"
                       className="justify-start bg-white"
@@ -577,7 +577,7 @@ export default function ResourcesPage() {
                   {/* Parent & Family Guides */}
                   <div>
                     <h4 className="font-semibold mb-3 text-lg">Parent & Family Guides</h4>
-                    <div className="grid md:grid-cols-2 gap-3">
+                    <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                       <Button 
                         variant="outline" 
                         className="justify-start"
@@ -600,7 +600,7 @@ export default function ResourcesPage() {
                   {/* Adult Support */}
                   <div>
                     <h4 className="font-semibold mb-3 text-lg">Adult Support</h4>
-                    <div className="grid md:grid-cols-2 gap-3">
+                    <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                       <Button 
                         variant="outline" 
                         className="justify-start"
@@ -615,7 +615,7 @@ export default function ResourcesPage() {
                   {/* Clinical Resources */}
                   <div>
                     <h4 className="font-semibold mb-3 text-lg">Clinical Resources</h4>
-                    <div className="grid md:grid-cols-2 gap-3">
+                    <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                       <Button 
                         variant="outline" 
                         className="justify-start"
@@ -654,7 +654,7 @@ export default function ResourcesPage() {
                   {/* Dyslexia Guides */}
                   <div>
                     <h4 className="font-semibold mb-3 text-lg">Dyslexia Guides</h4>
-                    <div className="grid md:grid-cols-2 gap-3">
+                    <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                       <Button 
                         variant="outline" 
                         className="justify-start"
@@ -677,7 +677,7 @@ export default function ResourcesPage() {
                   {/* Practice Pack Templates */}
                   <div>
                     <h4 className="font-semibold mb-3 text-lg">Practice Materials</h4>
-                    <div className="grid md:grid-cols-2 gap-3">
+                    <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                       <Button 
                         variant="outline" 
                         className="justify-start"
@@ -733,7 +733,7 @@ export default function ResourcesPage() {
                   {/* Breathing Guides */}
                   <div>
                     <h4 className="font-semibold mb-3 text-lg">Breathing Guides</h4>
-                    <div className="grid md:grid-cols-2 gap-3">
+                    <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                       <Button 
                         variant="outline" 
                         className="justify-start"
@@ -748,7 +748,7 @@ export default function ResourcesPage() {
                   {/* Anxiety Support */}
                   <div>
                     <h4 className="font-semibold mb-3 text-lg">Anxiety Support</h4>
-                    <div className="grid md:grid-cols-2 gap-3">
+                    <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                       <Button 
                         variant="outline" 
                         className="justify-start"
@@ -804,7 +804,7 @@ export default function ResourcesPage() {
                   {/* Templates & Tools */}
                   <div>
                     <h4 className="font-semibold mb-3 text-lg">Templates & Tools</h4>
-                    <div className="grid md:grid-cols-2 gap-3">
+                    <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                       <Button 
                         variant="outline" 
                         className="justify-start"
@@ -827,7 +827,7 @@ export default function ResourcesPage() {
                   {/* Contact Information */}
                   <div>
                     <h4 className="font-semibold mb-3 text-lg">Contact Information</h4>
-                    <div className="grid md:grid-cols-2 gap-3">
+                    <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                       <Button 
                         variant="outline" 
                         className="justify-start"
@@ -856,7 +856,7 @@ export default function ResourcesPage() {
       <section className="py-16 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold mb-8 text-center">How to Use These Resources</h2>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card className="p-6">
               <div className="bg-blue-100 p-3 rounded-full inline-block mb-4">
                 <Download className="h-6 w-6 text-blue-600" />

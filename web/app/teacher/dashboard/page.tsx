@@ -36,7 +36,7 @@ export default function TeacherDashboardPage() {
         </div>
         
         {/* Quick Stats */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Learners</CardTitle>
@@ -133,7 +133,7 @@ function DashboardSkeleton() {
   return (
     <div className="space-y-4">
       <div className="h-64 bg-muted animate-pulse rounded-lg" />
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
         <div className="h-48 bg-muted animate-pulse rounded-lg" />
         <div className="h-48 bg-muted animate-pulse rounded-lg" />
       </div>

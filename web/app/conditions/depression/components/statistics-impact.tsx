@@ -106,7 +106,7 @@ export function StatisticsImpact() {
       </div>
 
       {/* Key Statistics Grid */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
         {keyStats?.map?.((stat, index) => {
           const Icon = stat?.icon ?? Users;
           return (
@@ -132,7 +132,7 @@ export function StatisticsImpact() {
           {/* Age Distribution Comparison */}
           <div className="bg-white rounded-xl shadow-lg p-6">
             <h3 className="text-xl font-bold text-gray-900 mb-4">Depression Prevalence by Age Group</h3>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
               <div>
                 <p className="text-sm font-semibold text-gray-700 mb-3 text-center">🇬🇧 United Kingdom (2023)</p>
                 <ResponsiveContainer width="100%" height={280}>
@@ -242,7 +242,7 @@ export function StatisticsImpact() {
       )}
 
       {/* Additional Context */}
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
         <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl shadow-lg p-6">
           <h3 className="text-lg font-bold text-gray-900 mb-3">Socioeconomic Disparities</h3>
           <div className="space-y-2 text-sm text-gray-700">

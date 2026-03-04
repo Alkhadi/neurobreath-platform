@@ -205,7 +205,7 @@ export function TreatmentDecisionTree() {
             <CardTitle className="text-lg">Your Selections</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
               <div>
                 <div className="text-sm text-muted-foreground mb-1">Age Group</div>
                 <Badge variant="secondary" className="gap-1">
@@ -383,7 +383,7 @@ export function TreatmentDecisionTree() {
           )}
         </CardHeader>
         <CardContent>
-          <div className="grid gap-2 sm:gap-3 grid-cols-1">
+          <div className="flex flex-col gap-2 sm:gap-3">
             {currentStepData.options.map((option) => (
               <Button
                 key={option.value}

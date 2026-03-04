@@ -181,7 +181,7 @@ export const CrisisSupport = () => {
       {/* Crisis Hotlines */}
       <div className="mb-8">
         <h3 className="text-2xl font-bold mb-6 text-center">24/7 Crisis Support</h3>
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
           {crisisResources.map(resource => {
             const Icon = resource.icon;
             
@@ -260,7 +260,7 @@ export const CrisisSupport = () => {
         <p className="text-sm text-muted-foreground mb-4">
           If you or someone you know is experiencing any of these, please reach out for support:
         </p>
-        <div className="grid md:grid-cols-2 gap-3">
+        <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
           {warningSigns.map((sign, idx) => (
             <div key={idx} className="flex items-start gap-2 p-3 bg-muted rounded-lg">
               <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0 mt-2" />
@@ -279,7 +279,7 @@ export const CrisisSupport = () => {
         <p className="text-sm text-muted-foreground mb-4">
           If you're having thoughts of self-harm right now:
         </p>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           {safetyStrategies.map((strategy, idx) => {
             const Icon = strategy.icon;
             return (

@@ -72,7 +72,7 @@ export default async function RootLayout({
       <head>
         <JsonLd data={schemaGraph} />
       </head>
-      <body className="font-sans antialiased overflow-x-hidden" suppressHydrationWarning>
+      <body className="font-sans antialiased overflow-x-hidden bg-[#F9FAFB] dark:bg-[#0B1220] text-[#0F172A] dark:text-white" suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

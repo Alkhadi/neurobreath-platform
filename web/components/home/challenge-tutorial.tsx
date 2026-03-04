@@ -59,7 +59,7 @@ export default function ChallengeTutorial() {
               <h3 className="text-xl font-semibold text-gray-900">Understanding your stats</h3>
             </div>
             <div className="pl-11">
-              <div className="grid grid-cols-3 gap-4 mb-4">
+              <div className="flex flex-wrap gap-4 mb-4 [&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 animate-pulse">
                   <div className="text-3xl mb-2">⏱️</div>
                   <div className="text-sm text-gray-600">Total minutes</div>
@@ -209,7 +209,7 @@ export default function ChallengeTutorial() {
               </div>
               <h3 className="text-xl font-semibold text-gray-900">Quick visual guide</h3>
             </div>
-            <div className="pl-11 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-wrap pl-11 gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               {[
                 { icon: '🫁', title: '1. Choose your challenge', desc: 'Pick a card that matches your need: calm, focus, sleep, or reset.' },
                 { icon: '👆', title: '2. Start breathing', desc: 'Click the primary button to open the breathing tool or guide.' },
@@ -235,7 +235,7 @@ export default function ChallengeTutorial() {
               </div>
               <h3 className="text-xl font-semibold text-gray-900">Pro tips 💡</h3>
             </div>
-            <div className="pl-11 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-wrap pl-11 gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               {[
                 { icon: '🎯', title: 'Micro wins matter', desc: 'Log even 30 seconds. Small sessions keep your streak alive and build the habit.' },
                 { icon: '📱', title: 'Data stays private', desc: 'All progress is saved only on your device. No accounts, no tracking, no pressure.' },

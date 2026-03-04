@@ -283,7 +283,7 @@ export function WordListReading({ wordList, itemType, onComplete, onCancel }: Wo
         </Card>
         
         {/* Response Buttons */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           <Button
             variant="outline"
             size="lg"
@@ -333,7 +333,7 @@ export function WordListReading({ wordList, itemType, onComplete, onCancel }: Wo
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Metrics */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
             <div className="p-4 bg-muted rounded-lg text-center">
               <div className="text-3xl font-bold text-green-600">{correctCount}</div>
               <div className="text-sm text-muted-foreground">Correct</div>

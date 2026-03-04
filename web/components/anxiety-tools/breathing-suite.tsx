@@ -193,7 +193,7 @@ export function BreathingSuite() {
   return (
     <div className="space-y-6">
       {/* Technique Selection */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
         {TECHNIQUES.map(tech => (
           <Card
             key={tech?.id}
@@ -231,7 +231,7 @@ export function BreathingSuite() {
           </div>
 
           {/* Session Stats */}
-          <div className="grid grid-cols-3 gap-8 text-center">
+          <div className="flex flex-wrap gap-8 text-center [&>*]:basis-[calc(33.333%-21px)] [&>*]:min-w-0">
             <div>
               <div className="text-2xl font-bold text-primary">
                 {Math.floor(sessionTime / 60)}:{String(sessionTime % 60).padStart(2, '0')}
@@ -275,7 +275,7 @@ export function BreathingSuite() {
           <Wind className="h-5 w-5 text-primary" />
           <h3 className="font-semibold">Lifetime Statistics</h3>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
           <div>
             <div className="text-2xl font-bold text-primary">{sessions?.length ?? 0}</div>
             <div className="text-sm text-muted-foreground">Total Sessions</div>

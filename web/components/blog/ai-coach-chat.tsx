@@ -145,7 +145,7 @@ export default function AICoachChat() {
   return (
     <Card id="ai-chat" className="scroll-mt-20">
       <CardHeader>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           <div>
             <CardTitle className="text-2xl">Ask the AI Coach</CardTitle>
             <p className="text-sm text-muted-foreground mt-2">

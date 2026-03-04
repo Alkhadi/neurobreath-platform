@@ -198,7 +198,7 @@ export function RelaxationGame() {
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4 max-w-[250px] mx-auto">
+            <div className="flex flex-wrap gap-4 max-w-[250px] mx-auto [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               {patternColors.map((color, idx) => {
                 const isActive = showPattern && pattern[Math.floor((Date.now() / 600) % pattern.length)] === idx
                 return (

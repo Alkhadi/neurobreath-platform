@@ -91,7 +91,7 @@ export function AnalyticsCharts() {
       </Card>
       
       {/* Activity Breakdown */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -141,7 +141,7 @@ export function AnalyticsCharts() {
           <CardTitle>Summary Statistics</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
             <div className="space-y-1">
               <p className="text-sm text-muted-foreground">Completion Rate</p>
               <p className="text-2xl font-bold">{data.completionRate.toFixed(0)}%</p>
@@ -168,7 +168,7 @@ function ChartsSkeleton() {
   return (
     <div className="space-y-6">
       <div className="h-80 bg-muted animate-pulse rounded-lg" />
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
         <div className="h-64 bg-muted animate-pulse rounded-lg" />
         <div className="h-64 bg-muted animate-pulse rounded-lg" />
       </div>

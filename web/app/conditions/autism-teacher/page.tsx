@@ -80,7 +80,7 @@ export default function AutismTeacherSupportPage() {
           </div>
 
           {/* Hero Cards */}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur">
               <CardHeader>
                 <Badge className="w-fit mb-2" variant="secondary">Quick start</Badge>
@@ -136,7 +136,7 @@ export default function AutismTeacherSupportPage() {
               <CardTitle>Supporting autistic learners effectively</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                 <div>
                   <h4 className="font-semibold mb-1 flex items-center gap-2">
                     <Shield className="w-4 h-4 text-emerald-600" />
@@ -176,7 +176,7 @@ export default function AutismTeacherSupportPage() {
       {/* Teacher Overview */}
       <section id="teacher-overview" className="py-16 bg-white dark:bg-gray-900">
         <div className="mx-auto w-[86vw] max-w-[86vw] px-4">
-          <div className="grid gap-6 lg:grid-cols-3 mb-8">
+          <div className="flex flex-wrap gap-6 mb-8 [&>*]:basis-full lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <div className="lg:col-span-2">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Autism (Teachers) — quick overview</h2>
               <p className="text-muted-foreground">
@@ -206,7 +206,7 @@ export default function AutismTeacherSupportPage() {
             </Card>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -651,7 +651,7 @@ export default function AutismTeacherSupportPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-6 md:grid-cols-4">
+              <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
@@ -802,7 +802,7 @@ export default function AutismTeacherSupportPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                 <div>
                   <h4 className="font-semibold mb-3 flex items-center gap-2">
                     <Briefcase className="w-5 h-5 text-purple-600" />
@@ -914,7 +914,7 @@ export default function AutismTeacherSupportPage() {
         <div className="mx-auto w-[86vw] max-w-[86vw] px-4">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Professional Development & CPD</h2>
           
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full lg:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card className="border-2 border-purple-200 dark:border-purple-800">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -1061,7 +1061,7 @@ export default function AutismTeacherSupportPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div>
                   <h4 className="font-semibold mb-2 text-sm">Teaching & Learning</h4>
                   <ul className="space-y-1 text-sm text-muted-foreground">
@@ -1109,7 +1109,7 @@ export default function AutismTeacherSupportPage() {
         <div className="mx-auto w-[86vw] max-w-[86vw] px-4">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Clinical & Education Guidance</h2>
           
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full lg:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle>Clinical guidance (NICE)</CardTitle>
@@ -1221,7 +1221,7 @@ export default function AutismTeacherSupportPage() {
               <CardTitle>Practical techniques for the classroom</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-3 md:grid-cols-2 text-sm">
+              <div className="flex flex-wrap gap-3 text-sm [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                 <div>
                   <strong>Visual schedules & First/Then (ages 3–16):</strong> Make steps visible to reduce 
                   transition stress and increase predictability.
@@ -1275,7 +1275,7 @@ export default function AutismTeacherSupportPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                 <div>
                   <h4 className="font-semibold mb-3">How to introduce breathing exercises</h4>
                   <ol className="space-y-2 text-sm list-decimal list-inside">
@@ -1299,7 +1299,7 @@ export default function AutismTeacherSupportPage() {
                 </div>
               </div>
 
-              <div className="mt-6 grid gap-3 grid-cols-2 md:grid-cols-4">
+              <div className="flex flex-wrap mt-6 gap-3 [&>*]:basis-[calc(50%-6px)] md:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
                 <Link href="/techniques/box-breathing">
                   <Button variant="outline" className="w-full h-auto py-3" size="sm">
                     <div className="text-center">

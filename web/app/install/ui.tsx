@@ -308,7 +308,7 @@ export function InstallPageClient() {
           <CardDescription>Quick checks to help you install smoothly.</CardDescription>
         </CardHeader>
         <CardContent className="text-sm">
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="flex flex-wrap gap-2 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
             <div>
               <span className="font-medium">Platform:</span> {platform}
             </div>
@@ -325,7 +325,7 @@ export function InstallPageClient() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
         <Card className={platform === 'iOS' ? 'ring-2 ring-primary/30' : undefined}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

@@ -262,7 +262,7 @@ export const EvidenceHub = () => {
       {/* Evidence Strength Legend */}
       <Card className="p-6 mb-8 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950">
         <h3 className="font-bold mb-4">Evidence Strength Guide</h3>
-        <div className="grid md:grid-cols-3 gap-4 text-sm">
+        <div className="flex flex-wrap gap-4 text-sm [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           <div>
             <Badge className="bg-green-500 mb-2">Strong Evidence</Badge>
             <p className="text-muted-foreground">

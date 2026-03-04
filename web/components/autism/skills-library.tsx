@@ -107,7 +107,7 @@ export const SkillsLibrary = () => {
         </div>
 
         {/* Skills grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
           {filteredSkills?.map?.(skill => (
             <SkillCard
               key={skill?.id}

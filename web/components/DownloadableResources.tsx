@@ -126,7 +126,7 @@ export function DownloadableResources() {
         </div>
 
         {/* Resources Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           {RESOURCES.map((resource) => {
             const Icon = resource.icon;
             return (
@@ -204,7 +204,7 @@ export function DownloadableResources() {
         {/* Additional Resources */}
         <div className="border-t-2 border-gray-200 dark:border-gray-700 pt-6">
           <h3 className="font-semibold text-lg mb-3">📚 Recommended External Resources:</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
             {[
               { name: 'International Dyslexia Association', url: 'https://dyslexiaida.org' },
               { name: 'Reading Rockets', url: 'https://www.readingrockets.org' },

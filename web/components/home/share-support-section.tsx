@@ -250,7 +250,7 @@ export default function ShareSupportSection() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <div className="flex flex-wrap gap-6 max-w-4xl mx-auto [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             {/* Social Share Buttons */}
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
@@ -365,7 +365,7 @@ export default function ShareSupportSection() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="flex flex-wrap gap-6 max-w-4xl mx-auto [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-lg p-6 text-center">
               <div className="text-4xl mb-3">☕</div>
               <h3 className="font-semibold text-gray-900 mb-2">Buy us a coffee</h3>

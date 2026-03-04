@@ -77,7 +77,7 @@ export function PlacementResults({
           </div>
           
           {/* Skill Levels Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] md:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
             {Object.entries(placement.skillLevels).map(([skill, level]) => {
               const skillConfig = NB_LEVELS[level]
               return (
@@ -181,7 +181,7 @@ export function PlacementResults({
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Plan Summary */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
                 <div className="p-4 bg-muted/50 rounded-lg text-center">
                   <Clock className="w-6 h-6 mx-auto mb-2 text-primary" />
                   <div className="text-2xl font-bold">{plan.recommendedMinutesPerDay}</div>

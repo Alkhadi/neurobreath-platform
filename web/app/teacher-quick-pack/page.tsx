@@ -54,7 +54,7 @@ export default function TeacherToolsPage() {
 
           {/* Quick Stats */}
           <Card className="p-8 bg-white/80 backdrop-blur">
-            <div className="grid md:grid-cols-4 gap-6">
+            <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
               <div className="text-center">
                 <div className="text-4xl font-bold text-primary mb-2">60+</div>
                 <div className="text-sm text-muted-foreground">Teaching Resources</div>
@@ -81,7 +81,7 @@ export default function TeacherToolsPage() {
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold mb-12 text-center">Quick Access</h2>
           
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             {/* Teacher Dashboard */}
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <div className="bg-blue-100 p-3 rounded-lg inline-block mb-4">
@@ -202,7 +202,7 @@ export default function TeacherToolsPage() {
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold mb-12 text-center">Resources by Condition</h2>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
             {/* ADHD */}
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <div className="bg-blue-100 p-3 rounded-lg inline-block mb-4">
@@ -341,7 +341,7 @@ export default function TeacherToolsPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card className="p-6">
               <Wind className="h-8 w-8 text-green-600 mb-4" />
               <h3 className="text-lg font-bold mb-2">Breathing Exercises</h3>
@@ -432,7 +432,7 @@ export default function TeacherToolsPage() {
       {/* Support & Contact */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="flex flex-wrap gap-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
             <Card className="p-8">
               <Users className="h-12 w-12 text-primary mb-4" />
               <h3 className="text-2xl font-bold mb-4">Need Help?</h3>

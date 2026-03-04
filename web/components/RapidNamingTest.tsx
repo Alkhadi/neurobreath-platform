@@ -169,7 +169,7 @@ export function RapidNamingTest() {
         {!isRunning && (
           <div className="space-y-3">
             <label className="text-sm font-medium">Select Test Type:</label>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] md:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
               {[
                 { type: 'letter' as const, label: 'Letters', emoji: '🔤', color: 'blue' },
                 { type: 'number' as const, label: 'Numbers', emoji: '🔢', color: 'green' },

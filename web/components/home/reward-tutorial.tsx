@@ -67,7 +67,7 @@ export default function RewardTutorial() {
               <h3 className="text-xl font-semibold text-gray-900">What are badges?</h3>
             </div>
             <div className="pl-11">
-              <div className="grid grid-cols-2 gap-6 mb-4 max-w-md mx-auto">
+              <div className="flex flex-wrap gap-6 mb-4 max-w-md mx-auto [&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                 <div className="bg-gray-100 rounded-lg p-6 text-center border-2 border-dashed border-gray-300">
                   <div className="text-4xl mb-2 opacity-40">🌱</div>
                   <div className="font-semibold text-gray-500 mb-1">First calm minute</div>
@@ -129,7 +129,7 @@ export default function RewardTutorial() {
               </div>
               <h3 className="text-xl font-semibold text-gray-900">Types of badges</h3>
             </div>
-            <div className="pl-11 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="flex flex-wrap pl-11 gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
               {[
                 { icon: '⏱️', title: 'Time-based', desc: 'Total minutes practiced (e.g., 10-minute marker)' },
                 { icon: '🔥', title: 'Streak badges', desc: 'Consecutive days of practice (3-day, 7-day streak)' },
@@ -235,7 +235,7 @@ export default function RewardTutorial() {
               </div>
               <h3 className="text-xl font-semibold text-gray-900">Badge features 💡</h3>
             </div>
-            <div className="pl-11 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-wrap pl-11 gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               {[
                 { icon: '🔓', title: 'Auto-unlock', desc: 'Badges unlock automatically when you meet requirements—no manual claiming needed.' },
                 { icon: '💾', title: 'Stay unlocked', desc: 'Once unlocked, badges stay visible even if you take a break. They celebrate your achievement permanently.' },

@@ -193,7 +193,7 @@ export function LetterReversalTraining() {
           <>
             <div className="space-y-3">
               <label className="text-sm font-medium">Select Letter Pair to Practice:</label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] md:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
                 {REVERSAL_PAIRS.map((pair) => (
                   <button
                     key={pair.correct}
@@ -271,7 +271,7 @@ export function LetterReversalTraining() {
             </div>
 
             {/* Options */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
               {currentChallenge.options.map((option, idx) => (
                 <button
                   key={idx}
@@ -322,7 +322,7 @@ export function LetterReversalTraining() {
         )}
 
         {/* Stats */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
             <div className="text-2xl font-bold text-cyan-500">{score}</div>
             <div className="text-sm text-gray-600 dark:text-gray-400">Total Points</div>

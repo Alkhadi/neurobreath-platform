@@ -162,7 +162,7 @@ export function AssessmentTools() {
                 Choose the age group that best describes the person being assessed:
               </p>
 
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <button
                   onClick={() => setSelectedAge('preschool')}
                   className="p-6 rounded-lg border-2 border-gray-200 dark:border-gray-800 hover:border-blue-500 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-all text-left"

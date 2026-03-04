@@ -213,7 +213,7 @@ export function HelpMeChooseWizard({ region }: HelpMeChooseWizardProps) {
         <p className="text-sm text-slate-600">{step.description}</p>
       </div>
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-2">
+      <div className="flex flex-wrap mt-6 gap-3 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
         {step.options.map(option => {
           const isActive = Array.isArray(selectedValues)
             ? selectedValues.includes(option.id)

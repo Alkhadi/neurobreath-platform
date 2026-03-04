@@ -733,7 +733,7 @@ export function PhonicsSoundsLab() {
               </div>
 
               {/* Main Content Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6">
+              <div className="flex flex-wrap gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6 [&>*]:basis-full lg:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                 {/* Left: Letter Display */}
                 <div className="bg-slate-800/70 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 border border-slate-600/50 backdrop-blur-sm">
                   <div className="flex items-start gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6">
@@ -1019,7 +1019,7 @@ export function PhonicsSoundsLab() {
                     Enter the learner name (required) plus any optional details to personalise their official NeuroBreath certificate.
                   </p>
                   
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+                  <div className="flex flex-wrap gap-4 sm:gap-6 md:gap-8 [&>*]:basis-full lg:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                     {/* Form */}
                     <div className="space-y-3 sm:space-y-4 md:space-y-5">
                       <div>
@@ -1111,7 +1111,7 @@ export function PhonicsSoundsLab() {
                             </p>
                             
                             {/* Certificate Details */}
-                            <div className="bg-amber-100/70 rounded-xl p-4 grid grid-cols-2 gap-4">
+                            <div className="flex flex-wrap bg-amber-100/70 rounded-xl p-4 gap-4 [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                               <div>
                                 <span className="text-xs uppercase tracking-wide text-amber-600 font-medium">Certificate ID</span>
                                 <p className="font-mono font-bold text-slate-800">{certificateId}</p>

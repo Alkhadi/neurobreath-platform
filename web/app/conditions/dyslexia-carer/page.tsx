@@ -42,7 +42,7 @@ export default function DyslexiaCarersPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="flex flex-wrap gap-3 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] lg:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
               <Button className="w-full gap-2 bg-orange-600 hover:bg-orange-700">
                 <BookOpen className="w-5 h-5" />
                 Daily Support
@@ -61,7 +61,7 @@ export default function DyslexiaCarersPage() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+            <div className="flex flex-wrap gap-4 pt-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
               <div className="flex items-start gap-3 p-4 rounded-lg bg-white/50 dark:bg-gray-900/50 border border-orange-200 dark:border-orange-800">
                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center">
                   <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" />
@@ -118,7 +118,7 @@ export default function DyslexiaCarersPage() {
               </AlertDescription>
             </Alert>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               <div className="p-4 rounded-lg bg-white dark:bg-gray-900/50 border">
                 <h4 className="font-semibold mb-2 flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-green-600" />
@@ -254,7 +254,7 @@ export default function DyslexiaCarersPage() {
               <TabsContent value="communication" className="space-y-4 mt-4">
                 <div className="space-y-3">
                   <h4 className="font-semibold">Effective Communication</h4>
-                  <div className="grid gap-3 md:grid-cols-2">
+                  <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                     <div className="p-4 border rounded-lg bg-green-50 dark:bg-green-950/20">
                       <h5 className="font-medium mb-2">🗣️ Clear Instructions</h5>
                       <p className="text-sm text-muted-foreground">
@@ -347,7 +347,7 @@ export default function DyslexiaCarersPage() {
               </AlertDescription>
             </Alert>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               <div className="p-4 border rounded-lg">
                 <h4 className="font-semibold mb-3">🌟 Building Confidence</h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
@@ -391,7 +391,7 @@ export default function DyslexiaCarersPage() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               <div className="p-4 border rounded-lg">
                 <h4 className="font-semibold mb-3">📋 Education Support</h4>
                 <ul className="space-y-2 text-sm">
@@ -497,7 +497,7 @@ export default function DyslexiaCarersPage() {
               </AlertDescription>
             </Alert>
 
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
               <div className="p-4 border rounded-lg bg-white dark:bg-gray-900/50">
                 <h4 className="font-semibold mb-3">💪 Physical Health</h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
@@ -567,7 +567,7 @@ export default function DyslexiaCarersPage() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid gap-3 md:grid-cols-2">
+            <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
               <Button variant="outline" className="justify-start gap-3 h-auto p-4">
                 <FileText className="w-5 h-5" />
                 <div className="text-left">
@@ -603,7 +603,7 @@ export default function DyslexiaCarersPage() {
 
             <div className="pt-4 border-t">
               <h4 className="font-semibold mb-3">Recommended UK Organizations</h4>
-              <div className="grid gap-3 md:grid-cols-2 text-sm">
+              <div className="flex flex-wrap gap-3 text-sm [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                 <div>
                   <h5 className="font-medium mb-2">Dyslexia Support</h5>
                   <ul className="space-y-1 text-muted-foreground">

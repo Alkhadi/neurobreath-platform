@@ -71,7 +71,7 @@ export function UnderstandingDyslexia() {
 
               <div className="space-y-3">
                 <h4 className="font-semibold text-foreground">Key Characteristics:</h4>
-                <div className="grid gap-3 md:grid-cols-2">
+                <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                   <div className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900/50">
                     <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center">
                       <span className="text-purple-600 dark:text-purple-400 text-sm font-bold">1</span>
@@ -122,7 +122,7 @@ export function UnderstandingDyslexia() {
                 <p className="text-sm text-muted-foreground mb-3">
                   Research shows that people with dyslexia often excel in:
                 </p>
-                <ul className="grid gap-2 md:grid-cols-2 text-sm">
+                <ul className="flex flex-wrap gap-2 text-sm [&>*]:basis-full md:[&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
                     <span className="text-muted-foreground">Creative thinking and problem-solving</span>

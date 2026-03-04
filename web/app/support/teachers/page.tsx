@@ -22,7 +22,7 @@ export default function TeacherResourcesPage() {
               <p className="text-lg text-slate-700 mb-4">
                 Practical strategies and understanding for supporting neurodivergent students in your classroom.
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] sm:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
                 <div className="bg-white rounded-lg p-3 shadow-sm">
                   <div className="text-sm font-medium text-slate-600">Key Goal</div>
                   <div className="text-lg font-bold text-green-600">Inclusion</div>
@@ -72,7 +72,7 @@ export default function TeacherResourcesPage() {
                     <p className="text-slate-700">
                       Neurodivergent students learn differently. They may show:
                     </p>
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                       <div className="bg-green-50 p-4 rounded-lg">
                         <h4 className="font-semibold text-slate-900 mb-2">ADHD Traits</h4>
                         <ul className="text-sm text-slate-700 space-y-1">

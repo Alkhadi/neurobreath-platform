@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Card, CardContent } from '@/components/ui/card';
 
 export interface FeaturedGuide {
 	title: string;
@@ -22,45 +21,51 @@ export function GuidesBlock({
 	clusters: TopicCluster[];
 }) {
 	return (
-		<div className="grid gap-6 lg:grid-cols-12">
-			<div className="lg:col-span-7">
-				<h3 className="text-base font-semibold text-foreground">Featured guides</h3>
-				<div className="mt-4 grid gap-4 sm:grid-cols-2">
+		<div className="flex flex-col lg:flex-row gap-6">
+			{/* Featured guides — ~58% on desktop */}
+			<div className="w-full lg:w-[58%]">
+				<h3 className="text-base font-semibold text-[#0F172A] dark:text-white">Featured guides</h3>
+				<div className="mt-4 flex flex-col sm:flex-row sm:flex-wrap gap-4">
 					{featured.map(guide => (
-						<Card key={guide.href + guide.title} className="h-full rounded-2xl border-border/60 bg-card shadow-sm">
+						<div
+							key={guide.href + guide.title}
+							className="basis-full sm:basis-[calc(50%-8px)]"
+						>
 							<Link
 								href={guide.href}
-								className="block h-full rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+								className="group flex h-full flex-col bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-[30px] p-6 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 hover:scale-[1.015] active:scale-[0.99] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
 							>
-								<CardContent className="p-6">
-									<div className="text-base font-semibold text-foreground">{guide.title}</div>
-									<p className="mt-2 text-sm text-muted-foreground">{guide.description}</p>
-									<div className="mt-4 text-sm font-semibold text-foreground">Read →</div>
-								</CardContent>
+								<div className="text-base font-semibold text-[#0F172A] dark:text-white">{guide.title}</div>
+								<p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{guide.description}</p>
+								<div className="mt-4 text-sm font-semibold text-[#4ECDC4] group-hover:translate-x-0.5 transition-transform">
+									Read →
+								</div>
 							</Link>
-						</Card>
+						</div>
 					))}
 				</div>
 			</div>
-			<div className="lg:col-span-5">
-				<Card className="rounded-2xl border-border/60 bg-card shadow-sm">
-					<CardContent className="p-6">
-						<h3 className="text-base font-semibold text-foreground">Topic clusters</h3>
-						<p className="mt-1 text-sm text-muted-foreground">Start with a topic hub, then pick a specific guide.</p>
-						<div className="mt-4 grid gap-3">
-							{clusters.map(cluster => (
-								<Link
-									key={cluster.key}
-									href={cluster.href}
-									className="rounded-xl border border-border/60 bg-background/40 px-4 py-3 text-sm hover:bg-accent/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-								>
-									<div className="font-semibold text-foreground">{cluster.title}</div>
-									<div className="mt-1 text-muted-foreground">{cluster.description}</div>
-								</Link>
-							))}
-						</div>
-					</CardContent>
-				</Card>
+
+			{/* Topic clusters — ~40% on desktop */}
+			<div className="w-full lg:flex-1">
+				<div className="h-full bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-[30px] p-6 shadow-xl">
+					<h3 className="text-base font-semibold text-[#0F172A] dark:text-white">Topic clusters</h3>
+					<p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Start with a topic hub, then pick a specific guide.</p>
+					<div className="mt-4 flex flex-col gap-3">
+						{clusters.map(cluster => (
+							<Link
+								key={cluster.key}
+								href={cluster.href}
+								className="group rounded-2xl border border-black/5 dark:border-white/10 bg-slate-50 dark:bg-white/5 px-4 py-3 text-sm hover:border-[#4ECDC4]/40 hover:bg-[#4ECDC4]/5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
+							>
+								<div className="font-semibold text-[#0F172A] dark:text-white group-hover:text-[#4ECDC4] transition-colors">
+									{cluster.title}
+								</div>
+								<div className="mt-1 text-slate-500 dark:text-slate-400">{cluster.description}</div>
+							</Link>
+						))}
+					</div>
+				</div>
 			</div>
 		</div>
 	);

@@ -116,7 +116,7 @@ export function PracticeTimer() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t">
+        <div className="flex flex-wrap gap-4 pt-4 border-t [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           <div className="text-center">
             <div className="text-2xl font-bold">{sessions}</div>
             <p className="text-xs text-muted-foreground">Sessions</p>

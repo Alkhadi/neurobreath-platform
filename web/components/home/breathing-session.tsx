@@ -1449,7 +1449,7 @@ export default function BreathingSession({ technique, challengeKey, onClose }: B
             <div className="card">
               <h2 className="text-2xl font-bold mb-6 text-center">Session Complete</h2>
               
-              <div className="grid grid-cols-3 gap-4 mb-6">
+              <div className="flex flex-wrap gap-4 mb-6 [&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                 <div className="tile text-center">
                   <label>Total Minutes</label>
                   <div className="val">{settings.minutes}</div>

@@ -543,7 +543,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="flex flex-wrap gap-3 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                   <div>
                     <label className="block text-xs font-semibold text-gray-700 mb-1" htmlFor="flyer-cta-text">
                       CTA text
@@ -740,7 +740,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
           </div>
 
           {/* Basic Info */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
             <div>
               <label htmlFor="profile-full-name" className="block text-sm font-semibold text-gray-700 mb-2">
                 Full Name
@@ -822,7 +822,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
           {/* Social Media */}
           <div>
             <h3 className="text-lg font-bold text-gray-800 mb-3">Social Media Links</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               {([
                 { key: "website", label: "Website", placeholder: "https://yourwebsite.com" },
                 { key: "instagram", label: "Instagram", placeholder: "Instagram profile URL" },
@@ -908,7 +908,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                     Reset this section
                   </button>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                   <div>
                     <label htmlFor="address-line1" className="block text-sm font-semibold text-gray-700 mb-2">
                       Address Line 1
@@ -1129,7 +1129,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                     Reset this section
                   </button>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                   <div>
                     <label htmlFor="bank-account-name" className="block text-sm font-semibold text-gray-700 mb-2">
                       Account Name
@@ -1318,7 +1318,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                     Reset this section
                   </button>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                   <div>
                     <label htmlFor="business-company-name" className="block text-sm font-semibold text-gray-700 mb-2">
                       Company Name

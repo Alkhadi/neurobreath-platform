@@ -128,7 +128,7 @@ export default function ADHDToolsPage() {
               </div>
             </CardHeader>
             <CardContent className="p-6 space-y-6">
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
                 <div className="space-y-3">
                   <h4 className="font-semibold text-lg flex items-center gap-2">
                     <Brain className="w-5 h-5 text-purple-600" />
@@ -295,7 +295,7 @@ export default function ADHDToolsPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
             {[
               {
                 title: "Beginner Bundle",
@@ -400,7 +400,7 @@ export default function ADHDToolsPage() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             {[
               {
                 title: "Focus Sprint Planner",
@@ -531,7 +531,7 @@ export default function ADHDToolsPage() {
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div className="p-4 rounded-lg bg-muted/50">
                   <h4 className="font-semibold mb-3">🇬🇧 UK-Specific Resources</h4>
                   <ul className="space-y-2 text-sm">

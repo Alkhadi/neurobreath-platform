@@ -244,7 +244,7 @@ export default function FocusGardenPage() {
           </div>
         )}
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="flex flex-wrap gap-8 [&>*]:basis-full lg:[&>*]:basis-[calc(33.333%-21px)] [&>*]:min-w-0">
           {/* Left: Task Categories */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl p-6 shadow-xl">
@@ -297,7 +297,7 @@ export default function FocusGardenPage() {
                 {TASK_LAYERS[selectedLayer as keyof typeof TASK_LAYERS]?.icon}{' '}
                 {TASK_LAYERS[selectedLayer as keyof typeof TASK_LAYERS]?.name} Tasks
               </h2>
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 {TASK_LAYERS[selectedLayer as keyof typeof TASK_LAYERS]?.tasks.map(task => {
                   const isPlanted = isTaskPlanted(task.id)
                   return (
@@ -340,7 +340,7 @@ export default function FocusGardenPage() {
                   <p className="text-lg">Your garden is empty. Plant a task to get started!</p>
                 </div>
               ) : (
-                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                   {garden.map(plant => {
                     const task = getTaskInfo(plant.taskId, plant.layer)
                     const stageInfo = PLANT_STAGES[plant.stage]

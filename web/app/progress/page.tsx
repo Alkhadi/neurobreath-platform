@@ -827,7 +827,7 @@ export default function ProgressPage() {
         )}
 
         {/* ── Stats cards ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="flex flex-wrap gap-6 mb-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
           {/* Breathing Sessions */}
           <div className="bg-white rounded-xl p-6 shadow-lg">
             <div className="flex items-center gap-3 mb-3">

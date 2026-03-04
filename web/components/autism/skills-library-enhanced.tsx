@@ -216,7 +216,7 @@ export function SkillsLibraryEnhanced({ onProgressUpdate }: SkillsLibraryEnhance
 
         {/* Skills Grid */}
           <div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0"
             data-tour="nb:autism-hub:skills-results"
             data-tour-order="11"
             data-tour-title="Skills results list"

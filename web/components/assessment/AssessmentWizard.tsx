@@ -372,7 +372,7 @@ export function AssessmentWizard({
             <p className="text-sm text-muted-foreground">
               Select the age group to ensure content is appropriate and placement is weighted correctly.
             </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] md:[&>*]:basis-[calc(25%-6px)] [&>*]:min-w-0">
               {LEARNER_GROUP_ORDER.map(group => {
                 const config = LEARNER_GROUPS[group]
                 return (
@@ -396,7 +396,7 @@ export function AssessmentWizard({
             <p className="text-sm text-muted-foreground">
               Choose your estimated reading level. The assessment will adjust if needed.
             </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] md:[&>*]:basis-[calc(25%-6px)] [&>*]:min-w-0">
               {(['beginner', 'elementary', 'intermediate', 'advanced'] as LevelBand[]).map(band => (
                 <Button
                   key={band}

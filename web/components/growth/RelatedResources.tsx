@@ -95,7 +95,7 @@ export function RelatedResources({ region, title = 'Related resources', tags = [
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
       <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
-      <div className="mt-4 grid gap-4 md:grid-cols-2">
+      <div className="flex flex-wrap mt-4 gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
         {trimmedGroups.map(group => (
           <div key={group.title} className="space-y-2">
             <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{group.title}</div>

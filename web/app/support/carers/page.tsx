@@ -22,7 +22,7 @@ export default function CarerSupportPage() {
               <p className="text-lg text-slate-700 mb-4">
                 Resources and guidance for all caregivers supporting neurodivergent individuals in your life.
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] sm:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
                 <div className="bg-white rounded-lg p-3 shadow-sm">
                   <div className="text-sm font-medium text-slate-600">Your Role</div>
                   <div className="text-lg font-bold text-purple-600">Essential</div>

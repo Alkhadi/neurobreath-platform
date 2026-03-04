@@ -75,22 +75,22 @@ export default async function HelpMeChoosePage({ params }: HelpMeChoosePageProps
         <section className="rounded-2xl border border-slate-200 bg-white p-5">
           <h2 className="text-lg font-semibold text-slate-900">Explore while you decide</h2>
           <p className="text-sm text-slate-600">These starter links are available now — everything stays on‑site.</p>
-          <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <div className="mt-4 flex flex-wrap gap-3">
             <Link
               href={`/${regionKey}/guides/breathing-exercises-for-stress`}
-              className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900 hover:border-indigo-300"
+              className="basis-full md:basis-[calc(33.333%-8px)] min-w-0 rounded-xl border border-slate-200 bg-slate-50 dark:bg-white/5 dark:border-white/10 px-4 py-3 text-sm font-semibold text-slate-900 dark:text-white hover:border-[#4ECDC4]/50 nb-focus"
             >
               Calm starter journey
             </Link>
             <Link
               href="/tools/roulette"
-              className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900 hover:border-indigo-300"
+              className="basis-full md:basis-[calc(33.333%-8px)] min-w-0 rounded-xl border border-slate-200 bg-slate-50 dark:bg-white/5 dark:border-white/10 px-4 py-3 text-sm font-semibold text-slate-900 dark:text-white hover:border-[#4ECDC4]/50 nb-focus"
             >
               Quick calm tool
             </Link>
             <Link
               href="/guides/quick-calm-in-5-minutes"
-              className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900 hover:border-indigo-300"
+              className="basis-full md:basis-[calc(33.333%-8px)] min-w-0 rounded-xl border border-slate-200 bg-slate-50 dark:bg-white/5 dark:border-white/10 px-4 py-3 text-sm font-semibold text-slate-900 dark:text-white hover:border-[#4ECDC4]/50 nb-focus"
             >
               Quick calm guide
             </Link>

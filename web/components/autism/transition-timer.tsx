@@ -217,7 +217,7 @@ Citation: https://www.nice.org.uk/guidance/cg170
         </div>
 
         {/* Custom Configuration */}
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           <div>
             <Label htmlFor="current">Current Activity</Label>
             <Input

@@ -269,7 +269,7 @@ export const MoodToolkit = ({ onProgressUpdate }: { onProgressUpdate?: () => voi
       </div>
 
       {/* Tools Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
         {filteredTools.map(tool => {
           const Icon = tool.icon;
           const isUsed = usedTools.has(tool.id);

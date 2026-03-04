@@ -36,7 +36,7 @@ export function JourneysHub({ region }: JourneysHubProps) {
         </div>
       </header>
 
-      <section className="grid gap-4 md:grid-cols-2">
+      <section className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
         {JOURNEYS.map(journey => (
           <TrackedLink
             key={journey.id}

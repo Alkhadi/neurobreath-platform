@@ -159,7 +159,7 @@ export function PrintableWorksheets() {
               </div>
             </div>
             <p className="text-sm text-muted-foreground mb-6">Trace each letter, then write it on your own.</p>
-            <div className="grid grid-cols-3 gap-6">
+            <div className="flex flex-wrap gap-6 [&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
               {letters.map((letter) => (
                 <div key={letter} className="border-2 border-dashed border-muted rounded-lg p-4">
                   <div className="text-6xl font-bold text-muted-foreground/30 text-center mb-2 font-mono">
@@ -190,7 +190,7 @@ export function PrintableWorksheets() {
                 <div key={word} className="border rounded-lg p-3">
                   <div className="flex items-center gap-4 mb-2">
                     <span className="text-2xl font-bold min-w-[80px]">{word}</span>
-                    <div className="flex-1 grid grid-cols-3 gap-2">
+                    <div className="flex flex-wrap flex-1 gap-2 [&>*]:basis-[calc(33.333%-5px)] [&>*]:min-w-0">
                       {[1, 2, 3].map((n) => (
                         <div key={n} className="border-b-2 border-dotted border-muted h-8" />
                       ))}
@@ -279,7 +279,7 @@ export function PrintableWorksheets() {
               </div>
             </div>
             <p className="text-sm text-muted-foreground mb-6">Clap out each word. Write how many syllables you hear.</p>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               {SYLLABLE_WORDS.map((item, idx) => (
                 <div key={idx} className="border rounded-lg p-4 flex items-center justify-between">
                   <span className="text-xl font-medium">{item.word}</span>
@@ -331,7 +331,7 @@ export function PrintableWorksheets() {
             </div>
             <div className="mt-8 border-t pt-4">
               <p className="font-medium mb-2">Bonus: Write your own rhyming words!</p>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 {[1, 2].map((n) => (
                   <div key={n} className="flex items-center gap-2">
                     <div className="border-b-2 border-dotted border-muted flex-1 h-8" />
@@ -364,7 +364,7 @@ export function PrintableWorksheets() {
 
         <CardContent className="space-y-6">
           {/* Controls - hidden when printing */}
-          <div className="no-print grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="flex flex-wrap no-print gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
             <div className="space-y-2">
               <Label>Worksheet Type</Label>
               <Select value={selectedType} onValueChange={(v) => setSelectedType(v as WorksheetType)}>

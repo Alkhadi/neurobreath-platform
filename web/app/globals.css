@@ -1051,6 +1051,66 @@
   [data-hydration-on-demand] {
     content-visibility: auto;
   }
+
+  /* =========================================================================
+     NB-* DESIGN SYSTEM — GLOBAL PRIMITIVE CLASSES
+     Phase 1 Foundation: inherit MindPayLink-like look & feel site-wide.
+     Tokens: #4ECDC4 teal | #959E0B gold | #0F172A ink | #F9FAFB bg | #0B1220 dark bg
+     ========================================================================= */
+
+  /* Layout primitives */
+  .nb-container {
+    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .nb-section {
+    @apply py-16 md:py-24;
+  }
+
+  /* Surface — replaces manual card-in-card stacks */
+  .nb-surface {
+    @apply bg-white/90 dark:bg-white/5
+           border border-black/5 dark:border-white/10
+           rounded-[30px] shadow-xl;
+  }
+
+  /* Interactive surface — add on top of .nb-surface for clickable cards */
+  .nb-surface-interactive {
+    @apply hover:shadow-2xl hover:-translate-y-0.5 hover:scale-[1.015]
+           active:scale-[0.99]
+           transition-all duration-300;
+  }
+
+  /* Focus utility — shared across all interactive elements */
+  .nb-focus {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60 focus-visible:ring-offset-2;
+  }
+
+  /* Primary CTA button — teal-gold gradient pill */
+  .nb-btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           rounded-full px-8 py-4 text-lg font-semibold text-white
+           bg-gradient-to-r from-[#959E0B] to-[#4ECDC4]
+           shadow-2xl
+           hover:opacity-90 hover:-translate-y-0.5
+           active:scale-[0.98]
+           transition-all duration-300
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60 focus-visible:ring-offset-2;
+  }
+
+  /* Secondary CTA button — glassy pill */
+  .nb-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2
+           rounded-full px-8 py-4 text-lg font-semibold
+           bg-white/90 dark:bg-white/5
+           border border-black/10 dark:border-white/15
+           text-[#0F172A] dark:text-white
+           shadow-lg
+           hover:bg-white dark:hover:bg-white/10 hover:-translate-y-0.5
+           active:scale-[0.98]
+           transition-all duration-300
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60 focus-visible:ring-offset-2;
+  }
 }
 
 /* ============================================
@@ -1068,9 +1128,18 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: white;
-  border-bottom: 1px solid #e5e7eb;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid rgba(78, 205, 196, 0.2);
+  box-shadow: 0 1px 12px 0 rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(78, 205, 196, 0.06);
+  transition: box-shadow 0.2s ease;
+}
+
+.dark .nb-header {
+  background: rgba(11, 18, 32, 0.92);
+  border-bottom: 1px solid rgba(78, 205, 196, 0.15);
+  box-shadow: 0 1px 12px 0 rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(78, 205, 196, 0.08);
 }
 
 .nb-header-container {
@@ -1300,17 +1369,22 @@
   font-size: 0.938rem;
   font-weight: 600;
   color: white;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #959E0B 0%, #4ECDC4 100%);
+  border-radius: 0.75rem;
   text-decoration: none;
-  transition: all 0.2s;
-  box-shadow: 0 1px 3px 0 rgba(59, 130, 246, 0.3);
+  transition: all 0.25s ease;
+  box-shadow: 0 1px 8px 0 rgba(78, 205, 196, 0.35);
 }
 
 .nb-nav-cta:hover {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.4);
+  background: linear-gradient(135deg, #7a8409 0%, #3ab8b0 100%);
+  box-shadow: 0 4px 16px -2px rgba(78, 205, 196, 0.5);
   transform: translateY(-1px);
+}
+
+.nb-nav-cta:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.6);
 }
 
 /* User Menu */
@@ -1502,22 +1576,37 @@
     display: block;
   }
 
+  /*
+    The mobile nav is rendered OUTSIDE <header> in site-header.tsx to avoid
+    the header's backdrop-filter creating a containing block that traps fixed
+    descendants. Right-side panel: z-110 sits above hero content (z-10) but
+    below the sticky header (z-1000) so the toggle button stays accessible.
+    Content starts at padding-top:5rem to clear the 64px header visually.
+  */
   .nb-main-nav {
     position: fixed;
-    top: 64px;
-    left: 0;
+    top: 0;
     right: 0;
+    left: auto;
     bottom: 0;
+    width: min(420px, 92vw);
+    z-index: 110;
     background: white;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    padding: 1rem;
+    padding: 5rem 1rem 2rem;
     overflow-y: auto;
-    transform: translateX(-100%);
+    transform: translateX(100%);
     visibility: hidden;
     pointer-events: none;
-    transition: transform 0.3s ease-out;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.18);
+  }
+
+  .dark .nb-main-nav {
+    background: #0B1220;
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.45);
   }
 
   .nb-main-nav--open {

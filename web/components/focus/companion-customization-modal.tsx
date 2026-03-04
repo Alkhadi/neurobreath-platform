@@ -151,7 +151,7 @@ export function CompanionCustomizationModal({
                 Choose your companion! Some companions unlock as you progress.
               </p>
               
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 {Object.values(COMPANION_TYPES).map(profile => {
                   const isUnlocked = isCompanionUnlocked(profile);
                   const isActive = companion.type === profile.id;
@@ -301,7 +301,7 @@ export function CompanionCustomizationModal({
               
               {/* Available Accessories */}
               <h3 className="font-bold text-lg text-slate-900 mb-4">Available Accessories</h3>
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 {COMPANION_ACCESSORIES.map(accessory => {
                   const isUnlocked = isAccessoryUnlocked(accessory.id);
                   const isEquipped = companion.activeAccessory === accessory.id;

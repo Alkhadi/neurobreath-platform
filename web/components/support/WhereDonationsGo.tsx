@@ -7,7 +7,7 @@ export function WhereDonationsGo() {
       <div className="max-w-6xl mx-auto">
         <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center">Where Donations Go</h2>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="flex flex-wrap gap-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-2xl">

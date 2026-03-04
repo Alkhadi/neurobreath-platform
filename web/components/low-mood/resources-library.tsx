@@ -229,7 +229,7 @@ export const ResourcesLibrary = () => {
       </div>
 
       {/* Resources Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
         {filteredResources.map(resource => {
           const Icon = resource.icon;
           

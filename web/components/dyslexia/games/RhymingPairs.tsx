@@ -113,7 +113,7 @@ export function RhymingPairs() {
 
           <p className="text-lg font-semibold">Which word rhymes with it?</p>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
             {choices.map((word) => (
               <Button
                 key={word}

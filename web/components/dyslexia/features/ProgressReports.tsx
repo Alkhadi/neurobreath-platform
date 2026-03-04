@@ -46,7 +46,7 @@ Generated: ${new Date().toLocaleDateString()}
           </h3>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           <div className="p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg text-center">
             <p className="text-sm text-muted-foreground">Total Sessions</p>
             <p className="text-3xl font-bold text-blue-600">{progress.totalSessions}</p>
@@ -63,7 +63,7 @@ Generated: ${new Date().toLocaleDateString()}
 
         <div className="space-y-3">
           <h4 className="text-lg font-semibold">Achievements</h4>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
             <div className="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
               <p className="text-sm text-muted-foreground">Games Completed</p>
               <p className="text-xl font-bold">{progress.gamesCompleted}</p>

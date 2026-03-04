@@ -153,7 +153,7 @@ export const ProgressDashboard = ({ onReset: _onReset }: { onReset?: () => void 
       </div>
 
       {/* Stats Overview */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="flex flex-wrap gap-6 mb-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
         <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium">Current Streak</span>
@@ -192,7 +192,7 @@ export const ProgressDashboard = ({ onReset: _onReset }: { onReset?: () => void 
       </div>
 
       {/* Mood & Energy Averages */}
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
+      <div className="flex flex-wrap gap-6 mb-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold flex items-center gap-2">

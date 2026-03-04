@@ -269,7 +269,7 @@ export default function BlogDirectory() {
 
         {/* Posts Grid */}
         {filteredPosts.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
             {filteredPosts.map(post => (
               <Link key={post.id} href={post.url}>
                 <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">

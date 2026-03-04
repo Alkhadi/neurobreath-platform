@@ -127,7 +127,7 @@ export function HelpMeChooseResults({ region }: HelpMeChooseResultsProps) {
 
       <section className="space-y-4">
         <h3 className="text-xl font-semibold text-slate-900">Try now</h3>
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
           {recommendations.tools.map(tool => (
             <Link key={tool.id} href={tool.href} className="rounded-2xl border border-slate-200 bg-white p-4 hover:border-indigo-300">
               <p className="text-base font-semibold text-slate-900">{tool.title}</p>
@@ -139,7 +139,7 @@ export function HelpMeChooseResults({ region }: HelpMeChooseResultsProps) {
 
       <section className="space-y-4">
         <h3 className="text-xl font-semibold text-slate-900">Learn more</h3>
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
           {recommendations.guides.map(guide => (
             <Link key={guide.id} href={guide.href} className="rounded-2xl border border-slate-200 bg-white p-4 hover:border-indigo-300">
               <p className="text-base font-semibold text-slate-900">{guide.title}</p>

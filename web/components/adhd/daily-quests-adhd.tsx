@@ -120,7 +120,7 @@ export function DailyQuestsADHD() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
               <Card className="bg-white/50 dark:bg-black/20">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3">

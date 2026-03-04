@@ -314,7 +314,7 @@ export function ProgressDashboardEnhanced({ onReset }: ProgressDashboardEnhanced
                 </CardHeader>
                 <CardContent>
                   {earnedBadges.length > 0 ? (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
                       {earnedBadges.map(badge => (
                         <div 
                           key={badge.id} 
@@ -347,7 +347,7 @@ export function ProgressDashboardEnhanced({ onReset }: ProgressDashboardEnhanced
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
                       {lockedBadges.map(badge => (
                         <div 
                           key={badge.id}

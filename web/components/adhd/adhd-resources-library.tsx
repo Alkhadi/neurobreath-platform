@@ -24,7 +24,7 @@ export function ADHDResourcesLibrary() {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
         {resources.map((resource, index) => (
           <Card key={index} className="hover:shadow-lg transition-all hover:scale-105 cursor-pointer border-2">
             <CardHeader>

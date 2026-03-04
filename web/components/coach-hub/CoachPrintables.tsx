@@ -45,7 +45,7 @@ export function CoachPrintables() {
 			subtitle="Share ahead of sessions or keep copies in a binder. Each download opens in a new tab with live links."
 			withDivider
 		>
-			<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+			<div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
 				{printables.map(card => (
 					<Card
 						key={card.title}

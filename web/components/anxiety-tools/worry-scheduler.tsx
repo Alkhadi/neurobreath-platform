@@ -318,7 +318,7 @@ export function WorryScheduler() {
       {/* Stats */}
       <Card className="p-6">
         <h3 className="font-semibold mb-4">Worry Statistics</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
           <div>
             <div className="text-2xl font-bold text-primary">{activeWorries?.length ?? 0}</div>
             <div className="text-sm text-muted-foreground">Active Worries</div>

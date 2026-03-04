@@ -114,7 +114,7 @@ export function StudyTimer() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           <div className="space-y-2">
             <label htmlFor="study-timer-work-minutes" className="text-sm font-semibold">
               Work Duration (min)

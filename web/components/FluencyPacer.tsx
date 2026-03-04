@@ -188,7 +188,7 @@ export default function FluencyPacer() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           <div className="bg-white/60 dark:bg-gray-800/60 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
               {targetWPM}

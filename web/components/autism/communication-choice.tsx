@@ -221,7 +221,7 @@ Citation: https://www.nice.org.uk/guidance/cg170
               <CardTitle className="text-center">{boardName}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 {choices.map((choice) => (
                   <div
                     key={choice.id}

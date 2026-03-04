@@ -133,7 +133,7 @@ export function ReadingSpeedCalculator() {
               <TrendingUp className="w-5 h-5" />
               Your Progress
             </h4>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] sm:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
               {results.map((wpm, i) => {
                 const perf = getPerformance(wpm, passage.target);
                 return (

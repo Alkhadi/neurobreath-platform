@@ -56,7 +56,7 @@ export default function LiveHealthUpdates() {
 
       <CardContent className="space-y-6">
         {/* Seasonal Guidance Cards */}
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           <Card className="border-2 border-blue-200 bg-blue-50 dark:bg-blue-950">
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -156,7 +156,7 @@ export default function LiveHealthUpdates() {
         {/* Official Links */}
         <div className="border-t pt-4">
           <h3 className="font-semibold mb-3 text-sm">Official Resources</h3>
-          <div className="grid sm:grid-cols-2 gap-2">
+          <div className="flex flex-wrap gap-2 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
             <Button variant="outline" size="sm" asChild>
               <a href="https://www.nhs.uk" target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="w-3 h-3 mr-2" />

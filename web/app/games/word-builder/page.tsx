@@ -212,14 +212,14 @@ export default function WordBuilderGamePage() {
               </p>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
               <Card className="md:col-span-2">
                 <CardContent className="p-4 space-y-3">
                   <div className="font-semibold flex items-center gap-2">
                     <Target className="w-4 h-4 text-purple-600" />
                     Choose difficulty
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                     <Button
                       variant={difficulty === 'beginner' ? 'default' : 'outline'}
                       onClick={() => setDifficulty('beginner')}
@@ -415,7 +415,7 @@ export default function WordBuilderGamePage() {
             <Progress value={progressPct} />
 
             {current ? (
-              <div className="grid gap-4 lg:grid-cols-2">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full lg:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div className="space-y-3">
                   <div className="rounded-xl border p-4 bg-white/60 dark:bg-white/5">
                     <div className="text-xs text-muted-foreground">Clue</div>
@@ -488,7 +488,7 @@ export default function WordBuilderGamePage() {
 
                 <div className="space-y-3">
                   <div className="text-sm font-medium">Sound tiles</div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] sm:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
                     {pool.map((tile, i) => (
                       <Button
                         key={`${tile}-${i}`}

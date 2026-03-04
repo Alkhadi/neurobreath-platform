@@ -22,7 +22,7 @@ export default function StressManagementPage() {
               <p className="text-lg text-slate-700 mb-4">
                 Practical tools and techniques to manage daily stress and prevent overwhelm
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] sm:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
                 <div className="bg-white rounded-lg p-3 shadow-sm">
                   <div className="text-sm font-medium text-slate-600">Neurodivergent Impact</div>
                   <div className="text-lg font-bold text-orange-600">2-3x Higher</div>
@@ -123,7 +123,7 @@ export default function StressManagementPage() {
                     <CardDescription>Recognize stress before it builds up</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                       <div className="bg-slate-50 p-4 rounded-lg">
                         <h4 className="font-semibold text-slate-900 mb-2">Physical Signs</h4>
                         <ul className="text-sm text-slate-700 space-y-1">

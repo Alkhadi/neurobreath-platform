@@ -62,7 +62,7 @@ export default function AnxietyParentSupportPage() {
           </div>
           
           {/* Stats Card */}
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="flex flex-wrap mt-12 gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card className="bg-white/10 backdrop-blur border-white/20">
               <CardContent className="pt-6">
                 <div className="text-3xl font-bold text-white mb-1">20.3%</div>
@@ -87,7 +87,7 @@ export default function AnxietyParentSupportPage() {
 
       {/* Interactive Dashboard */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+        <div className="flex flex-wrap gap-6 mb-12 [&>*]:basis-full lg:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
           <StreakTracker />
           <SupportQuiz />
           <DailyChallenges />
@@ -119,7 +119,7 @@ export default function AnxietyParentSupportPage() {
               <TabsContent value="physical" className="space-y-4 mt-6">
                 <div className="bg-red-50 dark:bg-red-950/20 p-6 rounded-lg border border-red-200 dark:border-red-800">
                   <h4 className="font-semibold text-lg mb-4 text-red-900 dark:text-red-100">Physical Manifestations</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                     <div className="flex items-start gap-2">
                       <CheckCircle2 className="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
                       <div>
@@ -175,7 +175,7 @@ export default function AnxietyParentSupportPage() {
               <TabsContent value="behavioral" className="space-y-4 mt-6">
                 <div className="bg-amber-50 dark:bg-amber-950/20 p-6 rounded-lg border border-amber-200 dark:border-amber-800">
                   <h4 className="font-semibold text-lg mb-4 text-amber-900 dark:text-amber-100">Behavioral Warning Signs</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                     <div className="flex items-start gap-2">
                       <CheckCircle2 className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                       <div>
@@ -225,7 +225,7 @@ export default function AnxietyParentSupportPage() {
               <TabsContent value="cognitive" className="space-y-4 mt-6">
                 <div className="bg-blue-50 dark:bg-blue-950/20 p-6 rounded-lg border border-blue-200 dark:border-blue-800">
                   <h4 className="font-semibold text-lg mb-4 text-blue-900 dark:text-blue-100">Cognitive Patterns</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                     <div className="flex items-start gap-2">
                       <CheckCircle2 className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
                       <div>
@@ -405,7 +405,7 @@ export default function AnxietyParentSupportPage() {
                   <p className="text-sm text-muted-foreground">
                     Constant reassurance maintains anxiety because it prevents your child from building confidence in their own judgment.
                   </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                     <div className="p-3 bg-red-50 dark:bg-red-950/20 rounded border border-red-200 dark:border-red-800">
                       <p className="font-semibold text-sm mb-2 text-red-900 dark:text-red-100">❌ Excessive Reassurance</p>
                       <p className="text-sm text-muted-foreground">
@@ -445,7 +445,7 @@ export default function AnxietyParentSupportPage() {
                   <p className="text-sm text-muted-foreground">
                     Predictability reduces anxiety. Consistent sleep, meal, and activity schedules provide a sense of security.
                   </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                     <div className="space-y-2">
                       <h5 className="font-semibold text-sm">Morning Routine</h5>
                       <ul className="text-sm space-y-1 list-disc list-inside text-muted-foreground">
@@ -517,7 +517,7 @@ export default function AnxietyParentSupportPage() {
           <CardContent>
             <div className="bg-red-50 dark:bg-red-950/20 p-6 rounded-lg border border-red-200 dark:border-red-800 space-y-4">
               <p className="font-semibold">Contact a mental health professional if:</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                 <div className="flex items-start gap-2">
                   <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
                   <p className="text-sm">Anxiety interferes with school, friendships, or family life</p>

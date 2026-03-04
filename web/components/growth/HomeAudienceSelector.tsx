@@ -104,7 +104,7 @@ export function HomeAudienceSelector({ region, copy, recommendations }: HomeAudi
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
         {ranked.slice(0, 6).map(card => (
           <Link
             key={card.id}

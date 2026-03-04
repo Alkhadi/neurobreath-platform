@@ -20,7 +20,7 @@ export function ADHDWorkflowTemplates() {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
         {templates.map((template, idx) => (
           <Card key={idx} className="hover:shadow-lg transition-all">
             <CardHeader>

@@ -37,8 +37,8 @@ export default function JourneyComplete() {
       {/* Next Steps */}
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-6 text-center">What&apos;s Next?</h2>
-        <div className="grid gap-6 md:grid-cols-3">
-          <Card className="hover:shadow-lg transition-shadow">
+        <div className="flex flex-wrap gap-6">
+          <Card className="nb-surface-interactive basis-full md:basis-[calc(33.333%-16px)] min-w-0">
             <CardHeader>
               <CardTitle>Explore Tools</CardTitle>
               <CardDescription>Try practical tools</CardDescription>
@@ -52,7 +52,7 @@ export default function JourneyComplete() {
               </Button>
             </CardContent>
           </Card>
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="nb-surface-interactive basis-full md:basis-[calc(33.333%-16px)] min-w-0">
             <CardHeader>
               <CardTitle>Read Guides</CardTitle>
               <CardDescription>Deepen your understanding</CardDescription>
@@ -66,7 +66,7 @@ export default function JourneyComplete() {
               </Button>
             </CardContent>
           </Card>
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="nb-surface-interactive basis-full md:basis-[calc(33.333%-16px)] min-w-0">
             <CardHeader>
               <CardTitle>Get Help</CardTitle>
               <CardDescription>Find personalized recommendations</CardDescription>

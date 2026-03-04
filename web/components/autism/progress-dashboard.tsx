@@ -81,7 +81,7 @@ export const ProgressDashboard = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+        <div className="flex flex-wrap gap-4 mb-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
           <Card className="p-6">
             <div className="flex items-center gap-3 mb-2">
               <Flame className="h-5 w-5 text-orange-500" />
@@ -127,7 +127,7 @@ export const ProgressDashboard = () => {
             <Award className="h-5 w-5" />
             Badges Earned ({earnedBadges?.length ?? 0}/{badges?.length ?? 0})
           </h3>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
             {badges?.map?.((badge) => {
               const isEarned = earnedBadges?.some?.(b => b?.id === badge?.id);
               const IconComponent = (LucideIcons as unknown as Record<string, ComponentType<{ className?: string }>>)?.[badge?.icon];

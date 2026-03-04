@@ -26,7 +26,7 @@ export function DonationPanel() {
 
         {/* Donation Grid */}
         <div className="mb-12">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+          <div className="flex flex-wrap gap-6 max-w-5xl mx-auto [&>*]:basis-full sm:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
             {DONATION_TIERS.map((tier) => (
               <Card
                 key={tier.amount}

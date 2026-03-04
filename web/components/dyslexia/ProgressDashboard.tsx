@@ -60,7 +60,7 @@ export function ProgressDashboard() {
       </Card>
 
       {/* Stats Overview */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
         {/* Streak */}
         <Card className="hover:shadow-md transition-shadow">
           <CardContent className="p-6">
@@ -119,7 +119,7 @@ export function ProgressDashboard() {
       </div>
 
       {/* Daily Goals */}
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
         <Card>
           <CardContent className="p-6 space-y-4">
             <div className="flex items-center justify-between">
@@ -161,7 +161,7 @@ export function ProgressDashboard() {
             </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-wrap gap-3 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] lg:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
             {badges.map((badge) => (
               <div
                 key={badge.id}

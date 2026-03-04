@@ -7,7 +7,7 @@ export function ImpactCards() {
       <div className="max-w-6xl mx-auto">
         <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center">Why Your Support Matters</h2>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="flex flex-wrap gap-8 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-21px)] [&>*]:min-w-0">
           <Card className="p-8 text-center border-2 hover:border-purple-300 hover:shadow-lg transition-all duration-300 group">
             <div className="bg-purple-100 p-4 rounded-full inline-block mb-6 group-hover:scale-110 transition-transform">
               <Users className="h-10 w-10 text-purple-600" />

@@ -118,7 +118,7 @@ export function FrameChooser({ category, onSelect, onClose }: FrameChooserProps)
           )}
 
           {!loading && frames.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
               {frames.map((frame) => (
                 <button
                   type="button"

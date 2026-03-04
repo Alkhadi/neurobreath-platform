@@ -52,7 +52,7 @@ export default function BreathHowToPage() {
           {/* Context Presets */}
           <Card className="p-6 mb-8">
             <h2 className="text-2xl font-bold mb-4">Pick your context</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] md:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
               <Link href="/techniques/box-breathing?minutes=1">
                 <Button variant="outline" className="w-full h-auto py-4">
                   <div className="flex flex-col items-center gap-1">
@@ -97,7 +97,7 @@ export default function BreathHowToPage() {
           </Card>
 
           {/* Three Main Techniques */}
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <div className="flex flex-wrap gap-6 mb-8 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             {/* Box Breathing */}
             <Card className="p-6 hover:shadow-xl transition-shadow border-2 border-transparent hover:border-blue-200">
               <div className="bg-blue-100 p-3 rounded-lg inline-block mb-4">

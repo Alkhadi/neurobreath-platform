@@ -283,26 +283,26 @@ export default async function PrintableDetailPage({ params }: PrintableDetailPag
 
         <section className="rounded-2xl border border-slate-200 bg-white p-5">
           <h2 className="text-lg font-semibold text-slate-900">Related resources</h2>
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <div className="mt-4 flex flex-wrap gap-3">
             {journeys.slice(0, 2).map(journey => (
-              <Link key={journey.id} href={journey.href} className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm hover:border-indigo-300">
+              <Link key={journey.id} href={journey.href} className="basis-full md:basis-[calc(50%-6px)] min-w-0 rounded-xl border border-slate-200 bg-slate-50 dark:bg-white/5 dark:border-white/10 p-4 text-sm hover:border-[#4ECDC4]/50 nb-focus">
                 <p className="text-xs uppercase tracking-wide text-slate-500">Journey</p>
-                <p className="text-base font-semibold text-slate-900">{journey.label}</p>
+                <p className="text-base font-semibold text-slate-900 dark:text-white">{journey.label}</p>
               </Link>
             ))}
             {tools.slice(0, 2).map(tool => (
-              <Link key={tool.id} href={tool.href} className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm hover:border-indigo-300">
+              <Link key={tool.id} href={tool.href} className="basis-full md:basis-[calc(50%-6px)] min-w-0 rounded-xl border border-slate-200 bg-slate-50 dark:bg-white/5 dark:border-white/10 p-4 text-sm hover:border-[#4ECDC4]/50 nb-focus">
                 <p className="text-xs uppercase tracking-wide text-slate-500">Tool</p>
-                <p className="text-base font-semibold text-slate-900">{tool.label}</p>
+                <p className="text-base font-semibold text-slate-900 dark:text-white">{tool.label}</p>
               </Link>
             ))}
           </div>
           {guides.length > 0 && (
-            <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <div className="mt-4 flex flex-wrap gap-3">
               {guides.map(guide => (
-                <Link key={guide.href} href={guide.href} className="rounded-xl border border-slate-200 bg-white p-4 text-sm hover:border-indigo-300">
+                <Link key={guide.href} href={guide.href} className="basis-full md:basis-[calc(50%-6px)] min-w-0 rounded-xl border border-slate-200 bg-white dark:bg-white/5 dark:border-white/10 p-4 text-sm hover:border-[#4ECDC4]/50 nb-focus">
                   <p className="text-xs uppercase tracking-wide text-slate-500">Guide</p>
-                  <p className="text-base font-semibold text-slate-900">{guide.label}</p>
+                  <p className="text-base font-semibold text-slate-900 dark:text-white">{guide.label}</p>
                 </Link>
               ))}
             </div>

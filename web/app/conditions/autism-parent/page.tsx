@@ -112,7 +112,7 @@ export default function AutismParentSupportPage() {
           </div>
 
           {/* Hero Cards */}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur">
               <CardHeader>
                 <Badge className="w-fit mb-2" variant="secondary">Co-regulation</Badge>
@@ -199,7 +199,7 @@ export default function AutismParentSupportPage() {
               <CardTitle>Guidance at a glance</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                 <div>
                   <h4 className="font-semibold mb-1">NICE standards</h4>
                   <p className="text-sm text-muted-foreground">
@@ -237,7 +237,7 @@ export default function AutismParentSupportPage() {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card className="border-2 border-blue-200 dark:border-blue-800">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -324,7 +324,7 @@ export default function AutismParentSupportPage() {
       {/* Parent Overview Section */}
       <section id="parent-overview" className="py-16 bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50 dark:from-blue-950 dark:via-purple-950 dark:to-indigo-950">
         <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
-          <div className="grid gap-6 lg:grid-cols-3 mb-8">
+          <div className="flex flex-wrap gap-6 mb-8 [&>*]:basis-full lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <div className="lg:col-span-2">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Autism (Parent) — quick overview</h2>
               <p className="text-muted-foreground">
@@ -358,7 +358,7 @@ export default function AutismParentSupportPage() {
             </Card>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
             <Card
               data-tour="nb:conditions-autism-parent:early-signs"
               data-tour-order={4}
@@ -447,7 +447,7 @@ export default function AutismParentSupportPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
                 <div>
                   <div className="text-2xl font-bold">{sessionStats.sessions}</div>
                   <div className="text-sm text-muted-foreground">Sessions</div>
@@ -496,7 +496,7 @@ export default function AutismParentSupportPage() {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">What to bring</CardTitle>
@@ -550,7 +550,7 @@ export default function AutismParentSupportPage() {
             </div>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full lg:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle>What it is</CardTitle>
@@ -598,7 +598,7 @@ export default function AutismParentSupportPage() {
                   <li>• Save a one-page PDF and share it with carers or educators</li>
                 </ul>
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                   <Link href="/techniques/box-breathing">
                     <Button variant="outline" className="w-full" size="sm">
                       🟩 Box Breathing
@@ -636,7 +636,7 @@ export default function AutismParentSupportPage() {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Parent / Adult / Later-life PDFs</CardTitle>
@@ -689,7 +689,7 @@ export default function AutismParentSupportPage() {
         <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Evidence snapshot (UK)</h2>
           
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card className="border-2 border-blue-200 dark:border-blue-800">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -752,7 +752,7 @@ export default function AutismParentSupportPage() {
             </div>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card className="border-2 border-green-200 dark:border-green-800 md:col-span-2">
               <CardHeader>
                 <Badge className="w-fit mb-2" variant="secondary">Core routine</Badge>
@@ -888,7 +888,7 @@ export default function AutismParentSupportPage() {
             </div>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full lg:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card className="border-2 border-emerald-200 dark:border-emerald-800">
               <CardHeader>
                 <Badge className="w-fit mb-2" variant="secondary">Primary</Badge>
@@ -1152,7 +1152,7 @@ export default function AutismParentSupportPage() {
         <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Adults</h2>
           
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -1231,7 +1231,7 @@ export default function AutismParentSupportPage() {
             </div>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-3">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card className="border-2 border-amber-200 dark:border-amber-800">
               <CardHeader>
                 <Badge className="w-fit mb-2" variant="secondary">Sensory changes</Badge>
@@ -1309,7 +1309,7 @@ export default function AutismParentSupportPage() {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card
               data-tour="nb:conditions-autism-parent:meltdown-support"
               data-tour-order={11}
@@ -1492,7 +1492,7 @@ export default function AutismParentSupportPage() {
         <div className="mx-auto px-4 w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Clinical & Education Guidance</h2>
           
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full lg:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle>Clinical guidance</CardTitle>
@@ -1653,7 +1653,7 @@ export default function AutismParentSupportPage() {
               <CardTitle>Practical techniques</CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="grid gap-2 md:grid-cols-2 text-sm">
+              <ul className="flex flex-wrap gap-2 text-sm [&>*]:basis-full md:[&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 <li>• <strong>NDBI-style caregiver coaching (ages 2–8):</strong> brief play bursts with modelling and turn-taking</li>
                 <li>• <strong>Visual schedules & First/Then (ages 3–16):</strong> make steps visible to reduce transition stress</li>
                 <li>• <strong>AAC basics (all ages):</strong> core boards or PECS reduce frustration without replacing speech</li>
@@ -1676,7 +1676,7 @@ export default function AutismParentSupportPage() {
             Mental Health: Anxiety • Depression • Stress • Sleep
           </h2>
           
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -1715,7 +1715,7 @@ export default function AutismParentSupportPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                 <div>
                   <h4 className="font-semibold mb-2">How to run it</h4>
                   <ol className="space-y-1 text-sm list-decimal list-inside">
@@ -1752,7 +1752,7 @@ export default function AutismParentSupportPage() {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Try a 2‑minute reset</CardTitle>

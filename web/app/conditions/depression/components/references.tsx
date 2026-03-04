@@ -114,7 +114,7 @@ export function References() {
       {/* Additional Resources */}
       <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-xl shadow-lg p-6">
         <h3 className="text-xl font-bold text-gray-900 mb-3">Additional Authoritative Sources</h3>
-        <div className="grid sm:grid-cols-2 gap-4 text-sm">
+        <div className="flex flex-wrap gap-4 text-sm [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           <div>
             <p className="font-semibold text-gray-900 mb-1">🇬🇧 UK Resources:</p>
             <ul className="space-y-1 text-gray-700">

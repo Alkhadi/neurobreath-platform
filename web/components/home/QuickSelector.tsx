@@ -59,11 +59,11 @@ export function QuickSelector({ regionKey, copy, recommendations, maxCards = 3 }
   }, [recommendations, audience]);
 
   return (
-    <aside className="rounded-3xl border border-slate-200 bg-white/85 p-5 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-slate-950/60">
+    <aside className="rounded-[30px] border border-black/5 dark:border-white/10 bg-white/90 dark:bg-white/5 p-6 shadow-xl backdrop-blur-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{copy.audience.label}</p>
-          <h2 className="mt-1 text-base font-semibold text-slate-900 dark:text-slate-50">Next step in under a minute</h2>
+          <h2 className="mt-1 text-base font-semibold text-[#0F172A] dark:text-white">Next step in under a minute</h2>
           <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
             Pick your context to prioritise the best starting point.
           </p>
@@ -85,7 +85,7 @@ export function QuickSelector({ regionKey, copy, recommendations, maxCards = 3 }
               type="button"
               aria-pressed="true"
               onClick={onSelect}
-              className="rounded-full bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950"
+              className="rounded-full bg-gradient-to-r from-[#959E0B] to-[#4ECDC4] px-3 py-1.5 text-xs font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60 transition-all duration-200"
             >
               {option.label}
             </button>
@@ -95,7 +95,7 @@ export function QuickSelector({ regionKey, copy, recommendations, maxCards = 3 }
               type="button"
               aria-pressed="false"
               onClick={onSelect}
-              className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:bg-slate-950/40 dark:text-slate-200 dark:border-slate-800 dark:hover:border-slate-700 dark:focus-visible:ring-offset-slate-950"
+              className="rounded-full border border-black/10 dark:border-white/15 bg-white dark:bg-white/5 px-3 py-1.5 text-xs font-semibold text-[#0F172A] dark:text-white/80 hover:border-[#4ECDC4]/50 hover:text-[#4ECDC4] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
             >
               {option.label}
             </button>
@@ -103,17 +103,17 @@ export function QuickSelector({ regionKey, copy, recommendations, maxCards = 3 }
         })}
       </div>
 
-      <div className="mt-4 grid gap-3">
+      <div className="mt-4 flex flex-col gap-3">
         {ranked.slice(0, maxCards).map(card => (
           <Link
             key={card.id}
             href={card.href}
-            className="group rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:bg-slate-900/60 dark:border-slate-800 dark:hover:border-slate-700 dark:focus-visible:ring-offset-slate-950"
+            className="group rounded-2xl border border-black/5 dark:border-white/10 bg-white/80 dark:bg-white/5 px-4 py-3 shadow-sm hover:border-[#4ECDC4]/40 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.99] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
             onClick={() => trackEvent('home_secondary_cta_click', { href: card.href, label: card.label, source: `/${regionKey}` })}
           >
             <div className="flex items-center justify-between gap-3">
-              <div className="text-sm font-semibold text-slate-900 dark:text-slate-50">{card.label}</div>
-              <span aria-hidden="true" className="text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-300">
+              <div className="text-sm font-semibold text-[#0F172A] dark:text-white">{card.label}</div>
+              <span aria-hidden="true" className="text-slate-400 group-hover:text-[#4ECDC4] transition-colors">
                 →
               </span>
             </div>

@@ -241,7 +241,7 @@ export default function WordFamilySortingGame() {
                   <Star className="w-4 h-4 text-yellow-500" />
                   Choose Difficulty
                 </h3>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                   <Button
                     variant={difficulty === 'beginner' ? 'default' : 'outline'}
                     onClick={() => setDifficulty('beginner')}
@@ -280,7 +280,7 @@ export default function WordFamilySortingGame() {
                 <Card className="bg-blue-50 dark:bg-blue-950/20">
                   <CardContent className="p-4">
                     <h4 className="font-semibold text-sm mb-2">Your Progress</h4>
-                    <div className="grid grid-cols-2 gap-3 text-xs">
+                    <div className="flex flex-wrap gap-3 text-xs [&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                       <div>
                         <div className="text-muted-foreground">Best (Beginner)</div>
                         <div className="font-bold">{progress.bestScores.beginner} points</div>
@@ -442,7 +442,7 @@ export default function WordFamilySortingGame() {
             {/* Word Family Bins */}
             <div>
               <h2 className="text-lg font-bold mb-3">Word Family Bins</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] md:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
                 {families.map((family) => (
                   <button
                     key={family.family}
@@ -483,7 +483,7 @@ export default function WordFamilySortingGame() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] sm:[&>*]:basis-[calc(33.333%-8px)] md:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
                 {words.map((wordData) => {
                   const isSelected = selectedWord === wordData.word;
                   const isHighlighted = highlightedWord === wordData.word;
@@ -624,7 +624,7 @@ export default function WordFamilySortingGame() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
             <Card>
               <CardContent className="p-4 text-center">
                 <div className="text-3xl font-bold text-primary">{score}</div>

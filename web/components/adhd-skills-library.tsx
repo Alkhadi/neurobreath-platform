@@ -129,7 +129,7 @@ export function ADHDSkillsLibrary() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
         <AnimatePresence>
           {filteredSkills.map((skill, index) => {
             const isPracticed = practicedSkills.has(skill.id);

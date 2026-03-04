@@ -119,7 +119,7 @@ export default async function SleepToolsPage() {
 
         <section id="main-content" className="space-y-4 scroll-mt-24">
           <h2 className="text-xl font-semibold text-slate-900">How to use sleep tools effectively</h2>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
             <Card className="border-slate-200">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -181,7 +181,7 @@ export default async function SleepToolsPage() {
             </Button>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
             {tools.map(tool => (
               <Link
                 key={tool.href}
@@ -209,7 +209,7 @@ export default async function SleepToolsPage() {
         <section id="bundles" className="space-y-4 scroll-mt-24">
           <h2 className="text-xl font-semibold text-slate-900">Curated bundles</h2>
           <p className="text-sm text-slate-600">Pre-packaged combinations for common sleep scenarios.</p>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
             {bundles.map(bundle => (
               <Card key={bundle.name} className="border-slate-200">
                 <CardHeader>
@@ -231,7 +231,7 @@ export default async function SleepToolsPage() {
           <h2 className="text-xl font-semibold text-slate-900">Sleep hygiene checklist</h2>
           <Card className="border-slate-200">
             <CardContent className="pt-6">
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div className="space-y-3">
                   <h3 className="font-semibold text-slate-900 flex items-center gap-2">
                     <Clock className="h-4 w-4 text-indigo-600" />
@@ -281,7 +281,7 @@ export default async function SleepToolsPage() {
           </Card>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-2">
+        <section className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           <Card className="border-slate-200">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">

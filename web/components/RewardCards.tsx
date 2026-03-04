@@ -508,7 +508,7 @@ export function RewardCards({ className, compact = false }: RewardCardsProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-6 gap-2">
+          <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(16.667%-7px)] [&>*]:min-w-0">
             {REWARD_CARDS.slice(0, 12).map(card => {
               const Icon = card.icon;
               const unlocked = isUnlocked(card);
@@ -575,7 +575,7 @@ export function RewardCards({ className, compact = false }: RewardCardsProps) {
             </ScrollArea>
 
             <TabsContent value={activeCategory} className="mt-4">
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(33.333%-11px)] lg:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
                 {filteredCards.map(card => {
                   const Icon = card.icon;
                   const unlocked = isUnlocked(card);

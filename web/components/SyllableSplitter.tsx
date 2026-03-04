@@ -159,7 +159,7 @@ export default function SyllableSplitter() {
         </div>
 
         {/* Difficulty Selector */}
-        <div className="grid grid-cols-3 gap-2">
+        <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(33.333%-5px)] [&>*]:min-w-0">
           {['Easy (2 syllables)', 'Medium (3 syllables)', 'Hard (4+ syllables)'].map((diff) => (
             <button
               key={diff}
@@ -228,7 +228,7 @@ export default function SyllableSplitter() {
         </div>
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-3 gap-2">
+        <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(33.333%-5px)] [&>*]:min-w-0">
           <Button
             onClick={hearWord}
             variant="outline"

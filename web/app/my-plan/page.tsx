@@ -175,7 +175,7 @@ export default function MyPlanPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               {savedItems.map((item) => (
                 <Card key={item.id} className="relative">
                   <CardHeader>

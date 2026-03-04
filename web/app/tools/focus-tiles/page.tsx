@@ -70,7 +70,7 @@ export default function FocusTilesPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="flex flex-wrap gap-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
           {contexts?.map((context) => {
             const Icon = context.icon
             return (

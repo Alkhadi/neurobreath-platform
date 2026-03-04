@@ -223,7 +223,7 @@ export default function PronunciationPractice() {
         </div>
 
         {/* Audio Controls */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           <div className="bg-white/60 dark:bg-gray-800/60 rounded-lg p-4">
             <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 text-sm">
               Correct Pronunciation

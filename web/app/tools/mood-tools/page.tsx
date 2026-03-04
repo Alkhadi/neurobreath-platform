@@ -103,7 +103,7 @@ export default async function MoodToolsPage() {
 
         <section id="main-content" className="space-y-4 scroll-mt-24">
           <h2 className="text-xl font-semibold text-slate-900">How to use this page</h2>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
             <Card className="border-slate-200">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -169,7 +169,7 @@ export default async function MoodToolsPage() {
               <p>
                 If you’re not sure what you’re feeling, try these prompts. Answer in one sentence each — you can keep it private.
               </p>
-              <div className="grid gap-3 md:grid-cols-2">
+              <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                 <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                   <p className="font-semibold text-slate-900">Body</p>
                   <p className="mt-2 text-slate-600">Where do I feel this (chest, throat, stomach, head)? What’s the intensity 1–10?</p>
@@ -210,7 +210,7 @@ export default async function MoodToolsPage() {
             </Button>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
             {tools.map(tool => (
               <Link
                 key={tool.href}

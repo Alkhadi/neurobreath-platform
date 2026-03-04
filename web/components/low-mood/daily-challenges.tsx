@@ -299,7 +299,7 @@ export const DailyChallenges = ({ onUpdate }: { onUpdate?: () => void }) => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid md:grid-cols-3 gap-6 mb-8">
+      <div className="flex flex-wrap gap-6 mb-8 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
         <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
           <div className="text-center">
             <div className="text-4xl font-bold mb-2">{completedToday.size} / {dailyChallenges.length}</div>

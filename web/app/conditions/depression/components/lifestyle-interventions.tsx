@@ -118,7 +118,7 @@ export function LifestyleInterventions() {
       </div>
 
       {/* Interventions Grid */}
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
         {interventions?.map?.((intervention, index) => {
           const Icon = intervention?.icon ?? Dumbbell;
           return (

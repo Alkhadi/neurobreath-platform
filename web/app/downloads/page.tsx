@@ -203,7 +203,7 @@ export default function DownloadsPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
             {filteredDownloads.packs?.map((item) => (
               <Card key={item.name} className="p-6 hover:shadow-lg transition-shadow">
                 <div className={`p-3 rounded-lg inline-block mb-4 ${
@@ -250,7 +250,7 @@ export default function DownloadsPage() {
                     <FileText className="h-6 w-6 text-blue-600" />
                     Assessment & Diagnosis
                   </h3>
-                  <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-8px)] lg:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
                     {filteredDownloads.adhd.assessment.map((item) => (
                       <Button
                         key={item.name}
@@ -273,7 +273,7 @@ export default function DownloadsPage() {
                     <FileText className="h-6 w-6 text-purple-600" />
                     Home & Family
                   </h3>
-                  <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-8px)] lg:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
                     {filteredDownloads.adhd.home.map((item) => (
                       <Button
                         key={item.name}
@@ -296,7 +296,7 @@ export default function DownloadsPage() {
                     <FileText className="h-6 w-6 text-green-600" />
                     School Support
                   </h3>
-                  <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-8px)] lg:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
                     {filteredDownloads.adhd.school.map((item) => (
                       <Button
                         key={item.name}
@@ -319,7 +319,7 @@ export default function DownloadsPage() {
                     <FileText className="h-6 w-6 text-amber-600" />
                     Teens & Young Adults
                   </h3>
-                  <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-8px)] lg:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
                     {filteredDownloads.adhd.teens.map((item) => (
                       <Button
                         key={item.name}
@@ -342,7 +342,7 @@ export default function DownloadsPage() {
                     <FileText className="h-6 w-6 text-pink-600" />
                     Self-Care & Focus
                   </h3>
-                  <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-8px)] lg:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
                     {filteredDownloads.adhd.selfcare.map((item) => (
                       <Button
                         key={item.name}
@@ -365,7 +365,7 @@ export default function DownloadsPage() {
                     <Package className="h-6 w-6 text-indigo-600" />
                     ADHD Toolkits
                   </h3>
-                  <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  <div className="flex flex-wrap gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-8px)] lg:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
                     {filteredDownloads.adhd.toolkits.map((item) => (
                       <Button
                         key={item.name}
@@ -389,7 +389,7 @@ export default function DownloadsPage() {
       {/* Other Categories */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="flex flex-wrap gap-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
             {/* Autism */}
             {filteredDownloads.autism && filteredDownloads.autism.length > 0 && (
               <Card className="p-6">

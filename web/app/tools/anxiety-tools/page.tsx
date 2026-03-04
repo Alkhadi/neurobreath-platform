@@ -64,7 +64,7 @@ export default function AnxietyToolsPage() {
       <section className="py-16 bg-white dark:bg-gray-900">
         <div className="mx-auto px-4 w-[86vw] max-w-[86vw]">
           <h2 className="text-3xl font-bold text-center mb-8">You're Not Alone</h2>
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
             <Card className="p-6 text-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 border-none">
               <div className="text-4xl font-bold text-blue-600 mb-2">1 in 5</div>
               <div className="text-sm text-muted-foreground">UK adults report anxiety symptoms weekly</div>
@@ -95,7 +95,7 @@ export default function AnxietyToolsPage() {
               Learn to distinguish between normal anxiety and anxiety disorders
             </p>
           </div>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-blue-600" />
@@ -480,7 +480,7 @@ export default function AnxietyToolsPage() {
                     
                     <div>
                       <h4 className="font-semibold text-lg mb-3">Therapy Options</h4>
-                      <div className="grid md:grid-cols-2 gap-4">
+                      <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                         <Card className="p-4 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950">
                           <h5 className="font-semibold mb-2">Cognitive Behavioral Therapy (CBT)</h5>
                           <p className="text-sm text-muted-foreground">Gold standard, 12-20 sessions, focuses on thought patterns and behaviors</p>
@@ -502,7 +502,7 @@ export default function AnxietyToolsPage() {
                     
                     <div>
                       <h4 className="font-semibold text-lg mb-3">Finding a Therapist</h4>
-                      <div className="grid md:grid-cols-2 gap-6">
+                      <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                         <div>
                           <p className="font-semibold mb-2 text-blue-600">🇬🇧 United Kingdom</p>
                           <ul className="text-sm space-y-2">

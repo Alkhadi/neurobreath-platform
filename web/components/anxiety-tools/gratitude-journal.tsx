@@ -287,7 +287,7 @@ export function GratitudeJournal() {
       {/* Stats */}
       <Card className="p-6">
         <h3 className="font-semibold text-lg mb-4">Your Gratitude Practice</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           <div>
             <div className="text-2xl font-bold text-pink-500">{entries?.length ?? 0}</div>
             <div className="text-sm text-muted-foreground">Total Entries</div>

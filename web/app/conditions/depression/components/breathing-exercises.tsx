@@ -181,7 +181,7 @@ export function BreathingExercises() {
       </div>
 
       {/* Progress Stats */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 text-center shadow-md">
           <Activity className="w-6 h-6 text-blue-600 mx-auto mb-2" />
           <p className="text-2xl font-bold text-blue-900">{stats?.sessions ?? 0}</p>
@@ -200,7 +200,7 @@ export function BreathingExercises() {
       </div>
 
       {/* Exercise Selection */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
         {exercises?.map?.((exercise) => (
           <button
             key={exercise?.id}
@@ -308,7 +308,7 @@ export function BreathingExercises() {
       {/* Benefits */}
       <div className="bg-white rounded-xl shadow-lg p-6">
         <h3 className="text-xl font-bold text-gray-900 mb-4">Why Breathing Exercises Help</h3>
-        <div className="grid sm:grid-cols-2 gap-4 text-sm text-gray-700">
+        <div className="flex flex-wrap gap-4 text-sm text-gray-700 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
           <div className="flex items-start space-x-2">
             <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-1.5"></div>
             <p><span className="font-semibold">Activates vagal tone:</span> Stimulates the vagus nerve, promoting relaxation</p>

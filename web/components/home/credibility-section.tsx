@@ -185,7 +185,7 @@ export default function CredibilitySection() {
 
         {/* Grid of Individual Cards */}
         <div className="w-full max-w-6xl mx-auto mb-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             {CREDIBILITY_SECTIONS.flatMap((section) => 
               section.items.map((item, idx) => (
                 <CredibilityCard

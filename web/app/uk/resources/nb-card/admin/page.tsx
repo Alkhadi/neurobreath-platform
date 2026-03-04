@@ -217,8 +217,8 @@ export default function AdminFramesPage() {
               <h3 className="text-lg font-semibold mb-4">
                 {editingId ? "Edit Frame" : "Create New Frame"}
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
+              <div className="flex flex-wrap gap-4 mb-4">
+                <div className="basis-full md:basis-[calc(50%-8px)] min-w-0">
                   <label htmlFor="frame-name" className="block text-sm font-medium text-gray-700 mb-1">
                     Name *
                   </label>
@@ -231,7 +231,7 @@ export default function AdminFramesPage() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
                 </div>
-                <div>
+                <div className="basis-full md:basis-[calc(50%-8px)] min-w-0">
                   <label htmlFor="frame-category" className="block text-sm font-medium text-gray-700 mb-1">
                     Category *
                   </label>
@@ -247,7 +247,7 @@ export default function AdminFramesPage() {
                     <option value="BUSINESS">Business Profile</option>
                   </select>
                 </div>
-                <div>
+                <div className="basis-full md:basis-[calc(50%-8px)] min-w-0">
                   <label htmlFor="frame-image-url" className="block text-sm font-medium text-gray-700 mb-1">
                     Image URL (or upload below)
                   </label>
@@ -260,7 +260,7 @@ export default function AdminFramesPage() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
                 </div>
-                <div>
+                <div className="basis-full md:basis-[calc(50%-8px)] min-w-0">
                   <label htmlFor="frame-sort-order" className="block text-sm font-medium text-gray-700 mb-1">
                     Sort Order
                   </label>
@@ -331,11 +331,11 @@ export default function AdminFramesPage() {
             <p className="text-gray-600">No frames in this category yet.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex flex-wrap gap-6">
             {categorizedFrames.map((frame) => (
               <div
                 key={frame.id}
-                className={`bg-white rounded-lg shadow-lg overflow-hidden ${
+                className={`basis-full md:basis-[calc(50%-12px)] lg:basis-[calc(33.333%-16px)] min-w-0 bg-white dark:bg-white/5 rounded-[30px] shadow-xl overflow-hidden ${
                   !frame.isActive ? "opacity-60" : ""
                 }`}
               >

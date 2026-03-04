@@ -1878,7 +1878,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           ))}
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <div className="flex flex-wrap mt-4 gap-2 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
           {savedCardsInCategory.length === 0 ? (
             <div className="text-sm text-muted-foreground">No saved cards yet for this category.</div>
           ) : null}
@@ -2099,7 +2099,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                   <div>
                     <label htmlFor="nbcard-editor-fullName" className="block text-sm font-semibold text-gray-700 mb-2">
                       Full Name *
@@ -2211,7 +2211,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
                 <div>
                   <h3 className="text-lg font-bold text-gray-800 mb-3">Social Links</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                     {([
                       { key: "instagram", label: "Instagram", placeholder: "Instagram profile URL" },
                       { key: "facebook", label: "Facebook", placeholder: "Facebook profile URL" },
@@ -2247,7 +2247,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
             {activeEditorTab === "ADDRESS" ? (
               <div className="mt-4 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                   <div>
                     <label htmlFor="nbcard-editor-recipient" className="block text-sm font-semibold text-gray-700 mb-2">
                       Recipient Name (optional)
@@ -2295,7 +2295,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                   <div>
                     <label htmlFor="nbcard-editor-address1" className="block text-sm font-semibold text-gray-700 mb-2">
                       Address Line 1
@@ -2455,7 +2455,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                   <div>
                     <label htmlFor="nbcard-editor-phoneLabel" className="block text-sm font-semibold text-gray-700 mb-2">
                       Phone Label
@@ -2506,7 +2506,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
             {activeEditorTab === "BANK" ? (
               <div className="mt-4 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                   <div>
                     <label htmlFor="nbcard-editor-bank-accountName" className="block text-sm font-semibold text-gray-700 mb-2">
                       Account Name
@@ -2624,7 +2624,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                   <div>
                     <label htmlFor="nbcard-editor-bank-paymentLink" className="block text-sm font-semibold text-gray-700 mb-2">
                       Payment Link (optional)
@@ -2731,7 +2731,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                   <div>
                     <label htmlFor="nbcard-editor-flyer-ctaText" className="block text-sm font-semibold text-gray-700 mb-2">
                       CTA Text (optional)
@@ -2818,7 +2818,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                   <div>
                     <label htmlFor="nbcard-editor-wedding-ctaText" className="block text-sm font-semibold text-gray-700 mb-2">
                       CTA Text (optional)
@@ -2864,7 +2864,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
             {activeEditorTab === "BUSINESS" ? (
               <div className="mt-4 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                   <div>
                     <label htmlFor="nbcard-editor-business-company" className="block text-sm font-semibold text-gray-700 mb-2">
                       Company Name
@@ -3005,7 +3005,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                   <div>
                     <label htmlFor="nbcard-editor-business-booking" className="block text-sm font-semibold text-gray-700 mb-2">
                       Booking Link (optional)
@@ -3218,7 +3218,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
             {/* Downloads */}
             <div>
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Downloads</p>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 <Button size="sm" variant="default" onClick={handleDownloadPng} disabled={!!busyKey}>
                   <Download className="mr-1.5 h-3.5 w-3.5" /> PNG
                 </Button>
@@ -3237,7 +3237,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
             {/* Share files */}
             <div>
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Share files</p>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 <Button size="sm" variant="outline" onClick={handleSharePng} disabled={!!busyKey}>Share PNG</Button>
                 <Button size="sm" variant="outline" onClick={handleSharePdf} disabled={!!busyKey}>Share PDF</Button>
                 <Button size="sm" variant="outline" onClick={handleShareVcardFile} disabled={!!busyKey}>Share vCard</Button>
@@ -3248,7 +3248,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
             {/* Copy & QR */}
             <div>
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Copy &amp; QR</p>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 <Button size="sm" variant="outline" onClick={handleCopyLink} disabled={!!busyKey}>
                   <LinkIcon className="mr-1.5 h-3.5 w-3.5" /> Copy link
                 </Button>
@@ -3261,7 +3261,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
             {/* Send via */}
             <div>
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Send via</p>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(33.333%-5px)] [&>*]:min-w-0">
                 <Button size="sm" variant="outline" onClick={openWhatsapp}>WhatsApp</Button>
                 <Button size="sm" variant="outline" onClick={handleShareViaEmail} disabled={!!busyKey}>
                   <Mail className="mr-1 h-3.5 w-3.5" /> Email
@@ -3339,7 +3339,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
             {/* Browser print fallback */}
             <div>
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Browser print</p>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 <Button
                   type="button"
                   variant="outline"
@@ -3608,7 +3608,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Share Your Profile</h2>
 
       {/* Sharing Options Grid * /}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] sm:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
         <button
           onClick={generateQRWithImage}
           disabled={generatingQR}

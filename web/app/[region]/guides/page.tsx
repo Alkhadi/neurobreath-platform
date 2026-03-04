@@ -106,12 +106,12 @@ export default async function RegionGuidesPage({ params }: RegionGuidesPageProps
         {featuredGuides.length > 0 ? (
           <section className="space-y-4">
             <h2 className="text-xl font-semibold text-slate-900">Featured guides</h2>
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="flex flex-wrap gap-6">
               {featuredGuides.map(guide => (
                 <Link
                   key={guide.slug}
                   href={`/${regionKey}/guides/${guide.slug}`}
-                  className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+                  className="nb-surface nb-surface-interactive nb-focus p-5 basis-full md:basis-[calc(50%-12px)] min-w-0"
                 >
                   <h3 className="text-lg font-semibold text-slate-900">{guide.title}</h3>
                   <p className="mt-2 text-sm text-slate-600">{guide.description}</p>
@@ -124,12 +124,12 @@ export default async function RegionGuidesPage({ params }: RegionGuidesPageProps
         <section className="space-y-4">
           <h2 className="text-xl font-semibold text-slate-900">Browse topic clusters</h2>
           <p className="text-sm text-slate-600">Each cluster includes a “start here” tool and a set of focused guides.</p>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="flex flex-wrap gap-6">
             {PILLARS.map(pillar => (
               <Link
                 key={pillar.key}
                 href={`/guides/${pillar.key}`}
-                className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+                className="nb-surface nb-surface-interactive nb-focus p-5 basis-full md:basis-[calc(50%-12px)] min-w-0"
               >
                 <div className="text-lg font-semibold text-slate-900">{pillar.title}</div>
                 <p className="mt-2 text-sm text-slate-600">{pillar.description}</p>

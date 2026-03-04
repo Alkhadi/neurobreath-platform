@@ -27,7 +27,7 @@ export function ConditionHubPage({
         </header>
 
         {primaryLinks.length ? (
-          <section className="grid gap-4 md:grid-cols-2">
+          <section className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
             {primaryLinks.map(link => (
               <Link
                 key={link.href}

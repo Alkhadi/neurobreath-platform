@@ -81,7 +81,7 @@ export function CredibilityFooter({ editorial, region, className }: CredibilityF
           </div>
         </div>
 
-        <div className="grid gap-3 text-sm text-slate-600 md:grid-cols-3">
+        <div className="flex flex-wrap gap-3 text-sm text-slate-600 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
           <div>
             <p className="text-xs uppercase tracking-wide text-slate-400">{COPY[locale].lastReviewedLabel}</p>
             <p className="font-semibold text-slate-800">{format(reviewedDate, 'dd MMM yyyy')}</p>

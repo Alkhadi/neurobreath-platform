@@ -232,7 +232,7 @@ export function PhonicsSoundBoard() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
+          <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(20%-6px)] sm:[&>*]:basis-[calc(16.667%-7px)] md:[&>*]:basis-[calc(12.5%-7px)] lg:[&>*]:basis-[calc(10%-7px)] [&>*]:min-w-0">
             {alphabet.map((letter) => (
               <button
                 key={letter.letter}

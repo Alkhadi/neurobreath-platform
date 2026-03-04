@@ -166,7 +166,7 @@ export default function DyslexiaReadingTrainingPage() {
                         Our methods are informed by research from leading organizations including the British Dyslexia Association, Yale Center for Dyslexia & Creativity, Reading Rockets,
                         and National Center on Improving Literacy.
                       </p>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 pt-2">
+                      <div className="flex flex-wrap gap-2 pt-2 [&>*]:basis-[calc(50%-4px)] md:[&>*]:basis-[calc(33.333%-5px)] [&>*]:min-w-0">
                         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                           <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                           <span>Phonology</span>
@@ -420,7 +420,7 @@ export default function DyslexiaReadingTrainingPage() {
                       Guidance for Parents & Educators
                     </h3>
                     
-                    <div className="grid gap-4 md:grid-cols-2">
+                    <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                       <div className="space-y-2">
                         <h4 className="text-sm font-semibold text-foreground">✓ Best Practices</h4>
                         <ul className="text-sm text-muted-foreground space-y-1.5 list-disc list-inside">

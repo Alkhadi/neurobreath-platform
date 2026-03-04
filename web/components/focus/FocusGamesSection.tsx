@@ -36,7 +36,7 @@ export function FocusGamesSection({ region }: FocusGamesSectionProps) {
         Practice your focus skills with gentle, interactive games. No pressure,
         just fun practice.
       </p>
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
         {focusGames.map((game) => {
           const Icon = resolveIcon(game.icon);
           return (

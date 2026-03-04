@@ -12,7 +12,7 @@ export default function HeroSection() {
 
   return (
     <Card className="p-8 md:p-12 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-blue-200 dark:border-blue-800">
-      <div className="grid md:grid-cols-2 gap-8">
+      <div className="flex flex-wrap gap-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
         <div className="space-y-6">
           <div>
             <Badge variant="secondary" className="mb-4">Blog · AI-powered hub</Badge>

@@ -75,7 +75,7 @@ export default function ADHDParentSupportPage() {
           </div>
 
           {/* Hero Cards */}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur">
               <CardHeader>
                 <Badge className="w-fit mb-2" variant="secondary">Daily routines</Badge>
@@ -129,7 +129,7 @@ export default function ADHDParentSupportPage() {
               <CardTitle>Supporting your child with ADHD</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                 <div>
                   <h4 className="font-semibold mb-1 flex items-center gap-2">
                     <Target className="w-4 h-4 text-purple-600" />
@@ -170,7 +170,7 @@ export default function ADHDParentSupportPage() {
       {/* Parent Overview */}
       <section id="parent-overview" className="py-16 bg-white dark:bg-gray-900">
         <div className="mx-auto px-4 max-w-[86vw]">
-          <div className="grid gap-6 lg:grid-cols-3 mb-8">
+          <div className="flex flex-wrap gap-6 mb-8 [&>*]:basis-full lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <div className="lg:col-span-2">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">ADHD (Parents) — quick overview</h2>
               <p className="text-muted-foreground">
@@ -200,7 +200,7 @@ export default function ADHDParentSupportPage() {
             </Card>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -307,7 +307,7 @@ export default function ADHDParentSupportPage() {
             </p>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full lg:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card className="border-2 border-purple-200 dark:border-purple-800">
               <CardHeader>
                 <Badge className="w-fit mb-2" variant="secondary">Structure</Badge>
@@ -550,7 +550,7 @@ export default function ADHDParentSupportPage() {
             </TabsContent>
 
             <TabsContent value="accommodations" className="space-y-6">
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-lg">504 Plan (US)</CardTitle>
@@ -615,7 +615,7 @@ export default function ADHDParentSupportPage() {
                     <CardDescription>Special Educational Needs support in UK schools</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid gap-4 md:grid-cols-2">
+                    <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                       <div>
                         <h4 className="font-semibold text-sm mb-2">SEN Support</h4>
                         <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground ml-4">
@@ -706,7 +706,7 @@ export default function ADHDParentSupportPage() {
             </AlertDescription>
           </Alert>
 
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full lg:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card className="border-2 border-purple-200 dark:border-purple-800">
               <CardHeader>
                 <Badge className="w-fit mb-2" variant="secondary">Medication</Badge>
@@ -834,7 +834,7 @@ export default function ADHDParentSupportPage() {
                   <CardDescription>Preschool and early elementary years</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid gap-6 md:grid-cols-2">
+                  <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                     <div>
                       <h4 className="font-semibold mb-2">Key challenges</h4>
                       <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground ml-4">
@@ -877,7 +877,7 @@ export default function ADHDParentSupportPage() {
                   <CardDescription>Elementary and early middle school years</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid gap-6 md:grid-cols-2">
+                  <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                     <div>
                       <h4 className="font-semibold mb-2">Key challenges</h4>
                       <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground ml-4">
@@ -919,7 +919,7 @@ export default function ADHDParentSupportPage() {
                   <CardDescription>Middle and high school years</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid gap-6 md:grid-cols-2">
+                  <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                     <div>
                       <h4 className="font-semibold mb-2">Key challenges</h4>
                       <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground ml-4">
@@ -962,7 +962,7 @@ export default function ADHDParentSupportPage() {
                   <CardDescription>College, work, and independent living</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid gap-6 md:grid-cols-2">
+                  <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                     <div>
                       <h4 className="font-semibold mb-2">Key challenges</h4>
                       <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground ml-4">
@@ -1006,7 +1006,7 @@ export default function ADHDParentSupportPage() {
         <div className="mx-auto px-4 max-w-[86vw]">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Resources & Support Organizations</h2>
           
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">CHADD</CardTitle>
@@ -1133,7 +1133,7 @@ export default function ADHDParentSupportPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                 <div>
                   <h4 className="font-semibold mb-3">How breathing helps ADHD</h4>
                   <ul className="space-y-2 text-sm">
@@ -1155,7 +1155,7 @@ export default function ADHDParentSupportPage() {
                 </div>
               </div>
 
-              <div className="mt-6 grid gap-3 grid-cols-2 md:grid-cols-4">
+              <div className="flex flex-wrap mt-6 gap-3 [&>*]:basis-[calc(50%-6px)] md:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
                 <Link href="/techniques/sos">
                   <Button variant="default" className="w-full h-auto py-3" size="sm">
                     <div className="text-center">

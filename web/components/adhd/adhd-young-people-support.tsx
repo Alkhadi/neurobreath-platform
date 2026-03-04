@@ -14,7 +14,7 @@ export function ADHDYoungPeopleSupport() {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
         <Card className="border-2 border-red-200 dark:border-red-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -46,7 +46,7 @@ export function ADHDYoungPeopleSupport() {
         </Card>
       </div>
 
-      <div className="mt-6 grid md:grid-cols-3 gap-4">
+      <div className="flex flex-wrap mt-6 gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
         {[
           { name: 'NHS ADHD in Children', url: 'https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/' },
           { name: 'ADHD Foundation', url: 'https://adhdfoundation.org.uk/' },

@@ -21,7 +21,7 @@ export default function EvidenceSnapshot({ snapshot }: EvidenceSnapshotProps) {
           Evidence Snapshot
         </CardTitle>
       </CardHeader>
-      <CardContent className="grid md:grid-cols-2 gap-4">
+      <CardContent className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
         {snapshot.nhsNice.length > 0 && (
           <div>
             <h4 className="font-semibold text-sm mb-2 flex items-center gap-1">

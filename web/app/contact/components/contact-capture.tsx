@@ -390,7 +390,7 @@ export function ContactCapture({ contacts, onUpsert, onDelete }: ContactCaptureP
               <Label>Job Title</Label>
               <Input value={draft.jobTitle} onChange={(e) => setDraft((d) => ({ ...d, jobTitle: e.target.value }))} />
             </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
               <div className="grid gap-2">
                 <Label>Email</Label>
                 <Input value={draft.email} onChange={(e) => setDraft((d) => ({ ...d, email: e.target.value }))} />
@@ -662,7 +662,7 @@ export function ContactCapture({ contacts, onUpsert, onDelete }: ContactCaptureP
       {showForm && (
         <form onSubmit={handleSubmit} className="bg-gray-50 p-6 rounded-lg mb-6 space-y-4">
           <h3 className="text-lg font-bold text-gray-800 mb-4">Basic Information</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">Name *</label>
               <input
@@ -756,7 +756,7 @@ export function ContactCapture({ contacts, onUpsert, onDelete }: ContactCaptureP
                   </DialogHeader>
 
                   <form onSubmit={handleSubmit} className="space-y-5">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                       <div>
                         <Label htmlFor="c-name">Name *</Label>
                         <Input
@@ -831,7 +831,7 @@ export function ContactCapture({ contacts, onUpsert, onDelete }: ContactCaptureP
 
                     <Separator />
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                       <div>
                         <Label htmlFor="c-website">Website</Label>
                         <Input

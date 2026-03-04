@@ -20,7 +20,7 @@ export default function GuidesIndexPage() {
         Practical, UK-English guidance with clear next steps. Educational information only.
       </p>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+      <div className="flex flex-wrap mt-8 gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
         {pillars.map(pillar => (
           <Link
             key={pillar.key}

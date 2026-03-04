@@ -159,7 +159,7 @@ export const References = () => {
           NICE guidelines, NHS resources, government education guidance, and peer-reviewed research.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+        <div className="flex flex-wrap gap-6 auto-rows-fr [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
           {referenceGroups?.map?.((group) => (
             <Card key={group?.title} className="p-5 flex flex-col h-full">
               <h3 className="text-lg font-semibold mb-3">{group?.title}</h3>

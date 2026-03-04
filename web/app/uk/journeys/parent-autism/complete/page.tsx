@@ -32,8 +32,8 @@ export default function JourneyComplete() {
 
       <section className="mb-10">
         <h2 className="text-2xl font-semibold mb-6 text-center">What&apos;s Next?</h2>
-        <div className="grid gap-6 md:grid-cols-3">
-          <Card className="hover:shadow-lg transition-shadow">
+        <div className="flex flex-wrap gap-6">
+          <Card className="nb-surface-interactive basis-full md:basis-[calc(33.333%-16px)] min-w-0">
             <CardHeader>
               <CardTitle>Explore Resources</CardTitle>
               <CardDescription>Access comprehensive autism resources</CardDescription>
@@ -47,7 +47,7 @@ export default function JourneyComplete() {
               </Button>
             </CardContent>
           </Card>
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="nb-surface-interactive basis-full md:basis-[calc(33.333%-16px)] min-w-0">
             <CardHeader>
               <CardTitle>Try Tools</CardTitle>
               <CardDescription>Explore sensory and regulation tools</CardDescription>
@@ -61,7 +61,7 @@ export default function JourneyComplete() {
               </Button>
             </CardContent>
           </Card>
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="nb-surface-interactive basis-full md:basis-[calc(33.333%-16px)] min-w-0">
             <CardHeader>
               <CardTitle>About NeuroBreath</CardTitle>
               <CardDescription>Learn how NeuroBreath works</CardDescription>

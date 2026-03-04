@@ -141,7 +141,7 @@ export function ReadingCustomizer() {
           </h3>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
           {/* Settings Panel */}
           <div className="space-y-4">
             <div className="space-y-2">
@@ -223,7 +223,7 @@ export function ReadingCustomizer() {
                 <Palette className="w-4 h-4" />
                 Background Color:
               </label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(33.333%-5px)] [&>*]:min-w-0">
                 {backgroundColors.map((color) => (
                   <button
                     key={color.value}
@@ -242,7 +242,7 @@ export function ReadingCustomizer() {
 
             <div className="space-y-2">
               <label className="text-sm font-semibold">Text Color:</label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 {textColors.map((color) => (
                   <button
                     key={color.value}

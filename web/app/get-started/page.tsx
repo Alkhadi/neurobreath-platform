@@ -291,7 +291,7 @@ export default function GetStartedPage() {
 
           {/* Quick Stats */}
           <Card className="p-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="flex flex-wrap gap-6 [&>*]:basis-[calc(50%-12px)] md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary mb-2">5</div>
                 <div className="text-sm text-muted-foreground">Breathing Techniques</div>
@@ -324,7 +324,7 @@ export default function GetStartedPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             {quickWins.map((item) => {
               const Icon = item.icon;
               return (
@@ -363,7 +363,7 @@ export default function GetStartedPage() {
           </div>
 
           {/* Role Selection */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+          <div className="flex flex-wrap gap-4 mb-12 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
             {roles.map((role) => {
               const Icon = role.icon;
               const isSelected = selectedRole === role.id;
@@ -406,7 +406,7 @@ export default function GetStartedPage() {
               <h3 className="text-2xl font-bold mb-6 text-center">
                 {pathways[selectedRole].title}
               </h3>
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                 {pathways[selectedRole].steps.map((step, index) => {
                   const Icon = step.icon;
                   return (
@@ -457,7 +457,7 @@ export default function GetStartedPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             {mainFeatures.map((feature) => {
               const Icon = feature.icon;
               return (

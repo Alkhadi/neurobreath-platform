@@ -31,7 +31,7 @@ export function OtherWaysToSupport() {
       <div className="max-w-6xl mx-auto">
         <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center">Other Ways to Support</h2>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
+        <div className="flex flex-wrap gap-8 mb-12 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-21px)] [&>*]:min-w-0">
           <Card className="p-8 text-center hover:shadow-lg transition-shadow">
             <div className="text-5xl mb-6">📢</div>
             <h3 className="text-2xl font-bold mb-4">Spread the Word</h3>
