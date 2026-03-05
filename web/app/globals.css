@@ -1253,12 +1253,26 @@
   color: color-mix(in srgb, var(--nb-ink-500) 82%, var(--nb-brand-violet-ink) 18%);
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-/* Mid-width desktops: hide tagline to prevent brand/nav collisions (nav is still in desktop mode above 1024px) */
+/* Mid-width desktops (1025–1180px): compact tagline instead of hiding —
+   keeps brand legible on Tesla console screens and mid-size laptops
+   without colliding with the desktop nav that remains active above 1024px */
 @media (max-width: 1180px) and (min-width: 1025px) {
   .nb-brand-tagline {
-    display: none;
+    font-size: 0.52rem;
+    letter-spacing: 0.02em;
+  }
+}
+
+/* Tablets (481–1024px): hamburger active, tagline has full horizontal room —
+   bump readability slightly and ease tracking for comfortable viewing */
+@media (max-width: 1024px) and (min-width: 481px) {
+  .nb-brand-tagline {
+    font-size: clamp(0.60rem, 0.54rem + 0.28vw, 0.70rem);
+    letter-spacing: 0.06em;
   }
 }
 
@@ -1297,15 +1311,15 @@
   }
 }
 
-/* Ultra-small screens: keep tagline visible but tighten spacing to avoid collisions */
-@media (max-width: 420px) {
+/* Small mobile (≤480px): tighten brand gap + reduce tagline tracking for narrow screens */
+@media (max-width: 480px) {
   .nb-brand {
     gap: 0.6rem;
   }
 
   .nb-brand-tagline {
-    font-size: 0.58rem;
-    letter-spacing: 0.06em;
+    font-size: clamp(0.52rem, 0.48rem + 0.22vw, 0.60rem);
+    letter-spacing: 0.04em;
   }
 }
 
