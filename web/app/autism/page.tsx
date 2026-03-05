@@ -77,12 +77,20 @@ export default function AutismHubPage() {
 
       {/* Hero Section */}
       <section
-        className="py-6 sm:py-8 scroll-mt-20"
+        className="relative py-12 sm:py-16 scroll-mt-20 overflow-hidden"
+        style={{
+          backgroundImage: 'url("/images/home/home-section-bg.png")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
         data-tour="nb:autism-hub:hero"
         data-tour-order="1"
         data-tour-title="Autism Hub overview"
       >
-        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+        {/* Dark overlay — 30% darken, top-heavier gradient for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/20 dark:from-black/55 dark:via-black/40 dark:to-black/35" aria-hidden="true" />
+        <div className="relative z-10 mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div
             data-tour="nb:autism-hub:evidence-status"
             data-tour-order="2"
@@ -125,7 +133,7 @@ export default function AutismHubPage() {
 
       {/* Quick Navigation Cards - Full Width Background with Contained Content */}
       <section className="w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 py-8">
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] lg:[&>*]:basis-[calc(12.5%-14px)] [&>*]:min-w-0">
             {[
               { icon: Shield, label: 'Evidence', href: '#evidence' },
@@ -158,7 +166,7 @@ export default function AutismHubPage() {
         data-tour-order="3"
         data-tour-title="How to use this page"
       >
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <HowToUse />
         </div>
       </section>
@@ -171,7 +179,7 @@ export default function AutismHubPage() {
         data-tour-order="4"
         data-tour-title="Evidence Hub"
       >
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Evidence Hub
@@ -192,7 +200,7 @@ export default function AutismHubPage() {
         data-tour-order="8"
         data-tour-title="Track your progress"
       >
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Track Your Progress
@@ -213,7 +221,7 @@ export default function AutismHubPage() {
         data-tour-order="9"
         data-tour-title="Skills Library"
       >
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Skills Library
@@ -234,7 +242,7 @@ export default function AutismHubPage() {
         data-tour-order="12"
         data-tour-title="Calm Toolkit module"
       >
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Calm Toolkit
@@ -255,7 +263,7 @@ export default function AutismHubPage() {
         data-tour-order="13"
         data-tour-title="Quests module"
       >
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Daily Quests & Challenges
@@ -276,7 +284,7 @@ export default function AutismHubPage() {
         data-tour-order="14"
         data-tour-title="Pathways module"
       >
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Education Pathways
@@ -291,7 +299,7 @@ export default function AutismHubPage() {
 
       {/* Resources Library - Comprehensive Resources */}
       <section id="resources" className="w-full py-16 md:py-20 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Resources Library
@@ -306,7 +314,7 @@ export default function AutismHubPage() {
 
       {/* PubMed Research - Academic Section */}
       <section id="research" className="w-full py-16 md:py-20 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Research Database
@@ -327,7 +335,7 @@ export default function AutismHubPage() {
         data-tour-order="15"
         data-tour-title="AI chat support (educational)"
       >
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               AI Chat Support
@@ -342,7 +350,7 @@ export default function AutismHubPage() {
 
       {/* Myths & Facts - Educational Section */}
       <section id="myths" className="w-full py-16 md:py-20 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Myths vs Facts
@@ -363,7 +371,7 @@ export default function AutismHubPage() {
         data-tour-order="16"
         data-tour-title="Crisis / urgent help signposting"
       >
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <div className="text-center mb-12">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full mb-4">
               <AlertCircle className="w-8 h-8 text-red-600 dark:text-red-400" />

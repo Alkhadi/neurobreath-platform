@@ -47,8 +47,18 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950 pt-14 sm:pt-16 md:pt-20">
       {/* Hero Section */}
-      <section className="py-6 sm:py-8 scroll-mt-20">
-        <div className="mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
+      <section
+        className="relative py-12 sm:py-16 scroll-mt-20 overflow-hidden"
+        style={{
+          backgroundImage: 'url("/images/home/home-section-bg.png")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+          {/* Dark overlay — 30% darken, top-heavier gradient for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/20 dark:from-black/55 dark:via-black/40 dark:to-black/35" aria-hidden="true" />
+        <div className="relative z-10 mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px]">
           <PageHeader 
             title="ADHD Hub" 
             description="Evidence-based support and interactive tools for ADHD management backed by NICE NG87, AAP 2019, CDC, and 10+ peer-reviewed systematic reviews. Get personalized guidance for all ages."
