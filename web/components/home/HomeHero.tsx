@@ -58,12 +58,12 @@ export function HomeHero({ region, copy, recommendations }: HomeHeroProps) {
 					{/* Left: hero text + CTAs */}
 					<div className="w-full lg:w-[58%]">
 						<div className="flex flex-wrap items-center gap-3 mb-5">
-							<Badge className="border border-white/20 bg-white/10 text-white backdrop-blur-sm">
+							<Badge className="border border-white/20 bg-white/10 !text-black hover:!text-white active:!text-white transition-colors backdrop-blur-sm">
 								{copy.trustStrip.disclaimer}
 							</Badge>
 							<Link
 								href={`/${regionKey}/trust`}
-								className="text-xs font-semibold text-white/80 hover:text-white underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60 rounded-sm"
+								className="text-xs font-semibold !text-black hover:!text-white active:!text-white underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60 rounded-sm transition-colors"
 							>
 								{copy.trustStrip.trustCentreLabel}
 							</Link>
@@ -96,27 +96,27 @@ export function HomeHero({ region, copy, recommendations }: HomeHeroProps) {
 						<div className="mt-4 flex flex-wrap gap-3">
 							<Link
 								href={`/${regionKey}/conditions`}
-								className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold text-white/90 bg-white/10 border border-white/20 hover:bg-white/20 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
+								className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold !text-black hover:!text-white active:!text-white bg-white/10 border border-white/20 hover:bg-white/20 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
 							>
 								Browse conditions
 							</Link>
 							<Link
 								href="/techniques/sos"
-								className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold text-white/90 hover:text-white hover:bg-white/10 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
+								className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold !text-black hover:!text-white active:!text-white hover:bg-white/10 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
 							>
 								Try a quick calm tool
 							</Link>
 							<Link
 								href={`/${regionKey}/trust/last-reviewed`}
-								className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold text-white/90 hover:text-white hover:bg-white/10 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
+								className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold !text-black hover:!text-white active:!text-white hover:bg-white/10 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
 							>
 								{copy.trustStrip.lastReviewedLabel}
 							</Link>
 						</div>
 
 						<div className="mt-6 text-sm text-white/60">
-							<span className="font-semibold text-white/80">{copy.trustStrip.disclaimer}</span>{' '}
-							<span>Educational only. Not medical advice. No diagnosis. No medical claims.</span>
+							<span className="cursor-pointer font-semibold !text-black hover:!text-white active:!text-white transition-colors">{copy.trustStrip.disclaimer}</span>{' '}
+							<span className="!text-black hover:!text-white active:!text-white transition-colors">Educational only. Not medical advice. No diagnosis. No medical claims.</span>
 						</div>
 					</div>
 
