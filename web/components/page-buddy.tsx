@@ -1224,20 +1224,22 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
             "z-[60]",
             // 2% gap from top (navigation bar) - applies to all viewports
             "top-[calc(50%+1vh)]",
-            // Base mobile sizing - responsive for all devices
-            "w-[95vw] max-w-[340px]",
-            // Small devices (phones, unfolded screens)
-            "sm:w-[90vw] sm:max-w-[440px]",
+            // Mobile-first: large width filling nearly the full screen
+            "!w-[96vw] !max-w-[96vw]",
+            // Small devices
+            "sm:!w-[94vw] sm:!max-w-[820px]",
             // Medium devices and tablets
-            "md:w-[85vw] md:max-w-[520px]",
+            "md:!w-[92vw] md:!max-w-[960px]",
             // Large devices
-            "lg:w-[80vw] lg:max-w-[580px]",
-            // Heights - adaptive for all devices with 2% top margin
-            "h-[86vh] max-h-[86vh]",
-            "sm:h-[84vh] sm:max-h-[84vh]",
-            "md:h-[82vh] md:max-h-[82vh]",
+            "lg:!w-[90vw] lg:!max-w-[1120px]",
+            // Extra-large devices
+            "xl:!w-[88vw] xl:!max-w-[1240px]",
+            // Heights
+            "!h-[92vh] !max-h-[92vh]",
+            "sm:!h-[90vh] sm:!max-h-[90vh]",
+            "md:!h-[88vh] md:!max-h-[88vh]",
             // Minimized state
-            isMinimized ? "h-[120px] sm:h-[130px]" : ""
+            isMinimized ? "!h-[120px] sm:!h-[130px]" : ""
           )}
           aria-describedby="buddy-description"
           role="dialog"
@@ -1403,7 +1405,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
                       'bg-muted rounded-bl-md'
                     )}
                   >
-                    <div className="max-h-[300px] sm:max-h-[350px] md:max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent pr-1 sm:pr-2 md:pr-3 flex-shrink min-h-0">
+                    <div className="!max-h-none !overflow-visible pr-1 sm:pr-2 md:pr-3">
                       <BuddyErrorBoundary>
                         {message.buddyAnswer ? (
                           <BuddyAnswerCard

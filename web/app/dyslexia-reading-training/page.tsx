@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { PageHeaderCompact } from '@/components/page/PageHeader';
 import { PhonicsPlayer } from '@/components/PhonicsPlayer';
 import { PhonicsSoundsLab } from '@/components/PhonicsSoundsLab';
 import { VowelUniverse } from '@/components/VowelUniverse';

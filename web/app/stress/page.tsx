@@ -36,6 +36,8 @@ export default function StressPage() {
     ]),
     citationsSummary: createCitationsSummary(0, ['C']),
   })
+  const containerCls = "max-w-7xl mx-auto px-4"
+
   return (
     <main className="min-h-screen">
       {/* Skip Link for Accessibility */}
@@ -43,24 +45,37 @@ export default function StressPage() {
         Skip to main content
       </a>
 
-      {/* Hero Section */}
-      <section id="main-content" className="relative py-16 px-4 overflow-hidden">
-        <div className="max-w-7xl mx-auto">
+      {/* ── Band 1: Hero — background image + dark overlay ── */}
+      <section
+        id="main-content"
+        className="relative py-16 overflow-hidden"
+        style={{
+          backgroundImage: 'url("/images/home/home-section-bg.png")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div
+          className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/20 dark:from-black/55 dark:via-black/40 dark:to-black/35"
+          aria-hidden="true"
+        />
+        <div className={`relative z-10 ${containerCls}`}>
           <div className="mb-12">
-            <PageHeader 
-              title="Stress Hub" 
+            <PageHeader
+              title="Stress Hub"
               description="Evidence-based tools and resources to understand and manage stress. Track your progress, build resilience, and find calm."
               showMetadata
             />
             <div className="flex flex-wrap justify-center gap-4 mt-6">
               <a href="#interactive-tools">
-                <Button size="lg" className="px-8 bg-teal-600 hover:bg-teal-700">
+                <Button size="lg" className="px-8 bg-teal-500 hover:bg-teal-400 text-white shadow-lg">
                   <Activity className="mr-2 h-5 w-5" />
                   Start Managing Stress
                 </Button>
               </a>
               <a href="#crisis-help">
-                <Button size="lg" variant="outline" className="px-8">
+                <Button size="lg" variant="outline" className="px-8 border-white/40 bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm">
                   <AlertCircle className="mr-2 h-5 w-5" />
                   Crisis Resources
                 </Button>
@@ -68,48 +83,47 @@ export default function StressPage() {
             </div>
           </div>
 
-          {/* Quick Stats */}
-          <Card className="p-8 bg-gradient-to-r from-teal-50 to-purple-50">
-            <h2 className="text-2xl font-bold text-center mb-8">You're Not Alone</h2>
+          {/* Quick Stats — glass card */}
+          <Card className="p-8 bg-white/10 backdrop-blur-sm border-white/20">
+            <h2 className="text-2xl font-bold text-center mb-8 text-white">You&apos;re Not Alone</h2>
             <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
               <div className="text-center">
-                <div className="text-4xl font-bold text-primary mb-2">74%</div>
-                <div className="text-sm text-muted-foreground">UK adults felt overwhelmed by stress in the past year</div>
+                <div className="text-4xl font-bold text-teal-300 mb-2">74%</div>
+                <div className="text-sm text-white/75">UK adults felt overwhelmed by stress in the past year</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold text-primary mb-2">77%</div>
-                <div className="text-sm text-muted-foreground">US adults report stress affecting physical health</div>
+                <div className="text-4xl font-bold text-teal-300 mb-2">77%</div>
+                <div className="text-sm text-white/75">US adults report stress affecting physical health</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold text-primary mb-2">12.8M</div>
-                <div className="text-sm text-muted-foreground">Working days lost to stress in UK (2023)</div>
+                <div className="text-4xl font-bold text-teal-300 mb-2">12.8M</div>
+                <div className="text-sm text-white/75">Working days lost to stress in UK (2023)</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold text-primary mb-2">Manageable</div>
-                <div className="text-sm text-muted-foreground">With evidence-based strategies</div>
+                <div className="text-4xl font-bold text-teal-300 mb-2">Manageable</div>
+                <div className="text-sm text-white/75">With evidence-based strategies</div>
               </div>
             </div>
           </Card>
         </div>
       </section>
 
-
-      {/* What is Stress */}
-      <section className="py-16 px-4 bg-white">
+      {/* ── Band 2: What is Stress? — soft teal tint ── */}
+      <section className="py-16 px-4 bg-teal-50/70 dark:bg-teal-950/10">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold mb-6 text-center">What is Stress?</h2>
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             <Card className="p-6">
               <h3 className="font-semibold text-lg mb-3">Normal Stress vs. Chronic Stress</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                <strong>Normal stress</strong> is the body's natural reaction to challenges—it enhances alertness and can boost performance. 
+                <strong>Normal stress</strong> is the body&apos;s natural reaction to challenges—it enhances alertness and can boost performance.
                 <strong className="block mt-2">Chronic stress</strong> occurs when stressors persist without relief, leading to physical and mental health problems over time.
               </p>
             </Card>
             <Card className="p-6">
               <h3 className="font-semibold text-lg mb-3">The Fight-or-Flight Response</h3>
               <p className="text-sm text-muted-foreground">
-                When facing a threat, your body releases adrenaline and cortisol, increasing heart rate, blood pressure, and energy supplies. 
+                When facing a threat, your body releases adrenaline and cortisol, increasing heart rate, blood pressure, and energy supplies.
                 This survival mechanism is helpful short-term but harmful when constantly activated.
               </p>
             </Card>
@@ -117,8 +131,8 @@ export default function StressPage() {
         </div>
       </section>
 
-      {/* Interactive Tools Hub */}
-      <section id="interactive-tools" className="py-16 px-4">
+      {/* ── Band 3: Interactive Tools — white ── */}
+      <section id="interactive-tools" className="py-16 px-4 bg-white dark:bg-gray-950">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">Interactive Wellness Tools</h2>
@@ -181,8 +195,8 @@ export default function StressPage() {
         </div>
       </section>
 
-      {/* Understanding Stress - Educational Content */}
-      <section className="py-16 px-4 bg-gradient-to-br from-teal-50 to-purple-50">
+      {/* ── Band 4: Understanding Stress — purple-teal gradient ── */}
+      <section className="py-16 px-4 bg-gradient-to-br from-teal-50 to-purple-50 dark:from-teal-950/20 dark:to-purple-950/20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <BookOpen className="h-12 w-12 text-primary mx-auto mb-4" />
@@ -521,8 +535,8 @@ export default function StressPage() {
         </div>
       </section>
 
-      {/* Crisis Resources Section */}
-      <section id="crisis-help" className="py-16 px-4 bg-white">
+      {/* ── Band 5: Crisis Resources — white ── */}
+      <section id="crisis-help" className="py-16 px-4 bg-white dark:bg-gray-950">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <AlertCircle className="h-12 w-12 text-red-600 mx-auto mb-4" />

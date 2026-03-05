@@ -261,54 +261,72 @@ export default function SleepPage() {
   const unlockedBadges = badges.filter(b => b.unlocked).length
   const checklistProgress = Math.round(checklist.filter(c => c.completed).length / checklist.length * 100)
 
+  const containerCls = "max-w-4xl mx-auto px-4"
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 py-12">
-      <div className="container max-w-4xl mx-auto px-4">
-        
-        {/* Hero Section */}
-        <div className="mb-8">
-          <PageHeader 
-            title="Sleep Hub" 
-            description="Evidence-based tools and resources to understand and manage sleep. Track your progress, build resilience, and find rest."
-            showMetadata
-          />
-          
-          {/* Quick Stats */}
-          <div className="flex flex-wrap gap-4 mt-6 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
-            <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-200">
-              <Flame className="w-6 h-6 mx-auto mb-1 text-orange-500" />
-              <p className="text-2xl font-bold text-slate-900">{streak}</p>
-              <p className="text-sm text-slate-600">Day Streak</p>
+    <main className="min-h-screen">
+
+      {/* ── Band 1: Hero — background image + dark overlay ── */}
+      <section
+        className="relative py-16 overflow-hidden"
+        style={{
+          backgroundImage: 'url("/images/home/home-section-bg.png")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div
+          className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/20 dark:from-black/55 dark:via-black/40 dark:to-black/35"
+          aria-hidden="true"
+        />
+        <div className={`relative z-10 ${containerCls}`}>
+          <div className="mb-8">
+            <PageHeader
+              title="Sleep Hub"
+              description="Evidence-based tools and resources to understand and manage sleep. Track your progress, build resilience, and find rest."
+              showMetadata
+            />
+
+            {/* Quick Stats — glass cards */}
+            <div className="flex flex-wrap gap-4 mt-6 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
+              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 text-center">
+                <Flame className="w-6 h-6 mx-auto mb-1 text-orange-400" />
+                <p className="text-2xl font-bold text-white">{streak}</p>
+                <p className="text-sm text-white/75">Day Streak</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 text-center">
+                <Target className="w-6 h-6 mx-auto mb-1 text-blue-400" />
+                <p className="text-2xl font-bold text-white">{sleepScore}</p>
+                <p className="text-sm text-white/75">Sleep Score</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 text-center">
+                <Trophy className="w-6 h-6 mx-auto mb-1 text-yellow-400" />
+                <p className="text-2xl font-bold text-white">{unlockedBadges}/{badges.length}</p>
+                <p className="text-sm text-white/75">Badges</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 text-center">
+                <CheckCircle className="w-6 h-6 mx-auto mb-1 text-green-400" />
+                <p className="text-2xl font-bold text-white">{checklistProgress}%</p>
+                <p className="text-sm text-white/75">Hygiene</p>
+              </div>
             </div>
-            <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-200">
-              <Target className="w-6 h-6 mx-auto mb-1 text-blue-500" />
-              <p className="text-2xl font-bold text-slate-900">{sleepScore}</p>
-              <p className="text-sm text-slate-600">Sleep Score</p>
-            </div>
-            <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-200">
-              <Trophy className="w-6 h-6 mx-auto mb-1 text-yellow-500" />
-              <p className="text-2xl font-bold text-slate-900">{unlockedBadges}/{badges.length}</p>
-              <p className="text-sm text-slate-600">Badges</p>
-            </div>
-            <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-200">
-              <CheckCircle className="w-6 h-6 mx-auto mb-1 text-green-500" />
-              <p className="text-2xl font-bold text-slate-900">{checklistProgress}%</p>
-              <p className="text-sm text-slate-600">Hygiene</p>
-            </div>
+
+            <Button
+              onClick={() => setShowTracker(!showTracker)}
+              className="mt-6 bg-indigo-500 hover:bg-indigo-400 text-white shadow-lg"
+            >
+              <Moon className="w-4 h-4 mr-2" /> {showTracker ? 'Hide' : 'Open'} Sleep Tracker
+            </Button>
           </div>
-          
-          <Button 
-            onClick={() => setShowTracker(!showTracker)} 
-            className="mt-6 bg-indigo-600 text-white hover:bg-indigo-700"
-          >
-            <Moon className="w-4 h-4 mr-2" /> {showTracker ? 'Hide' : 'Open'} Sleep Tracker
-          </Button>
         </div>
+      </section>
 
-
-        {/* Sleep Tracker Panel */}
-        {showTracker && (
-          <div className="bg-white rounded-2xl p-6 shadow-xl mb-8">
+      {/* ── Band 2: Sleep Tracker Panel — indigo tint (conditional) ── */}
+      {showTracker && (
+        <section className="py-8 px-4 bg-indigo-50/70 dark:bg-indigo-950/10">
+          <div className={containerCls}>
+            <div className="bg-white rounded-2xl p-6 shadow-xl">
             <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
               <Calendar className="w-6 h-6 text-indigo-600" /> Sleep Tracker & Diary
             </h2>
@@ -445,11 +463,17 @@ export default function SleepPage() {
                 />
               </div>
             </div>
+            </div>
           </div>
-        )}
+        </section>
+      )}
+
+      {/* ── Band 3: Navigation Tabs + Content — white ── */}
+      <section className="py-8 px-4 bg-white dark:bg-gray-950">
+        <div className={containerCls}>
 
         {/* Navigation Tabs */}
-        <div className="bg-white rounded-xl p-2 shadow mb-6 overflow-x-auto">
+        <div className="bg-white rounded-xl p-2 shadow mb-6 overflow-x-auto border border-slate-100">
           <div className="flex gap-1 min-w-max">
             {[
               { id: 'understanding', label: 'Understanding', icon: Brain },
@@ -1275,33 +1299,40 @@ export default function SleepPage() {
           )}
         </div>
 
-        {/* Warning Note */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
-          <p className="text-sm text-gray-700">
-            <strong>⚠️ Important:</strong> If sleep problems persist for more than 3 weeks or significantly interfere with daily functioning, 
-            consult a healthcare professional. This information is educational and does not replace medical advice.
-          </p>
         </div>
+      </section>
 
-        {/* Footer CTA */}
-        <div className="flex justify-center gap-4">
-          <Button onClick={() => setShowTracker(true)} size="lg" className="bg-indigo-600 hover:bg-indigo-700">
-            <Moon className="w-4 h-4 mr-2" /> Track Your Sleep
-          </Button>
-          <Button asChild size="lg" variant="outline">
-            <Link href="/techniques/4-7-8">Try Sleep Breathing</Link>
-          </Button>
+      {/* ── Band 4: Warning Note + CTAs — amber tint ── */}
+      <section className="py-10 px-4 bg-amber-50/60 dark:bg-amber-950/10">
+        <div className={containerCls}>
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
+            <p className="text-sm text-gray-700">
+              <strong>⚠️ Important:</strong> If sleep problems persist for more than 3 weeks or significantly interfere with daily functioning,
+              consult a healthcare professional. This information is educational and does not replace medical advice.
+            </p>
+          </div>
+
+          <div className="flex justify-center gap-4">
+            <Button onClick={() => setShowTracker(true)} size="lg" className="bg-indigo-600 hover:bg-indigo-700">
+              <Moon className="w-4 h-4 mr-2" /> Track Your Sleep
+            </Button>
+            <Button asChild size="lg" variant="outline">
+              <Link href="/techniques/4-7-8">Try Sleep Breathing</Link>
+            </Button>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <CredibilityFooter editorial={editorial} region={region} />
-      </div>
+      {/* ── Band 5: Credibility + Evidence footers — slate ── */}
+      <section className="py-8 px-4 bg-slate-50 dark:bg-slate-950/20">
+        <div className="max-w-7xl mx-auto">
+          <CredibilityFooter editorial={editorial} region={region} />
+          <div className="mt-8">
+            <EvidenceFooter evidence={evidence} />
+          </div>
+        </div>
+      </section>
 
-      {/* Evidence Sources */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <EvidenceFooter evidence={evidence} />
-      </div>
-    </div>
+    </main>
   )
 }
