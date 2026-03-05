@@ -22,7 +22,10 @@
 
 /* Hero Section */
 .hero {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  background-image: url('/images/home/home-section-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: white;
   padding: var(--spacing-3xl) 0;
   text-align: center;
@@ -37,9 +40,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="rgba(255,255,255,0.1)"></path></svg>') no-repeat;
-  background-size: cover;
-  opacity: 0.3;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.42), rgba(0,0,0,0.28) 50%, rgba(0,0,0,0.22));
+  opacity: 1;
 }
 
 .heroContent {
@@ -64,18 +66,16 @@
   animation: slideUp 0.8s ease-out;
 }
 
-/* Language Toggle */
+/* Language Toggle — inline inside the hero, no longer fixed */
 .languageToggle {
-  position: fixed;
-  top: var(--spacing-lg);
-  right: var(--spacing-lg);
-  z-index: var(--z-fixed);
-  background: white;
-  border-radius: var(--radius-full);
-  box-shadow: var(--shadow-lg);
-  display: flex;
+  display: inline-flex;
   gap: var(--spacing-xs);
   padding: var(--spacing-xs);
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.30);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .languageButton {
@@ -84,19 +84,30 @@
   background: transparent;
   font-weight: 600;
   font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.90);
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
   transition: all var(--transition-base);
+  cursor: pointer;
+  border: none;
 }
 
 .languageButton:hover {
-  background-color: var(--color-surface);
+  background-color: rgba(255, 255, 255, 0.20);
+  color: white;
 }
 
 .languageButton.active {
-  background-color: var(--color-primary);
-  color: white;
+  background-color: rgba(255, 255, 255, 0.95);
+  color: var(--color-primary);
+}
+
+/* Slot at the top-right of the hero for the language toggle */
+.heroTopSlot {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--spacing-xl);
 }
 
 /* Content Card */
