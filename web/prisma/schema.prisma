@@ -167,6 +167,41 @@ model NBCardContact {
 }
 
 // ============================================================================
+// NB-CARD SHARE (Universal QR / tokenised share links)
+// ============================================================================
+
+model NbCardShare {
+  /// Short share token (cuid) used in /nb-card/s/[token]
+  token         String   @id @default(cuid())
+
+  /// Serialised CardModel JSON (sanitised — no secret fields)
+  cardModelJson Json
+
+  /// Pre-generated PNG (base64 data-url or S3/R2 URL)
+  pngUrl        String?
+
+  /// Pre-generated PDF (S3/R2 URL)
+  pdfUrl        String?
+
+  /// Owner email (signed-in user) or null (anonymous)
+  ownerEmail    String?
+
+  /// Owner device ID (anonymous) or null
+  ownerDeviceId String?
+
+  /// Whether the share is publicly accessible
+  isPublic      Boolean  @default(true)
+
+  createdAt     DateTime @default(now())
+  /// Auto-expire after 90 days (enforced by cron / TTL policy)
+  expiresAt     DateTime?
+
+  @@index([ownerEmail])
+  @@index([ownerDeviceId])
+  @@index([createdAt])
+}
+
+// ============================================================================
 // READING ASSESSMENT MODELS
 // ============================================================================
 
