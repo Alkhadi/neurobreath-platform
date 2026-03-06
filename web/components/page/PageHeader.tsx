@@ -36,7 +36,7 @@ export function PageHeader({
     <header className="space-y-6 mb-8">
       {/* Title and description */}
       <div className="space-y-2">
-        <h1 className={variant === 'compact' ? 'text-2xl font-bold' : 'text-3xl md:text-4xl font-bold'}>
+        <h1 className={variant === 'compact' ? 'text-2xl font-bold' : 'text-3xl md:text-4xl font-bold'} style={{ color: '#0d0d0d' }}>
           {title}
         </h1>
         {description && (

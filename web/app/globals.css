@@ -1763,7 +1763,7 @@
   font-size: 3rem;
   font-weight: 800;
   line-height: 1.1;
-  color: #111827;
+  color: #0d0d0d;
   letter-spacing: -0.02em;
 }
 
@@ -1939,7 +1939,7 @@
 .nb-hero-concerns-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #111827;
+  color: #0d0d0d;
   margin-bottom: 1.5rem;
   text-align: center;
 }
@@ -2546,7 +2546,7 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
 .nb-hero-main-title {
   font-size: 3rem;
   font-weight: 900;
-  color: #0f172a;
+  color: #0d0d0d;
   text-align: center;
   margin-bottom: 3rem;
   line-height: 1.2;
@@ -2637,7 +2637,7 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
 .nb-quickwin__title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #0d0d0d;
   margin-bottom: 0.75rem;
 }
 
@@ -2720,7 +2720,7 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
 .nb-glass-line-bold {
   font-size: 1.125rem;
   font-weight: 700;
-  color: #1e293b;
+  color: #0d0d0d;
   margin-bottom: 0.75rem;
   line-height: 1.6;
 }
@@ -2736,7 +2736,7 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
 /* Paragraph under glass card */
 .nb-hero-paragraph {
   font-size: 1rem;
-  color: #1e293b;
+  color: #0d0d0d;
   line-height: 1.7;
   margin: 0;
 }
@@ -2850,7 +2850,7 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
 .nb-glass-heading {
   font-size: 1.5rem;
   font-weight: 800;
-  color: #0f172a;
+  color: #0d0d0d;
   margin-bottom: 1.25rem;
 }
 
@@ -2878,7 +2878,7 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
 }
 
 .nb-feature-link {
-  color: #1e293b;
+  color: #0d0d0d;
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
@@ -2913,7 +2913,7 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
 .nb-glass-subheading {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #0d0d0d;
   margin-bottom: 1rem;
 }
 
@@ -2932,7 +2932,7 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
   border-radius: 0.75rem;
   font-size: 0.938rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #0d0d0d;
   text-align: center;
   text-decoration: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
