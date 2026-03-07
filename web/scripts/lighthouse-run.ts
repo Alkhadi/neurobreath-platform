@@ -1,7 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import lighthouse from 'lighthouse'
 import type { Config, Flags } from 'lighthouse'
 import * as chromeLauncher from 'chrome-launcher'
 
@@ -22,6 +21,11 @@ function slugify(input: string) {
 }
 
 async function runOnce(url: string, profile: Profile) {
+  // Lighthouse is ESM-first and relies on `import.meta.url` for internal path resolution.
+  // In some CI/tooling environments, static imports under tsx/CJS interop can break that.
+  // Use a dynamic import to ensure Lighthouse is loaded in a proper ESM context.
+  const { default: lighthouse } = await import('lighthouse')
+
   const chrome = await chromeLauncher.launch({
     chromeFlags: ['--headless=new', '--no-sandbox', '--disable-gpu'],
   })

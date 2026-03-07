@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node (LTS)
         uses: actions/setup-node@v4
@@ -26,6 +28,13 @@ jobs:
       - name: Validate SVG templates (no raster refs)
         working-directory: .
         run: node web/scripts/validate-svg-no-raster.mjs --dirs web/public/templates/nb-wallet/templates-bundle
+
+      - name: Strict patch guard (scope/deps/prisma/artifacts)
+        working-directory: .
+        run: node web/scripts/strict-patch-guard.mjs --ci
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.sha }}
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
