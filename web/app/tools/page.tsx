@@ -1,137 +1,156 @@
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Layers, Sparkles, Shuffle, Grid } from 'lucide-react'
 import type { Region } from '@/lib/region/region'
 import { splitTextWithGlossary } from '@/lib/glossary/recogniseTerms'
 import { GlossaryTooltip } from '@/components/glossary/GlossaryTooltip'
-import { TrustPanel } from '@/components/trust/TrustPanel'
+import { PageShellNB, PageEndNB } from '@/components/layout/page-primitives'
+import { HeroToolNB } from '@/components/layout/hero-primitives'
+import { FeatureGridNB, ContentCardNB, CTASectionNB } from '@/components/layout/section-primitives'
+import { TrustBlockNB, TrustStripNB } from '@/components/trust/trust-primitives'
+import { Layers, Sparkles, Shuffle, Grid } from 'lucide-react'
+import Link from 'next/link'
 
 export default function ToolsPage() {
-  const region: Region = 'UK';
-  let glossaryRemaining = 5;
+  const region: Region = 'UK'
+  let glossaryRemaining = 5
 
   const renderGlossaryText = (text: string) => {
-    if (glossaryRemaining <= 0) return text;
-    const segments = splitTextWithGlossary(text, region, glossaryRemaining);
-    const termCount = segments.filter(segment => segment.type === 'term').length;
-    glossaryRemaining = Math.max(0, glossaryRemaining - termCount);
+    if (glossaryRemaining <= 0) return text
+    const segments = splitTextWithGlossary(text, region, glossaryRemaining)
+    const termCount = segments.filter((segment) => segment.type === 'term').length
+    glossaryRemaining = Math.max(0, glossaryRemaining - termCount)
     return segments.map((segment, index) =>
       segment.type === 'term' ? (
-        <GlossaryTooltip key={`${segment.termId}-${index}`} termId={segment.termId || ''} display={segment.value} region={region} />
+        <GlossaryTooltip
+          key={`${segment.termId}-${index}`}
+          termId={segment.termId ?? ''}
+          display={segment.value}
+          region={region}
+        />
       ) : (
         <span key={`${segment.value}-${index}`}>{segment.value}</span>
       ),
-    );
-  };
+    )
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-12">
-      <div className="container max-w-6xl mx-auto px-4">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Breathing Tools</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {renderGlossaryText('Interactive breathing exercises and gamified tools to keep your practice engaging and effective.')}
-          </p>
-        </div>
+    <PageShellNB tone="soft">
+      {/* ── Hero ─────────────────────────────────────────────── */}
+      <HeroToolNB
+        eyebrow="Interactive tools"
+        title="Breathing Tools"
+        summary="Interactive breathing exercises and gamified tools to keep your practice engaging and effective."
+        trustNote={<TrustStripNB region={region} />}
+      />
 
-        <div className="flex flex-wrap gap-8 mb-12 [&>*]:basis-full md:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
+      {/* ── Tool cards ───────────────────────────────────────── */}
+      <div className="container-nb py-12">
+        <FeatureGridNB columns={2}>
           {/* Breath Ladder */}
-          <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                <Layers className="w-6 h-6 text-white" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900">Breath Ladder</h2>
-            </div>
-            <p className="text-gray-600 mb-6">
-              {renderGlossaryText('Progressively increase your breathing capacity by climbing from 3-3-3-3 to 5-5-5-5. Each rung builds steady focus and confidence with structured progression.')}
-            </p>
-            <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
+          <ContentCardNB
+            title="Breath Ladder"
+            description={renderGlossaryText(
+              'Progressively increase your breathing capacity by climbing from 3-3-3-3 to 5-5-5-5. Each rung builds steady focus and confidence with structured progression.',
+            ) as string}
+            icon={<Layers className="w-6 h-6 text-white" />}
+            accent="linear-gradient(135deg, #9333ea, #ec4899)"
+            action={
+              <Link href="/tools/breath-ladder" className="nb-btn-primary w-full justify-center">
+                Try Breath Ladder
+              </Link>
+            }
+          >
+            <ul className="space-y-1.5 text-sm text-[color:var(--nb-text-body)] dark:text-white/70 list-disc pl-5">
               <li>Start at your comfortable level</li>
               <li>Progress gradually through 5 rungs</li>
               <li>Track your advancement</li>
               <li>Build sustainable capacity</li>
             </ul>
-            <Button asChild className="w-full">
-              <Link href="/tools/breath-ladder">Try Breath Ladder</Link>
-            </Button>
-          </div>
+          </ContentCardNB>
 
           {/* Colour-Path Breathing */}
-          <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900">Colour-Path Breathing</h2>
-            </div>
-            <p className="text-gray-600 mb-6">
-              {renderGlossaryText('Follow the illuminated colour path through each breathing phase. Visual cues anchor attention and make timing intuitive for visual learners.')}
-            </p>
-            <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
+          <ContentCardNB
+            title="Colour-Path Breathing"
+            description={renderGlossaryText(
+              'Follow the illuminated colour path through each breathing phase. Visual cues anchor attention and make timing intuitive for visual learners.',
+            ) as string}
+            icon={<Sparkles className="w-6 h-6 text-white" />}
+            accent="linear-gradient(135deg, #3b82f6, #06b6d4)"
+            action={
+              <Link href="/tools/colour-path" className="nb-btn-primary w-full justify-center">
+                Try Colour-Path
+              </Link>
+            }
+          >
+            <ul className="space-y-1.5 text-sm text-[color:var(--nb-text-body)] dark:text-white/70 list-disc pl-5">
               <li>Color-coded breathing phases</li>
               <li>Visual timing guidance</li>
               <li>Perfect for visual processors</li>
               <li>Reduces cognitive load</li>
             </ul>
-            <Button asChild className="w-full">
-              <Link href="/tools/colour-path">Try Colour-Path</Link>
-            </Button>
-          </div>
+          </ContentCardNB>
 
           {/* Micro-Reset Roulette */}
-          <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
-                <Shuffle className="w-6 h-6 text-white" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900">Micro-Reset Roulette</h2>
-            </div>
-            <p className="text-gray-600 mb-6">
-              {renderGlossaryText("Can't decide which technique to use? Spin the wheel for a random 1-minute breathing reset. Perfect for decision fatigue and spontaneous practice.")}
-            </p>
-            <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
+          <ContentCardNB
+            title="Micro-Reset Roulette"
+            description={renderGlossaryText(
+              "Can't decide which technique to use? Spin the wheel for a random 1-minute breathing reset. Perfect for decision fatigue and spontaneous practice.",
+            ) as string}
+            icon={<Shuffle className="w-6 h-6 text-white" />}
+            accent="linear-gradient(135deg, #f97316, #ef4444)"
+            action={
+              <Link href="/tools/roulette" className="nb-btn-primary w-full justify-center">
+                Spin the Wheel
+              </Link>
+            }
+          >
+            <ul className="space-y-1.5 text-sm text-[color:var(--nb-text-body)] dark:text-white/70 list-disc pl-5">
               <li>Random technique selection</li>
               <li>1-minute quick resets</li>
               <li>Reduces decision paralysis</li>
               <li>Keeps practice varied</li>
             </ul>
-            <Button asChild className="w-full">
-              <Link href="/tools/roulette">Spin the Wheel</Link>
-            </Button>
-          </div>
+          </ContentCardNB>
 
           {/* Focus Tiles */}
-          <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
-                <Grid className="w-6 h-6 text-white" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900">Focus Tiles</h2>
-            </div>
-            <p className="text-gray-600 mb-6">
-              {renderGlossaryText('Context-based breathing suggestions for different situations: school, work, home, or social. Get the right technique for the right moment.')}
-            </p>
-            <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
+          <ContentCardNB
+            title="Focus Tiles"
+            description={renderGlossaryText(
+              'Context-based breathing suggestions for different situations: school, work, home, or social. Get the right technique for the right moment.',
+            ) as string}
+            icon={<Grid className="w-6 h-6 text-white" />}
+            accent="linear-gradient(135deg, #10b981, #059669)"
+            action={
+              <Link href="/tools/focus-tiles" className="nb-btn-primary w-full justify-center">
+                Explore Focus Tiles
+              </Link>
+            }
+          >
+            <ul className="space-y-1.5 text-sm text-[color:var(--nb-text-body)] dark:text-white/70 list-disc pl-5">
               <li>Situation-specific techniques</li>
               <li>Quick recommendations</li>
               <li>Context-aware guidance</li>
               <li>Practical application</li>
             </ul>
-            <Button asChild className="w-full">
-              <Link href="/tools/focus-tiles">Explore Focus Tiles</Link>
-            </Button>
-          </div>
-        </div>
+          </ContentCardNB>
+        </FeatureGridNB>
 
-        <TrustPanel region={region} title="Evidence & trust" />
-
-        <div className="text-center">
-          <Button asChild size="lg" className="bg-purple-600 hover:bg-purple-700">
-            <Link href="/">Back to Home</Link>
-          </Button>
+        {/* Trust block */}
+        <div className="mt-10">
+          <TrustBlockNB region={region} />
         </div>
       </div>
-    </div>
+
+      {/* ── Page end ─────────────────────────────────────────── */}
+      <PageEndNB eyebrow="Keep exploring" title="What would you like to do next?">
+        <CTASectionNB
+          title="Find the right support for you"
+          summary="Answer a few questions and we'll point you to the most helpful tools and guides."
+          primaryHref={`/uk/help-me-choose`}
+          primaryLabel="Help me choose"
+          secondaryHref="/"
+          secondaryLabel="Back to home"
+          trustNote="Educational only. Not medical advice."
+        />
+      </PageEndNB>
+    </PageShellNB>
   )
 }

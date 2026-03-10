@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { PageShellNB } from '@/components/layout/page-primitives';
+import { SafetyNoteNB } from '@/components/trust/trust-primitives';
 
 export interface ConditionHubPageProps {
   title: string;
@@ -18,35 +20,56 @@ export function ConditionHubPage({
   relatedTags = [],
 }: ConditionHubPageProps) {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
-      <div className="mx-auto w-[94vw] max-w-[1100px] py-12 space-y-10">
+    <PageShellNB tone="soft">
+      <div className="container-nb py-12 space-y-10">
+        {/* Page intro */}
         <header className="space-y-3">
-          <p className="text-sm uppercase tracking-wide text-slate-500">Condition hub</p>
-          <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900">{title}</h1>
-          <p className="text-base text-slate-600 max-w-3xl">{subtitle}</p>
+          <p className="section-eyebrow-nb">Condition hub</p>
+          <h1 className="text-3xl sm:text-4xl font-semibold text-[color:var(--nb-text-heading)] dark:text-white">
+            {title}
+          </h1>
+          <p className="text-base text-[color:var(--nb-text-body)] dark:text-white/75 max-w-3xl">
+            {subtitle}
+          </p>
         </header>
 
-        {primaryLinks.length ? (
-          <section className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
-            {primaryLinks.map(link => (
+        {/* Primary links */}
+        {primaryLinks.length > 0 ? (
+          <section aria-label="Support areas" className="feature-grid-nb">
+            {primaryLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+                className="content-card-nb block focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--nb-btn-primary-bg)]/40 no-underline"
               >
-                <h2 className="text-lg font-semibold text-slate-900">{link.label}</h2>
-                {link.description ? <p className="mt-2 text-sm text-slate-600">{link.description}</p> : null}
+                <h2 className="text-lg font-semibold text-[color:var(--nb-text-heading)] dark:text-white">
+                  {link.label}
+                </h2>
+                {link.description ? (
+                  <p className="mt-2 text-sm text-[color:var(--nb-text-body)] dark:text-white/70">
+                    {link.description}
+                  </p>
+                ) : null}
               </Link>
             ))}
           </section>
         ) : null}
 
-        {relatedTags.length ? (
-          <section className="rounded-2xl border border-slate-200 bg-slate-50/70 p-6">
-            <h2 className="text-lg font-semibold text-slate-900">Related support areas</h2>
+        {/* Related tags */}
+        {relatedTags.length > 0 ? (
+          <section
+            aria-label="Related support areas"
+            className="trust-block-nb"
+          >
+            <h2 className="text-base font-semibold text-[color:var(--nb-text-heading)] dark:text-white">
+              Related support areas
+            </h2>
             <div className="mt-3 flex flex-wrap gap-2">
-              {relatedTags.map(tag => (
-                <span key={tag} className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700 border border-slate-200">
+              {relatedTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full bg-white dark:bg-white/10 px-3 py-1 text-xs font-semibold text-[color:var(--nb-text-body)] dark:text-white/80 border border-[color:var(--nb-border-soft)] dark:border-white/15"
+                >
                   {tag}
                 </span>
               ))}
@@ -54,22 +77,24 @@ export function ConditionHubPage({
           </section>
         ) : null}
 
-        {secondaryLinks.length ? (
-          <section className="flex flex-wrap gap-3">
-            {secondaryLinks.map(link => (
+        {/* Secondary links */}
+        {secondaryLinks.length > 0 ? (
+          <nav aria-label="Secondary links" className="flex flex-wrap gap-3">
+            {secondaryLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 hover:border-slate-300"
+                className="rounded-xl border border-[color:var(--nb-border-soft)] dark:border-white/10 px-4 py-2 text-sm font-semibold text-[color:var(--nb-text-heading)] dark:text-white hover:border-[color:var(--nb-border-muted)] transition-colors"
               >
                 {link.label}
               </Link>
             ))}
-          </section>
+          </nav>
         ) : null}
 
-        <section className="text-xs text-slate-500">{educationalOnlyNote}</section>
+        {/* Safety note */}
+        <SafetyNoteNB>{educationalOnlyNote}</SafetyNoteNB>
       </div>
-    </main>
+    </PageShellNB>
   );
 }
