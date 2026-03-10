@@ -1303,11 +1303,13 @@
   }
 }
 
-/* Tesla + smaller: keep comfortable gutters even in hamburger mode */
+/* Tesla + smaller: keep comfortable gutters even in hamburger mode.
+   position:relative creates the containing block for the centred nb-brand-copy. */
 @media (max-width: 1439px) {
   .nb-header-container {
     padding-left: calc(1.5rem + env(safe-area-inset-left));
     padding-right: calc(1.5rem + env(safe-area-inset-right));
+    position: relative;
   }
 }
 
@@ -1586,6 +1588,29 @@
 
 /* Mobile/Tesla Responsive: use hamburger drawer up to 1439px */
 @media (max-width: 1439px) {
+  /* Centre the brand wordmark + tagline block inside the top bar on hamburger
+     layouts. The logo tile stays naturally left-aligned inside the brand link;
+     nb-brand-copy is lifted out of flow and pinned to the horizontal midpoint
+     of the header container so both lines sit symmetrically between the logo
+     and the hamburger button. */
+  .nb-brand-copy {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    align-items: center;
+    text-align: center;
+    /* keep well clear of 52 px logo + 44 px toggle + their safe-area gutters */
+    max-width: calc(100% - 176px);
+  }
+
+  /* Allow the tagline to wrap gracefully on very narrow viewports rather than
+     overflowing or getting clipped. */
+  .nb-brand-tagline {
+    white-space: normal;
+    line-height: 1.35;
+  }
+
   .nb-mobile-toggle {
     display: block;
   }
@@ -1695,8 +1720,12 @@
 }
 
 @media (max-width: 640px) {
+  /* nb-brand-text was hidden when it lived in a left-aligned flex row that also
+     had to fit the hamburger button. Now it is centered absolutely inside the
+     header container, so horizontal crowding is no longer a concern — keep it
+     visible at every mobile size so both lines remain readable together. */
   .nb-brand-text {
-    display: none;
+    display: block;
   }
 }
 
