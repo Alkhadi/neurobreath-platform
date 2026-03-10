@@ -89,6 +89,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       if (normalized === '/autism') return 'autism-hub';
       if (normalized === '/conditions/autism-parent') return 'conditions-autism-parent';
       if (normalized === '/contact') return 'contact';
+      if (normalized === '/breathing/training/focus-garden') return 'focus-garden-training';
 
       const parts = normalized.split('/').filter(Boolean);
       if (parts.length === 0) return 'root';
@@ -1191,7 +1192,12 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
         }}
       />
       {/* Floating trigger button */}
-      <div className={cn("fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[60]", isOpen && "hidden")}>
+      <div
+        className={cn("fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[60]", isOpen && "hidden")}
+        data-tour="nb:focus-garden-training:buddy-trigger"
+        data-tour-title="NeuroBreath Buddy"
+        data-tour-order="80"
+      >
         <Button
           type="button"
           onClick={(e) => {

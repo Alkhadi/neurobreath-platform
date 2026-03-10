@@ -41,7 +41,14 @@ export function SiteFooter() {
   }
 
   return (
-    <footer className="site-footer" id="siteFooter" role="contentinfo">
+    <footer
+      className="site-footer"
+      id="siteFooter"
+      role="contentinfo"
+      data-tour="nb:focus-garden-training:footer"
+      data-tour-title="Footer"
+      data-tour-order="90"
+    >
       {/* Footer navigation - Full Width */}
       <div className="ft-nav-wrapper">
         <div className="ft-nav-inner">

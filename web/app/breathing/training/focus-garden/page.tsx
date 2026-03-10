@@ -1115,7 +1115,12 @@ export default function FocusGardenPage() {
   const plotUnlockLevels = [1, 2, 4, 6, 8] as const
 
   return (
-    <div className={cn("min-h-screen bg-gradient-to-br", gardenTheme.bgGradient)}>
+    <div
+      className={cn("min-h-screen bg-gradient-to-br", gardenTheme.bgGradient)}
+      data-tour="nb:focus-garden-training:page-root"
+      data-tour-title="Focus Garden Training"
+      data-tour-order="10"
+    >
       {/* Celebration Toast */}
       {showCelebration && (
         <div className="fixed top-8 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-top duration-300">
@@ -1373,7 +1378,12 @@ export default function FocusGardenPage() {
         />
       )}
 
-      <div className="w-[96%] max-w-[2000px] mx-auto py-8 px-4">
+      <div
+        className="w-[96%] max-w-[2000px] mx-auto py-8 px-4"
+        data-tour="nb:focus-garden-training:main-content"
+        data-tour-title="Focus Garden area"
+        data-tour-order="20"
+      >
         {/* Back Button */}
         <Button asChild variant="ghost" className="mb-6 hover:bg-white/80">
           <Link href="/breathing/breath" className="flex items-center gap-2">
@@ -1383,7 +1393,12 @@ export default function FocusGardenPage() {
         </Button>
 
         {/* Hero Header with Garden Level */}
-        <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden mb-8">
+        <div
+          className="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden mb-8"
+          data-tour="nb:focus-garden-training:intro"
+          data-tour-title="Focus Garden overview"
+          data-tour-order="25"
+        >
           <div className="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 p-8 text-white">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div className="flex-1">
@@ -1440,7 +1455,12 @@ export default function FocusGardenPage() {
           </div>
 
           {/* Stats Dashboard */}
-          <div className="p-8 bg-gradient-to-br from-slate-50 to-blue-50">
+          <div
+            className="p-8 bg-gradient-to-br from-slate-50 to-blue-50"
+            data-tour="nb:focus-garden-training:stats-dashboard"
+            data-tour-title="Progress tracking"
+            data-tour-order="30"
+          >
             <div className="flex flex-wrap gap-4 mb-6 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(20%-13px)] [&>*]:min-w-0">
               {/* Garden Level */}
               <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
@@ -1512,7 +1532,12 @@ export default function FocusGardenPage() {
               </div>
             </div>
 
-            <div className="mt-6 flex flex-col sm:flex-row gap-3">
+            <div
+              className="mt-6 flex flex-col sm:flex-row gap-3"
+              data-tour="nb:focus-garden-training:session-controls"
+              data-tour-title="Session controls"
+              data-tour-order="40"
+            >
               <Button
                 type="button"
                 onClick={() => {
@@ -1558,7 +1583,12 @@ export default function FocusGardenPage() {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex gap-2 mb-8">
+        <div
+          className="flex gap-2 mb-8"
+          data-tour="nb:focus-garden-training:garden-tabs"
+          data-tour-title="Garden, Quests and Badges"
+          data-tour-order="45"
+        >
           {[
             { id: 'garden', label: 'Garden', icon: Sprout },
             { id: 'quests', label: 'Quests', icon: ScrollText },
@@ -1583,7 +1613,12 @@ export default function FocusGardenPage() {
         {activeTab === 'garden' && (
           <div className="space-y-8">
             {/* Seed Categories */}
-            <div className="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-2xl border-2 border-slate-200 p-7 overflow-hidden">
+            <div
+              className="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-2xl border-2 border-slate-200 p-7 overflow-hidden"
+              data-tour="nb:focus-garden-training:seed-categories"
+              data-tour-title="Seed categories"
+              data-tour-order="50"
+            >
               <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-slate-200">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center text-2xl shadow-lg">
@@ -1653,7 +1688,12 @@ export default function FocusGardenPage() {
             </div>
 
             {/* Plant a Seed */}
-            <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
+            <div
+              className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8"
+              data-tour="nb:focus-garden-training:plant-seed"
+              data-tour-title="Plant a seed"
+              data-tour-order="55"
+            >
               <div className="flex items-center gap-3 mb-6">
                 <div className={cn(
                   "w-14 h-14 rounded-2xl flex items-center justify-center text-3xl",
@@ -1734,7 +1774,12 @@ export default function FocusGardenPage() {
             </div>
 
             {/* Garden Section */}
-            <div className={cn("rounded-3xl shadow-xl border p-8", gardenTheme.borderColor, `bg-gradient-to-br ${gardenTheme.bgGradient}`)}>
+            <div
+              className={cn("rounded-3xl shadow-xl border p-8", gardenTheme.borderColor, `bg-gradient-to-br ${gardenTheme.bgGradient}`)}
+              data-tour="nb:focus-garden-training:garden-stage"
+              data-tour-title="Garden view"
+              data-tour-order="60"
+            >
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <div className="w-14 h-14 rounded-2xl bg-white/80 shadow-lg flex items-center justify-center text-3xl">
@@ -2213,7 +2258,12 @@ export default function FocusGardenPage() {
         )}
 
         {/* Related Tools */}
-        <div className="mt-8 bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
+        <div
+          className="mt-8 bg-white rounded-3xl shadow-xl border border-slate-200 p-8"
+          data-tour="nb:focus-garden-training:related-tools"
+          data-tour-title="Explore more tools"
+          data-tour-order="70"
+        >
           <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center text-xl">
               🔗
