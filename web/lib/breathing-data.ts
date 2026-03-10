@@ -16,6 +16,12 @@ export interface BreathingTechnique {
   description: string
   benefits: string[]
   category: string
+  recommendedCycles?: number
+  recommendedDurationSeconds?: number
+  recommendedLabel?: string
+  availableDurations?: number[]
+  recommendationNote?: string
+  cadenceNote?: string
 }
 
 const TECHNIQUE_ALIASES: Record<string, string> = {
@@ -93,7 +99,13 @@ export const breathingTechniques: Record<string, BreathingTechnique> = {
     ],
     description: 'Extended exhale for sleep and relaxation',
     benefits: ['Promotes sleep', 'Reduces anxiety', 'Deepens relaxation'],
-    category: 'sleep'
+    category: 'sleep',
+    recommendedCycles: 4,
+    recommendedDurationSeconds: 76,
+    recommendedLabel: 'Recommended • 4 cycles (1:16)',
+    availableDurations: [60, 120, 180, 240, 300],
+    recommendationNote: 'At least twice daily — once in the morning and once at bedtime.',
+    cadenceNote: '4s inhale, 7s hold, 8s exhale. The ratio matters more than absolute speed.'
   },
   // Alias for backward compatibility
   'four-7-8': {
@@ -107,7 +119,13 @@ export const breathingTechniques: Record<string, BreathingTechnique> = {
     ],
     description: 'Extended exhale for sleep and relaxation',
     benefits: ['Promotes sleep', 'Reduces anxiety', 'Deepens relaxation'],
-    category: 'sleep'
+    category: 'sleep',
+    recommendedCycles: 4,
+    recommendedDurationSeconds: 76,
+    recommendedLabel: 'Recommended • 4 cycles (1:16)',
+    availableDurations: [60, 120, 180, 240, 300],
+    recommendationNote: 'At least twice daily — once in the morning and once at bedtime.',
+    cadenceNote: '4s inhale, 7s hold, 8s exhale. The ratio matters more than absolute speed.'
   },
   'coherent': {
     id: 'coherent',

@@ -30,6 +30,16 @@ const TIME_OPTIONS = [
   { value: 600, label: '10 min' },
 ];
 
+// 4-7-8 specific: 1 cycle = 4s inhale + 7s hold + 8s exhale = 19s. Recommended = 4 cycles = 76s.
+const FOUR_SEVEN_EIGHT_RECOMMENDED = { value: 76, label: 'Recommended • 4 cycles (1:16)' };
+const FOUR_SEVEN_EIGHT_TIME_OPTIONS = [
+  { value: 60, label: '1 min' },
+  { value: 120, label: '2 min' },
+  { value: 180, label: '3 min' },
+  { value: 240, label: '4 min' },
+  { value: 300, label: '5 min' },
+];
+
 type VoiceMode = 'audio' | 'tts' | 'off';
 
 interface BreathingExerciseProps {
@@ -59,12 +69,20 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
   const totalTimeRef = useRef(0);
 
   const isSos = pattern === 'sos';
+  const is478 = pattern === '4-7-8';
 
   useEffect(() => {
     if (isSos && targetDuration !== 60) {
       setTargetDuration(60);
     }
   }, [isSos, targetDuration]);
+
+  // Reset duration to 60s when switching away from 4-7-8 if the recommended 76s preset was active
+  useEffect(() => {
+    if (!is478 && targetDuration === 76) {
+      setTargetDuration(60);
+    }
+  }, [is478, targetDuration]);
   
   // Audio hooks
   const { speak, cancel } = useSpeechSynthesis();
@@ -437,7 +455,11 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
   const currentPhaseLabel = currentPattern.phases[phase]?.name || 'Ready';
   const remainingTime = targetDuration - totalTime;
   const progressPercentage = (totalTime / targetDuration) * 100;
-  const durationOptions = isSos ? TIME_OPTIONS.filter((option) => option.value === 60) : TIME_OPTIONS;
+  const durationOptions = isSos
+    ? TIME_OPTIONS.filter((option) => option.value === 60)
+    : is478
+      ? [FOUR_SEVEN_EIGHT_RECOMMENDED, ...FOUR_SEVEN_EIGHT_TIME_OPTIONS]
+      : TIME_OPTIONS;
 
   // Fullscreen View
   if (isFullscreen) {
@@ -455,20 +477,20 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
         </button>
 
         {/* Controls Bar */}
-        <div className="absolute top-4 left-4 right-16 flex items-center gap-4 flex-wrap">
+        <div className="absolute top-4 left-4 right-16 flex items-center gap-2 sm:gap-4 flex-wrap">
           {/* Voice Mode Toggle */}
           <button
             onClick={cycleVoiceMode}
             className={cn(
-              'px-4 py-2 rounded-full transition-all text-sm font-medium flex items-center gap-2',
+              'px-3 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all text-xs sm:text-sm font-medium flex items-center gap-1.5',
               voiceMode === 'off'
                 ? 'bg-white/10 text-white/60'
                 : 'bg-green-500 text-white'
             )}
           >
-            {voiceMode === 'audio' && <><Mic className="w-4 h-4" />Guided Audio</>}
-            {voiceMode === 'tts' && <><Volume2 className="w-4 h-4" />Voice TTS</>}
-            {voiceMode === 'off' && <><MicOff className="w-4 h-4" />Voice Off</>}
+            {voiceMode === 'audio' && <><Mic className="w-3.5 h-3.5 sm:w-4 sm:h-4" />Guided Audio</>}
+            {voiceMode === 'tts' && <><Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />Voice TTS</>}
+            {voiceMode === 'off' && <><MicOff className="w-3.5 h-3.5 sm:w-4 sm:h-4" />Voice Off</>}
           </button>
 
           {/* Ambient Sound Selector */}
@@ -480,7 +502,7 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
             name="ambientSound"
             value={ambientSound}
             onChange={(e) => setAmbientSound(e.target.value)}
-            className="px-4 py-2 rounded-full bg-white/10 text-white text-sm font-medium border-none outline-none"
+            className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 text-white text-xs sm:text-sm font-medium border-none outline-none"
             aria-label="Select ambient sound"
             title="Choose background ambient sound"
           >
@@ -493,7 +515,7 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
         </div>
 
         {/* Main Content */}
-        <div className="relative z-10 text-center max-w-2xl w-full space-y-8">
+        <div className="relative z-10 text-center max-w-2xl w-full space-y-4 sm:space-y-8">
           {/* Pattern Tabs */}
           <Tabs value={pattern} onValueChange={(v) => setPattern(v as BreathingPattern)} className="w-full">
             <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4 bg-white/10">
@@ -519,8 +541,8 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
                 )}
               >
                 <div className="text-white text-center">
-                  <div className="text-7xl font-bold mb-2">{countdown || '—'}</div>
-                  <div className="text-2xl font-medium opacity-90">{currentPhaseLabel}</div>
+                  <div className="text-5xl sm:text-7xl font-bold mb-1 sm:mb-2">{countdown || '—'}</div>
+                  <div className="text-lg sm:text-2xl font-medium opacity-90">{currentPhaseLabel}</div>
                 </div>
               </div>
               
@@ -544,38 +566,38 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
           </div>
 
           {/* Stats */}
-          <div className="flex justify-center gap-8">
+          <div className="flex justify-center gap-5 sm:gap-8">
             <div className="text-center">
-              <div className="text-4xl font-bold text-white">{breathCount}</div>
-              <p className="text-sm text-white/60 mt-1">Breaths</p>
+              <div className="text-2xl sm:text-4xl font-bold text-white tabular-nums">{breathCount}</div>
+              <p className="text-xs sm:text-sm text-white/60 mt-1">Breaths</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-white">{cycles}</div>
-              <p className="text-sm text-white/60 mt-1">Cycles</p>
+              <div className="text-2xl sm:text-4xl font-bold text-white tabular-nums">{cycles}</div>
+              <p className="text-xs sm:text-sm text-white/60 mt-1">Cycles</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-white">{Math.floor(totalTime / 60)}:{(totalTime % 60).toString().padStart(2, '0')}</div>
-              <p className="text-sm text-white/60 mt-1">Time</p>
+              <div className="text-2xl sm:text-4xl font-bold text-white tabular-nums">{Math.floor(totalTime / 60)}:{(totalTime % 60).toString().padStart(2, '0')}</div>
+              <p className="text-xs sm:text-sm text-white/60 mt-1">Time</p>
             </div>
           </div>
 
           {/* Controls */}
-          <div className="flex gap-4 justify-center">
+          <div className="flex gap-3 sm:gap-4 justify-center">
             <Button 
               onClick={() => setIsActive(!isActive)} 
               size="lg" 
-              className="gap-2 bg-white text-blue-900 hover:bg-white/90 px-8 py-6 text-lg"
+              className="gap-2 bg-white text-blue-900 hover:bg-white/90 px-5 sm:px-8 py-4 sm:py-6 text-base sm:text-lg"
             >
-              {isActive ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+              {isActive ? <Pause className="w-4 h-4 sm:w-5 sm:h-5" /> : <Play className="w-4 h-4 sm:w-5 sm:h-5" />}
               {isActive ? 'Pause' : 'Start Breathing'}
             </Button>
             <Button 
               onClick={handleReset} 
               size="lg" 
               variant="outline"
-              className="border-white/30 text-white hover:bg-white/10 px-6"
+              className="border-white/30 text-white hover:bg-white/10 px-4 sm:px-6"
             >
-              <RotateCcw className="w-5 h-5" />
+              <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
           </div>
         </div>
@@ -593,7 +615,9 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
             <div>
               <div className="flex items-center gap-2">
                 <p className="text-xs uppercase tracking-wider text-primary font-semibold">
-                  Calm Reset • {Math.floor(targetDuration / 60)} {targetDuration >= 120 ? 'Minutes' : 'Minute'}
+                  {is478 && targetDuration === 76
+                    ? 'Recommended • 4 cycles (1:16)'
+                    : `Calm Reset • ${Math.floor(targetDuration / 60)} ${targetDuration >= 120 ? 'Minutes' : 'Minute'}`}
                 </p>
               </div>
               <h2 className="text-lg sm:text-xl font-bold">Breathing Exercise</h2>
@@ -641,14 +665,18 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
             <Clock className="w-4 h-4" />
             Session Duration
           </label>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {durationOptions.map((option) => (
               <button
                 key={option.value}
                 onClick={() => setTargetDuration(option.value)}
                 disabled={isSos && option.value !== 60}
                 className={cn(
-                  'px-4 py-2 rounded-lg text-sm font-medium transition-all',
+                  'px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all',
+                  // Recommended preset spans full width on mobile so the label never truncates
+                  option.value === 76 && is478
+                    ? 'w-full sm:w-auto'
+                    : 'flex-1 sm:flex-none min-w-[52px]',
                   targetDuration === option.value
                     ? 'bg-primary text-white shadow-sm'
                     : 'bg-muted text-gray-900 dark:text-gray-100 hover:bg-muted/80'
@@ -658,20 +686,25 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
               </button>
             ))}
           </div>
+          {is478 && (
+            <p className="text-xs text-muted-foreground leading-relaxed pt-1">
+              Recommended routine: 4 cycles (1:16) at least twice daily — once in the morning and once at bedtime. With consistent daily practice, you may begin to notice results in about 4–6 weeks.
+            </p>
+          )}
         </div>
 
         {/* Pattern Selection */}
         <Tabs value={pattern} onValueChange={(v) => setPattern(v as BreathingPattern)} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="box">Box</TabsTrigger>
-            <TabsTrigger value="4-7-8">4-7-8</TabsTrigger>
-            <TabsTrigger value="coherent">5-5</TabsTrigger>
-            <TabsTrigger value="sos">SOS</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 h-auto">
+            <TabsTrigger value="box"      className="text-xs sm:text-sm px-1.5 sm:px-3 py-2">Box</TabsTrigger>
+            <TabsTrigger value="4-7-8"    className="text-xs sm:text-sm px-1.5 sm:px-3 py-2">4-7-8</TabsTrigger>
+            <TabsTrigger value="coherent" className="text-xs sm:text-sm px-1.5 sm:px-3 py-2">5-5</TabsTrigger>
+            <TabsTrigger value="sos"      className="text-xs sm:text-sm px-1.5 sm:px-3 py-2">SOS</TabsTrigger>
           </TabsList>
         </Tabs>
 
         {/* Voice Mode & Ambient Sound */}
-        <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-2">
             <label className="text-sm font-medium flex items-center gap-2">
               <Music className="w-4 h-4" />
@@ -680,11 +713,11 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
             <Button
               onClick={cycleVoiceMode}
               variant={voiceMode === 'off' ? 'outline' : 'default'}
-              className="w-full gap-2"
+              className="w-full gap-2 whitespace-nowrap text-sm"
             >
-              {voiceMode === 'audio' && <><Mic className="w-4 h-4" />Guided Audio</>}
-              {voiceMode === 'tts' && <><Volume2 className="w-4 h-4" />Voice TTS</>}
-              {voiceMode === 'off' && <><MicOff className="w-4 h-4" />Off</>}
+              {voiceMode === 'audio' && <><Mic className="w-4 h-4 shrink-0" />Guided Audio</>}
+              {voiceMode === 'tts' && <><Volume2 className="w-4 h-4 shrink-0" />Voice TTS</>}
+              {voiceMode === 'off' && <><MicOff className="w-4 h-4 shrink-0" />Off</>}
             </Button>
           </div>
           <div className="space-y-2">
@@ -707,11 +740,11 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
         </div>
 
         {/* Breathing Circle */}
-        <div className="flex justify-center py-8">
+        <div className="flex justify-center py-4 sm:py-8">
           <div className="relative">
             <div
               className={cn(
-                'w-32 h-32 rounded-full flex items-center justify-center',
+                'w-[148px] h-[148px] rounded-full flex items-center justify-center',
                 'bg-gradient-to-br from-cyan-400 to-blue-500 shadow-lg',
                 'transition-all ease-in-out',
                 isActive && currentPhaseLabel === 'Inhale' && 'scale-150 [transition-duration:3000ms]',
@@ -742,35 +775,49 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
 
         {/* Controls */}
         <div className="flex gap-2 justify-center">
-          <Button onClick={() => setIsActive(!isActive)} size="lg" className="gap-2 flex-1">
-            {isActive ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+          <Button
+            onClick={() => setIsActive(!isActive)}
+            size="lg"
+            className="gap-2 flex-1 whitespace-nowrap text-sm sm:text-base"
+          >
+            {isActive ? <Pause className="w-4 h-4 shrink-0" /> : <Play className="w-4 h-4 shrink-0" />}
             {isActive ? 'Pause' : 'Start Breathing'}
           </Button>
-          <Button onClick={handleReset} size="lg" variant="outline">
+          <Button
+            onClick={handleReset}
+            variant="outline"
+            className="h-11 w-11 shrink-0 p-0"
+            aria-label="Reset"
+          >
             <RotateCcw className="w-4 h-4" />
           </Button>
-          <Button onClick={handleFullscreen} size="lg" variant="outline">
+          <Button
+            onClick={handleFullscreen}
+            variant="outline"
+            className="h-11 w-11 shrink-0 p-0"
+            aria-label="Fullscreen"
+          >
             <Maximize2 className="w-4 h-4" />
           </Button>
         </div>
 
         {/* Stats */}
-        <div className="flex justify-around py-4 border-t">
-          <div className="text-center">
-            <div className="text-xl font-bold">{breathCount}</div>
-            <p className="text-xs text-muted-foreground">breaths</p>
+        <div className="flex justify-around py-3 sm:py-4 border-t gap-1">
+          <div className="text-center min-w-0">
+            <div className="text-base sm:text-xl font-bold tabular-nums">{breathCount}</div>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">breaths</p>
           </div>
-          <div className="text-center">
-            <div className="text-xl font-bold">{cycles}</div>
-            <p className="text-xs text-muted-foreground">cycles</p>
+          <div className="text-center min-w-0">
+            <div className="text-base sm:text-xl font-bold tabular-nums">{cycles}</div>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">cycles</p>
           </div>
-          <div className="text-center">
-            <div className="text-xl font-bold">{Math.floor(totalTime / 60)}:{(totalTime % 60).toString().padStart(2, '0')}</div>
-            <p className="text-xs text-muted-foreground">time</p>
+          <div className="text-center min-w-0">
+            <div className="text-base sm:text-xl font-bold tabular-nums">{Math.floor(totalTime / 60)}:{(totalTime % 60).toString().padStart(2, '0')}</div>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">time</p>
           </div>
-          <div className="text-center">
-            <div className="text-xl font-bold">{Math.floor(remainingTime / 60)}:{(remainingTime % 60).toString().padStart(2, '0')}</div>
-            <p className="text-xs text-muted-foreground">remaining</p>
+          <div className="text-center min-w-0">
+            <div className="text-base sm:text-xl font-bold tabular-nums">{Math.floor(remainingTime / 60)}:{(remainingTime % 60).toString().padStart(2, '0')}</div>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">remaining</p>
           </div>
         </div>
 
