@@ -224,7 +224,7 @@ export function SiteFooter() {
                         •{' '}
                         <button
                           type="button"
-                          className="text-blue-600 dark:text-blue-400 hover:underline"
+                          className="hover:underline text-[#1E40AF] dark:text-[#BFDBFE]"
                           onClick={() => {
                             if (typeof window !== 'undefined') {
                               const win = window as CookieSettingsWindow
