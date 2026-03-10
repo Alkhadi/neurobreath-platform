@@ -57,7 +57,7 @@ export function AboutPageShell({ title, summary, region, path, children }: About
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
-      <div className="mx-auto w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1100px] py-12 space-y-8">
+      <div className="page-content-nb space-y-8">
         <div className="text-sm text-slate-500">
           {hubHref === path ? (
             'About'

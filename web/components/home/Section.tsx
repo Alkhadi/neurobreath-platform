@@ -104,7 +104,7 @@ export function HomeSection({
         />
       ) : null}
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative nb-container">
         {eyebrow || title || subtitle || actions ? (
           <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>

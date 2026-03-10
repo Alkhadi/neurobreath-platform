@@ -165,8 +165,8 @@
 .site-footer {
   background: linear-gradient(to bottom, hsl(240 10% 98%), hsl(250 20% 97%));
   border-top: 1px solid var(--nb-border-soft);
-  padding: 3rem 0 2rem;
-  margin-top: 4rem;
+  padding: var(--nb-section-space-mobile, 3rem) 0 var(--nb-space-8, 2rem);
+  margin-top: var(--nb-section-space-tablet, 4rem);
   position: relative;
 }
 
@@ -274,7 +274,8 @@
   margin-bottom: 0.75rem;
   cursor: pointer;
   list-style: none;
-  padding: 0.5rem 0.75rem;
+  padding: 0.75rem;
+  min-height: 44px;
   border-radius: 0.5rem;
   background: var(--nb-surface-soft);
   color: var(--nb-text-heading);
@@ -324,7 +325,7 @@
 .ft-group .links {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--nb-touch-gap-min, 8px);
   margin-top: 0.75rem;
   padding-left: 0;
 }
@@ -339,6 +340,10 @@
   color: var(--nb-text-body);
   text-decoration: none;
   transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  padding: 0.375rem 0.25rem;
+  min-height: 36px;
 }
 
 .ft-group .links a:hover {
@@ -1084,11 +1089,41 @@
 
   /* Layout primitives */
   .nb-container {
-    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: var(--nb-container-2xl);
+    padding-left: var(--nb-page-pad-mobile);
+    padding-right: var(--nb-page-pad-mobile);
+  }
+  @media (min-width: 640px) {
+    .nb-container {
+      padding-left: var(--nb-page-pad-tablet);
+      padding-right: var(--nb-page-pad-tablet);
+    }
+  }
+  @media (min-width: 1024px) {
+    .nb-container {
+      padding-left: var(--nb-page-pad-desktop);
+      padding-right: var(--nb-page-pad-desktop);
+    }
   }
 
   .nb-section {
-    @apply py-16 md:py-24;
+    padding-top: var(--nb-section-space-mobile);
+    padding-bottom: var(--nb-section-space-mobile);
+  }
+  @media (min-width: 768px) {
+    .nb-section {
+      padding-top: var(--nb-section-space-tablet);
+      padding-bottom: var(--nb-section-space-tablet);
+    }
+  }
+  @media (min-width: 1024px) {
+    .nb-section {
+      padding-top: var(--nb-section-space-desktop);
+      padding-bottom: var(--nb-section-space-desktop);
+    }
   }
 
   /* Surface — replaces manual card-in-card stacks */
@@ -1450,6 +1485,169 @@
     font-size: 0.75rem;
     color: var(--nb-chart-tooltip-body);
   }
+
+  /* ════════════════════════════════════════════════════
+     NB STRUCTURAL LAYOUT UTILITIES
+     ════════════════════════════════════════════════════ */
+
+  /* ── Container variants ──────────────────────────── */
+  /* Alias keeping backwards-compatibility with .nb-container */
+  .container-nb {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: var(--nb-container-2xl);
+    padding-left: var(--nb-page-pad-mobile);
+    padding-right: var(--nb-page-pad-mobile);
+  }
+  @media (min-width: 640px) {
+    .container-nb {
+      padding-left: var(--nb-page-pad-tablet);
+      padding-right: var(--nb-page-pad-tablet);
+    }
+  }
+  @media (min-width: 1024px) {
+    .container-nb {
+      padding-left: var(--nb-page-pad-desktop);
+      padding-right: var(--nb-page-pad-desktop);
+    }
+  }
+
+  /* Narrower named variants */
+  .container-nb-sm,
+  .container-nb-md,
+  .container-nb-lg,
+  .container-nb-xl {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    padding-left: var(--nb-page-pad-mobile);
+    padding-right: var(--nb-page-pad-mobile);
+  }
+  @media (min-width: 640px) {
+    .container-nb-sm,
+    .container-nb-md,
+    .container-nb-lg,
+    .container-nb-xl {
+      padding-left: var(--nb-page-pad-tablet);
+      padding-right: var(--nb-page-pad-tablet);
+    }
+  }
+  @media (min-width: 1024px) {
+    .container-nb-sm,
+    .container-nb-md,
+    .container-nb-lg,
+    .container-nb-xl {
+      padding-left: var(--nb-page-pad-desktop);
+      padding-right: var(--nb-page-pad-desktop);
+    }
+  }
+  .container-nb-sm  { max-width: var(--nb-container-sm);  }
+  .container-nb-md  { max-width: var(--nb-container-md);  }
+  .container-nb-lg  { max-width: var(--nb-container-lg);  }
+  .container-nb-xl  { max-width: var(--nb-container-xl);  }
+
+  /* ── Section rhythm ──────────────────────────────── */
+  /* Alias keeping backwards-compatibility with .nb-section */
+  .section-nb {
+    padding-top: var(--nb-section-space-mobile);
+    padding-bottom: var(--nb-section-space-mobile);
+  }
+  @media (min-width: 768px) {
+    .section-nb {
+      padding-top: var(--nb-section-space-tablet);
+      padding-bottom: var(--nb-section-space-tablet);
+    }
+  }
+  @media (min-width: 1024px) {
+    .section-nb {
+      padding-top: var(--nb-section-space-desktop);
+      padding-bottom: var(--nb-section-space-desktop);
+    }
+  }
+
+  /* ── Stack utilities (vertical flex stacks) ──────── */
+  .stack-nb {
+    display: flex;
+    flex-direction: column;
+    gap: var(--nb-block-gap-base);
+  }
+  .stack-nb-tight {
+    display: flex;
+    flex-direction: column;
+    gap: var(--nb-block-gap-tight);
+  }
+  .stack-nb-relaxed {
+    display: flex;
+    flex-direction: column;
+    gap: var(--nb-block-gap-relaxed);
+  }
+  .stack-nb-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--nb-stack-gap-section);
+  }
+
+  /* ── Grid utility ────────────────────────────────── */
+  .grid-nb {
+    display: grid;
+    gap: var(--nb-card-gap);
+  }
+
+  /* ── Touch target utility ────────────────────────── */
+  .touch-target-nb {
+    min-height: var(--nb-touch-target-min);
+    min-width: var(--nb-touch-target-min);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Page shell — outer <main> wrapper ───────────── */
+  .page-shell-nb {
+    min-height: 100dvh;
+    background-color: var(--nb-surface-base);
+  }
+
+  /* ── Page content container — inner content shell ── */
+  /* Used by content pages (trust, about, etc.) for     */
+  /* consistent max-width, padding, and vertical rhythm  */
+  .page-content-nb {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: var(--nb-container-xl);
+    padding-left: var(--nb-page-pad-mobile);
+    padding-right: var(--nb-page-pad-mobile);
+    padding-top: var(--nb-section-space-mobile);
+    padding-bottom: var(--nb-section-space-mobile);
+  }
+  @media (min-width: 640px) {
+    .page-content-nb {
+      padding-left: var(--nb-page-pad-tablet);
+      padding-right: var(--nb-page-pad-tablet);
+      padding-top: var(--nb-section-space-tablet);
+      padding-bottom: var(--nb-section-space-tablet);
+    }
+  }
+  @media (min-width: 1024px) {
+    .page-content-nb {
+      padding-left: var(--nb-page-pad-desktop);
+      padding-right: var(--nb-page-pad-desktop);
+      padding-top: var(--nb-section-space-desktop);
+      padding-bottom: var(--nb-section-space-desktop);
+    }
+  }
+
+  /* ── Card density ────────────────────────────────── */
+  .card-density-nb {
+    padding: var(--nb-card-pad-mobile);
+  }
+  @media (min-width: 640px) {
+    .card-density-nb {
+      padding: var(--nb-card-pad-desktop);
+    }
+  }
 }
 
 /* Dark mode overrides for secondary button */
@@ -1749,6 +1947,54 @@
   --nb-chart-dark-tooltip-border: rgba(255, 255, 255, 0.14);
   --nb-chart-dark-tooltip-title: #FFFFFF;
   --nb-chart-dark-tooltip-body:  #E2E8F0;
+
+  /* ── NB Spacing Scale ────────────────────────────────── */
+  --nb-space-1:  0.25rem;
+  --nb-space-2:  0.5rem;
+  --nb-space-3:  0.75rem;
+  --nb-space-4:  1rem;
+  --nb-space-5:  1.25rem;
+  --nb-space-6:  1.5rem;
+  --nb-space-8:  2rem;
+  --nb-space-10: 2.5rem;
+  --nb-space-12: 3rem;
+  --nb-space-16: 4rem;
+  --nb-space-20: 5rem;
+  --nb-space-24: 6rem;
+
+  /* ── NB Section Rhythm ───────────────────────────────── */
+  --nb-section-space-mobile:  3rem;
+  --nb-section-space-tablet:  4rem;
+  --nb-section-space-desktop: 5rem;
+
+  /* ── NB Content Gap Rhythm ───────────────────────────── */
+  --nb-block-gap-tight:    0.75rem;
+  --nb-block-gap-base:     1rem;
+  --nb-block-gap-relaxed:  1.5rem;
+  --nb-stack-gap-section:  2rem;
+
+  /* ── NB Container Widths ─────────────────────────────── */
+  --nb-container-xs:  36rem;
+  --nb-container-sm:  42rem;
+  --nb-container-md:  48rem;
+  --nb-container-lg:  64rem;
+  --nb-container-xl:  72rem;
+  --nb-container-2xl: 80rem;
+
+  /* ── NB Page Padding ─────────────────────────────────── */
+  --nb-page-pad-mobile:  1rem;
+  --nb-page-pad-tablet:  1.5rem;
+  --nb-page-pad-desktop: 2rem;
+
+  /* ── NB Touch Targets ────────────────────────────────── */
+  --nb-touch-target-min:  44px;
+  --nb-touch-gap-min:     8px;
+  --nb-icon-button-hit:   44px;
+
+  /* ── NB Card Density ─────────────────────────────────── */
+  --nb-card-pad-mobile:  1rem;
+  --nb-card-pad-desktop: 1.25rem;
+  --nb-card-gap:         1rem;
 }
 
 .nb-header {
@@ -3551,12 +3797,14 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
 .nb-chips-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  gap: var(--nb-block-gap-tight, 0.75rem);
+  margin-bottom: var(--nb-block-gap-relaxed, 1.5rem);
 }
 
 .nb-chip {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
   padding: 0.5rem 1.25rem;
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid var(--nb-border-soft);
@@ -3578,11 +3826,14 @@ section:not(.nb-hero-section-v2) .nb-quickwin,
 .nb-concern-pills {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 0.75rem;
+  gap: var(--nb-block-gap-tight, 0.75rem);
 }
 
 .nb-pill-btn {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--nb-touch-target-min, 44px);
   padding: 0.75rem 1rem;
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid #cbd5e1;
