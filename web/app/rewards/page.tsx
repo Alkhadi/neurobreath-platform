@@ -119,9 +119,7 @@ export default function RewardsPage() {
                     {unlocked ? def?.icon : <Lock className="w-12 h-12 text-gray-400" />}
                   </div>
                   {unlocked && (
-                    <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">
-                      ✔ Unlocked
-                    </span>
+                    <span className="badge-nb badge-nb-success">✔ Unlocked</span>
                   )}
                 </div>
 

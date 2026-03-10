@@ -163,7 +163,7 @@ export default function FluencyPacer() {
             <h4 className="text-lg font-bold text-blue-900 dark:text-blue-100">
               {currentStory.title}
             </h4>
-            <span className="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium mt-1">
+            <span className="badge-nb badge-nb-info mt-1">
               {currentStory.level}
             </span>
           </div>

@@ -52,9 +52,7 @@ export default function SourcesPage() {
                   <CheckCircle className="h-5 w-5 text-green-600" />
                   {source.name}
                 </h3>
-                <span className="inline-block bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs px-2 py-1 rounded mt-1">
-                  Tier A
-                </span>
+                <span className="badge-nb badge-nb-success mt-1">Tier A</span>
               </div>
             </div>
             {source.notes && (
@@ -82,7 +80,7 @@ export default function SourcesPage() {
                   {source.topics.map((topic) => (
                     <span 
                       key={topic}
-                      className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs px-2 py-1 rounded"
+                      className="badge-nb badge-nb-soft"
                     >
                       {topic}
                     </span>
@@ -113,9 +111,7 @@ export default function SourcesPage() {
                   <CheckCircle className="h-5 w-5 text-blue-600" />
                   {source.name}
                 </h3>
-                <span className="inline-block bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded mt-1">
-                  Tier B
-                </span>
+                <span className="badge-nb badge-nb-info mt-1">Tier B</span>
               </div>
             </div>
             {source.notes && (
@@ -143,7 +139,7 @@ export default function SourcesPage() {
                   {source.topics.map((topic) => (
                     <span 
                       key={topic}
-                      className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs px-2 py-1 rounded"
+                      className="badge-nb badge-nb-soft"
                     >
                       {topic}
                     </span>
@@ -158,42 +154,42 @@ export default function SourcesPage() {
       <h2>Source Usage Rules</h2>
 
       <table className="not-prose w-full text-sm my-6">
-        <thead className="bg-slate-100 dark:bg-slate-700">
-          <tr>
-            <th className="text-left p-3 font-semibold">Content Type</th>
-            <th className="text-left p-3 font-semibold">Required Tier</th>
-            <th className="text-left p-3 font-semibold">Example</th>
+        <thead className="bg-[var(--nb-table-header-bg)]">
+          <tr className="border-b border-[var(--nb-table-border)]">
+            <th className="text-left p-3 font-semibold text-[var(--nb-table-header-text)]">Content Type</th>
+            <th className="text-left p-3 font-semibold text-[var(--nb-table-header-text)]">Required Tier</th>
+            <th className="text-left p-3 font-semibold text-[var(--nb-table-header-text)]">Example</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+        <tbody className="divide-y divide-[var(--nb-table-border)]">
           <tr>
             <td className="p-3">Clinical definition</td>
-            <td className="p-3"><span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs px-2 py-1 rounded">Tier A only</span></td>
+            <td className="p-3"><span className="badge-nb badge-nb-success">Tier A only</span></td>
             <td className="p-3">"ADHD is a neurodevelopmental disorder" (NHS)</td>
           </tr>
           <tr>
             <td className="p-3">Diagnostic criteria</td>
-            <td className="p-3"><span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs px-2 py-1 rounded">Tier A only</span></td>
+            <td className="p-3"><span className="badge-nb badge-nb-success">Tier A only</span></td>
             <td className="p-3">"DSM-5 criteria require..." (APA, peer-reviewed)</td>
           </tr>
           <tr>
             <td className="p-3">Treatment effectiveness</td>
-            <td className="p-3"><span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs px-2 py-1 rounded">Tier A only</span></td>
+            <td className="p-3"><span className="badge-nb badge-nb-success">Tier A only</span></td>
             <td className="p-3">"CBT effective for anxiety" (Cochrane Review)</td>
           </tr>
           <tr>
             <td className="p-3">Support strategies</td>
-            <td className="p-3"><span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded">Tier A or B</span></td>
+            <td className="p-3"><span className="badge-nb badge-nb-info">Tier A or B</span></td>
             <td className="p-3">"Visual schedules may help" (NAS, labeled Tier B)</td>
           </tr>
           <tr>
             <td className="p-3">Lived experience</td>
-            <td className="p-3"><span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded">Tier B</span></td>
+            <td className="p-3"><span className="badge-nb badge-nb-info">Tier B</span></td>
             <td className="p-3">"Parents report that..." (Mind, clearly labeled)</td>
           </tr>
           <tr>
             <td className="p-3">UK-specific guidance</td>
-            <td className="p-3"><span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs px-2 py-1 rounded">Tier A preferred</span></td>
+            <td className="p-3"><span className="badge-nb badge-nb-success">Tier A preferred</span></td>
             <td className="p-3">"SEND Code of Practice states..." (DfE)</td>
           </tr>
         </tbody>

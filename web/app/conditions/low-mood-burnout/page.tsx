@@ -342,7 +342,7 @@ export default function LowMoodBurnoutPage() {
                   <AccordionItem value="cbt">
                     <AccordionTrigger className="text-left">
                       <div className="flex items-center gap-2">
-                        <Badge className="bg-green-100 text-green-800">Most Effective</Badge>
+                        <Badge variant="success">Most Effective</Badge>
                         <span>Cognitive Behavioural Therapy (CBT)</span>
                       </div>
                     </AccordionTrigger>
@@ -369,7 +369,7 @@ export default function LowMoodBurnoutPage() {
                   <AccordionItem value="ba">
                     <AccordionTrigger className="text-left">
                       <div className="flex items-center gap-2">
-                        <Badge className="bg-green-100 text-green-800">Highly Effective</Badge>
+                        <Badge variant="success">Highly Effective</Badge>
                         <span>Behavioural Activation</span>
                       </div>
                     </AccordionTrigger>
@@ -396,7 +396,7 @@ export default function LowMoodBurnoutPage() {
                   <AccordionItem value="mindfulness">
                     <AccordionTrigger className="text-left">
                       <div className="flex items-center gap-2">
-                        <Badge className="bg-green-100 text-green-800">Evidence-Based</Badge>
+                        <Badge variant="success">Evidence-Based</Badge>
                         <span>Mindfulness & Stress Reduction</span>
                       </div>
                     </AccordionTrigger>
@@ -422,7 +422,7 @@ export default function LowMoodBurnoutPage() {
                   <AccordionItem value="pacing">
                     <AccordionTrigger className="text-left">
                       <div className="flex items-center gap-2">
-                        <Badge className="bg-amber-100 text-amber-800">Energy Management</Badge>
+                        <Badge variant="warning">Energy Management</Badge>
                         <span>Pacing & Energy Conservation</span>
                       </div>
                     </AccordionTrigger>
@@ -449,7 +449,7 @@ export default function LowMoodBurnoutPage() {
                   <AccordionItem value="workplace">
                     <AccordionTrigger className="text-left">
                       <div className="flex items-center gap-2">
-                        <Badge className="bg-blue-100 text-blue-800">Organisational</Badge>
+                        <Badge variant="info">Organisational</Badge>
                         <span>Workplace Interventions</span>
                       </div>
                     </AccordionTrigger>
@@ -1235,37 +1235,37 @@ export default function LowMoodBurnoutPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="bg-green-50 p-4 rounded-lg border-2 border-green-200">
-                  <Badge className="bg-green-100 text-green-800 mb-2">Strong Evidence</Badge>
+                  <Badge variant="success" className="mb-2">Strong Evidence</Badge>
                   <p className="text-sm font-semibold">Cognitive Behavioural Therapy (CBT)</p>
                   <p className="text-sm text-muted-foreground">Effect size: Cohen's d = 0.5-0.8 (moderate to large). Most consistent evidence for reducing emotional exhaustion.</p>
                 </div>
 
                 <div className="bg-green-50 p-4 rounded-lg border-2 border-green-200">
-                  <Badge className="bg-green-100 text-green-800 mb-2">Strong Evidence</Badge>
+                  <Badge variant="success" className="mb-2">Strong Evidence</Badge>
                   <p className="text-sm font-semibold">Workplace Organisational Interventions</p>
                   <p className="text-sm text-muted-foreground">Addressing workload, control, rewards (Maslach's 6 Areas). Effect size: d = 0.35-0.65</p>
                 </div>
 
                 <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
-                  <Badge className="bg-blue-100 text-blue-800 mb-2">Moderate Evidence</Badge>
+                  <Badge variant="info" className="mb-2">Moderate Evidence</Badge>
                   <p className="text-sm font-semibold">Mindfulness-Based Stress Reduction (MBSR)</p>
                   <p className="text-sm text-muted-foreground">Emotional exhaustion: d = -0.46. Particularly effective for healthcare workers.</p>
                 </div>
 
                 <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
-                  <Badge className="bg-blue-100 text-blue-800 mb-2">Moderate Evidence</Badge>
+                  <Badge variant="info" className="mb-2">Moderate Evidence</Badge>
                   <p className="text-sm font-semibold">Acceptance and Commitment Therapy (ACT)</p>
                   <p className="text-sm text-muted-foreground">Values clarification, psychological flexibility. Helpful for meaning/purpose dimensions.</p>
                 </div>
 
                 <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
-                  <Badge className="bg-blue-100 text-blue-800 mb-2">Moderate Evidence</Badge>
+                  <Badge variant="info" className="mb-2">Moderate Evidence</Badge>
                   <p className="text-sm font-semibold">Behavioural Activation</p>
                   <p className="text-sm text-muted-foreground">Particularly if low mood/depression co-occurs. Focus on meaningful activities.</p>
                 </div>
 
                 <div className="bg-amber-50 p-4 rounded-lg border-2 border-amber-200">
-                  <Badge className="bg-amber-100 text-amber-800 mb-2">Supporting Evidence</Badge>
+                  <Badge variant="warning" className="mb-2">Supporting Evidence</Badge>
                   <p className="text-sm font-semibold">Physical Activity & Pacing Systems</p>
                   <p className="text-sm text-muted-foreground">Exercise reduces stress hormones. Pacing prevents boom-bust cycles.</p>
                 </div>
@@ -1754,7 +1754,7 @@ export default function LowMoodBurnoutPage() {
               <CardContent className="space-y-3">
                 <div className="space-y-2 text-sm">
                   <div className="flex items-start gap-2">
-                    <Badge className="bg-blue-100 text-blue-800">1</Badge>
+                    <Badge variant="neutral">1</Badge>
                     <div>
                       <p className="font-semibold">Digital Interventions</p>
                       <p className="text-muted-foreground">App-based CBT, VR therapy for stress management, wearable biofeedback devices</p>
@@ -1762,7 +1762,7 @@ export default function LowMoodBurnoutPage() {
                   </div>
 
                   <div className="flex items-start gap-2">
-                    <Badge className="bg-blue-100 text-blue-800">2</Badge>
+                    <Badge variant="neutral">2</Badge>
                     <div>
                       <p className="font-semibold">Biomarkers</p>
                       <p className="text-muted-foreground">Heart rate variability (HRV), cortisol awakening response, inflammatory markers as early warning signs</p>
@@ -1770,7 +1770,7 @@ export default function LowMoodBurnoutPage() {
                   </div>
 
                   <div className="flex items-start gap-2">
-                    <Badge className="bg-blue-100 text-blue-800">3</Badge>
+                    <Badge variant="neutral">3</Badge>
                     <div>
                       <p className="font-semibold">Precision Medicine</p>
                       <p className="text-muted-foreground">Genetic vulnerability factors (FKBP5, COMT genes), personalized interventions based on individual profiles</p>
@@ -1778,7 +1778,7 @@ export default function LowMoodBurnoutPage() {
                   </div>
 
                   <div className="flex items-start gap-2">
-                    <Badge className="bg-blue-100 text-blue-800">4</Badge>
+                    <Badge variant="neutral">4</Badge>
                     <div>
                       <p className="font-semibold">Social Prescribing</p>
                       <p className="text-sm text-muted-foreground">Nature therapy, arts on prescription, community-based interventions gaining evidence base</p>
@@ -1786,7 +1786,7 @@ export default function LowMoodBurnoutPage() {
                   </div>
 
                   <div className="flex items-start gap-2">
-                    <Badge className="bg-blue-100 text-blue-800">5</Badge>
+                    <Badge variant="neutral">5</Badge>
                     <div>
                       <p className="font-semibold">4-Day Work Week</p>
                       <p className="text-muted-foreground">Iceland and UK pilot studies showing reduced burnout, maintained productivity, improved wellbeing</p>

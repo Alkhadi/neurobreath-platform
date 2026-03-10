@@ -231,7 +231,7 @@ export default function DyslexiaReadingTrainingPage() {
                     </p>
                     <div className="flex flex-wrap gap-2 pt-2">
                       {['Sound Segmentation','Blending','Rhyming','Multisensory'].map(t => (
-                        <span key={t} className="text-xs px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">{t}</span>
+                        <span key={t} className="badge-nb badge-nb-success">{t}</span>
                       ))}
                     </div>
                   </div>
