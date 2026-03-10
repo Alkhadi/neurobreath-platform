@@ -1082,35 +1082,92 @@
   }
 
   /* Focus utility — shared across all interactive elements */
-  .nb-focus {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60 focus-visible:ring-offset-2;
+  .nb-focus:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--nb-btn-primary-focus);
   }
 
-  /* Primary CTA button — teal-gold gradient pill */
+  /* Primary CTA button — solid brand-blue pill */
   .nb-btn-primary {
-    @apply inline-flex items-center justify-center gap-2
-           rounded-full px-8 py-4 text-lg font-semibold text-white
-           bg-gradient-to-r from-[#959E0B] to-[#4ECDC4]
-           shadow-2xl
-           hover:opacity-90 hover:-translate-y-0.5
-           active:scale-[0.98]
-           transition-all duration-300
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60 focus-visible:ring-offset-2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    color: var(--nb-btn-primary-text);
+    background-color: var(--nb-btn-primary-bg);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    transition: all 300ms;
+    outline: none;
+  }
+  .nb-btn-primary:hover {
+    background-color: var(--nb-btn-primary-hover);
+    transform: translateY(-2px);
+  }
+  .nb-btn-primary:active {
+    transform: scale(0.98);
+  }
+  .nb-btn-primary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--nb-btn-primary-focus);
   }
 
-  /* Secondary CTA button — glassy pill */
+  /* Secondary CTA button — clean outline pill */
   .nb-btn-secondary {
-    @apply inline-flex items-center justify-center gap-2
-           rounded-full px-8 py-4 text-lg font-semibold
-           bg-white/90 dark:bg-white/5
-           border border-black/10 dark:border-white/15
-           text-[#0F172A] dark:text-white
-           shadow-lg
-           hover:bg-white dark:hover:bg-white/10 hover:-translate-y-0.5
-           active:scale-[0.98]
-           transition-all duration-300
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60 focus-visible:ring-offset-2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    color: var(--nb-btn-secondary-text);
+    background-color: var(--nb-btn-secondary-bg);
+    border: 1px solid var(--nb-btn-secondary-border);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: all 300ms;
+    outline: none;
   }
+  .nb-btn-secondary:hover {
+    background-color: var(--nb-btn-secondary-hover-bg);
+    transform: translateY(-2px);
+  }
+  .nb-btn-secondary:active {
+    transform: scale(0.98);
+  }
+  .nb-btn-secondary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--nb-btn-secondary-focus);
+  }
+
+  /* ── Semantic text utility classes ───────────────────── */
+  .text-nb-heading   { color: var(--nb-text-heading); }
+  .text-nb-body      { color: var(--nb-text-body); }
+  .text-nb-secondary { color: var(--nb-text-secondary); }
+  .text-nb-link      { color: var(--nb-text-link); }
+  .text-nb-on-dark   { color: var(--nb-text-on-dark); }
+}
+
+/* Dark mode overrides for secondary button */
+.dark .nb-btn-secondary {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+.dark .nb-btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* ============================================
@@ -1122,6 +1179,26 @@
   --nb-ink-900: #111827;
   --nb-ink-700: #374151;
   --nb-ink-500: #6b7280;
+
+  /* ── NB Semantic Text Tokens ─────────────────────────── */
+  --nb-text-heading:   #0F172A;
+  --nb-text-body:      #334155;
+  --nb-text-secondary: #5B6B7F;
+  --nb-text-link:      #1E40AF;
+  --nb-text-on-dark:   #FFFFFF;
+
+  /* ── NB Button Tokens — Primary ──────────────────────── */
+  --nb-btn-primary-bg:    #1E40AF;
+  --nb-btn-primary-text:  #FFFFFF;
+  --nb-btn-primary-hover: #1E3A8A;
+  --nb-btn-primary-focus: rgba(30, 64, 175, 0.24);
+
+  /* ── NB Button Tokens — Secondary ────────────────────── */
+  --nb-btn-secondary-bg:       #FFFFFF;
+  --nb-btn-secondary-text:     #1E40AF;
+  --nb-btn-secondary-border:   #BFDBFE;
+  --nb-btn-secondary-hover-bg: #EFF6FF;
+  --nb-btn-secondary-focus:    rgba(30, 64, 175, 0.18);
 }
 
 .nb-header {
@@ -1384,23 +1461,23 @@
   padding: 0.5rem 1.25rem;
   font-size: 0.938rem;
   font-weight: 600;
-  color: white;
-  background: linear-gradient(135deg, #959E0B 0%, #4ECDC4 100%);
+  color: var(--nb-btn-primary-text);
+  background: var(--nb-btn-primary-bg);
   border-radius: 0.75rem;
   text-decoration: none;
   transition: all 0.25s ease;
-  box-shadow: 0 1px 8px 0 rgba(78, 205, 196, 0.35);
+  box-shadow: 0 1px 8px 0 rgba(30, 64, 175, 0.2);
 }
 
 .nb-nav-cta:hover {
-  background: linear-gradient(135deg, #7a8409 0%, #3ab8b0 100%);
-  box-shadow: 0 4px 16px -2px rgba(78, 205, 196, 0.5);
+  background: var(--nb-btn-primary-hover);
+  box-shadow: 0 4px 16px -2px rgba(30, 64, 175, 0.35);
   transform: translateY(-1px);
 }
 
 .nb-nav-cta:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.6);
+  box-shadow: 0 0 0 3px var(--nb-btn-primary-focus);
 }
 
 /* User Menu */

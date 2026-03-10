@@ -5,19 +5,19 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 dark:ring-offset-gray-950 dark:focus-visible:ring-[#4ECDC4]/60",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E40AF]/24 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 dark:ring-offset-gray-950 dark:focus-visible:ring-[#1E40AF]/40",
   {
     variants: {
       variant: {
-        default: "bg-gradient-to-r from-[#959E0B] to-[#4ECDC4] text-white shadow-lg hover:opacity-90 dark:from-[#959E0B] dark:to-[#4ECDC4]",
+        default: "bg-[#1E40AF] text-white shadow-sm hover:bg-[#1E3A8A] dark:bg-[#1E40AF] dark:hover:bg-[#1E3A8A]",
         destructive:
           "bg-red-500 text-gray-50 hover:bg-red-500/90 dark:bg-red-900 dark:text-gray-50 dark:hover:bg-red-900/90",
         outline:
-          "border border-gray-200 bg-white hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50",
+          "border border-[#BFDBFE] bg-white text-[#1E40AF] hover:bg-[#EFF6FF] dark:border-white/20 dark:bg-transparent dark:text-[#93C5FD] dark:hover:bg-[#1E40AF]/10",
         secondary:
           "bg-gray-100 text-gray-900 hover:bg-gray-100/80 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-800/80",
         ghost: "hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-50",
-        link: "text-gray-900 underline-offset-4 hover:underline dark:text-gray-50",
+        link: "text-[#1E40AF] underline-offset-4 hover:underline dark:text-[#93C5FD]",
       },
       size: {
         default: "h-10 px-4 py-2",

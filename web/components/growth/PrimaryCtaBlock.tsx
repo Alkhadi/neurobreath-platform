@@ -25,7 +25,7 @@ export function PrimaryCtaBlock({ region, title, description, primary, secondary
           href={primary.href}
           event={primary.event || 'home_primary_cta_click'}
           payload={{ href: primary.href, source: `/${regionKey}` }}
-          className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+          className="inline-flex items-center justify-center rounded-xl bg-[#1E40AF] px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#1E3A8A] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E40AF]/24 focus-visible:ring-offset-2"
         >
           {primary.label}
         </TrackedLink>
@@ -35,7 +35,7 @@ export function PrimaryCtaBlock({ region, title, description, primary, secondary
             href={secondary.href}
             event={secondary.event || 'home_secondary_cta_click'}
             payload={{ href: secondary.href, source: `/${regionKey}` }}
-            className="inline-flex items-center justify-center rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-900 hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+            className="inline-flex items-center justify-center rounded-xl border border-[#BFDBFE] bg-white px-5 py-3 text-sm font-semibold text-[#1E40AF] hover:bg-[#EFF6FF] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E40AF]/18 focus-visible:ring-offset-2"
           >
             {secondary.label}
           </TrackedLink>
