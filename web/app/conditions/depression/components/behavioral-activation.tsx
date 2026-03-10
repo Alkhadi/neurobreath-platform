@@ -187,7 +187,7 @@ export function BehavioralActivation() {
                     }
                   }}
                   placeholder={`Add a task...`}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                  className="flex-1 px-4 py-2 rounded-lg border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] text-sm text-[var(--nb-form-input-text)] placeholder:text-[var(--nb-form-placeholder)] hover:border-[var(--nb-form-border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)] focus:border-[var(--nb-form-border-focus)]"
                 />
                 <button
                   onClick={() => addTask(category?.key)}

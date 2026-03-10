@@ -573,7 +573,7 @@ export function BeginSessionModal({ isOpen, onClose }: BeginSessionModalProps) {
                   name="narrationVoice"
                   value={selectedVoice}
                   onChange={(e) => setSelectedVoice(e.target.value)}
-                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-3 py-1.5 text-sm rounded-md border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] text-[var(--nb-form-input-text)] hover:border-[var(--nb-form-border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)] focus:border-[var(--nb-form-border-focus)]"
                   aria-label="Select narration voice"
                   title="Choose your preferred narration voice"
                 >

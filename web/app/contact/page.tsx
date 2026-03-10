@@ -321,7 +321,7 @@ export default function ContactPage() {
             {/* Contact Form */}
             <form
               onSubmit={handleContactFormSubmit}
-              className="space-y-4 [&_input::placeholder]:text-gray-500 [&_textarea::placeholder]:text-gray-500 dark:[&_input::placeholder]:text-gray-300 dark:[&_textarea::placeholder]:text-gray-300"
+              className="space-y-4"
             >
               {/* Honeypot field: bots often fill it, humans never see it */}
               <div className={styles.honeypot} aria-hidden="true">
@@ -353,7 +353,7 @@ export default function ContactPage() {
                 />
               </div>
               <div>
-                <label htmlFor="name" className="block text-sm font-semibold text-gray-900 xl:text-white mb-2">
+                <label htmlFor="name" className="block text-sm font-semibold text-[var(--nb-form-label)] xl:text-white mb-2">
                   Full Name *
                 </label>
                 <input
@@ -364,12 +364,12 @@ export default function ContactPage() {
                   minLength={2}
                   maxLength={80}
                   autoComplete="name"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 rounded-lg border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] text-[var(--nb-form-input-text)] placeholder:text-[var(--nb-form-placeholder)] hover:border-[var(--nb-form-border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)] focus:border-[var(--nb-form-border-focus)] transition-colors"
                   placeholder="Moe Koroma"
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-gray-900 xl:text-white mb-2">
+                <label htmlFor="email" className="block text-sm font-semibold text-[var(--nb-form-label)] xl:text-white mb-2">
                   Email Address *
                 </label>
                 <input
@@ -379,13 +379,13 @@ export default function ContactPage() {
                   required
                   maxLength={254}
                   autoComplete="email"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 rounded-lg border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] text-[var(--nb-form-input-text)] placeholder:text-[var(--nb-form-placeholder)] hover:border-[var(--nb-form-border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)] focus:border-[var(--nb-form-border-focus)] transition-colors"
                   placeholder="john@example.com"
                 />
               </div>
 
               <div>
-                <label htmlFor="organization" className="block text-sm font-semibold text-gray-900 xl:text-white mb-2">
+                <label htmlFor="organization" className="block text-sm font-semibold text-[var(--nb-form-label)] xl:text-white mb-2">
                   Organisation (optional)
                 </label>
                 <input
@@ -394,13 +394,13 @@ export default function ContactPage() {
                   name="organization"
                   maxLength={200}
                   autoComplete="organization"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 rounded-lg border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] text-[var(--nb-form-input-text)] placeholder:text-[var(--nb-form-placeholder)] hover:border-[var(--nb-form-border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)] focus:border-[var(--nb-form-border-focus)] transition-colors"
                   placeholder="NeuroBreath"
                 />
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-sm font-semibold text-gray-900 xl:text-white mb-2">
+                <label htmlFor="phone" className="block text-sm font-semibold text-[var(--nb-form-label)] xl:text-white mb-2">
                   Phone (optional)
                 </label>
                 <input
@@ -409,13 +409,13 @@ export default function ContactPage() {
                   name="phone"
                   maxLength={50}
                   autoComplete="tel"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 rounded-lg border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] text-[var(--nb-form-input-text)] placeholder:text-[var(--nb-form-placeholder)] hover:border-[var(--nb-form-border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)] focus:border-[var(--nb-form-border-focus)] transition-colors"
                   placeholder="+44 7xxx xxxxxx"
                 />
               </div>
 
               <div>
-                <label htmlFor="subject" className="block text-sm font-semibold text-gray-900 xl:text-white mb-2">
+                <label htmlFor="subject" className="block text-sm font-semibold text-[var(--nb-form-label)] xl:text-white mb-2">
                   Subject *
                 </label>
                 <input
@@ -426,12 +426,12 @@ export default function ContactPage() {
                   minLength={2}
                   maxLength={120}
                   autoComplete="off"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 rounded-lg border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] text-[var(--nb-form-input-text)] placeholder:text-[var(--nb-form-placeholder)] hover:border-[var(--nb-form-border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)] focus:border-[var(--nb-form-border-focus)] transition-colors"
                   placeholder="How can we help?"
                 />
               </div>
               <div>
-                <label htmlFor="message" className="block text-sm font-semibold text-gray-900 xl:text-white mb-2">
+                <label htmlFor="message" className="block text-sm font-semibold text-[var(--nb-form-label)] xl:text-white mb-2">
                   Message *
                 </label>
                 <textarea
@@ -442,7 +442,7 @@ export default function ContactPage() {
                   maxLength={4000}
                   rows={5}
                   autoComplete="off"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all resize-none"
+                  className="w-full px-4 py-3 rounded-lg border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] text-[var(--nb-form-input-text)] placeholder:text-[var(--nb-form-placeholder)] hover:border-[var(--nb-form-border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)] focus:border-[var(--nb-form-border-focus)] transition-colors resize-none"
                   placeholder="Your message here..."
                 />
               </div>
@@ -466,10 +466,10 @@ export default function ContactPage() {
 
                 <div aria-live="polite" aria-atomic="true">
                   {contactSubmitStatus.state === "error" && contactSubmitStatus.message ? (
-                    <p className="text-sm text-red-600">{contactSubmitStatus.message}</p>
+                    <p className="text-sm font-medium text-[var(--nb-form-error-text)]">{contactSubmitStatus.message}</p>
                   ) : null}
                   {contactSubmitStatus.state === "success" && contactSubmitStatus.message ? (
-                    <p className="text-sm text-green-700 xl:text-white">{contactSubmitStatus.message}</p>
+                    <p className="text-sm font-medium text-[var(--nb-form-success-text)] xl:text-white">{contactSubmitStatus.message}</p>
                   ) : null}
                 </div>
               </div>

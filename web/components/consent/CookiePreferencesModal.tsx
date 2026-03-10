@@ -141,7 +141,7 @@ export function CookiePreferencesModal({ onClose }: CookiePreferencesModalProps)
                     type="checkbox"
                     checked={true}
                     disabled
-                    className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 opacity-50 cursor-not-allowed"
+                    className="w-5 h-5 rounded border-[var(--nb-form-disabled-border)] bg-[var(--nb-form-bg-disabled)] text-[var(--nb-btn-primary-bg)] accent-[var(--nb-btn-primary-bg)] opacity-50 cursor-not-allowed"
                     aria-label="Essential cookies (always enabled)"
                   />
                   <span className="ml-2 text-xs text-slate-500">Always on</span>
@@ -170,7 +170,7 @@ export function CookiePreferencesModal({ onClose }: CookiePreferencesModalProps)
                     type="checkbox"
                     checked={functional}
                     onChange={(e) => setFunctional(e.target.checked)}
-                    className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                    className="w-5 h-5 rounded border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] text-[var(--nb-btn-primary-bg)] accent-[var(--nb-btn-primary-bg)] hover:border-[var(--nb-form-border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)]"
                     aria-label="Enable functional cookies"
                   />
                 </div>
@@ -201,7 +201,7 @@ export function CookiePreferencesModal({ onClose }: CookiePreferencesModalProps)
                     type="checkbox"
                     checked={analytics}
                     onChange={(e) => setAnalytics(e.target.checked)}
-                    className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                    className="w-5 h-5 rounded border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] text-[var(--nb-btn-primary-bg)] accent-[var(--nb-btn-primary-bg)] hover:border-[var(--nb-form-border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)]"
                     aria-label="Enable analytics cookies"
                   />
                 </div>

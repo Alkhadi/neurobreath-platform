@@ -649,8 +649,9 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
  
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* NB-aligned: #1E40AF deep blue for primary */
+    --primary: 226 71% 40%;
+    --primary-foreground: 0 0% 100%;
  
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -658,15 +659,19 @@
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
  
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* NB-aligned: #EFF6FF light-blue accent for dropdown/listbox hover */
+    --accent: 214 100% 97%;
+    --accent-foreground: 226 71% 40%;
  
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* NB-aligned: #991B1B dark crimson — WCAG AA readable error text */
+    --destructive: 0 70% 35%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* NB-aligned: #CBD5E1 visible but calm input border */
+    --border: 213 27% 84%;
+    --input: 213 27% 84%;
+    /* NB-aligned: #1E40AF blue focus ring */
+    --ring: 226 71% 40%;
  
     --radius: 0.5rem;
   }
@@ -1206,6 +1211,172 @@
   .nb-dark-section p,
   .nb-dark-section li  { color: var(--nb-text-dark-body); }
   .nb-dark-section a   { color: var(--nb-text-dark-link); }
+
+  /* ── NB Form Semantic Utilities ──────────────────────── */
+
+  /* Text colour helpers */
+  .text-nb-form-label   { color: var(--nb-form-label); }
+  .text-nb-form-helper  { color: var(--nb-form-helper); }
+  .text-nb-form-error   { color: var(--nb-form-error-text); }
+  .text-nb-form-success { color: var(--nb-form-success-text); }
+  .text-nb-form-warning { color: var(--nb-form-warning-text); }
+
+  /* Validation state rings applied to field wrappers or directly to fields */
+  .field-error {
+    border-color: var(--nb-form-error-border) !important;
+    background-color: var(--nb-form-error-bg);
+  }
+  .field-error:focus-visible,
+  .field-error:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--nb-form-error-ring);
+  }
+
+  .field-success {
+    border-color: var(--nb-form-success-border) !important;
+    background-color: var(--nb-form-success-bg);
+  }
+  .field-success:focus-visible,
+  .field-success:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--nb-form-success-ring);
+  }
+
+  .field-warning {
+    border-color: var(--nb-form-warning-border) !important;
+    background-color: var(--nb-form-warning-bg);
+  }
+  .field-warning:focus-visible,
+  .field-warning:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--nb-form-warning-ring);
+  }
+
+  /* Dark-section form field overrides — apply when forms live inside .nb-dark-section */
+  .nb-dark-section input,
+  .nb-dark-section textarea,
+  .nb-dark-section select,
+  .nb-dark-section [role="combobox"] {
+    background-color: var(--nb-form-dark-bg);
+    color: var(--nb-form-dark-input-text);
+    border-color: var(--nb-form-dark-border);
+  }
+  .nb-dark-section input::placeholder,
+  .nb-dark-section textarea::placeholder {
+    color: var(--nb-form-dark-placeholder);
+  }
+  .nb-dark-section input:hover,
+  .nb-dark-section textarea:hover,
+  .nb-dark-section select:hover,
+  .nb-dark-section [role="combobox"]:hover {
+    border-color: var(--nb-form-dark-border-hover);
+  }
+  .nb-dark-section input:focus-visible,
+  .nb-dark-section textarea:focus-visible,
+  .nb-dark-section select:focus-visible,
+  .nb-dark-section [role="combobox"]:focus {
+    border-color: var(--nb-form-dark-border-focus);
+    box-shadow: 0 0 0 3px var(--nb-form-dark-ring-focus);
+    outline: none;
+  }
+  .nb-dark-section label {
+    color: var(--nb-form-dark-label);
+  }
+  .nb-dark-section [id$="-form-item-description"],
+  .nb-dark-section [id$="-form-item-message"] {
+    color: var(--nb-form-dark-helper);
+  }
+
+  /* ── NB Badge / Status Chip semantic classes ─────── */
+  /* Use these on any raw status pill, chip, or tag that bypasses the Badge component */
+  .badge-nb {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    border-width: 1px;
+    padding: 0.125rem 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+    white-space: nowrap;
+  }
+  .badge-nb-neutral {
+    background-color: var(--nb-badge-neutral-bg);
+    color: var(--nb-badge-neutral-text);
+    border-color: var(--nb-badge-neutral-border);
+  }
+  .badge-nb-soft {
+    background-color: var(--nb-badge-soft-bg);
+    color: var(--nb-badge-soft-text);
+    border-color: var(--nb-badge-soft-border);
+  }
+  .badge-nb-success {
+    background-color: var(--nb-badge-success-bg);
+    color: var(--nb-badge-success-text);
+    border-color: var(--nb-badge-success-border);
+  }
+  .badge-nb-warning {
+    background-color: var(--nb-badge-warning-bg);
+    color: var(--nb-badge-warning-text);
+    border-color: var(--nb-badge-warning-border);
+  }
+  .badge-nb-error {
+    background-color: var(--nb-badge-error-bg);
+    color: var(--nb-badge-error-text);
+    border-color: var(--nb-badge-error-border);
+  }
+  .badge-nb-info {
+    background-color: var(--nb-badge-info-bg);
+    color: var(--nb-badge-info-text);
+    border-color: var(--nb-badge-info-border);
+  }
+
+  /* ── NB Table semantic wrapper ───────────────────── */
+  /* Apply to a <table> or its wrapper to get NB table styling without the shadcn Table component */
+  .table-nb {
+    width: 100%;
+    caption-side: bottom;
+    font-size: 0.875rem;
+    color: var(--nb-table-body-text);
+    border-collapse: collapse;
+  }
+  .table-nb thead tr {
+    background-color: var(--nb-table-header-bg);
+    border-bottom: 1px solid var(--nb-table-border);
+  }
+  .table-nb thead th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--nb-table-header-text);
+  }
+  .table-nb tbody tr {
+    border-bottom: 1px solid var(--nb-table-border);
+    transition: background-color 150ms ease;
+  }
+  .table-nb tbody tr:last-child {
+    border-bottom: none;
+  }
+  .table-nb tbody tr:hover {
+    background-color: var(--nb-table-row-hover-bg);
+  }
+  .table-nb tbody tr[data-state=selected] {
+    background-color: var(--nb-table-selected-bg);
+  }
+  .table-nb td {
+    padding: 1rem;
+    vertical-align: middle;
+    color: var(--nb-table-body-text);
+  }
+  .table-nb caption {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--nb-table-muted-text);
+  }
+
+  /* ── NB Layer shadow utilities ───────────────────── */
+  .nb-layer-shadow    { box-shadow: var(--nb-layer-shadow); }
+  .nb-layer-shadow-sm { box-shadow: var(--nb-layer-shadow-sm); }
 }
 
 /* Dark mode overrides for secondary button */
@@ -1281,6 +1452,133 @@
   --nb-footer-body:       #CBD5E1;
   --nb-footer-link:       #BFDBFE;
   --nb-footer-link-hover: #FFFFFF;
+
+  /* ── NB Form Tokens ──────────────────────────────────── */
+
+  /* Label colours */
+  --nb-form-label:       #0F172A;
+  --nb-form-label-muted: #334155;
+
+  /* Input text */
+  --nb-form-input-text: #0F172A;
+
+  /* Placeholder — visible but clearly secondary */
+  --nb-form-placeholder: #64748B;
+
+  /* Helper / description text */
+  --nb-form-helper: #5B6B7F;
+
+  /* Field backgrounds */
+  --nb-form-bg:          #FFFFFF;
+  --nb-form-bg-readonly: #F8FAFC;
+  --nb-form-bg-disabled: #F1F5F9;
+
+  /* Border states */
+  --nb-form-border:       #CBD5E1;
+  --nb-form-border-hover: #94A3B8;
+  --nb-form-border-focus: #1E40AF;
+  --nb-form-ring-focus:   rgba(30, 64, 175, 0.18);
+
+  /* Disabled colours */
+  --nb-form-disabled-text:   #94A3B8;
+  --nb-form-disabled-border: #E2E8F0;
+
+  /* Validation — Error */
+  --nb-form-error-text:   #991B1B;
+  --nb-form-error-border: #DC2626;
+  --nb-form-error-bg:     #FEF2F2;
+  --nb-form-error-ring:   rgba(220, 38, 38, 0.16);
+
+  /* Validation — Success */
+  --nb-form-success-text:   #166534;
+  --nb-form-success-border: #16A34A;
+  --nb-form-success-bg:     #F0FDF4;
+  --nb-form-success-ring:   rgba(22, 163, 74, 0.16);
+
+  /* Validation — Warning */
+  --nb-form-warning-text:   #92400E;
+  --nb-form-warning-border: #D97706;
+  --nb-form-warning-bg:     #FFFBEB;
+  --nb-form-warning-ring:   rgba(217, 119, 6, 0.16);
+
+  /* Dark/inverted form surface tokens (for forms on nb-dark-section) */
+  --nb-form-dark-label:       #E2E8F0;
+  --nb-form-dark-input-text:  #F1F5F9;
+  --nb-form-dark-placeholder: #94A3B8;
+  --nb-form-dark-helper:      #CBD5E1;
+  --nb-form-dark-bg:          rgba(255, 255, 255, 0.06);
+  --nb-form-dark-border:      rgba(255, 255, 255, 0.18);
+  --nb-form-dark-border-hover: rgba(255, 255, 255, 0.32);
+  --nb-form-dark-border-focus: #BFDBFE;
+  --nb-form-dark-ring-focus:  rgba(191, 219, 254, 0.24);
+
+  /* ── NB Table Tokens ──────────────────────────────── */
+  --nb-table-header-bg:    #F8FAFC;
+  --nb-table-row-bg:       #FFFFFF;
+  --nb-table-row-alt-bg:   #FCFDFE;
+  --nb-table-row-hover-bg: #F1F5F9;
+  --nb-table-border:       #E2E8F0;
+  --nb-table-header-text:  #0F172A;
+  --nb-table-body-text:    #334155;
+  --nb-table-muted-text:   #5B6B7F;
+  --nb-table-selected-bg:  #EFF6FF;
+
+  /* ── NB Badge / Chip / Status Tokens ─────────────── */
+  --nb-badge-neutral-bg:     #EFF6FF;
+  --nb-badge-neutral-text:   #1E3A8A;
+  --nb-badge-neutral-border: #BFDBFE;
+
+  --nb-badge-soft-bg:     #F8FAFC;
+  --nb-badge-soft-text:   #334155;
+  --nb-badge-soft-border: #E2E8F0;
+
+  --nb-badge-success-bg:     #F0FDF4;
+  --nb-badge-success-text:   #166534;
+  --nb-badge-success-border: #86EFAC;
+
+  --nb-badge-warning-bg:     #FFFBEB;
+  --nb-badge-warning-text:   #92400E;
+  --nb-badge-warning-border: #FCD34D;
+
+  --nb-badge-error-bg:     #FEF2F2;
+  --nb-badge-error-text:   #991B1B;
+  --nb-badge-error-border: #FCA5A5;
+
+  --nb-badge-info-bg:     #EFF6FF;
+  --nb-badge-info-text:   #1E40AF;
+  --nb-badge-info-border: #BFDBFE;
+
+  /* ── NB Tab Tokens ────────────────────────────────── */
+  --nb-tab-text:          #334155;
+  --nb-tab-text-active:   #0F172A;
+  --nb-tab-active-bg:     #FFFFFF;
+  --nb-tab-hover-bg:      #F1F5F9;
+  --nb-tab-focus:         rgba(30, 64, 175, 0.18);
+  --nb-tab-active-border: #1E40AF;
+
+  /* ── NB Accordion Tokens ──────────────────────────── */
+  --nb-accordion-border:           #E2E8F0;
+  --nb-accordion-trigger-text:     #0F172A;
+  --nb-accordion-trigger-hover-bg: #F8FAFC;
+  --nb-accordion-content-text:     #334155;
+  --nb-accordion-icon-color:       #64748B;
+
+  /* ── NB Layer / Overlay Tokens ───────────────────── */
+  --nb-layer-overlay:     rgba(15, 23, 42, 0.48);
+  --nb-layer-surface:     #FFFFFF;
+  --nb-layer-surface-alt: #F8FAFC;
+  --nb-layer-border:      #E2E8F0;
+  --nb-layer-heading:     #0F172A;
+  --nb-layer-body:        #334155;
+  --nb-layer-muted:       #5B6B7F;
+  --nb-layer-shadow:      0 20px 50px rgba(15, 23, 42, 0.16), 0 4px 16px rgba(15, 23, 42, 0.08);
+  --nb-layer-shadow-sm:   0 4px 16px rgba(15, 23, 42, 0.10), 0 1px 4px rgba(15, 23, 42, 0.06);
+
+  --nb-layer-dark-surface: #0F172A;
+  --nb-layer-dark-border:  rgba(255, 255, 255, 0.14);
+  --nb-layer-dark-heading: #FFFFFF;
+  --nb-layer-dark-body:    #E2E8F0;
+  --nb-layer-dark-muted:   #CBD5E1;
 }
 
 .nb-header {

@@ -63,7 +63,7 @@ function MoodTracker() {
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="What influenced your mood today?"
-            className="w-full p-3 border rounded-lg"
+            className="w-full p-3 rounded-lg border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] text-[var(--nb-form-input-text)] placeholder:text-[var(--nb-form-placeholder)] hover:border-[var(--nb-form-border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)] focus:border-[var(--nb-form-border-focus)]"
             rows={3}
           />
         </div>
@@ -210,7 +210,7 @@ function GratitudePractice() {
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && addGratitude()}
             placeholder="I'm grateful for..."
-            className="flex-1 p-3 border rounded-lg"
+            className="flex-1 p-3 rounded-lg border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] text-[var(--nb-form-input-text)] placeholder:text-[var(--nb-form-placeholder)] hover:border-[var(--nb-form-border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)] focus:border-[var(--nb-form-border-focus)]"
           />
           <Button onClick={addGratitude}>Add</Button>
         </div>

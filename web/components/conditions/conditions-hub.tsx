@@ -92,21 +92,21 @@ export default function ConditionsHub({ conditions, regionKey, supportNeedLabels
           <div className="text-sm text-slate-500">Showing {filtered.length} of {conditions.length}</div>
         </div>
         <div className="flex flex-wrap mt-4 gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] lg:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
-          <label className="flex flex-col text-xs font-semibold text-slate-500 uppercase">
+          <label className="flex flex-col text-xs font-semibold text-[var(--nb-form-helper)] uppercase">
             Search
             <input
               value={query}
               onChange={event => setQuery(event.target.value)}
               placeholder="Search conditions"
-              className="mt-1 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none"
+              className="mt-1 rounded-lg border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] px-3 py-2 text-sm text-[var(--nb-form-input-text)] placeholder:text-[var(--nb-form-placeholder)] hover:border-[var(--nb-form-border-hover)] focus:border-[var(--nb-form-border-focus)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)]"
             />
           </label>
-          <label className="flex flex-col text-xs font-semibold text-slate-500 uppercase">
+          <label className="flex flex-col text-xs font-semibold text-[var(--nb-form-helper)] uppercase">
             Support need
             <select
               value={supportNeed}
               onChange={event => setSupportNeed(event.target.value)}
-              className="mt-1 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none"
+              className="mt-1 rounded-lg border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] px-3 py-2 text-sm text-[var(--nb-form-input-text)] hover:border-[var(--nb-form-border-hover)] focus:border-[var(--nb-form-border-focus)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)]"
             >
               <option value="all">All</option>
               {supportNeeds.map(tag => (
@@ -116,12 +116,12 @@ export default function ConditionsHub({ conditions, regionKey, supportNeedLabels
               ))}
             </select>
           </label>
-          <label className="flex flex-col text-xs font-semibold text-slate-500 uppercase">
+          <label className="flex flex-col text-xs font-semibold text-[var(--nb-form-helper)] uppercase">
             Audience
             <select
               value={audience}
               onChange={event => setAudience(event.target.value)}
-              className="mt-1 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none"
+              className="mt-1 rounded-lg border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] px-3 py-2 text-sm text-[var(--nb-form-input-text)] hover:border-[var(--nb-form-border-hover)] focus:border-[var(--nb-form-border-focus)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)]"
             >
               <option value="all">All</option>
               {audiences.map(tag => (
@@ -131,12 +131,12 @@ export default function ConditionsHub({ conditions, regionKey, supportNeedLabels
               ))}
             </select>
           </label>
-          <label className="flex flex-col text-xs font-semibold text-slate-500 uppercase">
+          <label className="flex flex-col text-xs font-semibold text-[var(--nb-form-helper)] uppercase">
             Category
             <select
               value={category}
               onChange={event => setCategory(event.target.value)}
-              className="mt-1 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none"
+              className="mt-1 rounded-lg border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] px-3 py-2 text-sm text-[var(--nb-form-input-text)] hover:border-[var(--nb-form-border-hover)] focus:border-[var(--nb-form-border-focus)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)]"
             >
               <option value="all">All</option>
               {categories.map(tag => (

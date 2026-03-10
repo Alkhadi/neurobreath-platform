@@ -686,7 +686,7 @@ export default function ProgressPage() {
                 setActiveSubjectId(next)
                 safeSetActiveSubjectId(next)
               }}
-              className="h-10 rounded-md border border-gray-200 bg-white px-3 text-sm shadow-sm"
+              className="h-10 rounded-md border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] px-3 text-sm text-[var(--nb-form-input-text)] shadow-sm hover:border-[var(--nb-form-border-hover)] focus:border-[var(--nb-form-border-focus)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)]"
               disabled={loading && subjects.length === 0}
             >
               {(subjects.length ? subjects : [{ id: 'me', kind: 'self', displayName: 'Me' }]).map(
@@ -804,9 +804,9 @@ export default function ProgressPage() {
                 type="text"
                 value={newLearnerName}
                 onChange={(e) => setNewLearnerName(e.target.value)}
-                placeholder="e.g. Sam"
-                maxLength={80}
-                className="h-10 w-64 max-w-full rounded-md border border-gray-200 bg-white px-3 text-sm shadow-sm"
+                  placeholder="e.g. Sam"
+                  maxLength={80}
+                  className="h-10 w-64 max-w-full rounded-md border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] px-3 text-sm text-[var(--nb-form-input-text)] placeholder:text-[var(--nb-form-placeholder)] shadow-sm hover:border-[var(--nb-form-border-hover)] focus:border-[var(--nb-form-border-focus)] focus:outline-none focus:ring-2 focus:ring-[var(--nb-form-ring-focus)]"
                 disabled={creatingLearner}
               />
               <Button type="submit" disabled={creatingLearner || !newLearnerName.trim()}>
@@ -969,12 +969,12 @@ export default function ProgressPage() {
                         const v = parseInt(e.target.value)
                         if (!isNaN(v)) updateGoal('dailyBreathingMinutes', v, 1, 240)
                       }}
-                      className="w-14 h-6 text-right text-xs border border-gray-300 rounded px-1"
+                      className="w-14 h-6 text-right text-xs rounded px-1 border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] text-[var(--nb-form-input-text)] focus:border-[var(--nb-form-border-focus)] focus:outline-none focus:ring-1 focus:ring-[var(--nb-form-ring-focus)]"
                     />
-                    <span className="text-xs text-gray-500">min</span>
+                    <span className="text-xs text-[var(--nb-text-secondary)]">min</span>
                   </span>
                 ) : (
-                  <span className="text-gray-500">
+                  <span className="text-[var(--nb-text-secondary)]">
                     {todayMetrics.breathingMinutes}/{goals.dailyBreathingMinutes} min
                   </span>
                 )}
@@ -1009,11 +1009,11 @@ export default function ProgressPage() {
                         const v = parseInt(e.target.value)
                         if (!isNaN(v)) updateGoal('dailyCompletions', v, 1, 50)
                       }}
-                      className="w-14 h-6 text-right text-xs border border-gray-300 rounded px-1"
+                      className="w-14 h-6 text-right text-xs rounded px-1 border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] text-[var(--nb-form-input-text)] focus:border-[var(--nb-form-border-focus)] focus:outline-none focus:ring-1 focus:ring-[var(--nb-form-ring-focus)]"
                     />
                   </span>
                 ) : (
-                  <span className="text-gray-500">
+                  <span className="text-[var(--nb-text-secondary)]">
                     {todayMetrics.completions}/{goals.dailyCompletions}
                   </span>
                 )}
@@ -1048,12 +1048,12 @@ export default function ProgressPage() {
                         const v = parseInt(e.target.value)
                         if (!isNaN(v)) updateGoal('weeklyBreathingMinutes', v, 1, 1680)
                       }}
-                      className="w-14 h-6 text-right text-xs border border-gray-300 rounded px-1"
+                      className="w-14 h-6 text-right text-xs rounded px-1 border border-[var(--nb-form-border)] bg-[var(--nb-form-bg)] text-[var(--nb-form-input-text)] focus:border-[var(--nb-form-border-focus)] focus:outline-none focus:ring-1 focus:ring-[var(--nb-form-ring-focus)]"
                     />
-                    <span className="text-xs text-gray-500">min</span>
+                    <span className="text-xs text-[var(--nb-text-secondary)]">min</span>
                   </span>
                 ) : (
-                  <span className="text-gray-500">
+                  <span className="text-[var(--nb-text-secondary)]">
                     {weeklyBreathingMinutes}/{goals.weeklyBreathingMinutes} min
                   </span>
                 )}
