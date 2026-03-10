@@ -343,13 +343,16 @@ export function ExposureLadder() {
                       <div className="h-[200px]">
                         <ResponsiveContainer width="100%" height="100%">
                           <LineChart data={getStepAttemptsData(selectedStepId)} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
-                            <XAxis dataKey="attempt" tick={{ fontSize: 10 }} tickLine={false} />
-                            <YAxis domain={[0, 10]} tick={{ fontSize: 10 }} tickLine={false} />
-                            <Tooltip contentStyle={{ fontSize: 11 }} />
-                            <Legend verticalAlign="top" wrapperStyle={{ fontSize: 11 }} />
-                            <Line type="monotone" dataKey="before" stroke="#60B5FF" strokeWidth={2} name="Before" />
-                            <Line type="monotone" dataKey="during" stroke="#FF9149" strokeWidth={2} name="During" />
-                            <Line type="monotone" dataKey="after" stroke="#72BF78" strokeWidth={2} name="After" />
+                            <XAxis dataKey="attempt" tick={{ fontSize: 10, fill: 'var(--nb-chart-text,#334155)' }} tickLine={false} axisLine={{ stroke: 'var(--nb-chart-grid,#E2E8F0)' }} />
+                                                        <YAxis domain={[0, 10]} tick={{ fontSize: 10, fill: 'var(--nb-chart-text,#334155)' }} tickLine={false} axisLine={{ stroke: 'var(--nb-chart-grid,#E2E8F0)' }} />
+                                                        <Tooltip
+                                                          contentStyle={{ background: 'var(--nb-chart-tooltip-bg,#FFF)', border: '1px solid var(--nb-chart-tooltip-border,#CBD5E1)', borderRadius: '0.5rem', fontSize: 11, color: 'var(--nb-chart-tooltip-body,#334155)' }}
+                                                          labelStyle={{ color: 'var(--nb-chart-tooltip-title,#0F172A)', fontWeight: 600 }}
+                                                        />
+                                                        <Legend verticalAlign="top" wrapperStyle={{ fontSize: 11, color: 'var(--nb-chart-text,#334155)' }} />
+                                                        <Line type="monotone" dataKey="before" stroke="var(--nb-chart-1,#1E40AF)" strokeWidth={2} name="Before" />
+                                                        <Line type="monotone" dataKey="during" stroke="var(--nb-chart-5,#D97706)" strokeWidth={2} name="During" />
+                                                        <Line type="monotone" dataKey="after" stroke="var(--nb-chart-4,#16A34A)" strokeWidth={2} name="After" />
                           </LineChart>
                         </ResponsiveContainer>
                       </div>

@@ -73,22 +73,22 @@
   height: var(--nb-progress-height, 0.5rem);
   border-radius: 9999px;
   overflow: hidden;
-  background: hsl(var(--secondary));
+  background: var(--nb-progress-track, #E2E8F0);
 }
 
 .nb-progress::-webkit-progress-bar {
-  background: hsl(var(--secondary));
+  background: var(--nb-progress-track, #E2E8F0);
   border-radius: 9999px;
 }
 
 .nb-progress::-webkit-progress-value {
-  background: hsl(var(--primary));
+  background: var(--nb-progress-fill, #1E40AF);
   border-radius: 9999px;
   transition: width 0.3s ease;
 }
 
 .nb-progress::-moz-progress-bar {
-  background: hsl(var(--primary));
+  background: var(--nb-progress-fill, #1E40AF);
   border-radius: 9999px;
   transition: width 0.3s ease;
 }
@@ -98,36 +98,36 @@
 }
 
 .nb-progress--gradient::-webkit-progress-value {
-  background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--primary) / 0.7));
+  background: linear-gradient(to right, var(--nb-progress-fill, #1E40AF), var(--nb-progress-fill-soft, #60A5FA));
 }
 
 .nb-progress--gradient::-moz-progress-bar {
-  background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--primary) / 0.7));
+  background: linear-gradient(to right, var(--nb-progress-fill, #1E40AF), var(--nb-progress-fill-soft, #60A5FA));
 }
 
 /* Preset fills (no inline styles) */
 .nb-progress--focus::-webkit-progress-value {
-  background: linear-gradient(to right, #22c55e, #059669);
+  background: linear-gradient(to right, var(--nb-progress-success, #16A34A), #059669);
 }
 
 .nb-progress--focus::-moz-progress-bar {
-  background: linear-gradient(to right, #22c55e, #059669);
+  background: linear-gradient(to right, var(--nb-progress-success, #16A34A), #059669);
 }
 
 .nb-progress--short::-webkit-progress-value {
-  background: linear-gradient(to right, #3b82f6, #0891b2);
+  background: linear-gradient(to right, var(--nb-progress-fill, #1E40AF), var(--nb-chart-2, #0EA5E9));
 }
 
 .nb-progress--short::-moz-progress-bar {
-  background: linear-gradient(to right, #3b82f6, #0891b2);
+  background: linear-gradient(to right, var(--nb-progress-fill, #1E40AF), var(--nb-chart-2, #0EA5E9));
 }
 
 .nb-progress--long::-webkit-progress-value {
-  background: linear-gradient(to right, #a855f7, #db2777);
+  background: linear-gradient(to right, var(--nb-chart-6, #7C3AED), #db2777);
 }
 
 .nb-progress--long::-moz-progress-bar {
-  background: linear-gradient(to right, #a855f7, #db2777);
+  background: linear-gradient(to right, var(--nb-chart-6, #7C3AED), #db2777);
 }
 
 /* =========================================================================
@@ -674,6 +674,13 @@
     --ring: 226 71% 40%;
  
     --radius: 0.5rem;
+
+    /* shadcn chart series — maps to NB palette (required by tailwind.config chart aliases) */
+    --chart-1: 226 71% 40%;   /* #1E40AF NB blue */
+    --chart-2: 199 89% 48%;   /* #0EA5E9 sky */
+    --chart-3: 173 80% 40%;   /* #14B8A6 teal */
+    --chart-4: 142 71% 45%;   /* #16A34A green */
+    --chart-5: 38 92% 50%;    /* #D97706 amber */
   }
  
   .dark {
@@ -1377,6 +1384,72 @@
   /* ── NB Layer shadow utilities ───────────────────── */
   .nb-layer-shadow    { box-shadow: var(--nb-layer-shadow); }
   .nb-layer-shadow-sm { box-shadow: var(--nb-layer-shadow-sm); }
+
+  /* ── NB Icon colour utilities ─────────────────────── */
+  .icon-nb-primary   { color: var(--nb-icon-primary);   }
+  .icon-nb-secondary { color: var(--nb-icon-secondary); }
+  .icon-nb-muted     { color: var(--nb-icon-muted);     }
+  .icon-nb-accent    { color: var(--nb-icon-accent);    }
+  .icon-nb-disabled  { color: var(--nb-icon-disabled);  }
+  .icon-nb-on-dark   { color: var(--nb-icon-on-dark);   }
+
+  /* ── NB Empty state surface ───────────────────────── */
+  .empty-state-nb {
+    background: var(--nb-empty-surface);
+    border: 1px solid var(--nb-empty-border);
+    border-radius: 0.75rem;
+  }
+  .empty-state-nb .empty-title {
+    color: var(--nb-empty-title);
+    font-weight: 600;
+  }
+  .empty-state-nb .empty-body {
+    color: var(--nb-empty-body);
+  }
+  .empty-state-nb .empty-icon {
+    color: var(--nb-empty-icon);
+  }
+
+  /* ── NB Inline alert / notice semantic variants ──── */
+  .alert-info {
+    background: var(--nb-info-bg);
+    border-color: var(--nb-info-border);
+    color: var(--nb-info-text);
+  }
+  .alert-success {
+    background: var(--nb-success-bg);
+    border-color: var(--nb-success-border);
+    color: var(--nb-success-text);
+  }
+  .alert-warning {
+    background: var(--nb-warning-bg);
+    border-color: var(--nb-warning-border);
+    color: var(--nb-warning-text);
+  }
+  .alert-error {
+    background: var(--nb-error-bg);
+    border-color: var(--nb-error-border);
+    color: var(--nb-error-text);
+  }
+
+  /* ── NB Chart tooltip surface ─────────────────────── */
+  .nb-chart-tooltip {
+    background: var(--nb-chart-tooltip-bg);
+    border: 1px solid var(--nb-chart-tooltip-border);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    box-shadow: var(--nb-layer-shadow-sm);
+  }
+  .nb-chart-tooltip .tooltip-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--nb-chart-tooltip-title);
+    margin-bottom: 0.25rem;
+  }
+  .nb-chart-tooltip .tooltip-body {
+    font-size: 0.75rem;
+    color: var(--nb-chart-tooltip-body);
+  }
 }
 
 /* Dark mode overrides for secondary button */
@@ -1579,6 +1652,103 @@
   --nb-layer-dark-heading: #FFFFFF;
   --nb-layer-dark-body:    #E2E8F0;
   --nb-layer-dark-muted:   #CBD5E1;
+
+  /* ── NB Icon Tokens ────────────────────────────────── */
+  --nb-icon-primary:       #0F172A;
+  --nb-icon-secondary:     #334155;
+  --nb-icon-muted:         #64748B;
+  --nb-icon-accent:        #1E40AF;
+  --nb-icon-on-dark:       #FFFFFF;
+  --nb-icon-on-dark-muted: #CBD5E1;
+  --nb-icon-disabled:      #94A3B8;
+
+  /* ── NB Illustration Tokens ────────────────────────── */
+  --nb-illustration-ink:          #0F172A;
+  --nb-illustration-soft:         #334155;
+  --nb-illustration-muted:        #94A3B8;
+  --nb-illustration-accent:       #1E40AF;
+  --nb-illustration-accent-soft:  #DBEAFE;
+  --nb-illustration-surface:      #F8FAFC;
+  --nb-illustration-success:      #16A34A;
+  --nb-illustration-warning:      #D97706;
+  --nb-illustration-error:        #DC2626;
+
+  /* ── NB Empty State Tokens ──────────────────────────── */
+  --nb-empty-title:   #0F172A;
+  --nb-empty-body:    #334155;
+  --nb-empty-muted:   #5B6B7F;
+  --nb-empty-icon:    #1E40AF;
+  --nb-empty-surface: #F8FAFC;
+  --nb-empty-border:  #E2E8F0;
+
+  /* ── NB Semantic Status Tokens (info/success/warning/error) ── */
+  --nb-info-bg:      #EFF6FF;
+  --nb-info-border:  #BFDBFE;
+  --nb-info-text:    #1E3A8A;
+  --nb-info-icon:    #1E40AF;
+
+  --nb-success-bg:     #F0FDF4;
+  --nb-success-border: #86EFAC;
+  --nb-success-text:   #166534;
+  --nb-success-icon:   #16A34A;
+
+  --nb-warning-bg:     #FFFBEB;
+  --nb-warning-border: #FCD34D;
+  --nb-warning-text:   #92400E;
+  --nb-warning-icon:   #D97706;
+
+  --nb-error-bg:     #FEF2F2;
+  --nb-error-border: #FCA5A5;
+  --nb-error-text:   #991B1B;
+  --nb-error-icon:   #DC2626;
+
+  /* ── NB Toast Surface Tokens ────────────────────────── */
+  --nb-toast-surface: #FFFFFF;
+  --nb-toast-border:  #E2E8F0;
+  --nb-toast-title:   #0F172A;
+  --nb-toast-body:    #334155;
+  --nb-toast-muted:   #5B6B7F;
+
+  /* ── NB Progress Tokens ─────────────────────────────── */
+  --nb-progress-track:   #E2E8F0;
+  --nb-progress-fill:    #1E40AF;
+  --nb-progress-fill-soft: #60A5FA;
+  --nb-progress-success: #16A34A;
+  --nb-progress-warning: #D97706;
+  --nb-progress-error:   #DC2626;
+  --nb-progress-label:   #0F172A;
+  --nb-progress-value:   #334155;
+  --nb-progress-muted:   #5B6B7F;
+
+  /* ── NB Chart Tokens ────────────────────────────────── */
+  --nb-chart-1: #1E40AF;
+  --nb-chart-2: #0EA5E9;
+  --nb-chart-3: #14B8A6;
+  --nb-chart-4: #16A34A;
+  --nb-chart-5: #D97706;
+  --nb-chart-6: #7C3AED;
+  --nb-chart-7: #DC2626;
+
+  --nb-chart-text:          #334155;
+  --nb-chart-muted-text:    #64748B;
+  --nb-chart-axis:          #94A3B8;
+  --nb-chart-grid:          #E2E8F0;
+  --nb-chart-tooltip-bg:    #FFFFFF;
+  --nb-chart-tooltip-border: #CBD5E1;
+  --nb-chart-tooltip-title: #0F172A;
+  --nb-chart-tooltip-body:  #334155;
+  --nb-chart-surface:       #FFFFFF;
+  --nb-chart-surface-alt:   #F8FAFC;
+
+  /* Dark-context chart equivalents */
+  --nb-chart-dark-text:          #E2E8F0;
+  --nb-chart-dark-muted-text:    #CBD5E1;
+  --nb-chart-dark-axis:          rgba(255, 255, 255, 0.28);
+  --nb-chart-dark-grid:          rgba(255, 255, 255, 0.14);
+  --nb-chart-dark-tooltip-bg:    #0F172A;
+  --nb-chart-dark-tooltip-border: rgba(255, 255, 255, 0.14);
+  --nb-chart-dark-tooltip-title: #FFFFFF;
+  --nb-chart-dark-tooltip-body:  #E2E8F0;
 }
 
 .nb-header {

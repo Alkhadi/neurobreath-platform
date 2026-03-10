@@ -201,17 +201,32 @@ export function ProgressDashboardEnhanced({ onReset }: ProgressDashboardEnhanced
               <CardContent>
                 <ResponsiveContainer width="100%" height={250}>
                   <BarChart data={analytics.weeklyData}>
-                    <CartesianGrid strokeDasharray="3 3" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--nb-chart-grid, #E2E8F0)" />
                     <XAxis 
-                      dataKey="date" 
+                      dataKey="date"
+                      tick={{ fill: 'var(--nb-chart-text, #334155)', fontSize: 12 }}
+                      tickLine={false}
+                      axisLine={{ stroke: 'var(--nb-chart-grid, #E2E8F0)' }}
                       tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { weekday: 'short' })}
                     />
-                    <YAxis />
-                    <Tooltip 
+                    <YAxis
+                      tick={{ fill: 'var(--nb-chart-text, #334155)', fontSize: 12 }}
+                      tickLine={false}
+                      axisLine={{ stroke: 'var(--nb-chart-grid, #E2E8F0)' }}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        background: 'var(--nb-chart-tooltip-bg, #FFFFFF)',
+                        border: '1px solid var(--nb-chart-tooltip-border, #CBD5E1)',
+                        borderRadius: '0.5rem',
+                        fontSize: 12,
+                        color: 'var(--nb-chart-tooltip-body, #334155)',
+                      }}
+                      labelStyle={{ color: 'var(--nb-chart-tooltip-title, #0F172A)', fontWeight: 600 }}
                       labelFormatter={(value) => new Date(value).toLocaleDateString()}
                       formatter={(value: number) => [`${value} min`, 'Practice Time']}
                     />
-                    <Bar dataKey="minutes" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]} />
+                    <Bar dataKey="minutes" fill="var(--nb-chart-1, #1E40AF)" radius={[8, 8, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>

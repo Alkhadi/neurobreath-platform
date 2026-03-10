@@ -10,27 +10,31 @@ interface WeeklyChartProps {
   }[];
 }
 
+const CHART_FILL = 'var(--nb-chart-1, #1E40AF)';
+
 const WeeklyChart = ({ data }: WeeklyChartProps) => {
   return (
     <ResponsiveContainer width="100%" height={200}>
       <BarChart data={data}>
         <XAxis
           dataKey="day"
-          tick={{ fontSize: 12 }}
+          tick={{ fontSize: 12, fill: 'var(--nb-chart-text, #334155)' }}
           tickLine={false}
+          axisLine={{ stroke: 'var(--nb-chart-grid, #E2E8F0)' }}
         />
         <YAxis
-          tick={{ fontSize: 12 }}
+          tick={{ fontSize: 12, fill: 'var(--nb-chart-text, #334155)' }}
           tickLine={false}
-          label={{ value: 'Minutes', angle: -90, position: 'insideLeft', style: { fontSize: 11 } }}
+          axisLine={{ stroke: 'var(--nb-chart-grid, #E2E8F0)' }}
+          label={{ value: 'Minutes', angle: -90, position: 'insideLeft', style: { fontSize: 11, fill: 'var(--nb-chart-muted-text, #64748B)' } }}
         />
         <Tooltip
           content={({ active, payload }) => {
             if (active && payload && payload?.length > 0) {
               return (
-                <div className="bg-white dark:bg-gray-800 p-2 rounded shadow-lg border">
-                  <p className="text-sm font-semibold">{payload?.[0]?.payload?.day}</p>
-                  <p className="text-sm text-muted-foreground">
+                <div className="nb-chart-tooltip">
+                  <p className="tooltip-title">{payload?.[0]?.payload?.day}</p>
+                  <p className="tooltip-body">
                     {payload?.[0]?.value} minutes
                   </p>
                 </div>
@@ -41,7 +45,7 @@ const WeeklyChart = ({ data }: WeeklyChartProps) => {
         />
         <Bar
           dataKey="minutes"
-          fill="#60B5FF"
+          fill={CHART_FILL}
           radius={[4, 4, 0, 0]}
         />
       </BarChart>

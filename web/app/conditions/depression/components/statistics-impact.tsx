@@ -148,8 +148,11 @@ export function StatisticsImpact() {
                       tick={{ fontSize: 10 }}
                       label={{ value: 'Prevalence (%)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fontSize: 11 } }}
                     />
-                    <Tooltip wrapperStyle={{ fontSize: 11 }} />
-                    <Bar dataKey="rate" fill="#60B5FF" name="Rate (%)" />
+                    <Tooltip
+                      contentStyle={{ background: 'var(--nb-chart-tooltip-bg,#FFF)', border: '1px solid var(--nb-chart-tooltip-border,#CBD5E1)', borderRadius: '0.5rem', fontSize: 11, color: 'var(--nb-chart-tooltip-body,#334155)' }}
+                      labelStyle={{ color: 'var(--nb-chart-tooltip-title,#0F172A)', fontWeight: 600 }}
+                    />
+                    <Bar dataKey="rate" fill="var(--nb-chart-1, #1E40AF)" name="Rate (%)" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -168,8 +171,11 @@ export function StatisticsImpact() {
                       tick={{ fontSize: 10 }}
                       label={{ value: 'Prevalence (%)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fontSize: 11 } }}
                     />
-                    <Tooltip wrapperStyle={{ fontSize: 11 }} />
-                    <Bar dataKey="rate" fill="#FF9149" name="Rate (%)" />
+                    <Tooltip
+                      contentStyle={{ background: 'var(--nb-chart-tooltip-bg,#FFF)', border: '1px solid var(--nb-chart-tooltip-border,#CBD5E1)', borderRadius: '0.5rem', fontSize: 11, color: 'var(--nb-chart-tooltip-body,#334155)' }}
+                      labelStyle={{ color: 'var(--nb-chart-tooltip-title,#0F172A)', fontWeight: 600 }}
+                    />
+                    <Bar dataKey="rate" fill="var(--nb-chart-5, #D97706)" name="Rate (%)" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -197,10 +203,13 @@ export function StatisticsImpact() {
                   tick={{ fontSize: 10 }}
                   label={{ value: 'Prevalence (%)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fontSize: 11 } }}
                 />
-                <Tooltip wrapperStyle={{ fontSize: 11 }} />
-                <Legend verticalAlign="top" wrapperStyle={{ fontSize: 11 }} />
-                <Bar dataKey="female" fill="#FF90BB" name="Female (%)" />
-                <Bar dataKey="male" fill="#60B5FF" name="Male (%)" />
+                <Tooltip
+                  contentStyle={{ background: 'var(--nb-chart-tooltip-bg,#FFF)', border: '1px solid var(--nb-chart-tooltip-border,#CBD5E1)', borderRadius: '0.5rem', fontSize: 11, color: 'var(--nb-chart-tooltip-body,#334155)' }}
+                  labelStyle={{ color: 'var(--nb-chart-tooltip-title,#0F172A)', fontWeight: 600 }}
+                />
+                <Legend verticalAlign="top" wrapperStyle={{ fontSize: 11, color: 'var(--nb-chart-text,#334155)' }} />
+                <Bar dataKey="female" fill="var(--nb-chart-6, #7C3AED)" name="Female (%)" />
+                <Bar dataKey="male" fill="var(--nb-chart-1, #1E40AF)" name="Male (%)" />
               </BarChart>
             </ResponsiveContainer>
             <div className="mt-4 bg-pink-50 rounded-lg p-4">
@@ -227,9 +236,12 @@ export function StatisticsImpact() {
                   domain={[0, 25]}
                   label={{ value: 'Prevalence (%)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fontSize: 11 } }}
                 />
-                <Tooltip wrapperStyle={{ fontSize: 11 }} />
-                <Legend verticalAlign="top" wrapperStyle={{ fontSize: 11 }} />
-                <Line type="monotone" dataKey="rate" stroke="#A19AD3" strokeWidth={3} name="Depression Rate (%)" dot={{ r: 5 }} />
+                <Tooltip
+                  contentStyle={{ background: 'var(--nb-chart-tooltip-bg,#FFF)', border: '1px solid var(--nb-chart-tooltip-border,#CBD5E1)', borderRadius: '0.5rem', fontSize: 11, color: 'var(--nb-chart-tooltip-body,#334155)' }}
+                  labelStyle={{ color: 'var(--nb-chart-tooltip-title,#0F172A)', fontWeight: 600 }}
+                />
+                <Legend verticalAlign="top" wrapperStyle={{ fontSize: 11, color: 'var(--nb-chart-text,#334155)' }} />
+                <Line type="monotone" dataKey="rate" stroke="var(--nb-chart-6, #7C3AED)" strokeWidth={3} name="Depression Rate (%)" dot={{ r: 5 }} />
               </LineChart>
             </ResponsiveContainer>
             <div className="mt-4 bg-purple-50 rounded-lg p-4">

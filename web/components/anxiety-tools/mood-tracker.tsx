@@ -224,31 +224,40 @@ export function MoodTracker() {
               <LineChart data={chartData} margin={{ top: 5, right: 20, left: -20, bottom: 20 }}>
                 <XAxis 
                   dataKey="date" 
-                  tick={{ fontSize: 10 }} 
+                  tick={{ fontSize: 10, fill: 'var(--nb-chart-text, #334155)' }} 
                   tickLine={false}
+                  axisLine={{ stroke: 'var(--nb-chart-grid, #E2E8F0)' }}
                   angle={-45}
                   textAnchor="end"
                   height={60}
                 />
                 <YAxis 
                   domain={[0, 10]} 
-                  tick={{ fontSize: 10 }} 
+                  tick={{ fontSize: 10, fill: 'var(--nb-chart-text, #334155)' }} 
                   tickLine={false}
-                  label={{ value: 'Anxiety', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fontSize: 11 } }}
+                  axisLine={{ stroke: 'var(--nb-chart-grid, #E2E8F0)' }}
+                  label={{ value: 'Anxiety', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fontSize: 11, fill: 'var(--nb-chart-muted-text, #64748B)' } }}
                 />
                 <Tooltip 
-                  contentStyle={{ fontSize: 11 }}
+                  contentStyle={{
+                    fontSize: 11,
+                    background: 'var(--nb-chart-tooltip-bg, #FFFFFF)',
+                    border: '1px solid var(--nb-chart-tooltip-border, #CBD5E1)',
+                    borderRadius: '0.5rem',
+                    color: 'var(--nb-chart-tooltip-body, #334155)',
+                  }}
+                  labelStyle={{ color: 'var(--nb-chart-tooltip-title, #0F172A)', fontWeight: 600 }}
                 />
                 <Legend 
                   verticalAlign="top"
-                  wrapperStyle={{ fontSize: 11 }}
+                  wrapperStyle={{ fontSize: 11, color: 'var(--nb-chart-text, #334155)' }}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="anxiety" 
-                  stroke="#60B5FF" 
+                  stroke="var(--nb-chart-1, #1E40AF)"
                   strokeWidth={2}
-                  dot={{ fill: '#60B5FF', r: 4 }}
+                  dot={{ fill: 'var(--nb-chart-1, #1E40AF)', r: 4 }}
                   name="Anxiety Level"
                 />
               </LineChart>
