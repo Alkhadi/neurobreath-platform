@@ -2461,6 +2461,35 @@
   }
 }
 
+/* Large desktop (≥1440px): smaller tagline + compact nav so Get Started CTA stays fully visible */
+@media (min-width: 1440px) {
+  .nb-brand-tagline {
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+  }
+
+  .nb-main-nav {
+    gap: 0.25rem;
+  }
+
+  .nb-nav-link {
+    padding: 0.5rem 0.6rem;
+    font-size: 0.875rem;
+  }
+
+  .nb-login-link {
+    padding: 0.5rem 0.6rem;
+    font-size: 0.875rem;
+  }
+
+  .nb-nav-cta {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+
 .nb-mobile-toggle {
   display: none;
   background: none;
