@@ -104,7 +104,7 @@ function TinyCardPreview({
             <div className={`mt-1 ${isPortrait ? "h-8 w-8" : "h-7 w-7"} rounded-full bg-white/80 border border-black/10`} />
             <div className={`mt-2 w-[75%] h-2 rounded bg-current/80 ${barOpacityClass}`} />
             <div className={`mt-1 w-[55%] h-2 rounded bg-current/70 ${blockOpacityClass}`} />
-            <div className="flex flex-wrap mt-auto w-full gap-1 [&>*]:basis-[calc(50%-2px)] [&>*]:min-w-0">
+            <div className="grid grid-cols-2 gap-1 mt-auto w-full">
               <div className={`h-2 rounded bg-current/60 ${blockOpacityClass}`} />
               <div className={`h-2 rounded bg-current/60 ${blockOpacityClass}`} />
               <div className={`h-2 rounded bg-current/60 ${blockOpacityClass}`} />
@@ -283,7 +283,7 @@ export function TemplatePicker({
               <p className="text-sm text-muted-foreground py-4">No backgrounds available</p>
             ) : (
               <div className="space-y-4">
-                <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] md:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {backgrounds.map((template) => {
                     const isSelected = selection.backgroundId === template.id;
                     return (
@@ -387,7 +387,7 @@ export function TemplatePicker({
             {overlays.length === 0 ? (
               <p className="text-sm text-muted-foreground py-4">No overlays available</p>
             ) : (
-              <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] md:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 <button
                   type="button"
                   onClick={() => handleOverlaySelect(undefined)}

@@ -1475,7 +1475,7 @@ export function NBCardPanel() {
       )}
 
       {/* Main Content Grid */}
-      <div className="flex flex-wrap gap-8 mb-8 [&>*]:basis-full lg:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Left Column - Profile Card */}
         <div>
           {/* Profile Card with Capture Wrapper */}
@@ -1785,7 +1785,7 @@ export function NBCardPanel() {
                 Card Details (for sharing)
               </button>
               {showCardDetails && (
-                <div className="flex flex-wrap mt-2 gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
+                <div className="grid grid-cols-2 gap-2 mt-2">
                   <div>
                     <label className="text-xs text-gray-500" htmlFor="fle-name">Name</label>
                     <input
@@ -1955,7 +1955,7 @@ export function NBCardPanel() {
         {/* Install button removed: primary one-shot install is handled by the page CTA */}
 
         {/* Manual Install Instructions */}
-        <div className="flex flex-wrap gap-4 mt-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <div className="bg-white rounded-lg p-4">
             <h4 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
               <span className="bg-gray-800 text-white px-2 py-1 rounded text-xs">iOS</span>
