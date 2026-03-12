@@ -289,7 +289,7 @@ export function SiteHeader() {
     })
   }
 
-  const navContent = (
+  const primaryNavContent = (
     <>
       {/* Conditions Mega Menu */}
       <FloatingNavMenu
@@ -443,6 +443,12 @@ export function SiteHeader() {
         ⚙️ Settings
       </Link>
 
+    </>
+  )
+
+  const utilityNavContent = (
+    <>
+
       {/* Share / Install */}
       <ShareButton
         variant="ghost"
@@ -509,6 +515,13 @@ export function SiteHeader() {
     </>
   )
 
+  const navContent = (
+    <>
+      {primaryNavContent}
+      {utilityNavContent}
+    </>
+  )
+
   return (
     <>
       <header className="nb-header">
@@ -570,7 +583,8 @@ export function SiteHeader() {
           {/* Desktop Navigation — stays inside header (no backdrop-filter containment issue on desktop) */}
           {!isMobile && (
             <nav ref={navRef} className="nb-main-nav" id="mainNav" role="navigation" aria-label="Primary">
-              {navContent}
+              <div className="nb-main-nav-primary">{primaryNavContent}</div>
+              <div className="nb-main-nav-secondary">{utilityNavContent}</div>
             </nav>
           )}
         </div>

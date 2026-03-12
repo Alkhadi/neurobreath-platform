@@ -2461,8 +2461,34 @@
   }
 }
 
-/* Large desktop (≥1440px): smaller tagline + compact nav so Get Started CTA stays fully visible */
+/* Large desktop (≥1440px): taller header for logo breathing room + compact nav so Get Started CTA stays fully visible */
 @media (min-width: 1440px) {
+  /*
+   * 84px = 64px logo tile + 10px top margin + 10px bottom margin.
+   * max-width: 1600px replaces the inherited 1280px so the nav bar spans the
+   * full page width on typical 1440–1600px laptops, eliminating the large
+   * asymmetric auto-margins. clamp padding is identical on both sides so the
+   * space-to-the-left-of-the-logo always equals the space-to-the-right-of-
+   * Get-Started at every viewport width.
+   */
+  .nb-header-container {
+    height: 84px;
+    max-width: 1600px;
+    padding-left: clamp(2rem, 4vw, 5rem);
+    padding-right: clamp(2rem, 4vw, 5rem);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: clamp(1.25rem, 1.8vw, 2rem);
+  }
+
+  .nb-brand {
+    flex-shrink: 0;
+  }
+
+  .nb-brand-copy {
+    max-width: 13rem;
+  }
+
   .nb-brand-tagline {
     font-size: 0.58rem;
     letter-spacing: 0.06em;
@@ -2470,6 +2496,24 @@
 
   .nb-main-nav {
     gap: 0.25rem;
+    width: 100%;
+    min-width: 0;
+    justify-content: space-between;
+  }
+
+  .nb-main-nav-primary,
+  .nb-main-nav-secondary {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .nb-main-nav-primary {
+    min-width: 0;
+  }
+
+  .nb-main-nav-secondary {
+    flex-shrink: 0;
   }
 
   .nb-nav-link {
@@ -2733,7 +2777,7 @@
 /* Mega Menu Backdrop */
 .nb-mega-menu-backdrop {
   position: fixed;
-  top: 64px;
+  top: 84px;
   left: 0;
   right: 0;
   bottom: 0;
