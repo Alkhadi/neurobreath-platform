@@ -214,6 +214,14 @@ test.describe('Visual Regression Suite', () => {
       });
     });
 
+    await page.route('**/api/auth/session**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(null),
+      });
+    });
+
     // Collect console errors
     page.on('console', (msg) => {
       if (msg.type() === 'error') {

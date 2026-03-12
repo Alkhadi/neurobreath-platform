@@ -66,8 +66,12 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
     env: {
+      CI: process.env.CI ?? 'false',
       NODE_ENV: process.env.CI ? 'production' : 'development',
       NEXTAUTH_DEBUG: 'false',
+      NEXTAUTH_SECRET:
+        process.env.NEXTAUTH_SECRET ||
+        (process.env.CI ? 'ci-nextauth-secret' : 'dev-nextauth-secret'),
     },
   },
 });
