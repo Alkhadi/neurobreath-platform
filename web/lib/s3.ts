@@ -2,6 +2,41 @@ import { PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sd
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createS3Client, getBucketConfig } from "./aws-config";
 
+// ---------------------------------------------------------------------------
+// Server-side direct upload (no presigned URL dance)
+// ---------------------------------------------------------------------------
+
+/**
+ * Upload a Buffer directly to S3/R2 from a server-side context.
+ * Returns the public URL, or null when object storage is not configured.
+ *
+ * Use this in server route handlers (e.g. preview promotion job).
+ * For client-side uploads use the presigned URL flow via /api/upload/presigned.
+ */
+export async function uploadBufferToS3Direct(
+  buffer: Buffer,
+  filename: string,
+  mimeType: string
+): Promise<string | null> {
+  const { bucketName, folderPrefix, region } = getBucketConfig();
+  if (!bucketName) return null;
+
+  const s3Client = createS3Client(region);
+  const key = `${folderPrefix}public/uploads/${Date.now()}-${filename}`;
+
+  await s3Client.send(
+    new PutObjectCommand({
+      Bucket: bucketName,
+      Key: key,
+      Body: buffer,
+      ContentType: mimeType,
+      ContentDisposition: "inline",
+    })
+  );
+
+  return `https://${bucketName}.s3.${region}.amazonaws.com/${key}`;
+}
+
 export class UploadConfigError extends Error {
   constructor(message: string) {
     super(message);

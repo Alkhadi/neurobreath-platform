@@ -26,11 +26,12 @@ export const dynamic = "force-dynamic";
 
 type PreviewRecord = {
   pngUrl: string | null;
-  pdfUrl: string | null;
   isPublic: boolean;
   expiresAt: Date | null;
   previewPngBytes: Buffer | null;
   previewPngMimeType: string | null;
+  /** "pending" | "ready" | "failed" | null */
+  previewStatus: string | null;
 };
 
 function db() {
@@ -69,6 +70,7 @@ export async function GET(req: NextRequest): Promise<Response> {
         expiresAt: true,
         previewPngBytes: true,
         previewPngMimeType: true,
+        previewStatus: true,
       },
     });
   } catch {
@@ -98,21 +100,35 @@ export async function GET(req: NextRequest): Promise<Response> {
       headers: {
         "Content-Type": record.previewPngMimeType ?? "image/png",
         "Content-Length": String(record.previewPngBytes.length),
-        // Immutable since preview bytes don't change after generation
+        // Immutable since preview bytes don't change once generated
         "Cache-Control": "public, max-age=86400, immutable",
       },
     });
   }
 
-  // Priority 3: branded fallback
-  return brandedFallback(req, token);
+  // Priority 3: branded fallback — cache aggressively for failed previews,
+  // but keep short for pending so social crawlers retry when preview arrives.
+  const isPending = record.previewStatus === "pending";
+  return brandedFallback(req, token, isPending);
 }
 
 // ---------------------------------------------------------------------------
 // Branded fallback helper
 // ---------------------------------------------------------------------------
 
-function brandedFallback(req: NextRequest, token?: string): Response {
+/**
+ * Redirect to the branded OG fallback.
+ *
+ * @param pending  When true (preview still being generated), send a short
+ *                 cache TTL so crawlers check back soon for the real image.
+ *                 When false/absent, allow a longer cache to avoid hammering
+ *                 the OG route for shares that permanently have no preview.
+ */
+function brandedFallback(
+  req: NextRequest,
+  token?: string,
+  pending?: boolean
+): Response {
   const baseUrl =
     process.env.NEXTAUTH_URL ??
     (process.env.VERCEL_URL
@@ -125,6 +141,12 @@ function brandedFallback(req: NextRequest, token?: string): Response {
 
   return NextResponse.redirect(fallbackUrl, {
     status: 302,
-    headers: { "Cache-Control": "no-store" },
+    headers: {
+      // pending: short TTL so crawlers retry — real preview may arrive soon
+      // ready/failed/null: longer TTL — fewer unnecessary fallback requests
+      "Cache-Control": pending
+        ? "public, max-age=60, s-maxage=60"
+        : "public, max-age=3600, s-maxage=3600",
+    },
   });
 }

@@ -8,6 +8,11 @@ export function getBucketConfig() {
   };
 }
 
+/** Returns true when S3/R2 object storage is configured via env vars. */
+export function isStorageConfigured(): boolean {
+  return !!(process.env.AWS_BUCKET_NAME?.trim());
+}
+
 export function createS3Client(region?: string) {
   return new S3Client({
     region: region ?? process.env.AWS_REGION ?? "us-east-1",

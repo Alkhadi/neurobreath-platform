@@ -192,6 +192,15 @@ model NbCardShare {
   previewGeneratedAt   DateTime?
   previewSha256        String?
 
+  /// Preview lifecycle state: "pending" | "ready" | "failed"
+  /// pending — share created; preview capture in progress or not yet available
+  /// ready   — preview stored (pngUrl or previewPngBytes is populated)
+  /// failed  — preview generation failed; branded OG fallback will be served
+  previewStatus        String?
+  previewError         String?
+  previewAttemptCount  Int       @default(0)
+  previewLastTriedAt   DateTime?
+
   /// Owner email (signed-in user) or null (anonymous)
   ownerEmail    String?
 

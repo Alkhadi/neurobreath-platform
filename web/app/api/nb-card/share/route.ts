@@ -84,6 +84,8 @@ type NbCardShareCreateData = {
   previewPngHeight?: number | null;
   previewGeneratedAt?: Date | null;
   previewSha256?: string | null;
+  previewStatus?: string | null;
+  previewAttemptCount?: number;
 };
 
 type NbCardShareRecord = {
@@ -94,6 +96,7 @@ type NbCardShareRecord = {
   isPublic: boolean;
   expiresAt: Date | null;
   previewPngBytes: Buffer | null;
+  previewStatus: string | null;
 };
 
 type NbCardShareDb = {
@@ -159,6 +162,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
   }
 
+  // Determine initial preview lifecycle state
+  const hasPreviewNow = !!(pngUrl || previewFields.previewPngBytes);
+  const previewStatus = hasPreviewNow ? "ready" : "pending";
+
   try {
     const record = await db().nbCardShare.create({
       data: {
@@ -168,6 +175,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         ownerEmail: ownerEmail ?? null,
         ownerDeviceId: deviceId ?? null,
         expiresAt,
+        previewStatus,
+        previewAttemptCount: hasPreviewNow ? 1 : 0,
         ...previewFields,
       },
     });
@@ -212,6 +221,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         pdfUrl: true,
         isPublic: true,
         expiresAt: true,
+        previewStatus: true,
         // Only fetch existence flag — never send raw bytes to browser
         previewPngBytes: true,
       },
@@ -242,6 +252,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       pdfUrl: record.pdfUrl,
       /** True when any preview image is available (S3 URL or DB bytes) */
       hasPreview: !!(record.pngUrl || record.previewPngBytes),
+      /** "pending" | "ready" | "failed" | null */
+      previewStatus: record.previewStatus,
     });
   } catch (err) {
     console.error("[nb-card/share] GET error:", err);
