@@ -9,9 +9,12 @@
  *   curl -X POST https://your-host/api/nb-card/share/maintain-preview \
  *     -H "x-internal-secret: <NB_INTERNAL_SECRET>" \
  *     -H "Content-Type: application/json" \
- *     -d '{"action":"promote"}'
+ *     -d '{"action":"all"}'
  *
  * Actions:
+ *
+ *   generate — render previews server-side for pending / failed shares that
+ *              do not yet have stored preview bytes or a pngUrl.
  *
  *   promote  — when S3/R2 is now configured, upload DB-backed preview bytes
  *              to object storage, set pngUrl, clear previewPngBytes.
@@ -20,10 +23,10 @@
  *   prune    — clear previewPngBytes from expired or failed shares to
  *              reclaim DB space. Active shares are never touched.
  *
- *   all      — run promote then prune (recommended for scheduled jobs).
+ *   all      — run generate, promote, then prune (recommended for scheduled jobs).
  *
- * Request body: { action: "promote" | "prune" | "all", batchSize?: number }
- * Response:     { ok: true, promoted: N, pruned: N, errors: N }
+ * Request body: { action: "generate" | "promote" | "prune" | "all", batchSize?: number }
+ * Response:     { ok: true, generated: N, promoted: N, pruned: N, errors: N }
  *
  * No-auth-header → 401 (safe to expose the URL; secret guards access).
  */
@@ -31,7 +34,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, isDbDown } from "@/lib/db";
 import { isStorageConfigured } from "@/lib/aws-config";
-import { uploadBufferToS3Direct } from "@/lib/s3";
+import {
+  preparePreviewPersistenceFromBytes,
+  renderNbCardPreviewToBuffer,
+} from "@/lib/nbcard/share/previewPersistence";
 import { z } from "zod";
 
 export const dynamic = "force-dynamic";
@@ -40,7 +46,7 @@ const DEFAULT_BATCH = 50;
 const MAX_BATCH = 200;
 
 const RequestSchema = z.object({
-  action: z.enum(["promote", "prune", "all"]),
+  action: z.enum(["generate", "promote", "prune", "all"]),
   batchSize: z.number().int().min(1).max(MAX_BATCH).optional(),
 });
 
@@ -69,6 +75,11 @@ type PruneCandidate = {
   token: string;
 };
 
+type GenerationCandidate = {
+  token: string;
+  cardModelJson: Record<string, unknown>;
+};
+
 function db() {
   return prisma as unknown as {
     nbCardShare: {
@@ -76,7 +87,9 @@ function db() {
         where: Record<string, unknown>;
         select: Record<string, boolean>;
         take: number;
-      }): Promise<PromotionCandidate[] | PruneCandidate[]>;
+      }): Promise<
+        PromotionCandidate[] | PruneCandidate[] | GenerationCandidate[]
+      >;
       update(args: {
         where: { token: string };
         data: Record<string, unknown>;
@@ -119,13 +132,13 @@ async function promoteToObjectStorage(
 
   for (const share of candidates) {
     try {
-      const s3Url = await uploadBufferToS3Direct(
-        share.previewPngBytes,
-        `nb-card-preview-${share.token}.png`,
-        share.previewPngMimeType ?? "image/png"
-      );
+      const previewFields = await preparePreviewPersistenceFromBytes({
+        token: share.token,
+        bytes: share.previewPngBytes,
+        mimeType: share.previewPngMimeType ?? "image/png",
+      });
 
-      if (!s3Url) {
+      if (!previewFields.pngUrl) {
         errors++;
         continue;
       }
@@ -133,10 +146,7 @@ async function promoteToObjectStorage(
       await db().nbCardShare.update({
         where: { token: share.token },
         data: {
-          pngUrl: s3Url,
-          // Clear DB bytes now that S3 holds the canonical copy
-          previewPngBytes: null,
-          previewPngMimeType: null,
+          ...previewFields,
         },
       });
 
@@ -151,6 +161,76 @@ async function promoteToObjectStorage(
   }
 
   return { promoted, errors };
+}
+
+// ---------------------------------------------------------------------------
+// Generate: render previews for pending / failed shares without stored images
+// ---------------------------------------------------------------------------
+
+async function generateMissingPreviews(
+  batchSize: number
+): Promise<{ generated: number; errors: number }> {
+  const now = new Date();
+
+  const candidates = (await db().nbCardShare.findMany({
+    where: {
+      pngUrl: null,
+      previewPngBytes: null,
+      OR: [
+        { previewStatus: "pending" },
+        { previewStatus: "failed" },
+        { previewStatus: null },
+      ],
+      AND: [{ OR: [{ expiresAt: null }, { expiresAt: { gte: now } }] }],
+    },
+    select: {
+      token: true,
+      cardModelJson: true,
+    },
+    take: batchSize,
+  })) as GenerationCandidate[];
+
+  let generated = 0;
+  let errors = 0;
+
+  for (const share of candidates) {
+    const attemptedAt = new Date();
+    try {
+      const bytes = await renderNbCardPreviewToBuffer(share.cardModelJson);
+
+      await db().nbCardShare.update({
+        where: { token: share.token },
+        data: {
+          ...(await preparePreviewPersistenceFromBytes({
+            token: share.token,
+            bytes,
+            generatedAt: attemptedAt,
+          })),
+          previewAttemptCount: { increment: 1 },
+        },
+      });
+
+      generated++;
+    } catch (err) {
+      console.error(
+        `[maintain-preview] generate failed for token ${share.token}:`,
+        err
+      );
+      await db().nbCardShare.update({
+        where: { token: share.token },
+        data: {
+          previewStatus: "failed",
+          previewError:
+            err instanceof Error ? err.message : "Server preview generation failed.",
+          previewLastTriedAt: attemptedAt,
+          previewAttemptCount: { increment: 1 },
+        },
+      });
+      errors++;
+    }
+  }
+
+  return { generated, errors };
 }
 
 // ---------------------------------------------------------------------------
@@ -247,11 +327,18 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     );
   }
 
+  let totalGenerated = 0;
   let totalPromoted = 0;
   let totalPruned = 0;
   let totalErrors = 0;
 
   try {
+    if (action === "generate" || action === "all") {
+      const { generated, errors } = await generateMissingPreviews(batchSize);
+      totalGenerated += generated;
+      totalErrors += errors;
+    }
+
     if (action === "promote" || action === "all") {
       const { promoted, errors } = await promoteToObjectStorage(batchSize);
       totalPromoted += promoted;
@@ -274,6 +361,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   return NextResponse.json({
     ok: true,
     action,
+    generated: totalGenerated,
     promoted: totalPromoted,
     pruned: totalPruned,
     errors: totalErrors,

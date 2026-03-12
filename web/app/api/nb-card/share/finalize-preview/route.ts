@@ -1,12 +1,13 @@
 /**
  * POST /api/nb-card/share/finalize-preview
  *
- * Late-submission endpoint: stores a preview PNG for a share that was
- * created without one (previewStatus = "pending").
+ * Stores or generates a preview PNG for a share that was created without one
+ * (previewStatus = "pending") or needs a retry after a failed attempt.
  *
- * This is the reliable fallback path when the initial offscreen capture
- * in createServerShareFromProfile fails — the client can retry capture
- * and submit the resulting PNG here.
+ * This is the fallback path when the initial offscreen capture in
+ * createServerShareFromProfile fails. Callers may either submit raw PNG bytes,
+ * or omit them and let the server render the preview directly from the stored
+ * CardModel snapshot.
  *
  * Auth (one of):
  *   - x-internal-secret: <NB_INTERNAL_SECRET>   (server-to-server / admin)
@@ -18,21 +19,22 @@
  * Request body:
  * {
  *   token:         string   — share token
- *   imageBase64:   string   — raw PNG encoded as base64 (max 1.4 M chars)
+ *   imageBase64?:  string   — raw PNG encoded as base64 (max 1.4 M chars)
  *   deviceId?:     string   — anonymous device id (for owner check)
  * }
  *
  * Response: { ok: true, previewStatus: "ready" }
  */
 
-import { createHash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/nextauth";
 import { prisma, isDbDown } from "@/lib/db";
 import { z } from "zod";
-import { isStorageConfigured } from "@/lib/aws-config";
-import { uploadBufferToS3Direct } from "@/lib/s3";
+import {
+  preparePreviewPersistenceFromBytes,
+  renderNbCardPreviewToBuffer,
+} from "@/lib/nbcard/share/previewPersistence";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +43,7 @@ const MAX_BYTES = 1_048_576; // 1 MB
 
 const RequestSchema = z.object({
   token: z.string().min(1),
-  imageBase64: z.string().max(MAX_B64_CHARS),
+  imageBase64: z.string().max(MAX_B64_CHARS).optional(),
   deviceId: z.string().optional(),
 });
 
@@ -55,24 +57,12 @@ function isInternalRequest(req: NextRequest): boolean {
   return req.headers.get("x-internal-secret") === secret;
 }
 
-/** Extract PNG dimensions from a Buffer by reading the IHDR chunk. */
-function getPngDimensions(
-  buf: Buffer
-): { width: number; height: number } | null {
-  if (buf.length < 24) return null;
-  if (buf[0] !== 137 || buf[1] !== 80 || buf[2] !== 78) return null;
-  try {
-    return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
-  } catch {
-    return null;
-  }
-}
-
 // ---------------------------------------------------------------------------
 // Prisma type stubs
 // ---------------------------------------------------------------------------
 
 type ShareRecord = {
+  cardModelJson: Record<string, unknown>;
   ownerEmail: string | null;
   ownerDeviceId: string | null;
   pngUrl: string | null;
@@ -130,6 +120,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const share = await db().nbCardShare.findUnique({
     where: { token },
     select: {
+      cardModelJson: true,
       ownerEmail: true,
       ownerDeviceId: true,
       pngUrl: true,
@@ -172,71 +163,64 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ ok: true, previewStatus: "ready" });
   }
 
-  // Decode and validate the PNG bytes
-  const bytes = Buffer.from(imageBase64, "base64");
-  if (bytes.length === 0 || bytes.length > MAX_BYTES) {
-    return NextResponse.json(
-      { error: `Preview image must be between 1 B and ${MAX_BYTES} bytes.` },
-      { status: 400 }
-    );
-  }
-
-  const dims = getPngDimensions(bytes);
-  const sha256 = createHash("sha256").update(bytes).digest("hex");
   const now = new Date();
 
-  // Persist: try object storage first, fall back to DB bytes
-  let updateData: Record<string, unknown>;
-
-  if (isStorageConfigured()) {
-    try {
-      const s3Url = await uploadBufferToS3Direct(
-        bytes,
-        `nb-card-preview-${token}.png`,
-        "image/png"
+  let bytes: Buffer;
+  if (imageBase64) {
+    bytes = Buffer.from(imageBase64, "base64");
+    if (bytes.length === 0 || bytes.length > MAX_BYTES) {
+      return NextResponse.json(
+        { error: `Preview image must be between 1 B and ${MAX_BYTES} bytes.` },
+        { status: 400 }
       );
-      if (!s3Url) throw new Error("uploadBufferToS3Direct returned null");
-
-      updateData = {
-        pngUrl: s3Url,
-        // Clear DB bytes after successful S3 promotion
-        previewPngBytes: null,
-        previewPngMimeType: null,
-        previewStatus: "ready",
-        previewGeneratedAt: now,
-        previewSha256: sha256,
-        previewPngWidth: dims?.width ?? null,
-        previewPngHeight: dims?.height ?? null,
-        previewLastTriedAt: now,
-        previewAttemptCount: { increment: 1 },
-      };
-    } catch (uploadErr) {
-      console.error("[finalize-preview] S3 upload failed, using DB:", uploadErr);
-      updateData = {
-        previewPngBytes: bytes,
-        previewPngMimeType: "image/png",
-        previewStatus: "ready",
-        previewGeneratedAt: now,
-        previewSha256: sha256,
-        previewPngWidth: dims?.width ?? null,
-        previewPngHeight: dims?.height ?? null,
-        previewLastTriedAt: now,
-        previewAttemptCount: { increment: 1 },
-      };
     }
   } else {
-    updateData = {
-      previewPngBytes: bytes,
-      previewPngMimeType: "image/png",
-      previewStatus: "ready",
-      previewGeneratedAt: now,
-      previewSha256: sha256,
-      previewPngWidth: dims?.width ?? null,
-      previewPngHeight: dims?.height ?? null,
-      previewLastTriedAt: now,
-      previewAttemptCount: { increment: 1 },
-    };
+    try {
+      bytes = await renderNbCardPreviewToBuffer(share.cardModelJson);
+    } catch (err) {
+      await db().nbCardShare.update({
+        where: { token },
+        data: {
+          previewStatus: "failed",
+          previewError:
+            err instanceof Error ? err.message : "Server preview generation failed.",
+          previewLastTriedAt: now,
+          previewAttemptCount: { increment: 1 },
+        },
+      });
+
+      return NextResponse.json(
+        { error: "Could not generate preview." },
+        { status: 500 }
+      );
+    }
+
+    if (bytes.length === 0 || bytes.length > MAX_BYTES) {
+      await db().nbCardShare.update({
+        where: { token },
+        data: {
+          previewStatus: "failed",
+          previewError: "Server-generated preview exceeded storage limits.",
+          previewLastTriedAt: now,
+          previewAttemptCount: { increment: 1 },
+        },
+      });
+
+      return NextResponse.json(
+        { error: `Generated preview exceeded ${MAX_BYTES} bytes.` },
+        { status: 500 }
+      );
+    }
   }
+
+  const updateData = {
+    ...(await preparePreviewPersistenceFromBytes({
+      token,
+      bytes,
+      generatedAt: now,
+    })),
+    previewAttemptCount: { increment: 1 },
+  };
 
   try {
     await db().nbCardShare.update({ where: { token }, data: updateData });

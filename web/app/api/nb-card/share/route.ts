@@ -21,11 +21,15 @@
  * Response: { token, cardModel, pngUrl, pdfUrl, hasPreview }
  */
 
-import { createHash } from "crypto";
+import { randomUUID } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/nextauth";
 import { prisma, isDbDown } from "@/lib/db";
+import {
+  preparePreviewPersistenceFromBytes,
+  renderNbCardPreviewToBuffer,
+} from "@/lib/nbcard/share/previewPersistence";
 import { z } from "zod";
 
 export const dynamic = "force-dynamic";
@@ -49,25 +53,6 @@ const ShareRequestSchema = z.object({
 });
 
 // ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-/** Extract width/height from a PNG Buffer by reading the IHDR chunk header. */
-function getPngDimensions(
-  buf: Buffer
-): { width: number; height: number } | null {
-  // PNG signature (8 bytes) + IHDR length (4) + IHDR type (4) + width (4) + height (4)
-  if (buf.length < 24) return null;
-  // Check PNG signature bytes 0-1-2
-  if (buf[0] !== 137 || buf[1] !== 80 || buf[2] !== 78) return null;
-  try {
-    return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
-  } catch {
-    return null;
-  }
-}
-
-// ---------------------------------------------------------------------------
 // Prisma type stubs — avoids relying on generated types at build time
 // ---------------------------------------------------------------------------
 
@@ -85,7 +70,9 @@ type NbCardShareCreateData = {
   previewGeneratedAt?: Date | null;
   previewSha256?: string | null;
   previewStatus?: string | null;
+  previewError?: string | null;
   previewAttemptCount?: number;
+  previewLastTriedAt?: Date | null;
 };
 
 type NbCardShareRecord = {
@@ -150,21 +137,46 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   if (!pngUrl && previewPngBase64) {
     const bytes = Buffer.from(previewPngBase64, "base64");
     if (bytes.length > 0 && bytes.length <= MAX_PREVIEW_BYTES) {
-      const dims = getPngDimensions(bytes);
+      previewFields = await preparePreviewPersistenceFromBytes({
+        token: randomUUID(),
+        bytes,
+      });
+    }
+  }
+
+  if (!pngUrl && !previewFields.previewPngBytes) {
+    const attemptedAt = new Date();
+    try {
+      const bytes = await renderNbCardPreviewToBuffer(cardModel);
+      if (bytes.length > 0 && bytes.length <= MAX_PREVIEW_BYTES) {
+        previewFields = await preparePreviewPersistenceFromBytes({
+          token: randomUUID(),
+          bytes,
+          generatedAt: attemptedAt,
+        });
+      } else {
+        previewFields = {
+          previewStatus: "failed",
+          previewError: "Server-generated preview exceeded storage limits.",
+          previewLastTriedAt: attemptedAt,
+        };
+      }
+    } catch (err) {
       previewFields = {
-        previewPngBytes: bytes,
-        previewPngMimeType: "image/png",
-        previewPngWidth: dims?.width ?? null,
-        previewPngHeight: dims?.height ?? null,
-        previewGeneratedAt: new Date(),
-        previewSha256: createHash("sha256").update(bytes).digest("hex"),
+        previewStatus: "failed",
+        previewError:
+          err instanceof Error ? err.message : "Server preview generation failed.",
+        previewLastTriedAt: attemptedAt,
       };
     }
   }
 
   // Determine initial preview lifecycle state
   const hasPreviewNow = !!(pngUrl || previewFields.previewPngBytes);
-  const previewStatus = hasPreviewNow ? "ready" : "pending";
+  const previewStatus = hasPreviewNow
+    ? "ready"
+    : (previewFields.previewStatus ?? "pending");
+  const previewAttemptCount = hasPreviewNow || previewStatus === "failed" ? 1 : 0;
 
   try {
     const record = await db().nbCardShare.create({
@@ -176,7 +188,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         ownerDeviceId: deviceId ?? null,
         expiresAt,
         previewStatus,
-        previewAttemptCount: hasPreviewNow ? 1 : 0,
+        previewAttemptCount,
         ...previewFields,
       },
     });
