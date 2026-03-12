@@ -79,6 +79,18 @@ function clampNumber(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
+/**
+ * Returns true if the QR value is a legacy device-local URL
+ * (?profile=<id> or /resources/nb-card without a /nb-card/s/ token).
+ */
+function isLegacyQrValue(value: string): boolean {
+  if (!value) return false;
+  return (
+    value.includes("?profile=") ||
+    (value.includes("/resources/nb-card") && !value.includes("/nb-card/s/"))
+  );
+}
+
 function rgbToHex(r: number, g: number, b: number): string {
   const to = (n: number) => clampNumber(Math.round(n), 0, 255).toString(16).padStart(2, "0");
   return `#${to(r)}${to(g)}${to(b)}`;
@@ -132,6 +144,10 @@ export interface EditorToolbarProps {
   onAddAvatar: () => void;
   onAddImage: () => void;
   onAddQR: () => void;
+  /** True while a server share is being created for the QR */
+  qrSharePending?: boolean;
+  /** Called when the user clicks "Upgrade QR" on a selected legacy QR layer */
+  onUpgradeQR?: () => void;
   onDuplicate: () => void;
   onDelete: () => void;
   onToggleLock: () => void;
@@ -166,6 +182,8 @@ export function EditorToolbar({
   onAddAvatar,
   onAddImage,
   onAddQR,
+  qrSharePending = false,
+  onUpgradeQR,
   onDuplicate,
   onDelete,
   onToggleLock,
@@ -413,13 +431,18 @@ export function EditorToolbar({
 
         <Button
           onClick={onAddQR}
+          disabled={qrSharePending}
           size="sm"
           variant="outline"
           className="h-8 px-2"
-          title="Add QR Code layer"
+          title={qrSharePending ? "Creating cross-device QR link…" : "Add QR Code layer (cross-device shareable)"}
         >
-          <QrCode className="h-4 w-4 mr-1" />
-          QR Code
+          {qrSharePending ? (
+            <span className="h-4 w-4 mr-1 inline-block rounded-full border-2 border-current border-t-transparent animate-spin" aria-hidden="true" />
+          ) : (
+            <QrCode className="h-4 w-4 mr-1" />
+          )}
+          {qrSharePending ? "Creating…" : "QR Code"}
         </Button>
       </div>
 
@@ -1327,6 +1350,33 @@ export function EditorToolbar({
           {/* QR Layer Inspector */}
           {selectedLayer.type === "qr" && (
             <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
+              {/* Legacy QR warning — shown when the QR value is a device-local URL */}
+              {isLegacyQrValue(selectedLayer.style.value) && (
+                <div className="basis-full! w-full rounded-md bg-amber-50 border border-amber-300 px-3 py-2 text-xs text-amber-800 flex items-start gap-2"
+                     role="alert">
+                  <span className="mt-0.5 flex-shrink-0">⚠️</span>
+                  <div className="min-w-0">
+                    <p className="font-semibold">This QR uses an old local-only link</p>
+                    <p className="mt-0.5 opacity-80">It will not work on other devices. Regenerate it to get a cross-device shareable link.</p>
+                    {onUpgradeQR && (
+                      <button
+                        type="button"
+                        onClick={onUpgradeQR}
+                        disabled={qrSharePending}
+                        className="mt-1.5 inline-flex items-center gap-1 bg-amber-600 text-white rounded px-2 py-0.5 text-xs font-semibold hover:bg-amber-700 disabled:opacity-60 transition-colors"
+                        aria-label="Regenerate QR with a cross-device shareable link"
+                      >
+                        {qrSharePending ? (
+                          <span className="inline-block h-3 w-3 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+                        ) : (
+                          <QrCode className="h-3 w-3" />
+                        )}
+                        {qrSharePending ? "Creating…" : "Upgrade QR"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
               <div className="col-span-2">
                 <label className="text-xs text-gray-600">QR Value (URL or text)</label>
                 <input

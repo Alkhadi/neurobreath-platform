@@ -576,6 +576,12 @@ interface ProfileCardProps {
   selectedLayerId?: string | null; // Free Layout Editor: currently selected layer
   onLayerUpdate?: (layerId: string, updates: Partial<CardLayer>) => void; // Free Layout Editor: update layer
   onLayerSelect?: (layerId: string | null) => void; // Free Layout Editor: select layer
+  /**
+   * Pre-resolved canonical server share URL (e.g. /nb-card/s/<token>).
+   * When provided, used as the QR value in wallet templates instead of the
+   * browser-local ?profile=<id> URL — making scanned QR codes cross-device.
+   */
+  serverShareUrl?: string | null;
 }
 
 // Helper component to render a single card layer
@@ -1054,6 +1060,7 @@ export function ProfileCard({
   selectedLayerId = null,
   onLayerUpdate,
   onLayerSelect,
+  serverShareUrl,
 }: ProfileCardProps) {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const walletQrSourceRef = useRef<HTMLDivElement | null>(null);
@@ -1216,7 +1223,8 @@ export function ProfileCard({
     : null;
   // templateOverlaySrc removed — template overlays are no longer rendered (user-added layers only)
 
-  const shareUrl = getProfileShareUrl(profile.id);
+  // Use canonical server URL when available (cross-device safe); fallback to local URL
+  const shareUrl = serverShareUrl ?? getProfileShareUrl(profile.id);
   const walletQrValue = isWalletTemplate ? computeWalletQrValue(profile, shareUrl) : null;
 
   // Load nb-wallet SVG + descriptor

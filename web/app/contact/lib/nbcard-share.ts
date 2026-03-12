@@ -56,8 +56,11 @@ export function getProfileShareUrl(profileId: string): string {
   return url.toString();
 }
 
-export function buildShareMessage(profile: Profile): { title: string; text: string; url: string } {
-  const url = getProfileShareUrl(profile.id);
+export function buildShareMessage(
+  profile: Profile,
+  overrideUrl?: string
+): { title: string; text: string; url: string } {
+  const url = overrideUrl ?? getProfileShareUrl(profile.id);
   const title = `${profile.fullName} — NBCard`;
   const text = `Hi! Here is my digital business card: ${url}`;
   return { title, text, url };
@@ -67,8 +70,8 @@ export function buildWhatsappUrl(message: string): string {
   return `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
 }
 
-export function buildMailtoUrl(profile: Profile): string {
-  const { url } = buildShareMessage(profile);
+export function buildMailtoUrl(profile: Profile, overrideUrl?: string): string {
+  const { url } = buildShareMessage(profile, overrideUrl);
   const subject = `My Digital Business Card – ${profile.fullName}`;
   const body = `Hi,\n\nHere is my digital business card:\n${url}\n\nThanks,\n${profile.fullName}`;
   const mailto = new URL('mailto:');
@@ -77,8 +80,8 @@ export function buildMailtoUrl(profile: Profile): string {
   return mailto.toString();
 }
 
-export function buildSmsUrl(profile: Profile): string {
-  const { url } = buildShareMessage(profile);
+export function buildSmsUrl(profile: Profile, overrideUrl?: string): string {
+  const { url } = buildShareMessage(profile, overrideUrl);
   const body = `Hi, here is the link to my digital business card: ${url}`;
   return `sms:?&body=${encodeURIComponent(body)}`;
 }

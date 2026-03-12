@@ -113,6 +113,10 @@ export interface Profile {
   typography?: {
     fontKey?: string; // e.g. "inter", "roboto", "montserrat"
   };
+  /** ISO timestamp of the last local edit — used for sync conflict resolution.
+   *  Set automatically on every meaningful mutation in NBCardPanel.
+   *  Legacy profiles without this field are migrated on first load. */
+  updatedAt?: string;
 }
 
 // NB-Card Free Layout Editor: Layer Types
@@ -426,6 +430,8 @@ export interface Contact {
   category: "Business" | "Personal";
   notes: string;
   createdAt: string;
+  /** ISO timestamp of last local edit — used for sync conflict resolution */
+  updatedAt?: string;
   socialMedia?: {
     instagram?: string;
     facebook?: string;

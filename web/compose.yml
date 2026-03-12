@@ -33,9 +33,18 @@ services:
       # IMPORTANT: inside Docker, use host `db` (the service name), not localhost.
       DATABASE_URL: postgresql://${POSTGRES_USER:-neurobreath}:${POSTGRES_PASSWORD:-change_me}@db:5432/${POSTGRES_DB:-neurobreath}
       NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
       # You MUST set these for real authentication flows:
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-dev_only_change_me}
       PASSWORD_PEPPER: ${PASSWORD_PEPPER:-dev_only_change_me}
+      # S3 / AWS — required for asset normalization and OG image upload in share flows.
+      # Leave blank in local dev if you don't have S3; share will gracefully degrade
+      # to text-only (no PNG preview) but QR will still be cross-device.
+      AWS_BUCKET_NAME: ${AWS_BUCKET_NAME:-}
+      AWS_FOLDER_PREFIX: ${AWS_FOLDER_PREFIX:-}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
     volumes:
       - .:/app
     command: >

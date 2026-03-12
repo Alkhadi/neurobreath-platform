@@ -177,11 +177,20 @@ model NbCardShare {
   /// Serialised CardModel JSON (sanitised — no secret fields)
   cardModelJson Json
 
-  /// Pre-generated PNG (base64 data-url or S3/R2 URL)
+  /// Pre-generated PNG — S3/R2 URL when object storage is configured
   pngUrl        String?
 
   /// Pre-generated PDF (S3/R2 URL)
   pdfUrl        String?
+
+  /// DB-backed preview image — populated when object storage is unavailable.
+  /// Stores the raw PNG bytes (max ~1 MB) so shares always have a preview.
+  previewPngBytes      Bytes?
+  previewPngMimeType   String?
+  previewPngWidth      Int?
+  previewPngHeight     Int?
+  previewGeneratedAt   DateTime?
+  previewSha256        String?
 
   /// Owner email (signed-in user) or null (anonymous)
   ownerEmail    String?

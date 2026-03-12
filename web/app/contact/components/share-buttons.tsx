@@ -109,6 +109,13 @@ export type ShareButtonsProps = {
   onSetContacts: (next: Contact[]) => void;
   templateSelection?: TemplateSelection;
   showPrivacyControls?: boolean;
+  /**
+   * Pre-resolved canonical server share URL (e.g. /nb-card/s/<token>).
+   * When provided, replaces the browser-local ?profile=<id> URL in all
+   * share flows (copy link, native share, email, WhatsApp, QR display).
+   * Falls back to the local URL when null/undefined (degraded / not yet ready).
+   */
+  canonicalShareUrl?: string | null;
 };
 
 function contactsToCsv(contacts: Contact[]): string {
@@ -475,7 +482,7 @@ function renderShareText(profile: Profile, shareUrl: string): string {
   return lines.join("\n");
 }
 
-export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSetContacts, templateSelection, showPrivacyControls = true }: ShareButtonsProps) {
+export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSetContacts, templateSelection, showPrivacyControls = true, canonicalShareUrl }: ShareButtonsProps) {
   const [isQrOpen, setIsQrOpen] = React.useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = React.useState(false);
   const [isShareFallbackOpen, setIsShareFallbackOpen] = React.useState(false);
@@ -675,7 +682,10 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
     setActiveSavedIds(loadNbcardActiveSavedCardIds(savedCardsNamespace));
   }, [savedCardsNamespace, sessionEmail, deviceId]);
 
-  const shareUrl = React.useMemo(() => getProfileShareUrl(profile.id), [profile.id]);
+  // Local fallback URL — used when canonical server share is not yet available
+  const localShareUrl = React.useMemo(() => getProfileShareUrl(profile.id), [profile.id]);
+  // Prefer canonical server-backed URL; fall back to local ?profile=<id> URL
+  const shareUrl = canonicalShareUrl ?? localShareUrl;
 
   // Event listener for "Share Your Profile" button in NBCardPanel.
   // Stable effect; ref is kept current via assignment during render (below).
@@ -1161,7 +1171,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                 downloadBlob(new Blob([pdfBytes], { type: "application/pdf" }), `${safeName}_NBCard.pdf`);
                 toast.message("PDF downloaded — attach it to your email");
               }
-              window.location.href = buildMailtoUrl(redacted);
+              window.location.href = buildMailtoUrl(redacted, shareUrl);
             } finally {
               setExportCaptureProfile(null);
             }
@@ -1169,7 +1179,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
         },
         // TEXT path
         async () => {
-          window.location.href = buildMailtoUrl(redacted);
+          window.location.href = buildMailtoUrl(redacted, shareUrl);
         }
       );
     });
@@ -1198,7 +1208,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
               } else {
                 downloadBlob(pngBlob, `${safeName}_NBCard.png`);
                 toast.message("Image downloaded", { description: "Attach it to your message." });
-                window.location.href = buildSmsUrl(redacted);
+                window.location.href = buildSmsUrl(redacted, shareUrl);
               }
             } finally {
               setExportCaptureProfile(null);
@@ -1207,7 +1217,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
         },
         // TEXT path
         async () => {
-          window.location.href = buildSmsUrl(redacted);
+          window.location.href = buildSmsUrl(redacted, shareUrl);
         }
       );
     });

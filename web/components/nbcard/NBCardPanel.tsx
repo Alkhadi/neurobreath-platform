@@ -50,6 +50,7 @@ import { EditorToolbar, LayersPanel } from "./EditorToolbar";
 
 import { exportNbcardLocalState, loadNbcardLocalState, saveNbcardLocalState } from "@/app/contact/lib/nbcard-storage";
 import { getProfileShareUrl } from "@/app/contact/lib/nbcard-share";
+// createServerShareFromProfile is lazy-imported in each handler that needs it
 import { ContactCapture } from "@/app/contact/components/contact-capture";
 import { ProfileCard } from "@/app/contact/components/profile-card";
 import { ProfileManager } from "@/app/contact/components/profile-manager";
@@ -61,7 +62,7 @@ import { DataControlsCenter } from "./DataControlsCenter";
 import { HelpButton } from "./HelpButton";
 import { getExampleCardPreset, resetOnboarding } from "@/lib/nb-card/onboarding";
 import { Button } from "@/components/ui/button";
-import { fullSync, type SyncStatus } from "@/lib/nb-card/sync";
+import { fullSync, pullAndMerge, type SyncStatus } from "@/lib/nb-card/sync";
 import { RefreshCw, Cloud, CloudOff } from "lucide-react";
 
 const SIGN_IN_CALLOUT_DISMISSED_KEY = "nb-card:sign_in_callout_dismissed";
@@ -203,6 +204,18 @@ export function NBCardPanel() {
   // Phase 4: Saved Layouts list
   const [showSavedLayouts, setShowSavedLayouts] = useState(false);
   
+  // QR share: true while the server share is being created
+  const [qrSharePending, setQrSharePending] = useState(false);
+
+  // Canonical server share URL for the current profile.
+  // Starts as null; populated after a debounced background share creation.
+  // Used by ProfileCard (wallet QR) and ShareButtons (all share actions).
+  const [canonicalShareUrl, setCanonicalShareUrl] = useState<string | null>(null);
+  // Track which profile content the canonical URL was generated for
+  const canonicalShareKeyRef = useRef<string | null>(null);
+  // Debounce timer for background share creation
+  const canonicalShareTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   // Canvas Edit Mode - inline editing on the canvas preview
   const [canvasEditMode, setCanvasEditMode] = useState(() => {
     try {
@@ -288,6 +301,41 @@ export function NBCardPanel() {
     };
   }, [sessionEmail, profiles]);
 
+  // Auto-pull from server when a signed-in user first opens the editor.
+  // Local storage becomes the offline cache; server is the authoritative source.
+  // Throttled to once per hour per email to avoid excessive server calls.
+  useEffect(() => {
+    if (!sessionEmail || !deviceId || !mounted) return;
+
+    const throttleKey = `nb-card:last-autopull:${sessionEmail}`;
+    const ONE_HOUR_MS = 60 * 60 * 1000;
+    const lastPull = Number(localStorage.getItem(throttleKey) ?? 0);
+    if (Date.now() - lastPull < ONE_HOUR_MS) return;
+
+    pullAndMerge(deviceId, profiles, contacts)
+      .then((result) => {
+        if (!result.success) return;
+
+        const newProfileCount = result.mergedProfiles.length;
+        const prevProfileCount = profiles.length;
+
+        setProfiles(result.mergedProfiles);
+        setContacts(result.mergedContacts);
+        localStorage.setItem(throttleKey, String(Date.now()));
+
+        if (newProfileCount > prevProfileCount) {
+          toast.success(
+            `Synced ${newProfileCount - prevProfileCount} saved card${newProfileCount - prevProfileCount > 1 ? "s" : ""} from your account`,
+            { description: "Your cards from other devices are now available here." }
+          );
+        }
+      })
+      .catch(() => {
+        // Silent fail — local state stays intact
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionEmail, deviceId, mounted]);
+
   // Load NBCard state + register SW
   useEffect(() => {
     let cancelled = false;
@@ -311,9 +359,16 @@ export function NBCardPanel() {
 
       const state = await loadNbcardLocalState([defaultProfile], []);
       if (cancelled) return;
-      const sanitizedProfiles = state.profiles.map(sanitizeProfile);
+      // One-time migration: assign updatedAt to any legacy profiles that lack it.
+      // After this, sync conflict resolution uses real timestamps consistently.
+      const nowIso = new Date().toISOString();
+      const sanitizedProfiles = state.profiles
+        .map(sanitizeProfile)
+        .map((p) => (p.updatedAt ? p : { ...p, updatedAt: nowIso }));
       setProfiles(sanitizedProfiles);
-      setContacts(state.contacts);
+      setContacts(
+        state.contacts.map((c) => (c.updatedAt ? c : { ...c, updatedAt: c.createdAt ?? nowIso }))
+      );
 
       // Snapshot initial layers for reset() — captured once at session start
       sanitizedProfiles.forEach((p) => {
@@ -428,6 +483,81 @@ export function NBCardPanel() {
       saveTemplateSelection(templateSelection, currentProfile?.id);
     }
   }, [templateSelection, currentProfile?.id, mounted]);
+
+  // Proactively create a canonical server share URL for the current profile.
+  // Debounced 3 s after content settles to avoid server calls on every keystroke.
+  // The key is a cheap content fingerprint — only re-create when relevant fields change.
+  useEffect(() => {
+    const key = [
+      currentProfile.id,
+      currentProfile.fullName,
+      currentProfile.phone,
+      currentProfile.email,
+      currentProfile.cardCategory,
+      templateSelection?.backgroundId,
+    ].join("|");
+
+    if (canonicalShareKeyRef.current === key && canonicalShareUrl) {
+      return;
+    }
+
+    // Clear stale canonical URL when content changes
+    if (canonicalShareKeyRef.current !== key) {
+      setCanonicalShareUrl(null);
+      canonicalShareKeyRef.current = null;
+    }
+
+    if (canonicalShareTimerRef.current) {
+      clearTimeout(canonicalShareTimerRef.current);
+    }
+
+    canonicalShareTimerRef.current = setTimeout(async () => {
+      try {
+        // Attempt PNG capture for share preview — non-blocking, best-effort
+        let pngBlob: Blob | undefined;
+        try {
+          const captureEl = document.getElementById("profile-card-capture-export");
+          if (captureEl) {
+            const { captureToBlob } = await import("@/lib/nbcard/export/capture");
+            pngBlob = await captureToBlob(captureEl, { scale: 2 });
+          }
+        } catch {
+          // PNG capture is enhancement-only; do not block share creation
+        }
+
+        const { createServerShareFromProfile } = await import(
+          "@/lib/nbcard/share/createServerShare"
+        );
+        const result = await createServerShareFromProfile({
+          profile: currentProfile,
+          templateSelection,
+          deviceId,
+          pngBlob,
+        });
+        if (result.ok) {
+          setCanonicalShareUrl(result.shareUrl);
+          canonicalShareKeyRef.current = key;
+        }
+        // Degraded / error: canonicalShareUrl stays null — local URL is used as fallback
+      } catch {
+        // Silent fail — local URL fallback is always in place
+      }
+    }, 3000);
+
+    return () => {
+      if (canonicalShareTimerRef.current) {
+        clearTimeout(canonicalShareTimerRef.current);
+      }
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    currentProfile.id,
+    currentProfile.fullName,
+    currentProfile.phone,
+    currentProfile.email,
+    currentProfile.cardCategory,
+    templateSelection?.backgroundId,
+  ]);
 
   const handleSaveProfile = (profile: Profile) => {
     if (isNewProfile) {
@@ -679,7 +809,17 @@ export function NBCardPanel() {
     
     setSyncStatus('syncing');
     try {
-      const result = await fullSync(deviceId, profiles, contacts);
+      // Include template selections so they're synced alongside profiles
+      const templateSelections: Record<string, unknown> = {};
+      if (templateSelection && currentProfile.id) {
+        templateSelections[currentProfile.id] = templateSelection;
+      }
+      const result = await fullSync(
+        deviceId,
+        profiles,
+        contacts,
+        templateSelections as Record<string, import("@/lib/nbcard-templates").TemplateSelection>
+      );
       if (result.success) {
         setProfiles(result.mergedProfiles);
         setContacts(result.mergedContacts);
@@ -692,7 +832,7 @@ export function NBCardPanel() {
         toast.error(`Sync failed: ${result.error}`);
         setTimeout(() => setSyncStatus('idle'), 5000);
       }
-    } catch (error) {
+    } catch {
       setSyncStatus('error');
       toast.error("Sync error");
       setTimeout(() => setSyncStatus('idle'), 5000);
@@ -734,7 +874,17 @@ export function NBCardPanel() {
 
   const commitToHistory = useCallback(
     (updatedProfile: Profile) => {
-      setHistory((prev) => pushHistory(prev, updatedProfile));
+      // Stamp updatedAt on every meaningful edit so sync conflict resolution
+      // always has a real timestamp to compare against.
+      const profileWithTimestamp: Profile = {
+        ...updatedProfile,
+        updatedAt: new Date().toISOString(),
+      };
+      setHistory((prev) => pushHistory(prev, profileWithTimestamp));
+      // Propagate the timestamp back into the profiles array so it persists.
+      setProfiles((prev) =>
+        prev.map((p) => (p.id === profileWithTimestamp.id ? profileWithTimestamp : p))
+      );
     },
     []
   );
@@ -830,8 +980,60 @@ export function NBCardPanel() {
     input.click();
   };
 
-  const handleAddQR = () => {
-    const shareUrl = getProfileShareUrl(currentProfile.id);
+  const handleAddQR = async () => {
+    if (qrSharePending) return;
+    setQrSharePending(true);
+
+    // Default: local ?profile=<id> URL — works offline / when DB is down
+    let shareUrl = getProfileShareUrl(currentProfile.id);
+
+    try {
+      // Attempt PNG capture for share preview (non-blocking enhancement)
+      let pngBlob: Blob | undefined;
+      try {
+        const captureEl = document.getElementById("profile-card-capture-export");
+        if (captureEl) {
+          const { captureToBlob } = await import("@/lib/nbcard/export/capture");
+          pngBlob = await captureToBlob(captureEl, { scale: 2 });
+        }
+      } catch {
+        // PNG capture is best-effort; share creation continues without it
+      }
+
+      // Use full pipeline: asset normalization + canvas layers + optional PNG
+      const { createServerShareFromProfile } = await import(
+        "@/lib/nbcard/share/createServerShare"
+      );
+      const result = await createServerShareFromProfile({
+        profile: currentProfile,
+        templateSelection,
+        deviceId,
+        pngBlob,
+      });
+
+      if (result.ok) {
+        // Use the server canonical URL — cross-device safe
+        shareUrl = result.shareUrl;
+        // Also surface the canonical URL to ShareButtons + ProfileCard wallet QR
+        setCanonicalShareUrl(result.shareUrl);
+        toast.success("QR created — cross-device shareable", {
+          description: "Anyone who scans this QR can view the card on their device.",
+        });
+      } else if (result.degraded) {
+        toast.warning("Share service offline", {
+          description: "QR will use a local link. Try again later for a cross-device link.",
+        });
+      } else {
+        toast.warning("Could not create server share", {
+          description: "QR will use a local link.",
+        });
+      }
+    } catch {
+      // Silent fallback — QR still gets local URL
+    } finally {
+      setQrSharePending(false);
+    }
+
     const layer = createQrLayer(10, 10, shareUrl);
     const updatedProfile = {
       ...currentProfile,
@@ -843,7 +1045,66 @@ export function NBCardPanel() {
     commitToHistory(updatedProfile);
     setSelectedLayerId(layer.id);
     setLayoutEditMode(true);
-    toast.success("QR Code layer added");
+  };
+
+  /**
+   * Upgrade a selected legacy QR layer to use a canonical /nb-card/s/<token> URL.
+   * Detects if the currently selected QR layer has an old local ?profile=<id> URL
+   * and replaces it with a fresh server share token.
+   */
+  const handleUpgradeQR = async () => {
+    if (!selectedLayerId || qrSharePending) return;
+    const layer = (currentProfile.layers ?? []).find((l) => l.id === selectedLayerId);
+    if (!layer || layer.type !== "qr") return;
+
+    setQrSharePending(true);
+    try {
+      // Attempt PNG capture for the upgrade preview (non-blocking)
+      let pngBlob: Blob | undefined;
+      try {
+        const captureEl = document.getElementById("profile-card-capture-export");
+        if (captureEl) {
+          const { captureToBlob } = await import("@/lib/nbcard/export/capture");
+          pngBlob = await captureToBlob(captureEl, { scale: 2 });
+        }
+      } catch {
+        // PNG capture is best-effort
+      }
+
+      const { createServerShareFromProfile } = await import(
+        "@/lib/nbcard/share/createServerShare"
+      );
+      const result = await createServerShareFromProfile({
+        profile: currentProfile,
+        templateSelection,
+        deviceId,
+        pngBlob,
+      });
+
+      if (result.ok) {
+        const updatedLayers = (currentProfile.layers ?? []).map((l) => {
+          if (l.id !== selectedLayerId || l.type !== "qr") return l;
+          return { ...l, style: { ...l.style, value: result.shareUrl } };
+        });
+        const updatedProfile = { ...currentProfile, layers: updatedLayers };
+        setProfiles((prev) =>
+          prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+        );
+        commitToHistory(updatedProfile);
+        setCanonicalShareUrl(result.shareUrl);
+        toast.success("QR upgraded — now cross-device shareable", {
+          description: "The QR now encodes a permanent server link.",
+        });
+      } else {
+        toast.error("Could not upgrade QR — server unavailable", {
+          description: "The QR still uses a local link. Try again later.",
+        });
+      }
+    } catch {
+      toast.error("Failed to upgrade QR");
+    } finally {
+      setQrSharePending(false);
+    }
   };
 
   const handleNudgeLayer = useCallback((direction: "up" | "down" | "left" | "right", fine: boolean) => {
@@ -1474,10 +1735,10 @@ export function NBCardPanel() {
         </div>
       )}
 
-      {/* Main Content Grid */}
+      {/* Main Content — single column mobile, two columns lg+ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Left Column - Profile Card */}
-        <div>
+        <div className="min-w-0">
           {/* Profile Card with Capture Wrapper */}
           <div className="mb-6">
             <div id="profile-card-capture-wrapper" className="text-left w-full">
@@ -1500,6 +1761,7 @@ export function NBCardPanel() {
                 snapEnabled={snapEnabled}
                 selectedLayerId={selectedLayerId}
                 onLayerSelect={setSelectedLayerId}
+                serverShareUrl={canonicalShareUrl}
                 onLayerUpdate={(layerId, updates) => {
                   // Update layer in current profile
                   setProfiles(prev => prev.map((p, idx) => {
@@ -1559,7 +1821,7 @@ export function NBCardPanel() {
                     toast.info("Canvas Edit Mode enabled. Double-click text to edit, click avatar/background to upload.");
                   }
                 }}
-                className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                className={`w-full sm:w-auto px-4 py-2 rounded-lg font-semibold transition-all whitespace-normal text-center ${
                   canvasEditMode
                     ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
                     : 'bg-white text-gray-700 border border-gray-300 hover:border-emerald-400'
@@ -1570,29 +1832,28 @@ export function NBCardPanel() {
             </div>
           )}
 
-          {/* Action Buttons */}
-          <div className="flex gap-3">
+          {/* Action Buttons — responsive: stacked on mobile, row on sm+ */}
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={handleEditProfile}
-              className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold"
+              className="flex-1 min-w-0 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-3 rounded-lg hover:shadow-lg transition-all font-semibold whitespace-normal text-center leading-snug"
             >
-              <FaEdit /> Edit Profile
+              <FaEdit className="shrink-0" /> Edit Profile
             </button>
             <button
               onClick={handleCreateNewProfile}
-              className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold"
+              className="flex-1 min-w-0 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-3 rounded-lg hover:shadow-lg transition-all font-semibold whitespace-normal text-center leading-snug"
             >
-              <FaPlus /> New Profile
+              <FaPlus className="shrink-0" /> New Profile
             </button>
             <button
               type="button"
               onClick={() => {
                 const el = document.getElementById("share-your-profile");
                 el?.scrollIntoView({ behavior: "smooth", block: "start" });
-                // Open the share dialog in ShareButtons via custom event
                 window.dispatchEvent(new CustomEvent("nb-share-request", { detail: { action: "share" } }));
               }}
-              className="flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold"
+              className="flex-1 min-w-0 flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-3 rounded-lg hover:shadow-lg transition-all font-semibold whitespace-normal text-center leading-snug"
             >
               Share Your Profile
             </button>
@@ -1600,28 +1861,31 @@ export function NBCardPanel() {
         </div>
 
         {/* Right Column - Share Buttons */}
-        <div className="bg-white rounded-2xl shadow-xl p-6">
+        <div className="min-w-0 bg-white rounded-2xl shadow-xl p-6">
           {!sessionEmail && !signInCalloutDismissed ? (
-            <div className="mb-4 rounded-xl border border-purple-100 bg-purple-50 px-4 py-3 relative">
-              <div className="flex items-start justify-between gap-3">
-                <div className="pr-6">
-                  <p className="text-sm font-semibold text-gray-900">Tip: Sign in to sync across devices</p>
-                  <p className="text-xs text-gray-700">
-                    Your cards are saved locally on this device. Sign in to keep your cards across devices and avoid losing work if your browser storage is cleared.
-                  </p>
-                </div>
-                <Button asChild size="sm" className="shrink-0">
-                  <a href={`/uk/login?callbackUrl=${encodeURIComponent("/resources/nb-card")}`}>Sign in</a>
-                </Button>
+            <div className="mb-4 rounded-xl border border-purple-100 bg-purple-50 px-4 py-3">
+              {/* Title row with dismiss */}
+              <div className="flex items-start justify-between gap-2 mb-1">
+                <p className="text-sm font-semibold text-gray-900 min-w-0">
+                  Tip: Sign in to sync across devices
+                </p>
+                <button
+                  type="button"
+                  onClick={handleDismissSignInCallout}
+                  className="shrink-0 mt-0.5 text-gray-400 hover:text-gray-600 transition-colors"
+                  aria-label="Dismiss sign-in suggestion"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={handleDismissSignInCallout}
-                className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors"
-                aria-label="Dismiss sign-in suggestion"
-              >
-                <X className="h-4 w-4" />
-              </button>
+              {/* Body text — never forced into a narrow column */}
+              <p className="text-xs text-gray-700 mb-3">
+                Your cards are saved locally on this device. Sign in to keep your cards across devices and avoid losing work if your browser storage is cleared.
+              </p>
+              {/* CTA — full width on mobile, auto on larger screens */}
+              <Button asChild size="sm" className="w-full sm:w-auto">
+                <a href={`/uk/login?callbackUrl=${encodeURIComponent("/resources/nb-card")}`}>Sign in</a>
+              </Button>
             </div>
           ) : null}
           <div id="share-your-profile">
@@ -1633,6 +1897,7 @@ export function NBCardPanel() {
               onSetContacts={setContacts}
               templateSelection={templateSelection}
               showPrivacyControls={false}
+              canonicalShareUrl={canonicalShareUrl}
             />
           </div>
         </div>
@@ -1706,6 +1971,8 @@ export function NBCardPanel() {
             onAddAvatar={handleAddAvatar}
             onAddImage={handleAddImage}
             onAddQR={handleAddQR}
+            qrSharePending={qrSharePending}
+            onUpgradeQR={handleUpgradeQR}
             onDuplicate={handleDuplicateLayer}
             onDelete={handleDeleteLayer}
             onToggleLock={handleToggleLayerLock}

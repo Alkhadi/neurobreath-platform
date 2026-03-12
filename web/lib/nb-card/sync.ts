@@ -40,12 +40,14 @@ export interface PullResult {
 }
 
 /**
- * Upload local profiles and contacts to server
+ * Upload local profiles and contacts to server.
+ * templateSelections is a map of profileId → TemplateSelection.
  */
 export async function syncToServer(
   deviceId: string,
   profiles: Profile[],
-  contacts: Contact[]
+  contacts: Contact[],
+  templateSelections?: Record<string, TemplateSelection>
 ): Promise<SyncResult> {
   try {
     const payload = {
@@ -53,13 +55,16 @@ export async function syncToServer(
       profiles: profiles.map((p) => ({
         id: p.id,
         profileData: p,
-        templateData: undefined, // TODO: Get from localStorage or state
-        updatedAt: new Date().toISOString(),
+        templateData: templateSelections?.[p.id] ?? undefined,
+        // Prefer real updatedAt (Profile.updatedAt); fall back to current time only
+        // for legacy profiles that haven't been migrated yet. After the one-time
+        // migration in NBCardPanel.tsx, this fallback will never trigger.
+        updatedAt: p.updatedAt ?? new Date().toISOString(),
       })),
       contacts: contacts.map((c) => ({
         id: c.id,
         contactData: c,
-        updatedAt: new Date().toISOString(),
+        updatedAt: c.updatedAt ?? c.createdAt ?? new Date().toISOString(),
       })),
     };
 
@@ -139,17 +144,19 @@ export function mergeProfiles(
     const local = merged.get(serverItem.id);
     
     if (!local) {
-      // New profile from server
+      // New profile from server — add to local set
       merged.set(serverItem.id, serverItem.profileData);
     } else {
-      // Compare timestamps - prefer most recent
-      const localUpdated = new Date(local.id); // Fallback: use ID as timestamp if no updatedAt
+      // Use real updatedAt from Profile type (added in Phase 4).
+      // If the local profile is a legacy record without updatedAt, treat it as
+      // epoch-0 so the server version wins — a safe one-time migration.
+      const localUpdated = local.updatedAt ? new Date(local.updatedAt) : new Date(0);
       const serverUpdated = new Date(serverItem.updatedAt);
-      
+
       if (serverUpdated > localUpdated) {
         merged.set(serverItem.id, serverItem.profileData);
       }
-      // else: keep local (it's newer)
+      // else: keep local (it's newer or same-time)
     }
   }
 
@@ -177,10 +184,12 @@ export function mergeContacts(
     if (!local) {
       merged.set(serverItem.id, serverItem.contactData);
     } else {
-      // Compare timestamps - prefer most recent
-      const localUpdated = new Date(local.createdAt || local.id);
+      // Use real updatedAt from Contact type; fall back to createdAt for legacy records
+      const localUpdated = local.updatedAt
+        ? new Date(local.updatedAt)
+        : local.createdAt ? new Date(local.createdAt) : new Date(0);
       const serverUpdated = new Date(serverItem.updatedAt);
-      
+
       if (serverUpdated > localUpdated) {
         merged.set(serverItem.id, serverItem.contactData);
       }
@@ -191,12 +200,15 @@ export function mergeContacts(
 }
 
 /**
- * Full sync flow: Pull from server, merge with local, push back to server
+ * Full sync flow: Pull from server, merge with local, push merged data back.
+ * templateSelections is a map of profileId → TemplateSelection, used to
+ * persist template data alongside each profile.
  */
 export async function fullSync(
   deviceId: string,
   localProfiles: Profile[],
-  localContacts: Contact[]
+  localContacts: Contact[],
+  templateSelections?: Record<string, TemplateSelection>
 ): Promise<{
   success: boolean;
   mergedProfiles: Profile[];
@@ -210,12 +222,12 @@ export async function fullSync(
       throw new Error(pullResult.error || 'Pull failed');
     }
 
-    // 2. Merge with local data
+    // 2. Merge local + server data (server wins on timestamp conflict)
     const mergedProfiles = mergeProfiles(localProfiles, pullResult.profiles);
     const mergedContacts = mergeContacts(localContacts, pullResult.contacts);
 
     // 3. Push merged data back to server
-    const syncResult = await syncToServer(deviceId, mergedProfiles, mergedContacts);
+    const syncResult = await syncToServer(deviceId, mergedProfiles, mergedContacts, templateSelections);
     if (!syncResult.success) {
       throw new Error(syncResult.error || 'Sync failed');
     }
@@ -234,4 +246,37 @@ export async function fullSync(
       error: String(error),
     };
   }
+}
+
+/**
+ * Lightweight pull-only sync: fetch server data and merge into local state.
+ * Does NOT push back to server — used for background hydration on sign-in/mount.
+ * Returns merged profiles (server wins on conflict) without writing to server.
+ */
+export async function pullAndMerge(
+  deviceId: string,
+  localProfiles: Profile[],
+  localContacts: Contact[]
+): Promise<{
+  success: boolean;
+  mergedProfiles: Profile[];
+  mergedContacts: Contact[];
+  error?: string;
+}> {
+  const pullResult = await pullFromServer(deviceId).catch(() => ({
+    success: false as const,
+    profiles: [],
+    contacts: [],
+    error: 'Pull failed',
+  }));
+
+  if (!pullResult.success) {
+    return { success: false, mergedProfiles: localProfiles, mergedContacts: localContacts, error: pullResult.error };
+  }
+
+  return {
+    success: true,
+    mergedProfiles: mergeProfiles(localProfiles, pullResult.profiles),
+    mergedContacts: mergeContacts(localContacts, pullResult.contacts),
+  };
 }

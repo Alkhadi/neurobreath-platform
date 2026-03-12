@@ -1,53 +1,109 @@
 /**
  * capture.ts — Reliable export capture helpers for NB-Card
- * Ensures pixel-perfect PNG exports that match on-screen preview
+ * Ensures pixel-perfect PNG exports that match on-screen preview,
+ * including template CSS background-images and user-uploaded data: assets.
  */
 
 import html2canvas from "html2canvas";
+
+/** Chunk-safe btoa for large buffers (avoids call-stack overflow) */
+function bufferToBase64(bytes: Uint8Array): string {
+  let b64 = "";
+  const CHUNK = 8192;
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    b64 += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
+  }
+  return btoa(b64);
+}
+
+/** Fetch a URL and return a data: URI, or null on failure */
+async function fetchAsDataUri(url: string): Promise<string | null> {
+  try {
+    const res = await fetch(url, { mode: "cors", cache: "force-cache" });
+    if (!res.ok) return null;
+    const buf = await res.arrayBuffer();
+    const mime = res.headers.get("content-type") ?? "image/png";
+    return `data:${mime};base64,${bufferToBase64(new Uint8Array(buf))}`;
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Inline all cross-origin <img> srcs as data URIs so html2canvas can paint
  * them without a CORS SecurityError when allowTaint: false is set.
  *
- * Only processes images that have a crossorigin attribute and whose src is
- * not already a data: or blob: URI (those are already local).
+ * Processes ALL <img> elements (not just crossorigin ones) whose src is an
+ * external http(s) URL, since html2canvas needs them as data URIs.
  *
  * Returns a restore function — call it after captureToBlob() finishes to
  * put the original src values back (avoids polluting the live DOM).
  */
 export async function inlineImages(rootEl: HTMLElement): Promise<() => void> {
-  const imgs = Array.from(
-    rootEl.querySelectorAll<HTMLImageElement>("img[crossorigin]")
-  );
+  const imgs = Array.from(rootEl.querySelectorAll<HTMLImageElement>("img"));
   const originals: Array<{ el: HTMLImageElement; src: string }> = [];
 
   await Promise.all(
     imgs.map(async (img) => {
       const src = img.getAttribute("src") ?? "";
       if (!src || src.startsWith("data:") || src.startsWith("blob:")) return;
-      try {
-        const res = await fetch(src, { mode: "cors", cache: "force-cache" });
-        if (!res.ok) return;
-        const buf = await res.arrayBuffer();
-        const mime = res.headers.get("content-type") ?? "image/png";
-        // btoa on large buffers: chunk to avoid call-stack overflow
-        const bytes = new Uint8Array(buf);
-        let b64 = "";
-        const CHUNK = 8192;
-        for (let i = 0; i < bytes.length; i += CHUNK) {
-          b64 += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
-        }
-        b64 = btoa(b64);
-        originals.push({ el: img, src });
-        img.src = `data:${mime};base64,${b64}`;
-        await img.decode().catch(() => undefined);
-      } catch {
-        // Silently skip — html2canvas will render what it can
-      }
+      if (!src.startsWith("http://") && !src.startsWith("https://") && !src.startsWith("/")) return;
+
+      const dataUri = await fetchAsDataUri(src.startsWith("/") ? window.location.origin + src : src);
+      if (!dataUri) return;
+
+      originals.push({ el: img, src });
+      img.src = dataUri;
+      await img.decode().catch(() => undefined);
     })
   );
 
   return () => originals.forEach(({ el, src }) => { el.src = src; });
+}
+
+/**
+ * Inline all CSS background-image URLs as data URIs so html2canvas renders
+ * template backgrounds faithfully (they are rendered as CSS, not <img> tags).
+ *
+ * Handles both inline styles and computed styles.
+ * Skips data:, blob:, and gradient values — those are already local.
+ *
+ * Returns a restore function — call it after captureToBlob() finishes.
+ */
+export async function inlineCssBackgrounds(rootEl: HTMLElement): Promise<() => void> {
+  if (typeof window === "undefined") return () => undefined;
+
+  const elements = Array.from(rootEl.querySelectorAll<HTMLElement>("*"));
+  elements.unshift(rootEl);
+
+  const restoreList: Array<{ el: HTMLElement; originalInline: string }> = [];
+
+  await Promise.all(
+    elements.map(async (el) => {
+      const computed = window.getComputedStyle(el).backgroundImage;
+      if (!computed || computed === "none") return;
+
+      // Extract the first URL from background-image (handles multiple bg layers)
+      const match = computed.match(/url\(["']?([^"')]+)["']?\)/);
+      if (!match) return;
+
+      const url = match[1];
+      if (!url) return;
+      if (url.startsWith("data:") || url.startsWith("blob:")) return;
+      if (!url.startsWith("http://") && !url.startsWith("https://") && !url.startsWith("/")) return;
+
+      const resolvedUrl = url.startsWith("/") ? window.location.origin + url : url;
+      const dataUri = await fetchAsDataUri(resolvedUrl);
+      if (!dataUri) return;
+
+      restoreList.push({ el, originalInline: el.style.backgroundImage });
+      el.style.backgroundImage = `url("${dataUri}")`;
+    })
+  );
+
+  return () => restoreList.forEach(({ el, originalInline }) => {
+    el.style.backgroundImage = originalInline;
+  });
 }
 
 /**
@@ -130,9 +186,12 @@ export async function captureToBlob(
     });
   });
 
-  // Inline cross-origin images as data URIs so html2canvas can paint them
-  // without a SecurityError (allowTaint: false would otherwise blank them).
-  const restoreImages = await inlineImages(rootEl);
+  // Inline <img> srcs and CSS background-images as data URIs so html2canvas
+  // can faithfully paint template backgrounds and cross-origin images.
+  const [restoreImages, restoreCssBg] = await Promise.all([
+    inlineImages(rootEl),
+    inlineCssBackgrounds(rootEl),
+  ]);
 
   let canvas: HTMLCanvasElement;
   try {
@@ -146,8 +205,9 @@ export async function captureToBlob(
       // Respect data-html2canvas-ignore attributes (edit UI will be excluded)
     });
   } finally {
-    // Restore inlined image srcs and editor UI elements after capture
+    // Restore all inlined assets and editor UI elements after capture
     restoreImages();
+    restoreCssBg();
     uiElements.forEach((el, i) => { el.style.display = savedDisplays[i]; });
   }
   

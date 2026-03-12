@@ -54,18 +54,27 @@ export async function generateMetadata({
     typeof profile.fullName === "string" ? profile.fullName : "NB-Card";
   const title = `${name}'s Digital Card`;
 
+  // Use the token-backed OG route so social platforms always get a personalized
+  // preview image, even when pngUrl has not yet been generated.
+  const baseUrl =
+    process.env.NEXTAUTH_URL ??
+    (process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000");
+  const ogImageUrl = `${baseUrl}/api/og/nb-card?token=${encodeURIComponent(token)}`;
+
   return {
     title,
     description: "View and download this digital business card.",
     openGraph: {
       title,
       description: "View and download this digital business card.",
-      images: share.pngUrl ? [{ url: share.pngUrl }] : [],
+      images: [{ url: ogImageUrl, width: 1200, height: 630 }],
     },
     twitter: {
       card: "summary_large_image",
       title,
-      images: share.pngUrl ? [share.pngUrl] : [],
+      images: [ogImageUrl],
     },
   };
 }
