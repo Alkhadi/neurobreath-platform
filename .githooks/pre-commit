@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# STRICT PATCH MODE pre-commit guard:
+# - blocks committing artifacts / out-of-scope changes / deps / prisma edits (unless explicitly allowed)
+
+repo_root="$(git rev-parse --show-toplevel)"
+cd "$repo_root"
+
+node web/scripts/strict-patch-guard.mjs --staged
