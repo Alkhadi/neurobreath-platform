@@ -57,18 +57,6 @@ export function HomeHero({ region, copy, recommendations }: HomeHeroProps) {
 
 					{/* Left: hero text + CTAs */}
 					<div className="w-full lg:w-[58%]">
-						<div className="flex flex-wrap items-center gap-3 mb-5">
-							<Badge className="border border-white/20 bg-white/10 !text-black hover:!text-white active:!text-white transition-colors backdrop-blur-sm">
-								{copy.trustStrip.disclaimer}
-							</Badge>
-							<Link
-								href={`/${regionKey}/trust`}
-								className="text-xs font-semibold !text-black hover:!text-white active:!text-white underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60 rounded-sm transition-colors"
-							>
-								{copy.trustStrip.trustCentreLabel}
-							</Link>
-						</div>
-
 						<h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-white leading-tight">
 							{copy.valueProp}
 						</h1>
@@ -108,9 +96,17 @@ export function HomeHero({ region, copy, recommendations }: HomeHeroProps) {
 							</Link>
 						</div>
 
-						<div className="mt-6 text-sm text-white/60">
-							<span className="cursor-pointer font-semibold !text-black hover:!text-white active:!text-white transition-colors">{copy.trustStrip.disclaimer}</span>{' '}
-							<span className="!text-black hover:!text-white active:!text-white transition-colors">Educational only. Not medical advice. No diagnosis. No medical claims.</span>
+						{/* Trust badge + Trust Centre link — below all CTAs */}
+						<div className="mt-6 flex flex-wrap items-center gap-3">
+							<Badge className="border border-white/20 bg-white/10 !text-black hover:!text-white active:!text-white transition-colors backdrop-blur-sm">
+								{copy.trustStrip.disclaimer}
+							</Badge>
+							<Link
+								href={`/${regionKey}/trust`}
+								className="text-xs font-semibold !text-black hover:!text-white active:!text-white underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60 rounded-sm transition-colors"
+							>
+								{copy.trustStrip.trustCentreLabel}
+							</Link>
 						</div>
 					</div>
 
