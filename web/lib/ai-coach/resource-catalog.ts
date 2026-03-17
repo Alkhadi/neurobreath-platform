@@ -42,7 +42,7 @@ export const NEUROBREATH_RESOURCE_CATALOG: NeuroBreathResource[] = [
   },
   {
     title: '4–7–8 Wind-Down',
-    path: '/tools/breathing/4-7-8',
+    path: '/techniques/4-7-8',
     type: 'breathing',
     tags: ['sleep', 'night-anxiety'],
     timeToUseMin: 3,

@@ -252,7 +252,7 @@ export const INTERACTIVE_GUIDES: InteractiveGuide[] = [
         typeBadge: 'Guide',
       },
       {
-        href: '/techniques/478',
+        href: '/techniques/4-7-8',
         label: '4-7-8 Breathing',
         description: 'Slow breathing technique for sleep.',
         typeBadge: 'Technique',

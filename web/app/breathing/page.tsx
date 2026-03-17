@@ -124,8 +124,11 @@ export default function BreathingExercisesPage() {
               </Button>
             </Card>
 
-            {/* 4-7-8 Breathing */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            {/* 4-7-8 Breathing — Featured */}
+            <Card className="p-6 hover:shadow-xl transition-shadow ring-2 ring-purple-400 ring-offset-2 relative">
+              <span className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-semibold text-purple-700">
+                ★ Featured
+              </span>
               <div className="bg-purple-100 p-3 rounded-lg inline-block mb-4">
                 <Moon className="h-8 w-8 text-purple-600" />
               </div>
@@ -134,15 +137,15 @@ export default function BreathingExercisesPage() {
                 <strong>Best for:</strong> Sleep, anxiety, calming before bed
               </p>
               <p className="text-sm text-muted-foreground mb-4">
-                Developed by Dr. Andrew Weil. Extended exhale activates the parasympathetic nervous system for deep relaxation.
+                Commonly associated with Dr. Andrew Weil. Often used for relaxation and stress support — begin with four cycles if comfortable.
               </p>
               <ul className="text-xs text-muted-foreground space-y-1 mb-6">
                 <li>• Breathe in: 4 seconds</li>
                 <li>• Hold: 7 seconds</li>
                 <li>• Breathe out: 8 seconds</li>
-                <li>• Repeat 4 times</li>
+                <li>• Begin with 4 cycles if comfortable</li>
               </ul>
-              <Button asChild className="w-full">
+              <Button asChild className="w-full bg-purple-600 hover:bg-purple-700">
                 <Link href="/techniques/4-7-8">
                   <Play className="mr-2 h-4 w-4" />
                   Try 4-7-8 Breathing
