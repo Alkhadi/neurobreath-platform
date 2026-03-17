@@ -19,7 +19,7 @@ const sessionQuickStarts: QuickStartItem[] = [
 	{
 		text: '',
 		linkText: '4-7-8 Breathing',
-		href: '/legacy-assets/4-7-8-breathing',
+		href: '/techniques/4-7-8',
 		description: 'Longer exhale to settle the body before rest periods.',
 	},
 	{

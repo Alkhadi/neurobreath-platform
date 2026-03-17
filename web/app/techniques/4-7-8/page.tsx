@@ -1,5 +1,4 @@
-'use client'
-
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft, Play, Video, AlertTriangle, Moon, Target, Heart, Zap, Activity, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -8,6 +7,11 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Breathing478Player } from '@/components/breathing/Breathing478Player'
 import { ResponsiveYouTubeEmbed } from '@/components/video/ResponsiveYouTubeEmbed'
 import { FOUR_SEVEN_EIGHT_COPY } from '@/lib/breathing/478'
+import { breathTechnique478Metadata } from '@/lib/seo/page-metadata'
+
+// Server-component page following the nb-card pattern:
+// metadata exported directly, interactive children remain 'use client' components.
+export const metadata: Metadata = breathTechnique478Metadata
 
 const RELATED_TECHNIQUES = [
   {
@@ -42,7 +46,7 @@ const RELATED_TECHNIQUES = [
     iconBg: 'bg-amber-100',
     iconColor: 'text-amber-600',
   },
-]
+] as const
 
 export default function FourSevenEightPage() {
   return (
@@ -60,8 +64,7 @@ export default function FourSevenEightPage() {
         aria-labelledby="hero-heading"
         className="relative py-14 px-4 overflow-hidden bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50"
       >
-        {/* Back nav */}
-        <div className="max-w-4xl mx-auto mb-8">
+        <div className="max-w-6xl mx-auto mb-8">
           <Button asChild variant="ghost" size="sm" className="gap-1 text-muted-foreground">
             <Link href="/breathing">
               <ArrowLeft className="w-4 h-4" aria-hidden="true" />
@@ -70,12 +73,19 @@ export default function FourSevenEightPage() {
           </Button>
         </div>
 
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-purple-100 mb-6" aria-hidden="true">
+        <div className="max-w-6xl mx-auto text-center">
+          <div
+            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-purple-100 mb-6"
+            aria-hidden="true"
+          >
             <Moon className="w-8 h-8 text-purple-600" />
           </div>
 
-          <h1 id="hero-heading" className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+          {/* Gradient heading — nb-card pattern */}
+          <h1
+            id="hero-heading"
+            className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 mb-4"
+          >
             {FOUR_SEVEN_EIGHT_COPY.title}
           </h1>
 
@@ -83,20 +93,20 @@ export default function FourSevenEightPage() {
             {FOUR_SEVEN_EIGHT_COPY.subtitle}
           </p>
 
-          {/* Stats row */}
+          {/* Ratio stats */}
           <div className="flex flex-wrap justify-center gap-6 mb-10 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1.5">
-              <span className="font-semibold text-gray-800">4s</span> inhale
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-semibold text-gray-800">7s</span> hold
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-semibold text-gray-800">8s</span> exhale
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-semibold text-gray-800">19s</span> per cycle
-            </div>
+            {(
+              [
+                ['4s', 'inhale'],
+                ['7s', 'hold'],
+                ['8s', 'exhale'],
+                ['19s', 'per cycle'],
+              ] as const
+            ).map(([val, label]) => (
+              <div key={label} className="flex items-center gap-1.5">
+                <span className="font-semibold text-gray-800">{val}</span> {label}
+              </div>
+            ))}
           </div>
 
           {/* CTAs */}
@@ -123,7 +133,7 @@ export default function FourSevenEightPage() {
 
       {/* ── Safety Notice ─────────────────────────────────────────────── */}
       <section aria-label="Safety notice" className="px-4 py-6 bg-amber-50 border-y border-amber-100">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <Alert className="border-amber-300 bg-amber-50">
             <AlertTriangle className="h-5 w-5 text-amber-600" aria-hidden="true" />
             <AlertDescription className="text-sm text-amber-900 leading-relaxed">
@@ -135,12 +145,8 @@ export default function FourSevenEightPage() {
       </section>
 
       {/* ── Practice Panel ────────────────────────────────────────────── */}
-      <section
-        id="practice"
-        aria-labelledby="practice-heading"
-        className="py-16 px-4 bg-white"
-      >
-        <div className="max-w-4xl mx-auto">
+      <section id="practice" aria-labelledby="practice-heading" className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-10">
             <h2 id="practice-heading" className="text-3xl font-bold text-gray-900 mb-3">
               Guided Practice
@@ -158,7 +164,7 @@ export default function FourSevenEightPage() {
         aria-labelledby="explanation-heading"
         className="py-16 px-4 bg-gradient-to-br from-purple-50 to-indigo-50"
       >
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 id="explanation-heading" className="text-3xl font-bold text-gray-900 mb-8 text-center">
             About This Technique
           </h2>
@@ -171,37 +177,32 @@ export default function FourSevenEightPage() {
                 {FOUR_SEVEN_EIGHT_COPY.description}
               </p>
               <p className="text-gray-700 text-sm leading-relaxed">
-                The ratio — breathe in for 4 seconds, hold for 7, breathe out for 8 — is
-                thought to slow the breath and engage the body&apos;s natural calming mechanisms.
-                The ratio matters more than speed: if 4–7–8 feels too intense, slow each count
-                slightly.
+                The ratio — breathe in for 4 seconds, hold for 7, breathe out for 8 — is thought
+                to slow the breath and engage the body&apos;s natural calming mechanisms. The ratio
+                matters more than speed: if 4–7–8 feels too intense, slow each count slightly.
               </p>
             </Card>
 
-            {/* How to do it */}
+            {/* How to practise */}
             <Card className="p-6">
               <h3 className="text-xl font-bold mb-3">How to Practise</h3>
               <ol className="space-y-3 text-sm text-gray-700">
-                <li className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex items-center justify-center mt-0.5">1</span>
-                  <span>Sit comfortably or lie down. Place the tip of your tongue lightly behind your upper front teeth.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex items-center justify-center mt-0.5">2</span>
-                  <span>Exhale fully through your mouth, then close it.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex items-center justify-center mt-0.5">3</span>
-                  <span>Inhale quietly through your nose for a count of 4.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex items-center justify-center mt-0.5">4</span>
-                  <span>Hold your breath for a count of 7.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex items-center justify-center mt-0.5">5</span>
-                  <span>Exhale completely through your mouth for a count of 8. Repeat for 4 cycles.</span>
-                </li>
+                {(
+                  [
+                    'Sit comfortably or lie down. Place the tip of your tongue lightly behind your upper front teeth.',
+                    'Exhale fully through your mouth, then close it.',
+                    'Inhale quietly through your nose for a count of 4.',
+                    'Hold your breath for a count of 7.',
+                    'Exhale completely through your mouth for a count of 8. Repeat for 4 cycles.',
+                  ] as const
+                ).map((step, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex items-center justify-center mt-0.5">
+                      {i + 1}
+                    </span>
+                    <span>{step}</span>
+                  </li>
+                ))}
               </ol>
             </Card>
 
@@ -209,12 +210,14 @@ export default function FourSevenEightPage() {
             <Card className="p-6">
               <h3 className="text-xl font-bold mb-3">What It May Help With</h3>
               <ul className="space-y-2 text-sm text-gray-700">
-                {[
-                  'May help support relaxation before sleep',
-                  'Commonly used for calming during stressful moments',
-                  'Can support stress reduction when practised consistently',
-                  'Often used as part of an evening wind-down routine',
-                ].map((item) => (
+                {(
+                  [
+                    'May help support relaxation before sleep',
+                    'Commonly used for calming during stressful moments',
+                    'Can support stress reduction when practised consistently',
+                    'Often used as part of an evening wind-down routine',
+                  ] as const
+                ).map((item) => (
                   <li key={item} className="flex items-start gap-2">
                     <ChevronRight className="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
                     {item}
@@ -223,31 +226,28 @@ export default function FourSevenEightPage() {
               </ul>
             </Card>
 
-            {/* Timing explained */}
+            {/* The 4:7:8 ratio visualisation */}
             <Card className="p-6">
               <h3 className="text-xl font-bold mb-3">The 4:7:8 Ratio</h3>
               <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-24 text-right text-sm font-medium text-blue-600">Inhale</div>
-                  <div className="flex-1 h-3 rounded-full bg-blue-100 overflow-hidden">
-                    <div className="h-full bg-blue-400 rounded-full" style={{ width: `${(4 / 19) * 100}%` }} />
+                {(
+                  [
+                    { phase: 'Inhale', seconds: 4, bgBar: 'bg-blue-400', bgTrack: 'bg-blue-100', labelColor: 'text-blue-600' },
+                    { phase: 'Hold', seconds: 7, bgBar: 'bg-orange-400', bgTrack: 'bg-orange-100', labelColor: 'text-orange-500' },
+                    { phase: 'Exhale', seconds: 8, bgBar: 'bg-pink-400', bgTrack: 'bg-pink-100', labelColor: 'text-pink-500' },
+                  ] as const
+                ).map(({ phase, seconds, bgBar, bgTrack, labelColor }) => (
+                  <div key={phase} className="flex items-center gap-4">
+                    <div className={`w-16 text-right text-sm font-medium ${labelColor}`}>{phase}</div>
+                    <div className={`flex-1 h-3 rounded-full ${bgTrack} overflow-hidden`}>
+                      <div
+                        className={`h-full ${bgBar} rounded-full`}
+                        style={{ width: `${(seconds / 19) * 100}%` }}
+                      />
+                    </div>
+                    <div className="w-6 text-sm font-bold text-gray-700">{seconds}s</div>
                   </div>
-                  <div className="w-6 text-sm font-bold text-gray-700">4s</div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-24 text-right text-sm font-medium text-orange-500">Hold</div>
-                  <div className="flex-1 h-3 rounded-full bg-orange-100 overflow-hidden">
-                    <div className="h-full bg-orange-400 rounded-full" style={{ width: `${(7 / 19) * 100}%` }} />
-                  </div>
-                  <div className="w-6 text-sm font-bold text-gray-700">7s</div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-24 text-right text-sm font-medium text-pink-500">Exhale</div>
-                  <div className="flex-1 h-3 rounded-full bg-pink-100 overflow-hidden">
-                    <div className="h-full bg-pink-400 rounded-full" style={{ width: `${(8 / 19) * 100}%` }} />
-                  </div>
-                  <div className="w-6 text-sm font-bold text-gray-700">8s</div>
-                </div>
+                ))}
                 <p className="text-xs text-muted-foreground pt-1">
                   One complete cycle = 19 seconds. Default session = 4 cycles = 76 seconds.
                 </p>
@@ -258,12 +258,8 @@ export default function FourSevenEightPage() {
       </section>
 
       {/* ── Interview / Video ─────────────────────────────────────────── */}
-      <section
-        id="interview"
-        aria-labelledby="interview-heading"
-        className="py-16 px-4 bg-white"
-      >
-        <div className="max-w-4xl mx-auto">
+      <section id="interview" aria-labelledby="interview-heading" className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-10">
             <h2 id="interview-heading" className="text-3xl font-bold text-gray-900 mb-3">
               In Their Own Words
@@ -274,33 +270,28 @@ export default function FourSevenEightPage() {
             </p>
           </div>
 
-          {/* Video embed — replace videoId with confirmed YouTube ID before deploy */}
           <ResponsiveYouTubeEmbed
             videoId="gz4G31ty9-0"
             title="Dr. Andrew Weil demonstrates and explains the 4-7-8 breathing technique"
             className="mb-8"
           />
 
-          {/* Summary */}
           <Card className="p-6">
             <h3 className="text-lg font-bold mb-3">Key Points from the Interview</h3>
             <ul className="space-y-2 text-sm text-gray-700">
-              <li className="flex items-start gap-2">
-                <ChevronRight className="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
-                The extended exhale is considered the most important part of the ratio.
-              </li>
-              <li className="flex items-start gap-2">
-                <ChevronRight className="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
-                Dr. Weil commonly recommends starting with four cycles, twice per day.
-              </li>
-              <li className="flex items-start gap-2">
-                <ChevronRight className="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
-                Consistent daily practice over weeks is thought to support the cumulative effect.
-              </li>
-              <li className="flex items-start gap-2">
-                <ChevronRight className="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
-                The technique can be practised anywhere, with no equipment required.
-              </li>
+              {(
+                [
+                  'The extended exhale is considered the most important part of the ratio.',
+                  'Dr. Weil commonly recommends starting with four cycles, twice per day.',
+                  'Consistent daily practice over weeks is thought to support the cumulative effect.',
+                  'The technique can be practised anywhere, with no equipment required.',
+                ] as const
+              ).map((point) => (
+                <li key={point} className="flex items-start gap-2">
+                  <ChevronRight className="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                  {point}
+                </li>
+              ))}
             </ul>
           </Card>
         </div>
@@ -311,7 +302,7 @@ export default function FourSevenEightPage() {
         aria-labelledby="related-heading"
         className="py-16 px-4 bg-gradient-to-br from-gray-50 to-purple-50"
       >
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 id="related-heading" className="text-3xl font-bold text-gray-900 mb-3 text-center">
             Explore Related Techniques
           </h2>
