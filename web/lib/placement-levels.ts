@@ -12,7 +12,7 @@
 // LEARNER AGE GROUPS
 // ============================================================================
 
-export type LearnerGroup = 'children' | 'youth' | 'adolescence' | 'adult'
+export type LearnerGroup = 'children' | 'youth' | 'adolescence' | 'adult' | 'senior'
 
 export interface LearnerGroupConfig {
   id: LearnerGroup
@@ -57,15 +57,24 @@ export const LEARNER_GROUPS: Record<LearnerGroup, LearnerGroupConfig> = {
   adult: {
     id: 'adult',
     label: 'Adult',
-    ageRange: '18+',
+    ageRange: '18–64',
     description: 'Adult learners',
     contentTone: 'professional, practical, dignity-preserving',
     topicTags: ['work', 'finance', 'health', 'news', 'life-skills', 'community'],
     color: 'slate',
   },
+  senior: {
+    id: 'senior',
+    label: 'Senior',
+    ageRange: '65+',
+    description: 'Senior adult learners',
+    contentTone: 'respectful, clear, patient, affirming',
+    topicTags: ['health', 'community', 'history', 'family', 'leisure', 'life-skills'],
+    color: 'amber',
+  },
 }
 
-export const LEARNER_GROUP_ORDER: LearnerGroup[] = ['children', 'youth', 'adolescence', 'adult']
+export const LEARNER_GROUP_ORDER: LearnerGroup[] = ['children', 'youth', 'adolescence', 'adult', 'senior']
 
 // ============================================================================
 // NB LEVEL SCALE (NB-L0 through NB-L8)

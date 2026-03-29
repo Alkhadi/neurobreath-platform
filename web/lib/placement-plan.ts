@@ -238,6 +238,8 @@ function getPracticeConfig(group: LearnerGroup): PracticeConfig {
       return { minutesPerDay: 25, daysPerWeek: 4, sessionsPerDay: 1 }
     case 'adult':
       return { minutesPerDay: 30, daysPerWeek: 4, sessionsPerDay: 1 }
+    case 'senior':
+      return { minutesPerDay: 20, daysPerWeek: 4, sessionsPerDay: 1 }
     default:
       return { minutesPerDay: 20, daysPerWeek: 5, sessionsPerDay: 1 }
   }

@@ -115,6 +115,12 @@ const SKILL_WEIGHTS: Record<LearnerGroup, {
     fluency: 0.25,
     comprehension: 0.35,
   },
+  senior: {
+    decoding: 0.20,
+    wordRecognition: 0.20,
+    fluency: 0.25,
+    comprehension: 0.35,
+  },
 }
 
 // ============================================================================

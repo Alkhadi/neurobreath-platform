@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { saveTrainingResult } from '@/lib/dyslexia/reading-training-store'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -247,6 +248,10 @@ export function AssessmentWizard({
     plan?: PlacementPlan
   ) => {
     setIsSaving(true)
+    // Persist placement + plan to localStorage so the /plan page can render immediately
+    if (placement && plan) {
+      saveTrainingResult(placement, plan)
+    }
     try {
       const deviceId = getDeviceId()
       
@@ -333,6 +338,9 @@ export function AssessmentWizard({
   }
   
   const handleFinish = useCallback(() => {
+    if (placementResult && placementPlan) {
+      saveTrainingResult(placementResult, placementPlan)
+    }
     if (onComplete && readingProfile) {
       onComplete(readingProfile, assessmentData, placementResult ?? undefined, placementPlan ?? undefined)
     }
@@ -580,8 +588,7 @@ export function AssessmentWizard({
         plan={placementPlan ?? undefined}
         onFinish={handleFinish}
         onStartPlan={() => {
-          // Navigate to training/lessons page
-          window.location.href = '/dyslexia-reading-training'
+          window.location.href = '/dyslexia-reading-training/plan'
         }}
       />
     )

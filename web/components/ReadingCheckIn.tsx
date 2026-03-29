@@ -22,6 +22,10 @@ import { cn } from '@/lib/utils'
 import { AssessmentWizard } from './assessment/AssessmentWizard'
 import { SHORT_DISCLAIMER, ReadingProfile, getBandDisplay } from '@/lib/reading-profile'
 import { getDeviceId } from '@/lib/device-id'
+import type { PlacementResult } from '@/lib/placement-rubric'
+import type { PlacementPlan } from '@/lib/placement-plan'
+import { PlacementResults } from './assessment/PlacementResults'
+import { loadTrainingResult, clearTrainingResult } from '@/lib/dyslexia/reading-training-store'
 
 // Sample data - in production this would come from the database
 import {
@@ -99,6 +103,8 @@ export function ReadingCheckIn() {
   const [isAssessmentActive, setIsAssessmentActive] = useState(false)
   const [recentAttempts, setRecentAttempts] = useState<RecentAttempt[]>([])
   const [, setIsLoading] = useState(true)
+  const [savedPlacement, setSavedPlacement] = useState<PlacementResult | null>(null)
+  const [savedPlan, setSavedPlan] = useState<PlacementPlan | null>(null)
   
   // Load recent attempts
   useEffect(() => {
@@ -135,6 +141,15 @@ export function ReadingCheckIn() {
     
     loadRecentAttempts()
   }, [isAssessmentActive])
+
+  // Hydrate saved plan from localStorage on mount using the canonical store
+  useEffect(() => {
+    const result = loadTrainingResult()
+    if (result) {
+      setSavedPlacement(result.placement)
+      setSavedPlan(result.plan)
+    }
+  }, [])
   
   // Prepare assessment data
   // Combine sample and expanded data
@@ -216,14 +231,31 @@ export function ReadingCheckIn() {
     })
   }
   
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleCompleteAssessment = useCallback((_profile: ReadingProfile) => {
-    setIsAssessmentActive(false)
-    // Refresh recent attempts
-  }, [])
+  const handleCompleteAssessment = useCallback(
+    (_profile: ReadingProfile, _data: unknown, placement?: PlacementResult, plan?: PlacementPlan) => {
+      setIsAssessmentActive(false)
+      // AssessmentWizard already called saveTrainingResult; sync into local state
+      if (placement && plan) {
+        setSavedPlacement(placement)
+        setSavedPlan(plan)
+      }
+    },
+    []
+  )
   
   const handleCancelAssessment = useCallback(() => {
     setIsAssessmentActive(false)
+  }, [])
+
+  const handleStartTraining = useCallback(() => {
+    window.location.href = '/dyslexia-reading-training/plan'
+  }, [])
+
+  const handleRetakeAssessment = useCallback(() => {
+    setSavedPlan(null)
+    setSavedPlacement(null)
+    clearTrainingResult()
+    setIsAssessmentActive(true)
   }, [])
   
   const formatTime = (seconds: number) => {
@@ -256,7 +288,21 @@ export function ReadingCheckIn() {
     )
   }
 
-  // Show dashboard
+  // Show the personalised training plan when one exists (post-assessment or restored from localStorage)
+  if (savedPlacement && savedPlan) {
+    return (
+      <div className="space-y-4">
+        <PlacementResults
+          placement={savedPlacement}
+          plan={savedPlan}
+          onStartPlan={handleStartTraining}
+          onRetakeAssessment={handleRetakeAssessment}
+        />
+      </div>
+    )
+  }
+
+  // Show default dashboard (no plan yet)
   return (
     <Card className="border-2 border-primary/20">
       <CardHeader>
