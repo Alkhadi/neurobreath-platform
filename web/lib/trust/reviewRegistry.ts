@@ -64,6 +64,28 @@ export const REVIEW_REGISTRY: Record<string, ReviewMetadata> = {
     evidenceTier: 'Mixed',
   },
 
+  // Conditions Dyslexia Hub
+  '/conditions/dyslexia': {
+    route: '/conditions/dyslexia',
+    lastReviewed: '2026-03-30',
+    reviewedBy: 'SENCo (QTS, National Award for SEN Coordination)',
+    nextReview: '2026-07-30',
+    version: '1.1',
+    changelog: 'Management guides expanded to all age groups; ResourcesHub updated with real podcast/app links; TrustBadge added.',
+    evidenceTier: 'Mixed',
+  },
+
+  // Conditions Dyslexia Training Plan
+  '/conditions/dyslexia/training': {
+    route: '/conditions/dyslexia/training',
+    lastReviewed: '2026-03-30',
+    reviewedBy: 'SENCo (QTS, National Award for SEN Coordination)',
+    nextReview: '2026-07-30',
+    version: '1.1',
+    changelog: 'Podcast and audio resources added to all age-group daily routines; examples added to each task.',
+    evidenceTier: 'Mixed',
+  },
+
   // Sleep Hub
   '/sleep': {
     route: '/sleep',

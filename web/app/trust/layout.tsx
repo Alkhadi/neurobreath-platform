@@ -47,6 +47,16 @@ const trustLinks = [
     label: 'Disclaimer',
     icon: FileText,
   },
+  {
+    href: '/trust/medical-disclaimer',
+    label: 'Medical Disclaimer',
+    icon: AlertCircle,
+  },
+  {
+    href: '/trust/editorial-standards',
+    label: 'Editorial Standards',
+    icon: Shield,
+  },
 ];
 
 export default function TrustLayout({ children }: TrustLayoutProps) {

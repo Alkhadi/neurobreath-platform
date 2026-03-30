@@ -2163,11 +2163,9 @@ function ExerciseStep({
   const [selected, setSelected] = useState<number | null>(null)
   const [revealed, setRevealed] = useState(false)
 
-  const isCorrect = selected === step.correctIndex
-
   const handleCheck = () => {
     setRevealed(true)
-    if (isCorrect) onCorrect()
+    onCorrect()
   }
 
   return (
@@ -2177,7 +2175,7 @@ function ExerciseStep({
         <p className="text-sm font-semibold text-foreground">{step.prompt}</p>
       )}
       {step.options && (
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           {step.options.map((opt, i) => {
             const isSelected = selected === i
             const showResult = revealed
@@ -2187,12 +2185,13 @@ function ExerciseStep({
                 key={i}
                 onClick={() => { if (!revealed) setSelected(i) }}
                 disabled={revealed}
-                className={`w-full text-left px-4 py-3 rounded-xl border-2 text-sm transition-all
-                  ${!revealed && isSelected ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20' : ''}
-                  ${!revealed && !isSelected ? 'border-border hover:border-blue-300' : ''}
-                  ${showResult && isRight ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-200 font-medium' : ''}
-                  ${showResult && isSelected && !isRight ? 'border-red-400 bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-300' : ''}
-                `}
+                className={[
+                  'block w-full text-left px-4 py-3 rounded-xl border-2 text-sm transition-all',
+                  !revealed && isSelected ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20' : '',
+                  !revealed && !isSelected ? 'border-border hover:border-blue-300' : '',
+                  showResult && isRight ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-200 font-medium' : '',
+                  showResult && isSelected && !isRight ? 'border-red-400 bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-300' : '',
+                ].filter(Boolean).join(' ')}
               >
                 {opt}
               </button>
@@ -2377,6 +2376,7 @@ export default function LessonPage({
         <div className="space-y-4">
           {step.type === 'exercise' ? (
             <ExerciseStep
+              key={currentStep}
               step={step}
               onCorrect={markCurrentDone}
             />

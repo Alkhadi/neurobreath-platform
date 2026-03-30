@@ -15,6 +15,7 @@ import { SupportCommunity } from '@/components/dyslexia/SupportCommunity';
 import { EvidenceFooter } from '@/components/evidence-footer';
 import { evidenceByRoute } from '@/lib/evidence/page-evidence';
 import { EducationalDisclaimerInline } from '@/components/trust/EducationalDisclaimerInline';
+import { TrustBadge } from '@/components/trust/trust-badge';
 
 const evidence = evidenceByRoute['/conditions/dyslexia'];
 
@@ -77,6 +78,9 @@ export default function DyslexiaHubPage() {
               />
               <div className="relative z-10 mx-auto px-3 sm:px-4 w-[96vw] sm:w-[94vw] md:w-[90vw] lg:w-[86vw] max-w-[1400px] space-y-6">
                 <DyslexiaHero onScrollToSection={scrollToSection} />
+                <div className="flex flex-wrap items-center gap-3">
+                  <TrustBadge route="/conditions/dyslexia" variant="inline" />
+                </div>
                 <EducationalDisclaimerInline contextLabel="Dyslexia hub" />
               </div>
             </section>

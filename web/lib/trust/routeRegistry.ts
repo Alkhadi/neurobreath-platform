@@ -122,6 +122,32 @@ export const ROUTE_REGISTRY: Record<string, RouteGovernance> = {
     notes: 'NICE CG113 (2019) aligned.',
   },
   
+  '/conditions/dyslexia': {
+    route: '/conditions/dyslexia',
+    category: 'hub',
+    badges: ['Evidence-linked', 'Reviewed', 'Educational-only'],
+    evidenceRequirement: 'TierARequired',
+    reviewCadenceDays: 120,
+    lastReviewed: TODAY,
+    nextReview: calculateNextReview(TODAY, 120),
+    reviewedBy: 'SENCo (QTS, National Award for SEN Coordination)',
+    primarySources: ['nice', 'bda', 'cochrane', 'ida'],
+    notes: 'Dyslexia hub aligned with Rose Review (2009), BDA guidance, IDA Structured Literacy standards.',
+  },
+
+  '/conditions/dyslexia/training': {
+    route: '/conditions/dyslexia/training',
+    category: 'hub',
+    badges: ['Evidence-linked', 'Reviewed', 'Educational-only'],
+    evidenceRequirement: 'TierARequired',
+    reviewCadenceDays: 120,
+    lastReviewed: TODAY,
+    nextReview: calculateNextReview(TODAY, 120),
+    reviewedBy: 'SENCo (QTS, National Award for SEN Coordination)',
+    primarySources: ['nice', 'bda', 'ida', 'cochrane'],
+    notes: 'Personalised dyslexia training plan — age-tailored daily routines and exercises.',
+  },
+
   '/dyslexia-reading-training': {
     route: '/dyslexia-reading-training',
     category: 'hub',
