@@ -55,6 +55,10 @@ export default function FluencyPacer() {
   const [currentWPM, setCurrentWPM] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number>(0);
+  // Ref mirrors state so the interval closure always reads the current word
+  // index without being listed as a dependency (which would restart the
+  // interval on every word advance and corrupt timing).
+  const currentWordIndexRef = useRef(-1);
 
   const currentStory = stories[currentStoryIndex];
   const words = currentStory.text.split(/\s+/);
@@ -71,7 +75,11 @@ export default function FluencyPacer() {
   useEffect(() => {
     if (isPlaying) {
       const msPerWord = (60 / targetWPM) * 1000;
-      startTimeRef.current = Date.now() - (currentWordIndex + 1) * msPerWord;
+      // Anchor start time so that words already read are accounted for when
+      // resuming after a pause.  Uses the ref, not the state variable, to
+      // avoid listing currentWordIndex as a dependency (which would tear down
+      // and recreate the interval on every word advance, drifting the clock).
+      startTimeRef.current = Date.now() - (currentWordIndexRef.current + 1) * msPerWord;
 
       intervalRef.current = setInterval(() => {
         const elapsed = Date.now() - startTimeRef.current;
@@ -80,17 +88,26 @@ export default function FluencyPacer() {
         if (nextWordIndex >= totalWords) {
           setIsPlaying(false);
           setCurrentWordIndex(totalWords - 1);
+          currentWordIndexRef.current = totalWords - 1;
+          // Final elapsed is exact: every word was shown at exactly msPerWord
+          const finalElapsedSec = Math.round((totalWords * msPerWord) / 1000);
+          setElapsedTime(finalElapsedSec);
+          setCurrentWPM(targetWPM);
           if (intervalRef.current) {
             clearInterval(intervalRef.current);
           }
         } else {
           setCurrentWordIndex(nextWordIndex);
+          currentWordIndexRef.current = nextWordIndex;
           setElapsedTime(Math.floor(elapsed / 1000));
-          
-          // Calculate current WPM
+
+          // WPM = words highlighted ÷ actual minutes elapsed.
+          // As elapsed grows this converges tightly to targetWPM; the first
+          // few ticks may show a transient spike so we suppress display until
+          // at least one full msPerWord has passed.
           const wordsRead = nextWordIndex + 1;
           const minutesElapsed = elapsed / 60000;
-          if (minutesElapsed > 0) {
+          if (elapsed >= msPerWord) {
             setCurrentWPM(Math.round(wordsRead / minutesElapsed));
           }
         }
@@ -106,7 +123,10 @@ export default function FluencyPacer() {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isPlaying, targetWPM, currentWordIndex, totalWords]);
+    // currentWordIndex intentionally omitted: the ref keeps it fresh without
+    // restarting the interval on every word advance.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlaying, targetWPM, totalWords]);
 
   const togglePlay = () => {
     if (currentWordIndex >= totalWords - 1) {
@@ -120,6 +140,7 @@ export default function FluencyPacer() {
   const reset = () => {
     setIsPlaying(false);
     setCurrentWordIndex(-1);
+    currentWordIndexRef.current = -1;
     setElapsedTime(0);
     setCurrentWPM(0);
     if (intervalRef.current) {
