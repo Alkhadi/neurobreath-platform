@@ -61,3 +61,4 @@ playwright-report
 !web/perf/baseline/
 !web/tests/visual/__screenshots__/
 .claude/
+.tmp_mpl/

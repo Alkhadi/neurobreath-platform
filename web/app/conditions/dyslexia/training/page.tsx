@@ -1707,7 +1707,7 @@ export default function DyslexiaTrainingPage() {
                     Recommended Listening &amp; Resources
                   </h3>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Curated podcasts, audiobooks and apps tailored for {ageLabels[ageGroup]}. Listening is a dyslexic superpower — use it daily.
+                    Curated podcasts, audiobooks and apps tailored for {dyslexiaAgeLabels[ageGroup]}. Listening is a dyslexic superpower — use it daily.
                   </p>
                 </div>
 
@@ -1837,7 +1837,7 @@ export default function DyslexiaTrainingPage() {
                       <details className="group">
                         <summary className="text-xs text-amber-600 dark:text-amber-400 cursor-pointer hover:underline list-none flex items-center gap-1">
                           <ChevronRight className="w-3 h-3 transition-transform group-open:rotate-90 flex-shrink-0" />
-                          Examples for {ageLabels[ageGroup].split(' ')[0]}
+                          Examples for {dyslexiaAgeLabels[ageGroup].split(' ')[0]}
                         </summary>
                         <ul className="mt-2 space-y-1.5 border-l-2 border-amber-200 dark:border-amber-800 pl-3">
                           {ex.ageExamples[ageGroup]!.map((example, i) => (

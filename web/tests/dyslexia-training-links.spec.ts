@@ -62,7 +62,7 @@ test.describe('Dyslexia training support links', () => {
     await audioLibrary.click()
     await expect(page).toHaveURL(/\/conditions\/dyslexia\/training\/audio-library$/)
     await expect(page.getByRole('heading', { name: /trusted listening support for dyslexia/i })).toBeVisible()
-    await expect(page.getByRole('link', { name: /ted talks daily/i })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'TED Talks Daily', exact: true }).first()).toBeVisible()
 
     await page.goto('/conditions/dyslexia/training')
     await practiceLibrary.click()
