@@ -22,12 +22,12 @@ const wordSets: WordSet[] = [
   {
     id: 2,
     letters: ['d', 'o', 'g', 's', 'n', 'u'],
-    validWords: ['dog', 'dogs', 'god', 'gods', 'song', 'songs', 'sung', 'dung', 'don', 'dons', 'duo', 'duos', 'nod', 'nods']
+    validWords: ['dog', 'dogs', 'god', 'gods', 'song', 'sung', 'dung', 'don', 'dons', 'duo', 'duos', 'nod', 'nods']
   },
   {
     id: 3,
     letters: ['b', 'o', 'o', 'k', 's', 't'],
-    validWords: ['book', 'books', 'boot', 'boots', 'took', 'stook', 'stock']
+    validWords: ['book', 'books', 'boot', 'boots', 'took', 'stook']
   },
   {
     id: 4,
@@ -51,19 +51,26 @@ export default function WordConstruction() {
   const currentSet = wordSets[currentSetIndex];
 
   useEffect(() => {
-    // Load progress from localStorage
+    // Load progress from localStorage (runs once on mount)
     const saved = localStorage.getItem('wordConstructionProgress');
     if (saved) {
-      const data = JSON.parse(saved);
-      setCurrentSetIndex(data.currentSetIndex || 0);
-      setWordsFound(data.wordsFound || []);
+      try {
+        const data = JSON.parse(saved);
+        if (typeof data.currentSetIndex === 'number' && data.currentSetIndex < wordSets.length) {
+          setCurrentSetIndex(data.currentSetIndex);
+        }
+        if (Array.isArray(data.wordsFound)) {
+          setWordsFound(data.wordsFound);
+        }
+      } catch { /* corrupt data — start fresh */ }
     }
-    const doShuffle = () => {
-      const shuffled = [...currentSet.letters].sort(() => Math.random() - 0.5);
-      setAvailableLetters(shuffled);
-      setBuiltWord([]);
-    };
-    doShuffle();
+  }, []);
+
+  useEffect(() => {
+    // Shuffle letters whenever the active set changes
+    const shuffled = [...currentSet.letters].sort(() => Math.random() - 0.5);
+    setAvailableLetters(shuffled);
+    setBuiltWord([]);
   }, [currentSet.letters]);
 
   useEffect(() => {
@@ -110,8 +117,8 @@ export default function WordConstruction() {
         toast.success(`✓ "${word}" is correct!`);
         clearWord();
 
-        // Check if set is complete
-        if (wordsFound.length + 1 >= 5) {
+        // Check if set is complete (all valid words found)
+        if (wordsFound.length + 1 >= currentSet.validWords.length) {
           setTimeout(() => {
             toast.success('Set complete! Moving to next set...');
             nextSet();
@@ -144,9 +151,10 @@ export default function WordConstruction() {
 
   const nextSet = () => {
     if (currentSetIndex < wordSets.length - 1) {
-      setCurrentSetIndex(currentSetIndex + 1);
+      setCurrentSetIndex(prev => prev + 1);
       setWordsFound([]);
-      shuffleLetters();
+      setBuiltWord([]);
+      // useEffect on currentSet.letters handles the shuffle
     } else {
       toast.success('🎉 All sets completed!');
     }
@@ -197,7 +205,7 @@ export default function WordConstruction() {
           </div>
           <Button
             onClick={nextSet}
-            disabled={wordsFound.length < 5 || currentSetIndex >= wordSets.length - 1}
+            disabled={wordsFound.length < currentSet.validWords.length || currentSetIndex >= wordSets.length - 1}
             size="sm"
             className="bg-purple-600 hover:bg-purple-700"
           >
@@ -209,7 +217,7 @@ export default function WordConstruction() {
         <div className="flex items-center gap-4 text-sm">
           <div className="bg-white/60 dark:bg-gray-800/60 px-4 py-2 rounded-lg">
             <span className="font-semibold text-purple-900 dark:text-purple-100">
-              {wordsFound.length} / 5 words
+              {wordsFound.length} / {currentSet.validWords.length} words found
             </span>
           </div>
           <div className="text-purple-700 dark:text-purple-300">
