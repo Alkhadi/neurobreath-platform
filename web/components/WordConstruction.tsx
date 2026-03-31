@@ -191,58 +191,58 @@ export default function WordConstruction() {
   };
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border-purple-200 dark:border-purple-800">
-      <div className="space-y-4">
+    <Card className="p-3 sm:p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border-purple-200 dark:border-purple-800">
+      <div className="space-y-3 sm:space-y-4">
         {/* Header */}
-        <div className="flex items-start justify-between">
-          <div>
-            <h3 className="text-xl font-bold text-purple-900 dark:text-purple-100 flex items-center gap-2">
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <h3 className="text-lg sm:text-xl font-bold text-purple-900 dark:text-purple-100 flex items-center gap-2">
               🔤 Word Construction
             </h3>
-            <p className="text-sm text-purple-700 dark:text-purple-300 mt-1">
-              Arrange letters to form valid words. Click or drag to build.
+            <p className="text-xs sm:text-sm text-purple-700 dark:text-purple-300 mt-1">
+              Arrange letters to form valid words.
             </p>
           </div>
           <Button
             onClick={nextSet}
             disabled={wordsFound.length < currentSet.validWords.length || currentSetIndex >= wordSets.length - 1}
             size="sm"
-            className="bg-purple-600 hover:bg-purple-700"
+            className="bg-purple-600 hover:bg-purple-700 shrink-0 text-xs sm:text-sm"
           >
             Next Set
           </Button>
         </div>
 
         {/* Progress */}
-        <div className="flex items-center gap-4 text-sm">
-          <div className="bg-white/60 dark:bg-gray-800/60 px-4 py-2 rounded-lg">
+        <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm flex-wrap">
+          <div className="bg-white/60 dark:bg-gray-800/60 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg">
             <span className="font-semibold text-purple-900 dark:text-purple-100">
-              {wordsFound.length} / {currentSet.validWords.length} words found
+              {wordsFound.length}/{currentSet.validWords.length} found
             </span>
           </div>
           <div className="text-purple-700 dark:text-purple-300">
-            {currentSet.validWords.length} possible words in this set.
+            {currentSet.validWords.length} possible words
           </div>
         </div>
 
         {/* Word Building Area */}
         <div className="space-y-3">
           <div
-            className="min-h-[100px] bg-white/80 dark:bg-gray-800/80 rounded-xl p-4 border-2 border-dashed border-purple-300 dark:border-purple-700"
+            className="min-h-[80px] sm:min-h-[100px] bg-white/80 dark:bg-gray-800/80 rounded-xl p-3 sm:p-4 border-2 border-dashed border-purple-300 dark:border-purple-700"
             onDragOver={handleDragOver}
             onDrop={handleDropOnWord}
           >
-            <p className="text-sm text-purple-600 dark:text-purple-400 mb-2">
+            <p className="text-xs sm:text-sm text-purple-600 dark:text-purple-400 mb-2">
               Drop letters here to build a word
             </p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {builtWord.map((letter, index) => (
                 <button
                   key={index}
                   draggable
                   onDragStart={(e) => handleDragStart(e, letter, 'built', index)}
                   onClick={() => removeLetterFromWord(index)}
-                  className="w-12 h-12 bg-purple-500 hover:bg-purple-600 text-white text-xl font-bold rounded-lg shadow-md cursor-move transition-all hover:scale-105"
+                  className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-500 hover:bg-purple-600 text-white text-lg sm:text-xl font-bold rounded-lg shadow-md cursor-move transition-all hover:scale-105"
                 >
                   {letter}
                 </button>
@@ -251,20 +251,22 @@ export default function WordConstruction() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-2">
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
             <Button
               onClick={hearWord}
               disabled={builtWord.length === 0}
               variant="outline"
-              className="flex-1 border-purple-300 hover:bg-purple-50"
+              size="sm"
+              className="border-purple-300 hover:bg-purple-50 text-xs sm:text-sm"
             >
-              <Volume2 className="w-4 h-4 mr-2" />
+              <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
               Hear
             </Button>
             <Button
               onClick={checkWord}
               disabled={builtWord.length === 0}
-              className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+              size="sm"
+              className="bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm"
             >
               Check
             </Button>
@@ -272,9 +274,10 @@ export default function WordConstruction() {
               onClick={clearWord}
               disabled={builtWord.length === 0}
               variant="outline"
-              className="flex-1 border-purple-300 hover:bg-purple-50"
+              size="sm"
+              className="border-purple-300 hover:bg-purple-50 text-xs sm:text-sm"
             >
-              <RotateCcw className="w-4 h-4 mr-2" />
+              <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
               Clear
             </Button>
           </div>
@@ -300,14 +303,14 @@ export default function WordConstruction() {
               Shuffle
             </Button>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {availableLetters.map((letter, index) => (
               <button
                 key={index}
                 draggable
                 onDragStart={(e) => handleDragStart(e, letter, 'available', index)}
                 onClick={() => addLetterToWord(letter, index)}
-                className="w-12 h-12 bg-white hover:bg-purple-100 text-purple-900 text-xl font-bold rounded-lg shadow-md cursor-move border-2 border-purple-300 transition-all hover:scale-105"
+                className="w-10 h-10 sm:w-12 sm:h-12 bg-white hover:bg-purple-100 text-purple-900 text-lg sm:text-xl font-bold rounded-lg shadow-md cursor-move border-2 border-purple-300 transition-all hover:scale-105"
               >
                 {letter}
               </button>

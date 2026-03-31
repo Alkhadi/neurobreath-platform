@@ -172,20 +172,20 @@ export default function PronunciationPractice() {
   };
 
   return (
-    <Card className={`p-6 bg-gradient-to-br ${getDifficultyColor(selectedDifficulty)}`}>
-      <div className="space-y-4">
+    <Card className={`p-3 sm:p-6 bg-gradient-to-br ${getDifficultyColor(selectedDifficulty)}`}>
+      <div className="space-y-3 sm:space-y-4">
         {/* Header */}
         <div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            🎤 Pronunciation Practice
+          <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            🎙️ Pronunciation Practice
           </h3>
-          <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
+          <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mt-1">
             {practicedCount} practiced
           </p>
         </div>
 
         {/* Difficulty Selector */}
-        <div className="flex gap-2">
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
           {(['easy', 'medium', 'hard'] as const).map((difficulty) => (
             <button
               key={difficulty}
@@ -193,7 +193,7 @@ export default function PronunciationPractice() {
                 setSelectedDifficulty(difficulty);
                 setCurrentIndex(0);
               }}
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${
+              className={`px-2 sm:px-4 py-2 rounded-lg text-sm font-medium capitalize transition-all ${
                 selectedDifficulty === difficulty
                   ? difficulty === 'easy'
                     ? 'bg-green-600 text-white'
@@ -209,47 +209,49 @@ export default function PronunciationPractice() {
         </div>
 
         {/* Word Display */}
-        <div className="bg-white/80 dark:bg-gray-800/80 rounded-xl p-8 text-center space-y-4">
-          <div className="text-5xl font-bold text-gray-900 dark:text-gray-100">
+        <div className="bg-white/80 dark:bg-gray-800/80 rounded-xl p-4 sm:p-8 text-center space-y-3 sm:space-y-4">
+          <div className="text-3xl sm:text-5xl font-bold text-gray-900 dark:text-gray-100">
             {currentWord.word}
           </div>
-          <div className="text-2xl text-gray-600 dark:text-gray-400 font-mono">
+          <div className="text-lg sm:text-2xl text-gray-600 dark:text-gray-400 font-mono">
             {currentWord.phonetic}
           </div>
-          <div className="inline-flex items-start gap-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-lg text-left">
-            <span className="text-xl">💡</span>
-            <span className="text-sm">{currentWord.tip}</span>
+          <div className="inline-flex items-start gap-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 sm:px-4 py-2 rounded-lg text-left">
+            <span className="text-base sm:text-xl shrink-0">💡</span>
+            <span className="text-xs sm:text-sm">{currentWord.tip}</span>
           </div>
         </div>
 
         {/* Audio Controls */}
-        <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
-          <div className="bg-white/60 dark:bg-gray-800/60 rounded-lg p-4">
-            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 text-sm">
-              Correct Pronunciation
+        <div className="grid grid-cols-2 gap-2 sm:gap-4">
+          <div className="bg-white/60 dark:bg-gray-800/60 rounded-lg p-3 sm:p-4">
+            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 text-xs sm:text-sm">
+              Correct Sound
             </h4>
             <Button
               onClick={playCorrectPronunciation}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm"
+              size="sm"
             >
-              <Volume2 className="w-4 h-4 mr-2" />
+              <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
               Listen
             </Button>
           </div>
 
-          <div className="bg-white/60 dark:bg-gray-800/60 rounded-lg p-4">
-            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 text-sm">
-              Your Recording
+          <div className="bg-white/60 dark:bg-gray-800/60 rounded-lg p-3 sm:p-4">
+            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 text-xs sm:text-sm">
+              Your Turn
             </h4>
             <Button
               onClick={isRecording ? stopRecording : startRecording}
-              className={`w-full ${
+              className={`w-full text-xs sm:text-sm ${
                 isRecording
                   ? 'bg-red-600 hover:bg-red-700 animate-pulse'
                   : 'bg-green-600 hover:bg-green-700'
               } text-white`}
+              size="sm"
             >
-              <Mic className="w-4 h-4 mr-2" />
+              <Mic className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
               {isRecording ? 'Stop' : 'Record'}
             </Button>
           </div>
@@ -261,12 +263,14 @@ export default function PronunciationPractice() {
             onClick={() => navigate('prev')}
             disabled={currentIndex === 0}
             variant="outline"
+            size="sm"
           >
-            <ChevronLeft className="w-4 h-4 mr-1" />
-            Previous
+            <ChevronLeft className="w-4 h-4 mr-0.5" />
+            <span className="hidden sm:inline">Previous</span>
+            <span className="sm:hidden">Prev</span>
           </Button>
 
-          <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <div className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">
             {currentIndex + 1} / {filteredWords.length}
           </div>
 
@@ -274,9 +278,10 @@ export default function PronunciationPractice() {
             onClick={() => navigate('next')}
             disabled={currentIndex === filteredWords.length - 1}
             variant="outline"
+            size="sm"
           >
             Next
-            <ChevronRight className="w-4 h-4 ml-1" />
+            <ChevronRight className="w-4 h-4 ml-0.5" />
           </Button>
         </div>
 

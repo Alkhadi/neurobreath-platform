@@ -138,67 +138,71 @@ export default function SyllableSplitter() {
   };
 
   return (
-    <Card className={`p-6 bg-gradient-to-br ${getDifficultyColor()}`}>
-      <div className="space-y-4">
+    <Card className={`p-3 sm:p-6 bg-gradient-to-br ${getDifficultyColor()}`}>
+      <div className="space-y-3 sm:space-y-4">
         {/* Header */}
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between gap-2">
           <div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
               ✂️ Syllable Splitter
             </h3>
-            <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
-              Tap between letters to split words into syllables!
+            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mt-1">
+              Tap between letters to split into syllables!
             </p>
           </div>
-          <div className="text-right">
-            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <div className="text-right shrink-0">
+            <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
               {score}
             </div>
-            <div className="text-xs text-gray-600 dark:text-gray-400">Score</div>
+            <div className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-400">Score</div>
           </div>
         </div>
 
         {/* Difficulty Selector */}
-        <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(33.333%-5px)] [&>*]:min-w-0">
-          {['Easy (2 syllables)', 'Medium (3 syllables)', 'Hard (4+ syllables)'].map((diff) => (
-            <button
-              key={diff}
-              onClick={() => {
-                setSelectedDifficulty(diff);
-                setCurrentWordIndex(0);
-                setUserBreaks([]);
-                setShowHint(false);
-              }}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                selectedDifficulty === diff
-                  ? diff.includes('Easy')
-                    ? 'bg-green-600 text-white'
-                    : diff.includes('Medium')
-                    ? 'bg-yellow-600 text-white'
-                    : 'bg-red-600 text-white'
-                  : 'bg-white/60 dark:bg-gray-800/60 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800'
-              }`}
-            >
-              {diff}
-            </button>
-          ))}
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+          {['Easy (2 syllables)', 'Medium (3 syllables)', 'Hard (4+ syllables)'].map((diff) => {
+            const shortLabel = diff.includes('Easy') ? 'Easy' : diff.includes('Medium') ? 'Medium' : 'Hard';
+            return (
+              <button
+                key={diff}
+                onClick={() => {
+                  setSelectedDifficulty(diff);
+                  setCurrentWordIndex(0);
+                  setUserBreaks([]);
+                  setShowHint(false);
+                }}
+                className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+                  selectedDifficulty === diff
+                    ? diff.includes('Easy')
+                      ? 'bg-green-600 text-white'
+                      : diff.includes('Medium')
+                      ? 'bg-yellow-600 text-white'
+                      : 'bg-red-600 text-white'
+                    : 'bg-white/60 dark:bg-gray-800/60 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800'
+                }`}
+              >
+                <span className="sm:hidden">{shortLabel}</span>
+                <span className="hidden sm:inline">{diff}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Word Progress */}
-        <div className="text-center text-sm text-gray-700 dark:text-gray-300">
-          (Word {currentWordIndex + 1} of {filteredWords.length})
+        <div className="text-center text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+          Word {currentWordIndex + 1} of {filteredWords.length}
         </div>
 
         {/* Word Display */}
-        <div className="bg-white/80 dark:bg-gray-800/80 rounded-xl p-6">
-          <p className="text-center text-sm text-gray-600 dark:text-gray-400 mb-4">
+        <div className="bg-white/80 dark:bg-gray-800/80 rounded-xl p-3 sm:p-6">
+          <p className="text-center text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">
             Tap the spaces between letters where syllables break
           </p>
           
           <div className="flex justify-center items-center gap-1 flex-wrap">
             {letters.map((letter, index) => (
               <div key={index} className="flex items-center">
-                <div className="text-4xl font-bold text-gray-900 dark:text-gray-100">
+                <div className="text-2xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100">
                   {letter}
                 </div>
                 {index < letters.length - 1 && (
@@ -228,30 +232,33 @@ export default function SyllableSplitter() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(33.333%-5px)] [&>*]:min-w-0">
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
           <Button
             onClick={hearWord}
             variant="outline"
-            className="border-gray-300 hover:bg-gray-50"
+            size="sm"
+            className="border-gray-300 hover:bg-gray-50 text-xs sm:text-sm"
           >
-            <Volume2 className="w-4 h-4 mr-2" />
-            Hear Word
+            <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+            Hear
           </Button>
           <Button
             onClick={showHintHandler}
             variant="outline"
-            className="border-gray-300 hover:bg-gray-50"
+            size="sm"
+            className="border-gray-300 hover:bg-gray-50 text-xs sm:text-sm"
             disabled={showHint}
           >
-            <Lightbulb className="w-4 h-4 mr-2" />
+            <Lightbulb className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
             Hint
           </Button>
           <Button
             onClick={checkAnswer}
             disabled={userBreaks.length === 0}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            size="sm"
+            className="bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm"
           >
-            <Check className="w-4 h-4 mr-2" />
+            <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
             Check
           </Button>
         </div>
@@ -266,11 +273,11 @@ export default function SyllableSplitter() {
         </Button>
 
         {/* Instructions */}
-        <div className="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4">
-          <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
+        <div className="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-3 sm:p-4">
+          <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-1.5 sm:mb-2 text-sm">
             How to play:
           </h4>
-          <ol className="text-sm text-blue-800 dark:text-blue-200 space-y-1 list-decimal list-inside">
+          <ol className="text-xs sm:text-sm text-blue-800 dark:text-blue-200 space-y-0.5 sm:space-y-1 list-decimal list-inside">
             <li>Listen to the word by tapping "Hear Word"</li>
             <li>Tap the spaces between letters where syllables break</li>
             <li>Press "Check" to see if you're right!</li>

@@ -158,44 +158,45 @@ export default function FluencyPacer() {
   };
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 border-blue-200 dark:border-blue-800">
-      <div className="space-y-4">
+    <Card className="p-3 sm:p-6 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 border-blue-200 dark:border-blue-800">
+      <div className="space-y-3 sm:space-y-4">
         {/* Header */}
-        <div className="flex items-start justify-between">
-          <div>
-            <h3 className="text-xl font-bold text-blue-900 dark:text-blue-100 flex items-center gap-2">
-              📖 Fluency Pacer
-            </h3>
-            <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
-              Follow along at your own pace. Watch words highlight as you read!
-            </p>
-          </div>
+        <div>
+          <h3 className="text-lg sm:text-xl font-bold text-blue-900 dark:text-blue-100 flex items-center gap-2">
+            📖 Fluency Pacer
+          </h3>
+          <p className="text-xs sm:text-sm text-blue-700 dark:text-blue-300 mt-1">
+            Follow along at your own pace. Watch words highlight as you read!
+          </p>
         </div>
 
         {/* Story Info */}
-        <div className="flex items-center gap-4">
-          <div className="flex-1">
-            <h4 className="text-lg font-bold text-blue-900 dark:text-blue-100">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex-1 min-w-0">
+            <h4 className="text-base sm:text-lg font-bold text-blue-900 dark:text-blue-100 truncate">
               {currentStory.title}
             </h4>
             <span className="badge-nb badge-nb-info mt-1">
               {currentStory.level}
             </span>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5 shrink-0">
             <Button
               onClick={() => changeStory('prev')}
               disabled={currentStoryIndex === 0}
               size="sm"
               variant="outline"
+              className="px-2 sm:px-3"
             >
-              Previous
+              <span className="hidden sm:inline">Previous</span>
+              <span className="sm:hidden">Prev</span>
             </Button>
             <Button
               onClick={() => changeStory('next')}
               disabled={currentStoryIndex === stories.length - 1}
               size="sm"
               variant="outline"
+              className="px-2 sm:px-3"
             >
               Next
             </Button>
@@ -203,30 +204,30 @@ export default function FluencyPacer() {
         </div>
 
         {/* Stats */}
-        <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
-          <div className="bg-white/60 dark:bg-gray-800/60 p-4 rounded-lg text-center">
-            <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4">
+          <div className="bg-white/60 dark:bg-gray-800/60 p-2 sm:p-4 rounded-lg text-center">
+            <div className="text-lg sm:text-2xl font-bold text-blue-900 dark:text-blue-100">
               {targetWPM}
             </div>
-            <div className="text-sm text-blue-700 dark:text-blue-300">Target WPM</div>
+            <div className="text-[10px] sm:text-sm text-blue-700 dark:text-blue-300">Target WPM</div>
           </div>
-          <div className="bg-white/60 dark:bg-gray-800/60 p-4 rounded-lg text-center">
-            <div className="text-3xl font-extrabold text-blue-900 dark:text-blue-100">
+          <div className="bg-white/60 dark:bg-gray-800/60 p-2 sm:p-4 rounded-lg text-center">
+            <div className="text-xl sm:text-3xl font-extrabold text-blue-900 dark:text-blue-100">
               {currentWPM}
             </div>
-            <div className="text-sm font-semibold text-blue-700 dark:text-blue-300">Words / Min</div>
+            <div className="text-[10px] sm:text-sm font-semibold text-blue-700 dark:text-blue-300">Words/Min</div>
           </div>
-          <div className="bg-white/60 dark:bg-gray-800/60 p-4 rounded-lg text-center">
-            <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+          <div className="bg-white/60 dark:bg-gray-800/60 p-2 sm:p-4 rounded-lg text-center">
+            <div className="text-lg sm:text-2xl font-bold text-blue-900 dark:text-blue-100">
               {formatTime(elapsedTime)}
             </div>
-            <div className="text-sm text-blue-700 dark:text-blue-300">Time</div>
+            <div className="text-[10px] sm:text-sm text-blue-700 dark:text-blue-300">Time</div>
           </div>
         </div>
 
         {/* Reading Text */}
-        <div className="bg-white/80 dark:bg-gray-800/80 rounded-xl p-6 min-h-[200px]">
-          <div className="text-lg leading-relaxed">
+        <div className="bg-white/80 dark:bg-gray-800/80 rounded-xl p-3 sm:p-6">
+          <div className="text-base sm:text-lg leading-relaxed">
             {words.map((word, index) => (
               <span
                 key={index}
@@ -265,21 +266,21 @@ export default function FluencyPacer() {
         </div>
 
         {/* Controls */}
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           <div className="flex gap-2">
             <Button
               onClick={togglePlay}
               className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-              size="lg"
+              size="default"
             >
               {isPlaying ? (
                 <>
-                  <Pause className="w-5 h-5 mr-2" />
+                  <Pause className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                   Pause
                 </>
               ) : (
                 <>
-                  <Play className="w-5 h-5 mr-2" />
+                  <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                   {currentWordIndex >= totalWords - 1 ? 'Restart' : 'Play'}
                 </>
               )}
@@ -287,21 +288,21 @@ export default function FluencyPacer() {
             <Button
               onClick={reset}
               variant="outline"
-              size="lg"
+              size="default"
               className="border-blue-300 hover:bg-blue-50"
             >
-              <RotateCcw className="w-5 h-5" />
+              <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
           </div>
 
           {/* Speed Control */}
           <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                Reading Speed: {targetWPM} WPM
+            <div className="flex justify-between items-center gap-2">
+              <span className="text-xs sm:text-sm font-medium text-blue-900 dark:text-blue-100">
+                Speed: {targetWPM} WPM
               </span>
-              <div className="text-xs text-blue-700 dark:text-blue-300">
-                Slow (60) &rarr; Fast (300)
+              <div className="text-[10px] sm:text-xs text-blue-700 dark:text-blue-300 shrink-0">
+                60 &rarr; 300
               </div>
             </div>
             <Slider
