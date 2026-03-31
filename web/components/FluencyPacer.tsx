@@ -61,7 +61,7 @@ export default function FluencyPacer() {
   const currentWordIndexRef = useRef(-1);
 
   const currentStory = stories[currentStoryIndex];
-  const words = currentStory.text.split(/\s+/);
+  const words = currentStory.text.trim().split(/\s+/).filter(Boolean);
   const totalWords = words.length;
 
   useEffect(() => {
@@ -89,9 +89,8 @@ export default function FluencyPacer() {
           setIsPlaying(false);
           setCurrentWordIndex(totalWords - 1);
           currentWordIndexRef.current = totalWords - 1;
-          // Final elapsed is exact: every word was shown at exactly msPerWord
-          const finalElapsedSec = Math.round((totalWords * msPerWord) / 1000);
-          setElapsedTime(finalElapsedSec);
+          // Deterministic final stats — no wall-clock jitter.
+          setElapsedTime(Math.round((totalWords * msPerWord) / 1000));
           setCurrentWPM(targetWPM);
           if (intervalRef.current) {
             clearInterval(intervalRef.current);
@@ -99,17 +98,12 @@ export default function FluencyPacer() {
         } else {
           setCurrentWordIndex(nextWordIndex);
           currentWordIndexRef.current = nextWordIndex;
-          setElapsedTime(Math.floor(elapsed / 1000));
-
-          // WPM = words highlighted ÷ actual minutes elapsed.
-          // As elapsed grows this converges tightly to targetWPM; the first
-          // few ticks may show a transient spike so we suppress display until
-          // at least one full msPerWord has passed.
           const wordsRead = nextWordIndex + 1;
-          const minutesElapsed = elapsed / 60000;
-          if (elapsed >= msPerWord) {
-            setCurrentWPM(Math.round(wordsRead / minutesElapsed));
-          }
+          // Deterministic elapsed & WPM derived from word position, not
+          // wall-clock.  wordsRead × msPerWord is the exact moment word N
+          // should appear, so both values are jitter-free.
+          setElapsedTime(Math.floor((wordsRead * msPerWord) / 1000));
+          setCurrentWPM(targetWPM);
         }
       }, 50);
     } else {
@@ -217,10 +211,10 @@ export default function FluencyPacer() {
             <div className="text-sm text-blue-700 dark:text-blue-300">Target WPM</div>
           </div>
           <div className="bg-white/60 dark:bg-gray-800/60 p-4 rounded-lg text-center">
-            <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+            <div className="text-3xl font-extrabold text-blue-900 dark:text-blue-100">
               {currentWPM}
             </div>
-            <div className="text-sm text-blue-700 dark:text-blue-300">Current WPM</div>
+            <div className="text-sm font-semibold text-blue-700 dark:text-blue-300">Words / Min</div>
           </div>
           <div className="bg-white/60 dark:bg-gray-800/60 p-4 rounded-lg text-center">
             <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
@@ -236,11 +230,11 @@ export default function FluencyPacer() {
             {words.map((word, index) => (
               <span
                 key={index}
-                className={`inline-block mr-2 mb-1 px-1 transition-all duration-200 ${
+                className={`inline-block mr-2.5 mb-1 px-1 rounded transition-all duration-200 ${
                   index === currentWordIndex
                     ? 'bg-yellow-300 dark:bg-yellow-600 font-bold scale-110'
                     : index < currentWordIndex
-                    ? 'text-gray-500 dark:text-gray-500'
+                    ? 'text-gray-400 dark:text-gray-500'
                     : 'text-gray-900 dark:text-gray-100'
                 }`}
               >
@@ -253,11 +247,11 @@ export default function FluencyPacer() {
         {/* Progress */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-blue-700 dark:text-blue-300">
-              {currentWordIndex + 1} words read
+            <span className="text-blue-700 dark:text-blue-300 font-medium">
+              {Math.max(0, currentWordIndex + 1)} of {totalWords} words read
             </span>
-            <span className="text-blue-700 dark:text-blue-300">
-              {totalWords} total
+            <span className="text-blue-700 dark:text-blue-300 font-medium">
+              {Math.max(0, Math.round(((currentWordIndex + 1) / totalWords) * 100))}% complete
             </span>
           </div>
           <div className="w-full bg-blue-200 dark:bg-blue-900/30 rounded-full h-2">
