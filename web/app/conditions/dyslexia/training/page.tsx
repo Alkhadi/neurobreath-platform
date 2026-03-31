@@ -34,7 +34,16 @@ import {
   Trophy,
   RefreshCw,
   AlertTriangle,
+  ExternalLink,
 } from 'lucide-react';
+import {
+  categorySupportById,
+  dyslexiaAgeLabels,
+  dyslexiaCategoryLabels,
+  taskSupportById,
+  trainingResourceLinks,
+  type SupportLink,
+} from '@/lib/dyslexia/training-support';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -85,27 +94,10 @@ interface ExerciseCard {
 // Data: tailored plans per age group (enriched by category scores at runtime)
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ageLabels: Record<AgeGroup, string> = {
-  preschool: 'Preschool (3–5 years)',
-  primary: 'Primary School (5–11 years)',
-  secondary: 'Secondary School (11–18 years)',
-  adult: 'Adult (18–64 years)',
-  senior: 'Senior (65+ years)',
-};
-
 const scoreBadge: Record<ScoreLevel, { label: string; color: string }> = {
   low: { label: 'Low Indicators', color: 'emerald' },
   moderate: { label: 'Moderate Indicators', color: 'amber' },
   high: { label: 'Significant Indicators', color: 'red' },
-};
-
-const categoryLabels: Record<string, string> = {
-  reading: 'Reading', phonics: 'Phonics', phonological: 'Phonological Awareness',
-  spelling: 'Spelling', comprehension: 'Comprehension', visual: 'Visual Processing',
-  processing: 'Processing Speed', memory: 'Working Memory', writing: 'Written Expression',
-  executive: 'Executive Function', language: 'Language', learning: 'New Learning',
-  emotional: 'Confidence & Wellbeing', spatial: 'Spatial Awareness',
-  speech: 'Speech & Language', literacy: 'Early Literacy',
 };
 
 // Exercises mapped by category — the training page picks the most relevant ones
@@ -1271,6 +1263,26 @@ function TaskIcon({ type }: { type: DailyTask['icon'] }) {
   }
 }
 
+function SupportChipLink({ link }: { link: SupportLink }) {
+  const className = 'inline-flex items-center gap-1 rounded-full border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/20 px-2.5 py-1 text-[11px] font-medium text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors';
+
+  if (link.external) {
+    return (
+      <a href={link.href} target="_blank" rel="noopener noreferrer" className={className}>
+        {link.label}
+        <ExternalLink className="w-3 h-3" />
+      </a>
+    );
+  }
+
+  return (
+    <Link href={link.href} className={className}>
+      {link.label}
+      <ChevronRight className="w-3 h-3" />
+    </Link>
+  );
+}
+
 const iconBgByType: Record<DailyTask['icon'], string> = {
   book: 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400',
   brain: 'bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400',
@@ -1374,6 +1386,15 @@ export default function DyslexiaTrainingPage() {
   const todayPct = dailyTasks.length > 0 ? Math.round((todayCompleted / dailyTasks.length) * 100) : 0;
   const badge = scoreBadge[scoreLevel];
   const completedDate = new Date(completedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const topRoutineSupport = categoryBreakdown
+    .filter(item => categorySupportById[item.category])
+    .slice(0, 3)
+    .map(item => ({ ...item, support: categorySupportById[item.category] }));
+  const routineGuideLinks = [
+    trainingResourceLinks.audioLibrary,
+    trainingResourceLinks.practiceLibrary,
+    trainingResourceLinks.trainingSuite,
+  ];
 
   const tabs: { id: typeof activeTab; label: string; icon: ReactNode }[] = [
     { id: 'routine', label: 'Daily Routine', icon: <Clock className="w-4 h-4" /> },
@@ -1402,7 +1423,7 @@ export default function DyslexiaTrainingPage() {
                 Personalised Training Plan
               </div>
               <h1 className="text-3xl sm:text-4xl font-bold text-white">My Dyslexia Programme</h1>
-              <p className="text-white/80 text-sm">{ageLabels[ageGroup]} · Assessment completed {completedDate} · {totalQuestions} questions</p>
+              <p className="text-white/80 text-sm">{dyslexiaAgeLabels[ageGroup]} · Assessment completed {completedDate} · {totalQuestions} questions</p>
             </div>
 
             {/* Streak */}
@@ -1426,7 +1447,7 @@ export default function DyslexiaTrainingPage() {
             </span>
             {categoryBreakdown.slice(0, 3).map(c => (
               <span key={c.category} className="px-2.5 py-1 rounded-full bg-white/10 text-white/80 text-xs border border-white/20">
-                {categoryLabels[c.category] ?? c.category}: {c.pct}%
+                {dyslexiaCategoryLabels[c.category] ?? c.category}: {c.pct}%
               </span>
             ))}
           </div>
@@ -1490,9 +1511,29 @@ export default function DyslexiaTrainingPage() {
               </CardContent>
             </Card>
 
+            <Card className="border-indigo-200 dark:border-indigo-800 bg-white dark:bg-gray-900/60">
+              <CardContent className="p-4 sm:p-5 space-y-3">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-semibold text-foreground">Helpful Pages For This Routine</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Open trusted audio links, age-matched practice examples, and the full dyslexia training toolkit whenever you need more structure.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {routineGuideLinks.map(link => (
+                    <SupportChipLink key={link.href} link={link} />
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
             <div className="space-y-3">
               {dailyTasks.map(task => {
                 const done = progress.completedTasks.includes(task.id);
+                const taskSupport = taskSupportById[task.id];
+                const supportLinks = task.toolLink && !(taskSupport?.links ?? []).some(link => link.href === task.toolLink)
+                  ? [{ label: task.toolLabel ?? 'Open Tool', href: task.toolLink, description: task.description }, ...(taskSupport?.links ?? [])]
+                  : (taskSupport?.links ?? []);
                 return (
                   <Card key={task.id} className={`transition-all ${done ? 'border-emerald-200 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-950/10' : ''}`}>
                     <CardContent className="p-4">
@@ -1524,31 +1565,43 @@ export default function DyslexiaTrainingPage() {
                             <span className="text-xs text-muted-foreground flex-shrink-0">{task.duration}</span>
                           </div>
                           <p className="text-xs text-muted-foreground leading-relaxed">{task.description}</p>
+                            {/* Practical examples */}
+                            {task.examples && task.examples.length > 0 && (
+                              <details className="group">
+                                <summary className="text-xs text-blue-600 dark:text-blue-400 cursor-pointer hover:underline list-none flex items-center gap-1 mt-1">
+                                  <ChevronRight className="w-3 h-3 transition-transform group-open:rotate-90" />
+                                  See examples
+                                </summary>
+                                <ul className="mt-2 space-y-1 pl-1">
+                                  {task.examples.map((example, index) => (
+                                    <li key={index} className="flex items-start gap-1.5 text-xs text-muted-foreground">
+                                      <span className="flex-shrink-0 mt-0.5 text-amber-500">›</span>
+                                      {example}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </details>
+                            )}
 
-                          {/* Practical examples */}
-                          {task.examples && task.examples.length > 0 && (
-                            <details className="group">
-                              <summary className="text-xs text-blue-600 dark:text-blue-400 cursor-pointer hover:underline list-none flex items-center gap-1 mt-1">
-                                <ChevronRight className="w-3 h-3 transition-transform group-open:rotate-90" />
-                                See examples
-                              </summary>
-                              <ul className="mt-2 space-y-1 pl-1">
-                                {task.examples.map((ex, ei) => (
-                                  <li key={ei} className="flex items-start gap-1.5 text-xs text-muted-foreground">
-                                    <span className="flex-shrink-0 mt-0.5 text-amber-500">›</span>
-                                    {ex}
+                          {taskSupport?.examples?.length ? (
+                            <div className="mt-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 p-3 space-y-1.5">
+                              <p className="text-[11px] font-semibold uppercase tracking-wide text-foreground">Examples to try</p>
+                              <ul className="space-y-1">
+                                {taskSupport.examples.map((example, index) => (
+                                  <li key={index} className="flex items-start gap-2 text-xs text-muted-foreground">
+                                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-blue-500 flex-shrink-0" />
+                                    <span>{example}</span>
                                   </li>
                                 ))}
                               </ul>
-                            </details>
-                          )}
-
-                          {/* Internal tool link */}
-                          {task.toolLink && (
-                            <Link href={task.toolLink} className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline">
-                              {task.toolLabel ?? 'Open Tool'}
-                              <ChevronRight className="w-3 h-3" />
-                            </Link>
+                            </div>
+                          ) : null}
+                          {supportLinks.length > 0 && (
+                            <div className="flex flex-wrap gap-2 pt-2">
+                              {supportLinks.map(link => (
+                                <SupportChipLink key={`${task.id}-${link.href}`} link={link} />
+                              ))}
+                            </div>
                           )}
 
                           {/* External podcast / app / audiobook links */}
@@ -1581,6 +1634,57 @@ export default function DyslexiaTrainingPage() {
                 );
               })}
             </div>
+
+            {topRoutineSupport.length > 0 && (
+              <div className="space-y-3 pt-2">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-semibold text-foreground">Based On Your Answers, Prioritise These Support Moves</h3>
+                  <p className="text-xs text-muted-foreground">
+                    These quick routines target the highest-need areas showing up in your dyslexia profile.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+                  {topRoutineSupport.map(({ category, pct, support }) => (
+                    <Card key={category} className="border-indigo-200 dark:border-indigo-800 bg-white dark:bg-gray-900/60">
+                      <CardContent className="p-4 space-y-3">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="space-y-1">
+                            <p className="text-[11px] font-semibold uppercase tracking-wide text-indigo-600 dark:text-indigo-400">
+                              {dyslexiaCategoryLabels[category] ?? category}
+                            </p>
+                            <h3 className="text-sm font-semibold text-foreground">{support.title}</h3>
+                          </div>
+                          <span className="rounded-full bg-indigo-100 dark:bg-indigo-900/30 px-2 py-1 text-[11px] font-medium text-indigo-700 dark:text-indigo-300">
+                            {pct}%
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground leading-relaxed">{support.description}</p>
+                        <div className="space-y-1.5">
+                          <p className="text-[11px] font-semibold uppercase tracking-wide text-foreground">Quick wins</p>
+                          <ul className="space-y-1">
+                            {support.quickWins.map((item, index) => (
+                              <li key={index} className="flex items-start gap-2 text-xs text-muted-foreground">
+                                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-indigo-500 flex-shrink-0" />
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="rounded-lg border border-indigo-100 dark:border-indigo-900 bg-indigo-50/70 dark:bg-indigo-950/20 p-3">
+                          <p className="text-[11px] font-semibold uppercase tracking-wide text-foreground">Example</p>
+                          <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{support.example}</p>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {support.links.map(link => (
+                            <SupportChipLink key={`${category}-${link.href}`} link={link} />
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {todayCompleted === dailyTasks.length && dailyTasks.length > 0 && (
               <Card className="bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800">
@@ -1679,7 +1783,7 @@ export default function DyslexiaTrainingPage() {
                   {categoryBreakdown.slice(0, 5).map(({ category, pct }) => (
                     <div key={category} className="space-y-1">
                       <div className="flex justify-between text-xs">
-                        <span className="text-muted-foreground">{categoryLabels[category] ?? category}</span>
+                        <span className="text-muted-foreground">{dyslexiaCategoryLabels[category] ?? category}</span>
                         <span className={`font-medium ${pct >= 66 ? 'text-red-600 dark:text-red-400' : pct >= 33 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>{pct}%</span>
                       </div>
                       <div className="w-full h-1.5 rounded-full bg-gray-100 dark:bg-gray-800">

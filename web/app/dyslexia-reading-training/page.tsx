@@ -204,8 +204,8 @@ export default function DyslexiaReadingTrainingPage() {
               <ReadingCheckIn />
               <AssessmentHistory />
               <div data-tutorial="streak"><StreakToolkit /></div>
-              <div data-tutorial="timer"><PracticeTimer /></div>
-              <div ref={breathingRef} data-tutorial="breathing"><BreathingExercise /></div>
+              <div id="practice-timer" data-tutorial="timer"><PracticeTimer /></div>
+              <div id="focus-reset" ref={breathingRef} data-tutorial="breathing"><BreathingExercise /></div>
             </div>
           </section>
 
@@ -238,10 +238,10 @@ export default function DyslexiaReadingTrainingPage() {
                 </CardContent>
               </Card>
 
-              <div ref={phonicsRef} data-tutorial="phonics"><PhonicsPlayer /></div>
+              <div id="phonics" ref={phonicsRef} data-tutorial="phonics"><PhonicsPlayer /></div>
               <div data-tutorial="phonics-lab"><PhonicsSoundsLab /></div>
               <div data-tutorial="vowels"><VowelUniverse /></div>
-              <div data-tutorial="blending-segmenting"><BlendingSegmentingLab /></div>
+              <div id="blending" data-tutorial="blending-segmenting"><BlendingSegmentingLab /></div>
               <div data-tutorial="rhythm-training"><RhythmTraining /></div>
               <div data-tutorial="letter-reversal"><LetterReversalTraining /></div>
               <RapidNamingTest />
@@ -278,8 +278,8 @@ export default function DyslexiaReadingTrainingPage() {
               </Card>
 
               <div data-tutorial="wordbuilder"><WordConstruction /></div>
-              <div data-tutorial="syllables"><SyllableSplitter /></div>
-              <div data-tutorial="morphology"><MorphologyMaster /></div>
+              <div id="syllables" data-tutorial="syllables"><SyllableSplitter /></div>
+              <div id="morphology" data-tutorial="morphology"><MorphologyMaster /></div>
 
               <Card>
                 <CardContent className="p-4 sm:p-6">
@@ -302,7 +302,7 @@ export default function DyslexiaReadingTrainingPage() {
                 </CardContent>
               </Card>
 
-              <div ref={fluencyRef} data-tutorial="fluency"><FluencyPacer /></div>
+              <div id="fluency" ref={fluencyRef} data-tutorial="fluency"><FluencyPacer /></div>
               <PronunciationPractice />
             </div>
           </section>
