@@ -33,7 +33,7 @@ export function GuidesBlock({
 						>
 							<Link
 								href={guide.href}
-								className="group flex h-full flex-col bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-[30px] p-6 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 hover:scale-[1.015] active:scale-[0.99] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
+								className="group flex h-full flex-col bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-[30px] p-4 sm:p-6 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 hover:scale-[1.015] active:scale-[0.99] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
 							>
 								<div className="text-base font-semibold text-[#0F172A] dark:text-white">{guide.title}</div>
 								<p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{guide.description}</p>
@@ -48,7 +48,7 @@ export function GuidesBlock({
 
 			{/* Topic clusters — ~40% on desktop */}
 			<div className="w-full lg:flex-1">
-				<div className="h-full bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-[30px] p-6 shadow-xl">
+				<div className="h-full bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-[30px] p-4 sm:p-6 shadow-xl">
 					<h3 className="text-base font-semibold text-[#0F172A] dark:text-white">Topic clusters</h3>
 					<p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Start with a topic hub, then pick a specific guide.</p>
 					<div className="mt-4 flex flex-col gap-3">

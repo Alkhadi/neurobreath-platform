@@ -16,7 +16,7 @@ export function FinalCTA({
 	title: string;
 }) {
 	return (
-		<div className="rounded-[30px] border border-black/5 dark:border-white/10 bg-white/90 dark:bg-white/5 p-6 sm:p-8 shadow-xl">
+		<div className="rounded-[30px] border border-black/5 dark:border-white/10 bg-white/90 dark:bg-white/5 p-4 sm:p-6 md:p-8 shadow-xl">
 			<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<div>
 					<h2 className="text-xl font-semibold text-[#0F172A] dark:text-white">{title}</h2>

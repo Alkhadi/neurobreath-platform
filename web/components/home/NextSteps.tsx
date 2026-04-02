@@ -22,7 +22,7 @@ export function NextSteps({ items }: { items: NextStepItem[] }) {
 				<div className="col-span-1 sm:col-span-2 lg:col-span-4">
 					<Link
 						href={featured.href}
-						className="group relative flex items-center justify-between gap-6 rounded-2xl bg-gradient-to-r from-[#4ECDC4]/10 via-[#4ECDC4]/[0.05] to-transparent border border-[#4ECDC4]/20 dark:border-[#4ECDC4]/15 px-6 py-5 sm:px-8 sm:py-6 hover:border-[#4ECDC4]/40 hover:from-[#4ECDC4]/[0.12] hover:-translate-y-px transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
+						className="group relative flex items-center justify-between gap-4 sm:gap-6 rounded-2xl bg-gradient-to-r from-[#4ECDC4]/10 via-[#4ECDC4]/[0.05] to-transparent border border-[#4ECDC4]/20 dark:border-[#4ECDC4]/15 px-4 py-4 sm:px-8 sm:py-6 hover:border-[#4ECDC4]/40 hover:from-[#4ECDC4]/[0.12] hover:-translate-y-px transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
 					>
 						<div className="flex items-center gap-5 min-w-0">
 							<div
@@ -67,7 +67,7 @@ export function NextSteps({ items }: { items: NextStepItem[] }) {
 				<Link
 					key={item.id}
 					href={item.href}
-					className="group flex flex-col gap-3 rounded-2xl border border-black/[0.06] dark:border-white/10 bg-white/80 dark:bg-white/[0.04] px-5 py-5 hover:border-[#4ECDC4]/30 hover:bg-white dark:hover:bg-white/[0.07] hover:-translate-y-px transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
+					className="group flex flex-col gap-3 rounded-2xl border border-black/[0.06] dark:border-white/10 bg-white/80 dark:bg-white/[0.04] px-4 py-4 sm:px-5 sm:py-5 hover:border-[#4ECDC4]/30 hover:bg-white dark:hover:bg-white/[0.07] hover:-translate-y-px transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
 				>
 					<div className="flex items-start justify-between gap-2">
 						<div

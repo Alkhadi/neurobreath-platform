@@ -79,7 +79,7 @@ export function HomeSection({
       data-tour-order={typeof tourOrder === 'number' ? String(tourOrder) : undefined}
       data-tour-title={tourTitle}
       data-tour-placement={tourPlacement}
-      className={`relative py-12 sm:py-16 ${separatorClass} ${toneClass} ${withDivider ? 'border-t border-border/60' : ''} ${hasFullBleedBackground ? 'overflow-hidden' : ''}`}
+      className={`relative py-8 sm:py-12 md:py-16 ${separatorClass} ${toneClass} ${withDivider ? 'border-t border-border/60' : ''} ${hasFullBleedBackground ? 'overflow-hidden' : ''}`}
     >
       {hasFullBleedBackground ? (
         <div aria-hidden="true" className="pointer-events-none absolute inset-0">

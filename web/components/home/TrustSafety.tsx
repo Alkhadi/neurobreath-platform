@@ -33,7 +33,7 @@ export function TrustSafety({
 							key={card.title}
 							className="basis-full sm:basis-[calc(50%-8px)]"
 						>
-							<div className="h-full bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-[30px] p-6 shadow-xl">
+							<div className="h-full bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-[30px] p-4 sm:p-6 shadow-xl">
 								<div className="flex items-start gap-4">
 									<div
 										aria-hidden="true"
@@ -60,7 +60,7 @@ export function TrustSafety({
 
 			{/* Trust Centre card — ~40% on desktop */}
 			<div className="w-full lg:flex-1">
-				<div className="h-full bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-[30px] p-6 shadow-xl">
+				<div className="h-full bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-[30px] p-4 sm:p-6 shadow-xl">
 					<h3 className="text-base font-semibold text-[#0F172A] dark:text-white">Trust Centre</h3>
 					<p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{educationOnlyLine}</p>
 					<div className="mt-4 flex flex-wrap gap-3 text-sm">

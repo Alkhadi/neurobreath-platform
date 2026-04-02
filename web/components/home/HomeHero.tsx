@@ -52,12 +52,12 @@ export function HomeHero({ region, copy, recommendations }: HomeHeroProps) {
 			<div aria-hidden="true" className="absolute inset-0 nb-noise opacity-[0.04] pointer-events-none" />
 
 			{/* Content — single container, no nested card wrapper */}
-			<div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
-				<div className="flex flex-col lg:flex-row gap-8 lg:items-start">
+			<div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-16 lg:py-20">
+				<div className="flex flex-col lg:flex-row gap-6 sm:gap-8 lg:items-start">
 
 					{/* Left: hero text + CTAs */}
 					<div className="w-full lg:w-[58%]">
-						<h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-white leading-tight">
+						<h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-white leading-tight">
 							{copy.valueProp}
 						</h1>
 						<p className="mt-4 text-lg sm:text-xl text-white/80 font-light max-w-2xl leading-relaxed">
@@ -65,7 +65,7 @@ export function HomeHero({ region, copy, recommendations }: HomeHeroProps) {
 						</p>
 
 						{/* Primary + secondary CTAs */}
-						<div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+						<div className="mt-6 sm:mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
 							<Link href={`/${regionKey}/help-me-choose`} className="nb-btn-primary">
 								Help me choose
 							</Link>
@@ -75,35 +75,35 @@ export function HomeHero({ region, copy, recommendations }: HomeHeroProps) {
 						</div>
 
 						{/* Secondary ghost actions */}
-						<div className="mt-4 flex flex-wrap gap-3">
+						<div className="mt-3 sm:mt-4 flex flex-wrap gap-2 sm:gap-3">
 							<Link
 								href={`/${regionKey}/conditions`}
-								className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold !text-black hover:!text-white active:!text-white bg-white/10 border border-white/20 hover:bg-white/20 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
+								className="inline-flex items-center justify-center rounded-full px-4 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-semibold text-white/90 hover:text-white bg-white/10 border border-white/20 hover:bg-white/20 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
 							>
 								Browse conditions
 							</Link>
 							<Link
 								href="/techniques/sos"
-								className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold !text-black hover:!text-white active:!text-white hover:bg-white/10 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
+								className="inline-flex items-center justify-center rounded-full px-4 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-semibold text-white/90 hover:text-white hover:bg-white/10 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
 							>
 								Try a quick calm tool
 							</Link>
 							<Link
 								href={`/${regionKey}/trust/last-reviewed`}
-								className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold !text-black hover:!text-white active:!text-white hover:bg-white/10 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
+								className="inline-flex items-center justify-center rounded-full px-4 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-semibold text-white/90 hover:text-white hover:bg-white/10 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
 							>
 								{copy.trustStrip.lastReviewedLabel}
 							</Link>
 						</div>
 
 						{/* Trust badge + Trust Centre link — below all CTAs */}
-						<div className="mt-6 flex flex-wrap items-center gap-3">
-							<Badge className="border border-white/20 bg-white/10 !text-black hover:!text-white active:!text-white transition-colors backdrop-blur-sm">
+						<div className="mt-4 sm:mt-6 flex flex-wrap items-center gap-2 sm:gap-3">
+							<Badge className="border border-white/20 bg-white/10 text-white/90 transition-colors backdrop-blur-sm">
 								{copy.trustStrip.disclaimer}
 							</Badge>
 							<Link
 								href={`/${regionKey}/trust`}
-								className="text-xs font-semibold !text-black hover:!text-white active:!text-white underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60 rounded-sm transition-colors"
+								className="text-xs font-semibold text-white/90 hover:text-white underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60 rounded-sm transition-colors"
 							>
 								{copy.trustStrip.trustCentreLabel}
 							</Link>

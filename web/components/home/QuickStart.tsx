@@ -10,15 +10,15 @@ export interface QuickStartCard {
 
 export function QuickStart({ cards }: { cards: QuickStartCard[] }) {
 	return (
-		<div className="flex flex-col md:flex-row md:flex-wrap gap-4">
+		<div className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
 			{cards.map(card => (
 				<div
 					key={card.id}
-					className="basis-full md:basis-[calc(33.333%-11px)]"
+					className="basis-full sm:basis-[calc(50%-8px)] md:basis-[calc(33.333%-11px)]"
 				>
 					<Link
 						href={card.href}
-						className="group flex h-full flex-col bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-[30px] p-6 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 hover:scale-[1.015] active:scale-[0.99] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
+						className="group flex h-full flex-col bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-[30px] p-4 sm:p-6 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 hover:scale-[1.015] active:scale-[0.99] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
 					>
 						<div className="flex items-center justify-between gap-3">
 							<h3 className="text-base font-semibold text-[#0F172A] dark:text-white">{card.title}</h3>
