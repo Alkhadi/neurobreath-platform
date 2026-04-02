@@ -16,10 +16,10 @@ export function NextSteps({ items }: { items: NextStepItem[] }) {
 	const rest = items.filter(item => !item.recommended);
 
 	return (
-		<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+		<div className="flex flex-col gap-3 md:grid md:grid-cols-2 lg:grid-cols-4">
 
 			{featured ? (
-				<div className="col-span-1 sm:col-span-2 lg:col-span-4">
+				<div className="md:col-span-2 lg:col-span-4">
 					<Link
 						href={featured.href}
 						className="group relative flex items-center justify-between gap-4 sm:gap-6 rounded-2xl bg-gradient-to-r from-[#4ECDC4]/10 via-[#4ECDC4]/[0.05] to-transparent border border-[#4ECDC4]/20 dark:border-[#4ECDC4]/15 px-4 py-4 sm:px-8 sm:py-6 hover:border-[#4ECDC4]/40 hover:from-[#4ECDC4]/[0.12] hover:-translate-y-px transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
@@ -67,35 +67,36 @@ export function NextSteps({ items }: { items: NextStepItem[] }) {
 				<Link
 					key={item.id}
 					href={item.href}
-					className="group flex flex-col gap-3 rounded-2xl border border-black/[0.06] dark:border-white/10 bg-white/80 dark:bg-white/[0.04] px-4 py-4 sm:px-5 sm:py-5 hover:border-[#4ECDC4]/30 hover:bg-white dark:hover:bg-white/[0.07] hover:-translate-y-px transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
+					className="group flex items-center gap-4 rounded-2xl border border-black/[0.06] dark:border-white/10 bg-white/80 dark:bg-white/[0.04] px-4 py-3 sm:px-5 sm:py-4 hover:border-[#4ECDC4]/30 hover:bg-white dark:hover:bg-white/[0.07] hover:-translate-y-px transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
 				>
-					<div className="flex items-start justify-between gap-2">
-						<div
-							aria-hidden="true"
-							className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400 group-hover:bg-[#4ECDC4]/10 group-hover:text-[#4ECDC4] transition-colors duration-200"
-						>
-							{item.icon ?? (
-								<svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-									<path d="M9 18l6-6-6-6" />
-								</svg>
-							)}
-						</div>
-						<span
-							aria-hidden="true"
-							className="shrink-0 text-slate-300 dark:text-slate-600 group-hover:text-[#4ECDC4] transition-colors duration-200 text-base leading-none mt-1"
-						>
-							→
-						</span>
+					<div
+						aria-hidden="true"
+						className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400 group-hover:bg-[#4ECDC4]/10 group-hover:text-[#4ECDC4] transition-colors duration-200"
+					>
+						{item.icon ?? (
+							<svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+								<path d="M9 18l6-6-6-6" />
+							</svg>
+						)}
 					</div>
 
-					<div>
-						<h3 className="text-sm font-semibold text-[#0F172A] dark:text-white mb-1 leading-snug">
+					<div className="flex-1 min-w-0">
+						<h3 className="text-sm font-semibold text-[#0F172A] dark:text-white leading-snug">
 							{item.title}
 						</h3>
 						<p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
 							{item.description}
 						</p>
 					</div>
+
+					<span
+						aria-hidden="true"
+						className="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg bg-slate-50 dark:bg-white/5 text-slate-300 dark:text-slate-600 group-hover:bg-[#4ECDC4]/10 group-hover:text-[#4ECDC4] transition-all duration-200"
+					>
+						<svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+							<path d="M9 18l6-6-6-6" />
+						</svg>
+					</span>
 				</Link>
 			))}
 
