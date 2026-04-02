@@ -316,7 +316,7 @@ export function ReadingCheckIn() {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Start Assessment CTA */}
-        <div className="p-6 bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg">
+        <div className="p-4 sm:p-6 bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="space-y-2">
               <h3 className="text-lg font-semibold">Take a Reading Check-In</h3>
@@ -430,7 +430,7 @@ export function ReadingCheckIn() {
         {/* What's Assessed */}
         <div className="space-y-3">
           <h4 className="font-medium">What's Assessed</h4>
-          <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] md:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
+          <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] lg:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
             {[
               { label: 'Oral Reading', desc: 'Timed passage reading', icon: Activity, color: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30' },
               { label: 'Word Recognition', desc: 'Real word reading', icon: FileText, color: 'text-green-600 bg-green-100 dark:bg-green-900/30' },

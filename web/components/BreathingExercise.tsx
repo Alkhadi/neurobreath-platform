@@ -740,7 +740,7 @@ export function BreathingExercise({ initialPattern = 'box', initialDurationSecon
         </div>
 
         {/* Breathing Circle */}
-        <div className="flex justify-center py-4 sm:py-8">
+        <div className="flex justify-center py-4 sm:py-6 md:py-8">
           <div className="relative">
             <div
               className={cn(

@@ -88,7 +88,7 @@ export function PracticeTimer() {
         {/* Timer Display */}
         <div className="text-center space-y-4">
           <p className="text-sm text-muted-foreground">Focus Time</p>
-          <div className="text-6xl font-bold tabular-nums">{formatTime(timeLeft)}</div>
+          <div className="text-5xl md:text-6xl font-bold tabular-nums">{formatTime(timeLeft)}</div>
           <p className="text-sm font-medium text-primary">Time to practice!</p>
         </div>
 

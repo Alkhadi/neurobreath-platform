@@ -157,7 +157,7 @@ export default function DyslexiaReadingTrainingPage() {
           </section>
 
           {/* ── Band 2: Assessment & Preparation — soft blue ── */}
-          <section className="bg-blue-50/70 dark:bg-blue-950/10 py-8 sm:py-12 lg:py-20">
+          <section className="bg-blue-50/70 dark:bg-blue-950/10 py-8 sm:py-12 md:py-16 lg:py-20">
             <div className={`${containerCls} space-y-4 sm:space-y-8`}>
               <div className="pb-2 border-b border-blue-200 dark:border-blue-800">
                 <h2 className="text-xl sm:text-2xl font-bold text-foreground">Assessment &amp; Preparation</h2>

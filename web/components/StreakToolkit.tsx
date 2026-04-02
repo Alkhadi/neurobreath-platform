@@ -68,7 +68,7 @@ export function StreakToolkit() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
+        <div className="flex flex-wrap gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
           {/* Day Streak */}
           <div className="text-center p-4 rounded-lg bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 border border-orange-200 dark:border-orange-800">
             <Flame className="w-8 h-8 mx-auto mb-2 text-orange-500" />
