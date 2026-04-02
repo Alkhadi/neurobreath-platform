@@ -16,17 +16,17 @@ export function FinalCTA({
 	title: string;
 }) {
 	return (
-		<div className="rounded-[30px] border border-black/5 dark:border-white/10 bg-white/90 dark:bg-white/5 p-4 sm:p-6 md:p-8 shadow-xl">
-			<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-				<div>
-					<h2 className="text-xl font-semibold text-[#0F172A] dark:text-white">{title}</h2>
-					<p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{educationOnlyLine}</p>
+		<div className="rounded-2xl md:rounded-[30px] border border-black/5 dark:border-white/10 bg-white/90 dark:bg-white/5 p-4 sm:p-5 md:p-8 shadow-xl">
+			<div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+				<div className="min-w-0">
+					<h2 className="text-base sm:text-lg md:text-xl font-semibold text-[#0F172A] dark:text-white">{title}</h2>
+					<p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-300">{educationOnlyLine}</p>
 				</div>
-				<div className="flex flex-col gap-3 sm:flex-row sm:shrink-0">
-					<Link href={primaryHref} className="nb-btn-primary">
+				<div className="flex flex-row gap-3 md:shrink-0">
+					<Link href={primaryHref} className="nb-btn-primary text-sm whitespace-nowrap">
 						{primaryLabel}
 					</Link>
-					<Link href={secondaryHref} className="nb-btn-secondary">
+					<Link href={secondaryHref} className="nb-btn-secondary text-sm whitespace-nowrap">
 						{secondaryLabel}
 					</Link>
 				</div>

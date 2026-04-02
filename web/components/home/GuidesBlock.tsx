@@ -25,19 +25,21 @@ export function GuidesBlock({
 			{/* Featured guides — ~58% on desktop */}
 			<div className="w-full lg:w-[58%]">
 				<h3 className="text-base font-semibold text-[#0F172A] dark:text-white">Featured guides</h3>
-				<div className="mt-4 flex flex-col sm:flex-row sm:flex-wrap gap-4">
+				<div className="mt-4 flex flex-col gap-3 md:flex-row md:flex-wrap md:gap-4">
 					{featured.map(guide => (
 						<div
 							key={guide.href + guide.title}
-							className="basis-full sm:basis-[calc(50%-8px)]"
+							className="w-full md:basis-[calc(50%-8px)]"
 						>
 							<Link
 								href={guide.href}
-								className="group flex h-full flex-col bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-[30px] p-4 sm:p-6 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 hover:scale-[1.015] active:scale-[0.99] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
+								className="group flex items-center gap-4 md:flex-col md:items-stretch md:gap-0 bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-2xl md:rounded-[30px] p-4 md:p-6 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 hover:scale-[1.015] active:scale-[0.99] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
 							>
-								<div className="text-base font-semibold text-[#0F172A] dark:text-white">{guide.title}</div>
-								<p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{guide.description}</p>
-								<div className="mt-4 text-sm font-semibold text-[#4ECDC4] group-hover:translate-x-0.5 transition-transform">
+								<div className="flex-1 min-w-0">
+									<div className="text-sm sm:text-base font-semibold text-[#0F172A] dark:text-white">{guide.title}</div>
+									<p className="mt-1 md:mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{guide.description}</p>
+								</div>
+								<div className="shrink-0 text-sm font-semibold text-[#4ECDC4] group-hover:translate-x-0.5 transition-transform md:mt-4">
 									Read →
 								</div>
 							</Link>
