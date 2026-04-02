@@ -32,23 +32,23 @@ export function ConditionsGrid({
 					>
 						<Link
 							href={href}
-							className="group flex h-full flex-col bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-[30px] p-4 sm:p-6 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 hover:scale-[1.015] active:scale-[0.99] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
+							className="group flex h-full flex-col bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-2xl sm:rounded-[30px] p-3 sm:p-4 md:p-6 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 hover:scale-[1.015] active:scale-[0.99] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
 						>
-							<div className="flex items-start gap-4">
+							<div className="flex items-start gap-3 sm:gap-4">
 								<div
 									aria-hidden="true"
-									className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#4ECDC4]/10 text-[#4ECDC4]"
+									className="mt-0.5 flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl sm:rounded-2xl bg-[#4ECDC4]/10 text-[#4ECDC4]"
 								>
-									<Icon className="h-5 w-5" />
+									<Icon className="h-4 w-4 sm:h-5 sm:w-5" />
 								</div>
 								<div className="min-w-0 flex-1">
 									<div className="flex items-center justify-between gap-3">
-										<h3 className="text-base font-semibold text-[#0F172A] dark:text-white">{condition.canonicalName}</h3>
+										<h3 className="text-sm sm:text-base font-semibold text-[#0F172A] dark:text-white">{condition.canonicalName}</h3>
 										<span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded-full">
 											{regionKey.toUpperCase()}
 										</span>
 									</div>
-									<p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{condition.summary}</p>
+									<p className="mt-1 sm:mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{condition.summary}</p>
 									<div className="mt-4 text-sm font-semibold text-[#4ECDC4] group-hover:translate-x-0.5 transition-transform">
 										{ctaLabel} →
 									</div>

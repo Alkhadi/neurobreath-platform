@@ -59,7 +59,7 @@ export function QuickSelector({ regionKey, copy, recommendations, maxCards = 3 }
   }, [recommendations, audience]);
 
   return (
-    <aside className="rounded-[30px] border border-black/5 dark:border-white/10 bg-white/90 dark:bg-white/5 p-4 sm:p-6 shadow-xl backdrop-blur-sm">
+    <aside className="rounded-2xl sm:rounded-[30px] border border-black/5 dark:border-white/10 bg-white/90 dark:bg-white/5 p-3 sm:p-4 md:p-6 shadow-xl backdrop-blur-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{copy.audience.label}</p>

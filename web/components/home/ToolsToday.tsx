@@ -18,9 +18,9 @@ export function ToolsToday({ groups }: { groups: ToolsGroup[] }) {
 					key={group.title}
 					className="basis-full md:basis-[calc(50%-8px)]"
 				>
-					<div className="h-full bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-[30px] p-4 sm:p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
+					<div className="h-full bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-2xl sm:rounded-[30px] p-3 sm:p-4 md:p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
 						<div className="flex items-center justify-between">
-							<h3 className="text-base font-semibold text-[#0F172A] dark:text-white">{group.title}</h3>
+							<h3 className="text-sm sm:text-base font-semibold text-[#0F172A] dark:text-white">{group.title}</h3>
 							<span aria-hidden="true" className="text-[#4ECDC4]">↗</span>
 						</div>
 						<div className="mt-4 space-y-2 text-sm">

@@ -18,7 +18,7 @@ export function QuickStart({ cards }: { cards: QuickStartCard[] }) {
 				>
 					<Link
 						href={card.href}
-						className="group flex items-center gap-4 md:flex-col md:items-stretch md:gap-0 bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-2xl md:rounded-[30px] p-4 md:p-6 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 hover:scale-[1.015] active:scale-[0.99] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
+						className="group flex items-center gap-3 md:flex-col md:items-stretch md:gap-0 bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-2xl md:rounded-[30px] p-3 sm:p-4 md:p-6 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 hover:scale-[1.015] active:scale-[0.99] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
 					>
 						<div className="flex-1 min-w-0">
 							<div className="flex items-center gap-2 flex-wrap">

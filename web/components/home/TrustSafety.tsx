@@ -33,7 +33,7 @@ export function TrustSafety({
 							key={card.title}
 							className="w-full md:basis-[calc(50%-8px)]"
 						>
-							<div className="bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-2xl md:rounded-[30px] p-4 md:p-6 shadow-xl">
+							<div className="bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-2xl md:rounded-[30px] p-3 sm:p-4 md:p-6 shadow-xl">
 								<div className="flex items-start gap-3 sm:gap-4">
 									<div
 										aria-hidden="true"
@@ -60,15 +60,15 @@ export function TrustSafety({
 
 			{/* Trust Centre card — ~40% on desktop */}
 			<div className="w-full lg:flex-1">
-				<div className="h-full bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-[30px] p-4 sm:p-6 shadow-xl">
+				<div className="h-full bg-white/90 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-2xl sm:rounded-[30px] p-3 sm:p-4 md:p-6 shadow-xl">
 					<h3 className="text-base font-semibold text-[#0F172A] dark:text-white">Trust Centre</h3>
 					<p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{educationOnlyLine}</p>
-					<div className="mt-4 flex flex-wrap gap-3 text-sm">
+					<div className="mt-4 flex flex-wrap gap-2 sm:gap-3 text-xs sm:text-sm">
 						{links.map(link => (
 							<Link
 								key={link.href + link.label}
 								href={link.href}
-								className="rounded-full px-4 py-1.5 font-semibold text-[#4ECDC4] border border-[#4ECDC4]/30 hover:bg-[#4ECDC4]/10 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
+								className="rounded-full px-3 py-1 sm:px-4 sm:py-1.5 font-semibold text-[#4ECDC4] border border-[#4ECDC4]/30 hover:bg-[#4ECDC4]/10 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4ECDC4]/60"
 							>
 								{link.label}
 							</Link>

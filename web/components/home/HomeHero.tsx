@@ -52,20 +52,20 @@ export function HomeHero({ region, copy, recommendations }: HomeHeroProps) {
 			<div aria-hidden="true" className="absolute inset-0 nb-noise opacity-[0.04] pointer-events-none" />
 
 			{/* Content — single container, no nested card wrapper */}
-			<div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-16 lg:py-20">
+			<div className="relative z-10 mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 py-6 sm:py-16 lg:py-20">
 				<div className="flex flex-col lg:flex-row gap-6 sm:gap-8 lg:items-start">
 
 					{/* Left: hero text + CTAs */}
 					<div className="w-full lg:w-[58%]">
-						<h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-white leading-tight">
+						<h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold tracking-tight text-white leading-tight">
 							{copy.valueProp}
 						</h1>
-						<p className="mt-4 text-lg sm:text-xl text-white/80 font-light max-w-2xl leading-relaxed">
+						<p className="mt-3 sm:mt-4 text-sm sm:text-lg md:text-xl text-white/80 font-light max-w-2xl leading-relaxed">
 							{copy.heroSubtitle}
 						</p>
 
 						{/* Primary + secondary CTAs */}
-						<div className="mt-6 sm:mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+						<div className="mt-4 sm:mt-8 flex flex-col gap-2 sm:gap-3 sm:flex-row sm:flex-wrap">
 							<Link href={`/${regionKey}/help-me-choose`} className="nb-btn-primary">
 								Help me choose
 							</Link>
