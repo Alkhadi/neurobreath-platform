@@ -283,11 +283,11 @@ export function TemplatePicker({
               <p className="text-sm text-muted-foreground py-4">No backgrounds available</p>
             ) : (
               <div className="space-y-4">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
                   {backgrounds.map((template) => {
                     const isSelected = selection.backgroundId === template.id;
                     return (
-                      <div key={template.id} className="space-y-2">
+                      <div key={template.id} className="space-y-1.5 sm:space-y-2 min-w-0">
                         <TinyCardPreview
                           template={template}
                           selected={isSelected}
@@ -298,7 +298,7 @@ export function TemplatePicker({
                           type="button"
                           onClick={() => handleBackgroundSelect(template.id)}
                           className={cn(
-                            "w-full text-left text-sm font-medium leading-snug",
+                            "w-full text-left text-xs sm:text-sm font-medium leading-snug truncate",
                             isSelected ? "text-purple-700" : "text-gray-800 hover:text-purple-700"
                           )}
                         >
@@ -387,7 +387,7 @@ export function TemplatePicker({
             {overlays.length === 0 ? (
               <p className="text-sm text-muted-foreground py-4">No overlays available</p>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => handleOverlaySelect(undefined)}

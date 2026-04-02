@@ -1694,7 +1694,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   }
 
   return (
-    <div className="rounded-2xl border bg-card p-4 md:p-6">
+    <div className="rounded-2xl border bg-card p-3 sm:p-4 md:p-6">
       {/* Off-screen clean-mode export card: no editor UI (editMode=false, no selected layer) */}
       {exportCaptureProfile ? (
         <div className="fixed left-[-10000px] top-0 w-[448px]" aria-hidden="true">
@@ -1745,9 +1745,9 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
       />
 
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h2 className="text-lg font-semibold">Share Your Profile</h2>
-          <p className="text-sm text-muted-foreground">Export as QR/PDF/vCard/image, or share via WhatsApp, email, or SMS.</p>
+        <div className="min-w-0">
+          <h2 className="text-base sm:text-lg font-semibold">Share Your Profile</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground">Export as QR/PDF/vCard/image, or share via WhatsApp, email, or SMS.</p>
           {!sessionEmail ? (
             <p className="mt-2 text-sm text-purple-600 font-medium">
               💡 <Link href="/signin" className="underline hover:text-purple-700">Sign in</Link> to save your cards across devices and access advanced features.
@@ -1755,21 +1755,21 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           ) : null}
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={handleCopyLink} disabled={!!busyKey}>
-            <LinkIcon className="mr-2 h-4 w-4" />
+        <div className="flex flex-wrap gap-1.5 sm:gap-2">
+          <Button variant="outline" size="sm" className="h-8 sm:h-10 px-2.5 sm:px-4 text-xs sm:text-sm" onClick={handleCopyLink} disabled={!!busyKey}>
+            <LinkIcon className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
             Copy Link
           </Button>
 
-          <Button onClick={handleShareNative} disabled={!!busyKey}>
-            <Share2 className="mr-2 h-4 w-4" />
+          <Button size="sm" className="h-8 sm:h-10 px-2.5 sm:px-4 text-xs sm:text-sm" onClick={handleShareNative} disabled={!!busyKey}>
+            <Share2 className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
             Share
           </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="secondary" disabled={!!busyKey}>
-                <Download className="mr-2 h-4 w-4" />
+              <Button variant="secondary" size="sm" className="h-8 sm:h-10 px-2.5 sm:px-4 text-xs sm:text-sm" disabled={!!busyKey}>
+                <Download className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 Export
               </Button>
             </DropdownMenuTrigger>
@@ -1840,15 +1840,15 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Button variant="outline" onClick={openWhatsapp} disabled={!!busyKey}>
-            <MessageSquare className="mr-2 h-4 w-4" />
+          <Button variant="outline" size="sm" className="h-8 sm:h-10 px-2.5 sm:px-4 text-xs sm:text-sm" onClick={openWhatsapp} disabled={!!busyKey}>
+            <MessageSquare className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
             WhatsApp
           </Button>
-          <Button variant="outline" onClick={openEmail} disabled={!!busyKey}>
-            <Mail className="mr-2 h-4 w-4" />
+          <Button variant="outline" size="sm" className="h-8 sm:h-10 px-2.5 sm:px-4 text-xs sm:text-sm" onClick={openEmail} disabled={!!busyKey}>
+            <Mail className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
             Email
           </Button>
-          <Button variant="outline" onClick={openSms} disabled={!!busyKey}>
+          <Button variant="outline" size="sm" className="h-8 sm:h-10 px-2.5 sm:px-4 text-xs sm:text-sm" onClick={openSms} disabled={!!busyKey}>
             SMS
           </Button>
         </div>
@@ -1860,25 +1860,26 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
             <div className="text-sm font-semibold">Saved Cards</div>
             <div className="text-xs text-muted-foreground">Save multiple cards per category and load instantly before sharing.</div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <Button size="sm" variant="outline" onClick={() => handleSaveCurrentAsNew()} disabled={!!busyKey}>
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
+            <Button size="sm" variant="outline" className="text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3" onClick={() => handleSaveCurrentAsNew()} disabled={!!busyKey}>
               Save current as new
             </Button>
-            <Button size="sm" variant="secondary" onClick={handleUpdateSelected} disabled={!!busyKey || !activeSavedIdForCategory}>
+            <Button size="sm" variant="secondary" className="text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3" onClick={handleUpdateSelected} disabled={!!busyKey || !activeSavedIdForCategory}>
               Overwrite selected
             </Button>
-            <Button size="sm" variant="outline" onClick={handleNewEmptyCard} disabled={!!busyKey}>
+            <Button size="sm" variant="outline" className="text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3" onClick={handleNewEmptyCard} disabled={!!busyKey}>
               New empty card
             </Button>
           </div>
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap gap-1.5 sm:gap-2">
           {savedCategoryOptions.map((c) => (
             <Button
               key={c.key}
               type="button"
               size="sm"
+              className="text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3"
               variant={savedCategory === c.key ? "default" : "outline"}
               onClick={() => openFocusedEditor(c.key)}
               disabled={!!busyKey}

@@ -1899,6 +1899,16 @@ export function NBCardPanel() {
               canonicalShareUrl={canonicalShareUrl}
             />
           </div>
+
+          {/* Template Picker — below Share panel on all screens */}
+          <div className="mt-4 sm:mt-6">
+            <TemplatePicker
+              selection={templateSelection}
+              orientation={templateSelection.orientation || 'landscape'}
+              onSelectionChange={handleTemplateSelectionChange}
+              onCreateFromTemplate={handleCreateFromTemplate}
+            />
+          </div>
         </div>
       </div>
 
@@ -2174,16 +2184,6 @@ export function NBCardPanel() {
             </div>
           )}
         </div>
-      </div>
-
-      {/* Template Picker Section */}
-      <div className="mb-4 sm:mb-6 md:mb-8">
-        <TemplatePicker
-          selection={templateSelection}
-          orientation={templateSelection.orientation || 'landscape'}
-          onSelectionChange={handleTemplateSelectionChange}
-          onCreateFromTemplate={handleCreateFromTemplate}
-        />
       </div>
 
       {/* Contact Capture Section */}
