@@ -53,7 +53,7 @@ export default function TeacherToolsPage() {
           </div>
 
           {/* Quick Stats */}
-          <Card className="p-8 bg-white/80 backdrop-blur">
+          <Card className="p-3 sm:p-5 md:p-8 bg-white/80 backdrop-blur">
             <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
               <div className="text-center">
                 <div className="text-4xl font-bold text-primary mb-2">60+</div>
@@ -83,7 +83,7 @@ export default function TeacherToolsPage() {
           
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             {/* Teacher Dashboard */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-blue-100 p-3 rounded-lg inline-block mb-4">
                 <BarChart3 className="h-6 w-6 text-blue-600" />
               </div>
@@ -101,7 +101,7 @@ export default function TeacherToolsPage() {
             </Card>
 
             {/* School Resources */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-purple-100 p-3 rounded-lg inline-block mb-4">
                 <BookOpen className="h-6 w-6 text-purple-600" />
               </div>
@@ -119,7 +119,7 @@ export default function TeacherToolsPage() {
             </Card>
 
             {/* Downloadable Resources */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-green-100 p-3 rounded-lg inline-block mb-4">
                 <Download className="h-6 w-6 text-green-600" />
               </div>
@@ -149,7 +149,7 @@ export default function TeacherToolsPage() {
             </p>
           </div>
 
-          <Card className="p-8 max-w-3xl mx-auto">
+          <Card className="p-3 sm:p-5 md:p-8 max-w-3xl mx-auto">
             <div className="flex flex-col md:flex-row gap-6 items-center">
               <div className="flex-shrink-0">
                 <div className="bg-purple-100 p-6 rounded-2xl">
@@ -204,7 +204,7 @@ export default function TeacherToolsPage() {
           
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
             {/* ADHD */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-blue-100 p-3 rounded-lg inline-block mb-4">
                 <Brain className="h-6 w-6 text-blue-600" />
               </div>
@@ -235,7 +235,7 @@ export default function TeacherToolsPage() {
             </Card>
 
             {/* Autism */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-purple-100 p-3 rounded-lg inline-block mb-4">
                 <Sparkles className="h-6 w-6 text-purple-600" />
               </div>
@@ -266,7 +266,7 @@ export default function TeacherToolsPage() {
             </Card>
 
             {/* Anxiety */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-green-100 p-3 rounded-lg inline-block mb-4">
                 <Wind className="h-6 w-6 text-green-600" />
               </div>
@@ -297,7 +297,7 @@ export default function TeacherToolsPage() {
             </Card>
 
             {/* Dyslexia */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-amber-100 p-3 rounded-lg inline-block mb-4">
                 <BookOpen className="h-6 w-6 text-amber-600" />
               </div>
@@ -342,7 +342,7 @@ export default function TeacherToolsPage() {
           </div>
 
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <Wind className="h-8 w-8 text-green-600 mb-4" />
               <h3 className="text-lg font-bold mb-2">Breathing Exercises</h3>
               <p className="text-sm text-muted-foreground mb-4">
@@ -356,7 +356,7 @@ export default function TeacherToolsPage() {
               </Link>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <Heart className="h-8 w-8 text-pink-600 mb-4" />
               <h3 className="text-lg font-bold mb-2">Mood & Emotion Tools</h3>
               <p className="text-sm text-muted-foreground mb-4">
@@ -370,7 +370,7 @@ export default function TeacherToolsPage() {
               </Link>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <Target className="h-8 w-8 text-blue-600 mb-4" />
               <h3 className="text-lg font-bold mb-2">Focus & Attention</h3>
               <p className="text-sm text-muted-foreground mb-4">
@@ -384,7 +384,7 @@ export default function TeacherToolsPage() {
               </Link>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <Sparkles className="h-8 w-8 text-purple-600 mb-4" />
               <h3 className="text-lg font-bold mb-2">Autism Tools</h3>
               <p className="text-sm text-muted-foreground mb-4">
@@ -398,7 +398,7 @@ export default function TeacherToolsPage() {
               </Link>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <Target className="h-8 w-8 text-teal-600 mb-4" />
               <h3 className="text-lg font-bold mb-2">Stress Management</h3>
               <p className="text-sm text-muted-foreground mb-4">
@@ -412,7 +412,7 @@ export default function TeacherToolsPage() {
               </Link>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <BookOpen className="h-8 w-8 text-amber-600 mb-4" />
               <h3 className="text-lg font-bold mb-2">Reading Practice</h3>
               <p className="text-sm text-muted-foreground mb-4">
@@ -447,7 +447,7 @@ export default function TeacherToolsPage() {
               </Link>
             </Card>
 
-            <Card className="p-8 bg-gradient-to-br from-purple-50 to-blue-50">
+            <Card className="p-3 sm:p-5 md:p-8 bg-gradient-to-br from-purple-50 to-blue-50">
               <Settings className="h-12 w-12 text-purple-600 mb-4" />
               <h3 className="text-2xl font-bold mb-4">Professional Development</h3>
               <p className="text-muted-foreground mb-6">

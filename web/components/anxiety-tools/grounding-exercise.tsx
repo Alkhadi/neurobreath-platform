@@ -136,7 +136,7 @@ export function GroundingExercise() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="p-6 bg-gradient-to-r from-blue-50 to-green-50">
+      <Card className="p-3 sm:p-4 md:p-6 bg-gradient-to-r from-blue-50 to-green-50">
         <h2 className="text-2xl font-bold mb-2">5-4-3-2-1 Grounding Exercise</h2>
         <p className="text-muted-foreground mb-4">
           This mindfulness technique helps anchor you to the present moment when feeling anxious or overwhelmed.
@@ -200,7 +200,7 @@ export function GroundingExercise() {
       </div>
 
       {/* Stats */}
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <h3 className="font-semibold mb-4">Your Grounding Practice</h3>
         <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           <div>

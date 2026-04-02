@@ -457,7 +457,7 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 			</HomeSection>
 
 		<footer className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-8 sm:pb-14">
-			<div className="rounded-[30px] border border-black/5 dark:border-white/10 bg-white/90 dark:bg-white/5 p-4 sm:p-6 shadow-xl">
+			<div className="rounded-2xl sm:rounded-[30px] border border-black/5 dark:border-white/10 bg-white/90 dark:bg-white/5 p-3 sm:p-4 md:p-6 shadow-xl">
 				<div className="text-sm text-slate-600 dark:text-slate-300">
 					<span className="font-semibold text-[#0F172A] dark:text-white">Privacy note:</span> Event counts are stored locally (no personal data). See{' '}
 					<Link

@@ -133,7 +133,7 @@ export function HeroSection() {
         </div>
 
         {/* Quick Navigation Grid - Converted from ZIP header */}
-        <Card className="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg mb-6">
+        <Card className="p-3 sm:p-4 md:p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg mb-6">
           {/* Audience & Country Switchers */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 justify-between mb-6 pb-6 border-b">
             <div>

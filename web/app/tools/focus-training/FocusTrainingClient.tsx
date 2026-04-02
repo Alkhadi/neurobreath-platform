@@ -101,7 +101,7 @@ export default function FocusTrainingClient() {
 
           <FocusProgressTracker />
 
-          <Card className="p-6 md:p-8">
+          <Card className="p-3 sm:p-4 md:p-8">
             <div className="flex items-start gap-3">
               <div className="mt-1">
                 <Gamepad2 className="h-6 w-6" />
@@ -152,7 +152,7 @@ export default function FocusTrainingClient() {
             </div>
           </Card>
 
-          <Card className="p-6 md:p-8" id="focus-timer">
+          <Card className="p-3 sm:p-4 md:p-8" id="focus-timer">
             <h2 className="text-2xl font-bold mb-2">ADHD-friendly focus timer</h2>
             <p className="text-muted-foreground mb-5">
               Adjust the sprint and break lengths. Use this when you want structure without perfection.
@@ -160,7 +160,7 @@ export default function FocusTrainingClient() {
             <FocusPomodoro />
           </Card>
 
-          <Card className="p-6 md:p-8" id="evidence">
+          <Card className="p-3 sm:p-4 md:p-8" id="evidence">
             <h2 className="text-2xl font-bold mb-3">Evidence & UK resources</h2>
             <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
               <li>
@@ -189,7 +189,7 @@ export default function FocusTrainingClient() {
             </div>
           </Card>
 
-          <Card className="p-6 md:p-8" id="urgent-help">
+          <Card className="p-3 sm:p-4 md:p-8" id="urgent-help">
             <div className="flex items-start gap-3">
               <ShieldAlert className="h-6 w-6 text-red-600" />
               <div>

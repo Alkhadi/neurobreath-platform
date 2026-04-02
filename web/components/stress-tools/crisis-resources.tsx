@@ -42,7 +42,7 @@ export function CrisisResources() {
       </Card>
 
       {/* UK Resources */}
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <h4 className="font-semibold text-lg mb-4 flex items-center gap-2">
           <span className="text-xl">🇬🇧</span> UK Crisis Support
         </h4>
@@ -82,7 +82,7 @@ export function CrisisResources() {
       </Card>
 
       {/* US Resources */}
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <h4 className="font-semibold text-lg mb-4 flex items-center gap-2">
           <span className="text-xl">🇺🇸</span> US Crisis Support
         </h4>
@@ -122,7 +122,7 @@ export function CrisisResources() {
       </Card>
 
       {/* International */}
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <h4 className="font-semibold text-lg mb-4 flex items-center gap-2">
           <span className="text-xl">🌍</span> International Resources
         </h4>

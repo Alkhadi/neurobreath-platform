@@ -206,7 +206,7 @@ export function PMRBodyScan({ mode }: Props) {
   
   return (
     <div className="space-y-6">
-      <Card className="p-6 bg-gradient-to-r from-purple-50 to-blue-50">
+      <Card className="p-3 sm:p-4 md:p-6 bg-gradient-to-r from-purple-50 to-blue-50">
         <div className="flex items-center gap-3 mb-2">
           <User className="h-6 w-6 text-primary" />
           <h2 className="text-2xl font-bold">
@@ -221,7 +221,7 @@ export function PMRBodyScan({ mode }: Props) {
       </Card>
       
       {mode === 'bodyscan' && (
-        <Card className="p-6">
+        <Card className="p-3 sm:p-4 md:p-6">
           <label className="block text-sm font-medium mb-2">Time per body area (seconds)</label>
           <Select value={timePerArea.toString()} onValueChange={(v) => setTimePerArea(parseInt(v))}>
             <SelectTrigger>
@@ -294,7 +294,7 @@ export function PMRBodyScan({ mode }: Props) {
       </Card>
       
       {/* Stats */}
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <h3 className="font-semibold mb-4">Your Practice</h3>
         <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           <div>

@@ -8,7 +8,7 @@ export function CrisisResources() {
   return (
     <div className="space-y-6">
       {/* Emergency Warning */}
-      <Card className="p-6 bg-red-50 border-red-200">
+      <Card className="p-3 sm:p-4 md:p-6 bg-red-50 border-red-200">
         <div className="flex items-start gap-4">
           <AlertCircle className="h-8 w-8 text-red-600 flex-shrink-0 mt-1" />
           <div>
@@ -55,7 +55,7 @@ export function CrisisResources() {
       </Card>
 
       {/* UK Resources */}
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="text-3xl">🇬🇧</div>
           <h3 className="text-xl font-bold">United Kingdom Resources</h3>
@@ -127,7 +127,7 @@ export function CrisisResources() {
       </Card>
 
       {/* US Resources */}
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="text-3xl">🇺🇸</div>
           <h3 className="text-xl font-bold">United States Resources</h3>
@@ -180,7 +180,7 @@ export function CrisisResources() {
       </Card>
 
       {/* When to Seek Emergency Help */}
-      <Card className="p-6 bg-yellow-50 border-yellow-200">
+      <Card className="p-3 sm:p-4 md:p-6 bg-yellow-50 border-yellow-200">
         <div className="flex items-start gap-4">
           <Heart className="h-6 w-6 text-yellow-600 flex-shrink-0 mt-1" />
           <div>

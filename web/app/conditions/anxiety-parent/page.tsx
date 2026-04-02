@@ -281,7 +281,7 @@ export default function AnxietyParentSupportPage() {
                 </div>
                 <ChevronDown className="h-5 w-5" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="p-6 border-l-4 border-green-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
+              <CollapsibleContent className="p-3 sm:p-4 md:p-6 border-l-4 border-green-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
@@ -323,7 +323,7 @@ export default function AnxietyParentSupportPage() {
                 </div>
                 <ChevronDown className="h-5 w-5" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="p-6 border-l-4 border-indigo-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
+              <CollapsibleContent className="p-3 sm:p-4 md:p-6 border-l-4 border-indigo-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
                     Avoidance temporarily reduces anxiety but maintains it long-term. Research shows gradual exposure (facing fears step-by-step) is one of the most effective anxiety treatments.
@@ -367,7 +367,7 @@ export default function AnxietyParentSupportPage() {
                 </div>
                 <ChevronDown className="h-5 w-5" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="p-6 border-l-4 border-purple-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
+              <CollapsibleContent className="p-3 sm:p-4 md:p-6 border-l-4 border-purple-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
                     Children learn by watching you. Demonstrate healthy responses to stress out loud so they can learn the pattern.
@@ -400,7 +400,7 @@ export default function AnxietyParentSupportPage() {
                 </div>
                 <ChevronDown className="h-5 w-5" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="p-6 border-l-4 border-amber-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
+              <CollapsibleContent className="p-3 sm:p-4 md:p-6 border-l-4 border-amber-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
                     Constant reassurance maintains anxiety because it prevents your child from building confidence in their own judgment.
@@ -440,7 +440,7 @@ export default function AnxietyParentSupportPage() {
                 </div>
                 <ChevronDown className="h-5 w-5" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="p-6 border-l-4 border-blue-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
+              <CollapsibleContent className="p-3 sm:p-4 md:p-6 border-l-4 border-blue-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
                     Predictability reduces anxiety. Consistent sleep, meal, and activity schedules provide a sense of security.
@@ -475,7 +475,7 @@ export default function AnxietyParentSupportPage() {
                 </div>
                 <ChevronDown className="h-5 w-5" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="p-6 border-l-4 border-rose-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
+              <CollapsibleContent className="p-3 sm:p-4 md:p-6 border-l-4 border-rose-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
                     Communication between home and school ensures consistent support.

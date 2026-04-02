@@ -101,7 +101,7 @@ export function BurnoutProgressDashboard() {
 
       {/* Assessment History */}
       {assessments.length > 0 && (
-        <Card className="p-6">
+        <Card className="p-3 sm:p-4 md:p-6">
           <CardHeader className="p-0 pb-4">
             <CardTitle className="text-lg">Assessment History</CardTitle>
           </CardHeader>

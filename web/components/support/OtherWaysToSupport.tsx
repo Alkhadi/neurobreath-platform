@@ -32,7 +32,7 @@ export function OtherWaysToSupport() {
         <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center">Other Ways to Support</h2>
 
         <div className="flex flex-wrap gap-8 mb-12 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-21px)] [&>*]:min-w-0">
-          <Card className="p-8 text-center hover:shadow-lg transition-shadow">
+          <Card className="p-3 sm:p-5 md:p-8 text-center hover:shadow-lg transition-shadow">
             <div className="text-5xl mb-6">📢</div>
             <h3 className="text-2xl font-bold mb-4">Spread the Word</h3>
             <p className="text-muted-foreground mb-6 leading-relaxed">
@@ -41,7 +41,7 @@ export function OtherWaysToSupport() {
             </p>
           </Card>
 
-          <Card className="p-8 text-center hover:shadow-lg transition-shadow">
+          <Card className="p-3 sm:p-5 md:p-8 text-center hover:shadow-lg transition-shadow">
             <div className="text-5xl mb-6">⭐</div>
             <h3 className="text-2xl font-bold mb-4">Leave Feedback</h3>
             <p className="text-muted-foreground mb-6 leading-relaxed">
@@ -53,7 +53,7 @@ export function OtherWaysToSupport() {
             </Button>
           </Card>
 
-          <Card className="p-8 text-center hover:shadow-lg transition-shadow">
+          <Card className="p-3 sm:p-5 md:p-8 text-center hover:shadow-lg transition-shadow">
             <div className="text-5xl mb-6">🤝</div>
             <h3 className="text-2xl font-bold mb-4">Volunteer</h3>
             <p className="text-muted-foreground mb-6 leading-relaxed">
@@ -67,7 +67,7 @@ export function OtherWaysToSupport() {
         </div>
 
         {/* Share Links */}
-        <Card className="p-8 max-w-2xl mx-auto bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200">
+        <Card className="p-3 sm:p-5 md:p-8 max-w-2xl mx-auto bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200">
           <div className="text-center mb-6">
             <Share2 className="h-8 w-8 text-purple-600 mx-auto mb-3" />
             <h3 className="text-xl font-bold">Share NeuroBreath</h3>

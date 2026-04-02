@@ -58,7 +58,7 @@ export function UnderstandingDyslexia() {
       {/* Content Panels */}
       {activeTab === 'definition' && (
         <Card>
-          <CardContent className="p-6 space-y-6">
+          <CardContent className="p-3 sm:p-4 md:p-6 space-y-6">
             <div className="space-y-4">
               <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
                 <h3 className="text-lg font-bold text-foreground mb-2">Official Definition (NHS)</h3>
@@ -152,7 +152,7 @@ export function UnderstandingDyslexia() {
 
       {activeTab === 'signs' && (
         <Card>
-          <CardContent className="p-6 space-y-6">
+          <CardContent className="p-3 sm:p-4 md:p-6 space-y-6">
             <p className="text-sm text-muted-foreground">
               Signs of dyslexia vary by age and individual. Early identification and support lead to better outcomes.
             </p>
@@ -264,7 +264,7 @@ export function UnderstandingDyslexia() {
 
       {activeTab === 'myths' && (
         <Card>
-          <CardContent className="p-6 space-y-4">
+          <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
             <p className="text-sm text-muted-foreground mb-4">
               There are many misconceptions about dyslexia. Let's separate fact from fiction with evidence-based information.
             </p>

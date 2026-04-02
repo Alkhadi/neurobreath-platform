@@ -42,7 +42,7 @@ export default function AboutUsPage() {
       <section className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-wrap gap-8 mb-12 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-21px)] [&>*]:min-w-0">
-            <Card className="p-6 text-center">
+            <Card className="p-3 sm:p-4 md:p-6 text-center">
               <div className="bg-purple-100 p-3 rounded-full inline-block mb-4">
                 <Heart className="h-8 w-8 text-purple-600" />
               </div>
@@ -53,7 +53,7 @@ export default function AboutUsPage() {
               </p>
             </Card>
 
-            <Card className="p-6 text-center">
+            <Card className="p-3 sm:p-4 md:p-6 text-center">
               <div className="bg-blue-100 p-3 rounded-full inline-block mb-4">
                 <Shield className="h-8 w-8 text-blue-600" />
               </div>
@@ -64,7 +64,7 @@ export default function AboutUsPage() {
               </p>
             </Card>
 
-            <Card className="p-6 text-center">
+            <Card className="p-3 sm:p-4 md:p-6 text-center">
               <div className="bg-green-100 p-3 rounded-full inline-block mb-4">
                 <Users className="h-8 w-8 text-green-600" />
               </div>
@@ -76,7 +76,7 @@ export default function AboutUsPage() {
             </Card>
           </div>
 
-          <Card className="p-8 bg-gradient-to-br from-purple-50 to-blue-50">
+          <Card className="p-3 sm:p-5 md:p-8 bg-gradient-to-br from-purple-50 to-blue-50">
             <h2 className="text-3xl font-bold mb-4 text-center">Our Mission</h2>
             <p className="text-lg text-muted-foreground text-center max-w-3xl mx-auto mb-6">
               NeuroBreath exists to make mental health and neurodiversity support accessible to everyone. 
@@ -97,7 +97,7 @@ export default function AboutUsPage() {
           <h2 className="text-4xl font-bold mb-12 text-center">What We Offer</h2>
           
           <div className="flex flex-wrap gap-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <Brain className="h-10 w-10 text-blue-600 mb-4" />
               <h3 className="text-xl font-bold mb-3">Interactive Wellbeing Tools</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
@@ -109,7 +109,7 @@ export default function AboutUsPage() {
               </ul>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <FileText className="h-10 w-10 text-purple-600 mb-4" />
               <h3 className="text-xl font-bold mb-3">Educational Resources</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
@@ -121,7 +121,7 @@ export default function AboutUsPage() {
               </ul>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <Target className="h-10 w-10 text-green-600 mb-4" />
               <h3 className="text-xl font-bold mb-3">Specialized Support</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
@@ -133,7 +133,7 @@ export default function AboutUsPage() {
               </ul>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <Sparkles className="h-10 w-10 text-amber-600 mb-4" />
               <h3 className="text-xl font-bold mb-3">For Educators & Professionals</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
@@ -151,7 +151,7 @@ export default function AboutUsPage() {
       {/* Scope & Disclaimer */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <Card className="p-8 border-2 border-amber-200 bg-amber-50">
+          <Card className="p-3 sm:p-5 md:p-8 border-2 border-amber-200 bg-amber-50">
             <div className="flex items-start gap-4">
               <Shield className="h-8 w-8 text-amber-600 flex-shrink-0 mt-1" />
               <div>
@@ -188,7 +188,7 @@ export default function AboutUsPage() {
           <h2 className="text-4xl font-bold mb-8 text-center">Accessibility & Inclusive Design</h2>
           
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="font-bold mb-3">Visual Accessibility</h3>
               <ul className="text-sm text-muted-foreground space-y-2">
                 <li>• High contrast color schemes</li>
@@ -198,7 +198,7 @@ export default function AboutUsPage() {
               </ul>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="font-bold mb-3">Sensory Considerations</h3>
               <ul className="text-sm text-muted-foreground space-y-2">
                 <li>• Motion controls for animations</li>
@@ -208,7 +208,7 @@ export default function AboutUsPage() {
               </ul>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="font-bold mb-3">Cognitive Support</h3>
               <ul className="text-sm text-muted-foreground space-y-2">
                 <li>• Clear, simple instructions</li>
@@ -219,7 +219,7 @@ export default function AboutUsPage() {
             </Card>
           </div>
 
-          <Card className="p-6 mt-8 bg-white">
+          <Card className="p-3 sm:p-4 md:p-6 mt-8 bg-white">
             <p className="text-sm text-muted-foreground text-center">
               <strong>Help Us Improve:</strong> We're committed to continuous accessibility improvement. 
               If you encounter barriers or have suggestions, please{' '}
@@ -234,7 +234,7 @@ export default function AboutUsPage() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold mb-12 text-center">Founder & Builder</h2>
           
-          <Card className="p-8 max-w-3xl mx-auto">
+          <Card className="p-3 sm:p-5 md:p-8 max-w-3xl mx-auto">
             <div className="flex flex-col md:flex-row gap-6 items-center">
               <div className="flex-shrink-0">
                 <div className="relative w-32 h-32 rounded-full overflow-hidden bg-gradient-to-br from-purple-400 to-blue-400">
@@ -298,7 +298,7 @@ export default function AboutUsPage() {
           </div>
 
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <FileText className="h-8 w-8 text-purple-600 mb-4" />
               <h3 className="font-bold mb-2">All Resources</h3>
               <p className="text-sm text-muted-foreground mb-4">
@@ -312,7 +312,7 @@ export default function AboutUsPage() {
               </Link>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <Sparkles className="h-8 w-8 text-purple-600 mb-4" />
               <h3 className="font-bold mb-2">Autism Resources</h3>
               <p className="text-sm text-muted-foreground mb-4">
@@ -328,7 +328,7 @@ export default function AboutUsPage() {
               </Button>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <FileText className="h-8 w-8 text-amber-600 mb-4" />
               <h3 className="font-bold mb-2">Dyslexia Resources</h3>
               <p className="text-sm text-muted-foreground mb-4">

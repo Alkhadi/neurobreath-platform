@@ -68,7 +68,7 @@ export const Hero = ({ onStartCalm, onBrowseSkills, AudienceSwitcher, CountrySwi
     <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="container mx-auto max-w-6xl px-4 py-12 sm:py-16">
         {/* Personalization Controls */}
-        <Card className="p-6 mb-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg">
+        <Card className="p-3 sm:p-4 md:p-6 mb-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg">
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6 justify-between">
             {/* Audience Selector */}
             <div className="w-full lg:w-auto">
@@ -123,7 +123,7 @@ export const Hero = ({ onStartCalm, onBrowseSkills, AudienceSwitcher, CountrySwi
         </div>
 
         {/* Quick Navigation Grid */}
-        <Card className="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg">
+        <Card className="p-3 sm:p-4 md:p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg">
           <h2 className="text-lg font-semibold mb-4 text-center">Quick Navigation</h2>
           <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] sm:[&>*]:basis-[calc(33.333%-8px)] lg:[&>*]:basis-[calc(20%-10px)] [&>*]:min-w-0">
             {navigationButtons.map((btn) => {

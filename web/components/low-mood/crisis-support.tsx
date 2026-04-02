@@ -142,7 +142,7 @@ export const CrisisSupport = () => {
       </div>
 
       {/* Immediate Danger Alert */}
-      <Card className="p-8 mb-8 border-4 border-red-500 bg-red-50 dark:bg-red-950">
+      <Card className="p-3 sm:p-5 md:p-8 mb-8 border-4 border-red-500 bg-red-50 dark:bg-red-950">
         <div className="flex items-start gap-4">
           <AlertTriangle className="h-12 w-12 text-red-600 dark:text-red-400 flex-shrink-0" />
           <div className="flex-grow">
@@ -252,7 +252,7 @@ export const CrisisSupport = () => {
       </div>
 
       {/* Warning Signs */}
-      <Card className="p-6 mb-8">
+      <Card className="p-3 sm:p-4 md:p-6 mb-8">
         <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
           <AlertTriangle className="h-6 w-6 text-orange-500" />
           Warning Signs - When to Seek Help
@@ -271,7 +271,7 @@ export const CrisisSupport = () => {
       </Card>
 
       {/* Safety Strategies */}
-      <Card className="p-6 mb-8 bg-blue-50 dark:bg-blue-950">
+      <Card className="p-3 sm:p-4 md:p-6 mb-8 bg-blue-50 dark:bg-blue-950">
         <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
           <Shield className="h-6 w-6 text-blue-500" />
           Immediate Safety Strategies
@@ -296,7 +296,7 @@ export const CrisisSupport = () => {
       </Card>
 
       {/* Support for Others */}
-      <Card className="p-6 bg-purple-50 dark:bg-purple-950">
+      <Card className="p-3 sm:p-4 md:p-6 bg-purple-50 dark:bg-purple-950">
         <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
           <Heart className="h-6 w-6 text-purple-500" />
           Supporting Someone in Crisis

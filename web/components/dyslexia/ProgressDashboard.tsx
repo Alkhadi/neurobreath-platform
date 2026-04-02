@@ -63,7 +63,7 @@ export function ProgressDashboard() {
       <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
         {/* Streak */}
         <Card className="hover:shadow-md transition-shadow">
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-4 md:p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 rounded-lg bg-orange-100 dark:bg-orange-900/50">
                 <Flame className="w-6 h-6 text-orange-600 dark:text-orange-400" />
@@ -77,7 +77,7 @@ export function ProgressDashboard() {
 
         {/* Total Minutes */}
         <Card className="hover:shadow-md transition-shadow">
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-4 md:p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 rounded-lg bg-blue-100 dark:bg-blue-900/50">
                 <Clock className="w-6 h-6 text-blue-600 dark:text-blue-400" />
@@ -91,7 +91,7 @@ export function ProgressDashboard() {
 
         {/* Sessions */}
         <Card className="hover:shadow-md transition-shadow">
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-4 md:p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 rounded-lg bg-purple-100 dark:bg-purple-900/50">
                 <Target className="w-6 h-6 text-purple-600 dark:text-purple-400" />
@@ -105,7 +105,7 @@ export function ProgressDashboard() {
 
         {/* Games Completed */}
         <Card className="hover:shadow-md transition-shadow">
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-4 md:p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
                 <Star className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
@@ -121,7 +121,7 @@ export function ProgressDashboard() {
       {/* Daily Goals */}
       <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
         <Card>
-          <CardContent className="p-6 space-y-4">
+          <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-foreground">Daily Practice Goal</h3>
               <span className="text-sm font-semibold text-muted-foreground">{displayMinutesToday}/{dailyGoal} min</span>
@@ -134,7 +134,7 @@ export function ProgressDashboard() {
         </Card>
 
         <Card>
-          <CardContent className="p-6 space-y-4">
+          <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-foreground">Weekly Session Goal</h3>
               <span className="text-sm font-semibold text-muted-foreground">{displaySessionsToday}/{weeklyGoal} sessions</span>
@@ -149,7 +149,7 @@ export function ProgressDashboard() {
 
       {/* Badges & Achievements */}
       <Card>
-        <CardContent className="p-6 space-y-6">
+        <CardContent className="p-3 sm:p-4 md:p-6 space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold text-foreground">Achievements & Badges</h3>
@@ -191,7 +191,7 @@ export function ProgressDashboard() {
 
       {/* Motivational Message */}
       <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
-        <CardContent className="p-6">
+        <CardContent className="p-3 sm:p-4 md:p-6">
           <div className="text-center space-y-3">
             <h3 className="text-lg font-bold text-foreground">🌟 Keep Up the Amazing Progress!</h3>
             <p className="text-sm text-muted-foreground max-w-2xl mx-auto">

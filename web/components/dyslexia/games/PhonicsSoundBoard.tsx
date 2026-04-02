@@ -135,7 +135,7 @@ export function PhonicsSoundBoard() {
 
       {/* Controls */}
       <Card>
-        <CardContent className="p-6 space-y-4">
+        <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
           <div className="flex flex-wrap items-center gap-3">
             <Button 
               onClick={playAllSounds} 
@@ -261,7 +261,7 @@ export function PhonicsSoundBoard() {
       {/* Selected Letter Display */}
       {selectedLetter && (
         <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
-          <CardContent className="p-8">
+          <CardContent className="p-3 sm:p-5 md:p-8">
             <div className="flex items-center justify-between">
               <div className="space-y-3">
                 <div className="flex items-center gap-4">

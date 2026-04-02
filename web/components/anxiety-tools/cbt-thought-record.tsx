@@ -132,7 +132,7 @@ export function CBTThoughtRecord() {
 
         <TabsContent value="new" className="space-y-6 mt-6">
           {/* Header */}
-          <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50">
+          <Card className="p-3 sm:p-4 md:p-6 bg-gradient-to-r from-blue-50 to-purple-50">
             <div className="flex items-center gap-3 mb-2">
               <Brain className="h-6 w-6 text-primary" />
               <h2 className="text-2xl font-bold">CBT Thought Record</h2>
@@ -145,7 +145,7 @@ export function CBTThoughtRecord() {
           {/* Form */}
           <div className="space-y-6">
             {/* Situation */}
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <Label htmlFor="situation" className="text-base font-semibold mb-2 block">
                 1. What happened? Describe the situation
               </Label>
@@ -159,7 +159,7 @@ export function CBTThoughtRecord() {
             </Card>
 
             {/* Automatic Thought */}
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <Label htmlFor="thought" className="text-base font-semibold mb-2 block">
                 2. What went through your mind? Automatic thought
               </Label>
@@ -173,7 +173,7 @@ export function CBTThoughtRecord() {
             </Card>
 
             {/* Emotion & Intensity */}
-            <Card className="p-6 space-y-4">
+            <Card className="p-3 sm:p-4 md:p-6 space-y-4">
               <Label className="text-base font-semibold">3. What did you feel? Emotion & intensity</Label>
               <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                 <div>
@@ -208,7 +208,7 @@ export function CBTThoughtRecord() {
             </Card>
 
             {/* Cognitive Distortion */}
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <Label htmlFor="distortion" className="text-base font-semibold mb-2 block">
                 4. Cognitive distortion (thinking error)
               </Label>
@@ -225,7 +225,7 @@ export function CBTThoughtRecord() {
             </Card>
 
             {/* Evidence For/Against */}
-            <Card className="p-6 space-y-4">
+            <Card className="p-3 sm:p-4 md:p-6 space-y-4">
               <Label className="text-base font-semibold">5. Examine the evidence</Label>
               <div>
                 <Label htmlFor="evidence-for" className="text-sm mb-2 block">Evidence FOR this thought</Label>
@@ -250,7 +250,7 @@ export function CBTThoughtRecord() {
             </Card>
 
             {/* Balanced Thought */}
-            <Card className="p-6 space-y-4">
+            <Card className="p-3 sm:p-4 md:p-6 space-y-4">
               <Label htmlFor="balanced" className="text-base font-semibold mb-2 block">
                 6. Balanced alternative thought
               </Label>
@@ -367,7 +367,7 @@ export function CBTThoughtRecord() {
       </Tabs>
 
       {/* Stats */}
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <h3 className="font-semibold mb-4">Your CBT Practice</h3>
         <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           <div>

@@ -75,7 +75,7 @@ export function SpellingPatterns() {
   if (isComplete) {
     return (
       <Card className="bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-950/20 dark:to-purple-950/20">
-        <CardContent className="p-8 text-center space-y-4">
+        <CardContent className="p-3 sm:p-5 md:p-8 text-center space-y-4">
           <Trophy className="w-16 h-16 mx-auto text-yellow-500" />
           <h3 className="text-2xl font-bold">Pattern Master!</h3>
           <p className="text-lg">You scored {score} out of {patterns.length}</p>
@@ -93,7 +93,7 @@ export function SpellingPatterns() {
 
   return (
     <Card>
-      <CardContent className="p-6 space-y-6">
+      <CardContent className="p-3 sm:p-4 md:p-6 space-y-6">
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-bold">Spelling Patterns</h3>
           <div className="text-sm text-muted-foreground">

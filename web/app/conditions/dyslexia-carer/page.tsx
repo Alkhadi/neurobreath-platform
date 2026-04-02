@@ -26,7 +26,7 @@ export default function DyslexiaCarersPage() {
       {/* Hero Section */}
       <section className="space-y-6">
         <Card className="overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30">
-          <CardContent className="p-6 sm:p-8 lg:p-10 space-y-6">
+          <CardContent className="p-3 sm:p-6 md:p-8 lg:p-10 space-y-6">
             <div className="space-y-4">
               <Badge className="inline-flex items-center gap-2 px-3 py-1 bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300">
                 <Heart className="w-4 h-4" />

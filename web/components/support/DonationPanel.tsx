@@ -36,7 +36,7 @@ export function DonationPanel() {
                     : 'border-2 hover:border-purple-400 hover:shadow-xl hover:scale-105'
                 }`}
               >
-                <CardContent className="p-6 text-center">
+                <CardContent className="p-3 sm:p-4 md:p-6 text-center">
                   <div className="text-3xl font-bold mb-3 text-purple-600">{tier.label}</div>
                   <p className="text-sm text-muted-foreground mb-6 min-h-[3rem] leading-relaxed">{tier.benefit}</p>
 

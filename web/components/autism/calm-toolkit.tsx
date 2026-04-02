@@ -130,7 +130,7 @@ const BreathingExerciseCard = ({ exercise }: BreathingExerciseCardProps) => {
   };
 
   return (
-    <Card className="p-6">
+    <Card className="p-3 sm:p-4 md:p-6">
       <h3 className="text-xl font-semibold mb-2">{exercise?.name}</h3>
       <p className="text-sm text-muted-foreground mb-4">{exercise?.description}</p>
 
@@ -195,7 +195,7 @@ const CalmingTechniqueCard = ({ technique }: CalmingTechniqueCardProps) => {
   };
 
   return (
-    <Card className="p-6">
+    <Card className="p-3 sm:p-4 md:p-6">
       <h3 className="text-xl font-semibold mb-2">{technique?.name}</h3>
       <p className="text-sm text-muted-foreground mb-4">{technique?.description}</p>
 

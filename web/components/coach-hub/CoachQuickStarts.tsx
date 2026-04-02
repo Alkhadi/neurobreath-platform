@@ -60,7 +60,7 @@ function QuickStartCard({
 }) {
 	return (
 		<Card className="h-full rounded-2xl border-border/60 bg-card shadow-sm">
-			<CardContent className="p-6">
+			<CardContent className="p-3 sm:p-4 md:p-6">
 				<h2 className="text-lg font-semibold text-foreground">{title}</h2>
 				<ul className="mt-4 space-y-3">
 					{items.map((item, index) => (

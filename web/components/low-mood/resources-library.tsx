@@ -198,7 +198,7 @@ export const ResourcesLibrary = () => {
       </div>
 
       {/* Crisis Alert */}
-      <Card className="p-6 mb-8 border-red-500 bg-red-50 dark:bg-red-950">
+      <Card className="p-3 sm:p-4 md:p-6 mb-8 border-red-500 bg-red-50 dark:bg-red-950">
         <div className="flex items-start gap-4">
           <AlertCircle className="h-6 w-6 text-red-600 dark:text-red-400 flex-shrink-0 mt-1" />
           <div>

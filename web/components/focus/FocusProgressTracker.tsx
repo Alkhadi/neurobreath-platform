@@ -24,14 +24,14 @@ export function FocusProgressTracker() {
 
   if (!mounted) {
     return (
-      <Card className="p-6 mb-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950">
+      <Card className="p-3 sm:p-4 md:p-6 mb-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950">
         <div className="h-24 animate-pulse bg-muted/20 rounded" />
       </Card>
     );
   }
 
   return (
-    <Card className="p-6 mb-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950">
+    <Card className="p-3 sm:p-4 md:p-6 mb-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950">
       <h2 className="text-2xl font-bold mb-3 flex items-center gap-2">
         <Trophy className="h-6 w-6 text-amber-600" />
         Track your best focus run

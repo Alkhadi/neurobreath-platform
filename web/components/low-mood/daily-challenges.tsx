@@ -300,7 +300,7 @@ export const DailyChallenges = ({ onUpdate }: { onUpdate?: () => void }) => {
 
       {/* Stats Cards */}
       <div className="flex flex-wrap gap-6 mb-8 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
-        <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
+        <Card className="p-3 sm:p-4 md:p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
           <div className="text-center">
             <div className="text-4xl font-bold mb-2">{completedToday.size} / {dailyChallenges.length}</div>
             <div className="text-sm text-muted-foreground">Completed Today</div>
@@ -315,7 +315,7 @@ export const DailyChallenges = ({ onUpdate }: { onUpdate?: () => void }) => {
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900">
+        <Card className="p-3 sm:p-4 md:p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900">
           <div className="text-center">
             <div className="text-4xl font-bold mb-2">{totalPoints}</div>
             <div className="text-sm text-muted-foreground">Points Today</div>
@@ -326,7 +326,7 @@ export const DailyChallenges = ({ onUpdate }: { onUpdate?: () => void }) => {
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900">
+        <Card className="p-3 sm:p-4 md:p-6 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900">
           <div className="text-center">
             <div className="text-4xl font-bold mb-2">{streak}</div>
             <div className="text-sm text-muted-foreground">Day Streak</div>
@@ -340,7 +340,7 @@ export const DailyChallenges = ({ onUpdate }: { onUpdate?: () => void }) => {
       </div>
 
       {/* Today's Challenges */}
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <h3 className="text-xl font-bold mb-6">Today's Challenges</h3>
         
         {dailyChallenges.length === 0 ? (

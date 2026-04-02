@@ -24,7 +24,7 @@ export function ReferencesSection() {
           </TabsList>
 
           <TabsContent value="references">
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="font-semibold text-lg text-gray-900 mb-4">Curated Evidence Pack</h3>
 
               <div className="space-y-6">

@@ -86,7 +86,7 @@ export function RelaxationGame() {
 
   if (gameMode === 'menu') {
     return (
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <div className="flex items-center gap-2 mb-6">
           <Gamepad2 className="h-6 w-6 text-teal-600" />
           <h3 className="text-xl font-semibold">Mindfulness Games</h3>
@@ -123,7 +123,7 @@ export function RelaxationGame() {
 
   if (gameMode === 'bubble') {
     return (
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-semibold">🫧 Bubble Pop</h3>
           <div className="flex items-center gap-4">
@@ -164,7 +164,7 @@ export function RelaxationGame() {
     const patternColors = ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500']
 
     return (
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-semibold">🧩 Pattern Memory</h3>
           <div className="flex items-center gap-4">

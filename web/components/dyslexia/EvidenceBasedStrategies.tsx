@@ -106,7 +106,7 @@ export function EvidenceBasedStrategies() {
         const IconComponent = strategy.icon;
         return (
           <Card key={index}>
-            <CardContent className="p-6 space-y-4">
+            <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
               <div className="flex items-start gap-4">
                 <div className={`flex-shrink-0 p-3 rounded-lg bg-${strategy.color}-100 dark:bg-${strategy.color}-900/50`}>
                   <IconComponent className={`w-6 h-6 text-${strategy.color}-600 dark:text-${strategy.color}-400`} />
@@ -143,7 +143,7 @@ export function EvidenceBasedStrategies() {
 
       {/* Sources */}
       <Card className="bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-950/20 dark:to-slate-950/20">
-        <CardContent className="p-6">
+        <CardContent className="p-3 sm:p-4 md:p-6">
           <div className="space-y-3">
             <h3 className="text-lg font-bold text-foreground">📚 Key Research Sources</h3>
             <div className="grid gap-2 text-sm text-muted-foreground">

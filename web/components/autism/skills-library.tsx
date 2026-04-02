@@ -145,7 +145,7 @@ const SkillCard = ({ skill, onLogPractice }: SkillCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <Card className="p-6 hover:shadow-lg transition-shadow">
+    <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
       <h3 className="text-xl font-semibold mb-2">{skill?.title}</h3>
       <p className="text-sm text-muted-foreground mb-4">{skill?.description}</p>
 

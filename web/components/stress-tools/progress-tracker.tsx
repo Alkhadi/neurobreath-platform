@@ -40,7 +40,7 @@ export function ProgressTracker() {
 
   if (loading) {
     return (
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <div className="text-center py-8">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/3 mx-auto mb-4" />
@@ -73,7 +73,7 @@ export function ProgressTracker() {
   const nextReward = rewardThresholds.find(r => totalActivities < r.count)
 
   return (
-    <Card className="p-6">
+    <Card className="p-3 sm:p-4 md:p-6">
       <div className="flex items-center gap-2 mb-6">
         <TrendingUp className="h-6 w-6 text-teal-600" />
         <h3 className="text-xl font-semibold">Your Progress</h3>

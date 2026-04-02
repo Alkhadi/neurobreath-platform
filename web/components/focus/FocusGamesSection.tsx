@@ -27,7 +27,7 @@ export function FocusGamesSection({ region }: FocusGamesSectionProps) {
   };
 
   return (
-    <Card className="p-6 mb-8">
+    <Card className="p-3 sm:p-4 md:p-6 mb-8">
       <h2 className="text-2xl font-bold mb-3 flex items-center gap-2">
         <Gamepad2 className="h-6 w-6 text-purple-600" />
         Try Focus Training Games

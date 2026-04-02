@@ -165,7 +165,7 @@ export default function AnxietyCarerSupportPage() {
                 </div>
                 <ChevronDown className="h-5 w-5" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="p-6 border-l-4 border-emerald-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
+              <CollapsibleContent className="p-3 sm:p-4 md:p-6 border-l-4 border-emerald-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
                     Understanding anxiety as a medical condition (not a choice or character flaw) is the foundation of effective support.
@@ -203,7 +203,7 @@ export default function AnxietyCarerSupportPage() {
                 </div>
                 <ChevronDown className="h-5 w-5" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="p-6 border-l-4 border-teal-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
+              <CollapsibleContent className="p-3 sm:p-4 md:p-6 border-l-4 border-teal-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
                     Let them express worries without judgment. Your role is to listen, not immediately fix.
@@ -248,7 +248,7 @@ export default function AnxietyCarerSupportPage() {
                 </div>
                 <ChevronDown className="h-5 w-5" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="p-6 border-l-4 border-cyan-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
+              <CollapsibleContent className="p-3 sm:p-4 md:p-6 border-l-4 border-cyan-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
                     Support them in accessing professional help without being pushy or controlling.
@@ -284,7 +284,7 @@ export default function AnxietyCarerSupportPage() {
                 </div>
                 <ChevronDown className="h-5 w-5" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="p-6 border-l-4 border-purple-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
+              <CollapsibleContent className="p-3 sm:p-4 md:p-6 border-l-4 border-purple-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
                     Avoidance temporarily reduces anxiety but maintains it long-term. Your role is to support them in facing fears gradually, not enable avoidance.
@@ -328,7 +328,7 @@ export default function AnxietyCarerSupportPage() {
                 </div>
                 <ChevronDown className="h-5 w-5" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="p-6 border-l-4 border-rose-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
+              <CollapsibleContent className="p-3 sm:p-4 md:p-6 border-l-4 border-rose-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
                     Constant reassurance reinforces anxiety by preventing them from building confidence in their own judgment.
@@ -373,7 +373,7 @@ export default function AnxietyCarerSupportPage() {
                 </div>
                 <ChevronDown className="h-5 w-5" />
               </CollapsibleTrigger>
-              <CollapsibleContent className="p-6 border-l-4 border-indigo-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
+              <CollapsibleContent className="p-3 sm:p-4 md:p-6 border-l-4 border-indigo-500 ml-6 mt-2 bg-white dark:bg-gray-900 rounded-r-lg">
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
                     Support them in maintaining healthy habits that reduce anxiety (exercise, sleep, nutrition, social connection).

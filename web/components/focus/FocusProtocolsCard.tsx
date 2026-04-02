@@ -13,7 +13,7 @@ export function FocusProtocolsCard({ region }: FocusProtocolsCardProps) {
   const regionKey = getRegionKey(region);
 
   return (
-    <Card className="p-6 mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950">
+    <Card className="p-3 sm:p-4 md:p-6 mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950">
       <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
         <Timer className="h-6 w-6" />
         Focus protocols

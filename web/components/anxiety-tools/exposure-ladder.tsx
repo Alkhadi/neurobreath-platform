@@ -158,7 +158,7 @@ export function ExposureLadder() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="p-6 bg-gradient-to-r from-green-50 to-blue-50">
+      <Card className="p-3 sm:p-4 md:p-6 bg-gradient-to-r from-green-50 to-blue-50">
         <div className="flex items-center gap-3 mb-2">
           <TrendingUp className="h-6 w-6 text-primary" />
           <h2 className="text-2xl font-bold">Exposure Ladder Builder</h2>
@@ -169,7 +169,7 @@ export function ExposureLadder() {
       </Card>
 
       {/* Create/Select Ladder */}
-      <Card className="p-6 space-y-4">
+      <Card className="p-3 sm:p-4 md:p-6 space-y-4">
         <div className="flex gap-2">
           <Input
             placeholder="Create new ladder (e.g., Social Anxiety Ladder)"
@@ -204,7 +204,7 @@ export function ExposureLadder() {
       {selectedLadder && (
         <>
           {/* Add Step */}
-          <Card className="p-6 space-y-4">
+          <Card className="p-3 sm:p-4 md:p-6 space-y-4">
             <h3 className="font-semibold">Add New Step</h3>
             <div>
               <Label>Step Description</Label>
@@ -232,7 +232,7 @@ export function ExposureLadder() {
           </Card>
 
           {/* Ladder Steps */}
-          <Card className="p-6">
+          <Card className="p-3 sm:p-4 md:p-6">
             <h3 className="font-semibold mb-4">Your Exposure Ladder</h3>
             {sortedSteps?.length === 0 ? (
               <p className="text-muted-foreground text-center py-8">
@@ -277,7 +277,7 @@ export function ExposureLadder() {
 
           {/* Log Attempt */}
           {sortedSteps?.length > 0 && (
-            <Card className="p-6 space-y-4">
+            <Card className="p-3 sm:p-4 md:p-6 space-y-4">
               <h3 className="font-semibold">Log Exposure Attempt</h3>
               <div>
                 <Label>Select Step</Label>

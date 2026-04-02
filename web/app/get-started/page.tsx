@@ -290,7 +290,7 @@ export default function GetStartedPage() {
           </div>
 
           {/* Quick Stats */}
-          <Card className="p-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg">
+          <Card className="p-3 sm:p-5 md:p-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg">
             <div className="flex flex-wrap gap-6 [&>*]:basis-[calc(50%-12px)] md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary mb-2">5</div>
@@ -329,7 +329,7 @@ export default function GetStartedPage() {
               const Icon = item.icon;
               return (
                 <Card key={item.title} className="group hover:shadow-lg transition-all">
-                  <CardContent className="p-6">
+                  <CardContent className="p-3 sm:p-4 md:p-6">
                     <div className="flex items-start gap-4 mb-4">
                       <div className="p-3 bg-primary/10 rounded-lg">
                         <Icon className={`h-6 w-6 ${item.color}`} />
@@ -378,7 +378,7 @@ export default function GetStartedPage() {
                   }`}
                   onClick={() => setSelectedRole(role.id)}
                 >
-                  <CardContent className="p-6 text-center">
+                  <CardContent className="p-3 sm:p-4 md:p-6 text-center">
                     <div className={`mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-4 ${
                       isSelected ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'
                     }`}>
@@ -402,7 +402,7 @@ export default function GetStartedPage() {
 
           {/* Pathway Steps */}
           {selectedRole && pathways[selectedRole] && (
-            <Card className="p-8 bg-white dark:bg-gray-800 shadow-xl">
+            <Card className="p-3 sm:p-5 md:p-8 bg-white dark:bg-gray-800 shadow-xl">
               <h3 className="text-2xl font-bold mb-6 text-center">
                 {pathways[selectedRole].title}
               </h3>
@@ -437,7 +437,7 @@ export default function GetStartedPage() {
 
           {/* Prompt if no selection */}
           {!selectedRole && (
-            <Card className="p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-dashed">
+            <Card className="p-3 sm:p-5 md:p-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-dashed">
               <p className="text-center text-muted-foreground">
                 👆 Select your role above to see your personalized getting started path
               </p>
@@ -462,7 +462,7 @@ export default function GetStartedPage() {
               const Icon = feature.icon;
               return (
                 <Card key={feature.title} className="group hover:shadow-lg transition-all">
-                  <CardContent className="p-6">
+                  <CardContent className="p-3 sm:p-4 md:p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
                         <div className="p-3 bg-primary/10 rounded-lg">

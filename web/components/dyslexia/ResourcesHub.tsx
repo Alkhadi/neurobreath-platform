@@ -274,7 +274,7 @@ export function ResourcesHub() {
         const IconComponent = category.icon;
         return (
           <Card key={category.category}>
-            <CardContent className="p-6 space-y-4">
+            <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
               <div className="flex items-center gap-3">
                 <div className={`p-2 rounded-lg bg-${category.color}-100 dark:bg-${category.color}-900/50`}>
                   <IconComponent className={`w-5 h-5 text-${category.color}-600 dark:text-${category.color}-400`} />
@@ -320,7 +320,7 @@ export function ResourcesHub() {
 
       {/* External Resources */}
       <Card>
-        <CardContent className="p-6 space-y-4">
+        <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/50">
               <ExternalLink className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
@@ -352,7 +352,7 @@ export function ResourcesHub() {
 
       {/* How to use */}
       <Card className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20">
-        <CardContent className="p-6">
+        <CardContent className="p-3 sm:p-4 md:p-6">
           <div className="space-y-3">
             <h3 className="text-lg font-bold text-foreground">📚 How to Use These Resources</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">

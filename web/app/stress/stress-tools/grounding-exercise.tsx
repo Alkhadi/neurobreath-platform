@@ -48,7 +48,7 @@ export function GroundingExercise() {
 
   if (completed) {
     return (
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -68,7 +68,7 @@ export function GroundingExercise() {
   }
 
   return (
-    <Card className="p-6">
+    <Card className="p-3 sm:p-4 md:p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-semibold">5-4-3-2-1 Grounding</h3>
         <div className="flex gap-1">

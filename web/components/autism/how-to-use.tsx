@@ -19,7 +19,7 @@ export const HowToUse = () => {
           </Button>
         </CollapsibleTrigger>
 
-        <CollapsibleContent className="mt-4 p-6 bg-muted/50 rounded-lg">
+        <CollapsibleContent className="mt-4 p-3 sm:p-4 md:p-6 bg-muted/50 rounded-lg">
           <div className="space-y-4 text-sm">
             <p>
               <strong>1. Choose your audience and country</strong> at the top to personalize the content and resources shown.

@@ -55,7 +55,7 @@ export default function ResourcesPage() {
           </div>
 
           {/* Quick Stats */}
-          <Card className="p-8 bg-white/80 backdrop-blur">
+          <Card className="p-3 sm:p-5 md:p-8 bg-white/80 backdrop-blur">
             <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
               <div className="text-center">
                 <div className="text-4xl font-bold text-primary mb-2">60+</div>
@@ -90,7 +90,7 @@ export default function ResourcesPage() {
           </div>
 
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-purple-100 p-3 rounded-lg inline-block mb-4">
                 <Users className="h-6 w-6 text-purple-600" />
               </div>
@@ -124,7 +124,7 @@ export default function ResourcesPage() {
               </div>
             </Card>
 
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-blue-100 p-3 rounded-lg inline-block mb-4">
                 <BookOpen className="h-6 w-6 text-blue-600" />
               </div>
@@ -150,7 +150,7 @@ export default function ResourcesPage() {
               </Button>
             </Card>
 
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-green-100 p-3 rounded-lg inline-block mb-4">
                 <FolderArchive className="h-6 w-6 text-green-600" />
               </div>
@@ -200,7 +200,7 @@ export default function ResourcesPage() {
                 {/* Assessment & Diagnosis */}
                 <Collapsible>
                   <Card>
-                    <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                    <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-4">
                         <FileText className="h-6 w-6 text-blue-600" />
                         <h3 className="text-xl font-semibold text-left">Assessment & Diagnosis</h3>
@@ -278,7 +278,7 @@ export default function ResourcesPage() {
                 {/* Home & Family */}
                 <Collapsible>
                   <Card>
-                    <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                    <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-4">
                         <Users className="h-6 w-6 text-purple-600" />
                         <h3 className="text-xl font-semibold text-left">Home & Family</h3>
@@ -348,7 +348,7 @@ export default function ResourcesPage() {
                 {/* School Support */}
                 <Collapsible>
                   <Card>
-                    <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                    <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-4">
                         <BookOpen className="h-6 w-6 text-green-600" />
                         <h3 className="text-xl font-semibold text-left">School Support</h3>
@@ -394,7 +394,7 @@ export default function ResourcesPage() {
                 {/* Teens & Young Adults */}
                 <Collapsible>
                   <Card>
-                    <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                    <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-4">
                         <Brain className="h-6 w-6 text-amber-600" />
                         <h3 className="text-xl font-semibold text-left">Teens & Young Adults</h3>
@@ -464,7 +464,7 @@ export default function ResourcesPage() {
                 {/* Self-Care & Focus */}
                 <Collapsible>
                   <Card>
-                    <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                    <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-4">
                         <Heart className="h-6 w-6 text-pink-600" />
                         <h3 className="text-xl font-semibold text-left">Self-Care & Focus</h3>
@@ -532,7 +532,7 @@ export default function ResourcesPage() {
                 </Collapsible>
 
                 {/* ADHD Toolkits */}
-                <Card className="p-6 bg-gradient-to-br from-blue-50 to-purple-50">
+                <Card className="p-3 sm:p-4 md:p-6 bg-gradient-to-br from-blue-50 to-purple-50">
                   <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                     <Package className="h-6 w-6 text-blue-600" />
                     ADHD Toolkits
@@ -857,7 +857,7 @@ export default function ResourcesPage() {
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold mb-8 text-center">How to Use These Resources</h2>
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <div className="bg-blue-100 p-3 rounded-full inline-block mb-4">
                 <Download className="h-6 w-6 text-blue-600" />
               </div>
@@ -866,7 +866,7 @@ export default function ResourcesPage() {
                 Click any resource to download as a PDF. All resources are free and can be saved to your device.
               </p>
             </Card>
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <div className="bg-purple-100 p-3 rounded-full inline-block mb-4">
                 <FileText className="h-6 w-6 text-purple-600" />
               </div>
@@ -875,7 +875,7 @@ export default function ResourcesPage() {
                 Print resources for physical use, or fill them out digitally using PDF editing software.
               </p>
             </Card>
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <div className="bg-green-100 p-3 rounded-full inline-block mb-4">
                 <Users className="h-6 w-6 text-green-600" />
               </div>

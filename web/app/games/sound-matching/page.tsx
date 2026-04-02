@@ -226,7 +226,7 @@ export default function SoundMatchingGamePage() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-950 dark:to-gray-900 flex items-center justify-center p-4">
         <Card className="w-full max-w-2xl">
-          <CardContent className="p-6 md:p-8 space-y-6">
+          <CardContent className="p-3 sm:p-4 md:p-8 space-y-6">
             <div className="text-center space-y-3">
               <div className="inline-flex p-4 rounded-2xl bg-blue-100 dark:bg-blue-900/30" aria-hidden="true">
                 <span className="text-5xl">🎵</span>
@@ -358,7 +358,7 @@ export default function SoundMatchingGamePage() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-950 dark:to-gray-900 flex items-center justify-center p-4">
         <Card className="w-full max-w-2xl">
-          <CardContent className="p-6 md:p-8 space-y-6">
+          <CardContent className="p-3 sm:p-4 md:p-8 space-y-6">
             <div className="text-center space-y-3">
               <div className="inline-flex p-4 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30" aria-hidden="true">
                 <span className="text-5xl">🏁</span>

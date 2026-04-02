@@ -82,7 +82,7 @@ export const ProgressDashboard = () => {
 
         {/* Stats Cards */}
         <div className="flex flex-wrap gap-4 mb-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] lg:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
-          <Card className="p-6">
+          <Card className="p-3 sm:p-4 md:p-6">
             <div className="flex items-center gap-3 mb-2">
               <Flame className="h-5 w-5 text-orange-500" />
               <h3 className="font-semibold text-sm text-muted-foreground">Current Streak</h3>
@@ -90,7 +90,7 @@ export const ProgressDashboard = () => {
             <p className="text-3xl font-bold">{progress?.currentStreak ?? 0} days</p>
           </Card>
 
-          <Card className="p-6">
+          <Card className="p-3 sm:p-4 md:p-6">
             <div className="flex items-center gap-3 mb-2">
               <Target className="h-5 w-5 text-blue-500" />
               <h3 className="font-semibold text-sm text-muted-foreground">Total Sessions</h3>
@@ -98,7 +98,7 @@ export const ProgressDashboard = () => {
             <p className="text-3xl font-bold">{progress?.totalSessions ?? 0}</p>
           </Card>
 
-          <Card className="p-6">
+          <Card className="p-3 sm:p-4 md:p-6">
             <div className="flex items-center gap-3 mb-2">
               <Clock className="h-5 w-5 text-green-500" />
               <h3 className="font-semibold text-sm text-muted-foreground">Total Minutes</h3>
@@ -106,7 +106,7 @@ export const ProgressDashboard = () => {
             <p className="text-3xl font-bold">{progress?.totalMinutes ?? 0}</p>
           </Card>
 
-          <Card className="p-6">
+          <Card className="p-3 sm:p-4 md:p-6">
             <div className="flex items-center gap-3 mb-2">
               <Award className="h-5 w-5 text-purple-500" />
               <h3 className="font-semibold text-sm text-muted-foreground">Skills Practiced</h3>
@@ -116,13 +116,13 @@ export const ProgressDashboard = () => {
         </div>
 
         {/* Weekly Activity Chart */}
-        <Card className="p-6 mb-8">
+        <Card className="p-3 sm:p-4 md:p-6 mb-8">
           <h3 className="font-semibold mb-4">Weekly Activity</h3>
           <WeeklyChart data={weeklyData} />
         </Card>
 
         {/* Badges */}
-        <Card className="p-6">
+        <Card className="p-3 sm:p-4 md:p-6">
           <h3 className="font-semibold mb-4 flex items-center gap-2">
             <Award className="h-5 w-5" />
             Badges Earned ({earnedBadges?.length ?? 0}/{badges?.length ?? 0})

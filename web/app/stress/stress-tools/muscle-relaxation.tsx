@@ -97,7 +97,7 @@ export function MuscleRelaxation() {
 
   if (completed) {
     return (
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -118,7 +118,7 @@ export function MuscleRelaxation() {
   }
 
   return (
-    <Card className="p-6">
+    <Card className="p-3 sm:p-4 md:p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <Dumbbell className="h-6 w-6 text-teal-600" />

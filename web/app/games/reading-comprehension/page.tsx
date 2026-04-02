@@ -417,7 +417,7 @@ export default function ReadingComprehensionGamePage() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white dark:from-gray-950 dark:to-gray-900 flex items-center justify-center p-4">
         <Card className="w-full max-w-3xl">
-          <CardContent className="p-6 md:p-8 space-y-6">
+          <CardContent className="p-3 sm:p-4 md:p-8 space-y-6">
             <div className="text-center space-y-3">
               <div className="inline-flex p-4 rounded-2xl bg-sky-100 dark:bg-sky-900/30" aria-hidden="true">
                 <span className="text-5xl">📖</span>
@@ -622,7 +622,7 @@ export default function ReadingComprehensionGamePage() {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <Card className="w-full max-w-xl">
-          <CardContent className="p-6 space-y-4">
+          <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
             <p className="text-sm text-muted-foreground">No passages available for this difficulty yet.</p>
             <Button onClick={reset}>
               <RotateCcw className="w-4 h-4 mr-2" />
@@ -640,7 +640,7 @@ export default function ReadingComprehensionGamePage() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white dark:from-gray-950 dark:to-gray-900 flex items-center justify-center p-4">
         <Card className="w-full max-w-2xl">
-          <CardContent className="p-6 md:p-8 space-y-6">
+          <CardContent className="p-3 sm:p-4 md:p-8 space-y-6">
             <div className="text-center space-y-3">
               <div className="inline-flex p-4 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30" aria-hidden="true">
                 <span className="text-5xl">🏁</span>

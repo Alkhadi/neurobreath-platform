@@ -96,7 +96,7 @@ export function BreathingExercise() {
   const circleScale = phase === 'inhale' ? 1.3 : phase === 'exhale' ? 0.8 : 1
 
   return (
-    <Card className="p-6">
+    <Card className="p-3 sm:p-4 md:p-6">
       <div className="flex items-center gap-2 mb-6">
         <Wind className="h-6 w-6 text-teal-600" />
         <h3 className="text-xl font-semibold">Breathing Exercise</h3>

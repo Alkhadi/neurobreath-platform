@@ -117,7 +117,7 @@ export function GratitudeJournal() {
 
         <TabsContent value="new" className="space-y-6 mt-6">
           {/* Header */}
-          <Card className="p-6 bg-gradient-to-r from-pink-50 to-yellow-50">
+          <Card className="p-3 sm:p-4 md:p-6 bg-gradient-to-r from-pink-50 to-yellow-50">
             <div className="flex items-center gap-3 mb-2">
               <Heart className="h-6 w-6 text-pink-500" />
               <h2 className="text-2xl font-bold">Gratitude Journal</h2>
@@ -132,7 +132,7 @@ export function GratitudeJournal() {
           </Card>
 
           {/* Entry Form */}
-          <Card className="p-6 space-y-6">
+          <Card className="p-3 sm:p-4 md:p-6 space-y-6">
             {/* Date */}
             <div>
               <Label htmlFor="date" className="mb-2 block">Date</Label>
@@ -285,7 +285,7 @@ export function GratitudeJournal() {
       </Tabs>
 
       {/* Stats */}
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <h3 className="font-semibold text-lg mb-4">Your Gratitude Practice</h3>
         <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           <div>

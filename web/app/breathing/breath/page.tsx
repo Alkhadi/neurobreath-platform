@@ -25,7 +25,7 @@ export default function BreathHowToPage() {
           </div>
 
           {/* Quick Explainer Card */}
-          <Card className="p-6 mb-6 bg-gradient-to-r from-blue-50 to-purple-50">
+          <Card className="p-3 sm:p-4 md:p-6 mb-6 bg-gradient-to-r from-blue-50 to-purple-50">
             <h2 className="text-2xl font-bold mb-3">Breathing — quick explainer</h2>
             <p className="text-muted-foreground mb-4">
               Inhale, hold, exhale with gentle timing. Start silent; add tones or voice if that helps you.
@@ -50,7 +50,7 @@ export default function BreathHowToPage() {
           </Card>
 
           {/* Context Presets */}
-          <Card className="p-6 mb-8">
+          <Card className="p-3 sm:p-4 md:p-6 mb-8">
             <h2 className="text-2xl font-bold mb-4">Pick your context</h2>
             <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(50%-6px)] md:[&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
               <Link href="/techniques/box-breathing?minutes=1">
@@ -89,7 +89,7 @@ export default function BreathHowToPage() {
           </Card>
 
           {/* Introduction Card */}
-          <Card className="p-6 mb-8 bg-white border-2 border-primary/20">
+          <Card className="p-3 sm:p-4 md:p-6 mb-8 bg-white border-2 border-primary/20">
             <p className="text-lg text-center">
               Three patterns to learn: <strong>Box 4‑4‑4‑4</strong>, <strong>Coherent 5‑5</strong> (≈5–6 breaths/min), and{' '}
               <strong>4‑7‑8</strong> for settling. Keep it comfortable; stop if dizzy.
@@ -99,7 +99,7 @@ export default function BreathHowToPage() {
           {/* Three Main Techniques */}
           <div className="flex flex-wrap gap-6 mb-8 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             {/* Box Breathing */}
-            <Card className="p-6 hover:shadow-xl transition-shadow border-2 border-transparent hover:border-blue-200">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-xl transition-shadow border-2 border-transparent hover:border-blue-200">
               <div className="bg-blue-100 p-3 rounded-lg inline-block mb-4">
                 <Target className="h-8 w-8 text-blue-600" />
               </div>
@@ -128,7 +128,7 @@ export default function BreathHowToPage() {
             </Card>
 
             {/* Coherent Breathing */}
-            <Card className="p-6 hover:shadow-xl transition-shadow border-2 border-transparent hover:border-purple-200">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-xl transition-shadow border-2 border-transparent hover:border-purple-200">
               <div className="bg-purple-100 p-3 rounded-lg inline-block mb-4">
                 <Heart className="h-8 w-8 text-purple-600" />
               </div>
@@ -157,7 +157,7 @@ export default function BreathHowToPage() {
             </Card>
 
             {/* 4-7-8 Breathing */}
-            <Card className="p-6 hover:shadow-xl transition-shadow border-2 border-transparent hover:border-indigo-200">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-xl transition-shadow border-2 border-transparent hover:border-indigo-200">
               <div className="bg-indigo-100 p-3 rounded-lg inline-block mb-4">
                 <Moon className="h-8 w-8 text-indigo-600" />
               </div>
@@ -187,7 +187,7 @@ export default function BreathHowToPage() {
           </div>
 
           {/* Evidence & Resources */}
-          <Card className="p-6 mb-6">
+          <Card className="p-3 sm:p-4 md:p-6 mb-6">
             <h3 className="text-xl font-bold mb-4">Evidence &amp; UK resources</h3>
             <ul className="space-y-2 mb-6">
               <li>
@@ -241,7 +241,7 @@ export default function BreathHowToPage() {
           </Card>
 
           {/* Emergency Help */}
-          <Card className="p-6 bg-red-50 border-red-200">
+          <Card className="p-3 sm:p-4 md:p-6 bg-red-50 border-red-200">
             <h3 className="text-xl font-bold mb-3 text-red-900">Emergency &amp; urgent help (UK)</h3>
             <p className="text-sm text-red-800">
               If you are at immediate risk of harming yourself or someone else, call <strong>999</strong> or go to A&amp;E.

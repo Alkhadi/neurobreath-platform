@@ -90,7 +90,7 @@ export function WorryScheduler() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="p-6 bg-gradient-to-r from-purple-50 to-blue-50">
+      <Card className="p-3 sm:p-4 md:p-6 bg-gradient-to-r from-purple-50 to-blue-50">
         <div className="flex items-center gap-3 mb-2">
           <Clock className="h-6 w-6 text-primary" />
           <h2 className="text-2xl font-bold">Worry Time Scheduler</h2>
@@ -124,7 +124,7 @@ export function WorryScheduler() {
       </Card>
 
       {/* Quick Capture */}
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <h3 className="font-semibold mb-3">Quick Capture Worry</h3>
         <div className="flex gap-2">
           <Input
@@ -316,7 +316,7 @@ export function WorryScheduler() {
       </Tabs>
 
       {/* Stats */}
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <h3 className="font-semibold mb-4">Worry Statistics</h3>
         <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
           <div>

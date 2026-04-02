@@ -797,7 +797,7 @@ export function ManagementGuides() {
       {/* Guide Content */}
       {currentGuide ? (
         <Card>
-          <CardContent className="p-6 space-y-6">
+          <CardContent className="p-3 sm:p-4 md:p-6 space-y-6">
             {/* Guide header */}
             <div className="flex items-start gap-3">
               <div className={`p-3 rounded-lg bg-${color}-100 dark:bg-${color}-900/50 flex-shrink-0`}>
@@ -831,7 +831,7 @@ export function ManagementGuides() {
         </Card>
       ) : (
         <Card>
-          <CardContent className="p-6 text-center text-muted-foreground">
+          <CardContent className="p-3 sm:p-4 md:p-6 text-center text-muted-foreground">
             <p className="text-sm">Select an age group and role to view the guide.</p>
           </CardContent>
         </Card>
@@ -839,7 +839,7 @@ export function ManagementGuides() {
 
       {/* Key reminders */}
       <Card className="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/20 dark:to-yellow-950/20">
-        <CardContent className="p-6 space-y-3">
+        <CardContent className="p-3 sm:p-4 md:p-6 space-y-3">
           <div className="flex items-center gap-2">
             <Lightbulb className="w-5 h-5 text-amber-500 flex-shrink-0" />
             <h3 className="text-base font-bold text-foreground">Universal Principles</h3>

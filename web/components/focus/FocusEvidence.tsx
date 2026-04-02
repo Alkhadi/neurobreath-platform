@@ -13,7 +13,7 @@ export function FocusEvidence({ region }: FocusEvidenceProps) {
   const regionLabel = region === 'UK' ? 'UK' : 'US';
 
   return (
-    <Card className="p-6 mb-6">
+    <Card className="p-3 sm:p-4 md:p-6 mb-6">
       <h3 className="text-xl font-bold mb-4">
         Evidence &amp; {regionLabel} resources
       </h3>

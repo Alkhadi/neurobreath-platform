@@ -8,7 +8,7 @@ export function ImpactCards() {
         <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center">Why Your Support Matters</h2>
 
         <div className="flex flex-wrap gap-8 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-21px)] [&>*]:min-w-0">
-          <Card className="p-8 text-center border-2 hover:border-purple-300 hover:shadow-lg transition-all duration-300 group">
+          <Card className="p-3 sm:p-5 md:p-8 text-center border-2 hover:border-purple-300 hover:shadow-lg transition-all duration-300 group">
             <div className="bg-purple-100 p-4 rounded-full inline-block mb-6 group-hover:scale-110 transition-transform">
               <Users className="h-10 w-10 text-purple-600" />
             </div>
@@ -19,7 +19,7 @@ export function ImpactCards() {
             </p>
           </Card>
 
-          <Card className="p-8 text-center border-2 hover:border-blue-300 hover:shadow-lg transition-all duration-300 group">
+          <Card className="p-3 sm:p-5 md:p-8 text-center border-2 hover:border-blue-300 hover:shadow-lg transition-all duration-300 group">
             <div className="bg-blue-100 p-4 rounded-full inline-block mb-6 group-hover:scale-110 transition-transform">
               <Sparkles className="h-10 w-10 text-blue-600" />
             </div>
@@ -30,7 +30,7 @@ export function ImpactCards() {
             </p>
           </Card>
 
-          <Card className="p-8 text-center border-2 hover:border-pink-300 hover:shadow-lg transition-all duration-300 group">
+          <Card className="p-3 sm:p-5 md:p-8 text-center border-2 hover:border-pink-300 hover:shadow-lg transition-all duration-300 group">
             <div className="bg-pink-100 p-4 rounded-full inline-block mb-6 group-hover:scale-110 transition-transform">
               <Target className="h-10 w-10 text-pink-600" />
             </div>

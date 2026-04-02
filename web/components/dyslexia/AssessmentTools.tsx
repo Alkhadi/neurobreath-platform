@@ -477,7 +477,7 @@ export function AssessmentTools() {
         </Card>
 
         <Card>
-          <CardContent className="p-6 space-y-6">
+          <CardContent className="p-3 sm:p-4 md:p-6 space-y-6">
             <div className="space-y-3">
               <h3 className="text-lg font-semibold text-foreground">Select Age Group</h3>
               <p className="text-sm text-muted-foreground">
@@ -559,7 +559,7 @@ export function AssessmentTools() {
 
         {/* Score Result */}
         <Card>
-          <CardContent className="p-6 space-y-6">
+          <CardContent className="p-3 sm:p-4 md:p-6 space-y-6">
             <div className={`p-5 rounded-xl border-2 ${colorMap[result.color]}`}>
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0 p-3 rounded-full bg-white/60 dark:bg-black/20">
@@ -608,7 +608,7 @@ export function AssessmentTools() {
           <>
             {/* Daily Routine */}
             <Card>
-              <CardContent className="p-6 space-y-4">
+              <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
                 <h4 className="font-semibold text-foreground flex items-center gap-2">
                   <Clock className="w-4 h-4 text-blue-500" />
                   Recommended Daily Routine
@@ -629,7 +629,7 @@ export function AssessmentTools() {
 
             {/* Weekly Plan */}
             <Card>
-              <CardContent className="p-6 space-y-4">
+              <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
                 <h4 className="font-semibold text-foreground flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-purple-500" />
                   Weekly Practice Plan
@@ -657,7 +657,7 @@ export function AssessmentTools() {
 
             {/* Key Strategies */}
             <Card>
-              <CardContent className="p-6 space-y-4">
+              <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
                 <h4 className="font-semibold text-foreground flex items-center gap-2">
                   <Lightbulb className="w-4 h-4 text-amber-500" />
                   Evidence-Based Strategies for You
@@ -675,7 +675,7 @@ export function AssessmentTools() {
 
             {/* Exercises */}
             <Card>
-              <CardContent className="p-6 space-y-4">
+              <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
                 <h4 className="font-semibold text-foreground flex items-center gap-2">
                   <Target className="w-4 h-4 text-emerald-500" />
                   Core Exercises &amp; Practices
@@ -696,7 +696,7 @@ export function AssessmentTools() {
 
             {/* Known Strengths */}
             <Card>
-              <CardContent className="p-6 space-y-4">
+              <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
                 <h4 className="font-semibold text-foreground flex items-center gap-2">
                   <Star className="w-4 h-4 text-yellow-500" />
                   Recognised Dyslexic Strengths
@@ -713,7 +713,7 @@ export function AssessmentTools() {
             {/* Professional Next Steps */}
             {(scoreLevel === 'moderate' || scoreLevel === 'high') && (
               <Card>
-                <CardContent className="p-6 space-y-4">
+                <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
                   <h4 className="font-semibold text-foreground flex items-center gap-2">
                     <HeartHandshake className="w-4 h-4 text-rose-500" />
                     Professional Support — Next Steps
@@ -734,7 +734,7 @@ export function AssessmentTools() {
 
         {/* CTA to Training */}
         <Card className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-0">
-          <CardContent className="p-6 space-y-3">
+          <CardContent className="p-3 sm:p-4 md:p-6 space-y-3">
             <div className="flex items-start gap-3">
               <BookOpen className="w-6 h-6 text-white/80 flex-shrink-0 mt-0.5" />
               <div className="space-y-1">
@@ -801,7 +801,7 @@ export function AssessmentTools() {
 
       {/* Question Card */}
       <Card>
-        <CardContent className="p-6 space-y-6">
+        <CardContent className="p-3 sm:p-4 md:p-6 space-y-6">
           {/* Progress */}
           <div className="space-y-1.5">
             <Progress value={progress} className="h-2" />

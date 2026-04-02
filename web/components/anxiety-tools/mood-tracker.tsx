@@ -105,7 +105,7 @@ export function MoodTracker() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="p-6 bg-gradient-to-r from-purple-50 to-pink-50">
+      <Card className="p-3 sm:p-4 md:p-6 bg-gradient-to-r from-purple-50 to-pink-50">
         <div className="flex items-center gap-3 mb-2">
           <CalendarIcon className="h-6 w-6 text-primary" />
           <h2 className="text-2xl font-bold">Mood & Anxiety Tracker</h2>
@@ -116,7 +116,7 @@ export function MoodTracker() {
       </Card>
 
       {/* Daily Check-in */}
-      <Card className="p-6 space-y-6">
+      <Card className="p-3 sm:p-4 md:p-6 space-y-6">
         <h3 className="font-semibold text-lg">Daily Check-In</h3>
         
         {/* Date */}
@@ -217,7 +217,7 @@ export function MoodTracker() {
 
       {/* Trend Chart */}
       {chartData && chartData?.length > 0 && (
-        <Card className="p-6">
+        <Card className="p-3 sm:p-4 md:p-6">
           <h3 className="font-semibold text-lg mb-4">Anxiety Trends (Last 30 Days)</h3>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -267,7 +267,7 @@ export function MoodTracker() {
       )}
 
       {/* Statistics */}
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <h3 className="font-semibold text-lg mb-4">Statistics</h3>
         <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(50%-8px)] md:[&>*]:basis-[calc(25%-12px)] [&>*]:min-w-0">
           <div>

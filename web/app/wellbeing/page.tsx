@@ -64,7 +64,7 @@ export default function WellbeingPage() {
         aria-label="UK crisis and urgent support"
       >
         <div className="max-w-7xl mx-auto">
-          <Card className="p-6 bg-white border-amber-200 shadow-sm">
+          <Card className="p-3 sm:p-4 md:p-6 bg-white border-amber-200 shadow-sm">
             <div className="flex items-start gap-3 mb-4">
               <AlertCircle className="h-6 w-6 text-amber-600 mt-0.5 shrink-0" aria-hidden="true" />
               <div>
@@ -132,7 +132,7 @@ export default function WellbeingPage() {
           </Card>
 
           {/* Quick start card */}
-          <Card className="p-6">
+          <Card className="p-3 sm:p-4 md:p-6">
             <h3 className="text-xl font-semibold text-slate-900 mb-4">Quick start (90 seconds)</h3>
             <ol className="list-decimal pl-6 space-y-2 text-sm text-slate-700 mb-6">
               <li>Sit or stand comfortably; soften shoulders and jaw.</li>
@@ -155,7 +155,7 @@ export default function WellbeingPage() {
 
           {/* Daily dose / Neurodivergent tips */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="font-semibold text-lg text-slate-900 mb-3">Daily dose ideas</h3>
               <ul className="space-y-3 text-sm text-slate-700">
                 <li>
@@ -172,7 +172,7 @@ export default function WellbeingPage() {
                 </li>
               </ul>
             </Card>
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="font-semibold text-lg text-slate-900 mb-3">Neurodivergent tips</h3>
               <ul className="space-y-3 text-sm text-slate-700">
                 <li>

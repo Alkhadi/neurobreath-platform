@@ -23,7 +23,7 @@ export function FocusEmergencyHelp({ region }: FocusEmergencyHelpProps) {
   );
 
   return (
-    <Card className="p-6 bg-red-50 border-red-200 dark:bg-red-950 dark:border-red-800">
+    <Card className="p-3 sm:p-4 md:p-6 bg-red-50 border-red-200 dark:bg-red-950 dark:border-red-800">
       <h3 className="text-xl font-bold mb-3 text-red-900 dark:text-red-100">
         Emergency &amp; urgent help ({region})
       </h3>

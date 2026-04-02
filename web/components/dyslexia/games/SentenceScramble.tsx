@@ -95,7 +95,7 @@ export function SentenceScramble() {
   if (isComplete) {
     return (
       <Card className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20">
-        <CardContent className="p-8 text-center space-y-4">
+        <CardContent className="p-3 sm:p-5 md:p-8 text-center space-y-4">
           <Trophy className="w-16 h-16 mx-auto text-yellow-500" />
           <h3 className="text-2xl font-bold">Sentence Master!</h3>
           <p className="text-lg">You scored {score} out of {sentences.length}</p>
@@ -113,7 +113,7 @@ export function SentenceScramble() {
 
   return (
     <Card>
-      <CardContent className="p-6 space-y-6">
+      <CardContent className="p-3 sm:p-4 md:p-6 space-y-6">
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-bold">Sentence Scramble</h3>
           <div className="text-sm text-muted-foreground">

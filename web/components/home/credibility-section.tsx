@@ -100,7 +100,7 @@ function CredibilityCard({ item, sectionTitle, IconComponent, sectionId, index }
       key={`${sectionId}-${index}`} 
       className={`overflow-hidden hover:shadow-md transition-shadow ${isFullWidth ? 'sm:col-span-2 lg:col-span-3' : ''}`}
     >
-      <CardContent className="p-6">
+      <CardContent className="p-3 sm:p-4 md:p-6">
         <div className={`flex items-start gap-3 mb-4 ${isFullWidth ? 'max-w-2xl' : ''}`}>
           <div className="p-2.5 rounded-lg bg-primary/10 flex-shrink-0">
             <IconComponent className="w-5 h-5 text-primary" />

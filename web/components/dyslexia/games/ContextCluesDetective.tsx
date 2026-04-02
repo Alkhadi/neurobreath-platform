@@ -87,7 +87,7 @@ export function ContextCluesDetective() {
   if (isComplete) {
     return (
       <Card className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/20 dark:to-purple-950/20">
-        <CardContent className="p-8 text-center space-y-4">
+        <CardContent className="p-3 sm:p-5 md:p-8 text-center space-y-4">
           <Trophy className="w-16 h-16 mx-auto text-yellow-500" />
           <h3 className="text-2xl font-bold">Great Detective Work!</h3>
           <p className="text-lg">You scored {score} out of {sentences.length}</p>
@@ -105,7 +105,7 @@ export function ContextCluesDetective() {
 
   return (
     <Card>
-      <CardContent className="p-6 space-y-6">
+      <CardContent className="p-3 sm:p-4 md:p-6 space-y-6">
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-bold flex items-center gap-2">
             <Search className="w-5 h-5" />

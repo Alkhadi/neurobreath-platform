@@ -335,7 +335,7 @@ export default function AdminFramesPage() {
             {categorizedFrames.map((frame) => (
               <div
                 key={frame.id}
-                className={`basis-full md:basis-[calc(50%-12px)] lg:basis-[calc(33.333%-16px)] min-w-0 bg-white dark:bg-white/5 rounded-[30px] shadow-xl overflow-hidden ${
+                className={`basis-full md:basis-[calc(50%-12px)] lg:basis-[calc(33.333%-16px)] min-w-0 bg-white dark:bg-white/5 rounded-2xl sm:rounded-[30px] shadow-xl overflow-hidden ${
                   !frame.isActive ? "opacity-60" : ""
                 }`}
               >

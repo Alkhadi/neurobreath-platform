@@ -12,7 +12,7 @@ export function CoachSafeguarding() {
 	return (
 		<HomeSection id="coach-safeguarding" withDivider>
 			<Card className="rounded-2xl border-border/60 bg-card shadow-sm">
-				<CardContent className="p-6 sm:p-8">
+				<CardContent className="p-3 sm:p-4 md:p-8">
 					<div className="flex items-start gap-4">
 						<div
 							aria-hidden="true"

@@ -50,7 +50,7 @@ export default function MindfulnessPage() {
           </div>
 
           {/* 1-minute Grounding Card */}
-          <Card className="p-6 mb-6 bg-gradient-to-r from-blue-50 to-cyan-50">
+          <Card className="p-3 sm:p-4 md:p-6 mb-6 bg-gradient-to-r from-blue-50 to-cyan-50">
             <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
               <Eye className="h-6 w-6" />
               1-minute grounding
@@ -99,7 +99,7 @@ export default function MindfulnessPage() {
           </Card>
 
           {/* Reflection & Log Card */}
-          <Card className="p-6 mb-6 bg-gradient-to-r from-indigo-50 to-purple-50">
+          <Card className="p-3 sm:p-4 md:p-6 mb-6 bg-gradient-to-r from-indigo-50 to-purple-50">
             <h2 className="text-2xl font-bold mb-3 flex items-center gap-2">
               <Heart className="h-6 w-6 text-pink-600" />
               Reflect &amp; log (private)
@@ -129,7 +129,7 @@ export default function MindfulnessPage() {
           {/* Three Technique Cards */}
           <div className="flex flex-wrap gap-6 mb-8 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             {/* 3-minute breathing space */}
-            <Card className="p-6 hover:shadow-xl transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-xl transition-shadow">
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <Wind className="h-6 w-6 text-blue-600" />
                 3‑minute breathing space
@@ -148,7 +148,7 @@ export default function MindfulnessPage() {
             </Card>
 
             {/* Body scan */}
-            <Card className="p-6 hover:shadow-xl transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-xl transition-shadow">
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <Users className="h-6 w-6 text-purple-600" />
                 Body scan (brief)
@@ -160,7 +160,7 @@ export default function MindfulnessPage() {
             </Card>
 
             {/* Everyday mindful moments */}
-            <Card className="p-6 hover:shadow-xl transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-xl transition-shadow">
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <Sparkles className="h-6 w-6 text-pink-600" />
                 Everyday mindful moments
@@ -183,7 +183,7 @@ export default function MindfulnessPage() {
           </div>
 
           {/* 3-Minute Breathing Space Drill */}
-          <Card className="p-6 mb-6 border-2 border-primary/20">
+          <Card className="p-3 sm:p-4 md:p-6 mb-6 border-2 border-primary/20">
             <h2 className="text-2xl font-bold mb-3 flex items-center gap-2">
               <Wind className="h-6 w-6" />
               3‑Minute Breathing Space
@@ -203,7 +203,7 @@ export default function MindfulnessPage() {
           </Card>
 
           {/* Evidence & Resources */}
-          <Card className="p-6 mb-6">
+          <Card className="p-3 sm:p-4 md:p-6 mb-6">
             <h3 className="text-xl font-bold mb-4">Evidence &amp; UK resources</h3>
             <ul className="space-y-2 mb-6">
               <li>
@@ -257,7 +257,7 @@ export default function MindfulnessPage() {
           </Card>
 
           {/* Emergency Help */}
-          <Card className="p-6 bg-red-50 border-red-200">
+          <Card className="p-3 sm:p-4 md:p-6 bg-red-50 border-red-200">
             <h3 className="text-xl font-bold mb-3 text-red-900">Emergency &amp; urgent help (UK)</h3>
             <p className="text-sm text-red-800">
               If you are at immediate risk of harming yourself or someone else, call <strong>999</strong> or go to A&amp;E.

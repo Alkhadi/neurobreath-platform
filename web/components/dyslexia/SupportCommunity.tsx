@@ -91,7 +91,7 @@ export function SupportCommunity() {
 
       {/* FAQ Section */}
       <Card>
-        <CardContent className="p-6 space-y-4">
+        <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/50">
               <HelpCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -112,7 +112,7 @@ export function SupportCommunity() {
 
       {/* Success Stories */}
       <Card>
-        <CardContent className="p-6 space-y-4">
+        <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
               <Star className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
@@ -143,7 +143,7 @@ export function SupportCommunity() {
 
       {/* Professional Support */}
       <Card>
-        <CardContent className="p-6 space-y-4">
+        <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/50">
               <Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
@@ -180,7 +180,7 @@ export function SupportCommunity() {
 
       {/* When to Seek Professional Help */}
       <Card className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20">
-        <CardContent className="p-6">
+        <CardContent className="p-3 sm:p-4 md:p-6">
           <div className="space-y-3">
             <h3 className="text-lg font-bold text-foreground">⚠️ When to Seek Professional Help</h3>
             <p className="text-sm text-muted-foreground mb-3">
@@ -214,7 +214,7 @@ export function SupportCommunity() {
 
       {/* Community Message */}
       <Card className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20">
-        <CardContent className="p-6">
+        <CardContent className="p-3 sm:p-4 md:p-6">
           <div className="text-center space-y-3">
             <MessageCircle className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto" />
             <h3 className="text-xl font-bold text-foreground">You're Part of a Global Community</h3>

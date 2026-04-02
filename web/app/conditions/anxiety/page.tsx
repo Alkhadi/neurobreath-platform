@@ -58,7 +58,7 @@ export default function ConditionsAnxietyPage() {
           </div>
 
           {/* Quick Stats */}
-          <Card className="p-8 bg-gradient-to-r from-blue-50 to-green-50">
+          <Card className="p-3 sm:p-5 md:p-8 bg-gradient-to-r from-blue-50 to-green-50">
             <h2 className="text-2xl font-bold text-center mb-8">You're Not Alone</h2>
             <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
               <div className="text-center">
@@ -87,14 +87,14 @@ export default function ConditionsAnxietyPage() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold mb-6 text-center">What is Anxiety?</h2>
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="font-semibold text-lg mb-3">Normal Anxiety vs. Anxiety Disorder</h3>
               <p className="text-sm text-muted-foreground mb-4">
                 <strong>Normal anxiety</strong> is a natural response to stress or danger—it helps us stay alert and motivated. 
                 <strong className="block mt-2">Anxiety disorders</strong> involve excessive, persistent worry that interferes with daily life, relationships, work, or school.
               </p>
             </Card>
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="font-semibold text-lg mb-3">Common Signs & Symptoms</h3>
               <ul className="text-sm space-y-2">
                 <li>• Excessive worry that's hard to control</li>
@@ -215,7 +215,7 @@ export default function ConditionsAnxietyPage() {
             {/* Types of Anxiety Disorders */}
             <Collapsible>
               <Card>
-                <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                   <h3 className="text-xl font-semibold text-left">Types of Anxiety Disorders</h3>
                   <ChevronDown className="h-5 w-5 transition-transform" />
                 </CollapsibleTrigger>
@@ -264,7 +264,7 @@ export default function ConditionsAnxietyPage() {
             {/* Evidence-Based Techniques */}
             <Collapsible>
               <Card>
-                <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                   <h3 className="text-xl font-semibold text-left">Evidence-Based Techniques</h3>
                   <ChevronDown className="h-5 w-5 transition-transform" />
                 </CollapsibleTrigger>
@@ -329,7 +329,7 @@ export default function ConditionsAnxietyPage() {
             {/* Professional Help */}
             <Collapsible>
               <Card>
-                <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                   <h3 className="text-xl font-semibold text-left flex items-center gap-2">
                     <Stethoscope className="h-5 w-5" />
                     When to Seek Professional Help
@@ -391,7 +391,7 @@ export default function ConditionsAnxietyPage() {
             {/* Age-Specific Guidance */}
             <Collapsible>
               <Card>
-                <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                   <h3 className="text-xl font-semibold text-left">Age-Specific Considerations</h3>
                   <ChevronDown className="h-5 w-5 transition-transform" />
                 </CollapsibleTrigger>
@@ -430,7 +430,7 @@ export default function ConditionsAnxietyPage() {
             {/* For Parents, Teachers, Carers */}
             <Collapsible>
               <Card>
-                <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                   <h3 className="text-xl font-semibold text-left flex items-center gap-2">
                     <Users className="h-5 w-5" />
                     Guidance for Parents, Teachers & Carers

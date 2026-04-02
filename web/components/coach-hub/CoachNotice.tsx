@@ -14,7 +14,7 @@ export function CoachNotice({ label = 'AI coach' }: CoachNoticeProps) {
 				aria-live="polite"
 				className="rounded-2xl border-border/60 bg-muted/30 shadow-sm"
 			>
-				<CardContent className="p-6">
+				<CardContent className="p-3 sm:p-4 md:p-6">
 					<div className="flex items-start gap-4">
 						<div
 							aria-hidden="true"

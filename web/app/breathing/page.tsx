@@ -62,7 +62,7 @@ export default function BreathingExercisesPage() {
           </div>
 
           {/* Quick Stats */}
-          <Card className="p-8 bg-white/80 backdrop-blur">
+          <Card className="p-3 sm:p-5 md:p-8 bg-white/80 backdrop-blur">
             <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
               <div className="text-center">
                 <div className="text-4xl font-bold text-primary mb-2">6</div>
@@ -99,7 +99,7 @@ export default function BreathingExercisesPage() {
 
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             {/* Box Breathing */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-blue-100 p-3 rounded-lg inline-block mb-4">
                 <Target className="h-8 w-8 text-blue-600" />
               </div>
@@ -125,7 +125,7 @@ export default function BreathingExercisesPage() {
             </Card>
 
             {/* 4-7-8 Breathing — Featured */}
-            <Card className="p-6 hover:shadow-xl transition-shadow ring-2 ring-purple-400 ring-offset-2 relative">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-xl transition-shadow ring-2 ring-purple-400 ring-offset-2 relative">
               <span className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-semibold text-purple-700">
                 ★ Featured
               </span>
@@ -154,7 +154,7 @@ export default function BreathingExercisesPage() {
             </Card>
 
             {/* Coherent Breathing */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-green-100 p-3 rounded-lg inline-block mb-4">
                 <Heart className="h-8 w-8 text-green-600" />
               </div>
@@ -180,7 +180,7 @@ export default function BreathingExercisesPage() {
             </Card>
 
             {/* SOS Breathing */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-red-100 p-3 rounded-lg inline-block mb-4">
                 <Zap className="h-8 w-8 text-red-600" />
               </div>
@@ -206,7 +206,7 @@ export default function BreathingExercisesPage() {
             </Card>
 
             {/* Belly Breathing */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-amber-100 p-3 rounded-lg inline-block mb-4">
                 <Activity className="h-8 w-8 text-amber-600" />
               </div>
@@ -232,7 +232,7 @@ export default function BreathingExercisesPage() {
             </Card>
 
             {/* Focus Breathing */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-indigo-100 p-3 rounded-lg inline-block mb-4">
                 <Brain className="h-8 w-8 text-indigo-600" />
               </div>
@@ -272,7 +272,7 @@ export default function BreathingExercisesPage() {
           </div>
 
           <div className="flex flex-wrap gap-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="text-xl font-bold mb-4">Mental Health Benefits</h3>
               <ul className="space-y-3 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
@@ -298,7 +298,7 @@ export default function BreathingExercisesPage() {
               </ul>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="text-xl font-bold mb-4">Physical Health Benefits</h3>
               <ul className="space-y-3 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
@@ -325,7 +325,7 @@ export default function BreathingExercisesPage() {
             </Card>
           </div>
 
-          <Card className="p-6 mt-8 bg-white">
+          <Card className="p-3 sm:p-4 md:p-6 mt-8 bg-white">
             <h3 className="text-xl font-bold mb-4">Clinical Evidence</h3>
             <div className="flex flex-wrap gap-6 text-sm text-muted-foreground [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
               <div>
@@ -356,7 +356,7 @@ export default function BreathingExercisesPage() {
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-bold mb-8 text-center">How to Get Started</h2>
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
-            <Card className="p-6 text-center">
+            <Card className="p-3 sm:p-4 md:p-6 text-center">
               <div className="bg-blue-100 p-3 rounded-full inline-block mb-4">
                 <span className="text-2xl font-bold text-blue-600">1</span>
               </div>
@@ -366,7 +366,7 @@ export default function BreathingExercisesPage() {
               </p>
             </Card>
 
-            <Card className="p-6 text-center">
+            <Card className="p-3 sm:p-4 md:p-6 text-center">
               <div className="bg-purple-100 p-3 rounded-full inline-block mb-4">
                 <span className="text-2xl font-bold text-purple-600">2</span>
               </div>
@@ -376,7 +376,7 @@ export default function BreathingExercisesPage() {
               </p>
             </Card>
 
-            <Card className="p-6 text-center">
+            <Card className="p-3 sm:p-4 md:p-6 text-center">
               <div className="bg-green-100 p-3 rounded-full inline-block mb-4">
                 <span className="text-2xl font-bold text-green-600">3</span>
               </div>
@@ -439,7 +439,7 @@ export default function BreathingExercisesPage() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold mb-8 text-center">Related Tools & Resources</h2>
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <Heart className="h-8 w-8 text-pink-600 mb-4" />
               <h3 className="text-lg font-bold mb-2">Anxiety Tools</h3>
               <p className="text-sm text-muted-foreground mb-4">
@@ -450,7 +450,7 @@ export default function BreathingExercisesPage() {
               </Button>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <Brain className="h-8 w-8 text-blue-600 mb-4" />
               <h3 className="text-lg font-bold mb-2">Stress Management</h3>
               <p className="text-sm text-muted-foreground mb-4">
@@ -461,7 +461,7 @@ export default function BreathingExercisesPage() {
               </Button>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <BookOpen className="h-8 w-8 text-purple-600 mb-4" />
               <h3 className="text-lg font-bold mb-2">School Resources</h3>
               <p className="text-sm text-muted-foreground mb-4">

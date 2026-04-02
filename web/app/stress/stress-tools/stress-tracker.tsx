@@ -85,7 +85,7 @@ export function StressTracker() {
   }
 
   return (
-    <Card className="p-6">
+    <Card className="p-3 sm:p-4 md:p-6">
       <div className="flex items-center gap-2 mb-6">
         <Activity className="h-6 w-6 text-teal-600" />
         <h3 className="text-xl font-semibold">Stress Level Tracker</h3>

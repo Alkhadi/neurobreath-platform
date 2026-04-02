@@ -127,7 +127,7 @@ export default function ADHDToolsPage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-6 space-y-6">
+            <CardContent className="p-3 sm:p-4 md:p-6 space-y-6">
               <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
                 <div className="space-y-3">
                   <h4 className="font-semibold text-lg flex items-center gap-2">

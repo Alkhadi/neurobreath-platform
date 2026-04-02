@@ -171,7 +171,7 @@ export default function FourSevenEightPage() {
 
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
             {/* What it is */}
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="text-xl font-bold mb-3">What It Is</h3>
               <p className="text-gray-700 text-sm leading-relaxed mb-4">
                 {FOUR_SEVEN_EIGHT_COPY.description}
@@ -184,7 +184,7 @@ export default function FourSevenEightPage() {
             </Card>
 
             {/* How to practise */}
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="text-xl font-bold mb-3">How to Practise</h3>
               <ol className="space-y-3 text-sm text-gray-700">
                 {(
@@ -207,7 +207,7 @@ export default function FourSevenEightPage() {
             </Card>
 
             {/* What it may help with */}
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="text-xl font-bold mb-3">What It May Help With</h3>
               <ul className="space-y-2 text-sm text-gray-700">
                 {(
@@ -227,7 +227,7 @@ export default function FourSevenEightPage() {
             </Card>
 
             {/* The 4:7:8 ratio visualisation */}
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="text-xl font-bold mb-3">The 4:7:8 Ratio</h3>
               <div className="space-y-4">
                 {(
@@ -276,7 +276,7 @@ export default function FourSevenEightPage() {
             className="mb-8"
           />
 
-          <Card className="p-6">
+          <Card className="p-3 sm:p-4 md:p-6">
             <h3 className="text-lg font-bold mb-3">Key Points from the Interview</h3>
             <ul className="space-y-2 text-sm text-gray-700">
               {(

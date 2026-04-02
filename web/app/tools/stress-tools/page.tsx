@@ -51,7 +51,7 @@ export default function StressPage() {
           </div>
 
           {/* Quick Stats */}
-          <Card className="p-8 bg-gradient-to-r from-teal-50 to-purple-50">
+          <Card className="p-3 sm:p-5 md:p-8 bg-gradient-to-r from-teal-50 to-purple-50">
             <h2 className="text-2xl font-bold text-center mb-8">You're Not Alone</h2>
             <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
               <div className="text-center">
@@ -80,14 +80,14 @@ export default function StressPage() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold mb-6 text-center">What is Stress?</h2>
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="font-semibold text-lg mb-3">Normal Stress vs. Chronic Stress</h3>
               <p className="text-sm text-muted-foreground mb-4">
                 <strong>Normal stress</strong> is the body's natural reaction to challenges—it enhances alertness and can boost performance. 
                 <strong className="block mt-2">Chronic stress</strong> occurs when stressors persist without relief, leading to physical and mental health problems over time.
               </p>
             </Card>
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="font-semibold text-lg mb-3">The Fight-or-Flight Response</h3>
               <p className="text-sm text-muted-foreground">
                 When facing a threat, your body releases adrenaline and cortisol, increasing heart rate, blood pressure, and energy supplies. 
@@ -175,7 +175,7 @@ export default function StressPage() {
             {/* Types of Stress */}
             <Collapsible>
               <Card>
-                <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                   <h3 className="text-xl font-semibold text-left">Types of Stress</h3>
                   <ChevronDown className="h-5 w-5 transition-transform" />
                 </CollapsibleTrigger>
@@ -218,7 +218,7 @@ export default function StressPage() {
             {/* Signs and Symptoms */}
             <Collapsible>
               <Card>
-                <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                   <h3 className="text-xl font-semibold text-left">Signs & Symptoms of Stress</h3>
                   <ChevronDown className="h-5 w-5 transition-transform" />
                 </CollapsibleTrigger>
@@ -273,7 +273,7 @@ export default function StressPage() {
             {/* Evidence-Based Techniques */}
             <Collapsible>
               <Card>
-                <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                   <h3 className="text-xl font-semibold text-left">Evidence-Based Management Strategies</h3>
                   <ChevronDown className="h-5 w-5 transition-transform" />
                 </CollapsibleTrigger>
@@ -340,7 +340,7 @@ export default function StressPage() {
             {/* Professional Help */}
             <Collapsible>
               <Card>
-                <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                   <h3 className="text-xl font-semibold text-left flex items-center gap-2">
                     <Stethoscope className="h-5 w-5" />
                     When to Seek Professional Help
@@ -391,7 +391,7 @@ export default function StressPage() {
             {/* For Parents, Teachers, Carers */}
             <Collapsible>
               <Card>
-                <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                   <h3 className="text-xl font-semibold text-left flex items-center gap-2">
                     <Users className="h-5 w-5" />
                     Guidance for Parents, Teachers & Carers
@@ -460,7 +460,7 @@ export default function StressPage() {
             {/* Assessment Tools */}
             <Collapsible>
               <Card>
-                <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                   <h3 className="text-xl font-semibold text-left">Assessment & Diagnosis</h3>
                   <ChevronDown className="h-5 w-5 transition-transform" />
                 </CollapsibleTrigger>

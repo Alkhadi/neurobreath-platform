@@ -171,7 +171,7 @@ export function EvidenceUpdates() {
             </Card>
 
             {loading && (
-              <Card className="p-8 text-center">
+              <Card className="p-3 sm:p-5 md:p-8 text-center">
                 <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-3" />
                 <p className="text-sm text-gray-600">Searching PubMed...</p>
               </Card>
@@ -208,7 +208,7 @@ export function EvidenceUpdates() {
             )}
 
             {!loading && pubmedResults.length === 0 && selectedPreset && (
-              <Card className="p-8 text-center">
+              <Card className="p-3 sm:p-5 md:p-8 text-center">
                 <p className="text-gray-600">No results found. Try a different topic.</p>
               </Card>
             )}

@@ -515,7 +515,7 @@ export function LearningGames() {
                 : 'opacity-90'
             }
           >
-            <CardContent className="p-6 space-y-4">
+            <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
               <div className="flex items-start justify-between">
                 <div className={`text-4xl p-3 rounded-lg ${styles.iconBg}`} aria-hidden="true">
                   {game.icon}
@@ -605,7 +605,7 @@ export function LearningGames() {
 
       {/* Tips Card */}
       <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
-        <CardContent className="p-6">
+        <CardContent className="p-3 sm:p-4 md:p-6">
           <div className="space-y-3">
             <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-blue-600" />

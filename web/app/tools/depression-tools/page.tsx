@@ -32,7 +32,7 @@ function MoodTracker() {
   }
 
   return (
-    <Card className="p-6">
+    <Card className="p-3 sm:p-4 md:p-6">
       <h3 className="text-2xl font-bold mb-4">Daily Mood Tracker</h3>
       <p className="text-sm text-muted-foreground mb-6">
         Track your mood daily to identify patterns and triggers. Research shows that mood monitoring improves treatment outcomes.
@@ -94,7 +94,7 @@ function MoodTracker() {
 // Breathing Exercise Component
 function BreathingExercise() {
   return (
-    <Card className="p-6">
+    <Card className="p-3 sm:p-4 md:p-6">
       <h3 className="text-2xl font-bold mb-4">Breathing for Depression</h3>
       <p className="text-sm text-muted-foreground mb-6">
         Deep breathing activates the vagus nerve, reducing stress hormones and improving mood regulation. Practice daily for best results.
@@ -140,7 +140,7 @@ function BreathingExercise() {
 // Cognitive Reframing Tool
 function CognitiveReframing() {
   return (
-    <Card className="p-6">
+    <Card className="p-3 sm:p-4 md:p-6">
       <h3 className="text-2xl font-bold mb-4">Cognitive Reframing</h3>
       <p className="text-sm text-muted-foreground mb-6">
         Challenge negative automatic thoughts and develop more balanced thinking patterns. Core technique from Cognitive Behavioral Therapy.
@@ -196,7 +196,7 @@ function GratitudePractice() {
   }
 
   return (
-    <Card className="p-6">
+    <Card className="p-3 sm:p-4 md:p-6">
       <h3 className="text-2xl font-bold mb-4">Gratitude Practice</h3>
       <p className="text-sm text-muted-foreground mb-6">
         Regular gratitude practice increases positive emotions and life satisfaction. Write 3 things you're grateful for daily.
@@ -253,7 +253,7 @@ function CrisisResources() {
 
   return (
     <div className="space-y-6">
-      <Card className="p-6 bg-red-50 border-2 border-red-200">
+      <Card className="p-3 sm:p-4 md:p-6 bg-red-50 border-2 border-red-200">
         <div className="flex items-start gap-3">
           <AlertCircle className="h-8 w-8 text-red-600 flex-shrink-0" />
           <div>
@@ -272,7 +272,7 @@ function CrisisResources() {
       </Card>
 
       <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
-        <Card className="p-6">
+        <Card className="p-3 sm:p-4 md:p-6">
           <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
             <span>🇬🇧</span> UK Crisis Support
           </h4>
@@ -286,7 +286,7 @@ function CrisisResources() {
           </div>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-3 sm:p-4 md:p-6">
           <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
             <span>🇺🇸</span> US Crisis Support
           </h4>
@@ -344,7 +344,7 @@ export default function DepressionToolsPage() {
           </div>
 
           {/* Quick Stats */}
-          <Card className="p-8 bg-gradient-to-r from-blue-50 to-purple-50">
+          <Card className="p-3 sm:p-5 md:p-8 bg-gradient-to-r from-blue-50 to-purple-50">
             <h2 className="text-2xl font-bold text-center mb-8">Understanding Depression</h2>
             <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
               <div className="text-center">
@@ -373,19 +373,19 @@ export default function DepressionToolsPage() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold mb-6 text-center">What is Depression?</h2>
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="font-semibold text-lg mb-3">Clinical Depression (MDD)</h3>
               <p className="text-sm text-muted-foreground mb-4">
                 <strong>Major Depressive Disorder</strong> is more than sadness—it's a persistent condition lasting at least two weeks with five or more symptoms including depressed mood, loss of interest, changes in sleep/appetite, fatigue, difficulty concentrating, and feelings of worthlessness.
               </p>
             </Card>
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="font-semibold text-lg mb-3">The Neurobiology</h3>
               <p className="text-sm text-muted-foreground">
                 Depression involves complex interactions between neurotransmitters (serotonin, dopamine, norepinephrine), HPA axis dysregulation leading to elevated cortisol, and chronic neuroinflammation affecting brain regions like the hippocampus and prefrontal cortex.
               </p>
             </Card>
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="font-semibold text-lg mb-3">Types of Depression</h3>
               <ul className="text-sm text-muted-foreground space-y-1">
                 <li>• <strong>Major Depression (MDD):</strong> Severe episode lasting 2+ weeks</li>
@@ -394,7 +394,7 @@ export default function DepressionToolsPage() {
                 <li>• <strong>Postpartum:</strong> During/after pregnancy</li>
               </ul>
             </Card>
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="font-semibold text-lg mb-3">Depression vs. Sadness</h3>
               <p className="text-sm text-muted-foreground">
                 Normal sadness is temporary and situational. Depression is persistent, pervasive, significantly impairs functioning, and involves physical symptoms. It's a medical condition requiring professional treatment—not a character flaw or weakness.
@@ -476,7 +476,7 @@ export default function DepressionToolsPage() {
             {/* Pharmacotherapy */}
             <Collapsible>
               <Card>
-                <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                   <h3 className="text-xl font-semibold text-left flex items-center gap-2">
                     <Pill className="h-5 w-5 text-primary" />
                     Pharmacotherapy (Medication)
@@ -523,7 +523,7 @@ export default function DepressionToolsPage() {
             {/* Psychotherapy */}
             <Collapsible>
               <Card>
-                <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                   <h3 className="text-xl font-semibold text-left flex items-center gap-2">
                     <MessageSquare className="h-5 w-5 text-primary" />
                     Psychotherapy (Talk Therapy)
@@ -570,7 +570,7 @@ export default function DepressionToolsPage() {
             {/* Lifestyle Interventions */}
             <Collapsible>
               <Card>
-                <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                   <h3 className="text-xl font-semibold text-left">Lifestyle Interventions</h3>
                   <ChevronDown className="h-5 w-5 transition-transform" />
                 </CollapsibleTrigger>
@@ -623,7 +623,7 @@ export default function DepressionToolsPage() {
             {/* When to Seek Help */}
             <Collapsible>
               <Card>
-                <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                   <h3 className="text-xl font-semibold text-left flex items-center gap-2">
                     <Stethoscope className="h-5 w-5 text-primary" />
                     When to Seek Professional Help
@@ -679,7 +679,7 @@ export default function DepressionToolsPage() {
             {/* For Parents, Teachers, Carers */}
             <Collapsible>
               <Card>
-                <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                   <h3 className="text-xl font-semibold text-left flex items-center gap-2">
                     <Users className="h-5 w-5 text-primary" />
                     Guidance for Parents, Teachers & Carers
@@ -728,7 +728,7 @@ export default function DepressionToolsPage() {
             {/* Research & Statistics */}
             <Collapsible>
               <Card>
-                <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                   <h3 className="text-xl font-semibold text-left flex items-center gap-2">
                     <TrendingUp className="h-5 w-5 text-primary" />
                     Research & Statistics

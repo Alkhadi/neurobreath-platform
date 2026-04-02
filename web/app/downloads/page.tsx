@@ -172,7 +172,7 @@ export default function DownloadsPage() {
           </div>
 
           {/* Search Bar */}
-          <Card className="p-6 max-w-2xl mx-auto bg-white/80 backdrop-blur">
+          <Card className="p-3 sm:p-4 md:p-6 max-w-2xl mx-auto bg-white/80 backdrop-blur">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
@@ -245,7 +245,7 @@ export default function DownloadsPage() {
 
             <div className="space-y-8">
               {filteredDownloads.adhd.assessment && (
-                <Card className="p-6">
+                <Card className="p-3 sm:p-4 md:p-6">
                   <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
                     <FileText className="h-6 w-6 text-blue-600" />
                     Assessment & Diagnosis
@@ -268,7 +268,7 @@ export default function DownloadsPage() {
               )}
 
               {filteredDownloads.adhd.home && (
-                <Card className="p-6">
+                <Card className="p-3 sm:p-4 md:p-6">
                   <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
                     <FileText className="h-6 w-6 text-purple-600" />
                     Home & Family
@@ -291,7 +291,7 @@ export default function DownloadsPage() {
               )}
 
               {filteredDownloads.adhd.school && (
-                <Card className="p-6">
+                <Card className="p-3 sm:p-4 md:p-6">
                   <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
                     <FileText className="h-6 w-6 text-green-600" />
                     School Support
@@ -314,7 +314,7 @@ export default function DownloadsPage() {
               )}
 
               {filteredDownloads.adhd.teens && (
-                <Card className="p-6">
+                <Card className="p-3 sm:p-4 md:p-6">
                   <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
                     <FileText className="h-6 w-6 text-amber-600" />
                     Teens & Young Adults
@@ -337,7 +337,7 @@ export default function DownloadsPage() {
               )}
 
               {filteredDownloads.adhd.selfcare && (
-                <Card className="p-6">
+                <Card className="p-3 sm:p-4 md:p-6">
                   <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
                     <FileText className="h-6 w-6 text-pink-600" />
                     Self-Care & Focus
@@ -360,7 +360,7 @@ export default function DownloadsPage() {
               )}
 
               {filteredDownloads.adhd.toolkits && (
-                <Card className="p-6">
+                <Card className="p-3 sm:p-4 md:p-6">
                   <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
                     <Package className="h-6 w-6 text-indigo-600" />
                     ADHD Toolkits
@@ -392,7 +392,7 @@ export default function DownloadsPage() {
           <div className="flex flex-wrap gap-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
             {/* Autism */}
             {filteredDownloads.autism && filteredDownloads.autism.length > 0 && (
-              <Card className="p-6">
+              <Card className="p-3 sm:p-4 md:p-6">
                 <div className="flex items-center gap-3 mb-6">
                   <Sparkles className="h-8 w-8 text-purple-600" />
                   <div>
@@ -418,7 +418,7 @@ export default function DownloadsPage() {
 
             {/* Dyslexia */}
             {filteredDownloads.dyslexia && filteredDownloads.dyslexia.length > 0 && (
-              <Card className="p-6">
+              <Card className="p-3 sm:p-4 md:p-6">
                 <div className="flex items-center gap-3 mb-6">
                   <BookOpen className="h-8 w-8 text-amber-600" />
                   <div>
@@ -444,7 +444,7 @@ export default function DownloadsPage() {
 
             {/* Breathing */}
             {filteredDownloads.breathing && filteredDownloads.breathing.length > 0 && (
-              <Card className="p-6">
+              <Card className="p-3 sm:p-4 md:p-6">
                 <div className="flex items-center gap-3 mb-6">
                   <Wind className="h-8 w-8 text-green-600" />
                   <div>
@@ -470,7 +470,7 @@ export default function DownloadsPage() {
 
             {/* General */}
             {filteredDownloads.general && filteredDownloads.general.length > 0 && (
-              <Card className="p-6">
+              <Card className="p-3 sm:p-4 md:p-6">
                 <div className="flex items-center gap-3 mb-6">
                   <FileText className="h-8 w-8 text-indigo-600" />
                   <div>

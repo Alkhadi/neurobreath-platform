@@ -11,7 +11,7 @@ export default function HeroSection() {
   }
 
   return (
-    <Card className="p-8 md:p-12 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-blue-200 dark:border-blue-800">
+    <Card className="p-3 sm:p-5 md:p-8 md:p-12 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-blue-200 dark:border-blue-800">
       <div className="flex flex-wrap gap-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-16px)] [&>*]:min-w-0">
         <div className="space-y-6">
           <div>
@@ -49,7 +49,7 @@ export default function HeroSection() {
           </p>
         </div>
 
-        <Card className="p-6 bg-white dark:bg-gray-900 shadow-sm">
+        <Card className="p-3 sm:p-4 md:p-6 bg-white dark:bg-gray-900 shadow-sm">
           <h2 className="text-xl font-semibold mb-3">What's New</h2>
           <div className="space-y-3">
             <div>

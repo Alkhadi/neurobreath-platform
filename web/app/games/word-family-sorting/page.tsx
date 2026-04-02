@@ -224,7 +224,7 @@ export default function WordFamilySortingGame() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white dark:from-gray-950 dark:to-gray-900 flex items-center justify-center p-4">
         <Card className="w-full max-w-2xl">
-          <CardContent className="p-6 md:p-8 space-y-6">
+          <CardContent className="p-3 sm:p-4 md:p-8 space-y-6">
             <div className="text-center space-y-3">
               <div className="inline-flex p-4 rounded-2xl bg-pink-100 dark:bg-pink-900/30">
                 <span className="text-5xl">🏠</span>
@@ -318,7 +318,7 @@ export default function WordFamilySortingGame() {
         {showHelp && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
             <Card className="w-full max-w-lg">
-              <CardContent className="p-6 space-y-4">
+              <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
                 <h3 className="text-xl font-bold">What is a Word Family?</h3>
                 <p className="text-sm text-muted-foreground">
                   A word family is a group of words that share the same ending sound and spelling pattern.
@@ -562,7 +562,7 @@ export default function WordFamilySortingGame() {
         {showHelp && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
             <Card className="w-full max-w-lg">
-              <CardContent className="p-6 space-y-4">
+              <CardContent className="p-3 sm:p-4 md:p-6 space-y-4">
                 <h3 className="text-xl font-bold">Quick Help</h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex items-start gap-3">
@@ -611,7 +611,7 @@ export default function WordFamilySortingGame() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white dark:from-gray-950 dark:to-gray-900 flex items-center justify-center p-4">
       <Card className="w-full max-w-2xl">
-        <CardContent className="p-6 md:p-8 space-y-6">
+        <CardContent className="p-3 sm:p-4 md:p-8 space-y-6">
           <div className="text-center space-y-3">
             <div className="inline-flex p-4 rounded-2xl bg-pink-100 dark:bg-pink-900/30">
               <Trophy className="w-16 h-16 text-yellow-500" />

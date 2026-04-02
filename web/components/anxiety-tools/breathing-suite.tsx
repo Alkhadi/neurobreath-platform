@@ -270,7 +270,7 @@ export function BreathingSuite() {
       </Card>
 
       {/* Lifetime Stats */}
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <div className="flex items-center gap-2 mb-4">
           <Wind className="h-5 w-5 text-primary" />
           <h3 className="font-semibold">Lifetime Statistics</h3>

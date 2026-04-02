@@ -154,7 +154,7 @@ export const ProgressDashboard = ({ onReset: _onReset }: { onReset?: () => void 
 
       {/* Stats Overview */}
       <div className="flex flex-wrap gap-6 mb-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
-        <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
+        <Card className="p-3 sm:p-4 md:p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium">Current Streak</span>
             <Calendar className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -163,7 +163,7 @@ export const ProgressDashboard = ({ onReset: _onReset }: { onReset?: () => void 
           <p className="text-xs text-muted-foreground">Keep tracking daily!</p>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900">
+        <Card className="p-3 sm:p-4 md:p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium">Skills Practiced</span>
             <Award className="h-5 w-5 text-purple-600 dark:text-purple-400" />
@@ -172,7 +172,7 @@ export const ProgressDashboard = ({ onReset: _onReset }: { onReset?: () => void 
           <p className="text-xs text-muted-foreground">Building your toolkit</p>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
+        <Card className="p-3 sm:p-4 md:p-6 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium">Tools Used</span>
             <Target className="h-5 w-5 text-green-600 dark:text-green-400" />
@@ -181,7 +181,7 @@ export const ProgressDashboard = ({ onReset: _onReset }: { onReset?: () => void 
           <p className="text-xs text-muted-foreground">Active self-care</p>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900">
+        <Card className="p-3 sm:p-4 md:p-6 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium">Total Entries</span>
             <Heart className="h-5 w-5 text-orange-600 dark:text-orange-400" />
@@ -193,7 +193,7 @@ export const ProgressDashboard = ({ onReset: _onReset }: { onReset?: () => void 
 
       {/* Mood & Energy Averages */}
       <div className="flex flex-wrap gap-6 mb-8 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
-        <Card className="p-6">
+        <Card className="p-3 sm:p-4 md:p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <Heart className="h-5 w-5 text-pink-500" />
@@ -210,7 +210,7 @@ export const ProgressDashboard = ({ onReset: _onReset }: { onReset?: () => void 
           </p>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-3 sm:p-4 md:p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <Zap className="h-5 w-5 text-yellow-500" />
@@ -226,7 +226,7 @@ export const ProgressDashboard = ({ onReset: _onReset }: { onReset?: () => void 
       </div>
 
       {/* Log Today's Mood */}
-      <Card className="p-6 mb-8">
+      <Card className="p-3 sm:p-4 md:p-6 mb-8">
         <h3 className="text-xl font-bold mb-6">Log Today's Mood</h3>
         
         <div className="space-y-6">
@@ -282,7 +282,7 @@ export const ProgressDashboard = ({ onReset: _onReset }: { onReset?: () => void 
 
       {/* Recent Entries */}
       {moodEntries.length > 0 && (
-        <Card className="p-6">
+        <Card className="p-3 sm:p-4 md:p-6">
           <h3 className="text-xl font-bold mb-4">Recent Entries</h3>
           <div className="space-y-3">
             {moodEntries.slice(0, 7).map((entry, idx) => (

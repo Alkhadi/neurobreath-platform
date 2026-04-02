@@ -69,14 +69,14 @@ export function FocusDrill() {
 
   if (!mounted) {
     return (
-      <Card className="p-6 mb-6 border-2 border-primary/20">
+      <Card className="p-3 sm:p-4 md:p-6 mb-6 border-2 border-primary/20">
         <div className="h-32 animate-pulse bg-muted/20 rounded" />
       </Card>
     );
   }
 
   return (
-    <Card className="p-6 mb-6 border-2 border-primary/20">
+    <Card className="p-3 sm:p-4 md:p-6 mb-6 border-2 border-primary/20">
       <h2 className="text-2xl font-bold mb-3 flex items-center gap-2">
         <Target className="h-6 w-6" />
         Focus Drill (3x5)

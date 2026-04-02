@@ -95,7 +95,7 @@ export function ProgressDashboard() {
       </div>
       
       {/* Achievements Gallery */}
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold">Achievement Badges</h3>
           <div className="text-sm text-muted-foreground">{percentComplete}% Complete</div>
@@ -131,7 +131,7 @@ export function ProgressDashboard() {
       </Card>
       
       {/* Tool Usage Breakdown */}
-      <Card className="p-6">
+      <Card className="p-3 sm:p-4 md:p-6">
         <h3 className="text-lg font-semibold mb-4">Tool Usage</h3>
         <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
           <div className="space-y-2">

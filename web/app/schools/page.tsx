@@ -46,7 +46,7 @@ export default function SchoolsPage() {
           </div>
 
           {/* Quick Stats */}
-          <Card className="p-8 bg-white/80 backdrop-blur">
+          <Card className="p-3 sm:p-5 md:p-8 bg-white/80 backdrop-blur">
             <h2 className="text-2xl font-bold text-center mb-8">Supporting Every Student</h2>
             <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(25%-18px)] [&>*]:min-w-0">
               <div className="text-center">
@@ -83,7 +83,7 @@ export default function SchoolsPage() {
 
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
             {/* ADHD Quick Guide */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-blue-100 p-3 rounded-lg inline-block mb-4">
                 <Brain className="h-6 w-6 text-blue-600" />
               </div>
@@ -106,7 +106,7 @@ export default function SchoolsPage() {
             </Card>
 
             {/* Autism Quick Guide */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-purple-100 p-3 rounded-lg inline-block mb-4">
                 <Sparkles className="h-6 w-6 text-purple-600" />
               </div>
@@ -129,7 +129,7 @@ export default function SchoolsPage() {
             </Card>
 
             {/* Anxiety Quick Guide */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-green-100 p-3 rounded-lg inline-block mb-4">
                 <Wind className="h-6 w-6 text-green-600" />
               </div>
@@ -152,7 +152,7 @@ export default function SchoolsPage() {
             </Card>
 
             {/* Dyslexia Quick Guide */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-amber-100 p-3 rounded-lg inline-block mb-4">
                 <BookOpen className="h-6 w-6 text-amber-600" />
               </div>
@@ -175,7 +175,7 @@ export default function SchoolsPage() {
             </Card>
 
             {/* Depression & Mood Quick Guide */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-indigo-100 p-3 rounded-lg inline-block mb-4">
                 <Heart className="h-6 w-6 text-indigo-600" />
               </div>
@@ -198,7 +198,7 @@ export default function SchoolsPage() {
             </Card>
 
             {/* Stress Management Quick Guide */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
               <div className="bg-teal-100 p-3 rounded-lg inline-block mb-4">
                 <Target className="h-6 w-6 text-teal-600" />
               </div>
@@ -223,7 +223,7 @@ export default function SchoolsPage() {
 
           {/* Printable Classroom Posters */}
           <div className="mt-12">
-            <Card className="p-8 bg-gradient-to-br from-purple-50 to-blue-50">
+            <Card className="p-3 sm:p-5 md:p-8 bg-gradient-to-br from-purple-50 to-blue-50">
               <h3 className="text-2xl font-bold mb-4 text-center">Printable Classroom Posters</h3>
               <div className="flex flex-wrap gap-4 mb-6 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
                 <div className="bg-white p-4 rounded-lg">
@@ -285,7 +285,7 @@ export default function SchoolsPage() {
                 {/* ADHD */}
                 <Collapsible>
                   <Card>
-                    <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                    <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-4">
                         <Brain className="h-6 w-6 text-blue-600" />
                         <h3 className="text-xl font-semibold text-left">ADHD (Attention-Deficit/Hyperactivity Disorder)</h3>
@@ -341,7 +341,7 @@ export default function SchoolsPage() {
                 {/* Autism */}
                 <Collapsible>
                   <Card>
-                    <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                    <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-4">
                         <Sparkles className="h-6 w-6 text-purple-600" />
                         <h3 className="text-xl font-semibold text-left">Autism Spectrum Disorder (ASD)</h3>
@@ -399,7 +399,7 @@ export default function SchoolsPage() {
                 {/* Anxiety */}
                 <Collapsible>
                   <Card>
-                    <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                    <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-4">
                         <Wind className="h-6 w-6 text-green-600" />
                         <h3 className="text-xl font-semibold text-left">Anxiety Disorders</h3>
@@ -457,7 +457,7 @@ export default function SchoolsPage() {
                 {/* Dyslexia */}
                 <Collapsible>
                   <Card>
-                    <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                    <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-4">
                         <BookOpen className="h-6 w-6 text-amber-600" />
                         <h3 className="text-xl font-semibold text-left">Dyslexia</h3>
@@ -515,7 +515,7 @@ export default function SchoolsPage() {
                 {/* Depression & Low Mood */}
                 <Collapsible>
                   <Card>
-                    <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                    <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-4">
                         <Heart className="h-6 w-6 text-indigo-600" />
                         <h3 className="text-xl font-semibold text-left">Depression & Low Mood</h3>
@@ -574,7 +574,7 @@ export default function SchoolsPage() {
                 {/* Sleep Issues */}
                 <Collapsible>
                   <Card>
-                    <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                    <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-4">
                         <div className="h-6 w-6 text-blue-600 text-xl">😴</div>
                         <h3 className="text-xl font-semibold text-left">Sleep Issues & Impact on Learning</h3>
@@ -624,7 +624,7 @@ export default function SchoolsPage() {
                 {/* Stress & Emotional Regulation */}
                 <Collapsible>
                   <Card>
-                    <CollapsibleTrigger className="w-full p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                    <CollapsibleTrigger className="w-full p-3 sm:p-4 md:p-6 flex items-center justify-between hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-4">
                         <Target className="h-6 w-6 text-teal-600" />
                         <h3 className="text-xl font-semibold text-left">Stress & Emotional Regulation</h3>
@@ -897,7 +897,7 @@ export default function SchoolsPage() {
           </div>
 
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] lg:[&>*]:basis-[calc(33.333%-16px)] [&>*]:min-w-0">
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="text-xl font-bold mb-3">Box Breathing (4-4-4-4)</h3>
               <p className="text-sm text-muted-foreground mb-4">
                 <strong>Best for:</strong> Focus, test anxiety, transitions
@@ -917,7 +917,7 @@ export default function SchoolsPage() {
               </Link>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="text-xl font-bold mb-3">4-7-8 Breathing</h3>
               <p className="text-sm text-muted-foreground mb-4">
                 <strong>Best for:</strong> Anxiety, calming before rest time
@@ -936,7 +936,7 @@ export default function SchoolsPage() {
               </Link>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="text-xl font-bold mb-3">Belly Breathing (Younger Students)</h3>
               <p className="text-sm text-muted-foreground mb-4">
                 <strong>Best for:</strong> Elementary, simple calming
@@ -958,7 +958,7 @@ export default function SchoolsPage() {
           </div>
 
           <div className="mt-8">
-            <Card className="p-6 bg-gradient-to-br from-blue-50 to-green-50">
+            <Card className="p-3 sm:p-4 md:p-6 bg-gradient-to-br from-blue-50 to-green-50">
               <h3 className="text-xl font-bold mb-3 text-center">Implementation Tips</h3>
               <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                 <div>
@@ -999,7 +999,7 @@ export default function SchoolsPage() {
           </div>
 
           <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="text-xl font-bold mb-4 text-red-600">If Student Mentions Suicide or Self-Harm:</h3>
               <ol className="text-sm space-y-3 mb-4 list-decimal list-inside">
                 <li><strong>DO NOT leave student alone</strong></li>
@@ -1016,7 +1016,7 @@ export default function SchoolsPage() {
               </div>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="text-xl font-bold mb-4 text-orange-600">Other Mental Health Concerns:</h3>
               <div className="space-y-4">
                 <div>
@@ -1053,7 +1053,7 @@ export default function SchoolsPage() {
           </div>
 
           <div className="mt-8">
-            <Card className="p-6">
+            <Card className="p-3 sm:p-4 md:p-6">
               <h3 className="text-xl font-bold mb-4">Crisis Hotlines (Share with Students/Parents)</h3>
               <div className="flex flex-wrap gap-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-12px)] [&>*]:min-w-0">
                 <div>
