@@ -5,26 +5,28 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Timer, Play, Square, TrendingUp } from 'lucide-react';
 
+/** Count words by splitting on whitespace – matches how browsers render text. */
+function countWords(text: string): number {
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
 const passages = [
   {
     level: 'Beginner',
     text: 'The cat sat on the mat. The dog ran in the park. The sun was bright today.',
-    wordCount: 17,
     target: 60,
   },
   {
     level: 'Intermediate',
     text: 'Yesterday, my family visited the zoo. We saw lions, elephants, and monkeys. The elephants were my favorite because they were so big and gentle. We had a great time together.',
-    wordCount: 32,
     target: 100,
   },
   {
     level: 'Advanced',
     text: 'Reading fluency improves with consistent practice. When students read the same passage multiple times, their speed and accuracy naturally increase. This technique, called repeated reading, is highly effective for building automaticity in word recognition and improving overall reading comprehension skills.',
-    wordCount: 42,
     target: 130,
   },
-];
+].map((p) => ({ ...p, wordCount: countWords(p.text) }));
 
 export function ReadingSpeedCalculator() {
   const [selectedLevel, setSelectedLevel] = useState(0);

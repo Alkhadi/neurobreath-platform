@@ -6,23 +6,25 @@ import { Button } from '@/components/ui/button';
 import { Timer, Trophy, RefreshCw, Play, Pause, Flag } from 'lucide-react';
 import { useProgress } from '@/contexts/ProgressContext';
 
+/** Count words by splitting on whitespace – matches how browsers render text. */
+function countWords(text: string): number {
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
 const passages = [
   {
     level: 'Easy',
     text: 'The cat sat on the mat. The dog ran to the park. The sun was bright and warm.',
-    wordCount: 18,
   },
   {
     level: 'Medium',
     text: 'Yesterday, my family went to the beach. We built sandcastles and collected seashells. The water was cold but refreshing.',
-    wordCount: 22,
   },
   {
     level: 'Hard',
     text: 'Scientists have discovered that reading fluency improves with regular practice. When students read the same passage multiple times, their speed and comprehension naturally increase over time.',
-    wordCount: 28,
   },
-];
+].map((p) => ({ ...p, wordCount: countWords(p.text) }));
 
 export function ReadingFluencyRace() {
   const [selectedPassage, setSelectedPassage] = useState(0);

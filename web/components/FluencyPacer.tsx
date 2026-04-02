@@ -89,9 +89,15 @@ export default function FluencyPacer() {
           setIsPlaying(false);
           setCurrentWordIndex(totalWords - 1);
           currentWordIndexRef.current = totalWords - 1;
-          // Deterministic final stats — no wall-clock jitter.
-          setElapsedTime(Math.round((totalWords * msPerWord) / 1000));
-          setCurrentWPM(targetWPM);
+          // Use actual wall-clock elapsed time for accurate WPM.
+          const finalElapsedMs = Date.now() - startTimeRef.current;
+          const finalElapsedSec = Math.round(finalElapsedMs / 1000);
+          setElapsedTime(finalElapsedSec);
+          setCurrentWPM(
+            finalElapsedMs > 0
+              ? Math.round((totalWords / finalElapsedMs) * 60000)
+              : 0
+          );
           if (intervalRef.current) {
             clearInterval(intervalRef.current);
           }
@@ -99,11 +105,14 @@ export default function FluencyPacer() {
           setCurrentWordIndex(nextWordIndex);
           currentWordIndexRef.current = nextWordIndex;
           const wordsRead = nextWordIndex + 1;
-          // Deterministic elapsed & WPM derived from word position, not
-          // wall-clock.  wordsRead × msPerWord is the exact moment word N
-          // should appear, so both values are jitter-free.
-          setElapsedTime(Math.floor((wordsRead * msPerWord) / 1000));
-          setCurrentWPM(targetWPM);
+          // Use actual wall-clock elapsed time for accurate WPM.
+          const elapsedMs = Date.now() - startTimeRef.current;
+          setElapsedTime(Math.floor(elapsedMs / 1000));
+          setCurrentWPM(
+            elapsedMs > 0
+              ? Math.round((wordsRead / elapsedMs) * 60000)
+              : 0
+          );
         }
       }, 50);
     } else {
