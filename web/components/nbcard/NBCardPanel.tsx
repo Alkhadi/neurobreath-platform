@@ -1735,12 +1735,37 @@ export function NBCardPanel() {
         </div>
       )}
 
+      {/* Sign-in callout — always above the canvas */}
+      {!sessionEmail && !signInCalloutDismissed ? (
+        <div className="mb-4 rounded-xl border border-purple-100 bg-purple-50 px-3 sm:px-4 py-3">
+          <div className="flex items-start justify-between gap-2 mb-1">
+            <p className="text-sm font-semibold text-gray-900 min-w-0">
+              Tip: Sign in to sync across devices
+            </p>
+            <button
+              type="button"
+              onClick={handleDismissSignInCallout}
+              className="shrink-0 mt-0.5 text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label="Dismiss sign-in suggestion"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <p className="text-xs text-gray-700 mb-3">
+            Your cards are saved locally on this device. Sign in to keep your cards across devices and avoid losing work if your browser storage is cleared.
+          </p>
+          <Button asChild size="sm" className="w-full sm:w-auto">
+            <a href={`/uk/login?callbackUrl=${encodeURIComponent("/resources/nb-card")}`}>Sign in</a>
+          </Button>
+        </div>
+      ) : null}
+
       {/* Main Content — single column mobile, two columns lg+ */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
         {/* Left Column - Profile Card */}
-        <div className="min-w-0">
+        <div className="min-w-0 lg:flex-1">
           {/* Profile Card with Capture Wrapper */}
-          <div className="mb-6">
+          <div className="mb-4 sm:mb-6">
             <div id="profile-card-capture-wrapper" className="text-left w-full">
               <ProfileCard
                 profile={currentProfile}
@@ -1861,33 +1886,7 @@ export function NBCardPanel() {
         </div>
 
         {/* Right Column - Share Buttons */}
-        <div className="min-w-0 bg-white rounded-2xl shadow-xl p-6">
-          {!sessionEmail && !signInCalloutDismissed ? (
-            <div className="mb-4 rounded-xl border border-purple-100 bg-purple-50 px-4 py-3">
-              {/* Title row with dismiss */}
-              <div className="flex items-start justify-between gap-2 mb-1">
-                <p className="text-sm font-semibold text-gray-900 min-w-0">
-                  Tip: Sign in to sync across devices
-                </p>
-                <button
-                  type="button"
-                  onClick={handleDismissSignInCallout}
-                  className="shrink-0 mt-0.5 text-gray-400 hover:text-gray-600 transition-colors"
-                  aria-label="Dismiss sign-in suggestion"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-              {/* Body text — never forced into a narrow column */}
-              <p className="text-xs text-gray-700 mb-3">
-                Your cards are saved locally on this device. Sign in to keep your cards across devices and avoid losing work if your browser storage is cleared.
-              </p>
-              {/* CTA — full width on mobile, auto on larger screens */}
-              <Button asChild size="sm" className="w-full sm:w-auto">
-                <a href={`/uk/login?callbackUrl=${encodeURIComponent("/resources/nb-card")}`}>Sign in</a>
-              </Button>
-            </div>
-          ) : null}
+        <div className="min-w-0 lg:flex-1 nb-surface p-3 sm:p-4 md:p-6">
           <div id="share-your-profile">
             <ShareButtons
               profile={currentProfile}
@@ -2178,7 +2177,7 @@ export function NBCardPanel() {
       </div>
 
       {/* Template Picker Section */}
-      <div className="mb-8">
+      <div className="mb-4 sm:mb-6 md:mb-8">
         <TemplatePicker
           selection={templateSelection}
           orientation={templateSelection.orientation || 'landscape'}
@@ -2188,12 +2187,12 @@ export function NBCardPanel() {
       </div>
 
       {/* Contact Capture Section */}
-      <div className="mb-8">
+      <div className="mb-4 sm:mb-6 md:mb-8">
         <ContactCapture contacts={contacts} onUpsert={handleUpsertContact} onDelete={handleDeleteContact} />
       </div>
 
       {/* Data Controls Center */}
-      <div className="mb-8">
+      <div className="mb-4 sm:mb-6 md:mb-8">
         <DataControlsCenter
           profiles={profiles}
           contacts={contacts}
@@ -2203,7 +2202,7 @@ export function NBCardPanel() {
       </div>
 
       {/* PWA Install Section */}
-      <div id="nbcard-install" className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl shadow-xl p-6">
+      <div id="nbcard-install" className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl sm:rounded-[30px] shadow-xl p-3 sm:p-4 md:p-6">
         <div className="text-center mb-4">
           <h3 className="text-2xl font-bold text-gray-800 mb-2">Install as App</h3>
           <p className="text-gray-600">Use the “Download & Install NB-Card” button at the top of the page, or follow the steps below.</p>
@@ -2222,8 +2221,8 @@ export function NBCardPanel() {
         {/* Install button removed: primary one-shot install is handled by the page CTA */}
 
         {/* Manual Install Instructions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <div className="bg-white rounded-lg p-4">
+        <div className="flex flex-col md:flex-row gap-4 mt-4">
+          <div className="flex-1 min-w-0 bg-white rounded-lg p-3 sm:p-4">
             <h4 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
               <span className="bg-gray-800 text-white px-2 py-1 rounded text-xs">iOS</span>
               iPhone & iPad
@@ -2235,7 +2234,7 @@ export function NBCardPanel() {
               <li>Tap "Add" to confirm</li>
             </ol>
           </div>
-          <div className="bg-white rounded-lg p-4">
+          <div className="flex-1 min-w-0 bg-white rounded-lg p-3 sm:p-4">
             <h4 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
               <span className="bg-green-600 text-white px-2 py-1 rounded text-xs">Android</span>
               Chrome Browser

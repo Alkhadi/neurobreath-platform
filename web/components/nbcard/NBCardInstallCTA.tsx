@@ -81,9 +81,9 @@ export function NBCardInstallCTA() {
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 mb-10">
-        <div className="flex flex-col md:flex-row md:items-center gap-6">
-          <div className="flex items-center gap-4">
+      <div className="nb-surface p-3 sm:p-5 md:p-8 mb-6 sm:mb-8 md:mb-10">
+        <div className="flex flex-col md:flex-row md:items-center gap-4 sm:gap-6">
+          <div className="flex items-center gap-3 sm:gap-4">
             <Image
               src="/icons/nbcard/icon-192.png"
               alt="NB-Card"
@@ -93,8 +93,8 @@ export function NBCardInstallCTA() {
               priority
             />
             <div>
-              <h2 className="text-2xl font-bold text-gray-800">Install NB-Card</h2>
-              <p className="text-gray-600">Local-first digital business card. Installable where supported.</p>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Install NB-Card</h2>
+              <p className="text-sm sm:text-base text-gray-600">Local-first digital business card. Installable where supported.</p>
               <p className="mt-1 text-sm text-gray-500">Status: <span className="font-semibold text-gray-700">{statusText}</span></p>
             </div>
           </div>

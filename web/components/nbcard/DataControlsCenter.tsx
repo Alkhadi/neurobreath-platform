@@ -146,11 +146,11 @@ export function DataControlsCenter({ profiles, contacts, onRestoreData, onDelete
 
   return (
     <>
-      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl shadow-lg p-6">
+      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl sm:rounded-[30px] shadow-lg p-3 sm:p-4 md:p-6">
         <div className="flex items-start gap-3 mb-4">
-          <Info className="h-6 w-6 text-purple-600 flex-shrink-0 mt-1" />
+          <Info className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600 flex-shrink-0 mt-1" />
           <div>
-            <h3 className="text-xl font-bold text-gray-800 mb-1">Data &amp; Privacy</h3>
+            <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-1">Data &amp; Privacy</h3>
             <p className="text-sm text-gray-600">
               Back up your cards, restore them, or delete data from this device at any time.
             </p>
