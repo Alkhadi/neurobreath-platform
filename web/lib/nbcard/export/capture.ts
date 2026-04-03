@@ -179,6 +179,16 @@ export async function captureToBlob(
   const savedDisplays = uiElements.map((el) => el.style.display);
   uiElements.forEach((el) => { el.style.display = "none"; });
 
+  // html2canvas cannot resolve chained CSS custom properties (e.g.
+  // var(--nb-font) → var(--font-inter) → "Inter, sans-serif").
+  // Resolve every element's computed font-family into an explicit inline
+  // value so the captured canvas text matches on-screen output.
+  const fontRestoreList = resolveFontVariables(rootEl);
+
+  // Text layers use overflow:hidden to clip on-screen, but that can
+  // truncate text that barely fits.  Temporarily switch to visible.
+  const overflowRestoreList = relaxTextOverflow(rootEl);
+
   // Flush layout (double RAF for stability)
   await new Promise((resolve) => {
     requestAnimationFrame(() => {
@@ -208,6 +218,8 @@ export async function captureToBlob(
     // Restore all inlined assets and editor UI elements after capture
     restoreImages();
     restoreCssBg();
+    fontRestoreList();
+    overflowRestoreList();
     uiElements.forEach((el, i) => { el.style.display = savedDisplays[i]; });
   }
   
@@ -225,4 +237,69 @@ export async function captureToBlob(
       1.0 // Maximum quality
     );
   });
+}
+
+/**
+ * Resolve CSS-variable-based font-family into explicit computed values.
+ * html2canvas cannot follow chained `var()` references, so we snapshot
+ * every element's computed font-family into its inline style.
+ * Returns a restore function.
+ */
+function resolveFontVariables(rootEl: HTMLElement): () => void {
+  if (typeof window === "undefined") return () => undefined;
+
+  const elements = [rootEl, ...Array.from(rootEl.querySelectorAll<HTMLElement>("*"))];
+  const restoreList: Array<{ el: HTMLElement; prev: string }> = [];
+
+  for (const el of elements) {
+    const inlineFf = el.style.fontFamily;
+    // Only act on elements whose inline or inherited font-family references var().
+    // We resolve via getComputedStyle which already follows the variable chain.
+    const computed = window.getComputedStyle(el).fontFamily;
+    if (!computed) continue;
+
+    // If computed already equals the inline value, nothing to do.
+    if (inlineFf === computed) continue;
+
+    // Check whether this element (or an ancestor) uses a CSS variable.
+    // Cheap: look at the inline style string.  Expensive fallback: always set.
+    const usesVar =
+      inlineFf.includes("var(") ||
+      el.style.getPropertyValue("--nb-font") !== "" ||
+      el.closest("[style*='--nb-font']") !== null;
+
+    if (usesVar || inlineFf.includes("var(")) {
+      restoreList.push({ el, prev: inlineFf });
+      el.style.fontFamily = computed;
+    }
+  }
+
+  return () => restoreList.forEach(({ el, prev }) => { el.style.fontFamily = prev; });
+}
+
+/**
+ * Temporarily set overflow:visible on text-layer containers so
+ * html2canvas does not clip text that barely fits the layer box.
+ * Returns a restore function.
+ */
+function relaxTextOverflow(rootEl: HTMLElement): () => void {
+  if (typeof window === "undefined") return () => undefined;
+
+  const restoreList: Array<{ el: HTMLElement; prev: string }> = [];
+
+  // Text layer wrapper divs have overflow:hidden set via inline style
+  const all = Array.from(rootEl.querySelectorAll<HTMLElement>("*"));
+  for (const el of all) {
+    if (el.style.overflow !== "hidden") continue;
+    // Only relax elements that look like text containers (have text children)
+    const hasText = el.childNodes.length > 0 &&
+      Array.from(el.childNodes).some(n => n.nodeType === Node.TEXT_NODE && n.textContent?.trim());
+    const hasWordBreak = el.style.wordBreak === "break-word";
+    if (hasText || hasWordBreak) {
+      restoreList.push({ el, prev: el.style.overflow });
+      el.style.overflow = "visible";
+    }
+  }
+
+  return () => restoreList.forEach(({ el, prev }) => { el.style.overflow = prev; });
 }

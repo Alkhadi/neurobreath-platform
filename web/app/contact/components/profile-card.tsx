@@ -6,6 +6,30 @@ import { stripUrls, clamp } from "@/lib/nbcard/sanitize";
 import { findSnapPoints, snapToGrid } from "@/lib/nb-card/layer-editor";
 import { FaInstagram, FaFacebook, FaTiktok, FaLinkedin, FaTwitter, FaGlobe, FaPhone, FaEnvelope, FaHome } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
+import {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+} from "@/components/ui/context-menu";
+import {
+  Copy,
+  Trash2,
+  Lock,
+  Unlock,
+  Eye,
+  EyeOff,
+  ChevronUp,
+  ChevronDown,
+  ChevronsUp,
+  ChevronsDown,
+  RotateCw,
+  RotateCcw,
+  RefreshCcw,
+  Pencil,
+} from "lucide-react";
 import { getSession } from "next-auth/react";
 import { QRCodeSVG } from "qrcode.react";
 import { resolveAssetUrl } from "../lib/nbcard-assets";
@@ -576,6 +600,15 @@ interface ProfileCardProps {
   selectedLayerId?: string | null; // Free Layout Editor: currently selected layer
   onLayerUpdate?: (layerId: string, updates: Partial<CardLayer>) => void; // Free Layout Editor: update layer
   onLayerSelect?: (layerId: string | null) => void; // Free Layout Editor: select layer
+  // Context menu layer operations
+  onLayerDuplicate?: (layerId: string) => void;
+  onLayerDelete?: (layerId: string) => void;
+  onLayerLock?: (layerId: string) => void;
+  onLayerVisibility?: (layerId: string) => void;
+  onBringForward?: (layerId: string) => void;
+  onSendBackward?: (layerId: string) => void;
+  onBringToFront?: (layerId: string) => void;
+  onSendToBack?: (layerId: string) => void;
   /**
    * Pre-resolved canonical server share URL (e.g. /nb-card/s/<token>).
    * When provided, used as the QR value in wallet templates instead of the
@@ -596,6 +629,14 @@ function CardLayerRenderer({
   onUpdate,
   containerRef,
   allLayers,
+  onDuplicate,
+  onDelete,
+  onToggleLock,
+  onToggleVisibility,
+  onBringForward,
+  onSendBackward,
+  onBringToFront,
+  onSendToBack,
 }: {
   layer: CardLayer;
   editMode?: boolean;
@@ -607,6 +648,14 @@ function CardLayerRenderer({
   onUpdate?: (id: string, updates: Partial<CardLayer>) => void;
   containerRef: React.RefObject<HTMLDivElement>;
   allLayers: CardLayer[];
+  onDuplicate?: (id: string) => void;
+  onDelete?: (id: string) => void;
+  onToggleLock?: (id: string) => void;
+  onToggleVisibility?: (id: string) => void;
+  onBringForward?: (id: string) => void;
+  onSendBackward?: (id: string) => void;
+  onBringToFront?: (id: string) => void;
+  onSendToBack?: (id: string) => void;
 }) {
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
@@ -614,6 +663,8 @@ function CardLayerRenderer({
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, layerW: 0, layerH: 0 });
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
+  const [longPressPos, setLongPressPos] = useState<{ x: number; y: number } | null>(null);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto-focus textarea when editing starts
@@ -813,13 +864,13 @@ function CardLayerRenderer({
           style={{
             width: "100%",
             height: "100%",
-            fontSize: `${layer.style.fontSize}px`,
+            fontSize: `${(layer.style.fontSize / 448) * 100}cqw`,
             fontWeight: layer.style.fontWeight,
             fontFamily: layer.style.fontFamily || "var(--nb-font, ui-sans-serif, system-ui, sans-serif)",
             textAlign: layer.style.align,
             color: showPlaceholder ? "rgba(156, 163, 175, 0.6)" : layer.style.color,
             backgroundColor: layer.style.backgroundColor || "transparent",
-            padding: layer.style.padding ? `${layer.style.padding}px` : undefined,
+            padding: layer.style.padding ? `${(layer.style.padding / 448) * 100}cqw` : undefined,
             display: "flex",
             alignItems: "center",
             justifyContent: layer.style.align === "center" ? "center" : layer.style.align === "right" ? "flex-end" : "flex-start",
@@ -947,6 +998,345 @@ function CardLayerRenderer({
     return null;
   };
 
+  const showContextMenu = !!(editMode || canvasEditMode);
+
+  const handleRotate = (degrees: number) => {
+    onUpdate?.(layer.id, { rotation: ((layer.rotation ?? 0) + degrees) % 360 });
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!showContextMenu) return;
+    const touch = e.touches[0];
+    longPressTimer.current = setTimeout(() => {
+      onSelect?.(layer.id);
+      setLongPressPos({ x: touch.clientX, y: touch.clientY });
+    }, 500);
+  };
+
+  const handleTouchEnd = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  };
+
+  const handleTouchMove = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  };
+
+  const contextMenuItems = (
+    <>
+      {layer.type === "text" && (
+        <ContextMenuItem
+          onSelect={() => {
+            const textContent = layer.type === "text" ? layer.style.content : "";
+            setEditValue(textContent || "");
+            setIsEditing(true);
+          }}
+        >
+          <Pencil className="mr-2 h-4 w-4" /> Edit Text
+        </ContextMenuItem>
+      )}
+      {layer.type === "avatar" && (
+        <ContextMenuItem
+          onSelect={() => {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "image/*";
+            input.onchange = (evt: Event) => {
+              const file = (evt.target as HTMLInputElement).files?.[0];
+              if (!file) return;
+              const reader = new FileReader();
+              reader.onload = (ev) => {
+                const src = ev.target?.result as string;
+                if (src) onUpdate?.(layer.id, { style: { ...layer.style, src } });
+              };
+              reader.readAsDataURL(file);
+            };
+            input.click();
+          }}
+        >
+          <Pencil className="mr-2 h-4 w-4" /> Replace Image
+        </ContextMenuItem>
+      )}
+      <ContextMenuItem onSelect={() => onDuplicate?.(layer.id)}>
+        <Copy className="mr-2 h-4 w-4" /> Duplicate
+        <ContextMenuShortcut>⌘D</ContextMenuShortcut>
+      </ContextMenuItem>
+      <ContextMenuItem
+        onSelect={() => onDelete?.(layer.id)}
+        className="text-red-600 focus:text-red-600"
+      >
+        <Trash2 className="mr-2 h-4 w-4" /> Delete
+        <ContextMenuShortcut>⌫</ContextMenuShortcut>
+      </ContextMenuItem>
+      <ContextMenuSeparator />
+      <ContextMenuItem onSelect={() => onToggleLock?.(layer.id)}>
+        {layer.locked ? <Unlock className="mr-2 h-4 w-4" /> : <Lock className="mr-2 h-4 w-4" />}
+        {layer.locked ? "Unlock" : "Lock"}
+      </ContextMenuItem>
+      <ContextMenuItem onSelect={() => onToggleVisibility?.(layer.id)}>
+        {layer.visible ? <EyeOff className="mr-2 h-4 w-4" /> : <Eye className="mr-2 h-4 w-4" />}
+        {layer.visible ? "Hide" : "Show"}
+      </ContextMenuItem>
+      <ContextMenuSeparator />
+      <ContextMenuItem onSelect={() => onBringToFront?.(layer.id)}>
+        <ChevronsUp className="mr-2 h-4 w-4" /> Bring to Front
+      </ContextMenuItem>
+      <ContextMenuItem onSelect={() => onBringForward?.(layer.id)}>
+        <ChevronUp className="mr-2 h-4 w-4" /> Bring Forward
+      </ContextMenuItem>
+      <ContextMenuItem onSelect={() => onSendBackward?.(layer.id)}>
+        <ChevronDown className="mr-2 h-4 w-4" /> Send Backward
+      </ContextMenuItem>
+      <ContextMenuItem onSelect={() => onSendToBack?.(layer.id)}>
+        <ChevronsDown className="mr-2 h-4 w-4" /> Send to Back
+      </ContextMenuItem>
+      <ContextMenuSeparator />
+      <ContextMenuItem onSelect={() => handleRotate(90)}>
+        <RotateCw className="mr-2 h-4 w-4" /> Rotate 90° CW
+      </ContextMenuItem>
+      <ContextMenuItem onSelect={() => handleRotate(-90)}>
+        <RotateCcw className="mr-2 h-4 w-4" /> Rotate 90° CCW
+      </ContextMenuItem>
+      {(layer.rotation ?? 0) !== 0 && (
+        <ContextMenuItem onSelect={() => onUpdate?.(layer.id, { rotation: 0 })}>
+          <RefreshCcw className="mr-2 h-4 w-4" /> Reset Rotation
+        </ContextMenuItem>
+      )}
+    </>
+  );
+
+  // Long-press popover for mobile (positioned at touch point)
+  const longPressMenu = longPressPos ? (
+    /* eslint-disable-next-line react/forbid-dom-props */
+    <div
+      data-html2canvas-ignore="true"
+      data-nb-ui="true"
+      style={{
+        position: "fixed",
+        left: longPressPos.x,
+        top: longPressPos.y,
+        zIndex: 9999,
+      }}
+    >
+      {/* Backdrop to close */}
+      {/* eslint-disable-next-line react/forbid-dom-props */}
+      <div
+        style={{ position: "fixed", inset: 0, zIndex: -1 }}
+        onClick={() => setLongPressPos(null)}
+        onTouchStart={() => setLongPressPos(null)}
+      />
+      <div className="min-w-[10rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+        {layer.type === "text" && (
+          <button
+            className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+            onClick={() => {
+              setLongPressPos(null);
+              const textContent = layer.type === "text" ? layer.style.content : "";
+              setEditValue(textContent || "");
+              setIsEditing(true);
+            }}
+          >
+            <Pencil className="mr-2 h-4 w-4" /> Edit Text
+          </button>
+        )}
+        {layer.type === "avatar" && (
+          <button
+            className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+            onClick={() => {
+              setLongPressPos(null);
+              handleAvatarClick({} as React.MouseEvent);
+            }}
+          >
+            <Pencil className="mr-2 h-4 w-4" /> Replace Image
+          </button>
+        )}
+        <button
+          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          onClick={() => { setLongPressPos(null); onDuplicate?.(layer.id); }}
+        >
+          <Copy className="mr-2 h-4 w-4" /> Duplicate
+        </button>
+        <button
+          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent text-red-600"
+          onClick={() => { setLongPressPos(null); onDelete?.(layer.id); }}
+        >
+          <Trash2 className="mr-2 h-4 w-4" /> Delete
+        </button>
+        <div className="-mx-1 my-1 h-px bg-border" />
+        <button
+          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          onClick={() => { setLongPressPos(null); onToggleLock?.(layer.id); }}
+        >
+          {layer.locked ? <Unlock className="mr-2 h-4 w-4" /> : <Lock className="mr-2 h-4 w-4" />}
+          {layer.locked ? "Unlock" : "Lock"}
+        </button>
+        <button
+          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          onClick={() => { setLongPressPos(null); onToggleVisibility?.(layer.id); }}
+        >
+          {layer.visible ? <EyeOff className="mr-2 h-4 w-4" /> : <Eye className="mr-2 h-4 w-4" />}
+          {layer.visible ? "Hide" : "Show"}
+        </button>
+        <div className="-mx-1 my-1 h-px bg-border" />
+        <button
+          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          onClick={() => { setLongPressPos(null); onBringToFront?.(layer.id); }}
+        >
+          <ChevronsUp className="mr-2 h-4 w-4" /> Bring to Front
+        </button>
+        <button
+          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          onClick={() => { setLongPressPos(null); onBringForward?.(layer.id); }}
+        >
+          <ChevronUp className="mr-2 h-4 w-4" /> Bring Forward
+        </button>
+        <button
+          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          onClick={() => { setLongPressPos(null); onSendBackward?.(layer.id); }}
+        >
+          <ChevronDown className="mr-2 h-4 w-4" /> Send Backward
+        </button>
+        <button
+          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          onClick={() => { setLongPressPos(null); onSendToBack?.(layer.id); }}
+        >
+          <ChevronsDown className="mr-2 h-4 w-4" /> Send to Back
+        </button>
+        <div className="-mx-1 my-1 h-px bg-border" />
+        <button
+          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          onClick={() => { setLongPressPos(null); handleRotate(90); }}
+        >
+          <RotateCw className="mr-2 h-4 w-4" /> Rotate 90° CW
+        </button>
+        <button
+          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          onClick={() => { setLongPressPos(null); handleRotate(-90); }}
+        >
+          <RotateCcw className="mr-2 h-4 w-4" /> Rotate 90° CCW
+        </button>
+        {(layer.rotation ?? 0) !== 0 && (
+          <button
+            className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+            onClick={() => { setLongPressPos(null); onUpdate?.(layer.id, { rotation: 0 }); }}
+          >
+            <RefreshCcw className="mr-2 h-4 w-4" /> Reset Rotation
+          </button>
+        )}
+      </div>
+    </div>
+  ) : null;
+
+  if (showContextMenu) {
+    return (
+      <ContextMenu>
+        <ContextMenuTrigger asChild>
+          {/* eslint-disable-next-line react/forbid-dom-props */}
+          <div
+            style={style}
+            onPointerDown={editMode ? handlePointerDown : undefined}
+            onPointerMove={isDragging ? handlePointerMove : isResizing ? handleResizePointerMove : undefined}
+            onPointerUp={isDragging ? handlePointerUp : isResizing ? handleResizePointerUp : undefined}
+            onDoubleClick={handleDoubleClick}
+            onClick={layer.type === "avatar" ? handleAvatarClick : undefined}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onTouchMove={handleTouchMove}
+          >
+            {renderContent()}
+
+            {/* Inline text editor overlay */}
+            {isEditing && layer.type === "text" && (
+              /* eslint-disable-next-line react/forbid-dom-props */
+              <div
+                data-html2canvas-ignore="true"
+                data-nb-ui="true"
+                style={{ position: "absolute", inset: 0, zIndex: 1000 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* eslint-disable-next-line react/forbid-dom-props */}
+                <textarea
+                  ref={textareaRef}
+                  value={editValue}
+                  onChange={(e) => setEditValue(e.target.value)}
+                  onBlur={commitEdit}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                      e.preventDefault();
+                      commitEdit();
+                    } else if (e.key === "Escape") {
+                      e.preventDefault();
+                      cancelEdit();
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    fontSize: layer.type === "text" ? `${(layer.style.fontSize / 448) * 100}cqw` : `${(16 / 448) * 100}cqw`,
+                    fontWeight: layer.type === "text" ? layer.style.fontWeight : "normal",
+                    color: layer.type === "text" ? layer.style.color : "#000",
+                    textAlign: layer.type === "text" ? layer.style.align : "left",
+                    backgroundColor: "rgba(255, 255, 255, 0.95)",
+                    border: "2px solid #10B981",
+                    borderRadius: "4px",
+                    padding: "8px",
+                    resize: "none",
+                    outline: "none",
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Resize handle */}
+            {editMode && isSelected && !layer.locked && (
+              /* eslint-disable-next-line react/forbid-dom-props */
+              <div
+                data-html2canvas-ignore="true"
+                data-nb-ui="true"
+                style={{
+                  position: "absolute",
+                  right: -22,
+                  bottom: -22,
+                  width: 44,
+                  height: 44,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "nwse-resize",
+                  zIndex: 10,
+                  touchAction: "none",
+                }}
+                onPointerDown={(e) => handleResizePointerDown(e, "br")}
+                onPointerMove={handleResizePointerMove}
+                onPointerUp={handleResizePointerUp}
+              >
+                {/* eslint-disable-next-line react/forbid-dom-props */}
+                <div
+                  style={{
+                    width: 12,
+                    height: 12,
+                    backgroundColor: "#A855F7",
+                    border: "2px solid white",
+                    borderRadius: "50%",
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Long-press menu portal for mobile */}
+            {longPressMenu}
+          </div>
+        </ContextMenuTrigger>
+        <ContextMenuContent>{contextMenuItems}</ContextMenuContent>
+      </ContextMenu>
+    );
+  }
+
   return (
     /* eslint-disable-next-line react/forbid-dom-props */
     <div
@@ -990,7 +1380,7 @@ function CardLayerRenderer({
             style={{
               width: '100%',
               height: '100%',
-              fontSize: layer.type === 'text' ? `${layer.style.fontSize}px` : '16px',
+              fontSize: layer.type === 'text' ? `${(layer.style.fontSize / 448) * 100}cqw` : `${(16 / 448) * 100}cqw`,
               fontWeight: layer.type === 'text' ? layer.style.fontWeight : 'normal',
               color: layer.type === 'text' ? layer.style.color : '#000',
               textAlign: layer.type === 'text' ? layer.style.align : 'left',
@@ -1060,6 +1450,14 @@ export function ProfileCard({
   selectedLayerId = null,
   onLayerUpdate,
   onLayerSelect,
+  onLayerDuplicate,
+  onLayerDelete,
+  onLayerLock,
+  onLayerVisibility,
+  onBringForward,
+  onSendBackward,
+  onBringToFront,
+  onSendToBack,
   serverShareUrl,
 }: ProfileCardProps) {
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -1459,6 +1857,7 @@ export function ProfileCard({
       )}
       style={{ 
         aspectRatio: aspectRatioValue,
+        containerType: "inline-size",
         // @ts-expect-error - CSS custom properties
         "--nb-font": `var(${fontVarName})`,
       }}
@@ -1506,7 +1905,7 @@ export function ProfileCard({
       {/* CARD CONTENT (z=10) — hidden in edit mode (layout or canvas), wallet template,
           or canvas-only cards (layers present but no form data filled in) */}
       {isWalletTemplate || editMode || canvasEditMode || suppressSystemContent ? null : (
-      <div className={cn("relative z-10 p-8", contentTextClass)}>
+      <div className={cn("relative z-10", styles.systemContent, contentTextClass)}>
         {isFlyerPromoPortrait ? (
                 <div className="space-y-4">
                   {/* Header */}
@@ -1594,7 +1993,7 @@ export function ProfileCard({
                   {/* Profile Photo */}
                   <div className="flex justify-center mb-6">
                     <div className="relative group">
-                      <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-white">
+                      <div className={cn("rounded-full overflow-hidden border-4 border-white shadow-lg bg-white", styles.scalePhoto)}>
                         {resolvedPhotoUrl ? (
                           <CaptureImage
                             src={resolvedPhotoUrl}
@@ -1959,6 +2358,14 @@ export function ProfileCard({
                 onUpdate={onLayerUpdate}
                 containerRef={rootRef}
                 allLayers={profile.layers || []}
+                onDuplicate={onLayerDuplicate}
+                onDelete={onLayerDelete}
+                onToggleLock={onLayerLock}
+                onToggleVisibility={onLayerVisibility}
+                onBringForward={onBringForward}
+                onSendBackward={onSendBackward}
+                onBringToFront={onBringToFront}
+                onSendToBack={onSendToBack}
               />
             ))}
         </div>

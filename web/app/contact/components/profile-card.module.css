@@ -37,3 +37,28 @@
     0 16px 32px rgba(0, 0, 0, 0.07),
     0 32px 64px rgba(0, 0, 0, 0.07);
 }
+
+/* Responsive system card content: scale text & spacing with card width.
+   The card root has container-type: inline-size, so cqw = 1% of card width.
+   Reference design width = 448px. */
+.systemContent {
+  font-size: 3.571cqw;   /* 16px at 448px */
+  padding: 7.143cqw;     /* 32px at 448px */
+}
+
+/* Override Tailwind rem-based classes inside system content with em-based sizes
+   so they scale with the cqw base font-size set above. */
+.systemContent h2 {
+  font-size: 1.875em;  /* text-3xl equivalent */
+  line-height: 1.2;
+}
+.systemContent p {
+  font-size: 1em;
+}
+.systemContent a {
+  font-size: 1em;
+}
+.systemContent .scalePhoto {
+  width: 28.571cqw;    /* 128px at 448px */
+  height: 28.571cqw;
+}

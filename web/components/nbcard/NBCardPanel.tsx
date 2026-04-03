@@ -1218,6 +1218,91 @@ export function NBCardPanel() {
     toast.success("Sent to back");
   };
 
+  // Context-menu handlers: accept layerId directly (for right-click / long-press)
+  const handleCtxDuplicate = useCallback((layerId: string) => {
+    const updatedProfile = duplicateLayer(currentProfile, layerId);
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    const newLayer = updatedProfile.layers?.find(
+      (l) => l.id !== layerId && l.x >= (currentProfile.layers?.find((l2) => l2.id === layerId)?.x ?? 0)
+    );
+    if (newLayer) setSelectedLayerId(newLayer.id);
+    toast.success("Layer duplicated");
+  }, [currentProfile, currentProfileIndex, commitToHistory]);
+
+  const handleCtxDelete = useCallback((layerId: string) => {
+    if (!confirm("Delete this layer?")) return;
+    const updatedProfile = leDeleteLayer(currentProfile, layerId);
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    if (selectedLayerId === layerId) setSelectedLayerId(null);
+    toast.success("Layer deleted");
+  }, [currentProfile, currentProfileIndex, commitToHistory, selectedLayerId]);
+
+  const handleCtxToggleLock = useCallback((layerId: string) => {
+    const layer = currentProfile.layers?.find((l) => l.id === layerId);
+    if (!layer) return;
+    const updatedProfile = leUpdateLayer(currentProfile, layerId, {
+      locked: !layer.locked,
+    });
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+  }, [currentProfile, currentProfileIndex, commitToHistory]);
+
+  const handleCtxToggleVisibility = useCallback((layerId: string) => {
+    const layer = currentProfile.layers?.find((l) => l.id === layerId);
+    if (!layer) return;
+    const updatedProfile = leUpdateLayer(currentProfile, layerId, {
+      visible: !layer.visible,
+    });
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+  }, [currentProfile, currentProfileIndex, commitToHistory]);
+
+  const handleCtxBringForward = useCallback((layerId: string) => {
+    const updatedProfile = bringLayerForward(currentProfile, layerId);
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    toast.success("Brought forward");
+  }, [currentProfile, currentProfileIndex, commitToHistory]);
+
+  const handleCtxSendBackward = useCallback((layerId: string) => {
+    const updatedProfile = sendLayerBackward(currentProfile, layerId);
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    toast.success("Sent backward");
+  }, [currentProfile, currentProfileIndex, commitToHistory]);
+
+  const handleCtxBringToFront = useCallback((layerId: string) => {
+    const updatedProfile = bringLayerToFront(currentProfile, layerId);
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    toast.success("Brought to front");
+  }, [currentProfile, currentProfileIndex, commitToHistory]);
+
+  const handleCtxSendToBack = useCallback((layerId: string) => {
+    const updatedProfile = sendLayerToBack(currentProfile, layerId);
+    setProfiles((prev) =>
+      prev.map((p, idx) => (idx === currentProfileIndex ? updatedProfile : p))
+    );
+    commitToHistory(updatedProfile);
+    toast.success("Sent to back");
+  }, [currentProfile, currentProfileIndex, commitToHistory]);
+
   const handleAvatarUploadFromInspector = useCallback((layerId: string) => {
     const input = document.createElement("input");
     input.type = "file";
@@ -1818,6 +1903,14 @@ export function NBCardPanel() {
                     saveNbcardLocalState({ profiles: updatedProfiles, contacts });
                   }, 400);
                 }}
+                onLayerDuplicate={handleCtxDuplicate}
+                onLayerDelete={handleCtxDelete}
+                onLayerLock={handleCtxToggleLock}
+                onLayerVisibility={handleCtxToggleVisibility}
+                onBringForward={handleCtxBringForward}
+                onSendBackward={handleCtxSendBackward}
+                onBringToFront={handleCtxBringToFront}
+                onSendToBack={handleCtxSendToBack}
               />
             </div>
           </div>
@@ -1887,29 +1980,342 @@ export function NBCardPanel() {
 
       </div>
 
-      {/* Share Your Profile — standalone section below canvas */}
-      <div className="nb-surface p-3 sm:p-4 md:p-6 mb-6 sm:mb-8">
-        <div id="share-your-profile">
-          <ShareButtons
-            profile={currentProfile}
-            profiles={profiles}
-            contacts={contacts}
-            onSetProfiles={setProfiles}
-            onSetContacts={setContacts}
-            templateSelection={templateSelection}
-            showPrivacyControls={false}
-            canonicalShareUrl={canonicalShareUrl}
-          />
-        </div>
+      {/* Free Layout Editor card — above Card Templates */}
+      <div className="mb-4">
+        <div className="rounded-lg border bg-muted/20 p-4">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <div>
+              <h3 className="text-sm font-semibold">Free Layout Editor</h3>
+              <p className="text-xs text-muted-foreground">Add text, shapes, and images that you can drag and resize</p>
+            </div>
+            <div className="flex items-center gap-2">
+              {autosaveIndicator && (
+                <span className="text-xs text-emerald-600 font-medium">Saved &#10003;</span>
+              )}
+              {(currentProfile.layers?.length ?? 0) > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSaveAsName(currentProfile.fullName ? `${currentProfile.fullName}'s Layout` : 'My Layout');
+                    setShowSaveAsDialog(true);
+                  }}
+                  className="px-3 py-1.5 rounded-md text-xs font-semibold bg-white border border-gray-200 text-gray-700 hover:border-purple-400 hover:text-purple-700 transition-all"
+                >
+                  Save As...
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  setLayoutEditMode(!layoutEditMode);
+                  if (!layoutEditMode) {
+                    setCanvasEditMode(false);
+                    try { localStorage.setItem('nb-card:canvas-edit-mode', '0'); } catch { /* ignore */ }
+                  } else {
+                    setSelectedLayerId(null);
+                  }
+                }}
+                className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
+                  layoutEditMode
+                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:border-purple-400'
+                }`}
+              >
+                {layoutEditMode ? 'Exit Edit Layout' : 'Edit Layout'}
+              </button>
+            </div>
+          </div>
 
-        {/* Template Picker — below Share panel */}
-        <div className="mt-4 sm:mt-6">
-          <TemplatePicker
-            selection={templateSelection}
-            orientation={templateSelection.orientation || 'landscape'}
-            onSelectionChange={handleTemplateSelectionChange}
-            onCreateFromTemplate={handleCreateFromTemplate}
-          />
+          {/* Phase 2: Card Details — dynamic fields by category */}
+          {isCanvasOnly && (() => {
+            const category = getCategoryFromProfile(currentProfile);
+            // Sync form edits → linked canvas layers (bidirectional sync)
+            const syncLinkedLayers = (profile: Profile, fieldKey: string, value: string): Profile => {
+              if (!profile.layers || profile.layers.length === 0) return profile;
+              const updatedLayers = profile.layers.map((l) => {
+                if (l.type === "text" && l.fieldLink === fieldKey) {
+                  return { ...l, style: { ...l.style, content: value } } as CardLayer;
+                }
+                return l;
+              });
+              return { ...profile, layers: updatedLayers };
+            };
+            const updateField = (patch: Partial<Profile>) => {
+              let up = { ...currentProfile, ...patch };
+              // Sync each changed field to its linked layer
+              for (const [key, value] of Object.entries(patch)) {
+                if (typeof value === "string") up = syncLinkedLayers(up, key, value);
+              }
+              setProfiles((prev) => prev.map((p, i) => i === currentProfileIndex ? up : p));
+            };
+            const updateNested = (key: 'addressCard' | 'bankCard' | 'businessCard' | 'flyerCard' | 'weddingCard', field: string, value: string) => {
+              let up: Profile = { ...currentProfile, [key]: { ...(currentProfile[key] as Record<string, unknown> ?? {}), [field]: value } };
+              // Sync to linked layer using dot-path key (e.g. "bankCard.bankName")
+              up = syncLinkedLayers(up, `${key}.${field}`, value);
+              setProfiles((prev) => prev.map((p, i) => i === currentProfileIndex ? up : p));
+            };
+            const inputCls = "w-full px-2 py-1 text-sm border rounded bg-white";
+            const labelCls = "text-xs text-gray-500";
+            return (
+              <div className="mt-3 border-t pt-3">
+                <button
+                  type="button"
+                  onClick={() => setShowCardDetails((v) => !v)}
+                  className="flex items-center gap-1 text-xs font-semibold text-gray-600 hover:text-purple-700 transition-colors w-full text-left"
+                >
+                  <span className={`transition-transform ${showCardDetails ? "rotate-90" : ""}`}>&#9654;</span>
+                  Card Details (for sharing)
+                </button>
+                {showCardDetails && (
+                  <div className="grid grid-cols-2 gap-2 mt-2">
+                    {/* Common fields for PROFILE / BUSINESS / ADDRESS */}
+                    {(category === "PROFILE" || category === "BUSINESS" || category === "ADDRESS") && (
+                      <>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-name">Full Name</label>
+                          <input id="fle-name" type="text" value={currentProfile.fullName || ""} onChange={(e) => updateField({ fullName: e.target.value })} placeholder="Your name" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-phone">Phone</label>
+                          <input id="fle-phone" type="tel" value={currentProfile.phone || ""} onChange={(e) => updateField({ phone: e.target.value })} placeholder="+1 555 000 0000" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-email">Email</label>
+                          <input id="fle-email" type="email" value={currentProfile.email || ""} onChange={(e) => updateField({ email: e.target.value })} placeholder="you@example.com" className={inputCls} />
+                        </div>
+                      </>
+                    )}
+
+                    {/* PROFILE: job title, website, description */}
+                    {category === "PROFILE" && (
+                      <>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-jobtitle">Job Title</label>
+                          <input id="fle-jobtitle" type="text" value={currentProfile.jobTitle || ""} onChange={(e) => updateField({ jobTitle: e.target.value })} placeholder="Your title" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-website">Website</label>
+                          <input id="fle-website" type="url" value={currentProfile.website || ""} onChange={(e) => updateField({ website: e.target.value })} placeholder="https://example.com" className={inputCls} />
+                        </div>
+                      </>
+                    )}
+
+                    {/* ADDRESS: address-specific fields */}
+                    {category === "ADDRESS" && (
+                      <>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-addr1">Address Line 1</label>
+                          <input id="fle-addr1" type="text" value={currentProfile.addressCard?.addressLine1 || ""} onChange={(e) => updateNested("addressCard", "addressLine1", e.target.value)} placeholder="Street" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-addr2">Address Line 2</label>
+                          <input id="fle-addr2" type="text" value={currentProfile.addressCard?.addressLine2 || ""} onChange={(e) => updateNested("addressCard", "addressLine2", e.target.value)} placeholder="Flat, suite" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-city">City</label>
+                          <input id="fle-city" type="text" value={currentProfile.addressCard?.city || ""} onChange={(e) => updateNested("addressCard", "city", e.target.value)} placeholder="City" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-postcode">Postcode</label>
+                          <input id="fle-postcode" type="text" value={currentProfile.addressCard?.postcode || ""} onChange={(e) => updateNested("addressCard", "postcode", e.target.value)} placeholder="Postcode" className={inputCls} />
+                        </div>
+                        <div className="col-span-2">
+                          <label className={labelCls} htmlFor="fle-country">Country</label>
+                          <input id="fle-country" type="text" value={currentProfile.addressCard?.country || ""} onChange={(e) => updateNested("addressCard", "country", e.target.value)} placeholder="Country" className={inputCls} />
+                        </div>
+                      </>
+                    )}
+
+                    {/* BANK: bank-specific fields */}
+                    {category === "BANK" && (
+                      <>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-accname">Account Holder</label>
+                          <input id="fle-accname" type="text" value={currentProfile.bankCard?.accountName || ""} onChange={(e) => updateNested("bankCard", "accountName", e.target.value)} placeholder="Account holder name" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-bankname">Bank Name</label>
+                          <input id="fle-bankname" type="text" value={currentProfile.bankCard?.bankName || ""} onChange={(e) => updateNested("bankCard", "bankName", e.target.value)} placeholder="Bank name" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-sortcode">Sort Code</label>
+                          <input id="fle-sortcode" type="text" value={currentProfile.bankCard?.sortCode || ""} onChange={(e) => updateNested("bankCard", "sortCode", e.target.value)} placeholder="00-00-00" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-accnum">Account Number</label>
+                          <input id="fle-accnum" type="text" value={currentProfile.bankCard?.accountNumber || ""} onChange={(e) => updateNested("bankCard", "accountNumber", e.target.value)} placeholder="12345678" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-iban">IBAN</label>
+                          <input id="fle-iban" type="text" value={currentProfile.bankCard?.iban || ""} onChange={(e) => updateNested("bankCard", "iban", e.target.value)} placeholder="GB00 XXXX 0000 0000" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-swift">SWIFT / BIC</label>
+                          <input id="fle-swift" type="text" value={currentProfile.bankCard?.swiftBic || ""} onChange={(e) => updateNested("bankCard", "swiftBic", e.target.value)} placeholder="SWIFT/BIC" className={inputCls} />
+                        </div>
+                        <div className="col-span-2">
+                          <label className={labelCls} htmlFor="fle-refnote">Reference Note</label>
+                          <input id="fle-refnote" type="text" maxLength={60} value={currentProfile.bankCard?.referenceNote || ""} onChange={(e) => updateNested("bankCard", "referenceNote", e.target.value)} placeholder="Payment reference" className={inputCls} />
+                        </div>
+                      </>
+                    )}
+
+                    {/* BUSINESS: business-specific fields */}
+                    {category === "BUSINESS" && (
+                      <>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-jobtitle">Job Title</label>
+                          <input id="fle-jobtitle" type="text" value={currentProfile.jobTitle || ""} onChange={(e) => updateField({ jobTitle: e.target.value })} placeholder="Your title" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-company">Company</label>
+                          <input id="fle-company" type="text" value={currentProfile.businessCard?.companyName || ""} onChange={(e) => updateNested("businessCard", "companyName", e.target.value)} placeholder="Company name" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-services">Services</label>
+                          <input id="fle-services" type="text" maxLength={80} value={currentProfile.businessCard?.services || ""} onChange={(e) => updateNested("businessCard", "services", e.target.value)} placeholder="Services offered" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-bizwebsite">Website</label>
+                          <input id="fle-bizwebsite" type="url" value={currentProfile.businessCard?.websiteUrl || ""} onChange={(e) => updateNested("businessCard", "websiteUrl", e.target.value)} placeholder="https://business.com" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-hours">Hours</label>
+                          <input id="fle-hours" type="text" maxLength={60} value={currentProfile.businessCard?.hours || ""} onChange={(e) => updateNested("businessCard", "hours", e.target.value)} placeholder="Mon–Fri 9–5" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-location">Location</label>
+                          <input id="fle-location" type="text" maxLength={60} value={currentProfile.businessCard?.locationNote || ""} onChange={(e) => updateNested("businessCard", "locationNote", e.target.value)} placeholder="Location" className={inputCls} />
+                        </div>
+                      </>
+                    )}
+
+                    {/* FLYER: flyer-specific fields */}
+                    {category === "FLYER" && (
+                      <>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-headline">Headline</label>
+                          <input id="fle-headline" type="text" value={currentProfile.flyerCard?.headline || ""} onChange={(e) => updateNested("flyerCard", "headline", e.target.value)} placeholder="Event headline" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-subheadline">Subheadline</label>
+                          <input id="fle-subheadline" type="text" value={currentProfile.flyerCard?.subheadline || ""} onChange={(e) => updateNested("flyerCard", "subheadline", e.target.value)} placeholder="Details" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-ctatext">CTA Text</label>
+                          <input id="fle-ctatext" type="text" value={currentProfile.flyerCard?.ctaText || ""} onChange={(e) => updateNested("flyerCard", "ctaText", e.target.value)} placeholder="Buy Tickets" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-ctaurl">CTA URL</label>
+                          <input id="fle-ctaurl" type="url" value={currentProfile.flyerCard?.ctaUrl || ""} onChange={(e) => updateNested("flyerCard", "ctaUrl", e.target.value)} placeholder="https://tickets.com" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-flyername">Contact Name</label>
+                          <input id="fle-flyername" type="text" value={currentProfile.fullName || ""} onChange={(e) => updateField({ fullName: e.target.value })} placeholder="Contact name" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-flyerphone">Contact Phone</label>
+                          <input id="fle-flyerphone" type="tel" value={currentProfile.phone || ""} onChange={(e) => updateField({ phone: e.target.value })} placeholder="+1 555 000 0000" className={inputCls} />
+                        </div>
+                      </>
+                    )}
+
+                    {/* WEDDING: wedding-specific fields */}
+                    {category === "WEDDING" && (
+                      <>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-wheadline">Headline</label>
+                          <input id="fle-wheadline" type="text" value={currentProfile.weddingCard?.headline || ""} onChange={(e) => updateNested("weddingCard", "headline", e.target.value)} placeholder="We're getting married!" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-wsubheadline">Subheadline</label>
+                          <input id="fle-wsubheadline" type="text" value={currentProfile.weddingCard?.subheadline || ""} onChange={(e) => updateNested("weddingCard", "subheadline", e.target.value)} placeholder="Date & venue" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-wctatext">RSVP Text</label>
+                          <input id="fle-wctatext" type="text" value={currentProfile.weddingCard?.ctaText || ""} onChange={(e) => updateNested("weddingCard", "ctaText", e.target.value)} placeholder="RSVP Here" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-wctaurl">RSVP URL</label>
+                          <input id="fle-wctaurl" type="url" value={currentProfile.weddingCard?.ctaUrl || ""} onChange={(e) => updateNested("weddingCard", "ctaUrl", e.target.value)} placeholder="https://rsvp.com" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-wnames">Couple Names</label>
+                          <input id="fle-wnames" type="text" value={currentProfile.fullName || ""} onChange={(e) => updateField({ fullName: e.target.value })} placeholder="Sarah & James" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls} htmlFor="fle-wphone">Contact Phone</label>
+                          <input id="fle-wphone" type="tel" value={currentProfile.phone || ""} onChange={(e) => updateField({ phone: e.target.value })} placeholder="+1 555 000 0000" className={inputCls} />
+                        </div>
+                      </>
+                    )}
+
+                    <div className="col-span-2">
+                      <button
+                        type="button"
+                        onClick={autoFillFromLayers}
+                        className="px-3 py-1.5 text-xs font-semibold rounded border border-purple-300 text-purple-700 hover:bg-purple-50 transition-colors"
+                      >
+                        Auto-fill from text layers
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* Phase 4: Saved Layouts list */}
+          {savedLayouts.length > 0 && (
+            <div className="mt-3 border-t pt-3">
+              <button
+                type="button"
+                onClick={() => setShowSavedLayouts((v) => !v)}
+                className="flex items-center gap-1 text-xs font-semibold text-gray-600 hover:text-purple-700 transition-colors w-full text-left"
+              >
+                <span className={`transition-transform ${showSavedLayouts ? "rotate-90" : ""}`}>&#9654;</span>
+                My Saved Layouts ({savedLayouts.length})
+              </button>
+              {showSavedLayouts && (
+                <div className="mt-2 space-y-1 max-h-52 overflow-y-auto">
+                  {savedLayouts.map((card) => (
+                    <div key={card.id} className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-50 border border-transparent hover:border-gray-200">
+                      <span className="flex-1 text-xs text-gray-700 truncate" title={card.title}>{card.title}</span>
+                      <span className="text-[10px] text-gray-400 shrink-0">{new Date(card.updatedAt).toLocaleDateString()}</span>
+                      <button
+                        type="button"
+                        aria-label={`Load layout ${card.title}`}
+                        onClick={() => {
+                          const loaded = { ...card.snapshot, id: currentProfile.id };
+                          setProfiles((prev) => prev.map((p, i) => i === currentProfileIndex ? loaded : p));
+                          commitToHistory(loaded);
+                          toast.success(`Loaded "${card.title}"`);
+                        }}
+                        className="shrink-0 px-2 py-0.5 text-[10px] font-semibold rounded bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors"
+                      >
+                        Load
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={`Delete layout ${card.title}`}
+                        onClick={() => {
+                          if (!confirm(`Delete "${card.title}"?`)) return;
+                          const namespace = getNbcardSavedNamespace(sessionEmail ?? undefined);
+                          deleteNbcardSavedCard(namespace, card.id);
+                          // Trigger re-render via autosaveIndicator toggle
+                          setAutosaveIndicator((v) => !v);
+                          toast.success(`Deleted "${card.title}"`);
+                        }}
+                        className="shrink-0 px-2 py-0.5 text-[10px] font-semibold rounded bg-red-100 text-red-600 hover:bg-red-200 transition-colors"
+                      >
+                        Del
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -2004,186 +2410,29 @@ export function NBCardPanel() {
         </div>
       )}
 
-      {/* Free Layout Editor card — above Card Templates */}
-      <div className="mb-4">
-        <div className="rounded-lg border bg-muted/20 p-4">
-          <div className="flex items-center justify-between gap-2 flex-wrap">
-            <div>
-              <h3 className="text-sm font-semibold">Free Layout Editor</h3>
-              <p className="text-xs text-muted-foreground">Add text, shapes, and images that you can drag and resize</p>
-            </div>
-            <div className="flex items-center gap-2">
-              {autosaveIndicator && (
-                <span className="text-xs text-emerald-600 font-medium">Saved &#10003;</span>
-              )}
-              {(currentProfile.layers?.length ?? 0) > 0 && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSaveAsName(currentProfile.fullName ? `${currentProfile.fullName}'s Layout` : 'My Layout');
-                    setShowSaveAsDialog(true);
-                  }}
-                  className="px-3 py-1.5 rounded-md text-xs font-semibold bg-white border border-gray-200 text-gray-700 hover:border-purple-400 hover:text-purple-700 transition-all"
-                >
-                  Save As...
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => {
-                  setLayoutEditMode(!layoutEditMode);
-                  if (!layoutEditMode) {
-                    setCanvasEditMode(false);
-                    try { localStorage.setItem('nb-card:canvas-edit-mode', '0'); } catch { /* ignore */ }
-                  } else {
-                    setSelectedLayerId(null);
-                  }
-                }}
-                className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
-                  layoutEditMode
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:border-purple-400'
-                }`}
-              >
-                {layoutEditMode ? 'Exit Edit Layout' : 'Edit Layout'}
-              </button>
-            </div>
-          </div>
+      {/* Share Your Profile — standalone section below canvas */}
+      <div className="nb-surface p-3 sm:p-4 md:p-6 mb-6 sm:mb-8">
+        <div id="share-your-profile">
+          <ShareButtons
+            profile={currentProfile}
+            profiles={profiles}
+            contacts={contacts}
+            onSetProfiles={setProfiles}
+            onSetContacts={setContacts}
+            templateSelection={templateSelection}
+            showPrivacyControls={false}
+            canonicalShareUrl={canonicalShareUrl}
+          />
+        </div>
 
-          {/* Phase 2: Card Details — shown for canvas-only cards */}
-          {isCanvasOnly && (
-            <div className="mt-3 border-t pt-3">
-              <button
-                type="button"
-                onClick={() => setShowCardDetails((v) => !v)}
-                className="flex items-center gap-1 text-xs font-semibold text-gray-600 hover:text-purple-700 transition-colors w-full text-left"
-              >
-                <span className={`transition-transform ${showCardDetails ? "rotate-90" : ""}`}>&#9654;</span>
-                Card Details (for sharing)
-              </button>
-              {showCardDetails && (
-                <div className="grid grid-cols-2 gap-2 mt-2">
-                  <div>
-                    <label className="text-xs text-gray-500" htmlFor="fle-name">Name</label>
-                    <input
-                      id="fle-name"
-                      type="text"
-                      value={currentProfile.fullName || ""}
-                      onChange={(e) => {
-                        const up = { ...currentProfile, fullName: e.target.value };
-                        setProfiles((prev) => prev.map((p, i) => i === currentProfileIndex ? up : p));
-                      }}
-                      placeholder="Your name"
-                      className="w-full px-2 py-1 text-sm border rounded bg-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-gray-500" htmlFor="fle-phone">Phone</label>
-                    <input
-                      id="fle-phone"
-                      type="tel"
-                      value={currentProfile.phone || ""}
-                      onChange={(e) => {
-                        const up = { ...currentProfile, phone: e.target.value };
-                        setProfiles((prev) => prev.map((p, i) => i === currentProfileIndex ? up : p));
-                      }}
-                      placeholder="+1 555 000 0000"
-                      className="w-full px-2 py-1 text-sm border rounded bg-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-gray-500" htmlFor="fle-email">Email</label>
-                    <input
-                      id="fle-email"
-                      type="email"
-                      value={currentProfile.email || ""}
-                      onChange={(e) => {
-                        const up = { ...currentProfile, email: e.target.value };
-                        setProfiles((prev) => prev.map((p, i) => i === currentProfileIndex ? up : p));
-                      }}
-                      placeholder="you@example.com"
-                      className="w-full px-2 py-1 text-sm border rounded bg-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-gray-500" htmlFor="fle-website">Website</label>
-                    <input
-                      id="fle-website"
-                      type="url"
-                      value={currentProfile.website || ""}
-                      onChange={(e) => {
-                        const up = { ...currentProfile, website: e.target.value };
-                        setProfiles((prev) => prev.map((p, i) => i === currentProfileIndex ? up : p));
-                      }}
-                      placeholder="https://example.com"
-                      className="w-full px-2 py-1 text-sm border rounded bg-white"
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <button
-                      type="button"
-                      onClick={autoFillFromLayers}
-                      className="px-3 py-1.5 text-xs font-semibold rounded border border-purple-300 text-purple-700 hover:bg-purple-50 transition-colors"
-                    >
-                      Auto-fill from text layers
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Phase 4: Saved Layouts list */}
-          {savedLayouts.length > 0 && (
-            <div className="mt-3 border-t pt-3">
-              <button
-                type="button"
-                onClick={() => setShowSavedLayouts((v) => !v)}
-                className="flex items-center gap-1 text-xs font-semibold text-gray-600 hover:text-purple-700 transition-colors w-full text-left"
-              >
-                <span className={`transition-transform ${showSavedLayouts ? "rotate-90" : ""}`}>&#9654;</span>
-                My Saved Layouts ({savedLayouts.length})
-              </button>
-              {showSavedLayouts && (
-                <div className="mt-2 space-y-1 max-h-52 overflow-y-auto">
-                  {savedLayouts.map((card) => (
-                    <div key={card.id} className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-50 border border-transparent hover:border-gray-200">
-                      <span className="flex-1 text-xs text-gray-700 truncate" title={card.title}>{card.title}</span>
-                      <span className="text-[10px] text-gray-400 shrink-0">{new Date(card.updatedAt).toLocaleDateString()}</span>
-                      <button
-                        type="button"
-                        aria-label={`Load layout ${card.title}`}
-                        onClick={() => {
-                          const loaded = { ...card.snapshot, id: currentProfile.id };
-                          setProfiles((prev) => prev.map((p, i) => i === currentProfileIndex ? loaded : p));
-                          commitToHistory(loaded);
-                          toast.success(`Loaded "${card.title}"`);
-                        }}
-                        className="shrink-0 px-2 py-0.5 text-[10px] font-semibold rounded bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors"
-                      >
-                        Load
-                      </button>
-                      <button
-                        type="button"
-                        aria-label={`Delete layout ${card.title}`}
-                        onClick={() => {
-                          if (!confirm(`Delete "${card.title}"?`)) return;
-                          const namespace = getNbcardSavedNamespace(sessionEmail ?? undefined);
-                          deleteNbcardSavedCard(namespace, card.id);
-                          // Trigger re-render via autosaveIndicator toggle
-                          setAutosaveIndicator((v) => !v);
-                          toast.success(`Deleted "${card.title}"`);
-                        }}
-                        className="shrink-0 px-2 py-0.5 text-[10px] font-semibold rounded bg-red-100 text-red-600 hover:bg-red-200 transition-colors"
-                      >
-                        Del
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+        {/* Template Picker — below Share panel */}
+        <div className="mt-4 sm:mt-6">
+          <TemplatePicker
+            selection={templateSelection}
+            orientation={templateSelection.orientation || 'landscape'}
+            onSelectionChange={handleTemplateSelectionChange}
+            onCreateFromTemplate={handleCreateFromTemplate}
+          />
         </div>
       </div>
 

@@ -54,6 +54,7 @@ import { ShareModeDialog, type ShareMode } from "@/components/nbcard/ShareModeDi
 import {
   applyRedaction,
   getDefaultIncludedFieldsForProfile,
+  getPopulatedFields,
   type RedactableField,
 } from "@/lib/nb-card/redaction";
 import { getRecommendedCaptureScale, runExportPreflight } from "@/lib/nb-card/export-preflight";
@@ -191,7 +192,13 @@ async function captureProfileCardPng(captureElementId: string): Promise<Blob> {
   // CRITICAL: Wait for fonts to finish loading before capture
   await waitForAllFonts(5000);
 
-  // Flush layout to ensure fonts are rendered
+  // Extra stability delay: let the browser paint text layers with loaded fonts.
+  // A single rAF is not enough — fonts trigger reflow, then a repaint cycle.
+  await new Promise((resolve) => setTimeout(resolve, 150));
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+  // Force a synchronous reflow so all text dimensions are settled before capture.
+  void target.offsetHeight;
   await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
   
   // Use the new capture helper for consistent, reliable capture
@@ -232,6 +239,26 @@ async function captureProfileCardPng(captureElementId: string): Promise<Blob> {
 type PdfAnnotsArrayLike = {
   push: (value: unknown) => void;
 };
+
+/**
+ * Wait for the off-screen export card to be fully rendered in the DOM.
+ * A double-rAF alone is insufficient — React needs ≥1 commit cycle, fonts
+ * need to load, and images inside the card need to decode.  This helper
+ * polls until the element exists AND has a non-zero bounding rect, then
+ * pauses for a short layout-stabilisation delay.
+ */
+async function waitForExportRender(captureId: string, timeoutMs = 3000): Promise<void> {
+  const start = Date.now();
+  // Poll until the element is in the DOM with non-zero dimensions
+  while (Date.now() - start < timeoutMs) {
+    const el = document.getElementById(captureId);
+    if (el && el.getBoundingClientRect().height > 0) break;
+    await new Promise((r) => requestAnimationFrame(r));
+  }
+  // Two full paint frames + a short timer for font/layout stabilisation
+  await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+  await new Promise((r) => setTimeout(r, 120));
+}
 
 function getPdfPageNode(page: unknown): { Annots?: () => unknown; set: (name: PDFName, value: unknown) => void } | null {
   if (!page || typeof page !== "object") return null;
@@ -494,6 +521,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   const [pendingRedactionAction, setPendingRedactionAction] = React.useState<((fields: Set<RedactableField>) => void) | null>(null);
   const [lastRedactionFields, setLastRedactionFields] = React.useState<Set<RedactableField> | null>(null);
   const [exportCaptureProfile, setExportCaptureProfile] = React.useState<Profile | null>(null);
+  const [exportCaptureWidth, setExportCaptureWidth] = React.useState<number>(448);
   const [selectedTemplate, setSelectedTemplate] = React.useState<Template | undefined>(undefined);
 
   type PendingShareAction = {
@@ -509,6 +537,18 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
     onText: () => Promise<void>
   ) {
     if (busyKey) return;
+    // Auto-select "image" mode when the card has a visual canvas
+    // (layers, template background, or custom background) — skips the mode dialog.
+    const hasVisualCanvas = !!(
+      (profile.layers && profile.layers.length > 0) ||
+      templateSelection?.backgroundId ||
+      profile.backgroundUrl ||
+      profile.frameUrl
+    );
+    if (hasVisualCanvas) {
+      void onImage();
+      return;
+    }
     setPendingShare({ channel, onImage, onText });
   }
 
@@ -535,12 +575,38 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
   const EXPORT_CAPTURE_ID = "profile-card-capture-export";
 
+  /** Snapshot the live card's rendered width and mount the off-screen export card.
+   *  This ensures the export container matches the live canvas dimensions exactly,
+   *  so pixel-based font sizes in text layers render at the correct proportion.  */
+  function mountExportCard(redacted: Profile) {
+    const liveCard =
+      document.getElementById("profile-card-capture") ??
+      document.getElementById("profile-card-capture-wrapper");
+    if (liveCard) {
+      const w = liveCard.getBoundingClientRect().width;
+      if (w > 0) setExportCaptureWidth(Math.round(w));
+    }
+    setExportCaptureProfile(redacted);
+  }
+
   function getDefaultIncludedFields(nextProfile: Profile): Set<RedactableField> {
     return getDefaultIncludedFieldsForProfile(nextProfile);
   }
 
   function requestRedactionAndRun(run: (redacted: Profile) => Promise<void>) {
     if (busyKey) return;
+
+    // Skip Redaction Dialog for canvas-only cards (no populated form fields).
+    // Use default included fields and proceed directly.
+    const populated = getPopulatedFields(profile);
+    if (populated.length === 0) {
+      const defaults = getDefaultIncludedFields(profile);
+      setLastRedactionFields(defaults);
+      const redacted = applyRedaction(profile, defaults);
+      void run(redacted);
+      return;
+    }
+
     setPendingRedactionAction(() => {
       return (fields: Set<RedactableField>) => {
         const clonedFields = new Set(fields);
@@ -746,9 +812,9 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
         // IMAGE path
         async () => {
           await withBusy("share", async () => {
-            setExportCaptureProfile(redacted);
+            mountExportCard(redacted);
             try {
-              await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              await waitForExportRender(EXPORT_CAPTURE_ID);
               const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
               const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
               void uploadCardOgImage(pngBlob, redacted, deviceId).catch(() => undefined);
@@ -791,10 +857,9 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   async function handleDownloadQrCardImage() {
     requestRedactionAndRun(async (redacted) => {
       await withBusy("qr-card", async () => {
-        setExportCaptureProfile(redacted);
+        mountExportCard(redacted);
         try {
-          // Wait for the export card to render
-          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          await waitForExportRender(EXPORT_CAPTURE_ID);
 
           // 1. Capture the card preview as a high-DPI PNG
           const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
@@ -899,9 +964,9 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
         // IMAGE with background
         async () => {
           await withBusy("png", async () => {
-            setExportCaptureProfile(redacted);
+            mountExportCard(redacted);
             try {
-              await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              await waitForExportRender(EXPORT_CAPTURE_ID);
               const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
               void uploadCardOgImage(pngBlob, redacted, deviceId).catch(() => undefined);
               const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
@@ -947,9 +1012,9 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
         // IMAGE path
         async () => {
           await withBusy("png-share", async () => {
-            setExportCaptureProfile(redacted);
+            mountExportCard(redacted);
             try {
-              await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              await waitForExportRender(EXPORT_CAPTURE_ID);
               const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
               const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
               const ok = await shareViaWebShare({
@@ -994,9 +1059,9 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
         // IMAGE (PDF with embedded canvas)
         async () => {
           await withBusy("pdf", async () => {
-            setExportCaptureProfile(redacted);
+            mountExportCard(redacted);
             try {
-              await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              await waitForExportRender(EXPORT_CAPTURE_ID);
               const { pdfBytes } = await buildExportAssets(redacted, shareUrl, { includePdf: true }, EXPORT_CAPTURE_ID);
               if (!pdfBytes) throw new Error("Failed to generate PDF");
               const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
@@ -1034,9 +1099,9 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
         // IMAGE (PDF with embedded canvas)
         async () => {
           await withBusy("pdf-share", async () => {
-            setExportCaptureProfile(redacted);
+            mountExportCard(redacted);
             try {
-              await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              await waitForExportRender(EXPORT_CAPTURE_ID);
               const { pdfBytes } = await buildExportAssets(redacted, shareUrl, { includePdf: true }, EXPORT_CAPTURE_ID);
               if (!pdfBytes) throw new Error("Failed to generate PDF");
               const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
@@ -1090,11 +1155,9 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
         // IMAGE path
         async () => {
           await withBusy("whatsapp-share", async () => {
-            setExportCaptureProfile(redacted);
+            mountExportCard(redacted);
             try {
-              await new Promise((resolve) =>
-                requestAnimationFrame(() => requestAnimationFrame(resolve))
-              );
+              await waitForExportRender(EXPORT_CAPTURE_ID);
               const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
               void uploadCardOgImage(pngBlob, redacted, deviceId).catch(() => undefined);
               const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
@@ -1151,9 +1214,9 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
         // IMAGE path — share via Web Share API with PDF attachment (contains embedded canvas)
         async () => {
           await withBusy("email-image", async () => {
-            setExportCaptureProfile(redacted);
+            mountExportCard(redacted);
             try {
-              await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              await waitForExportRender(EXPORT_CAPTURE_ID);
               const { pdfBytes } = await buildExportAssets(redacted, shareUrl, { includePdf: true }, EXPORT_CAPTURE_ID);
               if (pdfBytes) {
                 const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
@@ -1192,9 +1255,9 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
         // IMAGE path
         async () => {
           await withBusy("sms-image", async () => {
-            setExportCaptureProfile(redacted);
+            mountExportCard(redacted);
             try {
-              await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              await waitForExportRender(EXPORT_CAPTURE_ID);
               const { pngBlob } = await buildExportAssets(redacted, shareUrl, {}, EXPORT_CAPTURE_ID);
               const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
               const file = new File([pngBlob], `${safeName}_NBCard.png`, { type: "image/png" });
@@ -1310,8 +1373,8 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
       // Try PDF with navigator.share first
       if (navigator.share && navigator.canShare) {
         try {
-          setExportCaptureProfile(redacted);
-          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          mountExportCard(redacted);
+          await waitForExportRender(EXPORT_CAPTURE_ID);
           const { pdfBytes } = await buildExportAssets(redacted, shareUrl, { includePdf: true }, EXPORT_CAPTURE_ID);
           if (!pdfBytes) throw new Error("Failed to generate PDF");
           const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
@@ -1697,7 +1760,16 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
     <div className="rounded-2xl border bg-card p-3 sm:p-4 md:p-6">
       {/* Off-screen clean-mode export card: no editor UI (editMode=false, no selected layer) */}
       {exportCaptureProfile ? (
-        <div className="fixed left-[-10000px] top-0 w-[448px]" aria-hidden="true">
+        <div
+          className="fixed left-[-10000px] top-0"
+          aria-hidden="true"
+          style={{
+            width: `${exportCaptureWidth}px`,
+            WebkitFontSmoothing: "antialiased",
+            MozOsxFontSmoothing: "grayscale",
+            textRendering: "optimizeLegibility",
+          }}
+        >
           <ProfileCard
             profile={exportCaptureProfile}
             showEditButton={false}
