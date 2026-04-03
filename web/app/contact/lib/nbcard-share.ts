@@ -174,13 +174,32 @@ export function generateProfileVCard(profile: Profile, options: VCardOptions = {
           a?.postcode || ''
         )};${sanitizeVcard(a?.country || '')}`
       );
+      // Full human-readable address label so scanners display the complete text
+      const fullAddress = [a?.addressLine1, a?.addressLine2, a?.city, a?.postcode, a?.country]
+        .filter((v) => v && v.trim())
+        .join(', ');
+      if (fullAddress) {
+        lines.push(`LABEL;TYPE=HOME:${sanitizeVcard(fullAddress)}`);
+      }
+      // Google Maps link as a clickable URL for easy navigation
+      const mapUrl = buildMapHref(a);
+      if (mapUrl) {
+        lines.push(`item1.URL:${sanitizeVcard(mapUrl)}`);
+        lines.push(`item1.X-ABLabel:Map`);
+      }
     } else if (profile.address) {
-      // Simple address field (non-ADDRESS category cards)
       lines.push(`ADR:;;${sanitizeVcard(profile.address)};;;;`);
+      lines.push(`LABEL;TYPE=HOME:${sanitizeVcard(profile.address)}`);
+      const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`;
+      lines.push(`item1.URL:${sanitizeVcard(mapUrl)}`);
+      lines.push(`item1.X-ABLabel:Map`);
     }
   } else if (profile.address) {
-    // Always include simple address in vCard when present
     lines.push(`ADR:;;${sanitizeVcard(profile.address)};;;;`);
+    lines.push(`LABEL;TYPE=HOME:${sanitizeVcard(profile.address)}`);
+    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`;
+    lines.push(`item1.URL:${sanitizeVcard(mapUrl)}`);
+    lines.push(`item1.X-ABLabel:Map`);
   }
 
   const notes: string[] = [];
