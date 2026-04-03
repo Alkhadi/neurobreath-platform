@@ -2484,9 +2484,33 @@
     gap: 0.6rem;
   }
 
+  .nb-brand-text {
+    font-size: clamp(0.82rem, 0.7rem + 0.5vw, 1.02rem);
+  }
+
   .nb-brand-tagline {
-    font-size: clamp(0.52rem, 0.48rem + 0.22vw, 0.60rem);
-    letter-spacing: 0.04em;
+    font-size: clamp(0.46rem, 0.4rem + 0.3vw, 0.56rem);
+    letter-spacing: 0.02em;
+  }
+
+  .nb-brand-copy {
+    max-width: calc(100% - 140px);
+  }
+}
+
+/* Very small mobile (≤360px): further shrink brand to prevent overflow */
+@media (max-width: 360px) {
+  .nb-brand-text {
+    font-size: 0.78rem;
+  }
+
+  .nb-brand-tagline {
+    font-size: 0.42rem;
+    letter-spacing: 0.01em;
+  }
+
+  .nb-brand-copy {
+    max-width: calc(100% - 120px);
   }
 }
 
