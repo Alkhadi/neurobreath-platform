@@ -513,7 +513,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   const [isQrOpen, setIsQrOpen] = React.useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = React.useState(false);
   const [isShareFallbackOpen, setIsShareFallbackOpen] = React.useState(false);
-  const [isQrVcard, setIsQrVcard] = React.useState(false);
+  const [isQrVcard, setIsQrVcard] = React.useState(() => getCategoryFromProfile(profile) === "ADDRESS");
   const [isPrintOpen, setIsPrintOpen] = React.useState(false);
   const [busyKey, setBusyKey] = React.useState<string | null>(null);
 
@@ -776,6 +776,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
     const vcard = generateProfileVCard(redacted, {
       includeAddress: category === "ADDRESS",
       includeBusiness: category === "BUSINESS" || category === "PROFILE",
+      shareUrl,
     });
     // Fall back to URL if vCard exceeds QR capacity
     if (vcard.length > 1200) return shareUrl;
@@ -3188,6 +3189,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                     const vcard = generateProfileVCard(redacted, {
                       includeAddress: category === "ADDRESS",
                       includeBusiness: category === "BUSINESS" || category === "PROFILE",
+                      shareUrl,
                     });
                     if (vcard.length > 1200) {
                       toast.message("vCard too large for QR", { description: "Using link QR instead." });

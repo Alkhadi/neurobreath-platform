@@ -192,6 +192,7 @@ function computeWalletQrValue(profile: Profile, shareUrl: string): string {
   const vcard = generateProfileVCard(profile, {
     includeAddress: category === "ADDRESS",
     includeBusiness: category === "BUSINESS" || category === "PROFILE",
+    shareUrl,
   });
   if (vcard.length > 1200) return shareUrl;
   return vcard;

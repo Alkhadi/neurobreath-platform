@@ -10,6 +10,7 @@ export type ShareFile = {
 export type VCardOptions = {
   includeAddress?: boolean;
   includeBusiness?: boolean;
+  shareUrl?: string;
 };
 
 export function renderBankQrText(profile: Profile, shareUrl: string): string {
@@ -206,6 +207,7 @@ export function generateProfileVCard(profile: Profile, options: VCardOptions = {
     // Always include map link for simple address even when includeAddress is false
     notes.push(`Map: https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`);
   }
+  if (options.shareUrl) notes.push(`Full Card: ${options.shareUrl}`);
   if (notes.length) lines.push(`NOTE:${sanitizeVcard(notes.join(' | '))}`);
 
   for (const [key, value] of Object.entries(profile.socialMedia || {})) {
