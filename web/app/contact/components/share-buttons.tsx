@@ -413,9 +413,9 @@ function renderShareText(profile: Profile, shareUrl: string): string {
   
   // Address
   if (profile.address) {
-    lines.push("🏠 Find Address:");
+    lines.push(`🏠 ${profile.address}`);
     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`;
-    lines.push(`Click Here: ${mapsUrl}`);
+    lines.push(`📍 Open in Google Maps: ${mapsUrl}`);
     lines.push(""); // blank line
   }
   

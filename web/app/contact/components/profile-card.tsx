@@ -2073,7 +2073,6 @@ export function ProfileCard({
             <div className="flex items-center gap-3 p-2">
               <FaHome className="text-xl" />
               <div className="flex flex-col">
-                <span className="text-sm opacity-75">Find Address:</span>
                 <a
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`}
                   data-pdf-link={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`}
@@ -2081,8 +2080,9 @@ export function ProfileCard({
                   rel="noopener noreferrer"
                   className="text-base underline hover:opacity-80 transition-opacity"
                 >
-                  Click Here
+                  <span data-pdf-text={profile.address}>{profile.address}</span>
                 </a>
+                <span className="text-xs opacity-60 mt-0.5">Tap to open in Google Maps</span>
               </div>
             </div>
           )}

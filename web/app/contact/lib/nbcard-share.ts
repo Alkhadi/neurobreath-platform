@@ -1,4 +1,5 @@
 import type { Contact, Profile } from '@/lib/utils';
+import { buildMapHref } from '@/lib/nbcard/mapHref';
 
 export type ShareFile = {
   file: File;
@@ -172,7 +173,13 @@ export function generateProfileVCard(profile: Profile, options: VCardOptions = {
           a?.postcode || ''
         )};${sanitizeVcard(a?.country || '')}`
       );
+    } else if (profile.address) {
+      // Simple address field (non-ADDRESS category cards)
+      lines.push(`ADR:;;${sanitizeVcard(profile.address)};;;;`);
     }
+  } else if (profile.address) {
+    // Always include simple address in vCard when present
+    lines.push(`ADR:;;${sanitizeVcard(profile.address)};;;;`);
   }
 
   const notes: string[] = [];
@@ -188,6 +195,16 @@ export function generateProfileVCard(profile: Profile, options: VCardOptions = {
   }
   if (options.includeAddress) {
     if (profile.addressCard?.directionsNote) notes.push(`Directions: ${profile.addressCard.directionsNote}`);
+    // Include Google Maps link in vCard notes
+    if (profile.addressCard) {
+      const mapUrl = buildMapHref(profile.addressCard);
+      if (mapUrl) notes.push(`Map: ${mapUrl}`);
+    } else if (profile.address) {
+      notes.push(`Map: https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`);
+    }
+  } else if (profile.address) {
+    // Always include map link for simple address even when includeAddress is false
+    notes.push(`Map: https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`);
   }
   if (notes.length) lines.push(`NOTE:${sanitizeVcard(notes.join(' | '))}`);
 
