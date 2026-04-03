@@ -2394,6 +2394,8 @@
   display: flex;
   flex-direction: column;
   line-height: 1.05;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .nb-brand-text {
@@ -2401,6 +2403,10 @@
   font-weight: 800;
   letter-spacing: -0.012em;
   color: var(--nb-ink-900);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .nb-brand-tagline {
@@ -2412,6 +2418,8 @@
   text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 /* Mid-width desktops (1025–1180px): compact tagline instead of hiding —
