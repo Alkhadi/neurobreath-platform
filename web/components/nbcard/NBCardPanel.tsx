@@ -217,13 +217,16 @@ export function NBCardPanel() {
   const canonicalShareTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Canvas Edit Mode - inline editing on the canvas preview
-  const [canvasEditMode, setCanvasEditMode] = useState(() => {
+  const [canvasEditMode, setCanvasEditMode] = useState(false);
+
+  // Hydrate canvas edit mode from localStorage after mount
+  useEffect(() => {
     try {
-      return localStorage.getItem('nb-card:canvas-edit-mode') === '1';
-    } catch {
-      return false;
-    }
-  });
+      if (localStorage.getItem('nb-card:canvas-edit-mode') === '1') {
+        setCanvasEditMode(true);
+      }
+    } catch { /* ignore */ }
+  }, []);
 
   // Load template when templateSelection changes
   useEffect(() => {
@@ -1914,7 +1917,7 @@ export function NBCardPanel() {
               />
             </div>
           </div>
-          <p className="text-center text-sm text-gray-600 mb-4">
+          <p className="text-center text-sm text-gray-600 mb-4" suppressHydrationWarning>
             {canvasEditMode
               ? "Double-click text to edit inline, click avatar/background to upload" 
               : layoutEditMode 
