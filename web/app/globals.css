@@ -4870,3 +4870,59 @@ html[data-reduced-motion="on"] *::after {
   transition-duration: 0.01ms !important;
   scroll-behavior: auto !important;
 }
+
+/* =========================================================================
+   GLOBAL TEXT-FIT — prevent overflow site-wide
+   ========================================================================= */
+
+/* All elements: allow long words to break instead of overflowing */
+*,
+*::before,
+*::after {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Headings: shrink to fit their container */
+h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Buttons: never overflow, shrink text to fit */
+button,
+[role="button"],
+.btn {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* Cards, sections, panels: contain their children */
+.nb-surface,
+[class*="rounded-2xl"],
+[class*="rounded-xl"],
+.card,
+[class*="bg-card"] {
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* Flex/grid children: always shrinkable */
+.flex > *,
+.grid > *,
+.inline-flex > * {
+  min-width: 0;
+}
+
+/* Paragraphs and body text */
+p, span, li, td, th, dd, dt, label, a {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Prevent horizontal page overflow */
+html, body {
+  overflow-x: hidden;
+}

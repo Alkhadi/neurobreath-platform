@@ -1885,30 +1885,31 @@ export function NBCardPanel() {
           </div>
         </div>
 
-        {/* Right Column - Share Buttons */}
-        <div className="min-w-0 lg:flex-1 nb-surface p-3 sm:p-4 md:p-6">
-          <div id="share-your-profile">
-            <ShareButtons
-              profile={currentProfile}
-              profiles={profiles}
-              contacts={contacts}
-              onSetProfiles={setProfiles}
-              onSetContacts={setContacts}
-              templateSelection={templateSelection}
-              showPrivacyControls={false}
-              canonicalShareUrl={canonicalShareUrl}
-            />
-          </div>
+      </div>
 
-          {/* Template Picker — below Share panel on all screens */}
-          <div className="mt-4 sm:mt-6">
-            <TemplatePicker
-              selection={templateSelection}
-              orientation={templateSelection.orientation || 'landscape'}
-              onSelectionChange={handleTemplateSelectionChange}
-              onCreateFromTemplate={handleCreateFromTemplate}
-            />
-          </div>
+      {/* Share Your Profile — standalone section below canvas */}
+      <div className="nb-surface p-3 sm:p-4 md:p-6 mb-6 sm:mb-8">
+        <div id="share-your-profile">
+          <ShareButtons
+            profile={currentProfile}
+            profiles={profiles}
+            contacts={contacts}
+            onSetProfiles={setProfiles}
+            onSetContacts={setContacts}
+            templateSelection={templateSelection}
+            showPrivacyControls={false}
+            canonicalShareUrl={canonicalShareUrl}
+          />
+        </div>
+
+        {/* Template Picker — below Share panel */}
+        <div className="mt-4 sm:mt-6">
+          <TemplatePicker
+            selection={templateSelection}
+            orientation={templateSelection.orientation || 'landscape'}
+            onSelectionChange={handleTemplateSelectionChange}
+            onCreateFromTemplate={handleCreateFromTemplate}
+          />
         </div>
       </div>
 
