@@ -367,16 +367,16 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto scroll-smooth">
-        <div className="sticky top-0 z-10 bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6 flex justify-between items-center">
-          <h2 className="text-2xl font-bold">{isNew ? "Create New Profile" : "Edit Profile"}</h2>
-          <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-full transition-colors" aria-label="Close">
-            <FaTimes className="text-xl" />
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center sm:p-4">
+      <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto scroll-smooth">
+        <div className="sticky top-0 z-10 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-3 sm:px-6 sm:py-4 flex justify-between items-center">
+          <h2 className="text-lg sm:text-2xl font-bold truncate">{isNew ? "Create New Profile" : "Edit Profile"}</h2>
+          <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-full transition-colors flex-shrink-0" aria-label="Close">
+            <FaTimes className="text-lg sm:text-xl" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="px-4 py-4 sm:px-6 sm:py-6 space-y-5">
           {/* Gradient Selector */}
           <GradientSelector
             selectedGradient={editedProfile.gradient}
@@ -402,7 +402,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
               ) : null}
             </div>
 
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
               {palettePresets.slice(0, 8).map((p) => {
                 const selected = (editedProfile.accentColor ?? "").toLowerCase() === p.color.toLowerCase();
                 return (
@@ -414,7 +414,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                       setEditedProfile({ ...editedProfile, accentColor: p.color });
                     }}
                     className={
-                      "flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors " +
+                      "flex items-center gap-1.5 rounded-lg border px-2 py-2 text-xs font-semibold transition-colors truncate " +
                       (selected ? "border-purple-600 bg-purple-50" : "border-gray-200 hover:bg-gray-50")
                     }
                     aria-label={`Set palette to ${p.name}`}
@@ -604,85 +604,38 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
 
           {/* Background Upload */}
           <div>
-            <label htmlFor="profile-background" className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="profile-background" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
               Card Background (optional)
             </label>
 
             {/* Professional Frames Section */}
-            <div className="mb-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
-              <h4 className="text-sm font-bold text-gray-800 mb-2">Professional frames made for you</h4>
-              <p className="text-xs text-gray-600 mb-3">
-                Choose a frame style for how you want your profile presented: Address details, Bank details, Business profile, Flyers, or Wedding.
+            <div className="mb-4 p-3 sm:p-4 bg-purple-50 rounded-lg border border-purple-200">
+              <h4 className="text-xs sm:text-sm font-bold text-gray-800 mb-1.5">Professional frames made for you</h4>
+              <p className="text-[11px] sm:text-xs text-gray-600 mb-3">
+                Choose a frame style for how you want your profile presented.
               </p>
               
-              <div className="flex flex-wrap gap-2 mb-3">
-                <button
-                  type="button"
-                  onClick={() => setCategory("ADDRESS")}
-                  className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
-                    selectedFrameCategory === "ADDRESS"
-                      ? "bg-purple-600 text-white"
-                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                  }`}
-                >
-                  Address details
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCategory("BANK")}
-                  className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
-                    selectedFrameCategory === "BANK"
-                      ? "bg-purple-600 text-white"
-                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                  }`}
-                >
-                  Bank details
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCategory("BUSINESS")}
-                  className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
-                    selectedFrameCategory === "BUSINESS"
-                      ? "bg-purple-600 text-white"
-                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                  }`}
-                >
-                  Business profile
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCategory("FLYER");
-                  }}
-                  className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
-                    selectedFrameCategory === "FLYER"
-                      ? "bg-purple-600 text-white"
-                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                  }`}
-                >
-                  Flyers
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCategory("WEDDING");
-                  }}
-                  className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
-                    selectedFrameCategory === "WEDDING"
-                      ? "bg-purple-600 text-white"
-                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                  }`}
-                >
-                  Wedding
-                </button>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-3">
+                {(["ADDRESS", "BANK", "BUSINESS", "FLYER", "WEDDING"] as const).map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setCategory(cat)}
+                    className={`px-3 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors text-center ${
+                      selectedFrameCategory === cat
+                        ? "bg-purple-600 text-white shadow-sm"
+                        : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                    }`}
+                  >
+                    {frameCategoryLabel[cat]}
+                  </button>
+                ))}
               </div>
 
               <button
                 type="button"
                 onClick={() => setShowFrameChooser(true)}
-                className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold"
+                className="w-full px-4 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold text-xs sm:text-sm"
               >
                 Browse Professional Frames
               </button>
@@ -696,12 +649,12 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
               onChange={handleBackgroundUpload}
               className="hidden"
             />
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <button
                 type="button"
                 onClick={() => backgroundInputRef.current?.click()}
                 disabled={uploading}
-                className="flex-1 px-4 py-3 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                className="flex-1 px-3 py-2.5 sm:px-4 sm:py-3 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 text-xs sm:text-sm"
               >
                 {uploading
                   ? "Uploading..."
@@ -713,18 +666,18 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                 <button
                   type="button"
                   onClick={handleClearBackground}
-                  className="px-4 py-3 border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                  className="px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-200 rounded-lg text-xs sm:text-sm font-semibold text-gray-700 hover:bg-gray-50"
                 >
                   Use Gradient
                 </button>
               )}
             </div>
-            <p className="mt-2 text-xs text-gray-500">Uploads fall back to your device if the server is unavailable.</p>
+            <p className="mt-1.5 text-[11px] sm:text-xs text-gray-500">Uploads fall back to your device if the server is unavailable.</p>
           </div>
 
           {/* Photo Upload */}
           <div>
-            <label htmlFor="profile-photo" className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="profile-photo" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
               Profile Photo
             </label>
             <input
@@ -739,16 +692,16 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="w-full px-4 py-3 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+              className="w-full px-3 py-2.5 sm:px-4 sm:py-3 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 text-xs sm:text-sm"
             >
               {uploading ? "Uploading..." : editedProfile.photoUrl ? "Change Photo" : "Upload Photo"}
             </button>
           </div>
 
           {/* Basic Info */}
-          <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
+          <div className="flex flex-wrap gap-3 sm:gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
             <div>
-              <label htmlFor="profile-full-name" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="profile-full-name" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                 Full Name
               </label>
               <input
@@ -756,11 +709,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                 type="text"
                 value={editedProfile.fullName}
                 onChange={(e) => setEditedProfile({ ...editedProfile, fullName: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               />
             </div>
             <div>
-              <label htmlFor="profile-job-title" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="profile-job-title" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                 Job Title
               </label>
               <input
@@ -768,11 +721,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                 type="text"
                 value={editedProfile.jobTitle}
                 onChange={(e) => setEditedProfile({ ...editedProfile, jobTitle: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               />
             </div>
             <div>
-              <label htmlFor="profile-phone" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="profile-phone" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                 Phone
               </label>
               <input
@@ -780,11 +733,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                 type="tel"
                 value={editedProfile.phone}
                 onChange={(e) => setEditedProfile({ ...editedProfile, phone: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               />
             </div>
             <div>
-              <label htmlFor="profile-email" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="profile-email" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                 Email
               </label>
               <input
@@ -792,14 +745,14 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                 type="email"
                 value={editedProfile.email}
                 onChange={(e) => setEditedProfile({ ...editedProfile, email: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               />
             </div>
           </div>
 
           {/* Descriptions */}
           <div>
-            <label htmlFor="profile-description" className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="profile-description" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
               Profile Description ({editedProfile.profileDescription.length}/50)
             </label>
             <input
@@ -808,11 +761,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
               maxLength={50}
               value={editedProfile.profileDescription}
               onChange={(e) => setEditedProfile({ ...editedProfile, profileDescription: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             />
           </div>
           <div>
-            <label htmlFor="business-description" className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="business-description" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
               Business Description ({editedProfile.businessDescription.length}/50)
             </label>
             <input
@@ -821,14 +774,14 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
               maxLength={50}
               value={editedProfile.businessDescription}
               onChange={(e) => setEditedProfile({ ...editedProfile, businessDescription: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             />
           </div>
 
           {/* Social Media */}
           <div>
-            <h3 className="text-lg font-bold text-gray-800 mb-3">Social Media Links</h3>
-            <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
+            <h3 className="text-sm sm:text-lg font-bold text-gray-800 mb-2 sm:mb-3">Social Media Links</h3>
+            <div className="flex flex-wrap gap-3 sm:gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
               {([
                 { key: "website", label: "Website", placeholder: "https://yourwebsite.com" },
                 { key: "instagram", label: "Instagram", placeholder: "Instagram profile URL" },
@@ -838,7 +791,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                 { key: "twitter", label: "X (Twitter)", placeholder: "X profile URL" },
               ] as const).map(({ key, label, placeholder }) => (
                 <div key={key}>
-                  <label htmlFor={`social-${key}`} className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor={`social-${key}`} className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                     {label}
                   </label>
                   <input
@@ -863,7 +816,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                       });
                     }}
                     placeholder={placeholder}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
                 </div>
               ))}
@@ -871,9 +824,9 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
           </div>
 
           {/* Card Details Section (Category-specific inputs) */}
-          <div ref={cardDetailsRef} className="border-t border-gray-200 pt-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold text-gray-800">Card Details</h3>
+          <div ref={cardDetailsRef} className="border-t border-gray-200 pt-4 sm:pt-6">
+            <div className="flex justify-between items-center mb-3 sm:mb-4">
+              <h3 className="text-sm sm:text-lg font-bold text-gray-800">Card Details</h3>
               {saveStatus === "saving" && (
                 <span className="text-sm text-gray-500 italic">Saving...</span>
               )}
@@ -914,9 +867,9 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                     Reset this section
                   </button>
                 </div>
-                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
+                <div className="flex flex-wrap gap-3 sm:gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                   <div>
-                    <label htmlFor="address-line1" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="address-line1" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Address Line 1
                     </label>
                     <input
@@ -930,11 +883,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           addressCard: { ...editedProfile.addressCard, addressLine1: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="address-line2" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="address-line2" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Address Line 2
                     </label>
                     <input
@@ -948,11 +901,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           addressCard: { ...editedProfile.addressCard, addressLine2: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="address-city" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="address-city" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       City
                     </label>
                     <input
@@ -966,11 +919,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           addressCard: { ...editedProfile.addressCard, city: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="address-postcode" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="address-postcode" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Postcode
                     </label>
                     <input
@@ -984,11 +937,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           addressCard: { ...editedProfile.addressCard, postcode: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="address-country" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="address-country" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Country
                     </label>
                     <input
@@ -1002,11 +955,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           addressCard: { ...editedProfile.addressCard, country: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="address-map-label" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="address-map-label" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Map Link Label
                     </label>
                     <input
@@ -1021,12 +974,12 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           addressCard: { ...editedProfile.addressCard, mapLinkLabel: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="address-directions" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="address-directions" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                     Directions Note (short)
                   </label>
                   <input
@@ -1047,14 +1000,14 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                         addressCard: { ...editedProfile.addressCard, directionsNote: sanitized },
                       });
                     }}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   <p className="text-xs text-gray-500 mt-1">
                     Human-readable hint (e.g., "Near the library"). No URLs allowed.
                   </p>
                 </div>
                 <div>
-                  <label htmlFor="address-map-url-override" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="address-map-url-override" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                     Custom Directions/Map URL (optional)
                   </label>
                   <input
@@ -1069,14 +1022,14 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                         addressCard: { ...editedProfile.addressCard, mapUrlOverride: e.target.value },
                       })
                     }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   <p className="text-xs text-gray-500 mt-1">
                     Paste a full Google Maps /dir/?api=1… link here to override default map behavior.
                   </p>
                 </div>
                 <div>
-                  <label htmlFor="address-map-destination-override" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="address-map-destination-override" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                     Custom Destination (optional)
                   </label>
                   <input
@@ -1106,7 +1059,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                         });
                       }
                     }}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   <p className="text-xs text-gray-500 mt-1">
                     Plain text destination (e.g., landmark name). Do NOT paste links here.
@@ -1135,9 +1088,9 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                     Reset this section
                   </button>
                 </div>
-                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
+                <div className="flex flex-wrap gap-3 sm:gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                   <div>
-                    <label htmlFor="bank-account-name" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="bank-account-name" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Account Name
                     </label>
                     <input
@@ -1151,11 +1104,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           bankCard: { ...editedProfile.bankCard, accountName: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="bank-name" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="bank-name" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Bank Name
                     </label>
                     <input
@@ -1169,11 +1122,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           bankCard: { ...editedProfile.bankCard, bankName: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="bank-sort-code" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="bank-sort-code" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Sort Code
                     </label>
                     <input
@@ -1187,11 +1140,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           bankCard: { ...editedProfile.bankCard, sortCode: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="bank-account-number" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="bank-account-number" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Account Number
                     </label>
                     <input
@@ -1205,11 +1158,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           bankCard: { ...editedProfile.bankCard, accountNumber: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="bank-iban" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="bank-iban" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       IBAN (optional)
                     </label>
                     <input
@@ -1223,11 +1176,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           bankCard: { ...editedProfile.bankCard, iban: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="bank-swift" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="bank-swift" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       SWIFT/BIC (optional)
                     </label>
                     <input
@@ -1241,11 +1194,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           bankCard: { ...editedProfile.bankCard, swiftBic: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="bank-payment-link" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="bank-payment-link" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Payment Link (optional)
                     </label>
                     <input
@@ -1259,11 +1212,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           bankCard: { ...editedProfile.bankCard, paymentLink: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="bank-payment-label" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="bank-payment-label" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Payment Link Label
                     </label>
                     <input
@@ -1278,12 +1231,12 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           bankCard: { ...editedProfile.bankCard, paymentLinkLabel: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="bank-reference" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="bank-reference" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                     Reference Note (short)
                   </label>
                   <input
@@ -1298,7 +1251,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                         bankCard: { ...editedProfile.bankCard, referenceNote: e.target.value },
                       })
                     }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -1324,9 +1277,9 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                     Reset this section
                   </button>
                 </div>
-                <div className="flex flex-wrap gap-4 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
+                <div className="flex flex-wrap gap-3 sm:gap-4 [&>*]:basis-full sm:[&>*]:basis-[calc(50%-6px)] [&>*]:min-w-0">
                   <div>
-                    <label htmlFor="business-company-name" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="business-company-name" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Company Name
                     </label>
                     <input
@@ -1340,11 +1293,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           businessCard: { ...editedProfile.businessCard, companyName: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="business-website" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="business-website" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Website URL
                     </label>
                     <input
@@ -1358,11 +1311,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           businessCard: { ...editedProfile.businessCard, websiteUrl: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <label htmlFor="business-services" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="business-services" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Services (max 80 chars)
                     </label>
                     <input
@@ -1377,11 +1330,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           businessCard: { ...editedProfile.businessCard, services: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="business-location" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="business-location" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Location Note (short)
                     </label>
                     <input
@@ -1396,11 +1349,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           businessCard: { ...editedProfile.businessCard, locationNote: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="business-hours" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="business-hours" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Hours (short)
                     </label>
                     <input
@@ -1415,11 +1368,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           businessCard: { ...editedProfile.businessCard, hours: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="business-booking-link" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="business-booking-link" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Booking Link (optional)
                     </label>
                     <input
@@ -1433,11 +1386,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           businessCard: { ...editedProfile.businessCard, bookingLink: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="business-booking-label" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="business-booking-label" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       Booking Link Label
                     </label>
                     <input
@@ -1452,11 +1405,11 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           businessCard: { ...editedProfile.businessCard, bookingLinkLabel: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label htmlFor="business-vat" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="business-vat" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
                       VAT/Reg No (optional)
                     </label>
                     <input
@@ -1470,7 +1423,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
                           businessCard: { ...editedProfile.businessCard, vatOrRegNo: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -1479,10 +1432,10 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-3 pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <button
               type="submit"
-              className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold"
+              className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-3 sm:px-6 rounded-lg hover:shadow-lg transition-all font-semibold text-sm sm:text-base"
             >
               <FaSave /> Save Profile
             </button>
@@ -1490,7 +1443,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
               <button
                 type="button"
                 onClick={onDelete}
-                className="flex items-center justify-center gap-2 bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition-colors font-semibold"
+                className="flex items-center justify-center gap-2 bg-red-500 text-white px-4 py-3 sm:px-6 rounded-lg hover:bg-red-600 transition-colors font-semibold text-sm sm:text-base"
               >
                 <FaTrash /> Delete
               </button>

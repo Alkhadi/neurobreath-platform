@@ -34,12 +34,12 @@ export function GradientSelector({ selectedGradient, onSelect, onClearBackground
           </button>
         )}
       </div>
-      <div className="flex flex-wrap gap-3 [&>*]:basis-[calc(25%-9px)] [&>*]:min-w-0">
+      <div className="grid grid-cols-4 sm:grid-cols-4 gap-2 sm:gap-3">
         {gradientOptions.map((option, index) => (
           <button
             key={index}
             onClick={() => onSelect(option.gradient)}
-            className={`h-12 rounded-lg transition-all hover:scale-105 ${
+            className={`h-10 sm:h-12 rounded-lg transition-all hover:scale-105 ${
               selectedGradient === option.gradient ? "ring-4 ring-purple-500 ring-offset-2" : "ring-1 ring-gray-200"
             } ${gradientClassMap[option.gradient] ?? ''}`}
             title={option.name}
