@@ -12,7 +12,7 @@ import { resolveAssetUrl } from "../lib/nbcard-assets";
 import { generateProfileVCard, getProfileShareUrl, renderBankQrText, renderFlyerQrText } from "../lib/nbcard-share";
 import { CaptureImage } from "./capture-image";
 import styles from "./profile-card.module.css";
-import type { TemplateSelection, Template } from "@/lib/nbcard-templates";
+import type { TemplateSelection, Template, CardCategory } from "@/lib/nbcard-templates";
 import {
   getTemplateThemeTokens,
   isLightColor,
@@ -1144,8 +1144,11 @@ export function ProfileCard({
   const isCanvasOnly = !hasProfileData && (profile.layers?.length ?? 0) > 0;
   const suppressSystemContent = suppressDefaultCardContent || isCanvasOnly;
 
-  // Phase 2: Get export dimensions from template metadata
-  const exportDimensions = resolvedTemplate ? getTemplateExportDimensions(resolvedTemplate) : { width: 1600, height: 900 };
+  // Phase 2: Get export dimensions from template metadata or card category
+  const fallbackCategory = (profile.cardCategory ?? "PROFILE").toString().toUpperCase();
+  const exportDimensions = resolvedTemplate
+    ? getTemplateExportDimensions(resolvedTemplate)
+    : getTemplateExportDimensions({ cardCategory: fallbackCategory as CardCategory } as Template);
   const aspectRatioValue = exportDimensions.width / exportDimensions.height;
 
   const templateTheme = useTemplateMode && !isWalletTemplate ? getTemplateThemeTokens(templateSelection?.backgroundId) : null;
@@ -1449,7 +1452,7 @@ export function ProfileCard({
       id={captureId ?? "profile-card-capture"}
       ref={rootRef}
       className={cn(
-        "relative isolate w-full max-w-md mx-auto rounded-3xl overflow-hidden",
+        "relative isolate w-full rounded-3xl overflow-hidden",
         styles.card3dEdge,
         !hasAnyBackground && gradientClass,
         hasAnyBackground && (isWalletTemplate ? "bg-white" : (effectiveSurfaceIsLight ? "bg-white" : "bg-black"))

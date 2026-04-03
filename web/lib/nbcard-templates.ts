@@ -371,24 +371,45 @@ export function saveTemplateSelection(selection: TemplateSelection, profileId?: 
 }
 
 /**
+ * Professional print dimensions per card category (300 DPI).
+ * - PROFILE / BUSINESS / ADDRESS: 3.5 × 2 in = 1050 × 600 px (standard business card)
+ * - BANK: CR-80 (85.6 × 54 mm ≈ 3.375 × 2.125 in) = 1013 × 638 px
+ * - FLYER / WEDDING: A5 portrait (148 × 210 mm) = 1748 × 2480 px
+ */
+const PRINT_DIMENSIONS: Record<string, { width: number; height: number }> = {
+  PROFILE:  { width: 1050, height: 600 },
+  BUSINESS: { width: 1050, height: 600 },
+  ADDRESS:  { width: 1050, height: 600 },
+  BANK:     { width: 1013, height: 638 },
+  FLYER:    { width: 1748, height: 2480 },
+  WEDDING:  { width: 1748, height: 2480 },
+};
+
+/**
  * Get export dimensions from template metadata
- * Returns default dimensions if template not found or dimensions not specified
+ * Returns professional print dimensions per card category when template
+ * metadata is not explicitly set.
  */
 export function getTemplateExportDimensions(template: Template | undefined | null): { width: number; height: number } {
-  const defaultLandscape = { width: 1600, height: 900 };
-  const defaultPortrait = { width: 900, height: 1200 };
-  
   if (!template) {
-    return defaultLandscape;
+    return PRINT_DIMENSIONS.PROFILE; // default: standard business card
   }
   
   // Use template metadata if available
   if (template.exportWidth && template.exportHeight) {
     return { width: template.exportWidth, height: template.exportHeight };
   }
+
+  // Use professional print dimensions for the card category
+  const cat = (template.cardCategory ?? '').toUpperCase();
+  if (cat && PRINT_DIMENSIONS[cat]) {
+    return PRINT_DIMENSIONS[cat];
+  }
   
-  // Fall back to orientation-based defaults
-  return template.orientation === 'portrait' ? defaultPortrait : defaultLandscape;
+  // Fall back to orientation-based professional defaults
+  return template.orientation === 'portrait'
+    ? PRINT_DIMENSIONS.FLYER
+    : PRINT_DIMENSIONS.PROFILE;
 }
 
 /**

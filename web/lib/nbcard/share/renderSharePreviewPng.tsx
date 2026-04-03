@@ -19,14 +19,28 @@ import type { CardModel, CanvasElement } from "@/lib/nbcard/cardModel";
 // Card visual — pure renderer (no state, no side effects)
 // ---------------------------------------------------------------------------
 
-const CARD_WIDTH = 428; // px — standard business card width at 1×
+/**
+ * Professional print dimensions per card category (300 DPI).
+ * Landscape categories use width > height; portrait uses height > width.
+ */
+const SHARE_DIMENSIONS: Record<string, { width: number; height: number }> = {
+  address:  { width: 1050, height: 600 },
+  bank:     { width: 1013, height: 638 },
+  business: { width: 1050, height: 600 },
+  flyer:    { width: 1748, height: 2480 },
+  wedding:  { width: 1748, height: 2480 },
+};
+const DEFAULT_SHARE_DIM = { width: 1050, height: 600 };
 
 /**
  * Renders the card background + canvas layers from a CardModel snapshot.
- * Width is fixed; height follows the 85.6 × 54 mm business card ratio.
+ * Dimensions are derived from the card's category for professional output.
  */
 function ShareCardVisual({ card }: { card: CardModel }) {
-  const height = Math.round(CARD_WIDTH * 0.629);
+  const dims = SHARE_DIMENSIONS[card.category] ?? DEFAULT_SHARE_DIM;
+  // Scale down for rendering (capture at scale 2 will restore full resolution)
+  const renderWidth = Math.round(dims.width / 2);
+  const renderHeight = Math.round(dims.height / 2);
   const { canvas, style } = card;
   const bgImageRef = style.backgroundImageRef;
   const hasBg = !!(bgImageRef || style.backgroundPresetId);
@@ -48,8 +62,8 @@ function ShareCardVisual({ card }: { card: CardModel }) {
     <div
       style={{
         position: "relative",
-        width: `${CARD_WIDTH}px`,
-        height: `${height}px`,
+        width: `${renderWidth}px`,
+        height: `${renderHeight}px`,
         overflow: "hidden",
         fontFamily: style.fontFamily ?? "Inter, sans-serif",
         background: hasBg
