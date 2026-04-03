@@ -638,6 +638,7 @@ function CardLayerRenderer({
   onSendBackward,
   onBringToFront,
   onSendToBack,
+  qrValueOverride,
 }: {
   layer: CardLayer;
   editMode?: boolean;
@@ -657,6 +658,7 @@ function CardLayerRenderer({
   onSendBackward?: (id: string) => void;
   onBringToFront?: (id: string) => void;
   onSendToBack?: (id: string) => void;
+  qrValueOverride?: string;
 }) {
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
@@ -970,7 +972,7 @@ function CardLayerRenderer({
 
     if (layer.type === "qr") {
       const qrLayer = layer as QrLayer;
-      const qrValue = qrLayer.style.value || "https://neurobreath.app";
+      const qrValue = qrValueOverride || qrLayer.style.value || "https://neurobreath.app";
       return (
         /* eslint-disable-next-line react/forbid-dom-props */
         <div
@@ -2367,6 +2369,7 @@ export function ProfileCard({
                 onSendBackward={onSendBackward}
                 onBringToFront={onBringToFront}
                 onSendToBack={onSendToBack}
+                qrValueOverride={layer.type === "qr" ? computeWalletQrValue(profile, shareUrl) : undefined}
               />
             ))}
         </div>
