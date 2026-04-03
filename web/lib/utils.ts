@@ -188,6 +188,7 @@ export interface QrLayer extends CardLayerBase {
     background: string; // hex — background color
     level: QrErrorLevel; // error correction level
     marginSize?: number; // quiet zone cells (default 1)
+    qrSource?: "auto" | "manual"; // auto = card data (vCard/bank/flyer); manual = custom URL
   };
 }
 

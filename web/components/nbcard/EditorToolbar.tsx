@@ -1377,6 +1377,34 @@ export function EditorToolbar({
                   </div>
                 </div>
               )}
+              <div className="basis-full! w-full">
+                <label className="text-xs text-gray-600">QR Source</label>
+                <select
+                  aria-label="QR source mode"
+                  value={selectedLayer.style.qrSource ?? "auto"}
+                  onChange={(e) => {
+                    const updated = {
+                      ...profile,
+                      layers: profile.layers?.map((l) =>
+                        l.id === selectedLayer.id && l.type === "qr"
+                          ? { ...l, style: { ...l.style, qrSource: e.target.value as "auto" | "manual" } }
+                          : l
+                      ),
+                    };
+                    onProfileUpdate(updated);
+                  }}
+                  className="w-full px-2 py-1 text-sm border rounded bg-white"
+                >
+                  <option value="auto">Auto — Card data (vCard / bank / flyer)</option>
+                  <option value="manual">Manual — Custom URL or text</option>
+                </select>
+                <p className="mt-0.5 text-[10px] text-gray-400">
+                  {(selectedLayer.style.qrSource ?? "auto") === "auto"
+                    ? "QR encodes your card data so scanners save it directly."
+                    : "QR encodes the custom value you enter below."}
+                </p>
+              </div>
+              {(selectedLayer.style.qrSource ?? "auto") === "manual" && (
               <div className="col-span-2">
                 <label className="text-xs text-gray-600">QR Value (URL or text)</label>
                 <input
@@ -1398,6 +1426,7 @@ export function EditorToolbar({
                   className="w-full px-2 py-1 text-sm border rounded bg-white"
                 />
               </div>
+              )}
               <div>
                 <label className="text-xs text-gray-600">Foreground</label>
                 <div className="flex items-center gap-1">

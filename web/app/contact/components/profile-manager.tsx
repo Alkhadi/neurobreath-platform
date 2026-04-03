@@ -63,10 +63,16 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
   const draftTimerRef = useRef<NodeJS.Timeout | null>(null);
   const hasRestoredDraftRef = useRef(false);
   const didInitRef = useRef(false);
+  const cardDetailsRef = useRef<HTMLDivElement>(null);
 
   const setCategory = useCallback(
     (category: FrameCategory) => {
       setSelectedFrameCategory(category);
+
+      // Auto-scroll to Card Details after state update
+      setTimeout(() => {
+        cardDetailsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
 
       if (category === "ADDRESS") {
         setEditedProfile((prev) => ({
@@ -362,8 +368,8 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6 flex justify-between items-center">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto scroll-smooth">
+        <div className="sticky top-0 z-10 bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6 flex justify-between items-center">
           <h2 className="text-2xl font-bold">{isNew ? "Create New Profile" : "Edit Profile"}</h2>
           <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-full transition-colors" aria-label="Close">
             <FaTimes className="text-xl" />
@@ -865,7 +871,7 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
           </div>
 
           {/* Card Details Section (Category-specific inputs) */}
-          <div className="border-t border-gray-200 pt-6">
+          <div ref={cardDetailsRef} className="border-t border-gray-200 pt-6">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-bold text-gray-800">Card Details</h3>
               {saveStatus === "saving" && (

@@ -194,7 +194,7 @@ function computeWalletQrValue(profile: Profile, shareUrl: string): string {
     includeBusiness: category === "BUSINESS" || category === "PROFILE",
     shareUrl,
   });
-  if (vcard.length > 1200) return shareUrl;
+  if (vcard.length > 2000) return shareUrl;
   return vcard;
 }
 
@@ -972,7 +972,10 @@ function CardLayerRenderer({
 
     if (layer.type === "qr") {
       const qrLayer = layer as QrLayer;
-      const qrValue = qrValueOverride || qrLayer.style.value || "https://neurobreath.app";
+      const useAuto = (qrLayer.style.qrSource ?? "auto") === "auto";
+      const qrValue = useAuto
+        ? (qrValueOverride || qrLayer.style.value || "https://neurobreath.app")
+        : (qrLayer.style.value || "https://neurobreath.app");
       return (
         /* eslint-disable-next-line react/forbid-dom-props */
         <div

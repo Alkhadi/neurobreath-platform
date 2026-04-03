@@ -92,6 +92,8 @@ import {
   buildMailtoUrl,
   buildSmsUrl,
   buildWhatsappUrl,
+  renderBankQrText,
+  renderFlyerQrText,
 } from "../lib/nbcard-share";
 import { uploadCardOgImage } from "@/lib/nb-card/og-upload";
 import {
@@ -513,7 +515,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   const [isQrOpen, setIsQrOpen] = React.useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = React.useState(false);
   const [isShareFallbackOpen, setIsShareFallbackOpen] = React.useState(false);
-  const [isQrVcard, setIsQrVcard] = React.useState(() => getCategoryFromProfile(profile) === "ADDRESS");
+  const [isQrVcard, setIsQrVcard] = React.useState(true);
   const [isPrintOpen, setIsPrintOpen] = React.useState(false);
   const [busyKey, setBusyKey] = React.useState<string | null>(null);
 
@@ -762,24 +764,30 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   }, []);
 
   const qrValue = React.useMemo(() => {
-    // Default: encode the share URL so scanning always opens the full card
-    // with background + all layers (correct for all card categories).
+    // When data mode is off, encode the share URL.
     if (!isQrVcard) return shareUrl;
 
-    // Optional vCard mode: encode contact fields directly into the QR.
-    // Not meaningful for BANK / FLYER / WEDDING — fall back to URL.
     const category = getCategoryFromProfile(profile);
-    if (category === "BANK" || category === "FLYER" || category === "WEDDING") return shareUrl;
-
     const fields = lastRedactionFields ?? getDefaultIncludedFields(profile);
     const redacted = applyRedaction(profile, fields);
+
+    // BANK / FLYER / WEDDING use dedicated compact formatters.
+    if (category === "BANK") {
+      const txt = renderBankQrText(redacted, shareUrl);
+      return txt.length > 2000 ? shareUrl : txt;
+    }
+    if (category === "FLYER" || category === "WEDDING") {
+      const txt = renderFlyerQrText(redacted, shareUrl);
+      return txt.length > 2000 ? shareUrl : txt;
+    }
+
     const vcard = generateProfileVCard(redacted, {
       includeAddress: category === "ADDRESS",
       includeBusiness: category === "BUSINESS" || category === "PROFILE",
       shareUrl,
     });
-    // Fall back to URL if vCard exceeds QR capacity
-    if (vcard.length > 1200) return shareUrl;
+    // Fall back to URL if vCard exceeds QR capacity (~2331 bytes at Level M)
+    if (vcard.length > 2000) return shareUrl;
     return vcard;
   }, [isQrVcard, lastRedactionFields, profile, shareUrl]);
 
@@ -3162,17 +3170,16 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           <DialogHeader>
             <DialogTitle>QR Code</DialogTitle>
             <DialogDescription>
-              Scan to open your full card (background + all details). For
-              profile/address/business cards you can optionally enable vCard mode
-              to encode contact fields directly into the QR.
+              Scan to import card data directly. Card data mode encodes your
+              contact details into the QR code so scanners can save them
+              without visiting a link.
             </DialogDescription>
           </DialogHeader>
 
-          {getCategoryFromProfile(profile) === "BANK" || getCategoryFromProfile(profile) === "FLYER" || getCategoryFromProfile(profile) === "WEDDING" ? null : (
-            <div className="flex items-center justify-between rounded-lg border p-3">
+          <div className="flex items-center justify-between rounded-lg border p-3">
               <div className="text-sm">
-                <div className="font-medium">vCard mode</div>
-                <div className="text-muted-foreground">Encodes contact fields directly (falls back to link if too large).</div>
+                <div className="font-medium">Card data mode</div>
+                <div className="text-muted-foreground">Encodes card data directly into QR (falls back to link if too large).</div>
               </div>
               <Button
                 type="button"
@@ -3184,15 +3191,21 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                     return;
                   }
 
+                  const category = getCategoryFromProfile(profile);
+
+                  if (category === "BANK" || category === "FLYER" || category === "WEDDING") {
+                    setIsQrVcard(true);
+                    return;
+                  }
+
                   requestRedactionAndRun(async (redacted) => {
-                    const category = getCategoryFromProfile(profile);
                     const vcard = generateProfileVCard(redacted, {
                       includeAddress: category === "ADDRESS",
                       includeBusiness: category === "BUSINESS" || category === "PROFILE",
                       shareUrl,
                     });
-                    if (vcard.length > 1200) {
-                      toast.message("vCard too large for QR", { description: "Using link QR instead." });
+                    if (vcard.length > 2000) {
+                      toast.message("Card data too large for QR", { description: "Using link QR instead." });
                       setIsQrVcard(false);
                       return;
                     }
@@ -3203,7 +3216,6 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                 {isQrVcard ? "On" : "Off"}
               </Button>
             </div>
-          )}
 
           <div className="flex items-center justify-center rounded-xl border bg-muted/30 p-4">
             <QRCodeSVG id="nbcard-qr-svg" value={qrValue} size={260} includeMargin level="M" />
