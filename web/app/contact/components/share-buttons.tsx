@@ -514,7 +514,6 @@ function renderShareText(profile: Profile, shareUrl: string): string {
 export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSetContacts, templateSelection, showPrivacyControls = true, canonicalShareUrl }: ShareButtonsProps) {
   const [isQrOpen, setIsQrOpen] = React.useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = React.useState(false);
-  const [isShareFallbackOpen, setIsShareFallbackOpen] = React.useState(false);
   const [isQrVcard, setIsQrVcard] = React.useState(true);
   const [isPrintOpen, setIsPrintOpen] = React.useState(false);
   const [busyKey, setBusyKey] = React.useState<string | null>(null);
@@ -832,8 +831,20 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                 text: `Here’s my contact card: ${shareUrl}`,
                 files: [new File([pngBlob], `${safeName}.png`, { type: "image/png" })],
               });
-              if (!ok) setIsShareFallbackOpen(true);
-              else toast.success("Shared");
+              if (!ok) {
+                // File sharing not supported (e.g. Atlas, Firefox) — try text share, then download.
+                const textOk = await shareViaWebShare({
+                  title: `NBCard — ${redacted.fullName || profile.fullName}`,
+                  text: `Here\u2019s my contact card: ${shareUrl}`,
+                  url: shareUrl,
+                });
+                if (!textOk) {
+                  downloadBlob(pngBlob, `${safeName}_NBCard.png`);
+                  toast.success("Card image downloaded");
+                }
+              } else {
+                toast.success("Shared");
+              }
             } finally {
               setExportCaptureProfile(null);
             }
@@ -3301,95 +3312,6 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           </DialogContent>
         </Dialog>
       ) : null}
-
-      <Dialog open={isShareFallbackOpen} onOpenChange={setIsShareFallbackOpen}>
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Share your card</DialogTitle>
-            <DialogDescription>
-              File sharing isn&apos;t supported in this browser. Use one of these options instead.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-3 max-h-[70vh] overflow-y-auto pr-1">
-            {/* Downloads */}
-            <div>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Downloads</p>
-              <div className="grid grid-cols-2 gap-2">
-                <Button size="sm" variant="default" onClick={handleDownloadPng} disabled={!!busyKey}>
-                  <Download className="mr-1.5 h-3.5 w-3.5" /> PNG
-                </Button>
-                <Button size="sm" variant="secondary" onClick={handleDownloadPdf} disabled={!!busyKey}>
-                  <Download className="mr-1.5 h-3.5 w-3.5" /> PDF
-                </Button>
-                <Button size="sm" variant="outline" onClick={handleDownloadVcard} disabled={!!busyKey}>
-                  <Download className="mr-1.5 h-3.5 w-3.5" /> vCard
-                </Button>
-                <Button size="sm" variant="outline" onClick={handleDownloadQrCardImage} disabled={!!busyKey}>
-                  <QrCode className="mr-1.5 h-3.5 w-3.5" /> QR Card
-                </Button>
-              </div>
-            </div>
-
-            {/* Share files */}
-            <div>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Share files</p>
-              <div className="grid grid-cols-2 gap-2">
-                <Button size="sm" variant="outline" onClick={handleSharePng} disabled={!!busyKey}>Share PNG</Button>
-                <Button size="sm" variant="outline" onClick={handleSharePdf} disabled={!!busyKey}>Share PDF</Button>
-                <Button size="sm" variant="outline" onClick={handleShareVcardFile} disabled={!!busyKey}>Share vCard</Button>
-                <Button size="sm" variant="outline" onClick={handleShareAsText} disabled={!!busyKey}>Share Text</Button>
-              </div>
-            </div>
-
-            {/* Copy & QR */}
-            <div>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Copy &amp; QR</p>
-              <div className="grid grid-cols-2 gap-2">
-                <Button size="sm" variant="outline" onClick={handleCopyLink} disabled={!!busyKey}>
-                  <LinkIcon className="mr-1.5 h-3.5 w-3.5" /> Copy link
-                </Button>
-                <Button size="sm" variant="outline" onClick={() => { setIsShareFallbackOpen(false); setIsQrOpen(true); }}>
-                  <QrCode className="mr-1.5 h-3.5 w-3.5" /> QR Code
-                </Button>
-              </div>
-            </div>
-
-            {/* Send via */}
-            <div>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Send via</p>
-              <div className="grid grid-cols-3 gap-2">
-                <Button size="sm" variant="outline" onClick={openWhatsapp}>WhatsApp</Button>
-                <Button size="sm" variant="outline" onClick={handleShareViaEmail} disabled={!!busyKey}>
-                  <Mail className="mr-1 h-3.5 w-3.5" /> Email
-                </Button>
-                <Button size="sm" variant="outline" onClick={openSms}>
-                  <MessageSquare className="mr-1 h-3.5 w-3.5" /> SMS
-                </Button>
-              </div>
-            </div>
-
-            {/* Print */}
-            <div>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Print</p>
-              <Button
-                size="sm"
-                variant="outline"
-                className="w-full"
-                onClick={() => { setIsShareFallbackOpen(false); setIsPrintOpen(true); }}
-              >
-                Print card
-              </Button>
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button type="button" variant="secondary" onClick={() => setIsShareFallbackOpen(false)}>
-              Close
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       <Dialog open={isPrintOpen} onOpenChange={setIsPrintOpen}>
         <DialogContent className="sm:max-w-md">

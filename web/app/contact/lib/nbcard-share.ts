@@ -128,7 +128,9 @@ export async function shareViaWebShare(share: { title: string; text?: string; ur
     }
     await navigator.share(share);
     return true;
-  } catch {
+  } catch (e) {
+    // User cancelled the share sheet — treat as handled so callers don't trigger fallback UI.
+    if (e instanceof Error && e.name === 'AbortError') return true;
     return false;
   }
 }
