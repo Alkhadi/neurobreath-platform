@@ -512,6 +512,7 @@ function renderShareText(profile: Profile, shareUrl: string): string {
 }
 
 export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSetContacts, templateSelection, showPrivacyControls = true, canonicalShareUrl }: ShareButtonsProps) {
+  const [hasMounted, setHasMounted] = React.useState(false);
   const [isQrOpen, setIsQrOpen] = React.useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = React.useState(false);
   const [isQrVcard, setIsQrVcard] = React.useState(true);
@@ -552,6 +553,10 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
     }
     setPendingShare({ channel, onImage, onText });
   }
+
+  React.useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   // Load template when templateSelection changes
   React.useEffect(() => {
@@ -1805,7 +1810,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
 
       {/* Hidden QR element used exclusively for QR Card image composite export */}
       <div className="fixed left-[-10000px] top-0 pointer-events-none select-none" aria-hidden="true">
-        <QRCodeSVG id="nbcard-qr-composite" value={qrValue} size={256} level="M" />
+        {hasMounted ? <QRCodeSVG id="nbcard-qr-composite" value={qrValue} size={256} level="M" /> : null}
       </div>
 
       <RedactionDialog
@@ -3229,7 +3234,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
             </div>
 
           <div className="flex items-center justify-center rounded-xl border bg-muted/30 p-4">
-            <QRCodeSVG id="nbcard-qr-svg" value={qrValue} size={260} includeMargin level="M" />
+            {hasMounted ? <QRCodeSVG id="nbcard-qr-svg" value={qrValue} size={260} includeMargin level="M" /> : null}
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
@@ -3711,18 +3716,20 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
             </div>
             
             <div ref={qrRef} className="flex justify-center mb-4 p-4 bg-gray-50 rounded-lg">
-              <QRCodeSVG 
-                value={qrCodeValue || "Loading..."} 
-                size={280} 
-                level="M" 
-                includeMargin
-                imageSettings={profileImageDataUrl ? {
-                  src: profileImageDataUrl,
-                  height: 50,
-                  width: 50,
-                  excavate: true,
-                } : undefined}
-              />
+              {hasMounted ? (
+                <QRCodeSVG 
+                  value={qrCodeValue || "Loading..."} 
+                  size={280} 
+                  level="M" 
+                  includeMargin
+                  imageSettings={profileImageDataUrl ? {
+                    src: profileImageDataUrl,
+                    height: 50,
+                    width: 50,
+                    excavate: true,
+                  } : undefined}
+                />
+              ) : null}
             </div>
             
             <div className="bg-purple-50 rounded-lg p-4 mb-4">
