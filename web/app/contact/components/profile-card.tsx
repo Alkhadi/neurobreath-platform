@@ -1844,6 +1844,7 @@ export function ProfileCard({
 
   const isFlyerPromoPortrait = templateSelection?.backgroundId === "flyer-promo-portrait" || templateSelection?.backgroundId === "flyer_promo_v1_portrait";
   const isBankCard = profile?.cardCategory === "BANK";
+  const hasCategoryPanel = ["BANK", "ADDRESS", "BUSINESS"].includes(profile?.cardCategory ?? "");
   
   // Phase 2: Use template metadata for aspect ratio (no distortion)
   // Remove hardcoded orientationClass; apply aspect-ratio via inline style
@@ -1912,7 +1913,7 @@ export function ProfileCard({
       {/* CARD CONTENT (z=10) — hidden in edit mode (layout or canvas), wallet template,
           or canvas-only cards (layers present but no form data filled in) */}
       {isWalletTemplate || editMode || canvasEditMode || suppressSystemContent ? null : (
-      <div className={cn("relative z-10", styles.systemContent, contentTextClass, isBankCard && "flex flex-col justify-center h-full")}>
+      <div className={cn("relative z-10", styles.systemContent, contentTextClass, hasCategoryPanel && "flex flex-col justify-center h-full")}>
         {isFlyerPromoPortrait ? (
                 <div className="space-y-4">
                   {/* Header */}
@@ -1997,57 +1998,6 @@ export function ProfileCard({
                 </div>
         ) : (
           <>
-                  {/* Profile Photo — hidden for bank cards */}
-                  {!isBankCard && (
-                  <div className="flex justify-center mb-6">
-                    <div className="relative group">
-                      <div className={cn("rounded-full overflow-hidden border-4 border-white shadow-lg bg-white", styles.scalePhoto)}>
-                        {resolvedPhotoUrl ? (
-                          <CaptureImage
-                            src={resolvedPhotoUrl}
-                            alt={profile?.fullName ?? "Profile"}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-400 to-blue-500 text-4xl font-bold text-white">
-                            {profile?.fullName?.charAt(0)?.toUpperCase() ?? "A"}
-                          </div>
-                        )}
-                      </div>
-                      {showEditButton && onPhotoClick && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onPhotoClick(e);
-                          }}
-                          className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg hover:scale-110 transition-transform"
-                          aria-label="Upload photo"
-                          data-html2canvas-ignore="true"
-                        >
-                          <svg
-                            className={cn("w-5 h-5", styles.accentText)}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 0 01-2-2V9z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M15 13a3 3 0 11-6 0 3 0 016 0z"
-                            />
-                          </svg>
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                  )}
         {/* Name & Title */}
         <h2 className={cn("text-3xl font-bold text-center mb-2", styles.signatureFont)}>
           <span data-pdf-text={profile?.fullName ?? ""}>{profile?.fullName ?? "Name"}</span>
@@ -2056,8 +2006,8 @@ export function ProfileCard({
           <span data-pdf-text={profile?.jobTitle ?? ""}>{profile?.jobTitle ?? "Job Title"}</span>
         </p>
 
-        {/* Contact Info — hidden for bank cards */}
-        {!isBankCard && (
+        {/* Contact Info — hidden for category cards */}
+        {!hasCategoryPanel && (
         <div className="space-y-3 mb-6">
           <a
             href={`tel:${profile?.phone ?? ""}`}
@@ -2111,8 +2061,8 @@ export function ProfileCard({
         </div>
         )}
 
-        {/* Social Media Icons — hidden for bank cards */}
-        {!isBankCard && (
+        {/* Social Media Icons — hidden for category cards */}
+        {!hasCategoryPanel && (
         <div className="flex justify-center gap-4 flex-wrap">
           {socialMediaLinks.map((social, index) => {
             const Icon = social.icon;
@@ -2138,14 +2088,14 @@ export function ProfileCard({
         </div>
         )}
 
-        {/* Descriptions — hidden for bank cards */}
-        {!isBankCard && profile?.profileDescription && (
+        {/* Descriptions — hidden for category cards */}
+        {!hasCategoryPanel && profile?.profileDescription && (
           <div className={cn("mt-6 backdrop-blur-md p-4 rounded-lg", softPanelClass)}>
             <h3 className="font-semibold mb-2">Profile</h3>
             <p className="text-sm opacity-90">{profile.profileDescription}</p>
           </div>
         )}
-        {!isBankCard && profile?.businessDescription && (
+        {!hasCategoryPanel && profile?.businessDescription && (
           <div className={cn("mt-3 backdrop-blur-md p-4 rounded-lg", softPanelClass)}>
             <h3 className="font-semibold mb-2">Business</h3>
             <p className="text-sm opacity-90">{profile.businessDescription}</p>
@@ -2154,34 +2104,33 @@ export function ProfileCard({
 
         {/* Category-specific Details Blocks */}
         {profile?.cardCategory === "ADDRESS" && profile?.addressCard && (
-          <div className={cn("mt-6 backdrop-blur-md p-4 rounded-lg", softPanelClass)}>
-            <h3 className="font-semibold mb-3 text-base">Address</h3>
-            <div className="text-sm space-y-1">
+          <div className={cn("my-auto backdrop-blur-md p-5 sm:p-6 rounded-xl w-full max-w-sm mx-auto", softPanelClass)}>
+            <h3 className="font-bold mb-4 text-lg text-center">Address</h3>
+            <div className="text-sm space-y-1.5">
               {profile.addressCard.recipientName && (
-                <p className="font-semibold" data-pdf-text={profile.addressCard.recipientName}>
+                <p className="font-medium" data-pdf-text={profile.addressCard.recipientName}>
                   {profile.addressCard.recipientName}
                 </p>
               )}
-              {profile.addressCard.addressLine1 && <p data-pdf-text={profile.addressCard.addressLine1}>{profile.addressCard.addressLine1}</p>}
-              {profile.addressCard.addressLine2 && <p data-pdf-text={profile.addressCard.addressLine2}>{profile.addressCard.addressLine2}</p>}
+              {profile.addressCard.addressLine1 && <p className="font-medium" data-pdf-text={profile.addressCard.addressLine1}>{profile.addressCard.addressLine1}</p>}
+              {profile.addressCard.addressLine2 && <p className="font-medium" data-pdf-text={profile.addressCard.addressLine2}>{profile.addressCard.addressLine2}</p>}
               {profile.addressCard.city && profile.addressCard.postcode && (
-                <p data-pdf-text={`${profile.addressCard.city}, ${profile.addressCard.postcode}`}>{profile.addressCard.city}, {profile.addressCard.postcode}</p>
+                <p className="font-medium" data-pdf-text={`${profile.addressCard.city}, ${profile.addressCard.postcode}`}>{profile.addressCard.city}, {profile.addressCard.postcode}</p>
               )}
-              {profile.addressCard.country && <p data-pdf-text={profile.addressCard.country}>{profile.addressCard.country}</p>}
+              {profile.addressCard.country && <p className="font-medium" data-pdf-text={profile.addressCard.country}>{profile.addressCard.country}</p>}
               {profile.addressCard.directionsNote && (
                 <p className="mt-2 text-xs opacity-75 italic" data-pdf-text={stripUrls(clamp(profile.addressCard.directionsNote, 60))}>
                   {stripUrls(clamp(profile.addressCard.directionsNote, 60))}
                 </p>
               )}
               {(profile.addressCard.addressLine1 || profile.addressCard.mapUrlOverride || profile.addressCard.mapDestinationOverride || profile.addressCard.mapQueryOverride) && (
-                <div className={cn("mt-3 pt-3 border-t", dividerBorderClass)}>
-                  <p className="text-xs opacity-75 mb-1">Find Address:</p>
+                <div className={cn("mt-3 pt-3 border-t text-center", dividerBorderClass)}>
                   <a
                     href={buildMapHref(profile.addressCard)}
                     data-pdf-link={buildMapHref(profile.addressCard)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm font-semibold underline hover:opacity-80 transition-opacity break-words"
+                    className="inline-block px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold hover:bg-white/30 transition-colors"
                   >
                     {profile.addressCard.mapLinkLabel || "Get Directions"}
                   </a>
@@ -2279,11 +2228,11 @@ export function ProfileCard({
         )}
 
         {profile?.cardCategory === "BUSINESS" && profile?.businessCard && (
-          <div className={cn("mt-6 backdrop-blur-md p-4 rounded-lg", softPanelClass)}>
-            <h3 className="font-semibold mb-3 text-base">Business</h3>
-            <div className="text-sm space-y-2">
+          <div className={cn("my-auto backdrop-blur-md p-5 sm:p-6 rounded-xl w-full max-w-sm mx-auto", softPanelClass)}>
+            <h3 className="font-bold mb-4 text-lg text-center">Business</h3>
+            <div className="text-sm space-y-2.5">
               {profile.businessCard.companyName && (
-                <p className="font-semibold text-base" data-pdf-text={profile.businessCard.companyName}>
+                <p className="font-medium text-base" data-pdf-text={profile.businessCard.companyName}>
                   {profile.businessCard.companyName}
                 </p>
               )}
@@ -2305,7 +2254,7 @@ export function ProfileCard({
                     data-pdf-link={profile.businessCard.websiteUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="underline hover:opacity-80 transition-opacity"
+                    className="font-medium underline hover:opacity-80 transition-opacity"
                   >
                     <span data-pdf-text={profile.businessCard.websiteUrl}>{profile.businessCard.websiteUrl}</span>
                   </a>
@@ -2314,13 +2263,13 @@ export function ProfileCard({
               {profile.businessCard.hours && (
                 <p>
                   <span className="opacity-75">Hours:</span>{" "}
-                  <span data-pdf-text={profile.businessCard.hours}>{profile.businessCard.hours}</span>
+                  <span className="font-medium" data-pdf-text={profile.businessCard.hours}>{profile.businessCard.hours}</span>
                 </p>
               )}
               {profile.businessCard.locationNote && (
                 <p>
                   <span className="opacity-75">Location:</span>{" "}
-                  <span data-pdf-text={profile.businessCard.locationNote}>{profile.businessCard.locationNote}</span>
+                  <span className="font-medium" data-pdf-text={profile.businessCard.locationNote}>{profile.businessCard.locationNote}</span>
                 </p>
               )}
               {profile.businessCard.vatOrRegNo && (
@@ -2330,7 +2279,7 @@ export function ProfileCard({
                 </p>
               )}
               {profile.businessCard.bookingLink && (
-                <div className={cn("mt-3 pt-3 border-t", dividerBorderClass)}>
+                <div className={cn("mt-3 pt-3 border-t text-center", dividerBorderClass)}>
                   <a
                     href={profile.businessCard.bookingLink}
                     data-pdf-link={profile.businessCard.bookingLink}
