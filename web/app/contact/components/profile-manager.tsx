@@ -41,9 +41,11 @@ interface ProfileManagerProps {
   isNew?: boolean;
   userEmail?: string; // For IndexedDB namespace
   onSelectTemplate?: (templateId: string) => void;
+  /** Called on every keystroke so the canvas updates in real-time. */
+  onLivePreview?: (profile: Profile) => void;
 }
 
-export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = false, userEmail, onSelectTemplate }: ProfileManagerProps) {
+export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = false, userEmail, onSelectTemplate, onLivePreview }: ProfileManagerProps) {
   const [editedProfile, setEditedProfile] = useState<Profile>(profile);
   const [sessionEmail, setSessionEmail] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -258,7 +260,9 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
     }
     if (editedProfile === profile) return;
     persistDraft();
-  }, [editedProfile, persistDraft, profile]);
+    // Live preview: pipe changes to the canvas immediately
+    onLivePreview?.(editedProfile);
+  }, [editedProfile, persistDraft, profile, onLivePreview]);
 
   // Cleanup timer on unmount
   useEffect(() => {
@@ -368,15 +372,15 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center sm:p-4">
-      <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto scroll-smooth">
-        <div className="sticky top-0 z-10 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-3 sm:px-6 sm:py-4 flex justify-between items-center">
+      <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] flex flex-col">
+        <div className="sticky top-0 z-10 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-3 sm:px-6 sm:py-4 flex justify-between items-center flex-shrink-0 rounded-t-2xl sm:rounded-t-2xl">
           <h2 className="text-lg sm:text-2xl font-bold truncate">{isNew ? "Create New Profile" : "Edit Profile"}</h2>
           <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-full transition-colors flex-shrink-0" aria-label="Close">
             <FaTimes className="text-lg sm:text-xl" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-4 py-4 sm:px-6 sm:py-6 space-y-5">
+        <form onSubmit={handleSubmit} className="px-4 py-4 sm:px-6 sm:py-6 space-y-5 overflow-y-auto flex-1 min-h-0 scroll-smooth">
           {/* Gradient Selector */}
           <GradientSelector
             selectedGradient={editedProfile.gradient}

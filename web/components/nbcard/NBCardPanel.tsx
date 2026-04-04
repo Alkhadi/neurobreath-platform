@@ -91,7 +91,8 @@ function sanitizeProfile(profile: Profile): Profile {
     ...profile,
     socialMedia: {
       instagram: sanitizeSocialUrl(social.instagram),
-      facebook: sanitizeSocialUrl(social.tiktok),
+      facebook: sanitizeSocialUrl(social.facebook),
+      tiktok: sanitizeSocialUrl(social.tiktok),
       linkedin: sanitizeSocialUrl(social.linkedin),
       twitter: sanitizeSocialUrl(social.twitter),
     },
@@ -2552,6 +2553,13 @@ export function NBCardPanel() {
           }}
           isNew={isNewProfile}
           userEmail={undefined}
+          onLivePreview={(preview) => {
+            setProfiles((prev) =>
+              prev.map((p) =>
+                p.id === editingProfile.id ? { ...preview, id: p.id } : p
+              )
+            );
+          }}
           onSelectTemplate={(templateId) => {
             loadTemplateManifest()
               .then((manifest) => {

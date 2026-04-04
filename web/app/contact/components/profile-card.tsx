@@ -4,7 +4,7 @@ import { Profile, cn, CardLayer, type TextLayer, type QrLayer } from "@/lib/util
 import { buildMapHref } from "@/lib/nbcard/mapHref";
 import { stripUrls, clamp } from "@/lib/nbcard/sanitize";
 import { findSnapPoints, snapToGrid } from "@/lib/nb-card/layer-editor";
-import { FaInstagram, FaFacebook, FaTiktok, FaLinkedin, FaTwitter, FaGlobe, FaPhone, FaEnvelope, FaHome } from "react-icons/fa";
+import { FaInstagram, FaFacebook, FaTiktok, FaLinkedin, FaTwitter, FaGlobe, FaHome } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 import {
   ContextMenu,
@@ -726,7 +726,7 @@ function CardLayerRenderer({
   };
 
   const handlePointerDown = (e: React.PointerEvent) => {
-    if (!editMode || layer.locked) return;
+    if (!(editMode || canvasEditMode) || layer.locked) return;
     e.stopPropagation();
     
     onSelect?.(layer.id);
@@ -745,7 +745,7 @@ function CardLayerRenderer({
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDragging || !editMode || layer.locked) return;
+    if (!isDragging || !(editMode || canvasEditMode) || layer.locked) return;
     e.stopPropagation();
     
     const container = containerRef.current;
@@ -789,7 +789,7 @@ function CardLayerRenderer({
   };
 
   const handleResizePointerDown = (e: React.PointerEvent, _corner: string) => {
-    if (!editMode || layer.locked) return;
+    if (!(editMode || canvasEditMode) || layer.locked) return;
     e.stopPropagation();
     
     const container = containerRef.current;
@@ -806,7 +806,7 @@ function CardLayerRenderer({
   };
 
   const handleResizePointerMove = (e: React.PointerEvent) => {
-    if (!isResizing || !editMode || layer.locked) return;
+    if (!isResizing || !(editMode || canvasEditMode) || layer.locked) return;
     e.stopPropagation();
     
     const container = containerRef.current;
@@ -1004,7 +1004,7 @@ function CardLayerRenderer({
     return null;
   };
 
-  const showContextMenu = !!(editMode || canvasEditMode);
+  const showContextMenu = true; // Always allow right-click/tap context menu in the canvas
 
   const handleRotate = (degrees: number) => {
     onUpdate?.(layer.id, { rotation: ((layer.rotation ?? 0) + degrees) % 360 });
@@ -2060,7 +2060,6 @@ export function ProfileCard({
             data-pdf-link={`tel:${profile?.phone ?? ""}`}
             className={cn("flex items-center gap-3 p-2 rounded-lg transition-colors", hoverRowClass)}
           >
-            <FaPhone className="text-xl" />
             <span className="text-lg" data-pdf-text={profile?.phone ?? ""}>
               {profile?.phone ?? "Phone"}
             </span>
@@ -2070,7 +2069,6 @@ export function ProfileCard({
             data-pdf-link={`mailto:${profile?.email ?? ""}`}
             className={cn("flex items-center gap-3 p-2 rounded-lg transition-colors", hoverRowClass)}
           >
-            <FaEnvelope className="text-xl" />
             <span className="text-lg" data-pdf-text={profile?.email ?? ""}>
               {profile?.email ?? "Email"}
             </span>

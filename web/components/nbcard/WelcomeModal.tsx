@@ -65,31 +65,31 @@ export function WelcomeModal({ hasExistingCards, onCreateCard, onUseExample }: W
 
         <div className="py-4 space-y-3">
           <div className="bg-blue-50 border border-blue-100 rounded-lg p-3">
-            <p className="text-sm text-gray-700">
+            <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">
               <strong className="text-blue-700">Saved locally.</strong> This card is stored on this device only &mdash;
               nothing is uploaded unless you share.
             </p>
           </div>
         </div>
 
-        <DialogFooter className="flex-col sm:flex-row gap-2">
+        <DialogFooter className="flex flex-col gap-2 sm:gap-3">
           <Button
             onClick={handleCreateCard}
-            className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold"
+            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold text-sm px-4 py-2.5 min-h-[44px]"
           >
             Create My Card
           </Button>
           <Button
             onClick={handleUseExample}
             variant="outline"
-            className="w-full sm:w-auto border-purple-300 text-purple-700 hover:bg-purple-50"
+            className="w-full border-purple-300 text-purple-700 hover:bg-purple-50 text-sm px-4 py-2.5 min-h-[44px]"
           >
             Use Example Template
           </Button>
           <Button
             asChild
             variant="ghost"
-            className="w-full sm:w-auto text-gray-600 hover:text-gray-900"
+            className="w-full text-gray-600 hover:text-gray-900 text-sm px-4 py-2.5 min-h-[44px]"
           >
             <a href={`/uk/login?callbackUrl=${encodeURIComponent("/resources/nb-card")}`}>
               Sign in to save across devices
