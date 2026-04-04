@@ -203,6 +203,8 @@ export function NBCardPanel() {
 
   // Phase 4: Saved Layouts list
   const [showSavedLayouts, setShowSavedLayouts] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => { setHasMounted(true); }, []);
   
   // QR share: true while the server share is being created
   const [qrSharePending, setQrSharePending] = useState(false);
@@ -1702,11 +1704,11 @@ export function NBCardPanel() {
 
   // Phase 4: compute saved layouts for current namespace
   const savedLayouts = useMemo((): NbcardSavedCard[] => {
-    if (typeof window === "undefined") return [];
+    if (!hasMounted) return [];
     const namespace = getNbcardSavedNamespace(sessionEmail ?? undefined);
     return loadNbcardSavedCards(namespace).sort((a, b) => b.updatedAt - a.updatedAt);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionEmail, autosaveIndicator]); // re-compute after each autosave / Save As
+  }, [sessionEmail, autosaveIndicator, hasMounted]); // re-compute after each autosave / Save As
 
   return (
     <>
