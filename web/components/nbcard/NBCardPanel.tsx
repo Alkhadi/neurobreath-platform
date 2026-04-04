@@ -565,6 +565,19 @@ export function NBCardPanel() {
     templateSelection?.backgroundId,
   ]);
 
+  // Live-preview handler: update the profiles array without closing the editor.
+  // Wrapped in useCallback so the reference is stable across renders.
+  const editingProfileIdRef = useRef<string | null>(null);
+  editingProfileIdRef.current = editingProfile?.id ?? null;
+
+  const handleLivePreview = useCallback((preview: Profile) => {
+    const eid = editingProfileIdRef.current;
+    if (!eid) return;
+    setProfiles((prev) =>
+      prev.map((p) => (p.id === eid ? { ...preview, id: p.id } : p))
+    );
+  }, []);
+
   const handleSaveProfile = (profile: Profile) => {
     if (isNewProfile) {
       const id = profile.id && profile.id.trim().length > 0 ? profile.id : Date.now().toString();
@@ -2553,13 +2566,7 @@ export function NBCardPanel() {
           }}
           isNew={isNewProfile}
           userEmail={undefined}
-          onLivePreview={(preview) => {
-            setProfiles((prev) =>
-              prev.map((p) =>
-                p.id === editingProfile.id ? { ...preview, id: p.id } : p
-              )
-            );
-          }}
+          onLivePreview={handleLivePreview}
           onSelectTemplate={(templateId) => {
             loadTemplateManifest()
               .then((manifest) => {

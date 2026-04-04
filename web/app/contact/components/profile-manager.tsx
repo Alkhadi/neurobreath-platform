@@ -66,6 +66,8 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
   const hasRestoredDraftRef = useRef(false);
   const didInitRef = useRef(false);
   const cardDetailsRef = useRef<HTMLDivElement>(null);
+  const livePreviewRef = useRef(onLivePreview);
+  livePreviewRef.current = onLivePreview;
 
   const setCategory = useCallback(
     (category: FrameCategory) => {
@@ -261,8 +263,8 @@ export function ProfileManager({ profile, onSave, onDelete, onClose, isNew = fal
     if (editedProfile === profile) return;
     persistDraft();
     // Live preview: pipe changes to the canvas immediately
-    onLivePreview?.(editedProfile);
-  }, [editedProfile, persistDraft, profile, onLivePreview]);
+    livePreviewRef.current?.(editedProfile);
+  }, [editedProfile, persistDraft, profile]);
 
   // Cleanup timer on unmount
   useEffect(() => {
