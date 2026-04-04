@@ -1843,6 +1843,7 @@ export function ProfileCard({
   ];
 
   const isFlyerPromoPortrait = templateSelection?.backgroundId === "flyer-promo-portrait" || templateSelection?.backgroundId === "flyer_promo_v1_portrait";
+  const isBankCard = profile?.cardCategory === "BANK";
   
   // Phase 2: Use template metadata for aspect ratio (no distortion)
   // Remove hardcoded orientationClass; apply aspect-ratio via inline style
@@ -1911,7 +1912,7 @@ export function ProfileCard({
       {/* CARD CONTENT (z=10) — hidden in edit mode (layout or canvas), wallet template,
           or canvas-only cards (layers present but no form data filled in) */}
       {isWalletTemplate || editMode || canvasEditMode || suppressSystemContent ? null : (
-      <div className={cn("relative z-10", styles.systemContent, contentTextClass)}>
+      <div className={cn("relative z-10", styles.systemContent, contentTextClass, isBankCard && "flex flex-col justify-center h-full")}>
         {isFlyerPromoPortrait ? (
                 <div className="space-y-4">
                   {/* Header */}
@@ -1996,7 +1997,8 @@ export function ProfileCard({
                 </div>
         ) : (
           <>
-                  {/* Profile Photo */}
+                  {/* Profile Photo — hidden for bank cards */}
+                  {!isBankCard && (
                   <div className="flex justify-center mb-6">
                     <div className="relative group">
                       <div className={cn("rounded-full overflow-hidden border-4 border-white shadow-lg bg-white", styles.scalePhoto)}>
@@ -2045,6 +2047,7 @@ export function ProfileCard({
                       )}
                     </div>
                   </div>
+                  )}
         {/* Name & Title */}
         <h2 className={cn("text-3xl font-bold text-center mb-2", styles.signatureFont)}>
           <span data-pdf-text={profile?.fullName ?? ""}>{profile?.fullName ?? "Name"}</span>
@@ -2053,7 +2056,8 @@ export function ProfileCard({
           <span data-pdf-text={profile?.jobTitle ?? ""}>{profile?.jobTitle ?? "Job Title"}</span>
         </p>
 
-        {/* Contact Info */}
+        {/* Contact Info — hidden for bank cards */}
+        {!isBankCard && (
         <div className="space-y-3 mb-6">
           <a
             href={`tel:${profile?.phone ?? ""}`}
@@ -2105,8 +2109,10 @@ export function ProfileCard({
             </a>
           )}
         </div>
+        )}
 
-        {/* Social Media Icons */}
+        {/* Social Media Icons — hidden for bank cards */}
+        {!isBankCard && (
         <div className="flex justify-center gap-4 flex-wrap">
           {socialMediaLinks.map((social, index) => {
             const Icon = social.icon;
@@ -2130,15 +2136,16 @@ export function ProfileCard({
             );
           })}
         </div>
+        )}
 
-        {/* Descriptions */}
-        {profile?.profileDescription && (
+        {/* Descriptions — hidden for bank cards */}
+        {!isBankCard && profile?.profileDescription && (
           <div className={cn("mt-6 backdrop-blur-md p-4 rounded-lg", softPanelClass)}>
             <h3 className="font-semibold mb-2">Profile</h3>
             <p className="text-sm opacity-90">{profile.profileDescription}</p>
           </div>
         )}
-        {profile?.businessDescription && (
+        {!isBankCard && profile?.businessDescription && (
           <div className={cn("mt-3 backdrop-blur-md p-4 rounded-lg", softPanelClass)}>
             <h3 className="font-semibold mb-2">Business</h3>
             <p className="text-sm opacity-90">{profile.businessDescription}</p>
@@ -2210,43 +2217,43 @@ export function ProfileCard({
         )}
 
         {profile?.cardCategory === "BANK" && profile?.bankCard && (
-          <div className={cn("mt-6 backdrop-blur-md p-4 rounded-lg", softPanelClass)}>
-            <h3 className="font-semibold mb-3 text-base">Bank Details</h3>
-            <div className="text-sm space-y-2">
+          <div className={cn("my-auto backdrop-blur-md p-5 sm:p-6 rounded-xl w-full max-w-sm mx-auto", softPanelClass)}>
+            <h3 className="font-bold mb-4 text-lg text-center">Bank Details</h3>
+            <div className="text-sm space-y-2.5">
               {profile.bankCard.bankName && (
                 <p>
                   <span className="opacity-75">Bank:</span>{" "}
-                  <span data-pdf-text={profile.bankCard.bankName}>{profile.bankCard.bankName}</span>
+                  <span className="font-medium" data-pdf-text={profile.bankCard.bankName}>{profile.bankCard.bankName}</span>
                 </p>
               )}
               {profile.bankCard.accountName && (
                 <p>
                   <span className="opacity-75">Account Name:</span>{" "}
-                  <span data-pdf-text={profile.bankCard.accountName}>{profile.bankCard.accountName}</span>
+                  <span className="font-medium" data-pdf-text={profile.bankCard.accountName}>{profile.bankCard.accountName}</span>
                 </p>
               )}
               {profile.bankCard.sortCode && (
                 <p>
                   <span className="opacity-75">Sort Code:</span>{" "}
-                  <span data-pdf-text={profile.bankCard.sortCode}>{profile.bankCard.sortCode}</span>
+                  <span className="font-medium tracking-wide" data-pdf-text={profile.bankCard.sortCode}>{profile.bankCard.sortCode}</span>
                 </p>
               )}
               {profile.bankCard.accountNumber && (
                 <p>
                   <span className="opacity-75">Account Number:</span>{" "}
-                  <span data-pdf-text={profile.bankCard.accountNumber}>{profile.bankCard.accountNumber}</span>
+                  <span className="font-medium tracking-wide" data-pdf-text={profile.bankCard.accountNumber}>{profile.bankCard.accountNumber}</span>
                 </p>
               )}
               {profile.bankCard.iban && (
                 <p>
                   <span className="opacity-75">IBAN:</span>{" "}
-                  <span data-pdf-text={profile.bankCard.iban}>{profile.bankCard.iban}</span>
+                  <span className="font-medium tracking-wide" data-pdf-text={profile.bankCard.iban}>{profile.bankCard.iban}</span>
                 </p>
               )}
               {profile.bankCard.swiftBic && (
                 <p>
                   <span className="opacity-75">SWIFT/BIC:</span>{" "}
-                  <span data-pdf-text={profile.bankCard.swiftBic}>{profile.bankCard.swiftBic}</span>
+                  <span className="font-medium tracking-wide" data-pdf-text={profile.bankCard.swiftBic}>{profile.bankCard.swiftBic}</span>
                 </p>
               )}
               {profile.bankCard.referenceNote && (
@@ -2255,7 +2262,7 @@ export function ProfileCard({
                 </p>
               )}
               {profile.bankCard.paymentLink && (
-                <div className={cn("mt-3 pt-3 border-t", dividerBorderClass)}>
+                <div className={cn("mt-3 pt-3 border-t text-center", dividerBorderClass)}>
                   <a
                     href={profile.bankCard.paymentLink}
                     data-pdf-link={profile.bankCard.paymentLink}
