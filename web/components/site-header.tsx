@@ -60,7 +60,7 @@ function FloatingNavMenu({
   triggerClassName,
   children,
 }: FloatingNavMenuProps) {
-  const isDesktop = useMediaQuery('(min-width: 1440px)')
+  const isDesktop = useMediaQuery('(min-width: 1720px)')
   const wrapperRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -152,7 +152,7 @@ export function SiteHeader() {
   const mobileClosingRef = useRef(false)
   const pathname = usePathname() || '/'
   const [regionPrefix, setRegionPrefix] = useState<'/uk' | '/us'>(pathname.startsWith('/us') ? '/us' : '/uk')
-  const isMobile = useMediaQuery('(max-width: 1439px)')
+  const isMobile = useMediaQuery('(max-width: 1719px)')
 
   useEffect(() => {
     if (pathname.startsWith('/us')) {

@@ -2468,9 +2468,9 @@
   }
 }
 
-/* Tesla + smaller: keep comfortable gutters even in hamburger mode.
+/* Hamburger mode: keep comfortable gutters.
    position:relative creates the containing block for the centred nb-brand-copy. */
-@media (max-width: 1439px) {
+@media (max-width: 1719px) {
   .nb-header-container {
     padding-left: calc(1.5rem + env(safe-area-inset-left));
     padding-right: calc(1.5rem + env(safe-area-inset-right));
@@ -2514,19 +2514,18 @@
   }
 }
 
-/* Large desktop (≥1440px): taller header for logo breathing room + compact nav so Get Started CTA stays fully visible */
-@media (min-width: 1440px) {
+/* Large desktop (≥1720px): taller header for logo breathing room + compact nav so Get Started CTA stays fully visible */
+@media (min-width: 1720px) {
   /*
    * 84px = 64px logo tile + 10px top margin + 10px bottom margin.
-   * max-width: 1600px replaces the inherited 1280px so the nav bar spans the
-   * full page width on typical 1440–1600px laptops, eliminating the large
-   * asymmetric auto-margins. clamp padding is identical on both sides so the
+   * max-width: 1920px so the nav bar spans the full width on large screens.
+   * clamp padding is identical on both sides so the
    * space-to-the-left-of-the-logo always equals the space-to-the-right-of-
    * Get-Started at every viewport width.
    */
   .nb-header-container {
     height: 84px;
-    max-width: 1600px;
+    max-width: 1920px;
     padding-left: clamp(2rem, 4vw, 5rem);
     padding-right: clamp(2rem, 4vw, 5rem);
     display: grid;
@@ -2848,8 +2847,8 @@
   }
 }
 
-/* Mobile/Tesla Responsive: use hamburger drawer up to 1439px */
-@media (max-width: 1439px) {
+/* Mobile/Tesla/Laptop Responsive: use hamburger drawer up to 1719px */
+@media (max-width: 1719px) {
   /* Centre the brand wordmark + tagline block inside the top bar on hamburger
      layouts. The logo tile stays naturally left-aligned inside the brand link;
      nb-brand-copy is lifted out of flow and pinned to the horizontal midpoint
