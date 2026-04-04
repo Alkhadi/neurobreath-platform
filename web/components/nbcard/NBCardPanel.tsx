@@ -6,7 +6,7 @@ import { FaChevronDown, FaEdit, FaPlus, FaUsers } from "react-icons/fa";
 import { X } from "lucide-react";
 import { getSession } from "next-auth/react";
 
-import type { Contact, Profile, CardLayer, NbcardSavedCard } from "@/lib/utils";
+import type { Contact, Profile, CardLayer, TextLayer, NbcardSavedCard } from "@/lib/utils";
 import { defaultProfile, getNbcardSavedNamespace, upsertNbcardSavedCard, loadNbcardSavedCards, deleteNbcardSavedCard } from "@/lib/utils";
 import { generateProfileId, getCategoryFromProfile } from "@/lib/nbcard-saved-cards";
 import {
@@ -113,6 +113,20 @@ function detectStandalone(): boolean {
  * e.g. fieldLink="bankCard.bankName" sets profile.bankCard.bankName = value.
  * Pure function — returns a new Profile with the field updated.
  */
+/** Resolve a dot-path field value from a profile (e.g. "bankCard.bankName" → "Barclays"). */
+function getProfileFieldValue(profile: Profile, fieldPath: string): string {
+  const dotIdx = fieldPath.indexOf(".");
+  if (dotIdx < 0) {
+    const v = (profile as unknown as Record<string, unknown>)[fieldPath];
+    return typeof v === "string" ? v : "";
+  }
+  const category = fieldPath.slice(0, dotIdx);
+  const field = fieldPath.slice(dotIdx + 1);
+  const sub = (profile as unknown as Record<string, unknown>)[category] as Record<string, unknown> | undefined;
+  const v = sub?.[field];
+  return typeof v === "string" ? v : "";
+}
+
 function applyFieldLinkUpdate(profile: Profile, fieldLink: string, value: string): Profile {
   const dotIdx = fieldLink.indexOf(".");
   if (dotIdx < 0) {
@@ -149,6 +163,7 @@ export function NBCardPanel() {
   const [showProfileManager, setShowProfileManager] = useState(false);
   const [editingProfile, setEditingProfile] = useState<Profile | null>(null);
   const [isNewProfile, setIsNewProfile] = useState(false);
+  const [livePreviewOverride, setLivePreviewOverride] = useState<Profile | null>(null);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [templateSelection, setTemplateSelection] = useState<TemplateSelection>({});
@@ -478,6 +493,13 @@ export function NBCardPanel() {
 
   const currentProfile = useMemo(() => profiles?.[currentProfileIndex] ?? defaultProfile, [profiles, currentProfileIndex]);
 
+  // Display profile: uses live-preview override for new profiles being edited,
+  // so the canvas updates in real-time without corrupting the profiles array.
+  const displayProfile = useMemo(
+    () => livePreviewOverride ?? currentProfile,
+    [livePreviewOverride, currentProfile]
+  );
+
   // Sync history when current profile changes (e.g., via profile selector)
   useEffect(() => {
     setHistory(createLayerHistory(currentProfile));
@@ -569,8 +591,16 @@ export function NBCardPanel() {
   // Wrapped in useCallback so the reference is stable across renders.
   const editingProfileIdRef = useRef<string | null>(null);
   editingProfileIdRef.current = editingProfile?.id ?? null;
+  const isNewProfileRef = useRef(false);
+  isNewProfileRef.current = isNewProfile;
 
   const handleLivePreview = useCallback((preview: Profile) => {
+    if (isNewProfileRef.current) {
+      // New profile isn't in the array yet — use override state so the
+      // canvas renders it in real-time without corrupting existing profiles.
+      setLivePreviewOverride(preview);
+      return;
+    }
     const eid = editingProfileIdRef.current;
     if (!eid) return;
     setProfiles((prev) =>
@@ -602,6 +632,7 @@ export function NBCardPanel() {
     setShowProfileManager(false);
     setEditingProfile(null);
     setIsNewProfile(false);
+    setLivePreviewOverride(null);
   };
 
   const handleCreateFromTemplate = (template: Template) => {
@@ -1872,7 +1903,7 @@ export function NBCardPanel() {
           <div className="mb-4 sm:mb-6">
             <div id="profile-card-capture-wrapper" className="text-left w-full">
               <ProfileCard
-                profile={currentProfile}
+                profile={displayProfile}
                 showEditButton={false}
                 suppressDefaultCardContent={true}
                 onPhotoClick={(e) => {
@@ -2026,10 +2057,51 @@ export function NBCardPanel() {
               <button
                 type="button"
                 onClick={() => {
-                  setLayoutEditMode(!layoutEditMode);
-                  if (!layoutEditMode) {
+                  const entering = !layoutEditMode;
+                  setLayoutEditMode(entering);
+                  if (entering) {
                     setCanvasEditMode(false);
                     try { localStorage.setItem('nb-card:canvas-edit-mode', '0'); } catch { /* ignore */ }
+
+                    // Auto-generate text layers from filled profile fields so
+                    // the Layers panel is not empty when entering edit mode.
+                    const existingLayers = currentProfile.layers || [];
+                    const existingFieldLinks = new Set(
+                      existingLayers
+                        .filter((l): l is TextLayer => l.type === "text" && Boolean(l.fieldLink))
+                        .map(l => l.fieldLink!)
+                    );
+
+                    const newLayers: CardLayer[] = [];
+                    let yOffset = 5;
+
+                    for (const field of availableFieldLinks) {
+                      const value = getProfileFieldValue(currentProfile, field.key);
+                      if (!value.trim()) continue;
+                      if (existingFieldLinks.has(field.key)) continue;
+
+                      const layer = leCreateTextLayer(5, yOffset, value) as TextLayer;
+                      layer.fieldLink = field.key;
+                      if (field.key === "fullName") {
+                        layer.style = { ...layer.style, fontSize: 28 };
+                        layer.w = 90;
+                      } else {
+                        layer.w = 70;
+                      }
+                      newLayers.push(layer);
+                      yOffset += 12;
+                    }
+
+                    if (newLayers.length > 0) {
+                      const updatedProfile = {
+                        ...currentProfile,
+                        layers: [...existingLayers, ...newLayers],
+                      };
+                      setProfiles(prev =>
+                        prev.map((p, idx) => idx === currentProfileIndex ? updatedProfile : p)
+                      );
+                      commitToHistory(updatedProfile);
+                    }
                   } else {
                     setSelectedLayerId(null);
                   }
@@ -2563,6 +2635,7 @@ export function NBCardPanel() {
             setShowProfileManager(false);
             setEditingProfile(null);
             setIsNewProfile(false);
+            setLivePreviewOverride(null);
           }}
           isNew={isNewProfile}
           userEmail={undefined}
