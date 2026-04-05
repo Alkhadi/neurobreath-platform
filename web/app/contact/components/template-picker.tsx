@@ -155,6 +155,8 @@ export function TemplatePicker({
   const [error, setError] = React.useState<string | null>(null);
   const [backgrounds, setBackgrounds] = React.useState<Template[]>([]);
   const [overlays, setOverlays] = React.useState<Template[]>([]);
+  const [businessCards, setBusinessCards] = React.useState<Template[]>([]);
+  const [businessCardSide, setBusinessCardSide] = React.useState<'front' | 'back'>('front');
   const [reloadKey, setReloadKey] = React.useState(0);
 
 
@@ -195,8 +197,11 @@ export function TemplatePicker({
 
         const filteredOverlays = filterTemplates(deduped, { type: "overlay", orientation: activeOrientation });
 
+        const allBusinessCards = filterTemplates(deduped, { type: "business-card" });
+
         setBackgrounds(sortedBackgrounds);
         setOverlays(filteredOverlays);
+        setBusinessCards(allBusinessCards);
         setLoading(false);
       })
       .catch((err) => {
@@ -339,8 +344,9 @@ export function TemplatePicker({
       </CardHeader>
       <CardContent ref={rootRef}>
         <Tabs defaultValue="backgrounds" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="backgrounds">Backgrounds ({backgrounds.length})</TabsTrigger>
+            <TabsTrigger value="business-cards">Business Cards</TabsTrigger>
             <TabsTrigger value="overlays">Overlays ({overlays.length})</TabsTrigger>
             <TabsTrigger value="frames">Pro Frames</TabsTrigger>
           </TabsList>
@@ -446,6 +452,87 @@ export function TemplatePicker({
                     <div className="text-xs text-muted-foreground">{selection.backgroundColor || "(not set)"}</div>
                   </div>
                 </div>
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="business-cards" className="space-y-4">
+            {businessCards.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-4">No business card templates available</p>
+            ) : (
+              <div className="space-y-4">
+                {/* Front / Back toggle */}
+                <div className="flex justify-center">
+                  <div className="inline-flex bg-gray-100 rounded-lg p-1">
+                    <button
+                      type="button"
+                      onClick={() => setBusinessCardSide('front')}
+                      className={`px-5 py-1.5 rounded-md text-sm font-semibold transition-all ${
+                        businessCardSide === 'front'
+                          ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      Front
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setBusinessCardSide('back')}
+                      className={`px-5 py-1.5 rounded-md text-sm font-semibold transition-all ${
+                        businessCardSide === 'back'
+                          ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      Back
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
+                  {businessCards
+                    .filter((t) => t.side === businessCardSide)
+                    .map((template) => {
+                      const isSelected = selection.backgroundId === template.id;
+                      return (
+                        <div key={template.id} className="space-y-1.5 sm:space-y-2 min-w-0">
+                          <TinyCardPreview
+                            template={template}
+                            selected={isSelected}
+                            onSelect={() => {
+                              onSelectionChange({
+                                ...selection,
+                                backgroundId: template.id,
+                                orientation: template.orientation,
+                              });
+                              toast.success(`${template.label} selected`);
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              onSelectionChange({
+                                ...selection,
+                                backgroundId: template.id,
+                                orientation: template.orientation,
+                              });
+                              toast.success(`${template.label} selected`);
+                            }}
+                            className={cn(
+                              "w-full text-left text-xs sm:text-sm font-medium leading-snug truncate",
+                              isSelected ? "text-purple-700" : "text-gray-800 hover:text-purple-700"
+                            )}
+                          >
+                            {template.label}
+                          </button>
+                        </div>
+                      );
+                    })}
+                </div>
+
+                <p className="text-xs text-muted-foreground">
+                  Select a front design, then switch to Back to choose the reverse side. Both sides are editable on the canvas above.
+                </p>
               </div>
             )}
           </TabsContent>

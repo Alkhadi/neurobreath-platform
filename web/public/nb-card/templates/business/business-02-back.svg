@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="business-02-back-title" preserveAspectRatio="xMidYMid meet">
+  <title id="business-02-back-title">Ocean Wave — Business Card Back</title>
+
+  <defs>
+    <linearGradient id="b02b-wave1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0C4A6E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0369A1;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="b02b-wave2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0EA5E9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#38BDF8;stop-opacity:1" />
+    </linearGradient>
+    <clipPath id="b02b-clip">
+      <rect x="0" y="0" width="1600" height="900" rx="36" ry="36" />
+    </clipPath>
+    <filter id="b02b-bevel" x="-2%" y="-2%" width="104%" height="104%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="-1" dy="-1" stdDeviation="1.5" flood-color="#FFFFFF" flood-opacity="0.12" result="highlight" />
+      <feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.10" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="highlight" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g clip-path="url(#b02b-clip)" filter="url(#b02b-bevel)">
+    <!-- White background -->
+    <rect width="1600" height="900" fill="#FFFFFF" />
+
+    <!-- Top wave band (mirrored from front bottom) -->
+    <path d="M0,0 L1600,0 L1600,150 C1400,120 1200,140 1000,170 C800,200 600,160 400,130 C200,100 100,120 0,150 Z" fill="url(#b02b-wave1)" />
+    <path d="M0,0 L1600,0 L1600,120 C1450,100 1300,110 1100,140 C900,170 700,130 500,100 C300,70 150,90 0,120 Z" fill="url(#b02b-wave2)" opacity="0.7" />
+    <path d="M0,0 L1600,0 L1600,80 C1400,60 1200,70 1000,90 C800,110 600,80 400,60 C200,40 100,50 0,80 Z" fill="#0C4A6E" opacity="0.4" />
+
+    <!-- Bottom-left corner wave cluster -->
+    <path d="M0,620 C100,650 200,680 300,700 C400,720 500,750 500,900 L0,900 Z" fill="url(#b02b-wave1)" opacity="0.9" />
+    <path d="M0,680 C80,700 180,720 260,740 C340,760 420,800 420,900 L0,900 Z" fill="url(#b02b-wave2)" opacity="0.5" />
+    <path d="M0,740 C60,760 120,780 180,800 C240,820 300,860 300,900 L0,900 Z" fill="#0C4A6E" opacity="0.3" />
+
+    <!-- Right-side accent wave (subtle) -->
+    <path d="M1600,350 C1560,370 1540,420 1560,500 C1580,580 1540,630 1600,680 Z" fill="url(#b02b-wave1)" opacity="0.3" />
+
+    <!-- Logo placeholder (centered, top area) -->
+    <rect id="nb-card-logo-area" x="660" y="200" width="280" height="180" rx="20" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="8 4" />
+    <image id="nb-card-logo" x="660" y="200" width="280" height="180" preserveAspectRatio="xMidYMid meet" href="" />
+    <!-- Logo placeholder icon -->
+    <g transform="translate(758,252)" opacity="0.35">
+      <rect x="0" y="12" width="84" height="60" rx="8" fill="none" stroke="#64748B" stroke-width="3" />
+      <circle cx="26" cy="34" r="12" fill="none" stroke="#64748B" stroke-width="2.5" />
+      <polyline points="8,62 30,44 50,56 64,42 76,52" fill="none" stroke="#64748B" stroke-width="2.5" stroke-linejoin="round" />
+    </g>
+
+    <!-- Tagline placeholder -->
+    <text id="nb-card-tagline" x="800" y="450" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="600" fill="#0C4A6E" text-anchor="middle">​</text>
+
+    <!-- Specialty / services placeholder -->
+    <text id="nb-card-specialty" x="800" y="500" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#475569" text-anchor="middle">​</text>
+
+    <!-- Address block -->
+    <g id="nb-card-address-block" transform="translate(800, 560)">
+      <text id="nb-card-address-line2" x="0" y="0" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#64748B" text-anchor="middle">​</text>
+      <text id="nb-card-address-country" x="0" y="35" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#64748B" text-anchor="middle">​</text>
+    </g>
+
+    <!-- Social handles with icon placeholders -->
+    <g id="nb-card-social-handles" transform="translate(0, 680)">
+      <!-- Instagram -->
+      <g transform="translate(460, 0)">
+        <circle cx="20" cy="20" r="20" fill="none" stroke="#0C4A6E" stroke-width="2" />
+        <rect x="7" y="7" width="26" height="26" rx="6" fill="none" stroke="#0C4A6E" stroke-width="1.8" />
+        <circle cx="20" cy="20" r="7" fill="none" stroke="#0C4A6E" stroke-width="1.8" />
+        <circle cx="29" cy="11" r="2" fill="#0C4A6E" />
+        <a id="nb-card-instagram-link" href="" target="_blank" rel="noopener">
+          <text id="nb-card-instagram" x="50" y="26" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#0369A1">​</text>
+        </a>
+      </g>
+
+      <!-- LinkedIn -->
+      <g transform="translate(720, 0)">
+        <circle cx="20" cy="20" r="20" fill="none" stroke="#0C4A6E" stroke-width="2" />
+        <g transform="translate(8, 8)">
+          <rect x="0" y="10" width="6" height="14" rx="1" fill="#0C4A6E" />
+          <circle cx="3" cy="4" r="3" fill="#0C4A6E" />
+          <path d="M10,24 L10,16 C10,12 14,10 18,12 L18,24" fill="none" stroke="#0C4A6E" stroke-width="2.5" stroke-linecap="round" />
+        </g>
+        <a id="nb-card-linkedin-link" href="" target="_blank" rel="noopener">
+          <text id="nb-card-linkedin" x="50" y="26" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#0369A1">​</text>
+        </a>
+      </g>
+
+      <!-- Twitter / X -->
+      <g transform="translate(980, 0)">
+        <circle cx="20" cy="20" r="20" fill="none" stroke="#0C4A6E" stroke-width="2" />
+        <g transform="translate(8, 10)">
+          <path d="M0,0 L10,12 L0,24 M24,0 L14,12 L24,24" fill="none" stroke="#0C4A6E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+        </g>
+        <a id="nb-card-twitter-link" href="" target="_blank" rel="noopener">
+          <text id="nb-card-twitter" x="50" y="26" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#0369A1">​</text>
+        </a>
+      </g>
+    </g>
+
+    <!-- QR code placeholder area (bottom right) -->
+    <rect id="nb-card-qr-area" x="1320" y="660" width="180" height="180" rx="16" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="8 4" />
+    <g transform="translate(1370,710)" opacity="0.3">
+      <rect x="0" y="0" width="80" height="80" rx="4" fill="none" stroke="#64748B" stroke-width="2" />
+      <rect x="8" y="8" width="24" height="24" rx="2" fill="#64748B" />
+      <rect x="48" y="8" width="24" height="24" rx="2" fill="#64748B" />
+      <rect x="8" y="48" width="24" height="24" rx="2" fill="#64748B" />
+      <rect x="48" y="48" width="16" height="16" rx="2" fill="#64748B" />
+    </g>
+  </g>
+</svg>

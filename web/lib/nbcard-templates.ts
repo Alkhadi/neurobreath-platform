@@ -5,7 +5,7 @@
  */
 
 export type TemplateOrientation = 'portrait' | 'landscape';
-export type TemplateType = 'background' | 'overlay';
+export type TemplateType = 'background' | 'overlay' | 'business-card';
 export type TemplateCategory = 'Profile' | 'Business' | 'Address' | 'Bank';
 export type FrameMode = 'PROFILE' | 'BUSINESS' | 'ADDRESS' | 'BANK';
 export type CardCategory = 'ADDRESS' | 'BANK' | 'BUSINESS' | 'PROFILE';
@@ -101,6 +101,15 @@ export function getTemplateThemeTokens(templateId?: string | null): TemplateThem
     };
   }
 
+  // Ocean Wave business cards have white backgrounds.
+  if (id.startsWith('business-02-')) {
+    return {
+      tone: 'light',
+      readabilityOverlayAlpha: 0,
+      lightenOverlayAlpha: 0,
+    };
+  }
+
   // Default: treat templates as dark surfaces (white text).
   return {
     tone: 'dark',
@@ -137,7 +146,7 @@ function encodeTemplateAssetUrl(value: string): string {
 }
 
 function isValidTemplateType(value: unknown): value is TemplateType {
-  return value === 'background' || value === 'overlay';
+  return value === 'background' || value === 'overlay' || value === 'business-card';
 }
 
 function isValidTemplateEngine(value: unknown): value is TemplateEngine {
