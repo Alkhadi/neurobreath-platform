@@ -443,6 +443,23 @@ function renderWalletSvg(params: {
     const palette = typeof paletteHex === "string" ? paletteHex.trim() : "";
     if (/^#[0-9a-fA-F]{3}$/.test(palette) || /^#[0-9a-fA-F]{6}$/.test(palette)) {
       (svg as unknown as SVGSVGElement).style.setProperty("--nb-bg", palette);
+
+      // Override the first full-size background <rect> fill so the user-chosen
+      // palette colour actually replaces the SVG's baked-in gradient/solid.
+      const viewBox = svg.getAttribute("viewBox");
+      if (viewBox) {
+        const [, , vbW, vbH] = viewBox.split(/\s+/).map(Number);
+        const rects = doc.querySelectorAll("rect");
+        for (const r of rects) {
+          const rw = parseFloat(r.getAttribute("width") ?? "0");
+          const rh = parseFloat(r.getAttribute("height") ?? "0");
+          // Match full-size background rect (within 10% tolerance)
+          if (rw >= vbW * 0.9 && rh >= vbH * 0.9) {
+            r.setAttribute("fill", palette);
+            break;
+          }
+        }
+      }
     }
 
     const paletteSaysLight = palette ? isLightColor(palette) : null;

@@ -533,6 +533,54 @@ export function TemplatePicker({
                 <p className="text-xs text-muted-foreground">
                   Select a front design, then switch to Back to choose the reverse side. Both sides are editable on the canvas above.
                 </p>
+
+                {/* Background colour picker for business cards */}
+                <div className="rounded-lg border bg-muted/20 p-3">
+                  <div className="text-sm font-semibold">Background colour</div>
+                  <div className="text-xs text-muted-foreground">Override the card background with a custom colour.</div>
+
+                  <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Business card background colour palette">
+                    {PRESET_PALETTE.map((c) => {
+                      const isActive = (selection.backgroundColor || "").toLowerCase() === c.value.toLowerCase();
+                      return (
+                        <button
+                          key={c.value}
+                          type="button"
+                          onClick={() => onSelectionChange({ ...selection, backgroundColor: c.value })}
+                          className={`h-8 w-8 rounded-md border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 focus-visible:ring-offset-2 ${
+                            isActive ? "border-purple-600 ring-2 ring-purple-600 ring-offset-2" : "border-gray-300"
+                          } ${c.swatchClass}`}
+                          aria-label={`Set background colour to ${c.value}`}
+                          title={c.label}
+                        />
+                      );
+                    })}
+
+                    <button
+                      type="button"
+                      onClick={() => onSelectionChange({ ...selection, backgroundColor: undefined })}
+                      className="h-8 px-3 rounded-md border border-gray-300 text-xs font-medium hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 focus-visible:ring-offset-2"
+                      aria-label="Reset to original card colours"
+                    >
+                      Reset
+                    </button>
+                  </div>
+
+                  <div className="mt-3 flex items-center gap-3">
+                    <label className="text-xs font-medium" htmlFor="nbcard-bizcard-custom-color">
+                      Custom
+                    </label>
+                    <input
+                      id="nbcard-bizcard-custom-color"
+                      type="color"
+                      value={selection.backgroundColor || "#ffffff"}
+                      onChange={(e) => onSelectionChange({ ...selection, backgroundColor: e.target.value })}
+                      className="h-9 w-14 rounded border border-gray-300 bg-white"
+                      aria-label="Choose custom background colour"
+                    />
+                    <div className="text-xs text-muted-foreground">{selection.backgroundColor || "(original)"}</div>
+                  </div>
+                </div>
               </div>
             )}
           </TabsContent>
