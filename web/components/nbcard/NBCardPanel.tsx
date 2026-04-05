@@ -53,9 +53,10 @@ import { getProfileShareUrl } from "@/app/contact/lib/nbcard-share";
 // createServerShareFromProfile is lazy-imported in each handler that needs it
 import { ContactCapture } from "@/app/contact/components/contact-capture";
 import { ProfileCard } from "@/app/contact/components/profile-card";
-import { ProfileManager } from "@/app/contact/components/profile-manager";
 import { ShareButtons } from "@/app/contact/components/share-buttons";
 import { TemplatePicker } from "@/app/contact/components/template-picker";
+import { InlinePropertyEditor } from "./InlinePropertyEditor";
+import { saveCardFile, loadCardFile, saveAllCardsFile, loadAllCardsFile, saveImageToDevice, isFileSystemAccessSupported } from "@/lib/nb-card/file-system";
 import { type TemplateSelection, loadTemplateSelection, saveTemplateSelection, loadTemplateManifest, getTemplateById, type Template } from "@/lib/nbcard-templates";
 import { WelcomeModal } from "./WelcomeModal";
 import { DataControlsCenter } from "./DataControlsCenter";
@@ -63,7 +64,7 @@ import { HelpButton } from "./HelpButton";
 import { getExampleCardPreset, resetOnboarding } from "@/lib/nb-card/onboarding";
 import { Button } from "@/components/ui/button";
 import { fullSync, pullAndMerge, type SyncStatus } from "@/lib/nb-card/sync";
-import { RefreshCw, Cloud, CloudOff } from "lucide-react";
+import { RefreshCw, Cloud, CloudOff, FolderOpen, Save, FileDown, FileUp } from "lucide-react";
 
 const SIGN_IN_CALLOUT_DISMISSED_KEY = "nb-card:sign_in_callout_dismissed";
 
@@ -153,6 +154,37 @@ function applyFieldLinkUpdate(profile: Profile, fieldLink: string, value: string
   return profile;
 }
 
+/**
+ * Build consolidated text content from all non-empty profile form fields.
+ * Used for the single form-linked text layer so users can style all form text at once.
+ */
+function buildFormLayerContent(profile: Profile): string {
+  const category = getCategoryFromProfile(profile);
+  const lines: string[] = [];
+
+  // Common fields
+  for (const key of ["fullName", "email", "phone", "jobTitle", "website"]) {
+    const v = getProfileFieldValue(profile, key);
+    if (v.trim()) lines.push(v.trim());
+  }
+
+  // Category-specific fields
+  const catFields: Record<string, string[]> = {
+    BANK: ["bankCard.accountName", "bankCard.bankName", "bankCard.sortCode", "bankCard.accountNumber", "bankCard.iban", "bankCard.swiftBic"],
+    ADDRESS: ["addressCard.addressLine1", "addressCard.addressLine2", "addressCard.city", "addressCard.postcode", "addressCard.country"],
+    BUSINESS: ["businessCard.companyName", "businessCard.tagline", "businessCard.websiteUrl", "businessCard.services"],
+    FLYER: ["flyerCard.headline", "flyerCard.subheadline"],
+    WEDDING: ["weddingCard.headline", "weddingCard.subheadline"],
+  };
+
+  for (const key of catFields[category] ?? []) {
+    const v = getProfileFieldValue(profile, key);
+    if (v.trim()) lines.push(v.trim());
+  }
+
+  return lines.join("\n");
+}
+
 export function NBCardPanel() {
   const [mounted, setMounted] = useState(false);
   const [sessionEmail, setSessionEmail] = useState<string | null>(null);
@@ -160,14 +192,12 @@ export function NBCardPanel() {
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [hasPersistedCards, setHasPersistedCards] = useState(false);
-  const [showProfileManager, setShowProfileManager] = useState(false);
-  const [editingProfile, setEditingProfile] = useState<Profile | null>(null);
-  const [isNewProfile, setIsNewProfile] = useState(false);
-  const [livePreviewOverride, setLivePreviewOverride] = useState<Profile | null>(null);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+
+  // Inline editing mode — replaces the old ProfileManager modal
+  const [isEditing, setIsEditing] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [templateSelection, setTemplateSelection] = useState<TemplateSelection>({});
-  const [pendingTemplateSelection, setPendingTemplateSelection] = useState<TemplateSelection | null>(null);
   const [signInCalloutDismissed, setSignInCalloutDismissed] = useState(true); // default hidden until mount check
   const [selectedTemplate, setSelectedTemplate] = useState<Template | undefined>(undefined);
   const [currentBusinessSide, setCurrentBusinessSide] = useState<'front' | 'back'>('front');
@@ -493,12 +523,8 @@ export function NBCardPanel() {
 
   const currentProfile = useMemo(() => profiles?.[currentProfileIndex] ?? defaultProfile, [profiles, currentProfileIndex]);
 
-  // Display profile: uses live-preview override for new profiles being edited,
-  // so the canvas updates in real-time without corrupting the profiles array.
-  const displayProfile = useMemo(
-    () => livePreviewOverride ?? currentProfile,
-    [livePreviewOverride, currentProfile]
-  );
+  // Display profile: with inline editing, currentProfile always has the latest state.
+  const displayProfile = currentProfile;
 
   // Sync history when current profile changes (e.g., via profile selector)
   useEffect(() => {
@@ -587,54 +613,6 @@ export function NBCardPanel() {
     templateSelection?.backgroundId,
   ]);
 
-  // Live-preview handler: update the profiles array without closing the editor.
-  // Wrapped in useCallback so the reference is stable across renders.
-  const editingProfileIdRef = useRef<string | null>(null);
-  editingProfileIdRef.current = editingProfile?.id ?? null;
-  const isNewProfileRef = useRef(false);
-  isNewProfileRef.current = isNewProfile;
-
-  const handleLivePreview = useCallback((preview: Profile) => {
-    if (isNewProfileRef.current) {
-      // New profile isn't in the array yet — use override state so the
-      // canvas renders it in real-time without corrupting existing profiles.
-      setLivePreviewOverride(preview);
-      return;
-    }
-    const eid = editingProfileIdRef.current;
-    if (!eid) return;
-    setProfiles((prev) =>
-      prev.map((p) => (p.id === eid ? { ...preview, id: p.id } : p))
-    );
-  }, []);
-
-  const handleSaveProfile = (profile: Profile) => {
-    if (isNewProfile) {
-      const id = profile.id && profile.id.trim().length > 0 ? profile.id : Date.now().toString();
-      setProfiles([...profiles, { ...profile, id }]);
-      setCurrentProfileIndex(profiles.length);
-
-      // If this new profile was created from a template, persist that selection under the new id.
-      if (pendingTemplateSelection) {
-        const nextSelection: TemplateSelection = {
-          ...pendingTemplateSelection,
-          // Ensure we have a stable orientation saved.
-          orientation: pendingTemplateSelection.orientation || 'landscape',
-        };
-        saveTemplateSelection(nextSelection, id);
-        setTemplateSelection(nextSelection);
-        setPendingTemplateSelection(null);
-      }
-    } else {
-      const updated = profiles.map((p) => (p.id === profile.id ? profile : p));
-      setProfiles(updated);
-    }
-    setShowProfileManager(false);
-    setEditingProfile(null);
-    setIsNewProfile(false);
-    setLivePreviewOverride(null);
-  };
-
   const handleCreateFromTemplate = (template: Template) => {
     const inferredCategory = template.cardCategory
       ? template.cardCategory
@@ -649,86 +627,37 @@ export function NBCardPanel() {
       backgroundColor: templateSelection.backgroundColor,
     };
 
-    // Apply immediately so the preview reflects the chosen template while editing.
+    // Apply immediately so the preview reflects the chosen template.
     setTemplateSelection(nextSelection);
 
-    setEditingProfile({
-      id: "",
-      fullName: "",
-      jobTitle: "",
-      phone: "",
-      email: "",
-      profileDescription: "",
-      businessDescription: "",
+    const newProfile: Profile = {
+      id: Date.now().toString(),
+      fullName: "", jobTitle: "", phone: "", email: "",
+      profileDescription: "", businessDescription: "",
       gradient: "linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)",
       socialMedia: {},
-      ...(inferredCategory === "ADDRESS"
-        ? ({
-            cardCategory: "ADDRESS" as const,
-            addressCard: {},
-          } as const)
-        : {}),
-      ...(inferredCategory === "BANK"
-        ? ({
-            cardCategory: "BANK" as const,
-            bankCard: {},
-          } as const)
-        : {}),
-      ...(inferredCategory === "BUSINESS"
-        ? ({
-            cardCategory: "BUSINESS" as const,
-            businessCard: {},
-          } as const)
-        : {}),
-      ...(inferredCategory === "FLYER"
-        ? ({
-            cardCategory: "FLYER" as const,
-            flyerCard: {
-              headline: "",
-              subheadline: "",
-              ctaText: "",
-              ctaUrl: "",
-            },
-          } as const)
-        : {}),
-      ...(inferredCategory === "WEDDING"
-        ? ({
-            cardCategory: "WEDDING" as const,
-            weddingCard: {
-              headline: "",
-              subheadline: "",
-              ctaText: "",
-              ctaUrl: "",
-            },
-          } as const)
-        : {}),
-    });
+      ...(inferredCategory === "ADDRESS" ? ({ cardCategory: "ADDRESS" as const, addressCard: {} } as const) : {}),
+      ...(inferredCategory === "BANK" ? ({ cardCategory: "BANK" as const, bankCard: {} } as const) : {}),
+      ...(inferredCategory === "BUSINESS" ? ({ cardCategory: "BUSINESS" as const, businessCard: {} } as const) : {}),
+      ...(inferredCategory === "FLYER" ? ({ cardCategory: "FLYER" as const, flyerCard: { headline: "", subheadline: "", ctaText: "", ctaUrl: "" } } as const) : {}),
+      ...(inferredCategory === "WEDDING" ? ({ cardCategory: "WEDDING" as const, weddingCard: { headline: "", subheadline: "", ctaText: "", ctaUrl: "" } } as const) : {}),
+    };
 
-    setIsNewProfile(true);
-    setPendingTemplateSelection(nextSelection);
-    setShowProfileManager(true);
+    setProfiles((prev) => [...prev, newProfile]);
+    setCurrentProfileIndex(profiles.length);
+    saveTemplateSelection(nextSelection, newProfile.id);
+    setIsEditing(true);
+    setCanvasEditMode(true);
+    try { localStorage.setItem('nb-card:canvas-edit-mode', '1'); } catch { /* ignore */ }
 
     toast.message("New card from template", {
-      description: `Add your details and save to finish creating “${template.label}”.`,
+      description: `Edit directly on the canvas — "${template.label}" applied.`,
     });
-  };
-
-  const handleDeleteProfile = () => {
-    if (profiles.length === 1) {
-      toast.error("Cannot delete the last profile");
-      return;
-    }
-    if (confirm("Are you sure you want to delete this profile?")) {
-      const updated = profiles.filter((p) => p.id !== currentProfile.id);
-      setProfiles(updated);
-      setCurrentProfileIndex(0);
-      setShowProfileManager(false);
-    }
   };
 
   const handleCreateNewProfile = () => {
-    setEditingProfile({
-      id: "",
+    const newProfile: Profile = {
+      id: Date.now().toString(),
       fullName: "",
       jobTitle: "",
       phone: "",
@@ -737,16 +666,121 @@ export function NBCardPanel() {
       businessDescription: "",
       gradient: "linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)",
       socialMedia: {},
-    });
-    setIsNewProfile(true);
-    setShowProfileManager(true);
+    };
+    setProfiles((prev) => [...prev, newProfile]);
+    setCurrentProfileIndex(profiles.length);
+    // Enter inline editing + canvas edit mode immediately
+    setIsEditing(true);
+    setCanvasEditMode(true);
+    try { localStorage.setItem('nb-card:canvas-edit-mode', '1'); } catch { /* ignore */ }
+    toast.success("New card created — edit directly on the canvas or use the properties panel");
   };
 
   const handleEditProfile = () => {
-    setEditingProfile(currentProfile);
-    setIsNewProfile(false);
-    setShowProfileManager(true);
+    // Enter inline editing mode — no form modal
+    setIsEditing(true);
+    setCanvasEditMode(true);
+    try { localStorage.setItem('nb-card:canvas-edit-mode', '1'); } catch { /* ignore */ }
   };
+
+  /** Inline property editor: update profile fields in real-time */
+  const handleInlineProfileUpdate = useCallback((updated: Profile) => {
+    setProfiles((prev) =>
+      prev.map((p, idx) => {
+        if (idx !== currentProfileIndex) return p;
+        const next = { ...updated, id: p.id };
+        // Sync consolidated form layer content when form fields change
+        const layers = next.layers;
+        if (layers) {
+          const formIdx = layers.findIndex(
+            (l) => l.type === "text" && (l as TextLayer).fieldLink === "__form__"
+          );
+          if (formIdx >= 0) {
+            const formLayer = layers[formIdx] as TextLayer;
+            const content = buildFormLayerContent(next);
+            next.layers = layers.map((l, i) =>
+              i === formIdx ? { ...formLayer, style: { ...formLayer.style, content } } : l
+            );
+          }
+        }
+        return next;
+      })
+    );
+  }, [currentProfileIndex]);
+
+  /** Inline property editor: commit to undo history — defined after commitToHistory below */
+  // handleInlineCommit is declared after commitToHistory
+
+  /** File System: save current card to device */
+  const handleSaveCardToDevice = useCallback(async () => {
+    const result = await saveCardFile(currentProfile);
+    if (result.ok) {
+      toast.success(`Saved as "${result.name}"`);
+    }
+  }, [currentProfile]);
+
+  /** File System: load a card from device */
+  const handleLoadCardFromDevice = useCallback(async () => {
+    const result = await loadCardFile();
+    if (!result.ok) {
+      if (result.error) toast.error(result.error);
+      return;
+    }
+    if (result.profile) {
+      const loaded = { ...result.profile, id: Date.now().toString() };
+      setProfiles((prev) => [...prev, loaded]);
+      setCurrentProfileIndex(profiles.length);
+      setIsEditing(true);
+      toast.success("Card loaded from file");
+    }
+  }, [profiles.length]);
+
+  /** File System: save all cards as backup */
+  const handleSaveAllToDevice = useCallback(async () => {
+    const result = await saveAllCardsFile(profiles, contacts);
+    if (result.ok) {
+      toast.success(`Backup saved as "${result.name}"`);
+    }
+  }, [profiles, contacts]);
+
+  /** File System: load backup from device */
+  const handleLoadBackupFromDevice = useCallback(async () => {
+    const result = await loadAllCardsFile();
+    if (!result.ok) {
+      if (result.error) toast.error(result.error);
+      return;
+    }
+    if (result.profiles && result.profiles.length > 0) {
+      setProfiles(result.profiles);
+      setContacts(result.contacts || []);
+      setCurrentProfileIndex(0);
+      toast.success(`Loaded ${result.profiles.length} card(s) from backup`);
+    }
+  }, []);
+
+  /** File System: export current card as PNG to device */
+  const handleExportPngToDevice = useCallback(async () => {
+    try {
+      const captureEl = document.getElementById("profile-card-capture-export");
+      if (!captureEl) {
+        toast.error("Cannot capture card — preview not found");
+        return;
+      }
+      const { captureToBlob } = await import("@/lib/nbcard/export/capture");
+      const blob = await captureToBlob(captureEl, { scale: 2 });
+      if (!blob) {
+        toast.error("Failed to capture card image");
+        return;
+      }
+      const safeName = (currentProfile.fullName || "NB-Card").replace(/[^a-zA-Z0-9\s-]/g, "").trim().replace(/\s+/g, "_");
+      const result = await saveImageToDevice(blob, `${safeName}.png`, "image/png");
+      if (result.ok) {
+        toast.success(`PNG saved as "${result.name}"`);
+      }
+    } catch {
+      toast.error("Failed to export PNG");
+    }
+  }, [currentProfile]);
 
   const handleUpsertContact = (contact: Contact) => {
     setContacts((prev) => {
@@ -938,6 +972,11 @@ export function NBCardPanel() {
     },
     []
   );
+
+  /** Inline property editor: commit to undo history */
+  const handleInlineCommit = useCallback((updated: Profile) => {
+    commitToHistory({ ...updated, id: currentProfile.id });
+  }, [currentProfile.id, commitToHistory]);
 
   // Pro Editor: Zoom handlers
   const handleZoomIn = () => setZoom((z) => Math.min(z + 0.25, 3));
@@ -1895,10 +1934,10 @@ export function NBCardPanel() {
         </div>
       ) : null}
 
-      {/* Main Content — single column mobile, two columns lg+ */}
+      {/* Main Content — mobile-first: canvas full-width, form below; side-by-side on lg+ */}
       <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
-        {/* Left Column - Profile Card */}
-        <div className="min-w-0 lg:flex-1">
+        {/* Left Column - Profile Card (full-width on mobile) */}
+        <div className={`min-w-0 w-full ${isEditing ? 'lg:flex-[2]' : 'lg:flex-1'}`}>
           {/* Profile Card with Capture Wrapper */}
           <div className="mb-4 sm:mb-6">
             <div id="profile-card-capture-wrapper" className="text-left w-full">
@@ -2002,12 +2041,24 @@ export function NBCardPanel() {
 
           {/* Action Buttons — responsive: stacked on mobile, row on sm+ */}
           <div className="flex flex-col sm:flex-row gap-3">
-            <button
-              onClick={handleEditProfile}
-              className="flex-1 min-w-0 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-3 rounded-lg hover:shadow-lg transition-all font-semibold whitespace-normal text-center leading-snug"
-            >
-              <FaEdit className="shrink-0" /> Edit Profile
-            </button>
+            {isEditing ? (
+              <button
+                onClick={() => {
+                  setIsEditing(false);
+                  toast.success("Changes saved");
+                }}
+                className="flex-1 min-w-0 flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-4 py-3 rounded-lg hover:shadow-lg transition-all font-semibold whitespace-normal text-center leading-snug"
+              >
+                Done Editing
+              </button>
+            ) : (
+              <button
+                onClick={handleEditProfile}
+                className="flex-1 min-w-0 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-3 rounded-lg hover:shadow-lg transition-all font-semibold whitespace-normal text-center leading-snug"
+              >
+                <FaEdit className="shrink-0" /> Edit Profile
+              </button>
+            )}
             <button
               onClick={handleCreateNewProfile}
               className="flex-1 min-w-0 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-3 rounded-lg hover:shadow-lg transition-all font-semibold whitespace-normal text-center leading-snug"
@@ -2026,8 +2077,59 @@ export function NBCardPanel() {
               Share Your Profile
             </button>
           </div>
+
+          {/* File System Buttons */}
+          {hasMounted && isFileSystemAccessSupported() && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              <button
+                type="button"
+                onClick={handleSaveCardToDevice}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-white border border-gray-200 text-gray-700 hover:border-purple-400 hover:text-purple-700 transition-all"
+              >
+                <Save className="h-3.5 w-3.5" /> Save Card
+              </button>
+              <button
+                type="button"
+                onClick={handleLoadCardFromDevice}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-white border border-gray-200 text-gray-700 hover:border-purple-400 hover:text-purple-700 transition-all"
+              >
+                <FolderOpen className="h-3.5 w-3.5" /> Open Card
+              </button>
+              <button
+                type="button"
+                onClick={handleExportPngToDevice}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-white border border-gray-200 text-gray-700 hover:border-emerald-400 hover:text-emerald-700 transition-all"
+              >
+                <FileDown className="h-3.5 w-3.5" /> Export PNG
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveAllToDevice}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-white border border-gray-200 text-gray-700 hover:border-blue-400 hover:text-blue-700 transition-all"
+              >
+                <FileDown className="h-3.5 w-3.5" /> Backup All
+              </button>
+              <button
+                type="button"
+                onClick={handleLoadBackupFromDevice}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-white border border-gray-200 text-gray-700 hover:border-blue-400 hover:text-blue-700 transition-all"
+              >
+                <FileUp className="h-3.5 w-3.5" /> Restore Backup
+              </button>
+            </div>
+          )}
         </div>
 
+        {/* InlinePropertyEditor — full-width below canvas on mobile, side column on lg+ */}
+        {isEditing && (
+          <div className="w-full lg:flex-1 min-w-0 max-h-[60vh] lg:max-h-[80vh] overflow-y-auto rounded-lg border border-gray-100 bg-white">
+            <InlinePropertyEditor
+              profile={currentProfile}
+              onProfileUpdate={handleInlineProfileUpdate}
+              onCommit={handleInlineCommit}
+            />
+          </div>
+        )}
       </div>
 
       {/* Free Layout Editor card — above Card Templates */}
@@ -2063,39 +2165,26 @@ export function NBCardPanel() {
                     setCanvasEditMode(false);
                     try { localStorage.setItem('nb-card:canvas-edit-mode', '0'); } catch { /* ignore */ }
 
-                    // Auto-generate text layers from filled profile fields so
-                    // the Layers panel is not empty when entering edit mode.
+                    // Auto-generate a single consolidated text layer from filled profile fields
+                    // so users can style all form text (colour, font, size) in one go.
                     const existingLayers = currentProfile.layers || [];
-                    const existingFieldLinks = new Set(
-                      existingLayers
-                        .filter((l): l is TextLayer => l.type === "text" && Boolean(l.fieldLink))
-                        .map(l => l.fieldLink!)
+                    const hasFormLayer = existingLayers.some(
+                      (l) => l.type === "text" && (l as TextLayer).fieldLink === "__form__"
                     );
 
-                    const newLayers: CardLayer[] = [];
-                    let yOffset = 5;
+                    const formContent = buildFormLayerContent(currentProfile);
 
-                    for (const field of availableFieldLinks) {
-                      const value = getProfileFieldValue(currentProfile, field.key);
-                      if (!value.trim()) continue;
-                      if (existingFieldLinks.has(field.key)) continue;
+                    if (!hasFormLayer && formContent) {
+                      const layer = leCreateTextLayer(5, 5, formContent) as TextLayer;
+                      layer.fieldLink = "__form__";
+                      layer.w = 90;
+                      // Scale height to accommodate multiple lines
+                      const lineCount = formContent.split("\n").length;
+                      layer.h = Math.max(10, lineCount * 8);
 
-                      const layer = leCreateTextLayer(5, yOffset, value) as TextLayer;
-                      layer.fieldLink = field.key;
-                      if (field.key === "fullName") {
-                        layer.style = { ...layer.style, fontSize: 28 };
-                        layer.w = 90;
-                      } else {
-                        layer.w = 70;
-                      }
-                      newLayers.push(layer);
-                      yOffset += 12;
-                    }
-
-                    if (newLayers.length > 0) {
                       const updatedProfile = {
                         ...currentProfile,
-                        layers: [...existingLayers, ...newLayers],
+                        layers: [...existingLayers, layer],
                       };
                       setProfiles(prev =>
                         prev.map((p, idx) => idx === currentProfileIndex ? updatedProfile : p)
@@ -2625,42 +2714,6 @@ export function NBCardPanel() {
         </DialogContent>
       </Dialog>
 
-      {/* Profile Manager Modal */}
-      {showProfileManager && editingProfile && (
-        <ProfileManager
-          profile={editingProfile}
-          onSave={handleSaveProfile}
-          onDelete={!isNewProfile ? handleDeleteProfile : undefined}
-          onClose={() => {
-            setShowProfileManager(false);
-            setEditingProfile(null);
-            setIsNewProfile(false);
-            setLivePreviewOverride(null);
-          }}
-          isNew={isNewProfile}
-          userEmail={undefined}
-          onLivePreview={handleLivePreview}
-          onSelectTemplate={(templateId) => {
-            loadTemplateManifest()
-              .then((manifest) => {
-                const template = getTemplateById(manifest.templates, templateId);
-                if (!template) return;
-                const nextSelection: TemplateSelection = {
-                  backgroundId: template.id,
-                  overlayId: undefined,
-                  orientation: template.orientation,
-                  backgroundColor: templateSelection.backgroundColor,
-                };
-
-                setTemplateSelection(nextSelection);
-                if (isNewProfile) setPendingTemplateSelection(nextSelection);
-              })
-              .catch(() => {
-                // ignore
-              });
-          }}
-        />
-      )}
     </>
   );
 }

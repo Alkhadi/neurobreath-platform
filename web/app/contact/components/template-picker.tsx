@@ -14,6 +14,8 @@ import {
   resetTemplateManifestCache,
 } from "@/lib/nbcard-templates";
 
+import { getBuiltinFrames, type NbCardFrame } from "@/lib/nbcard-frames";
+
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
@@ -229,6 +231,70 @@ export function TemplatePicker({
     toast.success(templateId ? 'Overlay updated' : 'Overlay removed');
   };
 
+  // ─── Professional Frames state ───
+  type FrameCategory = "ADDRESS" | "BANK" | "BUSINESS" | "FLYER" | "WEDDING";
+  const FRAME_CATEGORIES: Array<{ key: FrameCategory; label: string }> = [
+    { key: "ADDRESS", label: "Address" },
+    { key: "BANK", label: "Bank" },
+    { key: "BUSINESS", label: "Business" },
+    { key: "FLYER", label: "Flyer" },
+    { key: "WEDDING", label: "Wedding" },
+  ];
+  const [frameCategory, setFrameCategory] = React.useState<FrameCategory>("BUSINESS");
+  const [frames, setFrames] = React.useState<NbCardFrame[]>([]);
+  const [framesLoading, setFramesLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    setFramesLoading(true);
+
+    const categoryParam = frameCategory.trim().toLowerCase();
+    const cacheKey = `nbcard-frames-cache-v2:${categoryParam}`;
+    const CACHE_TTL = 1000 * 60 * 60 * 24;
+
+    // Try cache
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Date.now() - parsed.timestamp < CACHE_TTL && Array.isArray(parsed.frames) && parsed.frames.length > 0) {
+          if (!cancelled) { setFrames(parsed.frames); setFramesLoading(false); }
+          return;
+        }
+      }
+    } catch { /* ignore */ }
+
+    // Fetch from API
+    fetch(`/api/nb-card/frames?category=${encodeURIComponent(categoryParam)}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (cancelled) return;
+        const apiFrames: NbCardFrame[] = Array.isArray(data?.frames) ? data.frames : [];
+        const usable = apiFrames.filter((f) => typeof f?.src === "string" && f.src.startsWith("/"));
+        const nextFrames = usable.length > 0 ? usable : getBuiltinFrames();
+        setFrames(nextFrames);
+        try { localStorage.setItem(cacheKey, JSON.stringify({ frames: nextFrames, timestamp: Date.now() })); } catch { /* ignore */ }
+      })
+      .catch(() => {
+        if (!cancelled) setFrames(getBuiltinFrames());
+      })
+      .finally(() => {
+        if (!cancelled) setFramesLoading(false);
+      });
+
+    return () => { cancelled = true; };
+  }, [frameCategory]);
+
+  const handleFrameSelect = (frame: NbCardFrame) => {
+    // Apply frame as background by creating a synthetic template selection
+    onSelectionChange({
+      ...selection,
+      backgroundId: `frame:${frame.id}`,
+      orientation: frame.aspect || "portrait",
+    });
+    toast.success("Frame applied as background");
+  };
+
   if (loading) {
     return (
       <Card>
@@ -273,9 +339,10 @@ export function TemplatePicker({
       </CardHeader>
       <CardContent ref={rootRef}>
         <Tabs defaultValue="backgrounds" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="backgrounds">Backgrounds ({backgrounds.length})</TabsTrigger>
             <TabsTrigger value="overlays">Overlays ({overlays.length})</TabsTrigger>
+            <TabsTrigger value="frames">Pro Frames</TabsTrigger>
           </TabsList>
 
           <TabsContent value="backgrounds" className="space-y-4">
@@ -417,6 +484,59 @@ export function TemplatePicker({
                     />
                   );
                 })}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="frames" className="space-y-4">
+            {/* Category selector */}
+            <div className="flex flex-wrap gap-2">
+              {FRAME_CATEGORIES.map((cat) => (
+                <button
+                  key={cat.key}
+                  type="button"
+                  onClick={() => setFrameCategory(cat.key)}
+                  className={cn(
+                    "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all",
+                    frameCategory === cat.key
+                      ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md"
+                      : "bg-white text-gray-700 border border-gray-300 hover:border-purple-400"
+                  )}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+
+            {framesLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600" />
+              </div>
+            ) : frames.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-4">No frames available for this category</p>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
+                {frames.map((frame) => (
+                  <button
+                    key={frame.id}
+                    type="button"
+                    onClick={() => handleFrameSelect(frame)}
+                    className="group relative aspect-[3/4] rounded-lg overflow-hidden border-2 border-gray-200 hover:border-purple-500 transition-all hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 focus-visible:ring-offset-2"
+                  >
+                    <Image
+                      src={frame.src}
+                      alt={frame.name || "Frame"}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                    <div className="absolute bottom-0 left-0 right-0 p-2 text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-t from-black/60 to-transparent">
+                      {frame.name}
+                    </div>
+                  </button>
+                ))}
               </div>
             )}
           </TabsContent>

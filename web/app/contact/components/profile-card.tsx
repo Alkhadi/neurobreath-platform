@@ -904,7 +904,7 @@ function CardLayerRenderer({
             overflow: "hidden",
           }}
         >
-          {layer.style.src && (
+          {layer.style.src ? (
             /* eslint-disable-next-line @next/next/no-img-element, react/forbid-dom-props */
             <img
               src={layer.style.src}
@@ -913,8 +913,35 @@ function CardLayerRenderer({
                 width: "100%",
                 height: "100%",
                 objectFit: layer.style.fit,
+                display: "block",
               }}
             />
+          ) : (
+            /* eslint-disable-next-line react/forbid-dom-props */
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "rgba(168,85,247,0.08)",
+                border: "2px dashed rgba(168,85,247,0.3)",
+                borderRadius: "inherit",
+              }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(168,85,247,0.5)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
+              {canvasEditMode && (
+                <span style={{ fontSize: "8px", color: "rgba(168,85,247,0.6)", marginTop: "2px", textAlign: "center" }}>
+                  Click to add photo
+                </span>
+              )}
+            </div>
           )}
         </div>
       );

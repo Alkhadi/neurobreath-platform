@@ -1212,14 +1212,52 @@ export function EditorToolbar({
                 title="Upload image from device"
               >
                 <Upload className="h-3.5 w-3.5 mr-1" />
-                Change Image
+                {selectedLayer.style.src ? "Change Image" : "Upload Image"}
               </Button>
+
+              {/* Shape presets */}
+              <div>
+                <label className="text-xs text-gray-600">Shape</label>
+                <div className="flex gap-1.5 mt-1">
+                  {([
+                    { label: "Circle", radius: 999, icon: "●" },
+                    { label: "Rounded", radius: 16, icon: "▢" },
+                    { label: "Square", radius: 0, icon: "■" },
+                  ] as const).map((preset) => (
+                    <button
+                      key={preset.label}
+                      type="button"
+                      onClick={() => {
+                        const updated = {
+                          ...profile,
+                          layers: profile.layers?.map((l) =>
+                            l.id === selectedLayer.id && l.type === "avatar"
+                              ? { ...l, style: { ...l.style, borderRadius: preset.radius } }
+                              : l
+                          ),
+                        };
+                        onProfileUpdate(updated);
+                      }}
+                      className={`flex-1 px-2 py-1.5 text-xs font-medium rounded border transition-all ${
+                        selectedLayer.style.borderRadius === preset.radius
+                          ? "bg-purple-100 border-purple-400 text-purple-700"
+                          : "bg-white border-gray-200 text-gray-600 hover:border-purple-300"
+                      }`}
+                      title={preset.label}
+                    >
+                      <span className="block text-base leading-none mb-0.5">{preset.icon}</span>
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className="flex flex-wrap gap-2 [&>*]:basis-[calc(50%-4px)] [&>*]:min-w-0">
                 <div>
                   <label className="text-xs text-gray-600">Border Radius</label>
                   <input
-                    type="number"
-                    value={selectedLayer.style.borderRadius}
+                    type="range"
+                    value={Math.min(selectedLayer.style.borderRadius, 999)}
                     onChange={(e) => {
                       const v = parseInt(e.target.value, 10);
                       if (!Number.isFinite(v) || v < 0) return;
@@ -1233,10 +1271,11 @@ export function EditorToolbar({
                       };
                       onProfileUpdate(updated);
                     }}
-                    className="w-full px-2 py-1 text-sm border rounded"
+                    className="w-full"
                     min="0"
                     max="999"
                   />
+                  <div className="text-center text-[10px] text-gray-400">{selectedLayer.style.borderRadius}px</div>
                 </div>
                 <div>
                   <label className="text-xs text-gray-600">Border Width</label>

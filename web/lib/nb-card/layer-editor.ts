@@ -243,7 +243,7 @@ export function createTextLayer(
     visible: true,
     style: {
       content,
-      fontSize: 24,
+      fontSize: 12,
       fontFamily: "Inter",
       fontWeight: "bold",
       align: "left",
