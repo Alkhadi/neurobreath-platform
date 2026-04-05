@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "size": { "width": 1600, "height": 900 },
+  "category": "business",
+  "preserveOriginalColors": true,
+  "fields": [
+    {
+      "key": "tagline",
+      "type": "text",
+      "id": "nb-card-tagline",
+      "box": { "x": 300, "y": 250, "w": 1000, "h": 40 },
+      "style": { "fontSize": 32, "fontWeight": 600, "align": "center", "fit": "shrink-to-fit" }
+    },
+    {
+      "key": "services",
+      "type": "text",
+      "id": "nb-card-specialty",
+      "box": { "x": 300, "y": 330, "w": 1000, "h": 36 },
+      "style": { "fontSize": 24, "fontWeight": 400, "align": "center", "fit": "shrink-to-fit" }
+    },
+    {
+      "key": "addressLine1",
+      "type": "text",
+      "id": "nb-card-address-line1",
+      "box": { "x": 300, "y": 450, "w": 1000, "h": 30 },
+      "style": { "fontSize": 22, "fontWeight": 400, "align": "center" }
+    },
+    {
+      "key": "addressLine2",
+      "type": "text",
+      "id": "nb-card-address-line2",
+      "box": { "x": 300, "y": 485, "w": 1000, "h": 30 },
+      "style": { "fontSize": 22, "fontWeight": 400, "align": "center" }
+    },
+    {
+      "key": "country",
+      "type": "text",
+      "id": "nb-card-address-country",
+      "box": { "x": 300, "y": 520, "w": 1000, "h": 30 },
+      "style": { "fontSize": 22, "fontWeight": 400, "align": "center" }
+    },
+    {
+      "key": "instagram",
+      "type": "text",
+      "id": "nb-card-instagram",
+      "box": { "x": 400, "y": 620, "w": 250, "h": 30 },
+      "style": { "fontSize": 20, "fontWeight": 400, "align": "left" }
+    },
+    {
+      "key": "linkedin",
+      "type": "text",
+      "id": "nb-card-linkedin",
+      "box": { "x": 675, "y": 620, "w": 250, "h": 30 },
+      "style": { "fontSize": 20, "fontWeight": 400, "align": "center" }
+    },
+    {
+      "key": "twitter",
+      "type": "text",
+      "id": "nb-card-twitter",
+      "box": { "x": 975, "y": 620, "w": 250, "h": 30 },
+      "style": { "fontSize": 20, "fontWeight": 400, "align": "right" }
+    }
+  ],
+  "slots": [
+    {
+      "key": "logo",
+      "type": "image",
+      "id": "nb-card-logo-large",
+      "box": { "x": 650, "y": 100, "w": 300, "h": 100 },
+      "fit": "contain",
+      "shape": "roundedRect",
+      "radius": 8
+    }
+  ]
+}

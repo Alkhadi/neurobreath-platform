@@ -313,6 +313,9 @@ export default function SharePageClient({ token, cardModel: rawCardModel, pngUrl
         </button>
       </div>
 
+      {/* Contact Links */}
+      <ContactLinks card={card} />
+
       {/* Re-share QR */}
       <div className="rounded-2xl bg-white p-5 flex flex-col items-center gap-3 shadow-sm border border-gray-100">
         <p className="text-sm font-semibold text-gray-700">Share this card</p>
@@ -436,6 +439,88 @@ function buildCardText(card: CardModel): string {
   }
 
   return lines.join("\n");
+}
+
+// ---------------------------------------------------------------------------
+// Contact links section — clickable links shown on the share page
+// ---------------------------------------------------------------------------
+
+function ContactLinks({ card }: { card: CardModel }) {
+  const p = card.profile ?? {};
+  const s = card.social ?? {};
+  const d = (card.categoryData ?? {}) as Record<string, unknown>;
+
+  const links: { label: string; href: string; icon: string }[] = [];
+
+  if (p.phone) links.push({ label: p.phone, href: `tel:${p.phone}`, icon: "📞" });
+  if (p.email) links.push({ label: p.email, href: `mailto:${p.email}`, icon: "✉️" });
+
+  // Website — business websiteUrl, social website, or profile website
+  const website = (typeof d.websiteUrl === "string" && d.websiteUrl) || s.website;
+  if (website) links.push({ label: website.replace(/^https?:\/\//, ""), href: website.startsWith("http") ? website : `https://${website}`, icon: "🌐" });
+
+  // Address with map directions
+  if (card.category === "address") {
+    const parts = [d.line1, d.line2, d.city, d.postcode, d.country]
+      .filter((v): v is string => typeof v === "string" && v.length > 0);
+    if (parts.length > 0) {
+      const mapHref = buildMapHref(
+        { addressLine1: d.line1 as string | undefined, addressLine2: d.line2 as string | undefined,
+          city: d.city as string | undefined, postcode: d.postcode as string | undefined,
+          country: d.country as string | undefined,
+          mapUrlOverride: d.mapUrlOverride as string | undefined,
+          mapDestinationOverride: d.mapDestinationOverride as string | undefined },
+        { addressLine1: d.line1 as string | undefined, city: d.city as string | undefined,
+          postcode: d.postcode as string | undefined, country: d.country as string | undefined }
+      );
+      links.push({ label: parts.join(", "), href: mapHref, icon: "📍" });
+    }
+  }
+
+  // Business-specific links
+  if (card.category === "business") {
+    if (typeof d.bookingLink === "string" && d.bookingLink) {
+      links.push({ label: "Book Now", href: d.bookingLink.startsWith("http") ? d.bookingLink : `https://${d.bookingLink}`, icon: "📅" });
+    }
+  }
+
+  // Bank payment link
+  if (card.category === "bank") {
+    if (typeof d.paymentLink === "string" && d.paymentLink) {
+      links.push({ label: (typeof d.paymentLinkLabel === "string" && d.paymentLinkLabel) || "Pay", href: d.paymentLink.startsWith("http") ? d.paymentLink : `https://${d.paymentLink}`, icon: "💳" });
+    }
+  }
+
+  // Social media
+  const socialPlatforms: { key: string; base: string; icon: string; label: string }[] = [
+    { key: "instagram", base: "https://instagram.com/", icon: "📷", label: "Instagram" },
+    { key: "linkedin", base: "https://linkedin.com/in/", icon: "💼", label: "LinkedIn" },
+    { key: "facebook", base: "https://facebook.com/", icon: "👤", label: "Facebook" },
+    { key: "tiktok", base: "https://tiktok.com/@", icon: "🎵", label: "TikTok" },
+    { key: "x", base: "https://x.com/", icon: "🐦", label: "X" },
+  ];
+  for (const sp of socialPlatforms) {
+    const val = s[sp.key as keyof typeof s];
+    if (typeof val === "string" && val) {
+      const href = val.startsWith("http") ? val : `${sp.base}${val.replace(/^@/, "")}`;
+      links.push({ label: `${sp.label}: @${val.replace(/^@/, "")}`, href, icon: sp.icon });
+    }
+  }
+
+  if (links.length === 0) return null;
+
+  return (
+    <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100 space-y-2">
+      <p className="text-sm font-semibold text-gray-700 mb-2">Contact &amp; Links</p>
+      {links.map((link, i) => (
+        <a key={i} href={link.href} target="_blank" rel="noopener noreferrer"
+           className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gray-50 hover:bg-purple-50 transition-colors text-sm text-gray-700 hover:text-purple-700">
+          <span className="text-base flex-shrink-0">{link.icon}</span>
+          <span className="truncate">{link.label}</span>
+        </a>
+      ))}
+    </div>
+  );
 }
 
 // ---------------------------------------------------------------------------

@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "size": { "width": 1600, "height": 900 },
+  "category": "business",
+  "preserveOriginalColors": true,
+  "fields": [
+    {
+      "key": "fullName",
+      "type": "text",
+      "id": "nb-card-name",
+      "box": { "x": 380, "y": 180, "w": 400, "h": 60 },
+      "style": { "fontSize": 56, "fontWeight": 700, "align": "left", "fit": "shrink-to-fit" }
+    },
+    {
+      "key": "jobTitle",
+      "type": "text",
+      "id": "nb-card-title",
+      "box": { "x": 380, "y": 240, "w": 400, "h": 40 },
+      "style": { "fontSize": 28, "fontWeight": 400, "align": "left", "fit": "shrink-to-fit" }
+    },
+    {
+      "key": "companyName",
+      "type": "text",
+      "id": "nb-card-company",
+      "box": { "x": 380, "y": 285, "w": 400, "h": 36 },
+      "style": { "fontSize": 24, "fontWeight": 600, "align": "left", "fit": "shrink-to-fit" }
+    },
+    {
+      "key": "phone",
+      "type": "text",
+      "id": "nb-card-phone",
+      "box": { "x": 380, "y": 370, "w": 400, "h": 30 },
+      "style": { "fontSize": 22, "fontWeight": 400, "align": "left" }
+    },
+    {
+      "key": "email",
+      "type": "text",
+      "id": "nb-card-email",
+      "box": { "x": 380, "y": 410, "w": 400, "h": 30 },
+      "style": { "fontSize": 22, "fontWeight": 400, "align": "left" }
+    },
+    {
+      "key": "website",
+      "type": "text",
+      "id": "nb-card-website",
+      "box": { "x": 380, "y": 450, "w": 400, "h": 30 },
+      "style": { "fontSize": 22, "fontWeight": 400, "align": "left" }
+    }
+  ],
+  "slots": [
+    {
+      "key": "profilePhoto",
+      "type": "image",
+      "id": "nb-card-photo",
+      "box": { "x": 140, "y": 160, "w": 200, "h": 200 },
+      "fit": "cover",
+      "shape": "roundedRect",
+      "radius": 100
+    },
+    {
+      "key": "logo",
+      "type": "image",
+      "id": "nb-card-logo",
+      "box": { "x": 1200, "y": 650, "w": 300, "h": 150 },
+      "fit": "contain",
+      "shape": "roundedRect",
+      "radius": 8
+    },
+    {
+      "key": "qr",
+      "type": "image",
+      "id": "nb-card-qr",
+      "box": { "x": 150, "y": 660, "w": 130, "h": 130 },
+      "fit": "contain",
+      "shape": "roundedRect",
+      "radius": 8
+    }
+  ]
+}

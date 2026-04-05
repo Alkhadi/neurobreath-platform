@@ -67,6 +67,7 @@ type WalletTemplateDescriptor = {
   schemaVersion: number;
   size?: { width: number; height: number };
   category?: string;
+  preserveOriginalColors?: boolean;
   fields?: WalletFieldDescriptor[];
   slots?: WalletSlotDescriptor[];
 };
@@ -159,6 +160,18 @@ function getWalletFieldValue(profile: Profile, key: string, shareUrl: string): s
     case "vatOrRegNo":
       return safeText(business?.vatOrRegNo);
 
+    // Social Media
+    case "instagram":
+      return safeText(profile.socialMedia?.instagram);
+    case "linkedin":
+      return safeText(profile.socialMedia?.linkedin);
+    case "twitter":
+      return safeText(profile.socialMedia?.twitter);
+    case "facebook":
+      return safeText(profile.socialMedia?.facebook);
+    case "tiktok":
+      return safeText(profile.socialMedia?.tiktok);
+
     // Flyer / Wedding
     case "title": {
       const src = profile.cardCategory === "WEDDING" ? wedding : flyer;
@@ -184,6 +197,11 @@ function getWalletFieldValue(profile: Profile, key: string, shareUrl: string): s
 }
 
 function computeWalletQrValue(profile: Profile, shareUrl: string): string {
+  // When a canonical server share URL is available (PNG-backed share page with
+  // image preview + download links), prefer it so scanners see the full card
+  // image with all canvas layers and clickable links.
+  if (shareUrl.includes("/nb-card/s/")) return shareUrl;
+
   const category = (profile.cardCategory ?? "PROFILE").toString().toUpperCase();
 
   if (category === "BANK") return renderBankQrText(profile, shareUrl);
@@ -476,6 +494,22 @@ function renderWalletSvg(params: {
       svgText.setAttribute("opacity", "0");
       svgText.setAttribute("display", "none");
       svgText.textContent = "";
+      // Also hide the parent row <g> (contains icon + text) when empty
+      const parentG = svgText.parentElement;
+      if (parentG?.tagName.toLowerCase() === "g" && !parentG.getAttribute("id")) {
+        parentG.setAttribute("opacity", "0");
+        parentG.setAttribute("display", "none");
+      }
+      // Hide enclosing <a> and its parent <g> for social link fields
+      if (parentG?.tagName.toLowerCase() === "a") {
+        parentG.setAttribute("opacity", "0");
+        parentG.setAttribute("display", "none");
+        const grandParent = parentG.parentElement;
+        if (grandParent?.tagName.toLowerCase() === "g" && !grandParent.getAttribute("id")) {
+          grandParent.setAttribute("opacity", "0");
+          grandParent.setAttribute("display", "none");
+        }
+      }
       continue;
     }
     
@@ -490,7 +524,8 @@ function renderWalletSvg(params: {
     const { usedText } = setSvgTextValue({ textEl: svgText, value, boxWidth, fontSize, fontWeight, fontFamily: walletFontFamily });
 
     // Requested: strict black/white contrast for editable template text.
-    if (walletTextColor) {
+    // Skip when the descriptor opts into preserving the original SVG fill colours.
+    if (walletTextColor && !descriptor.preserveOriginalColors) {
       svgText.setAttribute("fill", walletTextColor);
     }
 
@@ -508,6 +543,22 @@ function renderWalletSvg(params: {
 
     if (field.style?.fit === "shrink-to-fit" && typeof fontSize === "number" && typeof boxWidth === "number") {
       applyShrinkToFit({ textEl: svgText, text: usedText || value, boxWidth, fontSize, fontWeight, fontFamily: walletFontFamily });
+    }
+
+    // Update social media link hrefs when the text field is inside an <a> element
+    const parentAnchor = svgText.parentElement;
+    if (parentAnchor?.tagName.toLowerCase() === "a" && value) {
+      const socialUrlMap: Record<string, (handle: string) => string> = {
+        instagram: (h) => `https://instagram.com/${h.replace(/^@/, "")}`,
+        linkedin: (h) => h.startsWith("http") ? h : `https://linkedin.com/in/${h.replace(/^@/, "")}`,
+        twitter: (h) => `https://x.com/${h.replace(/^@/, "")}`,
+        facebook: (h) => h.startsWith("http") ? h : `https://facebook.com/${h.replace(/^@/, "")}`,
+        tiktok: (h) => `https://tiktok.com/@${h.replace(/^@/, "")}`,
+      };
+      const urlBuilder = socialUrlMap[field.key];
+      if (urlBuilder) {
+        parentAnchor.setAttribute("href", urlBuilder(value));
+      }
     }
   }
 
@@ -579,6 +630,38 @@ function renderWalletSvg(params: {
       }
 
       rect.parentNode?.insertBefore(img, rect.nextSibling);
+      // Hide the dashed rect itself and any immediately following placeholder icon <g>
+      rect.setAttribute("opacity", "0");
+      rect.setAttribute("display", "none");
+      const iconSib = rect.nextElementSibling;
+      if (iconSib && iconSib !== img && iconSib.tagName.toLowerCase() === "g" && !iconSib.getAttribute("id")) {
+        iconSib.setAttribute("opacity", "0");
+        iconSib.setAttribute("display", "none");
+      }
+    }
+  }
+
+  // Hide dashed placeholder rects and their icon siblings when the corresponding
+  // image slot has been populated (e.g. nb-card-logo-area when nb-card-logo has an href).
+  for (const slot of slots) {
+    if (!slot || slot.type !== "image" || typeof slot.id !== "string") continue;
+    let href: string | undefined;
+    if (slot.key === "profilePhoto" || slot.key === "speakerPhoto") href = photoHref ?? undefined;
+    if (slot.key === "logo") href = logoHref ?? photoHref ?? undefined;
+    if (slot.key === "backgroundImage") href = backgroundHref ?? undefined;
+    if (slot.key === "qr") href = qrHref ?? undefined;
+    if (!href) continue;
+
+    const areaEl = doc.getElementById(slot.id + "-area");
+    if (areaEl) {
+      areaEl.setAttribute("opacity", "0");
+      areaEl.setAttribute("display", "none");
+      // Also hide the next sibling <g> (placeholder icon) if it exists
+      const nextSib = areaEl.nextElementSibling;
+      if (nextSib?.tagName.toLowerCase() === "g" && !nextSib.getAttribute("id")) {
+        nextSib.setAttribute("opacity", "0");
+        nextSib.setAttribute("display", "none");
+      }
     }
   }
 
@@ -1547,7 +1630,12 @@ export function ProfileCard({
   // Determine if we're using template mode (new) or legacy background mode
   const useTemplateMode = Boolean(templateSelection?.backgroundId);
 
-  const looksLikeWalletTemplate = Boolean(useTemplateMode && templateSelection?.backgroundId?.startsWith("wallet-"));
+  const looksLikeWalletTemplate = Boolean(
+    useTemplateMode && (
+      templateSelection?.backgroundId?.startsWith("wallet-") ||
+      resolvedTemplate?.engine === "nb-wallet"
+    )
+  );
 
   const isWalletTemplate = Boolean(
     useTemplateMode &&
@@ -1996,7 +2084,7 @@ export function ProfileCard({
 
                       <div className="flex items-center justify-center">
                         <div className="rounded-xl bg-white p-2 shadow-md">
-                          <QRCodeSVG value={renderFlyerQrText(profile, shareUrl)} size={120} marginSize={1} level="M" />
+                          <QRCodeSVG value={computeWalletQrValue(profile, shareUrl)} size={120} marginSize={1} level="M" />
                         </div>
                       </div>
                     </div>

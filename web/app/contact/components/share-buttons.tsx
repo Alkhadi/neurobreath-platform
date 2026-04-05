@@ -102,7 +102,7 @@ import {
   resetNbcardProfiles,
 } from "../lib/nbcard-storage";
 
-import { Download, Link as LinkIcon, Mail, MessageSquare, QrCode, Share2 } from "lucide-react";
+import { Download, FileImage, FileText, Link as LinkIcon, Mail, MessageSquare, QrCode, Share2 } from "lucide-react";
 
 export type ShareButtonsProps = {
   profile: Profile;
@@ -119,6 +119,12 @@ export type ShareButtonsProps = {
    * Falls back to the local URL when null/undefined (degraded / not yet ready).
    */
   canonicalShareUrl?: string | null;
+  /**
+   * Callback to switch the business card to a given side ('front' | 'back').
+   * Returns a Promise that resolves once the template has been swapped and
+   * the on-screen card has re-rendered.  Used by dual-side export flows.
+   */
+  onSwitchBusinessSide?: (side: 'front' | 'back') => Promise<void>;
 };
 
 function contactsToCsv(contacts: Contact[]): string {
@@ -397,13 +403,29 @@ async function createSimplePdf(profile: Profile, shareUrl: string, qrDataUrl: st
   return await doc.save();
 }
 
-// TODO Phase 5 Enhancement: Business Card Dual-Sided PDF Export
-// To implement 2-page PDF (front + back):
-// 1. Pass template switch callback from NBCardPanel to ShareButtons
-// 2. In export pipeline: capture front → switch to back template → capture back
-// 3. Create PDF with both pages using pdf-lib addPage()
-// 4. Ensure both pages have same dimensions (exportWidth × exportHeight)
-// For now, business cards export the currently visible side only.
+/**
+ * Create a 2-page PDF with the business card front on page 1 and back on page 2.
+ */
+async function createDualSidedPdf(frontPngBlob: Blob, backPngBlob: Blob): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  try {
+    const frontBytes = await frontPngBlob.arrayBuffer();
+    const frontImage = await doc.embedPng(frontBytes);
+    const frontPage = doc.addPage([frontImage.width, frontImage.height]);
+    frontPage.drawImage(frontImage, { x: 0, y: 0, width: frontImage.width, height: frontImage.height });
+  } catch (err) {
+    console.error("Failed to embed front card image in PDF:", err);
+  }
+  try {
+    const backBytes = await backPngBlob.arrayBuffer();
+    const backImage = await doc.embedPng(backBytes);
+    const backPage = doc.addPage([backImage.width, backImage.height]);
+    backPage.drawImage(backImage, { x: 0, y: 0, width: backImage.width, height: backImage.height });
+  } catch (err) {
+    console.error("Failed to embed back card image in PDF:", err);
+  }
+  return await doc.save();
+}
 
 function renderShareText(profile: Profile, shareUrl: string): string {
   const lines: string[] = [];
@@ -511,7 +533,7 @@ function renderShareText(profile: Profile, shareUrl: string): string {
   return lines.join("\n");
 }
 
-export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSetContacts, templateSelection, showPrivacyControls = true, canonicalShareUrl }: ShareButtonsProps) {
+export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSetContacts, templateSelection, showPrivacyControls = true, canonicalShareUrl, onSwitchBusinessSide }: ShareButtonsProps) {
   const [hasMounted, setHasMounted] = React.useState(false);
   const [isQrOpen, setIsQrOpen] = React.useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = React.useState(false);
@@ -1114,6 +1136,79 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           });
         }
       );
+    });
+  }
+
+  /**
+   * Capture the currently-visible side, then switch to the companion side,
+   * capture it, and return both PNGs.  Restores the original side afterwards.
+   */
+  async function captureBothSides(
+    redacted: Profile,
+    captureId: string
+  ): Promise<{ frontBlob: Blob; backBlob: Blob }> {
+    if (!onSwitchBusinessSide) throw new Error("Side-switch callback unavailable");
+
+    const currentSide = selectedTemplate?.side ?? 'front';
+    const otherSide = currentSide === 'front' ? 'back' : 'front';
+
+    // Capture the currently-visible side first
+    mountExportCard(redacted);
+    await waitForExportRender(captureId);
+    const firstBlob = await captureProfileCardPng(captureId);
+    setExportCaptureProfile(null);
+
+    // Switch to the companion side and capture
+    await onSwitchBusinessSide(otherSide);
+    // Allow React to commit the new template before mounting
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    await new Promise((r) => setTimeout(r, 200));
+    mountExportCard(redacted);
+    await waitForExportRender(captureId);
+    const secondBlob = await captureProfileCardPng(captureId);
+    setExportCaptureProfile(null);
+
+    // Restore the original side
+    await onSwitchBusinessSide(currentSide);
+
+    return currentSide === 'front'
+      ? { frontBlob: firstBlob, backBlob: secondBlob }
+      : { frontBlob: secondBlob, backBlob: firstBlob };
+  }
+
+  function handleExportBothSidesPdf() {
+    requestRedactionAndRun(async (redacted) => {
+      await withBusy("both-pdf", async () => {
+        try {
+          const { frontBlob, backBlob } = await captureBothSides(redacted, EXPORT_CAPTURE_ID);
+          const pdfBytes = await createDualSidedPdf(frontBlob, backBlob);
+          const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+          downloadBlob(new Blob([pdfBytes], { type: "application/pdf" }), `${safeName}_BusinessCard_FrontBack.pdf`);
+          toast.success("Front & back PDF downloaded");
+        } catch (err) {
+          console.error("Dual-side PDF export failed:", err);
+          toast.error("Export failed — please try again");
+        }
+      });
+    });
+  }
+
+  function handleExportBothSidesPng() {
+    requestRedactionAndRun(async (redacted) => {
+      await withBusy("both-png", async () => {
+        try {
+          const { frontBlob, backBlob } = await captureBothSides(redacted, EXPORT_CAPTURE_ID);
+          const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+          downloadBlob(frontBlob, `${safeName}_Front.png`);
+          // Small delay so the browser doesn't merge the two downloads
+          await new Promise((r) => setTimeout(r, 300));
+          downloadBlob(backBlob, `${safeName}_Back.png`);
+          toast.success("Front & back PNGs downloaded");
+        } catch (err) {
+          console.error("Dual-side PNG export failed:", err);
+          toast.error("Export failed — please try again");
+        }
+      });
     });
   }
 
@@ -1798,6 +1893,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           <ProfileCard
             profile={exportCaptureProfile}
             showEditButton={false}
+            suppressDefaultCardContent={true}
             userEmail={undefined}
             templateSelection={templateSelection}
             selectedTemplate={selectedTemplate}
@@ -1852,7 +1948,37 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           ) : null}
         </div>
 
-        <div className="flex flex-wrap gap-1.5 sm:gap-2">
+        <div className="flex flex-col gap-1.5 sm:gap-2">
+          {/* Row 1: Primary actions — Download PNG, Download PDF, QR Code, Share PNG, Share PDF */}
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
+            <Button variant="default" size="sm" className="h-8 sm:h-10 px-2.5 sm:px-4 text-xs sm:text-sm" onClick={handleDownloadPng} disabled={!!busyKey}>
+              <FileImage className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              {selectedTemplate?.cardCategory === 'BUSINESS' && selectedTemplate?.side
+                ? `Download ${selectedTemplate.side === 'front' ? 'Front' : 'Back'} PNG`
+                : 'Download PNG'}
+            </Button>
+            <Button variant="default" size="sm" className="h-8 sm:h-10 px-2.5 sm:px-4 text-xs sm:text-sm" onClick={handleDownloadPdf} disabled={!!busyKey}>
+              <FileText className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              {selectedTemplate?.cardCategory === 'BUSINESS' && selectedTemplate?.side
+                ? `Download ${selectedTemplate.side === 'front' ? 'Front' : 'Back'} PDF`
+                : 'Download PDF'}
+            </Button>
+            <Button variant="default" size="sm" className="h-8 sm:h-10 px-2.5 sm:px-4 text-xs sm:text-sm" onClick={() => setIsQrOpen(true)} disabled={!!busyKey}>
+              <QrCode className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              QR Code
+            </Button>
+            <Button variant="outline" size="sm" className="h-8 sm:h-10 px-2.5 sm:px-4 text-xs sm:text-sm" onClick={handleSharePng} disabled={!!busyKey}>
+              <Share2 className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              Share PNG
+            </Button>
+            <Button variant="outline" size="sm" className="h-8 sm:h-10 px-2.5 sm:px-4 text-xs sm:text-sm" onClick={handleSharePdf} disabled={!!busyKey}>
+              <Share2 className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              Share PDF
+            </Button>
+          </div>
+
+          {/* Row 2: Copy Link, Share, Export dropdown, social share */}
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
           <Button variant="outline" size="sm" className="h-8 sm:h-10 px-2.5 sm:px-4 text-xs sm:text-sm" onClick={handleCopyLink} disabled={!!busyKey}>
             <LinkIcon className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
             Copy Link
@@ -1889,12 +2015,27 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
               {/* Business card exports */}
               {selectedTemplate?.cardCategory === 'BUSINESS' && selectedTemplate?.side ? (
                 <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel>Current Side</DropdownMenuLabel>
                   <DropdownMenuItem onClick={handleDownloadPng} disabled={!!busyKey}>
                     Export {selectedTemplate.side === 'front' ? 'Front' : 'Back'} PNG
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleDownloadPdf} disabled={!!busyKey}>
                     Export {selectedTemplate.side === 'front' ? 'Front' : 'Back'} PDF
                   </DropdownMenuItem>
+                  {onSwitchBusinessSide ? (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuLabel>Both Sides</DropdownMenuLabel>
+                      <DropdownMenuItem onClick={handleExportBothSidesPdf} disabled={!!busyKey}>
+                        Export Front &amp; Back PDF
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleExportBothSidesPng} disabled={!!busyKey}>
+                        Export Front &amp; Back PNG
+                      </DropdownMenuItem>
+                    </>
+                  ) : null}
+                  <DropdownMenuSeparator />
                 </>
               ) : (
                 <>
@@ -1948,6 +2089,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           <Button variant="outline" size="sm" className="h-8 sm:h-10 px-2.5 sm:px-4 text-xs sm:text-sm" onClick={openSms} disabled={!!busyKey}>
             SMS
           </Button>
+          </div>
         </div>
       </div>
 
@@ -3348,15 +3490,35 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
             </div>
 
             {/* Business card front + back guidance */}
-            {getCategoryFromProfile(profile) === "BUSINESS" ? (
-              <div className="rounded-lg bg-blue-50 border border-blue-100 p-3">
+            {getCategoryFromProfile(profile) === "BUSINESS" || (selectedTemplate?.cardCategory === 'BUSINESS' && selectedTemplate?.side) ? (
+              <div className="rounded-lg bg-blue-50 border border-blue-100 p-3 space-y-2">
                 <p className="text-xs font-semibold text-blue-900 mb-1">Printing front &amp; back</p>
-                <ol className="text-xs text-blue-800 list-decimal list-inside space-y-1">
-                  <li>Download PDF of the front side (above)</li>
-                  <li>Switch to the back template using the template picker</li>
-                  <li>Download PDF of the back side</li>
-                  <li>Print both at business card size (85&#215;55&nbsp;mm / 3.5&#215;2&nbsp;in)</li>
-                </ol>
+                {onSwitchBusinessSide ? (
+                  <>
+                    <Button
+                      className="w-full"
+                      variant="outline"
+                      onClick={() => {
+                        setIsPrintOpen(false);
+                        handleExportBothSidesPdf();
+                      }}
+                      disabled={!!busyKey}
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Download Front &amp; Back PDF
+                    </Button>
+                    <p className="text-xs text-blue-800">
+                      One PDF with front on page 1 and back on page 2. Print double-sided at business card size (85&#215;55&nbsp;mm / 3.5&#215;2&nbsp;in).
+                    </p>
+                  </>
+                ) : (
+                  <ol className="text-xs text-blue-800 list-decimal list-inside space-y-1">
+                    <li>Download PDF of the front side (above)</li>
+                    <li>Switch to the back template using the template picker</li>
+                    <li>Download PDF of the back side</li>
+                    <li>Print both at business card size (85&#215;55&nbsp;mm / 3.5&#215;2&nbsp;in)</li>
+                  </ol>
+                )}
               </div>
             ) : null}
 

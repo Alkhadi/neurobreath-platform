@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "size": { "width": 1600, "height": 900 },
+  "category": "business",
+  "preserveOriginalColors": true,
+  "fields": [
+    {
+      "key": "tagline",
+      "type": "text",
+      "id": "nb-card-tagline",
+      "box": { "x": 300, "y": 420, "w": 1000, "h": 40 },
+      "style": { "fontSize": 32, "fontWeight": 600, "align": "center", "fit": "shrink-to-fit" }
+    },
+    {
+      "key": "services",
+      "type": "text",
+      "id": "nb-card-specialty",
+      "box": { "x": 300, "y": 470, "w": 1000, "h": 30 },
+      "style": { "fontSize": 22, "fontWeight": 400, "align": "center", "fit": "shrink-to-fit" }
+    },
+    {
+      "key": "addressLine2",
+      "type": "text",
+      "id": "nb-card-address-line2",
+      "box": { "x": 300, "y": 530, "w": 1000, "h": 30 },
+      "style": { "fontSize": 22, "fontWeight": 400, "align": "center" }
+    },
+    {
+      "key": "country",
+      "type": "text",
+      "id": "nb-card-address-country",
+      "box": { "x": 300, "y": 565, "w": 1000, "h": 30 },
+      "style": { "fontSize": 22, "fontWeight": 400, "align": "center" }
+    },
+    {
+      "key": "instagram",
+      "type": "text",
+      "id": "nb-card-instagram",
+      "box": { "x": 510, "y": 680, "w": 180, "h": 26 },
+      "style": { "fontSize": 18, "fontWeight": 400, "align": "left" }
+    },
+    {
+      "key": "linkedin",
+      "type": "text",
+      "id": "nb-card-linkedin",
+      "box": { "x": 770, "y": 680, "w": 180, "h": 26 },
+      "style": { "fontSize": 18, "fontWeight": 400, "align": "left" }
+    },
+    {
+      "key": "twitter",
+      "type": "text",
+      "id": "nb-card-twitter",
+      "box": { "x": 1030, "y": 680, "w": 180, "h": 26 },
+      "style": { "fontSize": 18, "fontWeight": 400, "align": "left" }
+    }
+  ],
+  "slots": [
+    {
+      "key": "logo",
+      "type": "image",
+      "id": "nb-card-logo",
+      "box": { "x": 660, "y": 200, "w": 280, "h": 180 },
+      "fit": "contain",
+      "shape": "roundedRect",
+      "radius": 20
+    },
+    {
+      "key": "qr",
+      "type": "image",
+      "id": "nb-card-qr-area",
+      "box": { "x": 1320, "y": 660, "w": 180, "h": 180 },
+      "fit": "contain",
+      "shape": "roundedRect",
+      "radius": 16
+    }
+  ]
+}

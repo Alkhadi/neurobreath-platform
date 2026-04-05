@@ -301,11 +301,11 @@ export function NBCardPanel() {
   const isBusinessCard = selectedTemplate?.cardCategory === 'BUSINESS' && selectedTemplate?.side !== undefined;
   
   // Get companion template (front ↔ back)
-  const getCompanionTemplateId = (currentId: string, currentSide: 'front' | 'back'): string | undefined => {
+  const getCompanionTemplateId = useCallback((currentId: string, currentSide: 'front' | 'back'): string | undefined => {
     const targetSide = currentSide === 'front' ? 'back' : 'front';
     // Assumes naming convention: business-01-front ↔ business-01-back
     return currentId.replace(`-${currentSide}`, `-${targetSide}`);
-  };
+  }, []);
 
   const handleBusinessSideToggle = (side: 'front' | 'back') => {
     if (!selectedTemplate || !isBusinessCard) return;
@@ -319,6 +319,37 @@ export function NBCardPanel() {
       backgroundId: companionId,
     });
   };
+
+  /**
+   * Async version of handleBusinessSideToggle for export flows.
+   * Switches the template to the requested side and waits for
+   * the manifest to load + React to commit the new template.
+   */
+  const handleBusinessSideSwitchAsync = useCallback(async (side: 'front' | 'back'): Promise<void> => {
+    const bgId = templateSelection?.backgroundId;
+    if (!bgId) return;
+
+    const currentSide = selectedTemplate?.side;
+    if (currentSide === side) return; // already on the requested side
+
+    const companionId = getCompanionTemplateId(bgId, currentSide ?? 'front');
+    if (!companionId) return;
+
+    setCurrentBusinessSide(side);
+    setTemplateSelection((prev) => ({
+      ...prev,
+      backgroundId: companionId,
+    }));
+
+    // Wait for React to commit the state change + template to load
+    await new Promise<void>((resolve) => {
+      // Allow two animation frames for React commit + layout
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        // Extra delay for template manifest fetch + SVG load
+        setTimeout(resolve, 400);
+      }));
+    });
+  }, [templateSelection, selectedTemplate, getCompanionTemplateId]);
 
   const handleDismissSignInCallout = useCallback(() => {
     setSignInCalloutDismissed(true);
@@ -2602,6 +2633,7 @@ export function NBCardPanel() {
             templateSelection={templateSelection}
             showPrivacyControls={false}
             canonicalShareUrl={canonicalShareUrl}
+            onSwitchBusinessSide={isBusinessCard ? handleBusinessSideSwitchAsync : undefined}
           />
         </div>
 
