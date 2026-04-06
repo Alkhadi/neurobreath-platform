@@ -3328,9 +3328,11 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           <DialogHeader>
             <DialogTitle>QR Code</DialogTitle>
             <DialogDescription>
-              Scan to import card data directly. Card data mode encodes your
-              contact details into the QR code so scanners can save them
-              without visiting a link.
+              {isQrVcard && !qrValue.startsWith("http")
+                ? "QR encodes your contact details directly — scanners can save them without visiting a link."
+                : shareUrl.includes("/nb-card/s/")
+                  ? "QR opens your full card — scanners will see the card page with download options."
+                  : "QR links to your card details."}
             </DialogDescription>
           </DialogHeader>
 
@@ -3375,8 +3377,13 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
               </Button>
             </div>
 
-          <div className="flex items-center justify-center rounded-xl border bg-muted/30 p-4">
+          <div className="flex flex-col items-center gap-2 rounded-xl border bg-muted/30 p-4">
             {hasMounted ? <QRCodeSVG id="nbcard-qr-svg" value={qrValue} size={260} includeMargin level="M" /> : null}
+            <span className="text-xs text-muted-foreground">
+              {qrValue.startsWith("http")
+                ? (shareUrl.includes("/nb-card/s/") ? "Opens full card" : "Opens card link")
+                : "Shares contact details"}
+            </span>
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">

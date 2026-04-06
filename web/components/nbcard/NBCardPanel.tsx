@@ -64,6 +64,8 @@ import { HelpButton } from "./HelpButton";
 import { getExampleCardPreset, resetOnboarding } from "@/lib/nb-card/onboarding";
 import { Button } from "@/components/ui/button";
 import { fullSync, pullAndMerge, type SyncStatus } from "@/lib/nb-card/sync";
+import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
+import { saveCardToFirestore, loadCardsFromFirestore, deleteCardFromFirestore } from "@/lib/nb-card/firestore-cards";
 import { RefreshCw, Cloud, CloudOff, FolderOpen, Save, FileDown, FileUp } from "lucide-react";
 
 const SIGN_IN_CALLOUT_DISMISSED_KEY = "nb-card:sign_in_callout_dismissed";
@@ -188,6 +190,9 @@ function buildFormLayerContent(profile: Profile): string {
 export function NBCardPanel() {
   const [mounted, setMounted] = useState(false);
   const [sessionEmail, setSessionEmail] = useState<string | null>(null);
+  const { user: fbUser, status: fbStatus } = useFirebaseAuth();
+  const saveMode: 'local' | 'account' = fbStatus === 'authenticated' ? 'account' : 'local';
+  const [cloudCards, setCloudCards] = useState<NbcardSavedCard[]>([]);
   const [profiles, setProfiles] = useState<Profile[]>([defaultProfile]);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -1700,10 +1705,16 @@ export function NBCardPanel() {
       updatedAt: Date.now(),
     };
     upsertNbcardSavedCard(namespace, record);
+    // Also persist to Firestore for authenticated users
+    if (fbUser && !fbUser.isAnonymous) {
+      saveCardToFirestore(fbUser.uid, record).catch(() => {
+        // Silent — local save already succeeded
+      });
+    }
     setShowSaveAsDialog(false);
     setSaveAsName('');
     toast.success(`Saved as "${name}"`);
-  }, [saveAsName, sessionEmail, currentProfile]);
+  }, [saveAsName, sessionEmail, currentProfile, fbUser]);
 
   /** Add a text layer from the Layers panel (custom text). */
   const handleAddTextFromPanel = useCallback((text?: string): void => {
@@ -1817,13 +1828,26 @@ export function NBCardPanel() {
     toast.success("Auto-filled from layers");
   }, [currentProfile, currentProfileIndex, commitToHistory]);
 
-  // Phase 4: compute saved layouts for current namespace
+  // Load saved cards from Firestore for authenticated users
+  useEffect(() => {
+    if (fbStatus !== 'authenticated' || !fbUser) { setCloudCards([]); return; }
+    loadCardsFromFirestore(fbUser.uid)
+      .then(setCloudCards)
+      .catch(() => setCloudCards([]));
+  }, [fbStatus, fbUser, autosaveIndicator]);
+
+  // Phase 4: compute saved layouts — merge local + cloud (dedupe by id)
   const savedLayouts = useMemo((): NbcardSavedCard[] => {
     if (!hasMounted) return [];
     const namespace = getNbcardSavedNamespace(sessionEmail ?? undefined);
-    return loadNbcardSavedCards(namespace).sort((a, b) => b.updatedAt - a.updatedAt);
+    const local = loadNbcardSavedCards(namespace);
+    const byId = new Map<string, NbcardSavedCard>();
+    for (const c of local) byId.set(c.id, c);
+    // Cloud cards fill in any not already present locally
+    for (const c of cloudCards) { if (!byId.has(c.id)) byId.set(c.id, c); }
+    return Array.from(byId.values()).sort((a, b) => b.updatedAt - a.updatedAt);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionEmail, autosaveIndicator, hasMounted]); // re-compute after each autosave / Save As
+  }, [sessionEmail, autosaveIndicator, hasMounted, cloudCards]); // re-compute after each autosave / Save As / cloud fetch
 
   return (
     <>
@@ -1937,6 +1961,28 @@ export function NBCardPanel() {
               </div>
             )}
           </div>
+        </div>
+      )}
+
+      {/* Save-mode badge */}
+      {mounted && (
+        <div className="mb-2 flex items-center gap-2 text-xs text-gray-500">
+          <span
+            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium ${
+              saveMode === 'account'
+                ? 'bg-green-100 text-green-700'
+                : 'bg-gray-100 text-gray-600'
+            }`}
+          >
+            {saveMode === 'account' ? (
+              <><Cloud className="h-3 w-3" /> Account</>  
+            ) : (
+              <><CloudOff className="h-3 w-3" /> Local</>  
+            )}
+          </span>
+          {saveMode === 'local' && fbStatus !== 'loading' && (
+            <span>Cards saved on this device only</span>
+          )}
         </div>
       )}
 
@@ -2513,6 +2559,10 @@ export function NBCardPanel() {
                           if (!confirm(`Delete "${card.title}"?`)) return;
                           const namespace = getNbcardSavedNamespace(sessionEmail ?? undefined);
                           deleteNbcardSavedCard(namespace, card.id);
+                          // Also remove from Firestore for authenticated users
+                          if (fbUser && !fbUser.isAnonymous) {
+                            deleteCardFromFirestore(fbUser.uid, card.id).catch(() => {});
+                          }
                           // Trigger re-render via autosaveIndicator toggle
                           setAutosaveIndicator((v) => !v);
                           toast.success(`Deleted "${card.title}"`);
