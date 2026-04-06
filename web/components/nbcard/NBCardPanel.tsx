@@ -66,7 +66,8 @@ import { Button } from "@/components/ui/button";
 import { fullSync, pullAndMerge, type SyncStatus } from "@/lib/nb-card/sync";
 import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
 import { saveCardToFirestore, loadCardsFromFirestore, deleteCardFromFirestore } from "@/lib/nb-card/firestore-cards";
-import { RefreshCw, Cloud, CloudOff, FolderOpen, Save, FileDown, FileUp } from "lucide-react";
+import { FirebaseAuthDialog } from "./FirebaseAuthDialog";
+import { RefreshCw, Cloud, CloudOff, FolderOpen, Save, FileDown, FileUp, LogIn } from "lucide-react";
 
 const SIGN_IN_CALLOUT_DISMISSED_KEY = "nb-card:sign_in_callout_dismissed";
 
@@ -190,8 +191,10 @@ function buildFormLayerContent(profile: Profile): string {
 export function NBCardPanel() {
   const [mounted, setMounted] = useState(false);
   const [sessionEmail, setSessionEmail] = useState<string | null>(null);
-  const { user: fbUser, status: fbStatus } = useFirebaseAuth();
+  const fbAuth = useFirebaseAuth();
+  const { user: fbUser, status: fbStatus } = fbAuth;
   const saveMode: 'local' | 'account' = fbStatus === 'authenticated' ? 'account' : 'local';
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [cloudCards, setCloudCards] = useState<NbcardSavedCard[]>([]);
   const [profiles, setProfiles] = useState<Profile[]>([defaultProfile]);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
@@ -1858,6 +1861,13 @@ export function NBCardPanel() {
         onUseExample={handleUseExample}
       />
 
+      {/* Firebase Auth Dialog */}
+      <FirebaseAuthDialog
+        open={showAuthDialog}
+        onOpenChange={setShowAuthDialog}
+        auth={fbAuth}
+      />
+
       {/* Help Button (floating) */}
       <HelpButton />
 
@@ -1964,14 +1974,16 @@ export function NBCardPanel() {
         </div>
       )}
 
-      {/* Save-mode badge */}
+      {/* Save-mode badge (clickable → opens auth dialog) */}
       {mounted && (
         <div className="mb-2 flex items-center gap-2 text-xs text-gray-500">
-          <span
-            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium ${
+          <button
+            type="button"
+            onClick={() => setShowAuthDialog(true)}
+            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium transition-colors ${
               saveMode === 'account'
-                ? 'bg-green-100 text-green-700'
-                : 'bg-gray-100 text-gray-600'
+                ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
             {saveMode === 'account' ? (
@@ -1979,7 +1991,7 @@ export function NBCardPanel() {
             ) : (
               <><CloudOff className="h-3 w-3" /> Local</>  
             )}
-          </span>
+          </button>
           {saveMode === 'local' && fbStatus !== 'loading' && (
             <span>Cards saved on this device only</span>
           )}
@@ -2005,8 +2017,9 @@ export function NBCardPanel() {
           <p className="text-xs text-gray-700 mb-3">
             Your cards are saved locally on this device. Sign in to keep your cards across devices and avoid losing work if your browser storage is cleared.
           </p>
-          <Button asChild size="sm" className="w-full sm:w-auto">
-            <a href={`/uk/login?callbackUrl=${encodeURIComponent("/resources/nb-card")}`}>Sign in</a>
+          <Button size="sm" className="w-full sm:w-auto" onClick={() => { handleDismissSignInCallout(); setShowAuthDialog(true); }}>
+            <LogIn className="mr-1.5 h-3.5 w-3.5" />
+            Sign in
           </Button>
         </div>
       ) : null}
