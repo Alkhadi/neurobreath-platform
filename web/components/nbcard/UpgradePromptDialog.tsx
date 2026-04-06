@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -17,6 +18,8 @@ import {
   planPriceLabel,
   type NbcardPlan,
 } from "@/lib/nb-card/plans";
+import { startCheckout } from "@/lib/stripe/checkout-client";
+import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
 
 interface UpgradePromptDialogProps {
   open: boolean;
@@ -27,6 +30,9 @@ export function UpgradePromptDialog({
   open,
   onOpenChange,
 }: UpgradePromptDialogProps) {
+  const { user, status } = useFirebaseAuth();
+  const uid = status === "authenticated" ? user?.uid ?? null : null;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
@@ -56,7 +62,7 @@ export function UpgradePromptDialog({
             </p>
             <div className="space-y-1.5">
               {ONE_TIME_PLANS.filter((p) => p.available).map((plan) => (
-                <PlanRow key={plan.id} plan={plan} />
+                <PlanRow key={plan.id} plan={plan} uid={uid} />
               ))}
             </div>
           </div>
@@ -73,14 +79,19 @@ export function UpgradePromptDialog({
             </p>
             <div className="space-y-1.5">
               {MONTHLY_PLANS.filter((p) => p.available).map((plan) => (
-                <PlanRow key={plan.id} plan={plan} />
+                <PlanRow key={plan.id} plan={plan} uid={uid} />
               ))}
             </div>
           </div>
 
-          {/* Payment pending notice */}
+          {/* Notice */}
+          {!uid && (
+            <p className="text-[11px] text-amber-600 text-center pt-1">
+              Sign in to upgrade your plan.
+            </p>
+          )}
           <p className="text-[11px] text-gray-400 text-center pt-1">
-            Payment processing is coming soon. Plans shown for preview.
+            All payments are handled securely by Stripe.
           </p>
         </div>
       </DialogContent>
@@ -90,11 +101,27 @@ export function UpgradePromptDialog({
 
 // ─── Row ─────────────────────────────────────────────────────────────────────
 
-function PlanRow({ plan }: { plan: NbcardPlan }) {
+function PlanRow({ plan, uid }: { plan: NbcardPlan; uid: string | null }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const monthlyEquiv =
     plan.purchaseType === "one-time" && plan.oneTimePriceGbp != null
       ? ` (≈ ${formatGbp(Math.round(plan.oneTimePriceGbp / 12))}/mo)`
       : null;
+
+  async function handleSelect() {
+    if (!uid) return;
+    setLoading(true);
+    setError(null);
+    const result = await startCheckout(plan.id, uid);
+    if (result.url) {
+      window.location.href = result.url;
+    } else {
+      setError(result.error ?? "Something went wrong.");
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="flex items-center gap-3 rounded-lg border border-gray-200 px-3 py-2 hover:border-purple-300 hover:bg-purple-50/40 transition-colors">
@@ -105,6 +132,9 @@ function PlanRow({ plan }: { plan: NbcardPlan }) {
             {plan.storageGb} GB
           </span>
         </p>
+        {error && (
+          <p className="text-[10px] text-red-600 mt-0.5">{error}</p>
+        )}
       </div>
       <span className="shrink-0 text-sm font-semibold text-gray-800">
         {planPriceLabel(plan)}
@@ -116,10 +146,10 @@ function PlanRow({ plan }: { plan: NbcardPlan }) {
         size="sm"
         variant="outline"
         className="shrink-0 text-xs h-7 px-3"
-        disabled
-        title="Payment processing coming soon"
+        disabled={!uid || loading}
+        onClick={handleSelect}
       >
-        Select
+        {loading ? "…" : "Select"}
       </Button>
     </div>
   );

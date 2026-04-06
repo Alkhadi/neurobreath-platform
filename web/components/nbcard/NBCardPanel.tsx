@@ -69,6 +69,7 @@ import { saveCardToFirestore, loadCardsFromFirestore, deleteCardFromFirestore } 
 import { FirebaseAuthDialog } from "./FirebaseAuthDialog";
 import { UpgradePromptDialog } from "./UpgradePromptDialog";
 import { useNbcardEntitlement } from "@/hooks/useNbcardEntitlement";
+import { useNbcardPlanId } from "@/hooks/useNbcardPlanId";
 import { RefreshCw, Cloud, CloudOff, FolderOpen, Save, FileDown, FileUp, LogIn, Crown } from "lucide-react";
 
 const SIGN_IN_CALLOUT_DISMISSED_KEY = "nb-card:sign_in_callout_dismissed";
@@ -198,7 +199,8 @@ export function NBCardPanel() {
   const saveMode: 'local' | 'account' = fbStatus === 'authenticated' ? 'account' : 'local';
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
-  const entitlement = useNbcardEntitlement(); // future: pass planId from user profile
+  const activePlanId = useNbcardPlanId(fbUser?.uid ?? null);
+  const entitlement = useNbcardEntitlement(activePlanId);
   const [cloudCards, setCloudCards] = useState<NbcardSavedCard[]>([]);
   const [profiles, setProfiles] = useState<Profile[]>([defaultProfile]);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
