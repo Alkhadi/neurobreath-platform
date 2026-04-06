@@ -67,7 +67,9 @@ import { fullSync, pullAndMerge, type SyncStatus } from "@/lib/nb-card/sync";
 import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
 import { saveCardToFirestore, loadCardsFromFirestore, deleteCardFromFirestore } from "@/lib/nb-card/firestore-cards";
 import { FirebaseAuthDialog } from "./FirebaseAuthDialog";
-import { RefreshCw, Cloud, CloudOff, FolderOpen, Save, FileDown, FileUp, LogIn } from "lucide-react";
+import { UpgradePromptDialog } from "./UpgradePromptDialog";
+import { useNbcardEntitlement } from "@/hooks/useNbcardEntitlement";
+import { RefreshCw, Cloud, CloudOff, FolderOpen, Save, FileDown, FileUp, LogIn, Crown } from "lucide-react";
 
 const SIGN_IN_CALLOUT_DISMISSED_KEY = "nb-card:sign_in_callout_dismissed";
 
@@ -195,6 +197,8 @@ export function NBCardPanel() {
   const { user: fbUser, status: fbStatus } = fbAuth;
   const saveMode: 'local' | 'account' = fbStatus === 'authenticated' ? 'account' : 'local';
   const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
+  const entitlement = useNbcardEntitlement(); // future: pass planId from user profile
   const [cloudCards, setCloudCards] = useState<NbcardSavedCard[]>([]);
   const [profiles, setProfiles] = useState<Profile[]>([defaultProfile]);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
@@ -1695,8 +1699,18 @@ export function NBCardPanel() {
 
   /** Save current canvas layers as a named card in the saved-cards store. */
   const handleSaveAsLayout = useCallback(() => {
-    const name = saveAsName.trim() || `Layout — ${new Date().toLocaleDateString()}`;
+    // Enforce plan card limit before saving
     const namespace = getNbcardSavedNamespace(sessionEmail ?? undefined);
+    const local = loadNbcardSavedCards(namespace);
+    const localIds = new Set(local.map((c) => c.id));
+    const totalCards = local.length + cloudCards.filter((c) => !localIds.has(c.id)).length;
+    if (!entitlement.canSave(totalCards)) {
+      setShowSaveAsDialog(false);
+      setShowUpgradeDialog(true);
+      return;
+    }
+
+    const name = saveAsName.trim() || `Layout — ${new Date().toLocaleDateString()}`;
     const id = generateProfileId();
     const category = getCategoryFromProfile(currentProfile);
     const record: NbcardSavedCard = {
@@ -1717,7 +1731,7 @@ export function NBCardPanel() {
     setShowSaveAsDialog(false);
     setSaveAsName('');
     toast.success(`Saved as "${name}"`);
-  }, [saveAsName, sessionEmail, currentProfile, fbUser]);
+  }, [saveAsName, sessionEmail, currentProfile, fbUser, entitlement, cloudCards]);
 
   /** Add a text layer from the Layers panel (custom text). */
   const handleAddTextFromPanel = useCallback((text?: string): void => {
@@ -1868,6 +1882,12 @@ export function NBCardPanel() {
         auth={fbAuth}
       />
 
+      {/* Upgrade / Pricing Dialog */}
+      <UpgradePromptDialog
+        open={showUpgradeDialog}
+        onOpenChange={setShowUpgradeDialog}
+      />
+
       {/* Help Button (floating) */}
       <HelpButton />
 
@@ -1994,6 +2014,24 @@ export function NBCardPanel() {
           </button>
           {saveMode === 'local' && fbStatus !== 'loading' && (
             <span>Cards saved on this device only</span>
+          )}
+          {/* Plan badge + card-count indicator */}
+          {entitlement.isFree && (
+            <>
+              <span className="text-gray-300">|</span>
+              <span>
+                {savedLayouts.length}/{entitlement.maxCards ?? '∞'} cards
+              </span>
+              {!entitlement.canSave(savedLayouts.length) && (
+                <button
+                  type="button"
+                  onClick={() => setShowUpgradeDialog(true)}
+                  className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 font-medium text-amber-700 hover:bg-amber-100 transition-colors"
+                >
+                  <Crown className="h-3 w-3" /> Upgrade
+                </button>
+              )}
+            </>
           )}
         </div>
       )}

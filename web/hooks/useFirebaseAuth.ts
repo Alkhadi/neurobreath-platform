@@ -12,7 +12,7 @@ import {
   linkWithPopup,
   type User,
 } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { getFirebaseAuth } from "@/lib/firebase";
 
 export type AuthStatus = "loading" | "guest" | "authenticated";
 
@@ -23,7 +23,13 @@ export function useFirebaseAuth() {
   const [status, setStatus] = useState<AuthStatus>("loading");
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    const firebaseAuth = getFirebaseAuth();
+    if (!firebaseAuth) {
+      // Firebase not configured — stay in guest mode, no crash
+      setStatus("guest");
+      return;
+    }
+    const unsubscribe = onAuthStateChanged(firebaseAuth, (firebaseUser) => {
       setUser(firebaseUser);
       if (!firebaseUser) {
         setStatus("guest");
@@ -35,12 +41,14 @@ export function useFirebaseAuth() {
   }, []);
 
   const signInAsGuest = useCallback(async () => {
-    if (!user) {
-      await signInAnonymously(auth);
-    }
+    const firebaseAuth = getFirebaseAuth();
+    if (!firebaseAuth || user) return;
+    await signInAnonymously(firebaseAuth);
   }, [user]);
 
   const signInWithGoogle = useCallback(async () => {
+    const firebaseAuth = getFirebaseAuth();
+    if (!firebaseAuth) return;
     // If user is anonymous, link with Google to preserve UID + Firestore data
     if (user?.isAnonymous) {
       try {
@@ -52,25 +60,31 @@ export function useFirebaseAuth() {
         if (code !== "auth/credential-already-in-use") throw e;
       }
     }
-    await signInWithPopup(auth, googleProvider);
+    await signInWithPopup(firebaseAuth, googleProvider);
   }, [user]);
 
   const signInWithEmail = useCallback(
     async (email: string, password: string) => {
-      await signInWithEmailAndPassword(auth, email, password);
+      const firebaseAuth = getFirebaseAuth();
+      if (!firebaseAuth) return;
+      await signInWithEmailAndPassword(firebaseAuth, email, password);
     },
     [],
   );
 
   const createAccountWithEmail = useCallback(
     async (email: string, password: string) => {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const firebaseAuth = getFirebaseAuth();
+      if (!firebaseAuth) return;
+      await createUserWithEmailAndPassword(firebaseAuth, email, password);
     },
     [],
   );
 
   const signOut = useCallback(async () => {
-    await fbSignOut(auth);
+    const firebaseAuth = getFirebaseAuth();
+    if (!firebaseAuth) return;
+    await fbSignOut(firebaseAuth);
   }, []);
 
   return {

@@ -17,7 +17,7 @@ import {
   serverTimestamp,
   type Timestamp,
 } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { getFirebaseDb } from "@/lib/firebase";
 import type { NbcardSavedCard, Profile } from "@/lib/utils";
 
 /** Firestore document shape — aligned with NbcardSavedCard. */
@@ -37,7 +37,9 @@ export async function saveCardToFirestore(
   uid: string,
   card: NbcardSavedCard,
 ): Promise<void> {
-  const ref = doc(collection(db, "users", uid, "nbcards"), card.id);
+  const firestore = getFirebaseDb();
+  if (!firestore) return;
+  const ref = doc(collection(firestore, "users", uid, "nbcards"), card.id);
   const data: NbcardFirestoreDoc = {
     title: card.title,
     category: card.category,
@@ -56,7 +58,9 @@ export async function saveCardToFirestore(
 export async function loadCardsFromFirestore(
   uid: string,
 ): Promise<NbcardSavedCard[]> {
-  const col = collection(db, "users", uid, "nbcards");
+  const firestore = getFirebaseDb();
+  if (!firestore) return [];
+  const col = collection(firestore, "users", uid, "nbcards");
   const q = query(col, orderBy("updatedAt", "desc"));
   const snap = await getDocs(q);
 
@@ -83,7 +87,9 @@ export async function deleteCardFromFirestore(
   uid: string,
   cardId: string,
 ): Promise<void> {
-  const ref = doc(collection(db, "users", uid, "nbcards"), cardId);
+  const firestore = getFirebaseDb();
+  if (!firestore) return;
+  const ref = doc(collection(firestore, "users", uid, "nbcards"), cardId);
   await deleteDoc(ref);
 }
 
