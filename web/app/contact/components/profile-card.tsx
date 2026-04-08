@@ -768,6 +768,7 @@ function CardLayerRenderer({
   const [editValue, setEditValue] = useState('');
   const [longPressPos, setLongPressPos] = useState<{ x: number; y: number } | null>(null);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const longPressStartRef = useRef<{ x: number; y: number } | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto-focus textarea when editing starts
@@ -1131,7 +1132,7 @@ function CardLayerRenderer({
     return null;
   };
 
-  const showContextMenu = true; // Always allow right-click/tap context menu in the canvas
+  const showContextMenu = !!(editMode || canvasEditMode); // Only allow context menu inside edit modes
 
   const handleRotate = (degrees: number) => {
     onUpdate?.(layer.id, { rotation: ((layer.rotation ?? 0) + degrees) % 360 });
@@ -1140,9 +1141,15 @@ function CardLayerRenderer({
   const handleTouchStart = (e: React.TouchEvent) => {
     if (!showContextMenu) return;
     const touch = e.touches[0];
+    longPressStartRef.current = { x: touch.clientX, y: touch.clientY };
     longPressTimer.current = setTimeout(() => {
       onSelect?.(layer.id);
-      setLongPressPos({ x: touch.clientX, y: touch.clientY });
+      // Clamp menu position to viewport so it never overflows off-screen
+      const menuW = 160; // min-w-[10rem]
+      const menuH = 320; // approximate max menu height
+      const x = Math.max(8, Math.min(touch.clientX, window.innerWidth - menuW - 8));
+      const y = Math.max(8, Math.min(touch.clientY, window.innerHeight - menuH - 8));
+      setLongPressPos({ x, y });
     }, 500);
   };
 
@@ -1153,11 +1160,18 @@ function CardLayerRenderer({
     }
   };
 
-  const handleTouchMove = () => {
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current);
-      longPressTimer.current = null;
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!longPressTimer.current) return;
+    const touch = e.touches[0];
+    const start = longPressStartRef.current;
+    if (start) {
+      const dx = touch.clientX - start.x;
+      const dy = touch.clientY - start.y;
+      // 10px tolerance — ignore micro-movements common on touch screens
+      if (dx * dx + dy * dy < 100) return;
     }
+    clearTimeout(longPressTimer.current);
+    longPressTimer.current = null;
   };
 
   const contextMenuItems = (
@@ -1372,6 +1386,11 @@ function CardLayerRenderer({
           {/* eslint-disable-next-line react/forbid-dom-props */}
           <div
             style={style}
+            onContextMenu={(e) => {
+              // Block context menu if right-click target is outside the card boundary
+              const card = (e.target as HTMLElement).closest("#profile-card-capture");
+              if (!card) { e.preventDefault(); e.stopPropagation(); }
+            }}
             onPointerDown={editMode ? handlePointerDown : undefined}
             onPointerMove={isDragging ? handlePointerMove : isResizing ? handleResizePointerMove : undefined}
             onPointerUp={isDragging ? handlePointerUp : isResizing ? handleResizePointerUp : undefined}
@@ -1410,6 +1429,8 @@ function CardLayerRenderer({
                   style={{
                     width: "100%",
                     height: "100%",
+                    maxHeight: "min(100%, calc(100vh - 200px))",
+                    overflow: "auto",
                     fontSize: layer.type === "text" ? `${(layer.style.fontSize / 448) * 100}cqw` : `${(16 / 448) * 100}cqw`,
                     fontWeight: layer.type === "text" ? layer.style.fontWeight : "normal",
                     color: layer.type === "text" ? layer.style.color : "#000",
@@ -1433,8 +1454,8 @@ function CardLayerRenderer({
                 data-nb-ui="true"
                 style={{
                   position: "absolute",
-                  right: -22,
-                  bottom: -22,
+                  right: -6,
+                  bottom: -6,
                   width: 44,
                   height: 44,
                   display: "flex",
@@ -1451,11 +1472,12 @@ function CardLayerRenderer({
                 {/* eslint-disable-next-line react/forbid-dom-props */}
                 <div
                   style={{
-                    width: 12,
-                    height: 12,
+                    width: 14,
+                    height: 14,
                     backgroundColor: "#A855F7",
                     border: "2px solid white",
                     borderRadius: "50%",
+                    boxShadow: "0 0 0 1px rgba(0,0,0,0.15)",
                   }}
                 />
               </div>
@@ -1513,6 +1535,8 @@ function CardLayerRenderer({
             style={{
               width: '100%',
               height: '100%',
+              maxHeight: 'min(100%, calc(100vh - 200px))',
+              overflow: 'auto',
               fontSize: layer.type === 'text' ? `${(layer.style.fontSize / 448) * 100}cqw` : `${(16 / 448) * 100}cqw`,
               fontWeight: layer.type === 'text' ? layer.style.fontWeight : 'normal',
               color: layer.type === 'text' ? layer.style.color : '#000',
@@ -1528,7 +1552,7 @@ function CardLayerRenderer({
         </div>
       )}
       
-      {/* Resize handle (bottom-right corner) — 44px touch target wrapping 12px visual dot */}
+      {/* Resize handle (bottom-right corner) — 44px touch target wrapping 14px visual dot */}
       {editMode && isSelected && !layer.locked && (
         /* eslint-disable-next-line react/forbid-dom-props */
         <div
@@ -1536,8 +1560,8 @@ function CardLayerRenderer({
           data-nb-ui="true"
           style={{
             position: "absolute",
-            right: -22,
-            bottom: -22,
+            right: -6,
+            bottom: -6,
             width: 44,
             height: 44,
             display: "flex",
@@ -1554,15 +1578,16 @@ function CardLayerRenderer({
           {/* eslint-disable-next-line react/forbid-dom-props */}
           <div
             style={{
-              width: 12,
-              height: 12,
+              width: 14,
+              height: 14,
               backgroundColor: "#A855F7",
               border: "2px solid white",
               borderRadius: "50%",
+              boxShadow: "0 0 0 1px rgba(0,0,0,0.15)",
             }}
           />
         </div>
-      )}
+      )} 
     </div>
   );
 }
@@ -2433,7 +2458,7 @@ export function ProfileCard({
 
       {/* FREE LAYOUT EDITOR: CUSTOM LAYERS (z=15) */}
       {profile.layers && profile.layers.length > 0 && (
-        <div className={cn("absolute inset-0 z-[15]", !(editMode || canvasEditMode) && "pointer-events-none")}>
+        <div className={cn("absolute inset-0 z-[15] overflow-hidden", !(editMode || canvasEditMode) && "pointer-events-none")}>
           {profile.layers
             .filter((l) => l.visible)
             .sort((a, b) => a.zIndex - b.zIndex)

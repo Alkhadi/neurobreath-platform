@@ -266,9 +266,9 @@ export function EditorToolbar({
   }, [selectedLayer?.id, selectedQrBg]);
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-3 space-y-3">
+    <div className="bg-white rounded-lg shadow-md p-2 sm:p-3 space-y-2 sm:space-y-3">
       {/* Top Row: Undo/Redo, Zoom, Grid */}
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex items-center gap-2 overflow-x-auto -mx-1 px-1 scrollbar-none">
         <div className="flex items-center gap-1 border-r pr-2">
           <Button
             onClick={onUndo}
@@ -276,7 +276,7 @@ export function EditorToolbar({
             size="sm"
             variant="ghost"
             title="Undo (Ctrl+Z)"
-            className="h-8 w-8 p-0"
+            className="h-10 w-10 sm:h-8 sm:w-8 p-0"
           >
             <Undo2 className="h-4 w-4" />
           </Button>
@@ -286,7 +286,7 @@ export function EditorToolbar({
             size="sm"
             variant="ghost"
             title="Redo (Ctrl+Y)"
-            className="h-8 w-8 p-0"
+            className="h-10 w-10 sm:h-8 sm:w-8 p-0"
           >
             <Redo2 className="h-4 w-4" />
           </Button>
@@ -298,7 +298,7 @@ export function EditorToolbar({
             size="sm"
             variant="ghost"
             title="Zoom Out"
-            className="h-8 w-8 p-0"
+            className="h-10 w-10 sm:h-8 sm:w-8 p-0"
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
@@ -310,7 +310,7 @@ export function EditorToolbar({
             size="sm"
             variant="ghost"
             title="Zoom In"
-            className="h-8 w-8 p-0"
+            className="h-10 w-10 sm:h-8 sm:w-8 p-0"
           >
             <ZoomIn className="h-4 w-4" />
           </Button>
@@ -319,7 +319,7 @@ export function EditorToolbar({
             size="sm"
             variant="ghost"
             title="Fit to Screen"
-            className="h-8 w-8 p-0"
+            className="h-10 w-10 sm:h-8 sm:w-8 p-0"
           >
             <Maximize2 className="h-4 w-4" />
           </Button>
@@ -350,7 +350,7 @@ export function EditorToolbar({
       </div>
 
       {/* Add Layer Row */}
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex items-center gap-2 overflow-x-auto -mx-1 px-1 scrollbar-none">
         <span className="text-xs font-semibold text-gray-600">Add:</span>
         <Button
           onClick={onAddText}
@@ -375,7 +375,7 @@ export function EditorToolbar({
             Shape ▾
           </Button>
           {shapeMenuOpen && (
-            <div className="absolute top-full left-0 mt-1 bg-white rounded-md shadow-lg border z-50 py-1 min-w-[120px]">
+            <div className="absolute top-full left-0 sm:left-0 right-auto mt-1 bg-white rounded-md shadow-lg border z-50 py-1 min-w-[120px] max-w-[calc(100vw-2rem)]">
               <button
                 onClick={() => {
                   onAddShape("rect");
@@ -502,8 +502,8 @@ export function EditorToolbar({
           </div>
 
           {/* Arrange */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs text-gray-600">Arrange:</span>
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
+            <span className="text-xs text-gray-600 shrink-0">Arrange:</span>
             <Button
               onClick={onSendToBack}
               size="sm"
@@ -543,8 +543,8 @@ export function EditorToolbar({
           </div>
 
           {/* Align */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs text-gray-600">Align:</span>
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
+            <span className="text-xs text-gray-600 shrink-0">Align:</span>
             <Button
               onClick={() => onAlign("left")}
               size="sm"
