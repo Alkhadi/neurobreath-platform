@@ -288,6 +288,74 @@ export default function ADHDPathwayPage() {
             Apply via gov.uk - covers assistive technology, travel costs, support workers.
           </p>
 
+          <h2>ADHD &amp; Driving Safety</h2>
+          <p>
+            Driving requires sustained attention, quick decision-making, and impulse control — all areas that
+            ADHD can affect. Understanding these risks is an important part of staying safe on the road.
+          </p>
+
+          <h3>How ADHD Impacts Driving</h3>
+          <p>
+            Research has identified a strong link between ADHD and increased risk of motor vehicle incidents.
+            Individuals with ADHD are more likely to make errors in judgment, take risks on the road, and
+            inadvertently break traffic rules. A 2023 study found that adults with ADHD aged 65–79 were roughly
+            twice as likely to receive traffic tickets and 74% more likely to be involved in crashes compared
+            to those without ADHD. ADHD disrupts executive function — the ability to plan, make decisions, and
+            filter out distractions — which is critical for safe driving.
+          </p>
+
+          <h3>Warning Signs</h3>
+          <ul>
+            <li>Frequently forgetting to check blind spots or missing road signs</li>
+            <li>Making unsafe lane changes or failing to stay in a lane</li>
+            <li>Difficulty concentrating during long drives</li>
+            <li>Reaching for items, adjusting controls, or using a phone while driving</li>
+            <li>Receiving multiple traffic tickets or being involved in preventable accidents</li>
+            <li>Feeling drowsy after extended periods of driving</li>
+          </ul>
+          <p>
+            If you notice these behaviours in yourself or a loved one, speaking with a healthcare professional may be helpful.
+          </p>
+
+          <h3>Young &amp; New Drivers With ADHD</h3>
+          <p>
+            Teenagers aged 16–19 are already among the highest-risk age groups for road incidents. Because the
+            brain areas responsible for executive function do not fully mature until the mid-to-late twenties,
+            teens are naturally more susceptible to distractions — and ADHD amplifies this. Research shows that
+            newly licensed drivers with ADHD are approximately 36% more likely to be involved in a crash.
+          </p>
+          <p>
+            Parents and carers can help by:
+          </p>
+          <ul>
+            <li>Setting clear rules about passengers and driving while drowsy</li>
+            <li>Practising in challenging conditions (night-time, rain)</li>
+            <li>Working with a healthcare provider on ADHD management strategies</li>
+            <li>Allowing extra time — permit-holding teens who practise regularly are up to 39% less likely to have an accident</li>
+          </ul>
+
+          <h3>Practical Safety Strategies</h3>
+          <ul>
+            <li><strong>Minimise distractions:</strong> Silence your phone, set up playlist and mirrors before setting off, and use a pre-drive checklist until safe habits become automatic</li>
+            <li><strong>Plan longer trips:</strong> Map your route and rest stops in advance; take regular breaks; use “active scanning” (periodically checking mirrors, speedometer, and traffic) to stay engaged</li>
+            <li><strong>Leverage safety features:</strong> Learn your steering wheel controls, always wear a seatbelt, and dim large in-car displays if they draw your attention from the road</li>
+            <li><strong>Medication and support:</strong> Research suggests ADHD medication can reduce crash risk by 38–42%; a responsible passenger can also assist with navigation and alertness on longer drives</li>
+          </ul>
+
+          <div className="not-prose bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-4 my-4">
+            <p className="text-xs text-slate-600 dark:text-slate-400">
+              Content in this section is paraphrased from{' '}
+              <a
+                href="https://shamiehlaw.com/adhd-and-driving/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300"
+              >
+                &quot;ADHD and Driving&quot; by Shamieh Law
+              </a>. Used with permission.
+            </p>
+          </div>
+
           <h2>Further Resources</h2>
           <div className="flex flex-wrap not-prose gap-4 my-6 [&>*]:basis-full md:[&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
             <a 
