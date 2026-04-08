@@ -561,14 +561,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
     onText: () => Promise<void>
   ) {
     if (busyKey) return;
-    // Auto-select "image" mode when the card has a visual canvas
-    // (layers, template background, or custom background) — skips the mode dialog.
-    const hasVisualCanvas = !!(
-      (profile.layers && profile.layers.length > 0) ||
-      templateSelection?.backgroundId ||
-      profile.backgroundUrl ||
-      profile.frameUrl
-    );
+    // Auto-select "image" mode when the card has a visual canvas — skips the mode dialog.
     if (hasVisualCanvas) {
       void onImage();
       return;
@@ -602,6 +595,35 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   }, [templateSelection?.backgroundId]);
 
   const EXPORT_CAPTURE_ID = "profile-card-capture-export";
+
+  /** True when the card has a visual canvas that should be captured as-is. */
+  const hasVisualCanvas = !!(
+    (profile.layers && profile.layers.length > 0) ||
+    templateSelection?.backgroundId ||
+    profile.backgroundUrl ||
+    profile.frameUrl
+  );
+
+  /** True when the canvas already contains a user-placed QR layer. */
+  const hasManualQrLayer = !!(profile.layers && profile.layers.some((l) => l.type === "qr"));
+
+  /**
+   * Capture the LIVE on-screen card exactly as the user sees it.
+   * No profile redaction, no form data — pure canvas capture.
+   * Falls back to the off-screen export card if the live element is missing.
+   */
+  async function captureLiveCanvas(): Promise<Blob> {
+    const liveEl =
+      document.getElementById("profile-card-capture") ??
+      document.getElementById("profile-card-capture-wrapper");
+    if (liveEl && liveEl.getBoundingClientRect().height > 0) {
+      return captureProfileCardPng("profile-card-capture");
+    }
+    // Fallback: mount off-screen export (shouldn't normally happen)
+    mountExportCard(profile);
+    await waitForExportRender(EXPORT_CAPTURE_ID);
+    return captureProfileCardPng(EXPORT_CAPTURE_ID);
+  }
 
   /** Snapshot the live card's rendered width and mount the off-screen export card.
    *  This ensures the export container matches the live canvas dimensions exactly,
@@ -841,6 +863,34 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   }
 
   async function handleShareNative() {
+    // Visual canvas: capture live card exactly as-is — no redaction, no form data
+    if (hasVisualCanvas) {
+      await withBusy("share", async () => {
+        const pngBlob = await captureLiveCanvas();
+        const safeName = (profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+        void uploadCardOgImage(pngBlob, profile, deviceId).catch(() => undefined);
+        const ok = await shareViaWebShare({
+          title: `NBCard \u2014 ${profile.fullName}`,
+          text: `Here\u2019s my contact card: ${shareUrl}`,
+          files: [new File([pngBlob], `${safeName}.png`, { type: "image/png" })],
+        });
+        if (!ok) {
+          const textOk = await shareViaWebShare({
+            title: `NBCard \u2014 ${profile.fullName}`,
+            text: `Here\u2019s my contact card: ${shareUrl}`,
+            url: shareUrl,
+          });
+          if (!textOk) {
+            downloadBlob(pngBlob, `${safeName}_NBCard.png`);
+            toast.success("Card image downloaded");
+          }
+        } else {
+          toast.success("Shared");
+        }
+      });
+      return;
+    }
+    // Non-visual (text-only) cards: keep redaction flow
     requestRedactionAndRun(async (redacted) => {
       requestShareMode(
         "Share",
@@ -902,6 +952,58 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   shareNativeRef.current = handleShareNative;
 
   async function handleDownloadQrCardImage() {
+    // Visual canvas with manual QR: just capture the live card (QR already on canvas)
+    if (hasVisualCanvas && hasManualQrLayer) {
+      await withBusy("qr-card", async () => {
+        const pngBlob = await captureLiveCanvas();
+        const safeName = (profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+        downloadBlob(pngBlob, `${safeName}_QRCard.png`);
+        toast.success("QR Card image downloaded");
+      });
+      return;
+    }
+    // Visual canvas without manual QR: capture live, composite generated QR
+    if (hasVisualCanvas) {
+      await withBusy("qr-card", async () => {
+        const pngBlob = await captureLiveCanvas();
+        const qrSvg = document.getElementById("nbcard-qr-composite");
+        if (!qrSvg) throw new Error("QR composite element not found");
+        const xml = new XMLSerializer().serializeToString(qrSvg);
+        const svgDataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(xml)}`;
+
+        const cardObjUrl = URL.createObjectURL(pngBlob);
+        try {
+          const [cardImg, qrImg] = await Promise.all([loadImage(cardObjUrl), loadImage(svgDataUrl)]);
+          const canvas = document.createElement("canvas");
+          canvas.width = cardImg.naturalWidth;
+          canvas.height = cardImg.naturalHeight;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) throw new Error("Canvas 2d context unavailable");
+          ctx.drawImage(cardImg, 0, 0);
+          const qrSize = Math.round(canvas.width * 0.22);
+          const margin = Math.round(canvas.width * 0.03);
+          const qrX = canvas.width - qrSize - margin;
+          const qrY = canvas.height - qrSize - margin;
+          const pad = Math.round(qrSize * 0.07);
+          ctx.fillStyle = "rgba(255,255,255,0.94)";
+          ctx.fillRect(qrX - pad, qrY - pad, qrSize + pad * 2, qrSize + pad * 2);
+          ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+          const composite = await new Promise<Blob>((resolve, reject) => {
+            canvas.toBlob(
+              (b) => { if (!b) reject(new Error("Failed to create QR card blob")); else resolve(b); },
+              "image/png", 1.0
+            );
+          });
+          const safeName = (profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+          downloadBlob(composite, `${safeName}_QRCard.png`);
+          toast.success("QR Card image downloaded");
+        } finally {
+          URL.revokeObjectURL(cardObjUrl);
+        }
+      });
+      return;
+    }
+    // Non-visual cards: keep existing redaction + export flow
     requestRedactionAndRun(async (redacted) => {
       await withBusy("qr-card", async () => {
         mountExportCard(redacted);
@@ -1005,6 +1107,18 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   }
 
   function handleDownloadPng() {
+    // Visual canvas: capture live card directly
+    if (hasVisualCanvas) {
+      void withBusy("png", async () => {
+        const pngBlob = await captureLiveCanvas();
+        void uploadCardOgImage(pngBlob, profile, deviceId).catch(() => undefined);
+        const safeName = (profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+        downloadBlob(pngBlob, `${safeName}_NBCard.png`);
+        toast.success("PNG downloaded");
+      });
+      return;
+    }
+    // Non-visual cards: keep redaction flow
     requestRedactionAndRun(async (redacted) => {
       requestShareMode(
         "Image Export",
@@ -1053,6 +1167,25 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   }
 
   function handleSharePng() {
+    // Visual canvas: capture live card directly
+    if (hasVisualCanvas) {
+      void withBusy("png-share", async () => {
+        const pngBlob = await captureLiveCanvas();
+        const safeName = (profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+        const ok = await shareViaWebShare({
+          title: `NBCard \u2014 ${profile.fullName}`,
+          files: [new File([pngBlob], `${safeName}.png`, { type: "image/png" })],
+        });
+        if (ok) {
+          toast.success("Shared image");
+        } else {
+          downloadBlob(pngBlob, `${safeName}_NBCard.png`);
+          toast.message("Sharing not supported here", { description: "Image downloaded instead." });
+        }
+      });
+      return;
+    }
+    // Non-visual cards: keep redaction flow
     requestRedactionAndRun(async (redacted) => {
       requestShareMode(
         "Share PNG",
@@ -1100,6 +1233,18 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   }
 
   function handleDownloadPdf() {
+    // Visual canvas: capture live card, embed in PDF
+    if (hasVisualCanvas) {
+      void withBusy("pdf", async () => {
+        const pngBlob = await captureLiveCanvas();
+        const pdfBytes = await createSimplePdf(profile, shareUrl, undefined, pngBlob, "profile-card-capture");
+        const safeName = (profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+        downloadBlob(new Blob([pdfBytes], { type: "application/pdf" }), `${safeName}_NBCard.pdf`);
+        toast.success("PDF downloaded");
+      });
+      return;
+    }
+    // Non-visual cards: keep redaction flow
     requestRedactionAndRun(async (redacted) => {
       requestShareMode(
         "PDF Export",
