@@ -1605,8 +1605,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
           downloadBlob(new Blob([pdfBytes], { type: "application/pdf" }), `${safeName}_NBCard.pdf`);
           toast.message("PDF downloaded — attach it to your email");
         }
-        const text = renderShareText(profile, shareUrl);
-        window.location.href = `mailto:?subject=${encodeURIComponent(`${profile.fullName || "NBCard"} - NBCard`)}&body=${encodeURIComponent(text)}`;
+        window.location.href = buildMailtoUrl(profile, shareUrl);
       });
       return;
     }
@@ -1803,10 +1802,9 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
             const safeName = (profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
             const pdfFile = new File([pdfBytes], `${safeName}_NBCard.pdf`, { type: "application/pdf" });
             if (navigator.canShare({ files: [pdfFile] })) {
-              const text = renderShareText(profile, shareUrl);
               await navigator.share({
                 title: `${profile.fullName || "NBCard"} - NBCard`,
-                text,
+                text: `My NBCard: ${shareUrl}`,
                 files: [pdfFile],
               });
               toast.success("Shared via email");
@@ -1816,9 +1814,7 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
             console.error("Share with PDF failed:", e);
           }
         }
-        const text = renderShareText(profile, shareUrl);
-        const mailtoUrl = `mailto:?subject=${encodeURIComponent(`${profile.fullName || "NBCard"} - NBCard`)}&body=${encodeURIComponent(text)}`;
-        window.location.href = mailtoUrl;
+        window.location.href = buildMailtoUrl(profile, shareUrl);
         toast.message("Email opened", { description: "Attachments not supported via mailto." });
       });
       return;
