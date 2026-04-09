@@ -1322,7 +1322,53 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
       : { frontBlob: secondBlob, backBlob: firstBlob };
   }
 
+  /**
+   * Capture both sides of a business card using the live canvas.
+   * Switches side via callback, waits for re-render, captures each side.
+   */
+  async function captureLiveBothSides(): Promise<{ frontBlob: Blob; backBlob: Blob }> {
+    if (!onSwitchBusinessSide) throw new Error("Side-switch callback unavailable");
+
+    const currentSide = selectedTemplate?.side ?? 'front';
+    const otherSide = currentSide === 'front' ? 'back' : 'front';
+
+    // Capture the currently-visible live side first
+    const firstBlob = await captureLiveCanvas();
+
+    // Switch to the companion side and wait for re-render
+    await onSwitchBusinessSide(otherSide);
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    await new Promise((r) => setTimeout(r, 200));
+
+    // Capture the new live side
+    const secondBlob = await captureLiveCanvas();
+
+    // Restore the original side
+    await onSwitchBusinessSide(currentSide);
+
+    return currentSide === 'front'
+      ? { frontBlob: firstBlob, backBlob: secondBlob }
+      : { frontBlob: secondBlob, backBlob: firstBlob };
+  }
+
   function handleExportBothSidesPdf() {
+    // Visual canvas: capture live card for both sides
+    if (hasVisualCanvas && onSwitchBusinessSide) {
+      void withBusy("both-pdf", async () => {
+        try {
+          const { frontBlob, backBlob } = await captureLiveBothSides();
+          const pdfBytes = await createDualSidedPdf(frontBlob, backBlob);
+          const safeName = (profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+          downloadBlob(new Blob([pdfBytes], { type: "application/pdf" }), `${safeName}_BusinessCard_FrontBack.pdf`);
+          toast.success("Front & back PDF downloaded");
+        } catch (err) {
+          console.error("Dual-side PDF export failed:", err);
+          toast.error("Export failed — please try again");
+        }
+      });
+      return;
+    }
+    // Non-visual cards: keep redaction flow
     requestRedactionAndRun(async (redacted) => {
       await withBusy("both-pdf", async () => {
         try {
@@ -1340,6 +1386,24 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   }
 
   function handleExportBothSidesPng() {
+    // Visual canvas: capture live card for both sides
+    if (hasVisualCanvas && onSwitchBusinessSide) {
+      void withBusy("both-png", async () => {
+        try {
+          const { frontBlob, backBlob } = await captureLiveBothSides();
+          const safeName = (profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+          downloadBlob(frontBlob, `${safeName}_Front.png`);
+          await new Promise((r) => setTimeout(r, 300));
+          downloadBlob(backBlob, `${safeName}_Back.png`);
+          toast.success("Front & back PNGs downloaded");
+        } catch (err) {
+          console.error("Dual-side PNG export failed:", err);
+          toast.error("Export failed — please try again");
+        }
+      });
+      return;
+    }
+    // Non-visual cards: keep redaction flow
     requestRedactionAndRun(async (redacted) => {
       await withBusy("both-png", async () => {
         try {
@@ -1359,6 +1423,27 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   }
 
   function handleSharePdf() {
+    // Visual canvas: capture live card, share as PDF
+    if (hasVisualCanvas) {
+      void withBusy("pdf-share", async () => {
+        const pngBlob = await captureLiveCanvas();
+        const pdfBytes = await createSimplePdf(profile, shareUrl, undefined, pngBlob, "profile-card-capture");
+        const safeName = (profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+        const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
+        const pdfFile = blobToFile(pdfBlob, `${safeName}.pdf`);
+        const shared = await shareFileOrFallback({
+          file: pdfFile,
+          title: `NBCard — ${profile.fullName || "NB-Card"}`,
+          text: "Here's my NBCard profile",
+          fallbackDownload: true,
+        });
+        if (shared) {
+          toast.success("PDF shared");
+        }
+      });
+      return;
+    }
+    // Non-visual cards: keep redaction flow
     requestRedactionAndRun(async (redacted) => {
       requestShareMode(
         "Share PDF",
@@ -1415,6 +1500,36 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   }
 
   function openWhatsapp() {
+    // Visual canvas: capture live card, share via WhatsApp
+    if (hasVisualCanvas) {
+      void withBusy("whatsapp-share", async () => {
+        const pngBlob = await captureLiveCanvas();
+        void uploadCardOgImage(pngBlob, profile, deviceId).catch(() => undefined);
+        const safeName = (profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+        const file = new File([pngBlob], `${safeName}_NBCard.png`, { type: "image/png" });
+        const ok = await shareViaWebShare({
+          title: `NBCard — ${profile.fullName}`,
+          text: shareUrl,
+          files: [file],
+        });
+        if (ok) {
+          toast.success("Card image ready to share");
+        } else {
+          downloadBlob(pngBlob, `${safeName}_NBCard.png`);
+          window.open(
+            buildWhatsappUrl(`Check out my card: ${shareUrl}`),
+            "_blank",
+            "noopener,noreferrer"
+          );
+          toast.message("Image downloaded + WhatsApp opened", {
+            description:
+              "Attach the downloaded image to your WhatsApp chat for the full card design.",
+          });
+        }
+      });
+      return;
+    }
+    // Non-visual cards: keep redaction flow
     requestRedactionAndRun(async (redacted) => {
       requestShareMode(
         "WhatsApp",
@@ -1428,7 +1543,6 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
               void uploadCardOgImage(pngBlob, redacted, deviceId).catch(() => undefined);
               const safeName = (redacted.fullName || profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
               const file = new File([pngBlob], `${safeName}_NBCard.png`, { type: "image/png" });
-              // On mobile the share sheet lets the user pick WhatsApp directly
               const ok = await shareViaWebShare({
                 title: `NBCard — ${redacted.fullName || profile.fullName}`,
                 text: shareUrl,
@@ -1437,9 +1551,6 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
               if (ok) {
                 toast.success("Card image ready to share");
               } else {
-                // File sharing not supported (desktop / HTTP). Download the PNG
-                // AND open WhatsApp with the share link so the recipient sees a
-                // branded card preview (og:image) even without the file attachment.
                 downloadBlob(pngBlob, `${safeName}_NBCard.png`);
                 window.open(
                   buildWhatsappUrl(`Check out my card: ${shareUrl}`),
@@ -1474,6 +1585,32 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   }
 
   function openEmail() {
+    // Visual canvas: capture live card, share via email with PDF
+    if (hasVisualCanvas) {
+      void withBusy("email-image", async () => {
+        const pngBlob = await captureLiveCanvas();
+        const pdfBytes = await createSimplePdf(profile, shareUrl, undefined, pngBlob, "profile-card-capture");
+        if (pdfBytes) {
+          const safeName = (profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+          const pdfFile = new File([pdfBytes], `${safeName}_NBCard.pdf`, { type: "application/pdf" });
+          const ok = await shareViaWebShare({
+            title: `NBCard — ${profile.fullName}`,
+            text: `My NBCard: ${shareUrl}`,
+            files: [pdfFile],
+          });
+          if (ok) {
+            toast.success("PDF ready to attach in email");
+            return;
+          }
+          downloadBlob(new Blob([pdfBytes], { type: "application/pdf" }), `${safeName}_NBCard.pdf`);
+          toast.message("PDF downloaded — attach it to your email");
+        }
+        const text = renderShareText(profile, shareUrl);
+        window.location.href = `mailto:?subject=${encodeURIComponent(`${profile.fullName || "NBCard"} - NBCard`)}&body=${encodeURIComponent(text)}`;
+      });
+      return;
+    }
+    // Non-visual cards: keep redaction flow
     requestRedactionAndRun(async (redacted) => {
       requestShareMode(
         "Email",
@@ -1515,6 +1652,28 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   }
 
   function openSms() {
+    // Visual canvas: capture live card, share via SMS
+    if (hasVisualCanvas) {
+      void withBusy("sms-image", async () => {
+        const pngBlob = await captureLiveCanvas();
+        const safeName = (profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+        const file = new File([pngBlob], `${safeName}_NBCard.png`, { type: "image/png" });
+        const ok = await shareViaWebShare({
+          title: `NBCard — ${profile.fullName}`,
+          text: shareUrl,
+          files: [file],
+        });
+        if (ok) {
+          toast.success("Card image ready to share");
+        } else {
+          downloadBlob(pngBlob, `${safeName}_NBCard.png`);
+          toast.message("Image downloaded", { description: "Attach it to your message." });
+          window.location.href = buildSmsUrl(profile, shareUrl);
+        }
+      });
+      return;
+    }
+    // Non-visual cards: keep redaction flow
     requestRedactionAndRun(async (redacted) => {
       requestShareMode(
         "SMS / Messages",
@@ -1634,6 +1793,37 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
   }
 
   async function handleShareViaEmail() {
+    // Visual canvas: capture live card, share via email
+    if (hasVisualCanvas) {
+      await withBusy("email-share", async () => {
+        if (navigator.share && navigator.canShare) {
+          try {
+            const pngBlob = await captureLiveCanvas();
+            const pdfBytes = await createSimplePdf(profile, shareUrl, undefined, pngBlob, "profile-card-capture");
+            const safeName = (profile.fullName || "nbcard").trim().replace(/\s+/g, "_");
+            const pdfFile = new File([pdfBytes], `${safeName}_NBCard.pdf`, { type: "application/pdf" });
+            if (navigator.canShare({ files: [pdfFile] })) {
+              const text = renderShareText(profile, shareUrl);
+              await navigator.share({
+                title: `${profile.fullName || "NBCard"} - NBCard`,
+                text,
+                files: [pdfFile],
+              });
+              toast.success("Shared via email");
+              return;
+            }
+          } catch (e) {
+            console.error("Share with PDF failed:", e);
+          }
+        }
+        const text = renderShareText(profile, shareUrl);
+        const mailtoUrl = `mailto:?subject=${encodeURIComponent(`${profile.fullName || "NBCard"} - NBCard`)}&body=${encodeURIComponent(text)}`;
+        window.location.href = mailtoUrl;
+        toast.message("Email opened", { description: "Attachments not supported via mailto." });
+      });
+      return;
+    }
+    // Non-visual cards: keep redaction flow
     requestRedactionAndRun(async (redacted) => {
       await withBusy("email-share", async () => {
       // Try PDF with navigator.share first
