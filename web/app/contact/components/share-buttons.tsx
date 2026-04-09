@@ -173,7 +173,8 @@ async function buildExportAssets(
   // 2. Generate QR code PNG if available (only needed for PDF)
   let qrPngUrl: string | undefined;
   try {
-    const svg = document.getElementById("nbcard-qr-svg");
+    // Prefer the always-mounted composite QR; fall back to dialog QR SVG
+    const svg = document.getElementById("nbcard-qr-composite") ?? document.getElementById("nbcard-qr-svg");
     if (svg) {
       const xml = new XMLSerializer().serializeToString(svg);
       const svgDataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(xml)}`;

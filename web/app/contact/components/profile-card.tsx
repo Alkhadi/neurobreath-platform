@@ -29,6 +29,7 @@ import {
   RotateCcw,
   RefreshCcw,
   Pencil,
+  X,
 } from "lucide-react";
 import { getSession } from "next-auth/react";
 import { QRCodeSVG } from "qrcode.react";
@@ -769,6 +770,7 @@ function CardLayerRenderer({
   const [longPressPos, setLongPressPos] = useState<{ x: number; y: number } | null>(null);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const longPressStartRef = useRef<{ x: number; y: number } | null>(null);
+  const longPressOpenedAt = useRef<number>(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto-focus textarea when editing starts
@@ -1140,15 +1142,23 @@ function CardLayerRenderer({
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (!showContextMenu) return;
+    // Boundary check: only open long-press menu if touch is inside #profile-card-capture
+    const touchTarget = e.target as HTMLElement;
+    const card = touchTarget.closest("#profile-card-capture");
+    if (!card) return;
+    // Must be a real editable layer, not background/overlay/empty area
+    const layerEl = touchTarget.closest("[data-layer-id]");
+    if (!layerEl) return;
     const touch = e.touches[0];
     longPressStartRef.current = { x: touch.clientX, y: touch.clientY };
     longPressTimer.current = setTimeout(() => {
       onSelect?.(layer.id);
       // Clamp menu position to viewport so it never overflows off-screen
-      const menuW = 160; // min-w-[10rem]
-      const menuH = 320; // approximate max menu height
+      const menuW = 200; // updated min-w
+      const menuH = 380; // approximate max menu height
       const x = Math.max(8, Math.min(touch.clientX, window.innerWidth - menuW - 8));
       const y = Math.max(8, Math.min(touch.clientY, window.innerHeight - menuH - 8));
+      longPressOpenedAt.current = Date.now();
       setLongPressPos({ x, y });
     }, 500);
   };
@@ -1159,6 +1169,29 @@ function CardLayerRenderer({
       longPressTimer.current = null;
     }
   };
+
+  // Document-level listener: close long-press menu on any outside click/tap or right-click
+  useEffect(() => {
+    if (!longPressPos) return;
+    const openedAt = longPressOpenedAt.current;
+    const handleOutsideInteraction = (e: MouseEvent | TouchEvent) => {
+      // Guard: ignore events within 300ms of menu opening (prevents race with the long-press touch)
+      if (Date.now() - openedAt < 300) return;
+      // If the interaction target is inside the long-press menu itself, ignore
+      const target = e.target as HTMLElement;
+      if (target.closest("[data-nb-context-menu]")) return;
+      setLongPressPos(null);
+    };
+    // Use capture phase so we catch events before they're consumed
+    document.addEventListener("mousedown", handleOutsideInteraction, true);
+    document.addEventListener("touchstart", handleOutsideInteraction, true);
+    document.addEventListener("contextmenu", handleOutsideInteraction, true);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideInteraction, true);
+      document.removeEventListener("touchstart", handleOutsideInteraction, true);
+      document.removeEventListener("contextmenu", handleOutsideInteraction, true);
+    };
+  }, [longPressPos]);
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!longPressTimer.current) return;
@@ -1263,6 +1296,7 @@ function CardLayerRenderer({
     <div
       data-html2canvas-ignore="true"
       data-nb-ui="true"
+      data-nb-context-menu="true"
       style={{
         position: "fixed",
         left: longPressPos.x,
@@ -1270,17 +1304,30 @@ function CardLayerRenderer({
         zIndex: 9999,
       }}
     >
-      {/* Backdrop to close */}
+      {/* Backdrop to close — onClick only (no onTouchStart to prevent race with long-press) */}
       {/* eslint-disable-next-line react/forbid-dom-props */}
       <div
         style={{ position: "fixed", inset: 0, zIndex: -1 }}
         onClick={() => setLongPressPos(null)}
-        onTouchStart={() => setLongPressPos(null)}
       />
-      <div className="min-w-[10rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+      <div className="min-w-[12rem] overflow-hidden rounded-xl border border-border/60 bg-popover p-1.5 text-popover-foreground shadow-xl ring-1 ring-black/5">
+        {/* Close X button */}
+        <div className="flex items-center justify-between px-2 pt-0.5 pb-1">
+          <span className="text-xs font-medium text-muted-foreground">Layer Actions</span>
+          <button
+            type="button"
+            aria-label="Close menu"
+            className="flex items-center justify-center h-6 w-6 rounded-full hover:bg-destructive/10 active:bg-destructive/20 transition-colors"
+            onClick={() => setLongPressPos(null)}
+            onTouchEnd={(e) => { e.preventDefault(); setLongPressPos(null); }}
+          >
+            <X className="h-3.5 w-3.5 text-muted-foreground" />
+          </button>
+        </div>
+        <div className="-mx-1.5 mb-1 h-px bg-border" />
         {layer.type === "text" && (
           <button
-            className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+            className="flex w-full cursor-default select-none items-center rounded-lg px-2.5 py-2 text-sm outline-none hover:bg-accent active:bg-accent/80 transition-colors"
             onClick={() => {
               setLongPressPos(null);
               const textContent = layer.type === "text" ? layer.style.content : "";
@@ -1288,91 +1335,91 @@ function CardLayerRenderer({
               setIsEditing(true);
             }}
           >
-            <Pencil className="mr-2 h-4 w-4" /> Edit Text
+            <Pencil className="mr-2.5 h-4 w-4" /> Edit Text
           </button>
         )}
         {layer.type === "avatar" && (
           <button
-            className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+            className="flex w-full cursor-default select-none items-center rounded-lg px-2.5 py-2 text-sm outline-none hover:bg-accent active:bg-accent/80 transition-colors"
             onClick={() => {
               setLongPressPos(null);
               handleAvatarClick({} as React.MouseEvent);
             }}
           >
-            <Pencil className="mr-2 h-4 w-4" /> Replace Image
+            <Pencil className="mr-2.5 h-4 w-4" /> Replace Image
           </button>
         )}
         <button
-          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          className="flex w-full cursor-default select-none items-center rounded-lg px-2.5 py-2 text-sm outline-none hover:bg-accent active:bg-accent/80 transition-colors"
           onClick={() => { setLongPressPos(null); onDuplicate?.(layer.id); }}
         >
-          <Copy className="mr-2 h-4 w-4" /> Duplicate
+          <Copy className="mr-2.5 h-4 w-4" /> Duplicate
         </button>
         <button
-          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent text-red-600"
+          className="flex w-full cursor-default select-none items-center rounded-lg px-2.5 py-2 text-sm outline-none hover:bg-accent active:bg-accent/80 transition-colors text-red-600"
           onClick={() => { setLongPressPos(null); onDelete?.(layer.id); }}
         >
-          <Trash2 className="mr-2 h-4 w-4" /> Delete
+          <Trash2 className="mr-2.5 h-4 w-4" /> Delete
         </button>
-        <div className="-mx-1 my-1 h-px bg-border" />
+        <div className="-mx-1.5 my-1 h-px bg-border" />
         <button
-          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          className="flex w-full cursor-default select-none items-center rounded-lg px-2.5 py-2 text-sm outline-none hover:bg-accent active:bg-accent/80 transition-colors"
           onClick={() => { setLongPressPos(null); onToggleLock?.(layer.id); }}
         >
-          {layer.locked ? <Unlock className="mr-2 h-4 w-4" /> : <Lock className="mr-2 h-4 w-4" />}
+          {layer.locked ? <Unlock className="mr-2.5 h-4 w-4" /> : <Lock className="mr-2.5 h-4 w-4" />}
           {layer.locked ? "Unlock" : "Lock"}
         </button>
         <button
-          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          className="flex w-full cursor-default select-none items-center rounded-lg px-2.5 py-2 text-sm outline-none hover:bg-accent active:bg-accent/80 transition-colors"
           onClick={() => { setLongPressPos(null); onToggleVisibility?.(layer.id); }}
         >
-          {layer.visible ? <EyeOff className="mr-2 h-4 w-4" /> : <Eye className="mr-2 h-4 w-4" />}
+          {layer.visible ? <EyeOff className="mr-2.5 h-4 w-4" /> : <Eye className="mr-2.5 h-4 w-4" />}
           {layer.visible ? "Hide" : "Show"}
         </button>
-        <div className="-mx-1 my-1 h-px bg-border" />
+        <div className="-mx-1.5 my-1 h-px bg-border" />
         <button
-          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          className="flex w-full cursor-default select-none items-center rounded-lg px-2.5 py-2 text-sm outline-none hover:bg-accent active:bg-accent/80 transition-colors"
           onClick={() => { setLongPressPos(null); onBringToFront?.(layer.id); }}
         >
-          <ChevronsUp className="mr-2 h-4 w-4" /> Bring to Front
+          <ChevronsUp className="mr-2.5 h-4 w-4" /> Bring to Front
         </button>
         <button
-          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          className="flex w-full cursor-default select-none items-center rounded-lg px-2.5 py-2 text-sm outline-none hover:bg-accent active:bg-accent/80 transition-colors"
           onClick={() => { setLongPressPos(null); onBringForward?.(layer.id); }}
         >
-          <ChevronUp className="mr-2 h-4 w-4" /> Bring Forward
+          <ChevronUp className="mr-2.5 h-4 w-4" /> Bring Forward
         </button>
         <button
-          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          className="flex w-full cursor-default select-none items-center rounded-lg px-2.5 py-2 text-sm outline-none hover:bg-accent active:bg-accent/80 transition-colors"
           onClick={() => { setLongPressPos(null); onSendBackward?.(layer.id); }}
         >
-          <ChevronDown className="mr-2 h-4 w-4" /> Send Backward
+          <ChevronDown className="mr-2.5 h-4 w-4" /> Send Backward
         </button>
         <button
-          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          className="flex w-full cursor-default select-none items-center rounded-lg px-2.5 py-2 text-sm outline-none hover:bg-accent active:bg-accent/80 transition-colors"
           onClick={() => { setLongPressPos(null); onSendToBack?.(layer.id); }}
         >
-          <ChevronsDown className="mr-2 h-4 w-4" /> Send to Back
+          <ChevronsDown className="mr-2.5 h-4 w-4" /> Send to Back
         </button>
-        <div className="-mx-1 my-1 h-px bg-border" />
+        <div className="-mx-1.5 my-1 h-px bg-border" />
         <button
-          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          className="flex w-full cursor-default select-none items-center rounded-lg px-2.5 py-2 text-sm outline-none hover:bg-accent active:bg-accent/80 transition-colors"
           onClick={() => { setLongPressPos(null); handleRotate(90); }}
         >
-          <RotateCw className="mr-2 h-4 w-4" /> Rotate 90° CW
+          <RotateCw className="mr-2.5 h-4 w-4" /> Rotate 90° CW
         </button>
         <button
-          className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+          className="flex w-full cursor-default select-none items-center rounded-lg px-2.5 py-2 text-sm outline-none hover:bg-accent active:bg-accent/80 transition-colors"
           onClick={() => { setLongPressPos(null); handleRotate(-90); }}
         >
-          <RotateCcw className="mr-2 h-4 w-4" /> Rotate 90° CCW
+          <RotateCcw className="mr-2.5 h-4 w-4" /> Rotate 90° CCW
         </button>
         {(layer.rotation ?? 0) !== 0 && (
           <button
-            className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent"
+            className="flex w-full cursor-default select-none items-center rounded-lg px-2.5 py-2 text-sm outline-none hover:bg-accent active:bg-accent/80 transition-colors"
             onClick={() => { setLongPressPos(null); onUpdate?.(layer.id, { rotation: 0 }); }}
           >
-            <RefreshCcw className="mr-2 h-4 w-4" /> Reset Rotation
+            <RefreshCcw className="mr-2.5 h-4 w-4" /> Reset Rotation
           </button>
         )}
       </div>
@@ -1385,11 +1432,16 @@ function CardLayerRenderer({
         <ContextMenuTrigger asChild>
           {/* eslint-disable-next-line react/forbid-dom-props */}
           <div
+            data-layer-id={layer.id}
             style={style}
             onContextMenu={(e) => {
-              // Block context menu if right-click target is outside the card boundary
-              const card = (e.target as HTMLElement).closest("#profile-card-capture");
-              if (!card) { e.preventDefault(); e.stopPropagation(); }
+              const target = e.target as HTMLElement;
+              // Block context menu if right-click target is outside #profile-card-capture
+              const card = target.closest("#profile-card-capture");
+              if (!card) { e.preventDefault(); e.stopPropagation(); return; }
+              // Block context menu if target is not a valid editable layer (background/empty area)
+              const layerEl = target.closest("[data-layer-id]");
+              if (!layerEl) { e.preventDefault(); e.stopPropagation(); return; }
             }}
             onPointerDown={editMode ? handlePointerDown : undefined}
             onPointerMove={isDragging ? handlePointerMove : isResizing ? handleResizePointerMove : undefined}
@@ -1495,6 +1547,7 @@ function CardLayerRenderer({
   return (
     /* eslint-disable-next-line react/forbid-dom-props */
     <div
+      data-layer-id={layer.id}
       style={style}
       onPointerDown={editMode ? handlePointerDown : undefined}
       onPointerMove={isDragging ? handlePointerMove : isResizing ? handleResizePointerMove : undefined}

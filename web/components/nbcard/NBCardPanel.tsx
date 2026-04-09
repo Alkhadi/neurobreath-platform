@@ -615,7 +615,7 @@ export function NBCardPanel() {
         // Attempt PNG capture for share preview — non-blocking, best-effort
         let pngBlob: Blob | undefined;
         try {
-          const captureEl = document.getElementById("profile-card-capture-export");
+          const captureEl = document.getElementById("profile-card-capture");
           if (captureEl) {
             const { captureToBlob } = await import("@/lib/nbcard/export/capture");
             pngBlob = await captureToBlob(captureEl, { scale: 2 });
@@ -806,7 +806,7 @@ export function NBCardPanel() {
   /** File System: export current card as PNG to device */
   const handleExportPngToDevice = useCallback(async () => {
     try {
-      const captureEl = document.getElementById("profile-card-capture-export");
+      const captureEl = document.getElementById("profile-card-capture");
       if (!captureEl) {
         toast.error("Cannot capture card — preview not found");
         return;
@@ -1125,7 +1125,7 @@ export function NBCardPanel() {
       // Attempt PNG capture for share preview (non-blocking enhancement)
       let pngBlob: Blob | undefined;
       try {
-        const captureEl = document.getElementById("profile-card-capture-export");
+        const captureEl = document.getElementById("profile-card-capture");
         if (captureEl) {
           const { captureToBlob } = await import("@/lib/nbcard/export/capture");
           pngBlob = await captureToBlob(captureEl, { scale: 2 });
@@ -1196,7 +1196,7 @@ export function NBCardPanel() {
       // Attempt PNG capture for the upgrade preview (non-blocking)
       let pngBlob: Blob | undefined;
       try {
-        const captureEl = document.getElementById("profile-card-capture-export");
+        const captureEl = document.getElementById("profile-card-capture");
         if (captureEl) {
           const { captureToBlob } = await import("@/lib/nbcard/export/capture");
           pngBlob = await captureToBlob(captureEl, { scale: 2 });

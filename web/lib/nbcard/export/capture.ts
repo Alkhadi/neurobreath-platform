@@ -179,6 +179,13 @@ export async function captureToBlob(
   const savedDisplays = uiElements.map((el) => el.style.display);
   uiElements.forEach((el) => { el.style.display = "none"; });
 
+  // Strip selection outlines / editor borders from layer wrappers so they
+  // never appear in exported images.
+  const layerEls = Array.from(rootEl.querySelectorAll<HTMLElement>("[data-layer-id]"));
+  const savedOutlines = layerEls.map((el) => el.style.outline);
+  const savedOutlineOffsets = layerEls.map((el) => el.style.outlineOffset);
+  layerEls.forEach((el) => { el.style.outline = "none"; el.style.outlineOffset = "0px"; });
+
   // html2canvas cannot resolve chained CSS custom properties (e.g.
   // var(--nb-font) → var(--font-inter) → "Inter, sans-serif").
   // Resolve every element's computed font-family into an explicit inline
@@ -221,6 +228,7 @@ export async function captureToBlob(
     fontRestoreList();
     overflowRestoreList();
     uiElements.forEach((el, i) => { el.style.display = savedDisplays[i]; });
+    layerEls.forEach((el, i) => { el.style.outline = savedOutlines[i]; el.style.outlineOffset = savedOutlineOffsets[i]; });
   }
   
   // Convert canvas to PNG blob
