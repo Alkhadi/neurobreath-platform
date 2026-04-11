@@ -249,7 +249,8 @@ export function NBCardPanel() {
   const layersLsTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Free Layout Editor state (lifted from TemplatePicker)
-  const [layoutEditMode, setLayoutEditMode] = useState(false);
+  // Always-on: editor panels and layer interaction are always available
+  const [layoutEditMode, setLayoutEditMode] = useState(true);
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
 
   // Save As dialog for named layouts
@@ -575,6 +576,35 @@ export function NBCardPanel() {
   useEffect(() => {
     setHistory(createLayerHistory(currentProfile));
   }, [currentProfile, currentProfileIndex]);
+
+  // Auto-generate a consolidated __form__ text layer on mount so form
+  // data is always visible as a canvas layer without needing to click "Edit Layout".
+  useEffect(() => {
+    if (!mounted) return;
+    const existingLayers = currentProfile.layers || [];
+    const hasFormLayer = existingLayers.some(
+      (l) => l.type === "text" && (l as TextLayer).fieldLink === "__form__"
+    );
+    const formContent = buildFormLayerContent(currentProfile);
+    if (!hasFormLayer && formContent) {
+      const layer = leCreateTextLayer(5, 5, formContent) as TextLayer;
+      layer.fieldLink = "__form__";
+      layer.w = 90;
+      const lineCount = formContent.split("\n").length;
+      layer.h = Math.max(10, lineCount * 8);
+      const updatedProfile = {
+        ...currentProfile,
+        layers: [...existingLayers, layer],
+        updatedAt: new Date().toISOString(),
+      };
+      setProfiles(prev =>
+        prev.map((p, idx) => idx === currentProfileIndex ? updatedProfile : p)
+      );
+      setHistory(prev => pushHistory(prev, updatedProfile));
+    }
+  // Run once per profile after mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mounted, currentProfile.id]);
 
   // Persist template selection when it changes
   useEffect(() => {
@@ -1747,7 +1777,7 @@ export function NBCardPanel() {
 
   // Keyboard shortcuts for pro editor
   useEffect(() => {
-    if (!layoutEditMode && !canvasEditMode) return;
+    // Keyboard shortcuts always active (editor is always on)
 
     const handleKeyDown = (e: KeyboardEvent) => {
       // Don't interfere with typing in input fields
@@ -2084,7 +2114,7 @@ export function NBCardPanel() {
                 userEmail={undefined}
                 templateSelection={templateSelection}
                 selectedTemplate={selectedTemplate}
-                editMode={layoutEditMode}
+                editMode={true}
                 canvasEditMode={canvasEditMode}
                 gridEnabled={gridEnabled}
                 snapEnabled={snapEnabled}
@@ -2136,9 +2166,7 @@ export function NBCardPanel() {
           <p className="text-center text-sm text-gray-600 mb-4" suppressHydrationWarning>
             {canvasEditMode
               ? "Double-click text to edit inline, click avatar/background to upload" 
-              : layoutEditMode 
-                ? "Click on a layer to select it, then drag to reposition" 
-                : "Use the buttons below to edit your profile or layout"}
+              : "Click on a layer to select it, then drag to reposition"}
           </p>
 
           {/* Canvas Edit Mode Toggle */}
@@ -2153,7 +2181,6 @@ export function NBCardPanel() {
                     localStorage.setItem('nb-card:canvas-edit-mode', newMode ? '1' : '0');
                   } catch { /* ignore */ }
                   if (newMode) {
-                    setLayoutEditMode(false);
                     setSelectedLayerId(null);
                     toast.info("Canvas Edit Mode enabled. Double-click text to edit, click avatar/background to upload.");
                   }
@@ -2661,8 +2688,7 @@ export function NBCardPanel() {
         </div>
       )}
 
-      {/* Pro Editor panels (when Layout Edit Mode is active) — Layers above Tools */}
-      {layoutEditMode && (
+      {/* Pro Editor panels — always visible */}
         <div className="mb-6 space-y-4">
           <LayersPanel
             layers={currentProfile.layers || []}
@@ -2722,7 +2748,6 @@ export function NBCardPanel() {
             }}
           />
         </div>
-      )}
 
       {/* Share Your Profile — standalone section below canvas */}
       <div className="nb-surface p-3 sm:p-4 md:p-6 mb-6 sm:mb-8">
