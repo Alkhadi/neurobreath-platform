@@ -2399,6 +2399,10 @@ export function ShareButtons({ profile, profiles, contacts, onSetProfiles, onSet
                 <Mail className="mr-2 h-4 w-4" />
                 Share via Email
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={openWhatsapp} disabled={!!busyKey}>
+                <MessageSquare className="mr-2 h-4 w-4" />
+                Share via WhatsApp
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleExportContactsCsv} disabled={!!busyKey}>
                 Export contacts CSV

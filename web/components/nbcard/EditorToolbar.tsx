@@ -5,7 +5,7 @@
 
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Undo2,
   Redo2,
@@ -198,6 +198,18 @@ export function EditorToolbar({
   onProfileUpdate,
 }: EditorToolbarProps) {
   const [shapeMenuOpen, setShapeMenuOpen] = useState(false);
+  const shapeMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!shapeMenuOpen) return;
+    function handleClickOutside(e: MouseEvent) {
+      if (shapeMenuRef.current && !shapeMenuRef.current.contains(e.target as Node)) {
+        setShapeMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [shapeMenuOpen]);
 
   const selectedTextColor = useMemo(
     () => (selectedLayer && selectedLayer.type === "text" ? selectedLayer.style.color : ""),
@@ -363,7 +375,7 @@ export function EditorToolbar({
           Text
         </Button>
 
-        <div className="relative">
+        <div className="relative" ref={shapeMenuRef}>
           <Button
             onClick={() => setShapeMenuOpen(!shapeMenuOpen)}
             size="sm"
@@ -377,6 +389,7 @@ export function EditorToolbar({
           {shapeMenuOpen && (
             <div className="absolute top-full left-0 sm:left-0 right-auto mt-1 bg-white rounded-md shadow-lg border z-50 py-1 min-w-[120px] max-w-[calc(100vw-2rem)]">
               <button
+                type="button"
                 onClick={() => {
                   onAddShape("rect");
                   setShapeMenuOpen(false);
@@ -386,6 +399,7 @@ export function EditorToolbar({
                 <Square className="h-4 w-4" /> Rectangle
               </button>
               <button
+                type="button"
                 onClick={() => {
                   onAddShape("circle");
                   setShapeMenuOpen(false);
@@ -395,6 +409,7 @@ export function EditorToolbar({
                 <Circle className="h-4 w-4" /> Circle
               </button>
               <button
+                type="button"
                 onClick={() => {
                   onAddShape("line");
                   setShapeMenuOpen(false);
