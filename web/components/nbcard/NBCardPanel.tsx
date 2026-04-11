@@ -55,7 +55,7 @@ import { ContactCapture } from "@/app/contact/components/contact-capture";
 import { ProfileCard } from "@/app/contact/components/profile-card";
 import { ShareButtons } from "@/app/contact/components/share-buttons";
 import { TemplatePicker } from "@/app/contact/components/template-picker";
-import { InlinePropertyEditor } from "./InlinePropertyEditor";
+// InlinePropertyEditor retired — canvas is now the sole editing surface
 import { saveCardFile, loadCardFile, saveAllCardsFile, loadAllCardsFile, saveImageToDevice, isFileSystemAccessSupported } from "@/lib/nb-card/file-system";
 import { type TemplateSelection, loadTemplateSelection, saveTemplateSelection, loadTemplateManifest, getTemplateById, type Template } from "@/lib/nbcard-templates";
 import { WelcomeModal } from "./WelcomeModal";
@@ -208,8 +208,8 @@ export function NBCardPanel() {
   const [hasPersistedCards, setHasPersistedCards] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
-  // Inline editing mode — replaces the old ProfileManager modal
-  const [isEditing, setIsEditing] = useState(false);
+  // Inline editing mode — retained for handler compatibility (canvas-only now)
+  const [_isEditing, setIsEditing] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [templateSelection, setTemplateSelection] = useState<TemplateSelection>({});
   const [signInCalloutDismissed, setSignInCalloutDismissed] = useState(true); // default hidden until mount check
@@ -1048,8 +1048,8 @@ export function NBCardPanel() {
     []
   );
 
-  /** Inline property editor: commit to undo history */
-  const handleInlineCommit = useCallback((updated: Profile) => {
+  /** Inline property editor: commit to undo history (retained for compatibility) */
+  const _handleInlineCommit = useCallback((updated: Profile) => {
     commitToHistory({ ...updated, id: currentProfile.id });
   }, [currentProfile.id, commitToHistory]);
 
@@ -1842,14 +1842,6 @@ export function NBCardPanel() {
   const selectedLayer =
     currentProfile.layers?.find((l) => l.id === selectedLayerId) || null;
 
-  // Phase 2: detect canvas-only card (has layers but no form fields)
-  const hasProfileFormData = !!(
-    currentProfile.fullName?.trim() || currentProfile.phone?.trim() ||
-    currentProfile.email?.trim() || currentProfile.jobTitle?.trim() ||
-    currentProfile.website?.trim()
-  );
-  const isCanvasOnly = !hasProfileFormData && (currentProfile.layers?.length ?? 0) > 0;
-
   // Phase 2: auto-fill Card Details from text layer content
   const autoFillFromLayers = useCallback(() => {
     const textContents = (currentProfile.layers || [])
@@ -2094,10 +2086,10 @@ export function NBCardPanel() {
         </div>
       ) : null}
 
-      {/* Main Content — mobile-first: canvas full-width, form below; side-by-side on lg+ */}
-      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
-        {/* Left Column - Profile Card (full-width on mobile) */}
-        <div className={`min-w-0 w-full ${isEditing ? 'lg:flex-[2]' : 'lg:flex-1'}`}>
+      {/* Main Content — canvas is the sole editing surface */}
+      <div className="flex flex-col gap-4 sm:gap-6 mb-6 sm:mb-8">
+        {/* Profile Card — full-width, canvas is the source of truth */}
+        <div className="min-w-0 w-full">
           {/* Profile Card with Capture Wrapper */}
           <div className="mb-4 sm:mb-6">
             <div id="profile-card-capture-wrapper" className="text-left w-full">
@@ -2169,38 +2161,13 @@ export function NBCardPanel() {
               : "Click on a layer to select it, then drag to reposition"}
           </p>
 
-          {/* Canvas Edit Mode Toggle */}
-          {currentProfile && (
-            <div className="flex justify-center gap-3 mb-4">
-              <button
-                type="button"
-                onClick={() => {
-                  const newMode = !canvasEditMode;
-                  setCanvasEditMode(newMode);
-                  try {
-                    localStorage.setItem('nb-card:canvas-edit-mode', newMode ? '1' : '0');
-                  } catch { /* ignore */ }
-                  if (newMode) {
-                    setSelectedLayerId(null);
-                    toast.info("Canvas Edit Mode enabled. Double-click text to edit, click avatar/background to upload.");
-                  }
-                }}
-                className={`w-full sm:w-auto px-4 py-2 rounded-lg font-semibold transition-all whitespace-normal text-center ${
-                  canvasEditMode
-                    ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:border-emerald-400'
-                }`}
-              >
-                {canvasEditMode ? 'Exit Canvas Edit' : 'Canvas Edit'}
-              </button>
-            </div>
-          )}
-
           {/* Action Buttons — responsive: stacked on mobile, row on sm+ */}
           <div className="flex flex-col sm:flex-row gap-3">
-            {isEditing ? (
+            {canvasEditMode ? (
               <button
                 onClick={() => {
+                  setCanvasEditMode(false);
+                  try { localStorage.setItem('nb-card:canvas-edit-mode', '0'); } catch { /* ignore */ }
                   setIsEditing(false);
                   toast.success("Changes saved");
                 }}
@@ -2213,7 +2180,7 @@ export function NBCardPanel() {
                 onClick={handleEditProfile}
                 className="flex-1 min-w-0 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-3 rounded-lg hover:shadow-lg transition-all font-semibold whitespace-normal text-center leading-snug"
               >
-                <FaEdit className="shrink-0" /> Edit Profile
+                <FaEdit className="shrink-0" /> Edit Card
               </button>
             )}
             <button
@@ -2276,17 +2243,6 @@ export function NBCardPanel() {
             </div>
           )}
         </div>
-
-        {/* InlinePropertyEditor — full-width below canvas on mobile, side column on lg+ */}
-        {isEditing && (
-          <div className="w-full lg:flex-1 min-w-0 max-h-[60vh] lg:max-h-[80vh] overflow-y-auto rounded-lg border border-gray-100 bg-white">
-            <InlinePropertyEditor
-              profile={currentProfile}
-              onProfileUpdate={handleInlineProfileUpdate}
-              onCommit={handleInlineCommit}
-            />
-          </div>
-        )}
       </div>
 
       {/* Free Layout Editor card — above Card Templates */}
@@ -2363,8 +2319,8 @@ export function NBCardPanel() {
             </div>
           </div>
 
-          {/* Phase 2: Card Details — dynamic fields by category */}
-          {isCanvasOnly && (() => {
+          {/* Card Properties — card type, photo/bg, gradient, details */}
+          {(() => {
             const category = getCategoryFromProfile(currentProfile);
             // Sync form edits → linked canvas layers (bidirectional sync)
             const syncLinkedLayers = (profile: Profile, fieldKey: string, value: string): Profile => {
@@ -2393,8 +2349,141 @@ export function NBCardPanel() {
             };
             const inputCls = "w-full px-2 py-1 text-sm border rounded bg-white";
             const labelCls = "text-xs text-gray-500";
+            const CARD_TYPE_OPTIONS: Array<{ value: string; label: string }> = [
+              { value: "PROFILE", label: "Profile" },
+              { value: "ADDRESS", label: "Address" },
+              { value: "BANK", label: "Bank" },
+              { value: "BUSINESS", label: "Business" },
+              { value: "FLYER", label: "Flyer" },
+              { value: "WEDDING", label: "Wedding" },
+            ];
+            const handleCardTypeChange = (newCategory: string) => {
+              const patch: Partial<Profile> = { cardCategory: newCategory === "PROFILE" ? undefined : newCategory as Profile["cardCategory"] };
+              if (newCategory === "ADDRESS") patch.addressCard = currentProfile.addressCard ?? {};
+              if (newCategory === "BANK") patch.bankCard = currentProfile.bankCard ?? {};
+              if (newCategory === "BUSINESS") patch.businessCard = currentProfile.businessCard ?? {};
+              if (newCategory === "FLYER") patch.flyerCard = currentProfile.flyerCard ?? { headline: "", subheadline: "", ctaText: "", ctaUrl: "" };
+              if (newCategory === "WEDDING") patch.weddingCard = currentProfile.weddingCard ?? { headline: "", subheadline: "", ctaText: "", ctaUrl: "" };
+              const updated = { ...currentProfile, ...patch };
+              handleInlineProfileUpdate(updated);
+              commitToHistory(updated);
+            };
             return (
-              <div className="mt-3 border-t pt-3">
+              <div className="mt-3 space-y-3">
+                {/* Card Type Switcher */}
+                <div className="border-t pt-3">
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Card Type</label>
+                  <div className="flex flex-wrap gap-1">
+                    {CARD_TYPE_OPTIONS.map(({ value, label }) => (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => handleCardTypeChange(value)}
+                        className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                          category === value
+                            ? "bg-purple-100 text-purple-700 border border-purple-300"
+                            : "bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100"
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Photo & Background Upload */}
+                <div className="border-t pt-3">
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Photo & Background</label>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const input = document.createElement("input");
+                        input.type = "file";
+                        input.accept = "image/*";
+                        input.onchange = async (evt: Event) => {
+                          const file = (evt.target as HTMLInputElement).files?.[0];
+                          if (!file) return;
+                          const reader = new FileReader();
+                          reader.onload = (e) => {
+                            const dataUrl = e.target?.result as string;
+                            if (dataUrl) {
+                              const updated = { ...currentProfile, photoUrl: dataUrl };
+                              handleInlineProfileUpdate(updated);
+                              commitToHistory(updated);
+                              toast.success("Photo uploaded");
+                            }
+                          };
+                          reader.readAsDataURL(file);
+                        };
+                        input.click();
+                      }}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 border border-dashed border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-xs font-medium text-gray-700"
+                    >
+                      📷 {currentProfile.photoUrl ? "Change Photo" : "Upload Photo"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const input = document.createElement("input");
+                        input.type = "file";
+                        input.accept = "image/*";
+                        input.onchange = async (evt: Event) => {
+                          const file = (evt.target as HTMLInputElement).files?.[0];
+                          if (!file) return;
+                          const reader = new FileReader();
+                          reader.onload = (e) => {
+                            const dataUrl = e.target?.result as string;
+                            if (dataUrl) {
+                              const updated = { ...currentProfile, backgroundUrl: dataUrl };
+                              handleInlineProfileUpdate(updated);
+                              commitToHistory(updated);
+                              toast.success("Background uploaded");
+                            }
+                          };
+                          reader.readAsDataURL(file);
+                        };
+                        input.click();
+                      }}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 border border-dashed border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-xs font-medium text-gray-700"
+                    >
+                      🖼️ {currentProfile.backgroundUrl ? "Change BG" : "Upload BG"}
+                    </button>
+                    {(currentProfile.photoUrl || currentProfile.backgroundUrl) && (
+                      <div className="flex gap-2 items-center">
+                        {currentProfile.photoUrl && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = { ...currentProfile, photoUrl: undefined };
+                              handleInlineProfileUpdate(updated);
+                              commitToHistory(updated);
+                            }}
+                            className="text-xs text-red-600 hover:underline"
+                          >
+                            Remove photo
+                          </button>
+                        )}
+                        {currentProfile.backgroundUrl && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = { ...currentProfile, backgroundUrl: undefined, frameUrl: undefined };
+                              handleInlineProfileUpdate(updated);
+                              commitToHistory(updated);
+                            }}
+                            className="text-xs text-red-600 hover:underline"
+                          >
+                            Remove background
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Card Details (profile fields) */}
+                <div className="border-t pt-3">
                 <button
                   type="button"
                   onClick={() => setShowCardDetails((v) => !v)}
@@ -2598,6 +2687,7 @@ export function NBCardPanel() {
                     </div>
                   </div>
                 )}
+                </div>
               </div>
             );
           })()}
