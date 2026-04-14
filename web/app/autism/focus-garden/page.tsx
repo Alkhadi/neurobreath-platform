@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, RotateCcw, Sprout } from 'lucide-react'
+import { useFocusGardenSync } from '@/hooks/useFocusGardenSync'
 import styles from './focus-garden.module.css'
 
 // Plant stages
@@ -82,6 +83,7 @@ export default function FocusGardenPage() {
   const [xp, setXp] = useState(0)
   const [level, setLevel] = useState(1)
   const [showTutorial, setShowTutorial] = useState(false)
+  const { syncWater, syncHarvest } = useFocusGardenSync()
 
   const resetGarden = () => {
     const ok = window.confirm('Reset your Focus Garden? This cannot be undone.')
@@ -126,6 +128,7 @@ export default function FocusGardenPage() {
   }
 
   const waterPlant = (plantId: string) => {
+    const target = garden.find(p => p.id === plantId)
     setGarden(garden.map(plant => {
       if (plant.id === plantId && plant.stage !== 'bloom') {
         const newWaterCount = plant.waterCount + 1
@@ -149,6 +152,9 @@ export default function FocusGardenPage() {
       }
       return newXp
     })
+
+    // Sync to Firestore (fire-and-forget)
+    syncWater(plantId, target?.layer ?? 'unknown', 10).catch(() => {})
   }
 
   const harvestPlant = (plantId: string) => {
@@ -156,6 +162,8 @@ export default function FocusGardenPage() {
     if (plant && plant.stage === 'bloom') {
       setGarden(garden.filter(p => p.id !== plantId))
       setXp(prev => prev + 50)
+      // Sync to Firestore (fire-and-forget)
+      syncHarvest(plantId, plant.layer).catch(() => {})
       // Show celebration animation (could be enhanced)
       alert('🎉 Harvest complete! +50 XP')
     }

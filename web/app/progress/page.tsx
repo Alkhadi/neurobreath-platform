@@ -23,6 +23,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ProgressCalendar } from '@/components/progress/ProgressCalendar'
 import { Badge } from '@/components/ui/badge'
+import { FirestoreDashboard } from '@/components/dashboard/FirestoreDashboard'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -671,6 +672,9 @@ export default function ProgressPage() {
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Progress</h1>
           <p className="text-lg text-gray-600">{smartDescription}</p>
         </div>
+
+        {/* ── Firestore-backed central dashboard ── */}
+        <FirestoreDashboard />
 
         {/* ── Toolbar ── */}
         <div className="flex flex-wrap items-center gap-3 mb-8">

@@ -23,8 +23,11 @@ import {
   ChevronRight
 } from 'lucide-react';
 
+import { IntakePlanFlow } from '@/components/onboarding/IntakePlanFlow';
+
 export default function GetStartedPage() {
   const [selectedRole, setSelectedRole] = useState<'individual' | 'parent' | 'teacher' | 'professional' | null>(null);
+  const [planCreated, setPlanCreated] = useState(false);
 
   const roles = [
     {
@@ -354,6 +357,20 @@ export default function GetStartedPage() {
       {/* Choose Your Role Section */}
       <section className="py-16 px-4 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto">
+          {/* AI Personalised Habit — shown once, hidden after creation */}
+          {!planCreated && (
+            <div className="mb-16">
+              <div className="text-center mb-8">
+                <Badge variant="outline" className="mb-4">AI-powered</Badge>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">Create Your First Habit</h2>
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                  Tell us what matters most and we&apos;ll create a short, evidence-informed daily habit for you
+                </p>
+              </div>
+              <IntakePlanFlow onComplete={() => setPlanCreated(true)} />
+            </div>
+          )}
+
           <div className="text-center mb-12">
             <Badge variant="outline" className="mb-4">Personalized paths</Badge>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Choose Your Path</h2>

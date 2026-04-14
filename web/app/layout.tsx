@@ -15,12 +15,15 @@ import { CookieSettingsButton } from '@/components/consent/CookieSettingsButton'
 import { Toaster } from '@/components/ui/sonner';
 import { JsonLd } from '@/components/seo/json-ld';
 import { generateOrganizationSchema, generateWebSiteSchema, generateWebPageSchema, generateBreadcrumbsFromPath, generateBreadcrumbSchema } from '@/lib/seo/schema';
+import { generateWebApplicationSchema } from '@/lib/seo/condition-schema';
 import { SITE_CONFIG, generateCanonicalUrl } from '@/lib/seo/site-seo';
 import { getRouteMetadata, getRouteSeoConfig } from '@/lib/seo/route-metadata';
 import { getLocaleForRegion, getRegionFromPath } from '@/lib/region/region';
 import { ServiceWorkerRegistrar } from '@/components/pwa/ServiceWorkerRegistrar';
 import { IosInstallBanner } from '@/components/pwa/IosInstallBanner';
+import { OfflineSyncDrain } from '@/components/pwa/OfflineSyncDrain';
 import { ConsoleErrorFilter } from '@/components/dev/ConsoleErrorFilter';
+import { FirebaseAuthProvider } from '@/contexts/FirebaseAuthContext';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -65,7 +68,8 @@ export default async function RootLayout({
     languageOverride: language,
   });
   const breadcrumbSchema = generateBreadcrumbSchema(generateBreadcrumbsFromPath(pathname));
-  const schemaGraph = [organizationSchema, websiteSchema, webPageSchema, breadcrumbSchema];
+  const webAppSchema = generateWebApplicationSchema();
+  const schemaGraph = [organizationSchema, websiteSchema, webPageSchema, breadcrumbSchema, webAppSchema];
 
   return (
     <html lang={language} suppressHydrationWarning className="overflow-x-hidden">
@@ -80,6 +84,8 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <ConsoleErrorFilter />
+          <FirebaseAuthProvider>
+          <OfflineSyncDrain />
           <UserPreferencesProvider>
             <UniversalProgressProvider>
               <BreathingSessionProvider>
@@ -95,6 +101,7 @@ export default async function RootLayout({
               </BreathingSessionProvider>
             </UniversalProgressProvider>
           </UserPreferencesProvider>
+          </FirebaseAuthProvider>
           <Toaster position="top-right" />
           <VercelWebAnalytics />
           <ServiceWorkerRegistrar />
