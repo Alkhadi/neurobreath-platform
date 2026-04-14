@@ -10,6 +10,7 @@ import { ConditionsGrid } from '@/components/home/ConditionsGrid';
 import { GuidesBlock } from '@/components/home/GuidesBlock';
 import { TrustSafety } from '@/components/home/TrustSafety';
 import { FinalCTA } from '@/components/home/FinalCTA';
+import { TestimonialsSection } from '@/components/testimonials';
 import { CONDITIONS } from '@/lib/coverage/conditions';
 import { getLocaleCopy } from '@/lib/i18n/localeCopy';
 import { PILLARS } from '@/lib/content/content-seo-map';
@@ -443,6 +444,16 @@ export default async function RegionHomePage({ params }: RegionHomePageProps) {
 					educationOnlyLine="Educational information only. Not medical advice. No diagnosis or treatment claims."
 					extraNote="Citations are shown as copy-only references (no external clicks). See the Trust Centre for details."
 				/>
+			</HomeSection>
+
+			<HomeSection
+				id="testimonials"
+				eyebrow="What people say"
+				title="Real experiences from our community"
+				subtitle="Hear from people who use NeuroBreath tools to support focus, calm, and daily routines."
+				tone="muted"
+			>
+				<TestimonialsSection />
 			</HomeSection>
 
 			<HomeSection id="final-cta" tone="muted" withDivider>

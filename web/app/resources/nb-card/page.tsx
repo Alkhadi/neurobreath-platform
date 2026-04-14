@@ -3,6 +3,7 @@ import { Inter, Roboto, Open_Sans, Lato, Montserrat, Poppins, Raleway, Nunito, S
 
 import { NBCardPanel } from "@/components/nbcard/NBCardPanel";
 import { NBCardInstallCTA } from "@/components/nbcard/NBCardInstallCTA";
+import { NBCardTestimonials } from "@/components/nbcard/NBCardTestimonials";
 import { prisma, isDbDown } from "@/lib/db";
 
 // Load fonts with Next.js next/font/google (NO new dependencies)
@@ -107,6 +108,11 @@ export default function NBCardPage() {
         {/* App Panel */}
         <section id="nbcard-app" aria-label="NB-Card App">
           <NBCardPanel />
+        </section>
+
+        {/* Testimonials */}
+        <section id="nbcard-testimonials" aria-label="NB-Card Testimonials" className="mt-8 sm:mt-12">
+          <NBCardTestimonials />
         </section>
       </div>
     </main>

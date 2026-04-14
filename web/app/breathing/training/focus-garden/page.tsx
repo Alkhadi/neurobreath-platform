@@ -19,6 +19,7 @@ import {
   Snowflake, Award, Clock, Music, Vibrate, RotateCcw
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { FocusGardenTestimonials } from '@/components/focus/FocusGardenTestimonials'
 import { Companion, CompactCompanion, CompanionInSession } from '@/components/focus/companion'
 import { CompanionCustomizationModal } from '@/components/focus/companion-customization-modal'
 import { getUnlockableAccessories } from '@/lib/focus/companion-data'
@@ -2311,6 +2312,11 @@ export default function FocusGardenPage() {
             </div>
           </div>
         )}
+
+        {/* Testimonials */}
+        <div className="mt-8 bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
+          <FocusGardenTestimonials />
+        </div>
 
         {/* Related Tools */}
         <div
