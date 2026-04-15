@@ -56,5 +56,10 @@
 
   // Disable Webhint in this repo to avoid noisy editor diagnostics.
   // (It may try to resolve a "hint" package / baseline mapping and crash.)
-  "webhint.enable": false
+  "webhint.enable": false,
+
+  // Scope TS language service to web/tsconfig.json so it doesn't pick up
+  // tsconfig files inside node_modules (e.g. openai/src/tsconfig.json).
+  "typescript.tsdk": "web/node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }
