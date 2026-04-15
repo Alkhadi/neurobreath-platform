@@ -73,6 +73,7 @@
     "about:validate": "node scripts/about/validate.mjs",
     "buddy:index": "tsx scripts/build-buddy-index.ts",
     "buddy:coverage": "tsx scripts/buddy-coverage-report.ts",
+    "index:site": "tsx scripts/index-site-content.ts",
     "evidence:ingest": "tsx scripts/ingest-evidence.ts",
     "links:verify": "tsx scripts/links-verify.ts",
     "responsive:scan": "tsx scripts/responsive-scan.ts",

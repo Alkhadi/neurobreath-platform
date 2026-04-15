@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import Stripe from "stripe";
 import { getAdminFirestore } from "@/lib/firebase-admin";
 import { ALL_PLANS } from "@/lib/nb-card/plans";
+import { COLLECTIONS } from "@/lib/firestore/collections";
 import { FieldValue } from "firebase-admin/firestore";
 
 export const runtime = "nodejs";
@@ -116,6 +117,21 @@ async function handleCheckoutCompleted(
       { merge: true },
     );
     console.log("[webhook/stripe] Entitlement activated:", { uid, planId });
+
+    // Sync supporter status to the supporters collection
+    const customerId = typeof session.customer === "string" ? session.customer : session.customer?.id;
+    await db.collection(COLLECTIONS.SUPPORTERS).doc(uid).set(
+      {
+        uid,
+        stripeCustomerId: customerId ?? null,
+        email: session.customer_details?.email ?? null,
+        status: "active",
+        planId,
+        activatedAt: FieldValue.serverTimestamp(),
+      },
+      { merge: true },
+    );
+    console.log("[webhook/stripe] Supporter synced:", { uid, planId });
   } catch (err) {
     console.error("[webhook/stripe] Failed to write entitlement:", err);
   }
@@ -163,6 +179,16 @@ async function handleSubscriptionDeleted(
       },
       { merge: true },
     );
+
+    // Sync supporter cancellation
+    await db.collection(COLLECTIONS.SUPPORTERS).doc(uid).set(
+      {
+        status: "cancelled",
+        cancelledAt: FieldValue.serverTimestamp(),
+      },
+      { merge: true },
+    );
+
     console.log("[webhook/stripe] Subscription cancelled, reset to free:", { uid });
   } catch (err) {
     console.error("[webhook/stripe] Failed to reset entitlement:", err);

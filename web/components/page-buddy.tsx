@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { getPageConfig, platformInfo, type PageBuddyConfig } from '@/lib/page-buddy-configs';
 import { loadPreferences } from '@/lib/ai/core/userPreferences';
+import { useAuth } from '@/contexts/FirebaseAuthContext';
 import { cn } from '@/lib/utils';
 import { useSpeechSynthesis } from '@/hooks/use-speech-synthesis';
 import { BuddyErrorBoundary } from '@/components/buddy/error-boundary';
@@ -44,6 +45,7 @@ interface PageBuddyProps {
 export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   const pathname = usePathname() || '/';
   const router = useRouter();
+  const { uid, signInAsGuest } = useAuth();
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -56,6 +58,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
   const [mounted, setMounted] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
+  const chatSessionIdRef = useRef<string | null>(null);
   const [pageContent, setPageContent] = useState<{
     headings: { text: string; id: string; level: number }[];
     buttons: { text: string; id: string }[];
@@ -963,7 +966,70 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       };
     }
 
-    // Load user preferences for jurisdiction
+    // ── Free-text path: try /api/chat (navigation + AI) first ──
+    // Quick-questions with an intentId still use the deterministic /api/buddy/ask.
+    if (!intentId) {
+      try {
+        // Ensure anonymous auth so chat history can be persisted
+        if (!uid) {
+          signInAsGuest().catch(() => { /* non-blocking */ });
+        }
+
+        const controller = new AbortController();
+        const timeoutId = window.setTimeout(() => controller.abort(), 30000);
+        const chatRes = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: userMessage,
+            sessionId: chatSessionIdRef.current,
+            uid: uid || undefined,
+            pathname,
+          }),
+          signal: controller.signal,
+        });
+        window.clearTimeout(timeoutId);
+
+        if (chatRes.ok) {
+          const chatData = (await chatRes.json()) as {
+            reply: string;
+            sessionId: string | null;
+            source: string;
+            navigateTo?: string;
+          };
+
+          if (chatData.sessionId) {
+            chatSessionIdRef.current = chatData.sessionId;
+          }
+
+          // If the server found a navigation match, offer to navigate
+          if (chatData.navigateTo) {
+            return {
+              id: (Date.now() + 1).toString(),
+              role: 'assistant',
+              content: chatData.reply,
+              timestamp: new Date(),
+              availableTools: pageContent.features,
+            };
+          }
+
+          return {
+            id: (Date.now() + 1).toString(),
+            role: 'assistant',
+            content: chatData.reply,
+            timestamp: new Date(),
+            availableTools: pageContent.features,
+          };
+        }
+
+        // If /api/chat failed, fall through to /api/buddy/ask below
+        console.warn('[Buddy] /api/chat returned', chatRes.status, '— falling back to /api/buddy/ask');
+      } catch (chatErr) {
+        console.warn('[Buddy] /api/chat error — falling back to /api/buddy/ask', chatErr);
+      }
+    }
+
+    // ── Fallback / quick-question path: existing deterministic Buddy pipeline ──
     const prefs = loadPreferences();
     const userSnapshot = buildUserSnapshot();
 
@@ -1034,7 +1100,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
       console.error('[Buddy] AI response error:', error);
       throw error;
     }
-  }, [buildUserSnapshot, config, getLocalResponse, pageContent.features, pageContent.sections.length, pathname]);
+  }, [buildUserSnapshot, config, getLocalResponse, pageContent.features, pageContent.sections.length, pathname, uid, signInAsGuest]);
 
   
   // Unified send pipeline for typed sends + quick questions.
