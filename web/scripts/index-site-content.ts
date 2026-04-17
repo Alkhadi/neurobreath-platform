@@ -6,8 +6,9 @@
  *   cd web && npx tsx scripts/index-site-content.ts
  *
  * Requires env vars:
- *   FIREBASE_SERVICE_ACCOUNT_KEY   (admin SDK JSON)
+ *   FIREBASE_SERVICE_ACCOUNT_KEY (or FIREBASE_ADMIN_* individual vars)
  *   SITE_INDEX_BASE_URL            (default: https://neurobreath.co.uk)
+ *   OPENAI_API_KEY                 (for embedding generation)
  *
  * This script is idempotent — re-running overwrites existing docs.
  */
@@ -15,10 +16,13 @@
 import * as cheerio from "cheerio";
 import { initializeApp, getApps, cert } from "firebase-admin/app";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import OpenAI from "openai";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
 const BASE_URL = process.env.SITE_INDEX_BASE_URL || "https://neurobreath.co.uk";
+const EMBEDDING_MODEL = process.env.OPENAI_EMBEDDING_MODEL || "text-embedding-3-small";
+const MAX_CHUNK_LENGTH = 1500;
 
 /** Public pages to index. Add new routes here as the site grows. */
 const PAGES_TO_INDEX: Array<{ path: string; title: string; description: string; keywords: string[]; parent?: string }> = [
@@ -115,30 +119,89 @@ function extractContent(html: string): { text: string; headings: string[] } {
   return { text, headings };
 }
 
+function chunkText(text: string, maxLen: number): string[] {
+  if (text.length <= maxLen) return [text];
+  const chunks: string[] = [];
+  let start = 0;
+  while (start < text.length) {
+    let end = start + maxLen;
+    if (end < text.length) {
+      const lastPeriod = text.lastIndexOf(". ", end);
+      if (lastPeriod > start + maxLen / 2) end = lastPeriod + 1;
+    }
+    const slice = text.slice(start, end).trim();
+    if (slice) chunks.push(slice);
+    start = end;
+  }
+  return chunks;
+}
+
+function buildAliases(path: string, title: string): string[] {
+  const aliases: string[] = [];
+  const segments = path.split("/").filter((s) => s && s !== "uk" && s !== "us");
+  for (const seg of segments) {
+    aliases.push(seg.replace(/-/g, " "));
+  }
+  const titleLower = title.toLowerCase();
+  if (!aliases.includes(titleLower)) aliases.push(titleLower);
+  return aliases;
+}
+
+async function generateEmbedding(openai: OpenAI, text: string): Promise<number[]> {
+  const resp = await openai.embeddings.create({
+    model: EMBEDDING_MODEL,
+    input: text.slice(0, 8000),
+  });
+  return resp.data[0]?.embedding ?? [];
+}
+
+// ─── Firebase Admin init (supports both credential modes) ────────────────────
+
+function initAdmin() {
+  const existing = getApps();
+  if (existing.length > 0) return getFirestore(existing[0]);
+
+  const raw = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+  if (raw) {
+    const app = initializeApp({ credential: cert(JSON.parse(raw)) });
+    return getFirestore(app);
+  }
+
+  const projectId = process.env.FIREBASE_ADMIN_PROJECT_ID;
+  const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
+  const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY;
+  if (projectId && clientEmail && privateKey) {
+    const app = initializeApp({
+      credential: cert({ projectId, clientEmail, privateKey: privateKey.replace(/\\n/g, "\n") }),
+    });
+    return getFirestore(app);
+  }
+
+  console.error("❌ No Firebase credentials found. Set FIREBASE_SERVICE_ACCOUNT_KEY or FIREBASE_ADMIN_* vars");
+  process.exit(1);
+}
+
 // ─── Main ────────────────────────────────────────────────────────────────────
 
 async function main() {
-  // Init Firebase Admin
-  const raw = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
-  if (!raw) {
-    console.error("❌ FIREBASE_SERVICE_ACCOUNT_KEY not set");
-    process.exit(1);
-  }
+  const db = initAdmin();
 
-  const existing = getApps();
-  const app = existing.length
-    ? existing[0]
-    : initializeApp({ credential: cert(JSON.parse(raw)) });
-  const db = getFirestore(app);
+  const apiKey = process.env.OPENAI_API_KEY;
+  const openai = apiKey ? new OpenAI({ apiKey }) : null;
+
+  if (!openai) {
+    console.warn("⚠ OPENAI_API_KEY not set — indexing without embeddings (keyword search only)");
+  }
 
   console.log(`🔍 Indexing ${PAGES_TO_INDEX.length} pages from ${BASE_URL}\n`);
 
   let indexed = 0;
   let navWritten = 0;
+  let totalChunks = 0;
 
   for (const page of PAGES_TO_INDEX) {
     const url = `${BASE_URL}${page.path}`;
-    const docId = slugify(page.path);
+    const navDocId = slugify(page.path);
 
     process.stdout.write(`  ${page.path} ... `);
 
@@ -150,28 +213,51 @@ async function main() {
 
     const { text, headings } = extractContent(html);
 
-    // Write siteContentChunks doc
-    await db.collection("siteContentChunks").doc(docId).set({
-      url: page.path,
-      title: page.title,
-      content: text,
-      headings,
-      indexedAt: new Date().toISOString(),
-      rawLength: html.length,
-    });
-    indexed++;
-
-    // Write siteNavigation doc
-    await db.collection("siteNavigation").doc(docId).set({
+    // Write siteNavigation doc with aliases and published flag
+    await db.collection("siteNavigation").doc(navDocId).set({
       path: page.path,
       title: page.title,
+      url: page.path,
       description: page.description,
       keywords: page.keywords,
+      aliases: buildAliases(page.path, page.title),
+      published: true,
       ...(page.parent ? { parent: page.parent } : {}),
+      updatedAt: FieldValue.serverTimestamp(),
     });
     navWritten++;
 
-    console.log(`OK (${text.length} chars, ${headings.length} headings)`);
+    // Chunk content and write siteContentChunks docs
+    const chunks = chunkText(text, MAX_CHUNK_LENGTH);
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      let embedding: number[] = [];
+
+      if (openai) {
+        try {
+          embedding = await generateEmbedding(openai, `${page.title} ${chunk}`);
+        } catch (err) {
+          console.warn(`\n    ⚠ Embedding failed for chunk ${i + 1}: ${err instanceof Error ? err.message : String(err)}`);
+        }
+      }
+
+      const chunkDocId = chunks.length === 1 ? navDocId : `${navDocId}-${i}`;
+      await db.collection("siteContentChunks").doc(chunkDocId).set({
+        url: page.path,
+        title: page.title,
+        content: chunk,
+        headings,
+        keywords: page.keywords,
+        embedding,
+        published: true,
+        chunkIndex: i,
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+      totalChunks++;
+    }
+
+    indexed++;
+    console.log(`OK (${text.length} chars, ${headings.length} headings, ${chunks.length} chunk(s))`);
   }
 
   // Write a metadata doc for last indexing run
@@ -180,9 +266,11 @@ async function main() {
     baseUrl: BASE_URL,
     pagesAttempted: PAGES_TO_INDEX.length,
     pagesIndexed: indexed,
+    totalChunks,
+    embeddingsEnabled: !!openai,
   });
 
-  console.log(`\n✅ Done: ${indexed} pages indexed, ${navWritten} nav entries written`);
+  console.log(`\n✅ Done: ${indexed} pages indexed, ${totalChunks} chunks, ${navWritten} nav entries`);
 }
 
 main().catch((err) => {

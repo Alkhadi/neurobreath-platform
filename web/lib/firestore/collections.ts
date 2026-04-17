@@ -11,4 +11,12 @@ export const COLLECTIONS = {
   SUPPORTERS: "supporters",
   /** Sub-collection under users/{uid} */
   CHAT_SESSIONS: "chatSessions",
+  /** Sub-collection under users/{uid}/chatSessions/{sessionId} */
+  MESSAGES: "messages",
+  /** Sub-collection under users/{uid} */
+  PROGRESS: "progress",
+  /** Sub-collection under users/{uid} */
+  SAVED_CARDS: "savedCards",
+  /** Sub-collection under users/{uid} */
+  PAGE_SAVES: "pageSaves",
 } as const;

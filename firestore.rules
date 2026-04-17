@@ -1,0 +1,64 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Users ─────────────────────────────────────────────────────────
+    // Users can read/write their own document, but cannot elevate plan/tier
+    match /users/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      // Allow writes but block client-side plan/tier escalation
+      allow create: if request.auth != null && request.auth.uid == uid
+                    && !('plan' in request.resource.data)
+                    && !('isSupporter' in request.resource.data)
+                    && !('nbCardLimit' in request.resource.data);
+      allow update: if request.auth != null && request.auth.uid == uid
+                    && (!('plan' in request.resource.data) || request.resource.data.plan == resource.data.plan)
+                    && (!('isSupporter' in request.resource.data) || request.resource.data.isSupporter == resource.data.isSupporter)
+                    && (!('nbCardLimit' in request.resource.data) || request.resource.data.nbCardLimit == resource.data.nbCardLimit);
+
+      // Chat sessions — user-scoped read/write
+      match /chatSessions/{sessionId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+
+        match /messages/{messageId} {
+          allow read, write: if request.auth != null && request.auth.uid == uid;
+        }
+      }
+
+      // Progress — user-scoped read/write
+      match /progress/{pageId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+
+      // Saved NB Cards — user-scoped read/write
+      // (limit enforcement is server-side via transactions)
+      match /savedCards/{cardId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+
+      // Page saves — user-scoped read/write
+      match /pageSaves/{pageKey} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+
+    // ─── Supporters ────────────────────────────────────────────────────
+    // Server-only writes (via Admin SDK). Clients cannot write.
+    match /supporters/{docId} {
+      allow read: if request.auth != null && request.auth.uid == docId;
+      allow write: if false; // Admin SDK only
+    }
+
+    // ─── Site content (knowledge base) ─────────────────────────────────
+    // Server-only writes. No client reads needed (Buddy reads server-side).
+    match /siteContentChunks/{docId} {
+      allow read, write: if false; // Admin SDK only
+    }
+
+    // ─── Site navigation ───────────────────────────────────────────────
+    // Server-only writes. No client reads needed (resolved server-side).
+    match /siteNavigation/{docId} {
+      allow read, write: if false; // Admin SDK only
+    }
+  }
+}

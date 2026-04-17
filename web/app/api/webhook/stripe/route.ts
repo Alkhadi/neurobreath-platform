@@ -113,7 +113,14 @@ async function handleCheckoutCompleted(
 
   try {
     await db.doc(`users/${uid}`).set(
-      { entitlement: entitlementData },
+      {
+        entitlement: entitlementData,
+        // Phase 1: sync user-level plan fields for Buddy / card limits
+        plan: "pro" as const,
+        isSupporter: true,
+        nbCardLimit: plan.maxSavedCards ?? 999,
+        updatedAt: FieldValue.serverTimestamp(),
+      },
       { merge: true },
     );
     console.log("[webhook/stripe] Entitlement activated:", { uid, planId });
@@ -123,11 +130,15 @@ async function handleCheckoutCompleted(
     await db.collection(COLLECTIONS.SUPPORTERS).doc(uid).set(
       {
         uid,
-        stripeCustomerId: customerId ?? null,
         email: session.customer_details?.email ?? null,
+        stripeCustomerId: customerId ?? null,
+        checkoutSessionId: session.id,
+        amountTotal: session.amount_total ?? null,
+        currency: session.currency ?? null,
         status: "active",
         planId,
-        activatedAt: FieldValue.serverTimestamp(),
+        supporterSince: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
       },
       { merge: true },
     );
@@ -176,6 +187,11 @@ async function handleSubscriptionDeleted(
           status: "cancelled",
           cancelledAt: FieldValue.serverTimestamp(),
         },
+        // Phase 1: reset user-level plan fields
+        plan: "free",
+        isSupporter: false,
+        nbCardLimit: 2,
+        updatedAt: FieldValue.serverTimestamp(),
       },
       { merge: true },
     );
