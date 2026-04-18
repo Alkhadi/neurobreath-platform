@@ -116,9 +116,9 @@ export const INTERNAL_PAGES_MAP: Record<string, InternalPage[]> = {
   ],
   depression: [
     {
-      path: '/blog',
-      title: 'AI-Powered Wellbeing Hub',
-      description: 'Get personalized mood management plans from the AI Coach',
+      path: '/conditions/depression',
+      title: 'Depression Support Hub',
+      description: 'Evidence-based depression support, breathing techniques, and wellbeing tools',
       evidenceSources: ['NICE CG90 (2022)', 'STAR*D trial PMID 16551270', 'Behavioral activation PMID 27470975']
     },
     {

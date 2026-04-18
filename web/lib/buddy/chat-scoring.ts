@@ -48,14 +48,34 @@ export function scorePages(
       if (page.description?.toLowerCase().includes(queryLower)) score += 40;
       if (page.headings.some((h) => h.text.toLowerCase().includes(queryLower)))
         score += 30;
+
+      // Path-segment scoring: boost pages whose URL slug matches query words.
+      // This ensures pages like /conditions/depression rank highly for
+      // queries such as "depression support" even when metadata is sparse.
+      const pathSegments = page.path
+        .split("/")
+        .filter(Boolean)
+        .map((s) => s.replace(/-/g, " ").toLowerCase());
+      for (const seg of pathSegments) {
+        if (seg === queryLower) {
+          score += 90;
+        } else if (queryLower.includes(seg) || seg.includes(queryLower)) {
+          score += 50;
+        }
+      }
+
       const words = queryLower.split(/\s+/);
       for (const w of words) {
+        if (w.length < 3) continue; // skip very short words
         if (
           page.title.toLowerCase().includes(w) ||
           page.keyTopics.some((t) => t.toLowerCase().includes(w)) ||
           page.description?.toLowerCase().includes(w)
         )
           score += 5;
+        // Also boost when query words match a path segment
+        if (pathSegments.some((seg) => seg.includes(w)))
+          score += 10;
       }
       return { page, score };
     })

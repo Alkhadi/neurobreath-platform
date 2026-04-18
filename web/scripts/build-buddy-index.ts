@@ -69,20 +69,37 @@ async function getPageMetadata(filePath: string): Promise<PageFrontmatter> {
   }
 }
 
+function extractHeadingsFromContent(content: string): { text: string; id: string; level: number }[] {
+  const headings: { text: string; id: string; level: number }[] = [];
+  const matches = content.matchAll(/<h([1-6])(?:\s+id=["']([^"']+)["'])?[^>]*>([^<]+)<\/h\1>/g);
+  for (const match of matches) {
+    const level = parseInt(match[1]);
+    const id = match[2] || generateId(match[3]);
+    const text = match[3].trim();
+    headings.push({ text, id, level });
+  }
+  return headings;
+}
+
 function extractHeadings(filePath: string): { text: string; id: string; level: number }[] {
   try {
     const content = fs.readFileSync(filePath, 'utf-8');
-    const headings: { text: string; id: string; level: number }[] = [];
+    let headings = extractHeadingsFromContent(content);
 
-    // Match <h1>, <h2>, <h3> tags
-    const matches = content.matchAll(/<h([1-6])(?:\s+id=["']([^"']+)["'])?[^>]*>([^<]+)<\/h\1>/g);
-
-    for (const match of matches) {
-      const level = parseInt(match[1]);
-      const id = match[2] || generateId(match[3]);
-      const text = match[3].trim();
-
-      headings.push({ text, id, level });
+    // When page.tsx delegates to component sub-files (e.g. conditions/depression),
+    // also scan the sibling components/ directory for headings.
+    if (headings.length === 0) {
+      const dir = path.dirname(filePath);
+      const componentsDir = path.join(dir, 'components');
+      if (fs.existsSync(componentsDir)) {
+        const componentFiles = fs.readdirSync(componentsDir)
+          .filter((f: string) => f.endsWith('.tsx') || f.endsWith('.ts'))
+          .sort();
+        for (const cf of componentFiles) {
+          const cfContent = fs.readFileSync(path.join(componentsDir, cf), 'utf-8');
+          headings = headings.concat(extractHeadingsFromContent(cfContent));
+        }
+      }
     }
 
     return headings;

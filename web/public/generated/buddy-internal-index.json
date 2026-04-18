@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-01-24T13:47:41.723Z",
+  "generatedAt": "2026-04-18T01:07:52.829Z",
   "pages": [
     {
       "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/page.tsx",
@@ -12,7 +12,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.702Z",
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
       "isPublished": true
     },
     {
@@ -25,7 +25,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.680Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -82,7 +82,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.678Z",
+      "lastUpdated": "2026-04-18T01:07:52.811Z",
       "isPublished": true
     },
     {
@@ -95,7 +95,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.676Z",
+      "lastUpdated": "2026-04-18T01:07:52.811Z",
       "isPublished": true
     },
     {
@@ -128,7 +128,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.677Z",
+      "lastUpdated": "2026-04-18T01:07:52.811Z",
       "isPublished": true
     },
     {
@@ -161,7 +161,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.678Z",
+      "lastUpdated": "2026-04-18T01:07:52.811Z",
       "isPublished": true
     },
     {
@@ -200,7 +200,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.678Z",
+      "lastUpdated": "2026-04-18T01:07:52.811Z",
       "isPublished": true
     },
     {
@@ -233,7 +233,28 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.678Z",
+      "lastUpdated": "2026-04-18T01:07:52.811Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/[region]/about/trust-centre/page.tsx",
+      "path": "/[region]/about/trust-centre",
+      "title": "Trust Centre",
+      "headings": [
+        {
+          "text": "Trust Centre",
+          "id": "trust-centre",
+          "level": 1
+        }
+      ],
+      "anchors": [
+        "trust-centre"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -266,7 +287,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.678Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -305,7 +326,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.678Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -318,7 +339,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.679Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -363,7 +384,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.679Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -396,7 +417,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.679Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -429,7 +450,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.679Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -450,7 +471,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.679Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -463,7 +484,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.679Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -502,7 +523,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.680Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -510,6 +531,36 @@
       "path": "/[region]/guides/[slug]",
       "title": "[slug]",
       "headings": [
+        {
+          "text": "{interactiveGuide.title}",
+          "id": "interactiveguidetitle",
+          "level": 1
+        },
+        {
+          "text": "Why this helps",
+          "id": "why-this-helps",
+          "level": 2
+        },
+        {
+          "text": "Practical steps",
+          "id": "practical-steps",
+          "level": 2
+        },
+        {
+          "text": "Helpful tips",
+          "id": "helpful-tips",
+          "level": 2
+        },
+        {
+          "text": "Safety notes",
+          "id": "safety-notes",
+          "level": 2
+        },
+        {
+          "text": "Try this now",
+          "id": "try-this-now",
+          "level": 2
+        },
         {
           "text": "{h1}",
           "id": "h1",
@@ -522,6 +573,12 @@
         }
       ],
       "anchors": [
+        "interactiveguidetitle",
+        "why-this-helps",
+        "practical-steps",
+        "helpful-tips",
+        "safety-notes",
+        "try-this-now",
         "h1",
         "key-terms"
       ],
@@ -529,7 +586,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.679Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -562,7 +619,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.680Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -583,7 +640,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.680Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -596,7 +653,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.680Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -609,7 +666,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.680Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -660,7 +717,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.680Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -687,7 +744,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.681Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -700,7 +757,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.683Z",
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
       "isPublished": true
     },
     {
@@ -713,7 +770,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.681Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -726,7 +783,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.681Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -739,7 +796,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.681Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -752,7 +809,20 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.681Z",
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/[region]/trust/editorial-policy/page.tsx",
+      "path": "/[region]/trust/editorial-policy",
+      "title": "editorial policy",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.812Z",
       "isPublished": true
     },
     {
@@ -765,7 +835,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.682Z",
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
       "isPublished": true
     },
     {
@@ -778,7 +848,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.682Z",
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
       "isPublished": true
     },
     {
@@ -791,7 +861,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.683Z",
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
       "isPublished": true
     },
     {
@@ -804,7 +874,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.683Z",
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
       "isPublished": true
     },
     {
@@ -817,7 +887,20 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.683Z",
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/[region]/trust/sources/page.tsx",
+      "path": "/[region]/trust/sources",
+      "title": "sources",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
       "isPublished": true
     },
     {
@@ -830,7 +913,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.683Z",
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
       "isPublished": true
     },
     {
@@ -843,7 +926,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.684Z",
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
       "isPublished": true
     },
     {
@@ -1026,7 +1109,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.684Z",
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
       "isPublished": true
     },
     {
@@ -1045,6 +1128,11 @@
           "level": 2
         },
         {
+          "text": "ADHD &amp; Driving Safety 🚗",
+          "id": "-adhd-amp-driving-safety-",
+          "level": 2
+        },
+        {
           "text": "ADHD Resources & Templates 📋",
           "id": "-adhd-resources-templates-",
           "level": 2
@@ -1058,6 +1146,7 @@
       "anchors": [
         "-daily-quests-challenges-",
         "-adhd-focus-timer-",
+        "-adhd-amp-driving-safety-",
         "-adhd-resources-templates-",
         "-adhd-research-database-"
       ],
@@ -1065,7 +1154,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.684Z",
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
       "isPublished": true
     },
     {
@@ -1189,6 +1278,31 @@
           "level": 3
         },
         {
+          "text": "ADHD &amp; Driving Safety",
+          "id": "adhd-amp-driving-safety",
+          "level": 2
+        },
+        {
+          "text": "How ADHD Impacts Driving",
+          "id": "how-adhd-impacts-driving",
+          "level": 3
+        },
+        {
+          "text": "Warning Signs",
+          "id": "warning-signs",
+          "level": 3
+        },
+        {
+          "text": "Young &amp; New Drivers With ADHD",
+          "id": "young-amp-new-drivers-with-adhd",
+          "level": 3
+        },
+        {
+          "text": "Practical Safety Strategies",
+          "id": "practical-safety-strategies",
+          "level": 3
+        },
+        {
           "text": "Further Resources",
           "id": "further-resources",
           "level": 2
@@ -1243,6 +1357,11 @@
         "school-workplace-supports-uk",
         "school-support-send-code-of-practice",
         "workplace-adjustments-equality-act-2010",
+        "adhd-amp-driving-safety",
+        "how-adhd-impacts-driving",
+        "warning-signs",
+        "young-amp-new-drivers-with-adhd",
+        "practical-safety-strategies",
         "further-resources",
         "nice-guideline-ng87",
         "nhs-adhd-overview",
@@ -1254,7 +1373,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.685Z",
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
       "isPublished": true
     },
     {
@@ -1461,7 +1580,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.685Z",
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
       "isPublished": true
     },
     {
@@ -1614,7 +1733,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.685Z",
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
       "isPublished": true
     },
     {
@@ -1695,7 +1814,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.686Z",
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
       "isPublished": true
     },
     {
@@ -1764,7 +1883,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.686Z",
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
       "isPublished": true
     },
     {
@@ -1965,20 +2084,28 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.686Z",
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
       "isPublished": true
     },
     {
       "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/blog/page.tsx",
       "path": "/blog",
       "title": "blog",
-      "headings": [],
-      "anchors": [],
+      "headings": [
+        {
+          "text": "NeuroBreath Blog",
+          "id": "neurobreath-blog",
+          "level": 1
+        }
+      ],
+      "anchors": [
+        "neurobreath-blog"
+      ],
       "audiences": [
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.686Z",
+      "lastUpdated": "2026-04-18T01:07:52.813Z",
       "isPublished": true
     },
     {
@@ -2113,7 +2240,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.687Z",
+      "lastUpdated": "2026-04-18T01:07:52.814Z",
       "isPublished": true
     },
     {
@@ -2176,7 +2303,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.687Z",
+      "lastUpdated": "2026-04-18T01:07:52.814Z",
       "isPublished": true
     },
     {
@@ -2189,7 +2316,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.687Z",
+      "lastUpdated": "2026-04-18T01:07:52.814Z",
       "isPublished": true
     },
     {
@@ -2222,7 +2349,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.687Z",
+      "lastUpdated": "2026-04-18T01:07:52.814Z",
       "isPublished": true
     },
     {
@@ -2235,13 +2362,13 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.687Z",
+      "lastUpdated": "2026-04-18T01:07:52.814Z",
       "isPublished": true
     },
     {
       "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/breathing/training/focus-garden/page.tsx",
       "path": "/breathing/training/focus-garden",
-      "title": "Morning Routine",
+      "title": "Hydrate",
       "headings": [
         {
           "text": "Companion Breathing",
@@ -2279,19 +2406,14 @@
           "level": 1
         },
         {
-          "text": "Task Categories",
-          "id": "task-categories",
+          "text": "Seed Categories",
+          "id": "seed-categories",
           "level": 2
         },
         {
-          "text": "{currentLayer.name} Tasks",
-          "id": "currentlayername-tasks",
+          "text": "Plant a {GARDEN_CATEGORIES[selectedCategory].name} Seed",
+          "id": "plant-a-garden_categoriesselectedcategoryname-seed",
           "level": 2
-        },
-        {
-          "text": "{task.title}",
-          "id": "tasktitle",
-          "level": 3
         },
         {
           "text": "Your {currentGardenLevel.name}",
@@ -2304,8 +2426,18 @@
           "level": 3
         },
         {
-          "text": "{task?.title || 'Unknown Task'}",
-          "id": "-tasktitle-unknown-task-",
+          "text": "Locked Plot",
+          "id": "locked-plot",
+          "level": 4
+        },
+        {
+          "text": "Empty Plot",
+          "id": "empty-plot",
+          "level": 4
+        },
+        {
+          "text": "{plant.title}",
+          "id": "-planttitle-",
           "level": 4
         },
         {
@@ -2392,12 +2524,13 @@
         "showquestmodaltitle",
         "quest-days",
         "focus-garden",
-        "task-categories",
-        "currentlayername-tasks",
-        "tasktitle",
+        "seed-categories",
+        "plant-a-garden_categoriesselectedcategoryname-seed",
         "your-currentgardenlevelname",
         "your-garden-awaits",
-        "-tasktitle-unknown-task-",
+        "locked-plot",
+        "empty-plot",
+        "-planttitle-",
         "active-quests",
         "questtitle",
         "available-quests",
@@ -2418,7 +2551,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.689Z",
+      "lastUpdated": "2026-04-18T01:07:52.814Z",
       "isPublished": true
     },
     {
@@ -2431,7 +2564,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.689Z",
+      "lastUpdated": "2026-04-18T01:07:52.814Z",
       "isPublished": true
     },
     {
@@ -2476,7 +2609,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.696Z",
+      "lastUpdated": "2026-04-18T01:07:52.818Z",
       "isPublished": true
     },
     {
@@ -2647,7 +2780,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.690Z",
+      "lastUpdated": "2026-04-18T01:07:52.814Z",
       "isPublished": true
     },
     {
@@ -2884,7 +3017,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.690Z",
+      "lastUpdated": "2026-04-18T01:07:52.814Z",
       "isPublished": true
     },
     {
@@ -3025,7 +3158,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.691Z",
+      "lastUpdated": "2026-04-18T01:07:52.815Z",
       "isPublished": true
     },
     {
@@ -3238,7 +3371,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.692Z",
+      "lastUpdated": "2026-04-18T01:07:52.815Z",
       "isPublished": true
     },
     {
@@ -3277,7 +3410,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.691Z",
+      "lastUpdated": "2026-04-18T01:07:52.815Z",
       "isPublished": true
     },
     {
@@ -3328,7 +3461,20 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.691Z",
+      "lastUpdated": "2026-04-18T01:07:52.815Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/conditions/auditory-processing/page.tsx",
+      "path": "/conditions/auditory-processing",
+      "title": "auditory processing",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.815Z",
       "isPublished": true
     },
     {
@@ -3341,7 +3487,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.694Z",
+      "lastUpdated": "2026-04-18T01:07:52.816Z",
       "isPublished": true
     },
     {
@@ -3542,7 +3688,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.693Z",
+      "lastUpdated": "2026-04-18T01:07:52.815Z",
       "isPublished": true
     },
     {
@@ -3578,6 +3724,11 @@
         {
           "text": "Autism (Parent) — quick overview",
           "id": "autism-parent-quick-overview",
+          "level": 2
+        },
+        {
+          "text": "Assessment & diagnosis (UK)",
+          "id": "assessment-diagnosis-uk",
           "level": 2
         },
         {
@@ -3636,6 +3787,11 @@
           "level": 2
         },
         {
+          "text": "Family supports: sensory, routines, and safety",
+          "id": "family-supports-sensory-routines-and-safety",
+          "level": 2
+        },
+        {
           "text": "Clinical & Education Guidance",
           "id": "clinical-education-guidance",
           "level": 2
@@ -3654,6 +3810,11 @@
           "text": "When to use",
           "id": "when-to-use",
           "level": 4
+        },
+        {
+          "text": "Next steps",
+          "id": "next-steps",
+          "level": 2
         }
       ],
       "anchors": [
@@ -3663,6 +3824,7 @@
         "clinical-collaboration",
         "download-pdfs",
         "autism-parent-quick-overview",
+        "assessment-diagnosis-uk",
         "quick-starter-autism",
         "possible-signs",
         "trusted-resource",
@@ -3674,16 +3836,18 @@
         "autistic-teachers-staff-reasonable-adjustments",
         "adults",
         "later-life",
+        "family-supports-sensory-routines-and-safety",
         "clinical-education-guidance",
         "-mental-health-anxiety-depression-stress-sleep-",
         "how-to-run-it",
-        "when-to-use"
+        "when-to-use",
+        "next-steps"
       ],
       "audiences": [
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.693Z",
+      "lastUpdated": "2026-04-18T01:07:52.815Z",
       "isPublished": true
     },
     {
@@ -3812,7 +3976,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.694Z",
+      "lastUpdated": "2026-04-18T01:07:52.816Z",
       "isPublished": true
     },
     {
@@ -3831,8 +3995,8 @@
           "level": 2
         },
         {
-          "text": "Statistics & Epidemiology",
-          "id": "statistics-epidemiology",
+          "text": "Statistics &amp; Epidemiology",
+          "id": "statistics-amp-epidemiology",
           "level": 2
         },
         {
@@ -3841,36 +4005,358 @@
           "level": 3
         },
         {
-          "text": "References & Further Reading",
-          "id": "references-further-reading",
+          "text": "References &amp; Further Reading",
+          "id": "references-amp-further-reading",
           "level": 2
         }
       ],
       "anchors": [
         "contents",
         "interactive-management-tools",
-        "statistics-epidemiology",
+        "statistics-amp-epidemiology",
         "key-facts",
-        "references-further-reading"
+        "references-amp-further-reading"
       ],
       "audiences": [
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.694Z",
+      "lastUpdated": "2026-04-18T01:07:52.816Z",
       "isPublished": true
     },
     {
       "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/conditions/depression/page.tsx",
       "path": "/conditions/depression",
       "title": "depression",
+      "headings": [
+        {
+          "text": "Behavioral Activation",
+          "id": "behavioral-activation",
+          "level": 2
+        },
+        {
+          "text": "The 1-3-5 Framework",
+          "id": "the-1-3-5-framework",
+          "level": 3
+        },
+        {
+          "text": "{category?.title}",
+          "id": "categorytitle",
+          "level": 3
+        },
+        {
+          "text": "Tips for Success",
+          "id": "tips-for-success",
+          "level": 3
+        },
+        {
+          "text": "Breathing Exercises",
+          "id": "breathing-exercises",
+          "level": 2
+        },
+        {
+          "text": "{exercise?.name}",
+          "id": "-exercisename-",
+          "level": 3
+        },
+        {
+          "text": "Why Breathing Exercises Help",
+          "id": "why-breathing-exercises-help",
+          "level": 3
+        },
+        {
+          "text": "Clinical Overview",
+          "id": "clinical-overview",
+          "level": 2
+        },
+        {
+          "text": "What is Major Depressive Disorder?",
+          "id": "what-is-major-depressive-disorder",
+          "level": 3
+        },
+        {
+          "text": "Types of Depression",
+          "id": "types-of-depression",
+          "level": 3
+        },
+        {
+          "text": "{type?.name}",
+          "id": "typename",
+          "level": 4
+        },
+        {
+          "text": "HPA Axis Dysregulation",
+          "id": "hpa-axis-dysregulation",
+          "level": 4
+        },
+        {
+          "text": "Neuroinflammation",
+          "id": "neuroinflammation",
+          "level": 4
+        },
+        {
+          "text": "Download This Guide",
+          "id": "download-this-guide",
+          "level": 2
+        },
+        {
+          "text": "Emerging & Novel Therapies",
+          "id": "emerging-novel-therapies",
+          "level": 2
+        },
+        {
+          "text": "{category?.category}",
+          "id": "categorycategory",
+          "level": 3
+        },
+        {
+          "text": "{treatment?.name}",
+          "id": "treatmentname",
+          "level": 4
+        },
+        {
+          "text": "What This Means for Treatment",
+          "id": "what-this-means-for-treatment",
+          "level": 3
+        },
+        {
+          "text": "Lifestyle Interventions",
+          "id": "lifestyle-interventions",
+          "level": 2
+        },
+        {
+          "text": "{intervention?.title}",
+          "id": "interventiontitle",
+          "level": 3
+        },
+        {
+          "text": "Important Note",
+          "id": "important-note",
+          "level": 3
+        },
+        {
+          "text": "Quick Starter Guide",
+          "id": "quick-starter-guide",
+          "level": 2
+        },
+        {
+          "text": "{card?.title}",
+          "id": "cardtitle",
+          "level": 3
+        },
+        {
+          "text": "Crisis Support Available Now",
+          "id": "crisis-support-available-now",
+          "level": 3
+        },
+        {
+          "text": "References & Sources",
+          "id": "references-sources",
+          "level": 2
+        },
+        {
+          "text": "Medical Disclaimer",
+          "id": "medical-disclaimer",
+          "level": 3
+        },
+        {
+          "text": "Additional Authoritative Sources",
+          "id": "additional-authoritative-sources",
+          "level": 3
+        },
+        {
+          "text": "Depression in Special Populations",
+          "id": "depression-in-special-populations",
+          "level": 2
+        },
+        {
+          "text": "{pop?.title}",
+          "id": "poptitle",
+          "level": 3
+        },
+        {
+          "text": "Common Thread: The Importance of Context",
+          "id": "common-thread-the-importance-of-context",
+          "level": 3
+        },
+        {
+          "text": "Statistics & Impact",
+          "id": "statistics-impact",
+          "level": 2
+        },
+        {
+          "text": "Depression Prevalence by Age Group",
+          "id": "depression-prevalence-by-age-group",
+          "level": 3
+        },
+        {
+          "text": "Gender Disparities in Depression",
+          "id": "gender-disparities-in-depression",
+          "level": 3
+        },
+        {
+          "text": "UK Depression Rates: COVID-19 Impact",
+          "id": "uk-depression-rates-covid-19-impact",
+          "level": 3
+        },
+        {
+          "text": "Socioeconomic Disparities",
+          "id": "socioeconomic-disparities",
+          "level": 3
+        },
+        {
+          "text": "Economic Burden",
+          "id": "economic-burden",
+          "level": 3
+        },
+        {
+          "text": "Support & Resources",
+          "id": "support-resources",
+          "level": 2
+        },
+        {
+          "text": "If You Are in Immediate Danger",
+          "id": "if-you-are-in-immediate-danger",
+          "level": 3
+        },
+        {
+          "text": "United Kingdom Resources",
+          "id": "united-kingdom-resources",
+          "level": 3
+        },
+        {
+          "text": "{resource?.name}",
+          "id": "resourcename",
+          "level": 4
+        },
+        {
+          "text": "United States Resources",
+          "id": "united-states-resources",
+          "level": 3
+        },
+        {
+          "text": "{resource?.name}",
+          "id": "resourcename",
+          "level": 4
+        },
+        {
+          "text": "When to Seek Professional Help",
+          "id": "when-to-seek-professional-help",
+          "level": 3
+        },
+        {
+          "text": "Evidence-Based Treatments",
+          "id": "evidence-based-treatments",
+          "level": 2
+        },
+        {
+          "text": "Pharmacotherapy (Medication)",
+          "id": "pharmacotherapy-medication",
+          "level": 3
+        },
+        {
+          "text": "{med?.class}",
+          "id": "medclass",
+          "level": 4
+        },
+        {
+          "text": "Psychotherapy (Talk Therapy)",
+          "id": "psychotherapy-talk-therapy",
+          "level": 3
+        },
+        {
+          "text": "{therapy?.name}",
+          "id": "therapyname",
+          "level": 4
+        },
+        {
+          "text": "The Power of Combination Therapy",
+          "id": "the-power-of-combination-therapy",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "behavioral-activation",
+        "the-1-3-5-framework",
+        "categorytitle",
+        "tips-for-success",
+        "breathing-exercises",
+        "-exercisename-",
+        "why-breathing-exercises-help",
+        "clinical-overview",
+        "what-is-major-depressive-disorder",
+        "types-of-depression",
+        "typename",
+        "hpa-axis-dysregulation",
+        "neuroinflammation",
+        "download-this-guide",
+        "emerging-novel-therapies",
+        "categorycategory",
+        "treatmentname",
+        "what-this-means-for-treatment",
+        "lifestyle-interventions",
+        "interventiontitle",
+        "important-note",
+        "quick-starter-guide",
+        "cardtitle",
+        "crisis-support-available-now",
+        "references-sources",
+        "medical-disclaimer",
+        "additional-authoritative-sources",
+        "depression-in-special-populations",
+        "poptitle",
+        "common-thread-the-importance-of-context",
+        "statistics-impact",
+        "depression-prevalence-by-age-group",
+        "gender-disparities-in-depression",
+        "uk-depression-rates-covid-19-impact",
+        "socioeconomic-disparities",
+        "economic-burden",
+        "support-resources",
+        "if-you-are-in-immediate-danger",
+        "united-kingdom-resources",
+        "resourcename",
+        "united-states-resources",
+        "resourcename",
+        "when-to-seek-professional-help",
+        "evidence-based-treatments",
+        "pharmacotherapy-medication",
+        "medclass",
+        "psychotherapy-talk-therapy",
+        "therapyname",
+        "the-power-of-combination-therapy"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.817Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/conditions/dyscalculia/page.tsx",
+      "path": "/conditions/dyscalculia",
+      "title": "dyscalculia",
       "headings": [],
       "anchors": [],
       "audiences": [
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.695Z",
+      "lastUpdated": "2026-04-18T01:07:52.817Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/conditions/dysgraphia/page.tsx",
+      "path": "/conditions/dysgraphia",
+      "title": "dysgraphia",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.817Z",
       "isPublished": true
     },
     {
@@ -3879,19 +4365,43 @@
       "title": "dyslexia",
       "headings": [
         {
+          "text": "Understand &amp; Assess",
+          "id": "understand-amp-assess",
+          "level": 2
+        },
+        {
+          "text": "Interactive Learning",
+          "id": "interactive-learning",
+          "level": 2
+        },
+        {
+          "text": "Resources &amp; Guides",
+          "id": "resources-amp-guides",
+          "level": 2
+        },
+        {
+          "text": "Evidence &amp; Community",
+          "id": "evidence-amp-community",
+          "level": 2
+        },
+        {
           "text": "Educational Resource Disclaimer",
           "id": "educational-resource-disclaimer",
           "level": 3
         }
       ],
       "anchors": [
+        "understand-amp-assess",
+        "interactive-learning",
+        "resources-amp-guides",
+        "evidence-amp-community",
         "educational-resource-disclaimer"
       ],
       "audiences": [
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.696Z",
+      "lastUpdated": "2026-04-18T01:07:52.817Z",
       "isPublished": true
     },
     {
@@ -4140,7 +4650,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.695Z",
+      "lastUpdated": "2026-04-18T01:07:52.817Z",
       "isPublished": true
     },
     {
@@ -4169,6 +4679,11 @@
           "level": 3
         },
         {
+          "text": "Getting Started",
+          "id": "getting-started",
+          "level": 2
+        },
+        {
           "text": "1) Protect confidence",
           "id": "1-protect-confidence",
           "level": 3
@@ -4182,6 +4697,11 @@
           "text": "3) Align with school",
           "id": "3-align-with-school",
           "level": 3
+        },
+        {
+          "text": "Strategies &amp; Wellbeing",
+          "id": "strategies-amp-wellbeing",
+          "level": 2
         },
         {
           "text": "Multi-Sensory Reading Techniques",
@@ -4249,8 +4769,8 @@
           "level": 5
         },
         {
-          "text": "Building Confidence & Resilience",
-          "id": "building-confidence-resilience",
+          "text": "Building Confidence &amp; Resilience",
+          "id": "building-confidence-amp-resilience",
           "level": 4
         },
         {
@@ -4284,6 +4804,11 @@
           "level": 3
         },
         {
+          "text": "School, Age &amp; Resources",
+          "id": "school-age-amp-resources",
+          "level": 2
+        },
+        {
           "text": "📋 Request These Accommodations",
           "id": "-request-these-accommodations",
           "level": 4
@@ -4294,8 +4819,8 @@
           "level": 4
         },
         {
-          "text": "Ages 3-5: Early Signs & Support",
-          "id": "ages-3-5-early-signs-support",
+          "text": "Ages 3-5: Early Signs &amp; Support",
+          "id": "ages-3-5-early-signs-amp-support",
           "level": 4
         },
         {
@@ -4309,14 +4834,19 @@
           "level": 4
         },
         {
-          "text": "Ages 14+: GCSEs, A-Levels & Beyond",
-          "id": "ages-14-gcses-a-levels-beyond",
+          "text": "Ages 14+: GCSEs, A-Levels &amp; Beyond",
+          "id": "ages-14-gcses-a-levels-amp-beyond",
           "level": 4
         },
         {
-          "text": "Recommended UK Organizations",
-          "id": "recommended-uk-organizations",
+          "text": "Recommended UK Organisations",
+          "id": "recommended-uk-organisations",
           "level": 4
+        },
+        {
+          "text": "Breathing for Calm &amp; Focus",
+          "id": "breathing-for-calm-amp-focus",
+          "level": 2
         },
         {
           "text": "🟦 Box Breathing",
@@ -4332,6 +4862,11 @@
           "text": "🆘 SOS-60",
           "id": "-sos-60",
           "level": 4
+        },
+        {
+          "text": "Community &amp; Support",
+          "id": "community-amp-support",
+          "level": 2
         }
       ],
       "anchors": [
@@ -4339,9 +4874,11 @@
         "evidence-based",
         "parent-community",
         "practical-tools",
+        "getting-started",
         "1-protect-confidence",
         "2-make-practice-short",
         "3-align-with-school",
+        "strategies-amp-wellbeing",
         "multi-sensory-reading-techniques",
         "-shared-reading",
         "-phonics-games",
@@ -4355,29 +4892,32 @@
         "-reduce-writing-load",
         "-reading-aloud",
         "-build-stamina-gradually",
-        "building-confidence-resilience",
+        "building-confidence-amp-resilience",
         "-celebrate-strengths",
         "-set-achievable-goals",
         "-open-communication",
         "-role-models",
         "language-that-helps",
         "when-to-scale-down",
+        "school-age-amp-resources",
         "-request-these-accommodations",
         "-communication-tips",
-        "ages-3-5-early-signs-support",
+        "ages-3-5-early-signs-amp-support",
         "ages-5-11-primary-school-support",
         "ages-11-14-secondary-school-transition",
-        "ages-14-gcses-a-levels-beyond",
-        "recommended-uk-organizations",
+        "ages-14-gcses-a-levels-amp-beyond",
+        "recommended-uk-organisations",
+        "breathing-for-calm-amp-focus",
         "-box-breathing",
         "-4-7-8-breathing",
-        "-sos-60"
+        "-sos-60",
+        "community-amp-support"
       ],
       "audiences": [
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.695Z",
+      "lastUpdated": "2026-04-18T01:07:52.817Z",
       "isPublished": true
     },
     {
@@ -4614,7 +5154,265 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.695Z",
+      "lastUpdated": "2026-04-18T01:07:52.817Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/conditions/dyslexia/training/page.tsx",
+      "path": "/conditions/dyslexia/training",
+      "title": "Repeated Reading",
+      "headings": [
+        {
+          "text": "Your Dyslexia Training Plan",
+          "id": "your-dyslexia-training-plan",
+          "level": 1
+        },
+        {
+          "text": "My Dyslexia Programme",
+          "id": "my-dyslexia-programme",
+          "level": 1
+        },
+        {
+          "text": "Helpful Pages For This Routine",
+          "id": "helpful-pages-for-this-routine",
+          "level": 3
+        },
+        {
+          "text": "{task.title}",
+          "id": "tasktitle",
+          "level": 3
+        },
+        {
+          "text": "Based On Your Answers, Prioritise These Support Moves",
+          "id": "based-on-your-answers-prioritise-these-support-moves",
+          "level": 3
+        },
+        {
+          "text": "{support.title}",
+          "id": "supporttitle",
+          "level": 3
+        },
+        {
+          "text": "All done for today!",
+          "id": "all-done-for-today",
+          "level": 3
+        },
+        {
+          "text": "Your Assessment Profile — Areas to Focus On",
+          "id": "your-assessment-profile-areas-to-focus-on",
+          "level": 3
+        },
+        {
+          "text": "{ex.title}",
+          "id": "extitle",
+          "level": 3
+        },
+        {
+          "text": "Full Practice Toolkit",
+          "id": "full-practice-toolkit",
+          "level": 3
+        },
+        {
+          "text": "{session.day}",
+          "id": "sessionday",
+          "level": 3
+        },
+        {
+          "text": "Today&apos;s Routine",
+          "id": "todayaposs-routine",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "your-dyslexia-training-plan",
+        "my-dyslexia-programme",
+        "helpful-pages-for-this-routine",
+        "tasktitle",
+        "based-on-your-answers-prioritise-these-support-moves",
+        "supporttitle",
+        "all-done-for-today",
+        "your-assessment-profile-areas-to-focus-on",
+        "extitle",
+        "full-practice-toolkit",
+        "sessionday",
+        "todayaposs-routine"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.818Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/conditions/dyslexia/training/audio-library/page.tsx",
+      "path": "/conditions/dyslexia/training/audio-library",
+      "title": "audio library",
+      "headings": [
+        {
+          "text": "Trusted Listening Support For Dyslexia",
+          "id": "trusted-listening-support-for-dyslexia",
+          "level": 1
+        },
+        {
+          "text": "Tailored Starting Point",
+          "id": "tailored-starting-point",
+          "level": 2
+        },
+        {
+          "text": "{resourceGroup.heading}",
+          "id": "resourcegroupheading",
+          "level": 2
+        },
+        {
+          "text": "{link.label}",
+          "id": "linklabel",
+          "level": 3
+        },
+        {
+          "text": "Based On Your Answers, Use Audio Like This",
+          "id": "based-on-your-answers-use-audio-like-this",
+          "level": 2
+        },
+        {
+          "text": "Essential Audio Platforms",
+          "id": "essential-audio-platforms",
+          "level": 2
+        },
+        {
+          "text": "How To Make Listening Help Reading",
+          "id": "how-to-make-listening-help-reading",
+          "level": 2
+        },
+        {
+          "text": "Keep Building Your Routine",
+          "id": "keep-building-your-routine",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "trusted-listening-support-for-dyslexia",
+        "tailored-starting-point",
+        "resourcegroupheading",
+        "linklabel",
+        "based-on-your-answers-use-audio-like-this",
+        "essential-audio-platforms",
+        "how-to-make-listening-help-reading",
+        "keep-building-your-routine"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.817Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/conditions/dyslexia/training/practice-library/page.tsx",
+      "path": "/conditions/dyslexia/training/practice-library",
+      "title": "practice library",
+      "headings": [
+        {
+          "text": "Routine Examples And Reading Support By Age",
+          "id": "routine-examples-and-reading-support-by-age",
+          "level": 1
+        },
+        {
+          "text": "Tailored View",
+          "id": "tailored-view",
+          "level": 2
+        },
+        {
+          "text": "Age-Tailored Routine Examples",
+          "id": "age-tailored-routine-examples",
+          "level": 2
+        },
+        {
+          "text": "{example.title}",
+          "id": "exampletitle",
+          "level": 3
+        },
+        {
+          "text": "Based On Your Answers, Start Here",
+          "id": "based-on-your-answers-start-here",
+          "level": 2
+        },
+        {
+          "text": "{support.title}",
+          "id": "supporttitle",
+          "level": 3
+        },
+        {
+          "text": "Support Areas To Explore For {dyslexiaAgeLabels[ageGroup]}",
+          "id": "support-areas-to-explore-for-dyslexiaagelabelsagegroup",
+          "level": 2
+        },
+        {
+          "text": "{support.title}",
+          "id": "supporttitle",
+          "level": 3
+        },
+        {
+          "text": "Build The Full Routine Around These Examples",
+          "id": "build-the-full-routine-around-these-examples",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "routine-examples-and-reading-support-by-age",
+        "tailored-view",
+        "age-tailored-routine-examples",
+        "exampletitle",
+        "based-on-your-answers-start-here",
+        "supporttitle",
+        "support-areas-to-explore-for-dyslexiaagelabelsagegroup",
+        "supporttitle",
+        "build-the-full-routine-around-these-examples"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.818Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/conditions/dyspraxia/page.tsx",
+      "path": "/conditions/dyspraxia",
+      "title": "dyspraxia",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.818Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/conditions/executive-function/page.tsx",
+      "path": "/conditions/executive-function",
+      "title": "executive function",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.818Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/conditions/hyperlexia/page.tsx",
+      "path": "/conditions/hyperlexia",
+      "title": "hyperlexia",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.818Z",
       "isPublished": true
     },
     {
@@ -4791,7 +5589,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.696Z",
+      "lastUpdated": "2026-04-18T01:07:52.818Z",
       "isPublished": true
     },
     {
@@ -4804,7 +5602,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.696Z",
+      "lastUpdated": "2026-04-18T01:07:52.818Z",
       "isPublished": true
     },
     {
@@ -4969,7 +5767,33 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.697Z",
+      "lastUpdated": "2026-04-18T01:07:52.818Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/conditions/sensory-processing/page.tsx",
+      "path": "/conditions/sensory-processing",
+      "title": "sensory processing",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.818Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/conditions/slcn/page.tsx",
+      "path": "/conditions/slcn",
+      "title": "slcn",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.818Z",
       "isPublished": true
     },
     {
@@ -5098,7 +5922,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.697Z",
+      "lastUpdated": "2026-04-18T01:07:52.819Z",
       "isPublished": true
     },
     {
@@ -5221,7 +6045,46 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.697Z",
+      "lastUpdated": "2026-04-18T01:07:52.819Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/conditions/tourette/page.tsx",
+      "path": "/conditions/tourette",
+      "title": "tourette",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.819Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/conditions/visual-processing/page.tsx",
+      "path": "/conditions/visual-processing",
+      "title": "visual processing",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.819Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/conditions/visual-stress/page.tsx",
+      "path": "/conditions/visual-stress",
+      "title": "visual stress",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.819Z",
       "isPublished": true
     },
     {
@@ -5230,14 +6093,9 @@
       "title": "contact",
       "headings": [
         {
-          "text": "NBCard - Digital Business Card",
-          "id": "-nbcard-digital-business-card-",
-          "level": 1
-        },
-        {
           "text": "Contact Us",
-          "id": "contact-us",
-          "level": 2
+          "id": "-contact-us-",
+          "level": 1
         },
         {
           "text": "Get In Touch",
@@ -5260,25 +6118,24 @@
           "level": 4
         },
         {
-          "text": "Install as App",
-          "id": "install-as-app",
-          "level": 3
+          "text": "Before you send",
+          "id": "before-you-send",
+          "level": 2
         }
       ],
       "anchors": [
-        "-nbcard-digital-business-card-",
-        "contact-us",
+        "-contact-us-",
         "get-in-touch",
         "email",
         "phone",
         "location",
-        "install-as-app"
+        "before-you-send"
       ],
       "audiences": [
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.697Z",
+      "lastUpdated": "2026-04-18T01:07:52.819Z",
       "isPublished": true
     },
     {
@@ -5317,7 +6174,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.698Z",
+      "lastUpdated": "2026-04-18T01:07:52.820Z",
       "isPublished": true
     },
     {
@@ -5338,7 +6195,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.698Z",
+      "lastUpdated": "2026-04-18T01:07:52.820Z",
       "isPublished": true
     },
     {
@@ -5413,7 +6270,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.698Z",
+      "lastUpdated": "2026-04-18T01:07:52.820Z",
       "isPublished": true
     },
     {
@@ -5422,8 +6279,43 @@
       "title": "dyslexia reading training",
       "headings": [
         {
+          "text": "Dyslexia Reading Training",
+          "id": "-dyslexia-reading-training-",
+          "level": 1
+        },
+        {
+          "text": "Assessment &amp; Preparation",
+          "id": "assessment-amp-preparation",
+          "level": 2
+        },
+        {
           "text": "Evidence-Based Reading Development",
           "id": "evidence-based-reading-development",
+          "level": 2
+        },
+        {
+          "text": "Phonological Awareness",
+          "id": "phonological-awareness",
+          "level": 2
+        },
+        {
+          "text": "Decoding &amp; Fluency",
+          "id": "decoding-amp-fluency",
+          "level": 2
+        },
+        {
+          "text": "Vocabulary &amp; Comprehension",
+          "id": "vocabulary-amp-comprehension",
+          "level": 2
+        },
+        {
+          "text": "Materials &amp; Rewards",
+          "id": "materials-amp-rewards",
+          "level": 2
+        },
+        {
+          "text": "Guidance for Parents &amp; Educators",
+          "id": "guidance-for-parents-amp-educators",
           "level": 2
         },
         {
@@ -5437,22 +6329,107 @@
           "level": 4
         },
         {
-          "text": "Expert Resources Referenced:",
-          "id": "expert-resources-referenced",
+          "text": "Expert Resources:",
+          "id": "expert-resources",
           "level": 4
         }
       ],
       "anchors": [
+        "-dyslexia-reading-training-",
+        "assessment-amp-preparation",
         "evidence-based-reading-development",
+        "phonological-awareness",
+        "decoding-amp-fluency",
+        "vocabulary-amp-comprehension",
+        "materials-amp-rewards",
+        "guidance-for-parents-amp-educators",
         "-best-practices",
         "-key-research-insights",
-        "expert-resources-referenced"
+        "expert-resources"
       ],
       "audiences": [
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.699Z",
+      "lastUpdated": "2026-04-18T01:07:52.820Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/dyslexia-reading-training/plan/page.tsx",
+      "path": "/dyslexia-reading-training/plan",
+      "title": "plan",
+      "headings": [
+        {
+          "text": "No Training Plan Yet",
+          "id": "no-training-plan-yet",
+          "level": 1
+        },
+        {
+          "text": "{emoji} {groupConfig.label} · {levelConfig.label}",
+          "id": "-emoji-groupconfiglabel-levelconfiglabel-",
+          "level": 1
+        },
+        {
+          "text": "Today&apos;s Session",
+          "id": "todayaposs-session",
+          "level": 2
+        },
+        {
+          "text": "Your Plan at a Glance",
+          "id": "your-plan-at-a-glance",
+          "level": 2
+        },
+        {
+          "text": "4-Week Training Goals",
+          "id": "4-week-training-goals",
+          "level": 2
+        },
+        {
+          "text": "My Progress",
+          "id": "my-progress",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "no-training-plan-yet",
+        "-emoji-groupconfiglabel-levelconfiglabel-",
+        "todayaposs-session",
+        "your-plan-at-a-glance",
+        "4-week-training-goals",
+        "my-progress"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.820Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/dyslexia-reading-training/plan/lesson/[slug]/page.tsx",
+      "path": "/dyslexia-reading-training/plan/lesson/[slug]",
+      "title": "Letter Sounds Introduction",
+      "headings": [
+        {
+          "text": "Lesson Complete!",
+          "id": "lesson-complete",
+          "level": 1
+        },
+        {
+          "text": "{step.title}",
+          "id": "steptitle",
+          "level": 1
+        }
+      ],
+      "anchors": [
+        "lesson-complete",
+        "steptitle"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.820Z",
       "isPublished": true
     },
     {
@@ -5605,7 +6582,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.699Z",
+      "lastUpdated": "2026-04-18T01:07:52.820Z",
       "isPublished": true
     },
     {
@@ -5638,7 +6615,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.700Z",
+      "lastUpdated": "2026-04-18T01:07:52.821Z",
       "isPublished": true
     },
     {
@@ -5671,7 +6648,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.700Z",
+      "lastUpdated": "2026-04-18T01:07:52.821Z",
       "isPublished": true
     },
     {
@@ -5704,7 +6681,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.700Z",
+      "lastUpdated": "2026-04-18T01:07:52.821Z",
       "isPublished": true
     },
     {
@@ -5779,7 +6756,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.700Z",
+      "lastUpdated": "2026-04-18T01:07:52.821Z",
       "isPublished": true
     },
     {
@@ -5812,7 +6789,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.701Z",
+      "lastUpdated": "2026-04-18T01:07:52.821Z",
       "isPublished": true
     },
     {
@@ -5834,6 +6811,11 @@
           "text": "{item.title}",
           "id": "itemtitle",
           "level": 3
+        },
+        {
+          "text": "Create Your First Habit",
+          "id": "create-your-first-habit",
+          "level": 2
         },
         {
           "text": "Choose Your Path",
@@ -5875,6 +6857,7 @@
         "-getting-started-",
         "quick-wins-1-3-minutes",
         "itemtitle",
+        "create-your-first-habit",
         "choose-your-path",
         "rolelabel",
         "-pathwaysselectedroletitle-",
@@ -5887,7 +6870,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.701Z",
+      "lastUpdated": "2026-04-18T01:07:52.821Z",
       "isPublished": true
     },
     {
@@ -5908,7 +6891,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.701Z",
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
       "isPublished": true
     },
     {
@@ -5929,7 +6912,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.701Z",
+      "lastUpdated": "2026-04-18T01:07:52.821Z",
       "isPublished": true
     },
     {
@@ -5962,7 +6945,466 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.701Z",
+      "lastUpdated": "2026-04-18T01:07:52.821Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/guides/adhd-break-planning/page.tsx",
+      "path": "/guides/adhd-break-planning",
+      "title": "adhd break planning",
+      "headings": [
+        {
+          "text": "{guide.title}",
+          "id": "guidetitle",
+          "level": 1
+        },
+        {
+          "text": "Why this helps",
+          "id": "why-this-helps",
+          "level": 2
+        },
+        {
+          "text": "Practical steps",
+          "id": "practical-steps",
+          "level": 2
+        },
+        {
+          "text": "Helpful tips",
+          "id": "helpful-tips",
+          "level": 2
+        },
+        {
+          "text": "Safety notes",
+          "id": "safety-notes",
+          "level": 2
+        },
+        {
+          "text": "Try this now",
+          "id": "try-this-now",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "guidetitle",
+        "why-this-helps",
+        "practical-steps",
+        "helpful-tips",
+        "safety-notes",
+        "try-this-now"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.821Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/guides/autism-sensory-reset/page.tsx",
+      "path": "/guides/autism-sensory-reset",
+      "title": "autism sensory reset",
+      "headings": [
+        {
+          "text": "{guide.title}",
+          "id": "guidetitle",
+          "level": 1
+        },
+        {
+          "text": "Why this helps",
+          "id": "why-this-helps",
+          "level": 2
+        },
+        {
+          "text": "Practical steps",
+          "id": "practical-steps",
+          "level": 2
+        },
+        {
+          "text": "Helpful tips",
+          "id": "helpful-tips",
+          "level": 2
+        },
+        {
+          "text": "Safety notes",
+          "id": "safety-notes",
+          "level": 2
+        },
+        {
+          "text": "Try this now",
+          "id": "try-this-now",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "guidetitle",
+        "why-this-helps",
+        "practical-steps",
+        "helpful-tips",
+        "safety-notes",
+        "try-this-now"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.821Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/guides/autism-transition-support/page.tsx",
+      "path": "/guides/autism-transition-support",
+      "title": "autism transition support",
+      "headings": [
+        {
+          "text": "{guide.title}",
+          "id": "guidetitle",
+          "level": 1
+        },
+        {
+          "text": "Why this helps",
+          "id": "why-this-helps",
+          "level": 2
+        },
+        {
+          "text": "Practical steps",
+          "id": "practical-steps",
+          "level": 2
+        },
+        {
+          "text": "Helpful tips",
+          "id": "helpful-tips",
+          "level": 2
+        },
+        {
+          "text": "Safety notes",
+          "id": "safety-notes",
+          "level": 2
+        },
+        {
+          "text": "Try this now",
+          "id": "try-this-now",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "guidetitle",
+        "why-this-helps",
+        "practical-steps",
+        "helpful-tips",
+        "safety-notes",
+        "try-this-now"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.821Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/guides/body-scan-for-stress/page.tsx",
+      "path": "/guides/body-scan-for-stress",
+      "title": "body scan for stress",
+      "headings": [
+        {
+          "text": "{guide.title}",
+          "id": "guidetitle",
+          "level": 1
+        },
+        {
+          "text": "Why this helps",
+          "id": "why-this-helps",
+          "level": 2
+        },
+        {
+          "text": "Practical steps",
+          "id": "practical-steps",
+          "level": 2
+        },
+        {
+          "text": "Helpful tips",
+          "id": "helpful-tips",
+          "level": 2
+        },
+        {
+          "text": "Safety notes",
+          "id": "safety-notes",
+          "level": 2
+        },
+        {
+          "text": "Try this now",
+          "id": "try-this-now",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "guidetitle",
+        "why-this-helps",
+        "practical-steps",
+        "helpful-tips",
+        "safety-notes",
+        "try-this-now"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.821Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/guides/breathing-for-sensory-overload/page.tsx",
+      "path": "/guides/breathing-for-sensory-overload",
+      "title": "breathing for sensory overload",
+      "headings": [
+        {
+          "text": "{guide.title}",
+          "id": "guidetitle",
+          "level": 1
+        },
+        {
+          "text": "Why this helps",
+          "id": "why-this-helps",
+          "level": 2
+        },
+        {
+          "text": "Practical steps",
+          "id": "practical-steps",
+          "level": 2
+        },
+        {
+          "text": "Helpful tips",
+          "id": "helpful-tips",
+          "level": 2
+        },
+        {
+          "text": "Safety notes",
+          "id": "safety-notes",
+          "level": 2
+        },
+        {
+          "text": "Try this now",
+          "id": "try-this-now",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "guidetitle",
+        "why-this-helps",
+        "practical-steps",
+        "helpful-tips",
+        "safety-notes",
+        "try-this-now"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/guides/focus-sprints-for-adhd/page.tsx",
+      "path": "/guides/focus-sprints-for-adhd",
+      "title": "focus sprints for adhd",
+      "headings": [
+        {
+          "text": "{guide.title}",
+          "id": "guidetitle",
+          "level": 1
+        },
+        {
+          "text": "Why this helps",
+          "id": "why-this-helps",
+          "level": 2
+        },
+        {
+          "text": "Practical steps",
+          "id": "practical-steps",
+          "level": 2
+        },
+        {
+          "text": "Helpful tips",
+          "id": "helpful-tips",
+          "level": 2
+        },
+        {
+          "text": "Safety notes",
+          "id": "safety-notes",
+          "level": 2
+        },
+        {
+          "text": "Try this now",
+          "id": "try-this-now",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "guidetitle",
+        "why-this-helps",
+        "practical-steps",
+        "helpful-tips",
+        "safety-notes",
+        "try-this-now"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/guides/quick-calm-in-5-minutes/page.tsx",
+      "path": "/guides/quick-calm-in-5-minutes",
+      "title": "quick calm in 5 minutes",
+      "headings": [
+        {
+          "text": "{guide.title}",
+          "id": "guidetitle",
+          "level": 1
+        },
+        {
+          "text": "Why this helps",
+          "id": "why-this-helps",
+          "level": 2
+        },
+        {
+          "text": "Practical steps",
+          "id": "practical-steps",
+          "level": 2
+        },
+        {
+          "text": "Helpful tips",
+          "id": "helpful-tips",
+          "level": 2
+        },
+        {
+          "text": "Safety notes",
+          "id": "safety-notes",
+          "level": 2
+        },
+        {
+          "text": "Try this now",
+          "id": "try-this-now",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "guidetitle",
+        "why-this-helps",
+        "practical-steps",
+        "helpful-tips",
+        "safety-notes",
+        "try-this-now"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/guides/reading-confidence-in-class/page.tsx",
+      "path": "/guides/reading-confidence-in-class",
+      "title": "reading confidence in class",
+      "headings": [
+        {
+          "text": "{guide.title}",
+          "id": "guidetitle",
+          "level": 1
+        },
+        {
+          "text": "Why this helps",
+          "id": "why-this-helps",
+          "level": 2
+        },
+        {
+          "text": "Practical steps",
+          "id": "practical-steps",
+          "level": 2
+        },
+        {
+          "text": "Helpful tips",
+          "id": "helpful-tips",
+          "level": 2
+        },
+        {
+          "text": "Safety notes",
+          "id": "safety-notes",
+          "level": 2
+        },
+        {
+          "text": "Try this now",
+          "id": "try-this-now",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "guidetitle",
+        "why-this-helps",
+        "practical-steps",
+        "helpful-tips",
+        "safety-notes",
+        "try-this-now"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/guides/reading-routine-at-home/page.tsx",
+      "path": "/guides/reading-routine-at-home",
+      "title": "reading routine at home",
+      "headings": [
+        {
+          "text": "{guide.title}",
+          "id": "guidetitle",
+          "level": 1
+        },
+        {
+          "text": "Why this helps",
+          "id": "why-this-helps",
+          "level": 2
+        },
+        {
+          "text": "Practical steps",
+          "id": "practical-steps",
+          "level": 2
+        },
+        {
+          "text": "Helpful tips",
+          "id": "helpful-tips",
+          "level": 2
+        },
+        {
+          "text": "Safety notes",
+          "id": "safety-notes",
+          "level": 2
+        },
+        {
+          "text": "Try this now",
+          "id": "try-this-now",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "guidetitle",
+        "why-this-helps",
+        "practical-steps",
+        "helpful-tips",
+        "safety-notes",
+        "try-this-now"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
       "isPublished": true
     },
     {
@@ -6007,7 +7449,122 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.701Z",
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/guides/sleep-reset-for-shift-workers/page.tsx",
+      "path": "/guides/sleep-reset-for-shift-workers",
+      "title": "sleep reset for shift workers",
+      "headings": [
+        {
+          "text": "{guide.title}",
+          "id": "guidetitle",
+          "level": 1
+        },
+        {
+          "text": "Why this helps",
+          "id": "why-this-helps",
+          "level": 2
+        },
+        {
+          "text": "Practical steps",
+          "id": "practical-steps",
+          "level": 2
+        },
+        {
+          "text": "Helpful tips",
+          "id": "helpful-tips",
+          "level": 2
+        },
+        {
+          "text": "Safety notes",
+          "id": "safety-notes",
+          "level": 2
+        },
+        {
+          "text": "Try this now",
+          "id": "try-this-now",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "guidetitle",
+        "why-this-helps",
+        "practical-steps",
+        "helpful-tips",
+        "safety-notes",
+        "try-this-now"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/guides/wind-down-routine/page.tsx",
+      "path": "/guides/wind-down-routine",
+      "title": "wind down routine",
+      "headings": [
+        {
+          "text": "{guide.title}",
+          "id": "guidetitle",
+          "level": 1
+        },
+        {
+          "text": "Why this helps",
+          "id": "why-this-helps",
+          "level": 2
+        },
+        {
+          "text": "Practical steps",
+          "id": "practical-steps",
+          "level": 2
+        },
+        {
+          "text": "Helpful tips",
+          "id": "helpful-tips",
+          "level": 2
+        },
+        {
+          "text": "Safety notes",
+          "id": "safety-notes",
+          "level": 2
+        },
+        {
+          "text": "Try this now",
+          "id": "try-this-now",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "guidetitle",
+        "why-this-helps",
+        "practical-steps",
+        "helpful-tips",
+        "safety-notes",
+        "try-this-now"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/install/page.tsx",
+      "path": "/install",
+      "title": "Install NeuroBreath",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
       "isPublished": true
     },
     {
@@ -6040,7 +7597,28 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.702Z",
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/nb-card/s/[token]/page.tsx",
+      "path": "/nb-card/s/[token]",
+      "title": "Card not found -- NB-Card",
+      "headings": [
+        {
+          "text": "Digital Business Card",
+          "id": "-digital-business-card-",
+          "level": 1
+        }
+      ],
+      "anchors": [
+        "-digital-business-card-"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
       "isPublished": true
     },
     {
@@ -6053,7 +7631,20 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.702Z",
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/pricing/page.tsx",
+      "path": "/pricing",
+      "title": "NB-Card Plans & Pricing | NeuroBreath",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
       "isPublished": true
     },
     {
@@ -6062,18 +7653,23 @@
       "title": "progress",
       "headings": [
         {
-          "text": "📊 Progress Dashboard",
-          "id": "-progress-dashboard",
+          "text": "Progress",
+          "id": "progress",
           "level": 1
         },
         {
-          "text": "Total Sessions",
-          "id": "total-sessions",
+          "text": "Add a learner",
+          "id": "add-a-learner",
+          "level": 2
+        },
+        {
+          "text": "Breathing Sessions",
+          "id": "breathing-sessions",
           "level": 3
         },
         {
-          "text": "Total Minutes",
-          "id": "total-minutes",
+          "text": "Breathing Minutes",
+          "id": "breathing-minutes",
           "level": 3
         },
         {
@@ -6082,35 +7678,42 @@
           "level": 3
         },
         {
-          "text": "Longest Streak",
-          "id": "longest-streak",
+          "text": "Completions",
+          "id": "completions",
           "level": 3
         },
         {
-          "text": "Recent Sessions",
-          "id": "recent-sessions",
+          "text": "Daily &amp; Weekly Goals",
+          "id": "daily-amp-weekly-goals",
+          "level": 3
+        },
+        {
+          "text": "{new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-GB', {\n                    day: 'numeric',\n                    month: 'long',\n                    year: 'numeric',\n                  })}",
+          "id": "-new-dateselecteddate-t000000tolocaledatestringen-gb-day-numeric-month-long-year-numeric-",
+          "level": 3
+        },
+        {
+          "text": "Recent Activity",
+          "id": "recent-activity",
           "level": 2
-        },
-        {
-          "text": "{session?.label ?? 'Session'}",
-          "id": "sessionlabel-session",
-          "level": 3
         }
       ],
       "anchors": [
-        "-progress-dashboard",
-        "total-sessions",
-        "total-minutes",
+        "progress",
+        "add-a-learner",
+        "breathing-sessions",
+        "breathing-minutes",
         "current-streak",
-        "longest-streak",
-        "recent-sessions",
-        "sessionlabel-session"
+        "completions",
+        "daily-amp-weekly-goals",
+        "-new-dateselecteddate-t000000tolocaledatestringen-gb-day-numeric-month-long-year-numeric-",
+        "recent-activity"
       ],
       "audiences": [
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.702Z",
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
       "isPublished": true
     },
     {
@@ -6275,7 +7878,28 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.703Z",
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/resources/nb-card/page.tsx",
+      "path": "/resources/nb-card",
+      "title": "NB-Card — Digital Business Card",
+      "headings": [
+        {
+          "text": "NB-Card — Digital Business Card",
+          "id": "-nb-card-digital-business-card-",
+          "level": 1
+        }
+      ],
+      "anchors": [
+        "-nb-card-digital-business-card-"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
       "isPublished": true
     },
     {
@@ -6302,7 +7926,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.703Z",
+      "lastUpdated": "2026-04-18T01:07:52.822Z",
       "isPublished": true
     },
     {
@@ -6785,7 +8409,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.704Z",
+      "lastUpdated": "2026-04-18T01:07:52.823Z",
       "isPublished": true
     },
     {
@@ -6806,7 +8430,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.704Z",
+      "lastUpdated": "2026-04-18T01:07:52.823Z",
       "isPublished": true
     },
     {
@@ -6819,7 +8443,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.704Z",
+      "lastUpdated": "2026-04-18T01:07:52.823Z",
       "isPublished": true
     },
     {
@@ -7374,7 +8998,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.705Z",
+      "lastUpdated": "2026-04-18T01:07:52.823Z",
       "isPublished": true
     },
     {
@@ -7545,7 +9169,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.705Z",
+      "lastUpdated": "2026-04-18T01:07:52.823Z",
       "isPublished": true
     },
     {
@@ -7554,8 +9178,8 @@
       "title": "stress",
       "headings": [
         {
-          "text": "You're Not Alone",
-          "id": "youre-not-alone",
+          "text": "You&apos;re Not Alone",
+          "id": "youaposre-not-alone",
           "level": 2
         },
         {
@@ -7735,7 +9359,7 @@
         }
       ],
       "anchors": [
-        "youre-not-alone",
+        "youaposre-not-alone",
         "what-is-stress",
         "normal-stress-vs-chronic-stress",
         "the-fight-or-flight-response",
@@ -7776,7 +9400,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.705Z",
+      "lastUpdated": "2026-04-18T01:07:52.823Z",
       "isPublished": true
     },
     {
@@ -7789,7 +9413,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.706Z",
+      "lastUpdated": "2026-04-18T01:07:52.823Z",
       "isPublished": true
     },
     {
@@ -7882,7 +9506,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.706Z",
+      "lastUpdated": "2026-04-18T01:07:52.823Z",
       "isPublished": true
     },
     {
@@ -7891,103 +9515,31 @@
       "title": "parents",
       "headings": [
         {
-          "text": "Parenting Neurodivergent Children",
-          "id": "parenting-neurodivergent-children",
-          "level": 1
-        },
-        {
-          "text": "1. Understand Your Child",
-          "id": "1-understand-your-child",
+          "text": "{item.heading}",
+          "id": "-itemheading-",
           "level": 4
         },
         {
-          "text": "2. Create Safe Structures",
-          "id": "2-create-safe-structures",
+          "text": "{item.heading}",
+          "id": "-itemheading-",
           "level": 4
         },
         {
-          "text": "3. Validate & Accept",
-          "id": "3-validate-accept",
-          "level": 4
-        },
-        {
-          "text": "4. Model Self-Care",
-          "id": "4-model-self-care",
-          "level": 4
-        },
-        {
-          "text": "Clear, Concrete Expectations",
-          "id": "clear-concrete-expectations",
-          "level": 4
-        },
-        {
-          "text": "Visual Supports",
-          "id": "visual-supports",
-          "level": 4
-        },
-        {
-          "text": "Sensory Breaks",
-          "id": "sensory-breaks",
-          "level": 4
-        },
-        {
-          "text": "Special Interests as Tools",
-          "id": "special-interests-as-tools",
-          "level": 4
-        },
-        {
-          "text": "Routine & Predictability",
-          "id": "routine-predictability",
-          "level": 4
-        },
-        {
-          "text": "Emotion Coaching",
-          "id": "emotion-coaching",
-          "level": 4
-        },
-        {
-          "text": "Parent Support Groups",
-          "id": "parent-support-groups",
-          "level": 4
-        },
-        {
-          "text": "Professional Support",
-          "id": "professional-support",
-          "level": 4
-        },
-        {
-          "text": "Respite Care",
-          "id": "respite-care",
-          "level": 4
-        },
-        {
-          "text": "Self-Care (Non-Negotiable)",
-          "id": "self-care-non-negotiable",
+          "text": "{item.heading}",
+          "id": "-itemheading-",
           "level": 4
         }
       ],
       "anchors": [
-        "parenting-neurodivergent-children",
-        "1-understand-your-child",
-        "2-create-safe-structures",
-        "3-validate-accept",
-        "4-model-self-care",
-        "clear-concrete-expectations",
-        "visual-supports",
-        "sensory-breaks",
-        "special-interests-as-tools",
-        "routine-predictability",
-        "emotion-coaching",
-        "parent-support-groups",
-        "professional-support",
-        "respite-care",
-        "self-care-non-negotiable"
+        "-itemheading-",
+        "-itemheading-",
+        "-itemheading-"
       ],
       "audiences": [
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.706Z",
+      "lastUpdated": "2026-04-18T01:07:52.823Z",
       "isPublished": true
     },
     {
@@ -8104,7 +9656,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.706Z",
+      "lastUpdated": "2026-04-18T01:07:52.823Z",
       "isPublished": true
     },
     {
@@ -8251,7 +9803,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.707Z",
+      "lastUpdated": "2026-04-18T01:07:52.823Z",
       "isPublished": true
     },
     {
@@ -8284,7 +9836,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.707Z",
+      "lastUpdated": "2026-04-18T01:07:52.823Z",
       "isPublished": true
     },
     {
@@ -8293,31 +9845,79 @@
       "title": "4 7 8",
       "headings": [
         {
-          "text": "{technique?.name ?? '4-7-8 Breathing'}",
-          "id": "techniquename-4-7-8-breathing",
+          "text": "{FOUR_SEVEN_EIGHT_COPY.title}",
+          "id": "hero-heading",
           "level": 1
         },
         {
-          "text": "Benefits",
-          "id": "benefits",
+          "text": "Guided Practice",
+          "id": "practice-heading",
           "level": 2
         },
         {
-          "text": "How It Works",
-          "id": "how-it-works",
+          "text": "About This Technique",
+          "id": "explanation-heading",
           "level": 2
+        },
+        {
+          "text": "What It Is",
+          "id": "what-it-is",
+          "level": 3
+        },
+        {
+          "text": "How to Practise",
+          "id": "how-to-practise",
+          "level": 3
+        },
+        {
+          "text": "What It May Help With",
+          "id": "what-it-may-help-with",
+          "level": 3
+        },
+        {
+          "text": "The 4:7:8 Ratio",
+          "id": "the-478-ratio",
+          "level": 3
+        },
+        {
+          "text": "In Their Own Words",
+          "id": "interview-heading",
+          "level": 2
+        },
+        {
+          "text": "Key Points from the Interview",
+          "id": "key-points-from-the-interview",
+          "level": 3
+        },
+        {
+          "text": "Explore Related Techniques",
+          "id": "related-heading",
+          "level": 2
+        },
+        {
+          "text": "{label}",
+          "id": "label",
+          "level": 3
         }
       ],
       "anchors": [
-        "techniquename-4-7-8-breathing",
-        "benefits",
-        "how-it-works"
+        "hero-heading",
+        "practice-heading",
+        "explanation-heading",
+        "what-it-is",
+        "how-to-practise",
+        "what-it-may-help-with",
+        "the-478-ratio",
+        "interview-heading",
+        "key-points-from-the-interview",
+        "related-heading",
+        "label"
       ],
       "audiences": [
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.707Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -8350,7 +9950,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.707Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -8383,7 +9983,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.708Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -8416,52 +10016,20 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.708Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
       "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/tools/page.tsx",
       "path": "/tools",
       "title": "tools",
-      "headings": [
-        {
-          "text": "Breathing Tools",
-          "id": "breathing-tools",
-          "level": 1
-        },
-        {
-          "text": "Breath Ladder",
-          "id": "breath-ladder",
-          "level": 2
-        },
-        {
-          "text": "Colour-Path Breathing",
-          "id": "colour-path-breathing",
-          "level": 2
-        },
-        {
-          "text": "Micro-Reset Roulette",
-          "id": "micro-reset-roulette",
-          "level": 2
-        },
-        {
-          "text": "Focus Tiles",
-          "id": "focus-tiles",
-          "level": 2
-        }
-      ],
-      "anchors": [
-        "breathing-tools",
-        "breath-ladder",
-        "colour-path-breathing",
-        "micro-reset-roulette",
-        "focus-tiles"
-      ],
+      "headings": [],
+      "anchors": [],
       "audiences": [
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.714Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
@@ -8474,7 +10042,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.708Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -8487,7 +10055,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.708Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -8500,7 +10068,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.708Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -8513,7 +10081,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.709Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -8526,7 +10094,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.709Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -8539,7 +10107,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.709Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -8552,7 +10120,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.709Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -8565,7 +10133,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.710Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -8578,7 +10146,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.710Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -8591,7 +10159,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.710Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -8660,7 +10228,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.710Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -8867,7 +10435,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.711Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -8954,7 +10522,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.712Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -8981,7 +10549,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.712Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -9020,7 +10588,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.712Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -9047,7 +10615,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.712Z",
+      "lastUpdated": "2026-04-18T01:07:52.824Z",
       "isPublished": true
     },
     {
@@ -9338,7 +10906,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.713Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
@@ -9371,20 +10939,20 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.714Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
       "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/tools/focus-training/page.tsx",
       "path": "/tools/focus-training",
-      "title": "focus training",
+      "title": "Focus — Sprints with Recovery · NeuroBreath",
       "headings": [],
       "anchors": [],
       "audiences": [
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.714Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
@@ -9429,7 +10997,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.714Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
@@ -9456,7 +11024,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.714Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
@@ -9507,7 +11075,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.714Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
@@ -9744,7 +11312,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.715Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
@@ -9757,7 +11325,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.716Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
@@ -9770,7 +11338,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.715Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
@@ -9783,7 +11351,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.715Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
@@ -9796,7 +11364,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.716Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
@@ -9889,7 +11457,40 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.716Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/trust/editorial-standards/page.tsx",
+      "path": "/trust/editorial-standards",
+      "title": "Editorial Standards | Trust Centre | NeuroBreath",
+      "headings": [
+        {
+          "text": "Editorial Standards",
+          "id": "editorial-standards",
+          "level": 1
+        },
+        {
+          "text": "Review Cadence by Content Type",
+          "id": "review-cadence-by-content-type",
+          "level": 2
+        },
+        {
+          "text": "Evidence Source Tiers",
+          "id": "evidence-source-tiers",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "editorial-standards",
+        "review-cadence-by-content-type",
+        "evidence-source-tiers"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
@@ -9902,7 +11503,70 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.716Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/trust/medical-disclaimer/page.tsx",
+      "path": "/trust/medical-disclaimer",
+      "title": "Medical Disclaimer | Trust Centre | NeuroBreath",
+      "headings": [
+        {
+          "text": "Medical Disclaimer",
+          "id": "medical-disclaimer",
+          "level": 1
+        },
+        {
+          "text": "1. Nature of Content",
+          "id": "1-nature-of-content",
+          "level": 2
+        },
+        {
+          "text": "2. Screening Tools Are Not Diagnostic",
+          "id": "2-screening-tools-are-not-diagnostic",
+          "level": 2
+        },
+        {
+          "text": "3. Exercises, Strategies and Routines",
+          "id": "3-exercises-strategies-and-routines",
+          "level": 2
+        },
+        {
+          "text": "4. No Clinician–Patient Relationship",
+          "id": "4-no-clinicianpatient-relationship",
+          "level": 2
+        },
+        {
+          "text": "5. Content Currency",
+          "id": "5-content-currency",
+          "level": 2
+        },
+        {
+          "text": "6. When You Must Seek Professional Help",
+          "id": "6-when-you-must-seek-professional-help",
+          "level": 2
+        },
+        {
+          "text": "7. Liability",
+          "id": "7-liability",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "medical-disclaimer",
+        "1-nature-of-content",
+        "2-screening-tools-are-not-diagnostic",
+        "3-exercises-strategies-and-routines",
+        "4-no-clinicianpatient-relationship",
+        "5-content-currency",
+        "6-when-you-must-seek-professional-help",
+        "7-liability"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
@@ -9915,7 +11579,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.716Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
@@ -9928,7 +11592,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.716Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
@@ -10015,7 +11679,7 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.716Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
@@ -10028,7 +11692,20 @@
         "all"
       ],
       "keyTopics": [],
-      "lastUpdated": "2026-01-24T13:47:41.717Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/uk/page.tsx",
+      "path": "/uk",
+      "title": "uk",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
       "isPublished": true
     },
     {
@@ -10047,7 +11724,7 @@
         ],
         "canonical": "/change-password"
       },
-      "lastUpdated": "2026-01-24T13:47:41.717Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
       "isPublished": true
     },
     {
@@ -10066,7 +11743,226 @@
         ],
         "canonical": "/get-started"
       },
-      "lastUpdated": "2026-01-24T13:47:41.717Z",
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/uk/journeys/adult-dyslexia-work/page.tsx",
+      "path": "/uk/journeys/adult-dyslexia-work",
+      "title": "Dyslexia at Work Journey | NeuroBreath",
+      "headings": [
+        {
+          "text": "Dyslexia at Work: Thriving Professionally",
+          "id": "dyslexia-at-work-thriving-professionally",
+          "level": 1
+        },
+        {
+          "text": "What You&apos;ll Learn",
+          "id": "what-youaposll-learn",
+          "level": 2
+        },
+        {
+          "text": "Understanding Your Rights",
+          "id": "understanding-your-rights",
+          "level": 3
+        },
+        {
+          "text": "Effective Communication",
+          "id": "effective-communication",
+          "level": 3
+        },
+        {
+          "text": "Tools and Strategies",
+          "id": "tools-and-strategies",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "dyslexia-at-work-thriving-professionally",
+        "what-youaposll-learn",
+        "understanding-your-rights",
+        "effective-communication",
+        "tools-and-strategies"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "uk"
+        ],
+        "canonical": "/journeys/adult-dyslexia-work"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/uk/journeys/adult-dyslexia-work/complete/page.tsx",
+      "path": "/uk/journeys/adult-dyslexia-work/complete",
+      "title": "Dyslexia at Work Journey — Complete | NeuroBreath",
+      "headings": [
+        {
+          "text": "You&apos;re Equipped to Succeed",
+          "id": "youaposre-equipped-to-succeed",
+          "level": 1
+        },
+        {
+          "text": "What&apos;s Next?",
+          "id": "whataposs-next",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "youaposre-equipped-to-succeed",
+        "whataposs-next"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "uk"
+        ],
+        "canonical": "/journeys/adult-dyslexia-work/complete"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.825Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/uk/journeys/adult-dyslexia-work/step/1/page.tsx",
+      "path": "/uk/journeys/adult-dyslexia-work/step/1",
+      "title": "Dyslexia at Work Journey — Step 1: Understanding Your Rights | NeuroBreath",
+      "headings": [
+        {
+          "text": "Understanding Your Rights",
+          "id": "understanding-your-rights",
+          "level": 1
+        },
+        {
+          "text": "Key Actions",
+          "id": "key-actions",
+          "level": 2
+        },
+        {
+          "text": "Reasonable adjustments",
+          "id": "reasonable-adjustments",
+          "level": 3
+        },
+        {
+          "text": "Disclosure choices",
+          "id": "disclosure-choices",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "understanding-your-rights",
+        "key-actions",
+        "reasonable-adjustments",
+        "disclosure-choices"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "uk"
+        ],
+        "canonical": "/journeys/adult-dyslexia-work/step/1"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/uk/journeys/adult-dyslexia-work/step/2/page.tsx",
+      "path": "/uk/journeys/adult-dyslexia-work/step/2",
+      "title": "Dyslexia at Work Journey — Step 2: Effective Communication | NeuroBreath",
+      "headings": [
+        {
+          "text": "Effective Communication",
+          "id": "effective-communication",
+          "level": 1
+        },
+        {
+          "text": "Key Actions",
+          "id": "key-actions",
+          "level": 2
+        },
+        {
+          "text": "Use a simple script",
+          "id": "use-a-simple-script",
+          "level": 3
+        },
+        {
+          "text": "Bring options",
+          "id": "bring-options",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "effective-communication",
+        "key-actions",
+        "use-a-simple-script",
+        "bring-options"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "uk"
+        ],
+        "canonical": "/journeys/adult-dyslexia-work/step/2"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/uk/journeys/adult-dyslexia-work/step/3/page.tsx",
+      "path": "/uk/journeys/adult-dyslexia-work/step/3",
+      "title": "Dyslexia at Work Journey — Step 3: Tools and Strategies | NeuroBreath",
+      "headings": [
+        {
+          "text": "Tools and Strategies",
+          "id": "tools-and-strategies",
+          "level": 1
+        },
+        {
+          "text": "Key Actions",
+          "id": "key-actions",
+          "level": 2
+        },
+        {
+          "text": "Text-to-speech",
+          "id": "text-to-speech",
+          "level": 3
+        },
+        {
+          "text": "Templates and checklists",
+          "id": "templates-and-checklists",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "tools-and-strategies",
+        "key-actions",
+        "text-to-speech",
+        "templates-and-checklists"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "uk"
+        ],
+        "canonical": "/journeys/adult-dyslexia-work/step/3"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
       "isPublished": true
     },
     {
@@ -10117,7 +12013,7 @@
         ],
         "canonical": "/journeys/new-to-adhd"
       },
-      "lastUpdated": "2026-01-24T13:47:41.717Z",
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
       "isPublished": true
     },
     {
@@ -10150,7 +12046,7 @@
         ],
         "canonical": "/journeys/new-to-adhd/complete"
       },
-      "lastUpdated": "2026-01-24T13:47:41.717Z",
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
       "isPublished": true
     },
     {
@@ -10183,7 +12079,7 @@
         ],
         "canonical": "/journeys/new-to-adhd/step/1"
       },
-      "lastUpdated": "2026-01-24T13:47:41.717Z",
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
       "isPublished": true
     },
     {
@@ -10216,7 +12112,7 @@
         ],
         "canonical": "/journeys/new-to-adhd/step/2"
       },
-      "lastUpdated": "2026-01-24T13:47:41.718Z",
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
       "isPublished": true
     },
     {
@@ -10249,7 +12145,295 @@
         ],
         "canonical": "/journeys/new-to-adhd/step/3"
       },
-      "lastUpdated": "2026-01-24T13:47:41.718Z",
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/uk/journeys/parent-autism/page.tsx",
+      "path": "/uk/journeys/parent-autism",
+      "title": "Supporting Your Autistic Child Journey | NeuroBreath",
+      "headings": [
+        {
+          "text": "Supporting Your Autistic Child",
+          "id": "supporting-your-autistic-child",
+          "level": 1
+        },
+        {
+          "text": "What You&apos;ll Learn",
+          "id": "what-youaposll-learn",
+          "level": 2
+        },
+        {
+          "text": "Understanding Autism",
+          "id": "understanding-autism",
+          "level": 3
+        },
+        {
+          "text": "Creating Supportive Environments",
+          "id": "creating-supportive-environments",
+          "level": 3
+        },
+        {
+          "text": "Communication Strategies",
+          "id": "communication-strategies",
+          "level": 3
+        },
+        {
+          "text": "Building Long-Term Support",
+          "id": "building-long-term-support",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "supporting-your-autistic-child",
+        "what-youaposll-learn",
+        "understanding-autism",
+        "creating-supportive-environments",
+        "communication-strategies",
+        "building-long-term-support"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "uk"
+        ],
+        "canonical": "/journeys/parent-autism"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/uk/journeys/parent-autism/complete/page.tsx",
+      "path": "/uk/journeys/parent-autism/complete",
+      "title": "Supporting Your Autistic Child Journey — Complete | NeuroBreath",
+      "headings": [
+        {
+          "text": "You&apos;re Building Great Foundations",
+          "id": "youaposre-building-great-foundations",
+          "level": 1
+        },
+        {
+          "text": "What&apos;s Next?",
+          "id": "whataposs-next",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "youaposre-building-great-foundations",
+        "whataposs-next"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "uk"
+        ],
+        "canonical": "/journeys/parent-autism/complete"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/uk/journeys/parent-autism/step/1/page.tsx",
+      "path": "/uk/journeys/parent-autism/step/1",
+      "title": "Supporting Autistic Child Journey — Step 1: Understanding Autism | NeuroBreath",
+      "headings": [
+        {
+          "text": "Understanding Autism",
+          "id": "understanding-autism",
+          "level": 1
+        },
+        {
+          "text": "Key Actions",
+          "id": "key-actions",
+          "level": 2
+        },
+        {
+          "text": "What This Means for Your Family",
+          "id": "what-this-means-for-your-family",
+          "level": 3
+        },
+        {
+          "text": "Supporting Your Child",
+          "id": "supporting-your-child",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "understanding-autism",
+        "key-actions",
+        "what-this-means-for-your-family",
+        "supporting-your-child"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "uk"
+        ],
+        "canonical": "/journeys/parent-autism/step/1"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/uk/journeys/parent-autism/step/2/page.tsx",
+      "path": "/uk/journeys/parent-autism/step/2",
+      "title": "Supporting Autistic Child Journey — Step 2: Creating Supportive Environments | NeuroBreath",
+      "headings": [
+        {
+          "text": "Creating Supportive Environments",
+          "id": "creating-supportive-environments",
+          "level": 1
+        },
+        {
+          "text": "Key Actions",
+          "id": "key-actions",
+          "level": 2
+        },
+        {
+          "text": "Understanding Sensory Needs",
+          "id": "understanding-sensory-needs",
+          "level": 3
+        },
+        {
+          "text": "Creating Calm Spaces",
+          "id": "creating-calm-spaces",
+          "level": 3
+        },
+        {
+          "text": "Predictable Routines",
+          "id": "predictable-routines",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "creating-supportive-environments",
+        "key-actions",
+        "understanding-sensory-needs",
+        "creating-calm-spaces",
+        "predictable-routines"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "uk"
+        ],
+        "canonical": "/journeys/parent-autism/step/2"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/uk/journeys/parent-autism/step/3/page.tsx",
+      "path": "/uk/journeys/parent-autism/step/3",
+      "title": "Supporting Autistic Child Journey — Step 3: Communication Strategies | NeuroBreath",
+      "headings": [
+        {
+          "text": "Communication Strategies",
+          "id": "communication-strategies",
+          "level": 1
+        },
+        {
+          "text": "Key Actions",
+          "id": "key-actions",
+          "level": 2
+        },
+        {
+          "text": "Say what you mean",
+          "id": "say-what-you-mean",
+          "level": 3
+        },
+        {
+          "text": "Slow the pace",
+          "id": "slow-the-pace",
+          "level": 3
+        },
+        {
+          "text": "Validate communication attempts",
+          "id": "validate-communication-attempts",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "communication-strategies",
+        "key-actions",
+        "say-what-you-mean",
+        "slow-the-pace",
+        "validate-communication-attempts"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "uk"
+        ],
+        "canonical": "/journeys/parent-autism/step/3"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/uk/journeys/parent-autism/step/4/page.tsx",
+      "path": "/uk/journeys/parent-autism/step/4",
+      "title": "Supporting Autistic Child Journey — Step 4: Building Long‑Term Support | NeuroBreath",
+      "headings": [
+        {
+          "text": "Building Long‑Term Support",
+          "id": "building-longterm-support",
+          "level": 1
+        },
+        {
+          "text": "Key Actions",
+          "id": "key-actions",
+          "level": 2
+        },
+        {
+          "text": "Build your team",
+          "id": "build-your-team",
+          "level": 3
+        },
+        {
+          "text": "Advocacy, step-by-step",
+          "id": "advocacy-step-by-step",
+          "level": 3
+        },
+        {
+          "text": "Parent wellbeing matters",
+          "id": "parent-wellbeing-matters",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "building-longterm-support",
+        "key-actions",
+        "build-your-team",
+        "advocacy-step-by-step",
+        "parent-wellbeing-matters"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "uk"
+        ],
+        "canonical": "/journeys/parent-autism/step/4"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
       "isPublished": true
     },
     {
@@ -10318,7 +12502,7 @@
         ],
         "canonical": "/legal/accessibility"
       },
-      "lastUpdated": "2026-01-24T13:47:41.718Z",
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
       "isPublished": true
     },
     {
@@ -10459,7 +12643,7 @@
         ],
         "canonical": "/legal/cookies"
       },
-      "lastUpdated": "2026-01-24T13:47:41.719Z",
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
       "isPublished": true
     },
     {
@@ -10576,7 +12760,7 @@
         ],
         "canonical": "/legal/data-rights"
       },
-      "lastUpdated": "2026-01-24T13:47:41.719Z",
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
       "isPublished": true
     },
     {
@@ -10675,7 +12859,7 @@
         ],
         "canonical": "/legal/disclaimer"
       },
-      "lastUpdated": "2026-01-24T13:47:41.719Z",
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
       "isPublished": true
     },
     {
@@ -10924,7 +13108,7 @@
         ],
         "canonical": "/legal/privacy"
       },
-      "lastUpdated": "2026-01-24T13:47:41.719Z",
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
       "isPublished": true
     },
     {
@@ -11101,15 +13285,23 @@
         ],
         "canonical": "/legal/terms"
       },
-      "lastUpdated": "2026-01-24T13:47:41.720Z",
+      "lastUpdated": "2026-04-18T01:07:52.826Z",
       "isPublished": true
     },
     {
       "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/uk/login/page.tsx",
       "path": "/uk/login",
       "title": "login",
-      "headings": [],
-      "anchors": [],
+      "headings": [
+        {
+          "text": "Check your email",
+          "id": "check-your-email",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "check-your-email"
+      ],
       "audiences": [
         "all"
       ],
@@ -11120,7 +13312,7 @@
         ],
         "canonical": "/login"
       },
-      "lastUpdated": "2026-01-24T13:47:41.720Z",
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
       "isPublished": true
     },
     {
@@ -11139,7 +13331,7 @@
         ],
         "canonical": "/my-account"
       },
-      "lastUpdated": "2026-01-24T13:47:41.720Z",
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
       "isPublished": true
     },
     {
@@ -11158,7 +13350,7 @@
         ],
         "canonical": "/password-reset"
       },
-      "lastUpdated": "2026-01-24T13:47:41.720Z",
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
       "isPublished": true
     },
     {
@@ -11177,7 +13369,73 @@
         ],
         "canonical": "/register"
       },
-      "lastUpdated": "2026-01-24T13:47:41.720Z",
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/uk/resources/nb-card/page.tsx",
+      "path": "/uk/resources/nb-card",
+      "title": "NB-Card — Digital Business Card",
+      "headings": [
+        {
+          "text": "NB-Card — Digital Business Card",
+          "id": "-nb-card-digital-business-card-",
+          "level": 1
+        }
+      ],
+      "anchors": [
+        "-nb-card-digital-business-card-"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "uk"
+        ],
+        "canonical": "/resources/nb-card"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/uk/resources/nb-card/admin/page.tsx",
+      "path": "/uk/resources/nb-card/admin",
+      "title": "admin",
+      "headings": [
+        {
+          "text": "Frame Management",
+          "id": "frame-management",
+          "level": 1
+        },
+        {
+          "text": "{editingId ? \"Edit Frame\" : \"Create New Frame\"}",
+          "id": "-editingid-edit-frame-create-new-frame-",
+          "level": 3
+        },
+        {
+          "text": "{frame.name}",
+          "id": "framename",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "frame-management",
+        "-editingid-edit-frame-create-new-frame-",
+        "framename"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "uk"
+        ],
+        "canonical": "/resources/nb-card/admin"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
       "isPublished": true
     },
     {
@@ -11196,7 +13454,20 @@
         ],
         "canonical": "/update-password"
       },
-      "lastUpdated": "2026-01-24T13:47:41.720Z",
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/us/page.tsx",
+      "path": "/us",
+      "title": "us",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.829Z",
       "isPublished": true
     },
     {
@@ -11215,7 +13486,226 @@
         ],
         "canonical": "/get-started"
       },
-      "lastUpdated": "2026-01-24T13:47:41.721Z",
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/us/journeys/adult-dyslexia-work/page.tsx",
+      "path": "/us/journeys/adult-dyslexia-work",
+      "title": "Dyslexia at Work Journey | NeuroBreath",
+      "headings": [
+        {
+          "text": "Dyslexia at Work: Thriving Professionally",
+          "id": "dyslexia-at-work-thriving-professionally",
+          "level": 1
+        },
+        {
+          "text": "What You&apos;ll Learn",
+          "id": "what-youaposll-learn",
+          "level": 2
+        },
+        {
+          "text": "Understanding Your Rights",
+          "id": "understanding-your-rights",
+          "level": 3
+        },
+        {
+          "text": "Effective Communication",
+          "id": "effective-communication",
+          "level": 3
+        },
+        {
+          "text": "Tools and Strategies",
+          "id": "tools-and-strategies",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "dyslexia-at-work-thriving-professionally",
+        "what-youaposll-learn",
+        "understanding-your-rights",
+        "effective-communication",
+        "tools-and-strategies"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "us"
+        ],
+        "canonical": "/journeys/adult-dyslexia-work"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/us/journeys/adult-dyslexia-work/complete/page.tsx",
+      "path": "/us/journeys/adult-dyslexia-work/complete",
+      "title": "Dyslexia at Work Journey — Complete | NeuroBreath",
+      "headings": [
+        {
+          "text": "You&apos;re Equipped to Succeed",
+          "id": "youaposre-equipped-to-succeed",
+          "level": 1
+        },
+        {
+          "text": "What&apos;s Next?",
+          "id": "whataposs-next",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "youaposre-equipped-to-succeed",
+        "whataposs-next"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "us"
+        ],
+        "canonical": "/journeys/adult-dyslexia-work/complete"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/us/journeys/adult-dyslexia-work/step/1/page.tsx",
+      "path": "/us/journeys/adult-dyslexia-work/step/1",
+      "title": "Dyslexia at Work Journey — Step 1: Understanding Your Rights | NeuroBreath",
+      "headings": [
+        {
+          "text": "Understanding Your Rights",
+          "id": "understanding-your-rights",
+          "level": 1
+        },
+        {
+          "text": "Key Actions",
+          "id": "key-actions",
+          "level": 2
+        },
+        {
+          "text": "Reasonable adjustments",
+          "id": "reasonable-adjustments",
+          "level": 3
+        },
+        {
+          "text": "Disclosure choices",
+          "id": "disclosure-choices",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "understanding-your-rights",
+        "key-actions",
+        "reasonable-adjustments",
+        "disclosure-choices"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "us"
+        ],
+        "canonical": "/journeys/adult-dyslexia-work/step/1"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/us/journeys/adult-dyslexia-work/step/2/page.tsx",
+      "path": "/us/journeys/adult-dyslexia-work/step/2",
+      "title": "Dyslexia at Work Journey — Step 2: Effective Communication | NeuroBreath",
+      "headings": [
+        {
+          "text": "Effective Communication",
+          "id": "effective-communication",
+          "level": 1
+        },
+        {
+          "text": "Key Actions",
+          "id": "key-actions",
+          "level": 2
+        },
+        {
+          "text": "Use a simple script",
+          "id": "use-a-simple-script",
+          "level": 3
+        },
+        {
+          "text": "Bring options",
+          "id": "bring-options",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "effective-communication",
+        "key-actions",
+        "use-a-simple-script",
+        "bring-options"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "us"
+        ],
+        "canonical": "/journeys/adult-dyslexia-work/step/2"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/us/journeys/adult-dyslexia-work/step/3/page.tsx",
+      "path": "/us/journeys/adult-dyslexia-work/step/3",
+      "title": "Dyslexia at Work Journey — Step 3: Tools and Strategies | NeuroBreath",
+      "headings": [
+        {
+          "text": "Tools and Strategies",
+          "id": "tools-and-strategies",
+          "level": 1
+        },
+        {
+          "text": "Key Actions",
+          "id": "key-actions",
+          "level": 2
+        },
+        {
+          "text": "Text-to-speech",
+          "id": "text-to-speech",
+          "level": 3
+        },
+        {
+          "text": "Templates and checklists",
+          "id": "templates-and-checklists",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "tools-and-strategies",
+        "key-actions",
+        "text-to-speech",
+        "templates-and-checklists"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "us"
+        ],
+        "canonical": "/journeys/adult-dyslexia-work/step/3"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
       "isPublished": true
     },
     {
@@ -11266,7 +13756,7 @@
         ],
         "canonical": "/journeys/new-to-adhd"
       },
-      "lastUpdated": "2026-01-24T13:47:41.721Z",
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
       "isPublished": true
     },
     {
@@ -11299,7 +13789,7 @@
         ],
         "canonical": "/journeys/new-to-adhd/complete"
       },
-      "lastUpdated": "2026-01-24T13:47:41.721Z",
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
       "isPublished": true
     },
     {
@@ -11332,7 +13822,7 @@
         ],
         "canonical": "/journeys/new-to-adhd/step/1"
       },
-      "lastUpdated": "2026-01-24T13:47:41.721Z",
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
       "isPublished": true
     },
     {
@@ -11365,7 +13855,7 @@
         ],
         "canonical": "/journeys/new-to-adhd/step/2"
       },
-      "lastUpdated": "2026-01-24T13:47:41.721Z",
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
       "isPublished": true
     },
     {
@@ -11398,7 +13888,295 @@
         ],
         "canonical": "/journeys/new-to-adhd/step/3"
       },
-      "lastUpdated": "2026-01-24T13:47:41.722Z",
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/us/journeys/parent-autism/page.tsx",
+      "path": "/us/journeys/parent-autism",
+      "title": "Supporting Your Autistic Child Journey | NeuroBreath",
+      "headings": [
+        {
+          "text": "Supporting Your Autistic Child",
+          "id": "supporting-your-autistic-child",
+          "level": 1
+        },
+        {
+          "text": "What You&apos;ll Learn",
+          "id": "what-youaposll-learn",
+          "level": 2
+        },
+        {
+          "text": "Understanding Autism",
+          "id": "understanding-autism",
+          "level": 3
+        },
+        {
+          "text": "Creating Supportive Environments",
+          "id": "creating-supportive-environments",
+          "level": 3
+        },
+        {
+          "text": "Communication Strategies",
+          "id": "communication-strategies",
+          "level": 3
+        },
+        {
+          "text": "Building Long‑Term Support",
+          "id": "building-longterm-support",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "supporting-your-autistic-child",
+        "what-youaposll-learn",
+        "understanding-autism",
+        "creating-supportive-environments",
+        "communication-strategies",
+        "building-longterm-support"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "us"
+        ],
+        "canonical": "/journeys/parent-autism"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/us/journeys/parent-autism/complete/page.tsx",
+      "path": "/us/journeys/parent-autism/complete",
+      "title": "Supporting Your Autistic Child Journey — Complete | NeuroBreath",
+      "headings": [
+        {
+          "text": "You&apos;re Building Great Foundations",
+          "id": "youaposre-building-great-foundations",
+          "level": 1
+        },
+        {
+          "text": "What&apos;s Next?",
+          "id": "whataposs-next",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "youaposre-building-great-foundations",
+        "whataposs-next"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "us"
+        ],
+        "canonical": "/journeys/parent-autism/complete"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/us/journeys/parent-autism/step/1/page.tsx",
+      "path": "/us/journeys/parent-autism/step/1",
+      "title": "Supporting Autistic Child Journey — Step 1: Understanding Autism | NeuroBreath",
+      "headings": [
+        {
+          "text": "Understanding Autism",
+          "id": "understanding-autism",
+          "level": 1
+        },
+        {
+          "text": "Key Actions",
+          "id": "key-actions",
+          "level": 2
+        },
+        {
+          "text": "What This Means for Your Family",
+          "id": "what-this-means-for-your-family",
+          "level": 3
+        },
+        {
+          "text": "Supporting Your Child",
+          "id": "supporting-your-child",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "understanding-autism",
+        "key-actions",
+        "what-this-means-for-your-family",
+        "supporting-your-child"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "us"
+        ],
+        "canonical": "/journeys/parent-autism/step/1"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/us/journeys/parent-autism/step/2/page.tsx",
+      "path": "/us/journeys/parent-autism/step/2",
+      "title": "Supporting Autistic Child Journey — Step 2: Creating Supportive Environments | NeuroBreath",
+      "headings": [
+        {
+          "text": "Creating Supportive Environments",
+          "id": "creating-supportive-environments",
+          "level": 1
+        },
+        {
+          "text": "Key Actions",
+          "id": "key-actions",
+          "level": 2
+        },
+        {
+          "text": "Understanding Sensory Needs",
+          "id": "understanding-sensory-needs",
+          "level": 3
+        },
+        {
+          "text": "Creating Calm Spaces",
+          "id": "creating-calm-spaces",
+          "level": 3
+        },
+        {
+          "text": "Predictable Routines",
+          "id": "predictable-routines",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "creating-supportive-environments",
+        "key-actions",
+        "understanding-sensory-needs",
+        "creating-calm-spaces",
+        "predictable-routines"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "us"
+        ],
+        "canonical": "/journeys/parent-autism/step/2"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/us/journeys/parent-autism/step/3/page.tsx",
+      "path": "/us/journeys/parent-autism/step/3",
+      "title": "Supporting Autistic Child Journey — Step 3: Communication Strategies | NeuroBreath",
+      "headings": [
+        {
+          "text": "Communication Strategies",
+          "id": "communication-strategies",
+          "level": 1
+        },
+        {
+          "text": "Key Actions",
+          "id": "key-actions",
+          "level": 2
+        },
+        {
+          "text": "Say what you mean",
+          "id": "say-what-you-mean",
+          "level": 3
+        },
+        {
+          "text": "Slow the pace",
+          "id": "slow-the-pace",
+          "level": 3
+        },
+        {
+          "text": "Validate communication attempts",
+          "id": "validate-communication-attempts",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "communication-strategies",
+        "key-actions",
+        "say-what-you-mean",
+        "slow-the-pace",
+        "validate-communication-attempts"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "us"
+        ],
+        "canonical": "/journeys/parent-autism/step/3"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.827Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/us/journeys/parent-autism/step/4/page.tsx",
+      "path": "/us/journeys/parent-autism/step/4",
+      "title": "Supporting Autistic Child Journey — Step 4: Building Long‑Term Support | NeuroBreath",
+      "headings": [
+        {
+          "text": "Building Long‑Term Support",
+          "id": "building-longterm-support",
+          "level": 1
+        },
+        {
+          "text": "Key Actions",
+          "id": "key-actions",
+          "level": 2
+        },
+        {
+          "text": "Build your team",
+          "id": "build-your-team",
+          "level": 3
+        },
+        {
+          "text": "Advocacy, step-by-step",
+          "id": "advocacy-step-by-step",
+          "level": 3
+        },
+        {
+          "text": "Parent wellbeing matters",
+          "id": "parent-wellbeing-matters",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "building-longterm-support",
+        "key-actions",
+        "build-your-team",
+        "advocacy-step-by-step",
+        "parent-wellbeing-matters"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "us"
+        ],
+        "canonical": "/journeys/parent-autism/step/4"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.828Z",
       "isPublished": true
     },
     {
@@ -11467,7 +14245,7 @@
         ],
         "canonical": "/legal/accessibility"
       },
-      "lastUpdated": "2026-01-24T13:47:41.722Z",
+      "lastUpdated": "2026-04-18T01:07:52.828Z",
       "isPublished": true
     },
     {
@@ -11608,7 +14386,7 @@
         ],
         "canonical": "/legal/cookies"
       },
-      "lastUpdated": "2026-01-24T13:47:41.722Z",
+      "lastUpdated": "2026-04-18T01:07:52.828Z",
       "isPublished": true
     },
     {
@@ -11707,7 +14485,7 @@
         ],
         "canonical": "/legal/disclaimer"
       },
-      "lastUpdated": "2026-01-24T13:47:41.722Z",
+      "lastUpdated": "2026-04-18T01:07:52.828Z",
       "isPublished": true
     },
     {
@@ -11842,7 +14620,7 @@
         ],
         "canonical": "/legal/privacy"
       },
-      "lastUpdated": "2026-01-24T13:47:41.723Z",
+      "lastUpdated": "2026-04-18T01:07:52.829Z",
       "isPublished": true
     },
     {
@@ -11971,7 +14749,7 @@
         ],
         "canonical": "/legal/privacy-rights"
       },
-      "lastUpdated": "2026-01-24T13:47:41.723Z",
+      "lastUpdated": "2026-04-18T01:07:52.828Z",
       "isPublished": true
     },
     {
@@ -12148,7 +14926,205 @@
         ],
         "canonical": "/legal/terms"
       },
-      "lastUpdated": "2026-01-24T13:47:41.723Z",
+      "lastUpdated": "2026-04-18T01:07:52.829Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/us/login/page.tsx",
+      "path": "/us/login",
+      "title": "login",
+      "headings": [
+        {
+          "text": "Check your email",
+          "id": "check-your-email",
+          "level": 3
+        }
+      ],
+      "anchors": [
+        "check-your-email"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "us"
+        ],
+        "canonical": "/login"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.829Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/us/my-account/page.tsx",
+      "path": "/us/my-account",
+      "title": "my account",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "us"
+        ],
+        "canonical": "/my-account"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.829Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/us/password-reset/page.tsx",
+      "path": "/us/password-reset",
+      "title": "password reset",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "us"
+        ],
+        "canonical": "/password-reset"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.829Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/us/register/page.tsx",
+      "path": "/us/register",
+      "title": "register",
+      "headings": [],
+      "anchors": [],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "us"
+        ],
+        "canonical": "/register"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.829Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/us/resources/nb-card/page.tsx",
+      "path": "/us/resources/nb-card",
+      "title": "NB-Card — Digital Business Card",
+      "headings": [
+        {
+          "text": "NB-Card — Digital Business Card",
+          "id": "-nb-card-digital-business-card-",
+          "level": 1
+        }
+      ],
+      "anchors": [
+        "-nb-card-digital-business-card-"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "regionSpecific": {
+        "regions": [
+          "us"
+        ],
+        "canonical": "/resources/nb-card"
+      },
+      "lastUpdated": "2026-04-18T01:07:52.829Z",
+      "isPublished": true
+    },
+    {
+      "filePath": "/Users/akoroma/Documents/GitHub/neurobreath-platform/web/app/wellbeing/page.tsx",
+      "path": "/wellbeing",
+      "title": "wellbeing",
+      "headings": [
+        {
+          "text": "About SOS-60",
+          "id": "about-sos-60",
+          "level": 2
+        },
+        {
+          "text": "How to use this breathing technique",
+          "id": "-how-to-use-this-breathing-technique-",
+          "level": 2
+        },
+        {
+          "text": "Quick start (90 seconds)",
+          "id": "quick-start-90-seconds",
+          "level": 3
+        },
+        {
+          "text": "Daily dose ideas",
+          "id": "daily-dose-ideas",
+          "level": 3
+        },
+        {
+          "text": "Neurodivergent tips",
+          "id": "neurodivergent-tips",
+          "level": 3
+        },
+        {
+          "text": "Where it fits in the day",
+          "id": "-where-it-fits-in-the-day-",
+          "level": 4
+        },
+        {
+          "text": "Example plan",
+          "id": "example-plan",
+          "level": 5
+        },
+        {
+          "text": "Safety &amp; adaptations",
+          "id": "-safety-amp-adaptations-",
+          "level": 4
+        },
+        {
+          "text": "Evidence &amp; rationale",
+          "id": "-evidence-amp-rationale-",
+          "level": 4
+        },
+        {
+          "text": "Trusted sources",
+          "id": "-trusted-sources-",
+          "level": 5
+        },
+        {
+          "text": "60-second SOS",
+          "id": "60-second-sos",
+          "level": 2
+        },
+        {
+          "text": "Related guides",
+          "id": "related-guides",
+          "level": 2
+        }
+      ],
+      "anchors": [
+        "about-sos-60",
+        "-how-to-use-this-breathing-technique-",
+        "quick-start-90-seconds",
+        "daily-dose-ideas",
+        "neurodivergent-tips",
+        "-where-it-fits-in-the-day-",
+        "example-plan",
+        "-safety-amp-adaptations-",
+        "-evidence-amp-rationale-",
+        "-trusted-sources-",
+        "60-second-sos",
+        "related-guides"
+      ],
+      "audiences": [
+        "all"
+      ],
+      "keyTopics": [],
+      "lastUpdated": "2026-04-18T01:07:52.829Z",
       "isPublished": true
     }
   ]
