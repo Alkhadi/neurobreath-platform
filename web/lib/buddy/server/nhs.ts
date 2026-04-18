@@ -81,7 +81,7 @@ function extractEntries(json: unknown, base: string): NhsManifestEntry[] {
 
 async function fetchJson(url: string, apiKey: string): Promise<Record<string, unknown> | null> {
   const res = await fetch(url, {
-    headers: { apikey: apiKey },
+    headers: { 'subscription-key': apiKey },
     signal: AbortSignal.timeout(12000),
   }).catch(() => null);
 
