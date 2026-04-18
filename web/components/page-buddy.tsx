@@ -27,6 +27,11 @@ import type { BuddyAskResponse } from '@/lib/buddy/server/types';
 import { getBuddyIntentIdByLabel } from '@/lib/assistant/intents';
 import { AnchoredPageTour, type AnchoredTourStep, type TourPlacement } from '@/components/tour/anchored-page-tour';
 
+interface ChatSource {
+  title: string;
+  url: string;
+}
+
 interface Message {
   id: string;
   role: 'user' | 'assistant';
@@ -36,6 +41,8 @@ interface Message {
   buddyAnswer?: BuddyAskResponse['answer'];
   buddyCitations?: BuddyAskResponse['citations'];
   buddyMeta?: BuddyAskResponse['meta'];
+  /** Sources returned by /api/chat (site + external evidence) */
+  chatSources?: ChatSource[];
 }
 
 interface PageBuddyProps {
@@ -996,6 +1003,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
             sessionId: string | null;
             source: string;
             navigateTo?: string;
+            sources?: ChatSource[];
           };
 
           if (chatData.sessionId) {
@@ -1010,6 +1018,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
               content: chatData.reply,
               timestamp: new Date(),
               availableTools: pageContent.features,
+              chatSources: chatData.sources,
             };
           }
 
@@ -1019,6 +1028,7 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
             content: chatData.reply,
             timestamp: new Date(),
             availableTools: pageContent.features,
+            chatSources: chatData.sources,
           };
         }
 
@@ -1494,6 +1504,33 @@ export function PageBuddy({ defaultOpen = false }: PageBuddyProps) {
                                 {i < message.content.split('\n').length - 1 && <br />}
                               </span>
                             ))}
+                            {message.chatSources && message.chatSources.length > 0 && (
+                              <div className="mt-3 pt-2 border-t border-border/30" data-buddy-chat-sources>
+                                <div className="text-[10px] text-muted-foreground font-medium mb-1">Sources</div>
+                                {message.chatSources.map((src, idx) => {
+                                  const isExternal = src.url.startsWith('http');
+                                  return (
+                                    <div key={idx} className="text-[10px] text-muted-foreground leading-snug">
+                                      {isExternal ? (
+                                        <span className="break-all">{src.title}</span>
+                                      ) : (
+                                        <a
+                                          href={src.url}
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            router.push(src.url);
+                                            setIsOpen(false);
+                                          }}
+                                          className="underline hover:text-foreground/80 break-all"
+                                        >
+                                          {src.title}
+                                        </a>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
                           </div>
                         )}
                       </BuddyErrorBoundary>

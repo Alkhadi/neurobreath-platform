@@ -10,6 +10,7 @@ import { resolveNhsTopic, fetchResolvedNhsPage } from "@/lib/buddy/server/nhs";
 import { fetchPubMed } from "@/lib/buddy/server/pubmed";
 import { COLLECTIONS } from "@/lib/firestore/collections";
 import { FieldValue } from "firebase-admin/firestore";
+import { normaliseQuery, scorePages, STRONG_MATCH_THRESHOLD } from "@/lib/buddy/chat-scoring";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -87,6 +88,8 @@ async function ensureUserDoc(
 // ─── POST handler ────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
+  const t0 = Date.now();
+
   // 1. Validate request body
   const body = (await req.json().catch(() => null)) as ChatRequestBody | null;
   const message = body?.message?.trim();
@@ -167,39 +170,15 @@ export async function POST(req: NextRequest) {
   if (!context) {
     try {
       const index = await loadInternalIndex();
-      // Normalise query: strip punctuation and common question words for better matching
-      const searchQuery = message
-        .replace(/[?!.,;:'"]/g, "")
-        .replace(/\b(what|where|how|who|why|when|is|are|do|does|can|the|a|an)\b/gi, "")
-        .replace(/\s+/g, " ")
-        .trim() || message;
-
-      // Score pages inline so we can apply a quality threshold.
-      const queryLower = searchQuery.toLowerCase();
-      const scored = index.pages
-        .filter((p) => p.isPublished)
-        .map((page) => {
-          let score = 0;
-          if (page.title.toLowerCase() === queryLower) score += 100;
-          else if (page.title.toLowerCase().includes(queryLower)) score += 80;
-          if (page.keyTopics.some((t) => t.toLowerCase().includes(queryLower))) score += 60;
-          if (page.description?.toLowerCase().includes(queryLower)) score += 40;
-          if (page.headings.some((h) => h.text.toLowerCase().includes(queryLower))) score += 30;
-          const words = queryLower.split(/\s+/);
-          for (const w of words) {
-            if (page.title.toLowerCase().includes(w) || page.keyTopics.some((t) => t.toLowerCase().includes(w)) || page.description?.toLowerCase().includes(w)) score += 5;
-          }
-          return { page, score };
-        })
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 5);
+      const searchQuery = normaliseQuery(message);
+      const scored = scorePages(index.pages, searchQuery, 5);
 
       // Only treat as real site context if hits actually scored above zero.
       const topScore = scored[0]?.score ?? 0;
       const qualityHits = scored.filter((h) => h.score > 0);
 
       if (qualityHits.length > 0) {
-        siteMatchStrong = topScore >= 30;
+        siteMatchStrong = topScore >= STRONG_MATCH_THRESHOLD;
         context = qualityHits
           .map(({ page }) => {
             const parts = [`--- ${page.title} (${page.path}) ---`];
@@ -315,6 +294,24 @@ export async function POST(req: NextRequest) {
       console.error("[api/chat] Failed to save chat history:", err);
     }
   }
+
+  // 8. Structured observability log (no secrets, no user content)
+  const latencyMs = Date.now() - t0;
+  const siteSourceCount = sources.filter((s) => s.url.startsWith("/")).length;
+  const externalSourceCount = sources.filter((s) => s.url.startsWith("http")).length;
+  console.log(
+    JSON.stringify({
+      event: "chat_response",
+      source,
+      siteSourceCount,
+      externalSourceCount,
+      hasExternalEvidence: !!externalContext,
+      hasSiteContext: !!context,
+      siteMatchStrong,
+      wantsResearch,
+      latencyMs,
+    }),
+  );
 
   return Response.json(response);
 }
