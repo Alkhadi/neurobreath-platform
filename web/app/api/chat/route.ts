@@ -5,6 +5,9 @@ import { verifyAuthToken } from "@/lib/buddy/auth";
 import { ensureSession, saveTurnPair } from "@/lib/buddy/history";
 import { resolveNavigation } from "@/lib/buddy/navigation";
 import { retrieveContent, buildContextFromChunks } from "@/lib/buddy/retrieval";
+import { loadInternalIndex } from "@/lib/buddy/kb/contentIndex";
+import { resolveNhsTopic, fetchResolvedNhsPage } from "@/lib/buddy/server/nhs";
+import { fetchPubMed } from "@/lib/buddy/server/pubmed";
 import { COLLECTIONS } from "@/lib/firestore/collections";
 import { FieldValue } from "firebase-admin/firestore";
 
@@ -37,11 +40,19 @@ interface ChatResponsePayload {
 
 // ─── Prompt ──────────────────────────────────────────────────────────────────
 
-function buildSystemPrompt(context: string | null): string {
+function buildSystemPrompt(siteContext: string | null, externalContext: string | null): string {
+  const contextParts: string[] = [];
+  if (siteContext) contextParts.push(`--- NeuroBreath site content ---\n${siteContext}`);
+  if (externalContext) contextParts.push(`--- External evidence (NHS / PubMed) ---\n${externalContext}`);
+  const hasContext = contextParts.length > 0;
+
   return `You are NeuroBreath Buddy, a friendly and supportive assistant for neurobreath.co.uk — a UK-based platform providing neurodivergent-friendly breathing techniques and wellbeing tools for ADHD, autism, anxiety, sleep, and dyslexia support.
 
 Rules:
-- Answer only from the supplied site context below. If the context is weak or does not cover the topic, say so clearly.
+- Answer from the supplied context below. Clearly distinguish NeuroBreath site content from external evidence when both are present.
+- When citing NeuroBreath content, say "On NeuroBreath…" or reference the page.
+- When citing external evidence, say "According to NHS…" or "Research suggests…" and note the source.
+- If the context is weak or does not cover the topic, say so clearly. Do not invent claims.
 - Do not invent features, routes, policies, statistics, or medical claims not present in the context.
 - Be warm, concise, and evidence-aware.
 - Never give medical diagnoses or replace professional advice.
@@ -49,7 +60,7 @@ Rules:
 - Reference specific NeuroBreath pages and tools when supported by the context.
 - Keep answers under 300 words unless the user asks for detail.
 - Use British English spelling.
-- Recommend the most relevant page if supported by context.${context ? `\n\nRelevant site content for context:\n${context}` : "\n\nNo indexed site content is available for this query. Let the user know and suggest they browse the site directly."}`;
+- Recommend the most relevant page if supported by context.${hasContext ? `\n\n${contextParts.join("\n\n")}` : "\n\nNo indexed site content or external evidence is available for this query. Let the user know and suggest they browse the site directly."}`;
 }
 
 // ─── User doc bootstrap ──────────────────────────────────────────────────────
@@ -151,6 +162,110 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // 4b. Fallback: use internal KB (local page index) when Firestore returned nothing.
+  let siteMatchStrong = false;
+  if (!context) {
+    try {
+      const index = await loadInternalIndex();
+      // Normalise query: strip punctuation and common question words for better matching
+      const searchQuery = message
+        .replace(/[?!.,;:'"]/g, "")
+        .replace(/\b(what|where|how|who|why|when|is|are|do|does|can|the|a|an)\b/gi, "")
+        .replace(/\s+/g, " ")
+        .trim() || message;
+
+      // Score pages inline so we can apply a quality threshold.
+      const queryLower = searchQuery.toLowerCase();
+      const scored = index.pages
+        .filter((p) => p.isPublished)
+        .map((page) => {
+          let score = 0;
+          if (page.title.toLowerCase() === queryLower) score += 100;
+          else if (page.title.toLowerCase().includes(queryLower)) score += 80;
+          if (page.keyTopics.some((t) => t.toLowerCase().includes(queryLower))) score += 60;
+          if (page.description?.toLowerCase().includes(queryLower)) score += 40;
+          if (page.headings.some((h) => h.text.toLowerCase().includes(queryLower))) score += 30;
+          const words = queryLower.split(/\s+/);
+          for (const w of words) {
+            if (page.title.toLowerCase().includes(w) || page.keyTopics.some((t) => t.toLowerCase().includes(w)) || page.description?.toLowerCase().includes(w)) score += 5;
+          }
+          return { page, score };
+        })
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5);
+
+      // Only treat as real site context if hits actually scored above zero.
+      const topScore = scored[0]?.score ?? 0;
+      const qualityHits = scored.filter((h) => h.score > 0);
+
+      if (qualityHits.length > 0) {
+        siteMatchStrong = topScore >= 30;
+        context = qualityHits
+          .map(({ page }) => {
+            const parts = [`--- ${page.title} (${page.path}) ---`];
+            if (page.description) parts.push(page.description);
+            if (page.headings.length > 0)
+              parts.push(`Sections: ${page.headings.map((h) => h.text).join(", ")}`);
+            if (page.keyTopics.length > 0)
+              parts.push(`Topics: ${page.keyTopics.slice(0, 8).join(", ")}`);
+            return parts.join("\n");
+          })
+          .join("\n\n");
+
+        for (const { page } of qualityHits.slice(0, 3)) {
+          sources.push({ title: page.title, url: page.path });
+        }
+      }
+    } catch (err) {
+      console.error("[api/chat] Internal KB fallback failed:", err);
+    }
+  }
+
+  // 4c. External evidence: NHS / PubMed for questions outside site content.
+  let externalContext: string | null = null;
+  const wantsResearch = /(study|studies|evidence|research|trial|paper|meta.analysis)/i.test(message);
+
+  // Fetch external evidence when site content is absent, weak, or user explicitly asks for research.
+  if (!context || !siteMatchStrong || wantsResearch) {
+    try {
+      const nhsResult = await resolveNhsTopic(message);
+      if (nhsResult.entry) {
+        const nhsPage = await fetchResolvedNhsPage(nhsResult.entry);
+        if (nhsPage?.text) {
+          const snippet = nhsPage.text.length > 800 ? nhsPage.text.slice(0, 800).trimEnd() + "…" : nhsPage.text;
+          externalContext = `NHS — ${nhsPage.title}\n${snippet}`;
+          const nhsUrl = nhsPage.publicUrl || nhsResult.entry.webUrl;
+          if (nhsUrl) sources.push({ title: `NHS: ${nhsPage.title}`, url: nhsUrl });
+        }
+      }
+    } catch (err) {
+      console.error("[api/chat] NHS evidence fetch failed:", err);
+    }
+
+    // Add PubMed citations when the question asks for research/evidence.
+    if (wantsResearch) {
+      try {
+        const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+        // Strip question words and filler for a tighter PubMed search term.
+        const pubmedQuery = message
+          .replace(/[?!.,;:'"]/g, "")
+          .replace(/\b(what|where|how|who|why|when|is|are|do|does|can|the|a|an|say|about|exist|and|or|for)\b/gi, "")
+          .replace(/\s+/g, " ")
+          .trim() || message;
+        const pubs = await fetchPubMed(pubmedQuery, ip);
+        if (pubs.results.length > 0) {
+          const pubLines = pubs.results.slice(0, 3).map((p) => `• ${p.title} (${p.url})`);
+          externalContext = (externalContext ? externalContext + "\n\n" : "") + `PubMed research:\n${pubLines.join("\n")}`;
+          for (const p of pubs.results.slice(0, 3)) {
+            sources.push({ title: `PubMed: ${p.title}`, url: p.url });
+          }
+        }
+      } catch (err) {
+        console.error("[api/chat] PubMed evidence fetch failed:", err);
+      }
+    }
+  }
+
   // 5. Call OpenAI (server-side only)
   let reply: string;
   let source: ChatResponsePayload["source"];
@@ -165,7 +280,7 @@ export async function POST(req: NextRequest) {
       const completion = await openai.chat.completions.create({
         model,
         messages: [
-          { role: "system", content: buildSystemPrompt(context) },
+          { role: "system", content: buildSystemPrompt(context, externalContext) },
           { role: "user", content: message },
         ],
         max_tokens: 600,
@@ -174,7 +289,7 @@ export async function POST(req: NextRequest) {
 
       reply = completion.choices[0]?.message?.content?.trim()
         || "I wasn't able to generate a response. Please try rephrasing your question.";
-      source = context ? "knowledge" : "ai";
+      source = (context || externalContext) ? "knowledge" : "ai";
     } catch (err) {
       console.error("[api/chat] OpenAI call failed:", err);
       reply = "I'm having trouble processing that right now. You can browse our pages directly — try ADHD, Autism, Breathing, or Sleep hubs for specific support.";
