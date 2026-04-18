@@ -14,8 +14,14 @@ function getNhsBaseUrl(): string {
   return (
     process.env.NHS_WEBSITE_CONTENT_API_BASE ||
     process.env.NHS_WEBSITE_CONTENT_BASE_URL ||
-    'https://api.service.nhs.uk/nhs-website-content'
+    (process.env.NHS_WEBSITE_CONTENT_API_KEY
+      ? 'https://api.service.nhs.uk/nhs-website-content'
+      : 'https://sandbox.api.service.nhs.uk/nhs-website-content')
   );
+}
+
+function isSandbox(url: string): boolean {
+  return url.startsWith('https://sandbox.api.service.nhs.uk');
 }
 
 function addModulesParam(url: string): string {
@@ -80,8 +86,11 @@ function extractEntries(json: unknown, base: string): NhsManifestEntry[] {
 }
 
 async function fetchJson(url: string, apiKey: string): Promise<Record<string, unknown> | null> {
+  const headers: Record<string, string> = {};
+  if (apiKey && !isSandbox(url)) headers.apikey = apiKey;
+
   const res = await fetch(url, {
-    headers: { 'subscription-key': apiKey },
+    headers,
     signal: AbortSignal.timeout(12000),
   }).catch(() => null);
 
@@ -93,10 +102,9 @@ export async function getManifestIndex(): Promise<NhsManifestEntry[] | null> {
   const cached = cacheGetWithStatus<NhsManifestEntry[]>('nhs:manifest:index');
   if (cached.value) return cached.value;
 
-  const apiKey = process.env.NHS_WEBSITE_CONTENT_API_KEY;
-  if (!apiKey) return null;
-
   const base = getNhsBaseUrl();
+  const apiKey = process.env.NHS_WEBSITE_CONTENT_API_KEY ?? '';
+  if (!apiKey && !isSandbox(base)) return null;
   const startCandidates = [`${base}/manifest/pages/?pageSize=200`, `${base}/manifest/pages/`];
 
   let entries: NhsManifestEntry[] = [];
@@ -191,8 +199,8 @@ export function extractTextFromNhsJson(json: unknown): { title: string; text: st
 }
 
 export async function fetchResolvedNhsPage(entry: NhsManifestEntry): Promise<{ title: string; text: string; lastReviewed?: string; publicUrl?: string } | null> {
-  const apiKey = process.env.NHS_WEBSITE_CONTENT_API_KEY;
-  if (!apiKey) return null;
+  const apiKey = process.env.NHS_WEBSITE_CONTENT_API_KEY ?? '';
+  if (!apiKey && !isSandbox(entry.apiUrl)) return null;
 
   const url = addModulesParam(entry.apiUrl);
   const json = await fetchJson(url, apiKey);
