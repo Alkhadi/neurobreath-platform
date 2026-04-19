@@ -10,14 +10,25 @@ export interface NhsManifestEntry {
 
 const MANIFEST_TTL_MS = 24 * 60 * 60 * 1000;
 
+const NHS_BASE_URLS: Record<string, string> = {
+  sandbox: 'https://sandbox.api.service.nhs.uk/nhs-website-content',
+  integration: 'https://int.api.service.nhs.uk/nhs-website-content',
+  production: 'https://api.service.nhs.uk/nhs-website-content',
+};
+
 function getNhsBaseUrl(): string {
-  return (
-    process.env.NHS_WEBSITE_CONTENT_API_BASE ||
-    process.env.NHS_WEBSITE_CONTENT_BASE_URL ||
-    (process.env.NHS_WEBSITE_CONTENT_API_KEY
-      ? 'https://api.service.nhs.uk/nhs-website-content'
-      : 'https://sandbox.api.service.nhs.uk/nhs-website-content')
-  );
+  // Explicit base URL override takes priority
+  if (process.env.NHS_WEBSITE_CONTENT_API_BASE) return process.env.NHS_WEBSITE_CONTENT_API_BASE;
+  if (process.env.NHS_WEBSITE_CONTENT_BASE_URL) return process.env.NHS_WEBSITE_CONTENT_BASE_URL;
+
+  // Respect NHS_WEBSITE_CONTENT_API_ENV (sandbox | integration | production)
+  const env = (process.env.NHS_WEBSITE_CONTENT_API_ENV || '').toLowerCase().trim();
+  if (env && NHS_BASE_URLS[env]) return NHS_BASE_URLS[env];
+
+  // Fallback: if a key is set, default to production; otherwise sandbox
+  return process.env.NHS_WEBSITE_CONTENT_API_KEY
+    ? NHS_BASE_URLS.production
+    : NHS_BASE_URLS.sandbox;
 }
 
 function isSandbox(url: string): boolean {
@@ -85,17 +96,60 @@ function extractEntries(json: unknown, base: string): NhsManifestEntry[] {
   return out;
 }
 
+export interface NhsFetchDiag {
+  url: string;
+  status: number | null;
+  error: 'auth' | 'forbidden' | 'not_found' | 'rate_limited' | 'timeout' | 'network' | 'parse' | null;
+}
+
+let _lastDiag: NhsFetchDiag | null = null;
+
+/** Returns the diagnostic from the most recent fetchJson call (for observability). */
+export function getLastNhsDiag(): NhsFetchDiag | null { return _lastDiag; }
+
 async function fetchJson(url: string, apiKey: string): Promise<Record<string, unknown> | null> {
   const headers: Record<string, string> = {};
   if (apiKey && !isSandbox(url)) headers.apikey = apiKey;
 
-  const res = await fetch(url, {
-    headers,
-    signal: AbortSignal.timeout(12000),
-  }).catch(() => null);
+  const logCtx = {
+    component: 'nhs',
+    baseUrl: getNhsBaseUrl(),
+    hasApiKey: !!apiKey,
+    isSandbox: isSandbox(url),
+    path: url.replace(/https?:\/\/[^/]+/, ''),
+  };
 
-  if (!res?.ok) return null;
-  return (await res.json().catch(() => null)) as Record<string, unknown> | null;
+  let res: Response | null = null;
+  try {
+    res = await fetch(url, {
+      headers,
+      signal: AbortSignal.timeout(12000),
+    });
+  } catch (err) {
+    const isTimeout = err instanceof DOMException && err.name === 'TimeoutError';
+    const errorType = isTimeout ? 'timeout' : 'network';
+    console.error(JSON.stringify({ ...logCtx, event: 'nhs_fetch_error', error: errorType, message: String(err) }));
+    _lastDiag = { url, status: null, error: errorType };
+    return null;
+  }
+
+  if (!res.ok) {
+    const errorMap: Record<number, NhsFetchDiag['error']> = { 401: 'auth', 403: 'forbidden', 404: 'not_found', 429: 'rate_limited' };
+    const errorType = errorMap[res.status] || 'network';
+    console.error(JSON.stringify({ ...logCtx, event: 'nhs_fetch_http_error', status: res.status, error: errorType }));
+    _lastDiag = { url, status: res.status, error: errorType };
+    return null;
+  }
+
+  _lastDiag = { url, status: res.status, error: null };
+
+  try {
+    return (await res.json()) as Record<string, unknown>;
+  } catch {
+    console.error(JSON.stringify({ ...logCtx, event: 'nhs_fetch_parse_error', status: res.status }));
+    _lastDiag = { url, status: res.status, error: 'parse' };
+    return null;
+  }
 }
 
 export async function getManifestIndex(): Promise<NhsManifestEntry[] | null> {

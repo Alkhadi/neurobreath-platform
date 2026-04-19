@@ -14,7 +14,7 @@ import type {
 } from './types';
 import { extractTopicCandidates, normalizeQuery } from './text';
 import { fetchPubMed } from './pubmed';
-import { fetchResolvedNhsPage, resolveNhsTopic } from './nhs';
+import { fetchResolvedNhsPage, getLastNhsDiag, resolveNhsTopic } from './nhs';
 import { searchInternalKb, type InternalCoverage, isValidInternalRoute } from './internalKb';
 import { validateExternalUrl } from './linkValidation';
 import { buildInternalFirstBuddyResponse, buildRelatedOnNeuroBreathSection, sanitizeBuddyResponse } from '@/lib/assistant/answerEngine';
@@ -449,7 +449,12 @@ export async function buddyAsk(
           });
         }
       } else {
-        telemetry.warnings.push('Some sources could not be verified, so they were excluded.');
+        const diag = getLastNhsDiag();
+        if (diag?.error) {
+          telemetry.warnings.push(`NHS source unavailable (${diag.error}${diag.status ? `, HTTP ${diag.status}` : ''}).`);
+        } else {
+          telemetry.warnings.push('Some sources could not be verified, so they were excluded.');
+        }
       }
     }
   }

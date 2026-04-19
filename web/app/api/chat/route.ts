@@ -6,7 +6,7 @@ import { ensureSession, saveTurnPair } from "@/lib/buddy/history";
 import { resolveNavigation } from "@/lib/buddy/navigation";
 import { retrieveContent, buildContextFromChunks } from "@/lib/buddy/retrieval";
 import { loadInternalIndex } from "@/lib/buddy/kb/contentIndex";
-import { resolveNhsTopic, fetchResolvedNhsPage } from "@/lib/buddy/server/nhs";
+import { resolveNhsTopic, fetchResolvedNhsPage, getLastNhsDiag } from "@/lib/buddy/server/nhs";
 import { fetchPubMed } from "@/lib/buddy/server/pubmed";
 import { COLLECTIONS } from "@/lib/firestore/collections";
 import { FieldValue } from "firebase-admin/firestore";
@@ -215,7 +215,20 @@ export async function POST(req: NextRequest) {
           externalContext = `NHS — ${nhsPage.title}\n${snippet}`;
           const nhsUrl = nhsPage.publicUrl || nhsResult.entry.webUrl;
           if (nhsUrl) sources.push({ title: `NHS: ${nhsPage.title}`, url: nhsUrl });
+        } else {
+          const diag = getLastNhsDiag();
+          console.warn(JSON.stringify({
+            event: "chat_nhs_empty_page",
+            nhsEntry: nhsResult.entry.title,
+            nhsDiag: diag ? { status: diag.status, error: diag.error } : null,
+          }));
         }
+      } else {
+        const diag = getLastNhsDiag();
+        console.warn(JSON.stringify({
+          event: "chat_nhs_no_topic_match",
+          nhsDiag: diag ? { status: diag.status, error: diag.error } : null,
+        }));
       }
     } catch (err) {
       console.error("[api/chat] NHS evidence fetch failed:", err);
@@ -251,7 +264,24 @@ export async function POST(req: NextRequest) {
 
   const openai = getOpenAIClient();
   if (!openai) {
-    reply = "I can help with navigation and site information. For detailed AI answers, the service is being configured — please try again shortly.";
+    console.error(JSON.stringify({
+      event: "chat_openai_unavailable",
+      hasOpenAIKey: !!process.env.OPENAI_API_KEY,
+      hasNhsKey: !!process.env.NHS_WEBSITE_CONTENT_API_KEY,
+      hasSiteContext: !!context,
+      hasExternalContext: !!externalContext,
+    }));
+
+    // If we have retrieved content (internal or NHS), provide it even without AI synthesis
+    if (context || externalContext) {
+      const parts: string[] = [];
+      if (context) parts.push("Here's what I found on NeuroBreath:\n\n" + context.slice(0, 600));
+      if (externalContext) parts.push("From NHS:\n\n" + externalContext.slice(0, 600));
+      parts.push("\n\n_Note: AI synthesis is temporarily unavailable. The above is raw retrieved content._");
+      reply = parts.join("\n\n");
+    } else {
+      reply = "I can help with navigation and site information. The AI service is not currently configured — please check back shortly or browse our hubs directly: ADHD, Autism, Breathing, Sleep.";
+    }
     source = "fallback";
   } else {
     try {
@@ -299,6 +329,7 @@ export async function POST(req: NextRequest) {
   const latencyMs = Date.now() - t0;
   const siteSourceCount = sources.filter((s) => s.url.startsWith("/")).length;
   const externalSourceCount = sources.filter((s) => s.url.startsWith("http")).length;
+  const nhsDiag = getLastNhsDiag();
   console.log(
     JSON.stringify({
       event: "chat_response",
@@ -309,6 +340,11 @@ export async function POST(req: NextRequest) {
       hasSiteContext: !!context,
       siteMatchStrong,
       wantsResearch,
+      hasOpenAIKey: !!process.env.OPENAI_API_KEY,
+      hasNhsKey: !!process.env.NHS_WEBSITE_CONTENT_API_KEY,
+      nhsEnv: process.env.NHS_WEBSITE_CONTENT_API_ENV || 'unset',
+      nhsLastStatus: nhsDiag?.status ?? null,
+      nhsLastError: nhsDiag?.error ?? null,
       latencyMs,
     }),
   );
