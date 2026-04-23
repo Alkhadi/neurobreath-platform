@@ -43,6 +43,12 @@ function addModulesParam(url: string): string {
 /**
  * Convert a topic phrase into URL slugs to try against the NHS Content API.
  * Returns slugs in order of specificity (most specific first).
+ *
+ * The NHS website appends the condition acronym to the slug, e.g.:
+ *   "generalised anxiety disorder" → "generalised-anxiety-disorder-gad"
+ *   "obsessive compulsive disorder" → "obsessive-compulsive-disorder-ocd"
+ *   "post traumatic stress disorder" → "post-traumatic-stress-disorder-ptsd"
+ * We generate both the plain slug and the acronym-appended variant.
  */
 function topicToSlugs(topic: string): string[] {
   const slug = topic
@@ -54,26 +60,39 @@ function topicToSlugs(topic: string): string[] {
 
   if (!slug) return [];
 
+  const words = slug.split('-').filter(Boolean);
   const slugs: string[] = [slug];
 
-  const words = slug.split('-');
+  // NHS appends acronym: "generalised-anxiety-disorder" → "generalised-anxiety-disorder-gad"
+  if (words.length >= 2) {
+    const acronym = words.map((w) => w[0]).join('');
+    if (acronym.length >= 2 && acronym.length <= 6) {
+      slugs.push(`${slug}-${acronym}`);
+    }
+  }
+
   if (words.length > 2) {
-    // "generalised-anxiety-disorder" → also try "anxiety-disorder", "anxiety"
-    slugs.push(words.slice(1).join('-'));
-    slugs.push(words.slice(-2).join('-'));
+    // Also try shorter tail: "anxiety-disorder" and "anxiety-disorder-ad"
+    const tail = words.slice(-2).join('-');
+    const tailAcronym = words.slice(-2).map((w) => w[0]).join('');
+    slugs.push(tail);
+    if (tailAcronym.length >= 2) slugs.push(`${tail}-${tailAcronym}`);
     slugs.push(words[words.length - 1]);
   } else if (words.length === 2) {
-    // "anxiety-disorder" → also try "anxiety"
     slugs.push(words[0]);
   }
 
   return [...new Set(slugs)].filter(Boolean);
 }
 
-/** NHS Content API v2 path prefixes to probe, in order of likelihood. */
+/**
+ * NHS Content API v2 path prefixes to probe.
+ * /mental-health/conditions/ is listed first because most Buddy queries are
+ * mental-health topics. Production 404s return in <100 ms so the cost is low.
+ */
 const NHS_PATH_PREFIXES = [
-  '/conditions/',
   '/mental-health/conditions/',
+  '/conditions/',
   '/mental-health/',
   '/live-well/',
 ] as const;
@@ -139,9 +158,17 @@ async function fetchJson(url: string, apiKey: string, timeoutMs = 12000): Promis
  * Content API v2. This avoids the non-existent /manifest/pages/ endpoint and
  * instead tries paths like /conditions/{slug}/ and /mental-health/{slug}/.
  *
- * Attempt budget: ≤ 2 candidates × ≤ 3 slugs × 4 prefixes, capped at 4 attempts
- * with a 3 s per-probe timeout and a 10 s total wall-clock cap.
- * Production 404s return in <100 ms; sandbox 504s are cut off by the per-probe timeout.
+ * Strategy: iterate prefixes in the outer loop, slugs in the inner loop.
+ * This ensures the most likely prefix (/mental-health/conditions/) is tried
+ * with ALL slug variants before falling through to less likely prefixes.
+ *
+ * Example for "generalised anxiety disorder":
+ *   slugs → ["generalised-anxiety-disorder", "generalised-anxiety-disorder-gad", ...]
+ *   prefix 1: /mental-health/conditions/generalised-anxiety-disorder/ → 404
+ *   prefix 1: /mental-health/conditions/generalised-anxiety-disorder-gad/ → 200 ✓
+ *
+ * Attempt budget: MAX_ATTEMPTS=6, per-probe timeout=3 s, wall-clock cap=12 s.
+ * Production 404s return in <100 ms so 6 probes ≈ <600 ms in the happy path.
  */
 export async function resolveNhsTopic(question: string): Promise<{ entry: NhsManifestEntry | null; cache: 'hit' | 'miss' }> {
   const base = getNhsBaseUrl();
@@ -151,14 +178,16 @@ export async function resolveNhsTopic(question: string): Promise<{ entry: NhsMan
   const candidates = extractTopicCandidates(question).slice(0, 2);
 
   let attempts = 0;
-  const MAX_ATTEMPTS = 4;
-  const deadline = Date.now() + 10_000; // 10 s wall-clock cap
+  const MAX_ATTEMPTS = 6;
+  const deadline = Date.now() + 12_000; // 12 s wall-clock cap
 
-  for (const candidate of candidates) {
-    const slugs = topicToSlugs(candidate).slice(0, 3);
+  // Outer loop: prefix — ensures the best prefix is exhausted across all slug
+  // variants before we try a less likely prefix.
+  for (const prefix of NHS_PATH_PREFIXES) {
+    for (const candidate of candidates) {
+      const slugs = topicToSlugs(candidate).slice(0, 4);
 
-    for (const slug of slugs) {
-      for (const prefix of NHS_PATH_PREFIXES) {
+      for (const slug of slugs) {
         if (attempts >= MAX_ATTEMPTS || Date.now() > deadline) return { entry: null, cache: 'miss' };
         attempts += 1;
 
