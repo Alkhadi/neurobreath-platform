@@ -203,9 +203,13 @@ export async function POST(req: NextRequest) {
   // 4c. External evidence: NHS / PubMed for questions outside site content.
   let externalContext: string | null = null;
   const wantsResearch = /(study|studies|evidence|research|trial|paper|meta.analysis)/i.test(message);
+  // Explicitly NHS/clinical-guidance questions must always trigger NHS retrieval
+  // regardless of whether the internal KB returned a site-content match.
+  const wantsNhs = /(nhs|nice|gp|guidance|clinical|medical|treatment|diagnos|condition|symptom|medicine|medication|therapy|therapies|disorder|syndrome|disease)/i.test(message);
 
-  // Fetch external evidence when site content is absent, weak, or user explicitly asks for research.
-  if (!context || !siteMatchStrong || wantsResearch) {
+  // Fetch external evidence when site content is absent, weak, user asks for research,
+  // or the question explicitly references NHS/clinical content.
+  if (!context || !siteMatchStrong || wantsResearch || wantsNhs) {
     try {
       const nhsResult = await resolveNhsTopic(message);
       if (nhsResult.entry) {
@@ -279,8 +283,21 @@ export async function POST(req: NextRequest) {
       if (externalContext) parts.push("From NHS:\n\n" + externalContext.slice(0, 600));
       parts.push("\n\n_Note: AI synthesis is temporarily unavailable. The above is raw retrieved content._");
       reply = parts.join("\n\n");
+    } else if (externalContext === null && wantsNhs) {
+      // NHS was attempted but returned no content — be specific about which service failed.
+      const nhsDiagNow = getLastNhsDiag();
+      const nhsStatusMsg = nhsDiagNow?.error === 'auth'
+        ? 'The NHS content service returned an authentication error (401). The API key may be invalid, missing, or assigned to the wrong environment.'
+        : nhsDiagNow?.error === 'forbidden'
+        ? 'The NHS content service denied access (403). The application may not be onboarded for the production endpoint.'
+        : nhsDiagNow?.error === 'rate_limited'
+        ? 'The NHS content service is rate-limiting requests (429). Please try again in a moment.'
+        : nhsDiagNow?.error === 'timeout'
+        ? 'The NHS content service timed out. Please try again.'
+        : 'The NHS content service is not returning results for this query.';
+      reply = `I was unable to retrieve NHS guidance for this question. ${nhsStatusMsg}\n\nFor NHS information directly, visit [nhs.uk](https://www.nhs.uk).`;
     } else {
-      reply = "I can help with navigation and site information. The AI service is not currently configured — please check back shortly or browse our hubs directly: ADHD, Autism, Breathing, Sleep.";
+      reply = "I can help with navigation and NeuroBreath content, but the AI service is not currently configured. Please check the OPENAI_API_KEY environment variable and redeploy.";
     }
     source = "fallback";
   } else {
@@ -340,6 +357,7 @@ export async function POST(req: NextRequest) {
       hasSiteContext: !!context,
       siteMatchStrong,
       wantsResearch,
+      wantsNhs,
       hasOpenAIKey: !!process.env.OPENAI_API_KEY,
       hasNhsKey: !!process.env.NHS_WEBSITE_CONTENT_API_KEY,
       nhsEnv: process.env.NHS_WEBSITE_CONTENT_API_ENV || 'unset',
