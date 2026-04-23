@@ -1,5 +1,5 @@
 import { cacheGetWithStatus, cacheSet } from './cache';
-import { extractTopicCandidates, scoreTextMatch } from './text';
+import { extractTopicCandidates } from './text';
 
 export interface NhsManifestEntry {
   title: string;
@@ -40,61 +40,43 @@ function addModulesParam(url: string): string {
   return url.includes('?') ? `${url}&modules=true` : `${url}?modules=true`;
 }
 
-function getNextUrl(json: Record<string, unknown>): string | null {
-  const direct = typeof json.next === 'string' ? json.next : null;
-  if (direct) return direct;
+/**
+ * Convert a topic phrase into URL slugs to try against the NHS Content API.
+ * Returns slugs in order of specificity (most specific first).
+ */
+function topicToSlugs(topic: string): string[] {
+  const slug = topic
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
 
-  const links = json.links as Record<string, unknown> | undefined;
-  const next = (links?.next as Record<string, unknown> | undefined)?.href;
-  if (typeof next === 'string') return next;
+  if (!slug) return [];
 
-  return null;
-}
+  const slugs: string[] = [slug];
 
-function extractEntries(json: unknown, base: string): NhsManifestEntry[] {
-  const root = json as Record<string, unknown>;
-  const items =
-    (Array.isArray(root?.items) && (root.items as unknown[])) ||
-    (Array.isArray(root?.pages) && (root.pages as unknown[])) ||
-    (Array.isArray(root?.hasPart) && (root.hasPart as unknown[])) ||
-    null;
-
-  if (!items) return [];
-
-  const out: NhsManifestEntry[] = [];
-  for (const item of items) {
-    const obj = item as Record<string, unknown>;
-
-    const title =
-      (typeof obj.name === 'string' && obj.name.trim()) ||
-      (typeof obj.title === 'string' && obj.title.trim()) ||
-      (typeof obj.headline === 'string' && obj.headline.trim()) ||
-      '';
-
-    const apiUrl =
-      (typeof obj.url === 'string' && obj.url) ||
-      (typeof obj['@id'] === 'string' && (obj['@id'] as string)) ||
-      '';
-
-    const webUrl =
-      (typeof obj.webUrl === 'string' && obj.webUrl) ||
-      (typeof obj.webpage === 'string' && obj.webpage) ||
-      (typeof obj.sameAs === 'string' && obj.sameAs) ||
-      undefined;
-
-    const description = (typeof obj.description === 'string' && obj.description.trim()) || undefined;
-
-    if (!title || !apiUrl) continue;
-    if (!apiUrl.startsWith('http')) continue;
-
-    // Filter to likely NHS content API URLs (best-effort)
-    if (!apiUrl.startsWith(base)) continue;
-
-    out.push({ title, apiUrl, webUrl, description });
+  const words = slug.split('-');
+  if (words.length > 2) {
+    // "generalised-anxiety-disorder" → also try "anxiety-disorder", "anxiety"
+    slugs.push(words.slice(1).join('-'));
+    slugs.push(words.slice(-2).join('-'));
+    slugs.push(words[words.length - 1]);
+  } else if (words.length === 2) {
+    // "anxiety-disorder" → also try "anxiety"
+    slugs.push(words[0]);
   }
 
-  return out;
+  return [...new Set(slugs)].filter(Boolean);
 }
+
+/** NHS Content API v2 path prefixes to probe, in order of likelihood. */
+const NHS_PATH_PREFIXES = [
+  '/conditions/',
+  '/mental-health/conditions/',
+  '/mental-health/',
+  '/live-well/',
+] as const;
 
 export interface NhsFetchDiag {
   url: string;
@@ -107,7 +89,7 @@ let _lastDiag: NhsFetchDiag | null = null;
 /** Returns the diagnostic from the most recent fetchJson call (for observability). */
 export function getLastNhsDiag(): NhsFetchDiag | null { return _lastDiag; }
 
-async function fetchJson(url: string, apiKey: string): Promise<Record<string, unknown> | null> {
+async function fetchJson(url: string, apiKey: string, timeoutMs = 12000): Promise<Record<string, unknown> | null> {
   const headers: Record<string, string> = {};
   if (apiKey && !isSandbox(url)) headers.apikey = apiKey;
 
@@ -123,7 +105,7 @@ async function fetchJson(url: string, apiKey: string): Promise<Record<string, un
   try {
     res = await fetch(url, {
       headers,
-      signal: AbortSignal.timeout(12000),
+      signal: AbortSignal.timeout(timeoutMs),
     });
   } catch (err) {
     const isTimeout = err instanceof DOMException && err.name === 'TimeoutError';
@@ -152,72 +134,68 @@ async function fetchJson(url: string, apiKey: string): Promise<Record<string, un
   }
 }
 
-export async function getManifestIndex(): Promise<NhsManifestEntry[] | null> {
-  const cached = cacheGetWithStatus<NhsManifestEntry[]>('nhs:manifest:index');
-  if (cached.value) return cached.value;
-
+/**
+ * Resolve an NHS topic by directly probing slug-based URLs against the NHS
+ * Content API v2. This avoids the non-existent /manifest/pages/ endpoint and
+ * instead tries paths like /conditions/{slug}/ and /mental-health/{slug}/.
+ *
+ * Attempt budget: ≤ 2 candidates × ≤ 3 slugs × 4 prefixes, capped at 4 attempts
+ * with a 3 s per-probe timeout and a 10 s total wall-clock cap.
+ * Production 404s return in <100 ms; sandbox 504s are cut off by the per-probe timeout.
+ */
+export async function resolveNhsTopic(question: string): Promise<{ entry: NhsManifestEntry | null; cache: 'hit' | 'miss' }> {
   const base = getNhsBaseUrl();
   const apiKey = process.env.NHS_WEBSITE_CONTENT_API_KEY ?? '';
-  if (!apiKey && !isSandbox(base)) return null;
-  const startCandidates = [`${base}/manifest/pages/?pageSize=200`, `${base}/manifest/pages/`];
+  if (!apiKey && !isSandbox(base)) return { entry: null, cache: 'miss' };
 
-  let entries: NhsManifestEntry[] = [];
+  const candidates = extractTopicCandidates(question).slice(0, 2);
 
-  for (const startUrl of startCandidates) {
-    let nextUrl: string | null = startUrl;
-    let pageCount = 0;
+  let attempts = 0;
+  const MAX_ATTEMPTS = 4;
+  const deadline = Date.now() + 10_000; // 10 s wall-clock cap
 
-    while (nextUrl && pageCount < 20) {
-      pageCount += 1;
-      const json = await fetchJson(nextUrl, apiKey);
-      if (!json) break;
+  for (const candidate of candidates) {
+    const slugs = topicToSlugs(candidate).slice(0, 3);
 
-      entries = entries.concat(extractEntries(json, base));
-      nextUrl = getNextUrl(json);
+    for (const slug of slugs) {
+      for (const prefix of NHS_PATH_PREFIXES) {
+        if (attempts >= MAX_ATTEMPTS || Date.now() > deadline) return { entry: null, cache: 'miss' };
+        attempts += 1;
 
-      // Some endpoints return relative next links
-      if (nextUrl && nextUrl.startsWith('/')) nextUrl = `${base}${nextUrl}`;
+        const url = `${base}${prefix}${slug}/`;
+        const cacheKey = `nhs:slug:${url}`;
+
+        const cached = cacheGetWithStatus<NhsManifestEntry>(cacheKey);
+        if (cached.value) return { entry: cached.value, cache: 'hit' };
+
+        const json = await fetchJson(url, apiKey, 3000);
+        if (!json) continue; // 404/timeout/error — try next
+
+        const title =
+          (typeof json.name === 'string' && json.name.trim()) ||
+          (typeof json.headline === 'string' && json.headline.trim()) ||
+          candidate;
+        const webUrl = (typeof json.url === 'string' && json.url) || undefined;
+
+        const entry: NhsManifestEntry = { title, apiUrl: url, webUrl };
+        cacheSet(cacheKey, entry, MANIFEST_TTL_MS);
+
+        console.log(JSON.stringify({
+          component: 'nhs',
+          event: 'nhs_slug_resolved',
+          slug,
+          prefix,
+          title,
+          url,
+          attempts,
+        }));
+
+        return { entry, cache: 'miss' };
+      }
     }
-
-    if (entries.length > 0) break;
   }
 
-  if (entries.length === 0) return null;
-
-  // Deduplicate by apiUrl
-  const deduped = Array.from(new Map(entries.map((e) => [e.apiUrl, e])).values());
-  cacheSet('nhs:manifest:index', deduped, MANIFEST_TTL_MS);
-  return deduped;
-}
-
-export async function getManifestIndexWithCache(): Promise<{ index: NhsManifestEntry[] | null; cache: 'hit' | 'miss' }> {
-  const cached = cacheGetWithStatus<NhsManifestEntry[]>('nhs:manifest:index');
-  if (cached.value) return { index: cached.value, cache: cached.hit };
-  const index = await getManifestIndex();
-  return { index, cache: index ? 'miss' : 'miss' };
-}
-
-export async function resolveNhsTopic(question: string): Promise<{ entry: NhsManifestEntry | null; cache: 'hit' | 'miss' }> {
-  const { index, cache } = await getManifestIndexWithCache();
-  if (!index) return { entry: null, cache };
-
-  const candidates = extractTopicCandidates(question);
-
-  let best: { entry: NhsManifestEntry; score: number } | null = null;
-  for (const entry of index) {
-    const haystack = `${entry.title} ${entry.description || ''} ${entry.webUrl || ''} ${entry.apiUrl}`;
-    let score = scoreTextMatch(haystack, candidates);
-
-    const url = (entry.webUrl || entry.apiUrl).toLowerCase();
-    if (url.includes('/mental-health/')) score += 20;
-    if (url.includes('/conditions/')) score += 10;
-    if (url.includes('/health-a-to-z/')) score += 10;
-
-    if (!best || score > best.score) best = { entry, score };
-  }
-
-  if (!best || best.score < 60) return { entry: null, cache };
-  return { entry: best.entry, cache };
+  return { entry: null, cache: 'miss' };
 }
 
 export function extractTextFromNhsJson(json: unknown): { title: string; text: string; lastReviewed?: string; publicUrl?: string } | null {
