@@ -97,6 +97,45 @@ const NHS_PATH_PREFIXES = [
   '/live-well/',
 ] as const;
 
+/**
+ * Explicit known-good paths for common clinical topics.
+ * Keys are normalized lowercase phrases; value is the exact NHS Content API path
+ * (relative to base URL). Matched by substring against the extracted topic.
+ *
+ * Source: verified live against https://www.nhs.uk/ on 2026-04-23.
+ * Add new entries here when you discover a clinical topic Buddy should surface.
+ */
+const NHS_KNOWN_PATHS: Array<{ match: RegExp; path: string }> = [
+  { match: /\b(generalised|general)\s+anxiety(\s+disorder)?|\bgad\b/i, path: '/mental-health/conditions/generalised-anxiety-disorder-gad/' },
+  { match: /\bpanic\s+(disorder|attack)/i, path: '/mental-health/conditions/panic-disorder/' },
+  { match: /\b(social\s+anxiety|social\s+phobia)/i, path: '/mental-health/conditions/social-anxiety/' },
+  { match: /\bphobia/i, path: '/mental-health/conditions/phobias/' },
+  { match: /\b(ocd|obsessive\s+compulsive)/i, path: '/mental-health/conditions/obsessive-compulsive-disorder-ocd/' },
+  { match: /\b(ptsd|post.?traumatic\s+stress)/i, path: '/mental-health/conditions/post-traumatic-stress-disorder-ptsd/' },
+  { match: /\b(clinical\s+)?depression|\blow\s+mood\b/i, path: '/mental-health/conditions/clinical-depression/' },
+  { match: /\bbipolar/i, path: '/mental-health/conditions/bipolar-disorder/' },
+  { match: /\bschizophrenia/i, path: '/mental-health/conditions/schizophrenia/' },
+  { match: /\beating\s+disorder|\banorexia|\bbulimia|\bbinge\s+eat/i, path: '/mental-health/conditions/eating-disorders/' },
+  { match: /\bself.?harm/i, path: '/mental-health/feelings-symptoms-behaviours/behaviours/self-harm/' },
+  { match: /\bsuicid/i, path: '/mental-health/feelings-symptoms-behaviours/behaviours/help-for-suicidal-thoughts/' },
+  { match: /\badhd|attention\s+deficit/i, path: '/conditions/attention-deficit-hyperactivity-disorder-adhd/' },
+  { match: /\b(autism|autistic|\basd\b)/i, path: '/conditions/autism/' },
+  { match: /\bdyslexia/i, path: '/conditions/dyslexia/' },
+  { match: /\binsomnia|\bsleep\s+problem|\btrouble\s+sleep/i, path: '/conditions/insomnia/' },
+  { match: /\bsleep\s+apnoea|\bsleep\s+apnea/i, path: '/conditions/sleep-apnoea/' },
+  { match: /\bstress\b/i, path: '/mental-health/feelings-symptoms-behaviours/feelings/stress/' },
+  { match: /\bloneliness|\blonely/i, path: '/mental-health/feelings-symptoms-behaviours/feelings/loneliness-in-adults/' },
+  { match: /\banger\s+(management|issues|problems)/i, path: '/mental-health/feelings-symptoms-behaviours/feelings/anger/' },
+];
+
+/** Return the first known path matching the question, or null. */
+function matchKnownPath(question: string): string | null {
+  for (const { match, path } of NHS_KNOWN_PATHS) {
+    if (match.test(question)) return path;
+  }
+  return null;
+}
+
 export interface NhsFetchDiag {
   url: string;
   status: number | null;
@@ -175,6 +214,36 @@ export async function resolveNhsTopic(question: string): Promise<{ entry: NhsMan
   const apiKey = process.env.NHS_WEBSITE_CONTENT_API_KEY ?? '';
   if (!apiKey && !isSandbox(base)) return { entry: null, cache: 'miss' };
 
+  // 1) Fast path: explicit known-good paths for common clinical topics.
+  const knownPath = matchKnownPath(question);
+  if (knownPath) {
+    const url = `${base}${knownPath}`;
+    const cacheKey = `nhs:known:${url}`;
+    const cached = cacheGetWithStatus<NhsManifestEntry>(cacheKey);
+    if (cached.value) return { entry: cached.value, cache: 'hit' };
+
+    const json = await fetchJson(url, apiKey, 5000);
+    if (json) {
+      const title =
+        (typeof json.name === 'string' && json.name.trim()) ||
+        (typeof json.headline === 'string' && json.headline.trim()) ||
+        'NHS topic';
+      const webUrl = (typeof json.url === 'string' && json.url) || undefined;
+      const entry: NhsManifestEntry = { title, apiUrl: url, webUrl };
+      cacheSet(cacheKey, entry, MANIFEST_TTL_MS);
+      console.log(JSON.stringify({
+        component: 'nhs',
+        event: 'nhs_known_path_resolved',
+        path: knownPath,
+        title,
+      }));
+      return { entry, cache: 'miss' };
+    }
+    // If the known path fails, fall through to slug probing so a wrong map
+    // entry doesn't break retrieval entirely.
+  }
+
+  // 2) Slug probing fallback.
   const candidates = extractTopicCandidates(question).slice(0, 2);
 
   let attempts = 0;
