@@ -12,10 +12,15 @@ import { test, expect, Page } from '@playwright/test';
 
 const USER_PREFS_KEY = 'neurobreath.userprefs.v1';
 
-// Support both legacy and unified Buddy endpoints.
-// Intentionally narrow this to Buddy only so unrelated background AI calls
-// (e.g., other assistants) can't satisfy `waitForRequest` and create flakes.
+// BUDDY_API_ROUTE targets /api/buddy/ask — the unified endpoint used for quick-questions
+// and the UI fallback when /api/chat is unavailable.
+// CHAT_API_ROUTE targets /api/chat — the primary free-text endpoint (since f124e9e).
+// Tests mock CHAT_API_ROUTE to 503 so the UI always falls through to /api/buddy/ask,
+// which we fully control and whose response shape the test mocks use.
+// Intentionally scoped so unrelated background AI calls
+// (e.g., /api/ai-coach, /api/ai-assistant) can't satisfy `waitForRequest` and create flakes.
 const BUDDY_API_ROUTE = /\/(?:(?:uk|us)\/)?api\/buddy(?:\/ask)?(\?.*)?$/;
+const CHAT_API_ROUTE = /\/(?:(?:uk|us)\/)?api\/chat(\?.*)?$/;
 
 async function seedConsent(page: Page) {
   await page.addInitScript(() => {
@@ -44,6 +49,12 @@ async function mockBuddyApi(page: Page, body: unknown) {
   // Replace any previously-registered handlers so tests can change the mocked
   // response within a single test (e.g., TEST 4/6).
   await page.unroute(BUDDY_API_ROUTE);
+  await page.unroute(CHAT_API_ROUTE);
+  // Force /api/chat to 503 so the UI falls through to /api/buddy/ask, which
+  // we fully control and whose response shape the test mocks use.
+  await page.route(CHAT_API_ROUTE, async (route) => {
+    await route.fulfill({ status: 503, contentType: 'application/json', body: '{}' });
+  });
   await page.route(BUDDY_API_ROUTE, async (route) => {
     await route.fulfill({
       status: 200,
@@ -770,6 +781,10 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
 
   test('Typed send: Enter sends, Shift+Enter adds newline', async ({ page }) => {
     let requestCount = 0;
+    // Force /api/chat to 503 so the UI falls through to /api/buddy/ask.
+    await page.route(CHAT_API_ROUTE, async (route) => {
+      await route.fulfill({ status: 503, contentType: 'application/json', body: '{}' });
+    });
     await page.route(BUDDY_API_ROUTE, async (route) => {
       const request = route.request();
       const payload = request.postDataJSON?.() as unknown;
@@ -823,6 +838,10 @@ test.describe('NeuroBreath Buddy Multi-Viewport Stability', () => {
 
   test('Surfaces errors and Retry re-sends', async ({ page }) => {
     let callCount = 0;
+    // Force /api/chat to 503 so the UI falls through to /api/buddy/ask.
+    await page.route(CHAT_API_ROUTE, async (route) => {
+      await route.fulfill({ status: 503, contentType: 'application/json', body: '{}' });
+    });
     await page.route(BUDDY_API_ROUTE, async (route) => {
       const request = route.request();
       const payload = request.postDataJSON?.() as unknown;
