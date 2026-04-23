@@ -1,3 +1,4 @@
+import { load } from 'cheerio';
 import { cacheGetWithStatus, cacheSet } from './cache';
 import { extractTopicCandidates } from './text';
 
@@ -9,6 +10,14 @@ export interface NhsManifestEntry {
 }
 
 const MANIFEST_TTL_MS = 24 * 60 * 60 * 1000;
+const PUBLIC_NHS_BASE_URL = 'https://www.nhs.uk';
+
+export interface NhsResolvedPage {
+  title: string;
+  text: string;
+  lastReviewed?: string;
+  publicUrl?: string;
+}
 
 const NHS_BASE_URLS: Record<string, string> = {
   sandbox: 'https://sandbox.api.service.nhs.uk/nhs-website-content',
@@ -38,6 +47,25 @@ function isSandbox(url: string): boolean {
 function addModulesParam(url: string): string {
   if (url.includes('modules=true')) return url;
   return url.includes('?') ? `${url}&modules=true` : `${url}?modules=true`;
+}
+
+function apiUrlToPublicUrl(apiUrl: string): string | undefined {
+  try {
+    const parsed = new URL(apiUrl);
+    const publicPath = parsed.pathname.replace(/^\/nhs-website-content/, '') || '/';
+    return new URL(publicPath, PUBLIC_NHS_BASE_URL).toString();
+  } catch {
+    return undefined;
+  }
+}
+
+function normalizePublicUrl(url?: string): string | undefined {
+  if (!url) return undefined;
+  try {
+    return new URL(url, PUBLIC_NHS_BASE_URL).toString();
+  } catch {
+    return undefined;
+  }
 }
 
 /**
@@ -328,19 +356,126 @@ export function extractTextFromNhsJson(json: unknown): { title: string; text: st
   return { title, text, lastReviewed, publicUrl };
 }
 
-export async function fetchResolvedNhsPage(entry: NhsManifestEntry): Promise<{ title: string; text: string; lastReviewed?: string; publicUrl?: string } | null> {
+const PUBLIC_HTML_SKIP_EXACT = new Set([
+  'Cookies on the NHS website',
+  'Support links',
+  'Additional Links',
+  'NHS homepage',
+  'Search the NHS website',
+]);
+
+const PUBLIC_HTML_SKIP_PREFIXES = [
+  'Accept analytics cookies',
+  'Reject analytics cookies',
+  'Choose your cookie settings',
+  'Skip to main content',
+  'Page last reviewed:',
+  'Next review due:',
+  'Home',
+  'Health A to Z',
+  'NHS services',
+  'Healthy living',
+  'Mental health',
+  'Care and support',
+  'About us',
+  'Report an issue with the NHS website',
+  'Accessibility statement',
+  'Our policies',
+];
+
+function shouldSkipPublicHtmlText(text: string): boolean {
+  if (!text) return true;
+  if (PUBLIC_HTML_SKIP_EXACT.has(text)) return true;
+  return PUBLIC_HTML_SKIP_PREFIXES.some((prefix) => text.startsWith(prefix));
+}
+
+export function extractTextFromNhsPublicHtml(html: string, publicUrl: string): NhsResolvedPage | null {
+  const $ = load(html);
+  const root = $('main').first().length ? $('main').first() : $('#maincontent').first();
+  const scope = root.length ? root : $('body').first();
+
+  const title = scope.find('h1').first().text().trim() || $('h1').first().text().trim() || 'NHS topic';
+  const textBits: string[] = [];
+  const seen = new Set<string>();
+  let stop = false;
+
+  scope.find('h2, h3, p, li').each((_, node) => {
+    if (stop) return;
+
+    const element = $(node);
+    if (element.parents('header, footer, nav, aside, form').length > 0) return;
+
+    const rawText = element.text().replace(/\s+/g, ' ').trim();
+    if (!rawText || rawText === title || shouldSkipPublicHtmlText(rawText)) return;
+
+    if (node.tagName === 'h2' && /^(Support links|Additional Links|Cookies on the NHS website)$/i.test(rawText)) {
+      stop = true;
+      return;
+    }
+
+    const formatted = node.tagName === 'li' ? `• ${rawText}` : rawText;
+    if (seen.has(formatted)) return;
+
+    seen.add(formatted);
+    textBits.push(formatted);
+  });
+
+  if (textBits.length === 0) return null;
+
+  const reviewMatch = html.match(/Page last reviewed:\s*([^<\n]+).*?Next review due:\s*([^<\n]+)/is);
+  const lastReviewed = reviewMatch?.[1]?.trim();
+
+  return {
+    title,
+    text: textBits.join('\n\n').trim(),
+    lastReviewed,
+    publicUrl: normalizePublicUrl(publicUrl),
+  };
+}
+
+async function fetchPublicNhsPage(publicUrl: string, timeoutMs = 12000): Promise<NhsResolvedPage | null> {
+  let res: Response;
+  try {
+    res = await fetch(publicUrl, {
+      signal: AbortSignal.timeout(timeoutMs),
+      headers: {
+        'user-agent': 'NeuroBreathBuddy/1.0 (+https://www.neurobreath.app)',
+      },
+    });
+  } catch {
+    return null;
+  }
+
+  if (!res.ok) return null;
+
+  const html = await res.text().catch(() => '');
+  if (!html) return null;
+
+  return extractTextFromNhsPublicHtml(html, publicUrl);
+}
+
+export async function fetchResolvedNhsPage(entry: NhsManifestEntry): Promise<NhsResolvedPage | null> {
   const apiKey = process.env.NHS_WEBSITE_CONTENT_API_KEY ?? '';
-  if (!apiKey && !isSandbox(entry.apiUrl)) return null;
+  const publicUrl = normalizePublicUrl(entry.webUrl) || apiUrlToPublicUrl(entry.apiUrl);
+
+  if (!apiKey && !isSandbox(entry.apiUrl)) {
+    return publicUrl ? fetchPublicNhsPage(publicUrl) : null;
+  }
 
   const url = addModulesParam(entry.apiUrl);
   const json = await fetchJson(url, apiKey);
-  if (!json) return null;
+  const extracted = json ? extractTextFromNhsJson(json) : null;
+  if (extracted) {
+    return {
+      ...extracted,
+      publicUrl: normalizePublicUrl(extracted.publicUrl) || publicUrl || entry.webUrl,
+    };
+  }
 
-  const extracted = extractTextFromNhsJson(json);
-  if (!extracted) return null;
+  if (!publicUrl) return null;
 
-  return {
-    ...extracted,
-    publicUrl: extracted.publicUrl || entry.webUrl,
-  };
+  const publicPage = await fetchPublicNhsPage(publicUrl);
+  if (!publicPage) return null;
+
+  return publicPage;
 }
