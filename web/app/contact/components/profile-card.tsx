@@ -781,8 +781,6 @@ function CardLayerRenderer({
     }
   }, [isEditing]);
 
-  if (!layer.visible) return null;
-
   // Canvas Edit Mode: inline text editing
   const handleDoubleClick = (e: React.MouseEvent) => {
     if (!canvasEditMode || layer.type !== 'text' || layer.locked) return;
@@ -1192,6 +1190,8 @@ function CardLayerRenderer({
       document.removeEventListener("contextmenu", handleOutsideInteraction, true);
     };
   }, [longPressPos]);
+
+  if (!layer.visible) return null;
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!longPressTimer.current) return;
