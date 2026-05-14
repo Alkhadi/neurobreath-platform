@@ -26,6 +26,17 @@ function stripNewlines(value: string) {
   return value.replace(/[\r\n]+/g, " ").trim();
 }
 
+const DEFAULT_CONTACT_RECIPIENTS = ["info@neurobreath.co.uk", "admin@neurobreath.co.uk"];
+
+function normalizeRecipientList(value: string | undefined) {
+  const configured = (value ?? "")
+    .split(",")
+    .map((entry) => stripNewlines(entry).toLowerCase())
+    .filter(Boolean);
+
+  return Array.from(new Set([...DEFAULT_CONTACT_RECIPIENTS, ...configured]));
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return !!value && typeof value === "object" && !Array.isArray(value);
 }
@@ -324,10 +335,10 @@ export async function POST(req: Request) {
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const to = process.env.CONTACT_TO || "info@neurobreath.co.uk";
+    const to = normalizeRecipientList(process.env.CONTACT_TO);
     const from = process.env.CONTACT_FROM || "NeuroBreath Support <onboarding@resend.dev>";
 
-    // 1) Send to your support inbox
+    // 1) Send to the NeuroBreath support inboxes
     const adminSend = await resend.emails.send({
       from,
       to,

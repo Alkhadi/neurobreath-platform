@@ -13,15 +13,15 @@ This project sends Contact form submissions via Resend.
 Set these (Vercel + local):
 
 - `RESEND_API_KEY` — your Resend API key (starts with `re_...`)
-- `CONTACT_TO` — destination inbox (recommended: `info@neurobreath.co.uk`)
+- `CONTACT_TO` — optional extra destination inboxes as a comma-separated list. The contact route always sends to `info@neurobreath.co.uk` and `admin@neurobreath.co.uk`.
 - `CONTACT_FROM` — sender identity (recommended: `NeuroBreath Support <onboarding@resend.dev>`)
 
 ## Cloudflare routing (recommended)
 
 Recommended production flow:
 
-1. Form sends to `info@neurobreath.co.uk`
-2. Cloudflare Email Routing forwards to your personal inbox (e.g. Yahoo)
+1. Form sends to `info@neurobreath.co.uk` and `admin@neurobreath.co.uk`
+2. Cloudflare Email Routing can forward those inboxes to your personal inbox if needed
 
 This keeps the code stable even if the destination inbox changes.
 
