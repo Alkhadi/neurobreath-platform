@@ -68,7 +68,7 @@ export default async function RegionGlossaryPage({ params }: RegionGlossaryPageP
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
       <div className="mx-auto w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1200px] py-12 space-y-8">
         <header className="space-y-3">
-          <p className="text-sm uppercase tracking-wide text-slate-500">Glossary</p>
+          <p className="text-sm tracking-wide text-slate-500">Glossary</p>
           <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900">
             Glossary &amp; plain‑English definitions
           </h1>

@@ -87,7 +87,7 @@ export default async function RegionGuidesPage({ params }: RegionGuidesPageProps
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
       <div className="mx-auto w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1100px] py-12 space-y-8">
         <header className="space-y-3">
-          <p className="text-sm uppercase tracking-wide text-slate-500">Guides</p>
+          <p className="text-sm tracking-wide text-slate-500">Guides</p>
           <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900">Guides by topic cluster</h1>
           <p className="text-base text-slate-600 max-w-3xl">
             Practical, educational guidance for calm, focus, sleep, and learning routines. Not medical advice.

@@ -190,7 +190,7 @@ export default async function RegionConditionsPage({ params }: RegionConditionsP
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
       <div className="nb-container py-12 space-y-10">
         <header className="space-y-4">
-          <p className="text-sm uppercase tracking-wide text-slate-500">Conditions we cover</p>
+          <p className="text-sm tracking-wide text-slate-500">Conditions we cover</p>
           <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900">
             NeuroBreath coverage across neurodivergent needs
           </h1>

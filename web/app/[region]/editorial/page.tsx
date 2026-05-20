@@ -64,7 +64,7 @@ export default async function RegionEditorialPage({ params }: RegionEditorialPag
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
       <div className="mx-auto w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1100px] py-12 space-y-8">
         <header className="space-y-3">
-          <p className="text-sm uppercase tracking-wide text-slate-500">Editorial team</p>
+          <p className="text-sm tracking-wide text-slate-500">Editorial team</p>
           <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900">Meet the editorial team</h1>
           <p className="text-base text-slate-600 max-w-3xl">
             NeuroBreath content is created and reviewed by an editorial team focused on clarity, safety language, and evidence‑informed guidance.
