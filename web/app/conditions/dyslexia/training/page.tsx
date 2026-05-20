@@ -1559,7 +1559,7 @@ export default function DyslexiaTrainingPage() {
                         <div className="flex-1 min-w-0 space-y-2">
                           <div className="flex items-start justify-between gap-2 flex-wrap">
                             <div>
-                              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{task.time}</span>
+                              <span className="text-xs font-medium text-muted-foreground tracking-wide">{task.time}</span>
                               <h3 className={`text-sm font-semibold ${done ? 'line-through text-muted-foreground' : 'text-foreground'}`}>{task.title}</h3>
                             </div>
                             <span className="text-xs text-muted-foreground flex-shrink-0">{task.duration}</span>
@@ -1585,7 +1585,7 @@ export default function DyslexiaTrainingPage() {
 
                           {taskSupport?.examples?.length ? (
                             <div className="mt-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 p-3 space-y-1.5">
-                              <p className="text-[11px] font-semibold uppercase tracking-wide text-foreground">Examples to try</p>
+                              <p className="text-[11px] font-semibold tracking-wide text-foreground">Examples to try</p>
                               <ul className="space-y-1">
                                 {taskSupport.examples.map((example, index) => (
                                   <li key={index} className="flex items-start gap-2 text-xs text-muted-foreground">
@@ -1649,7 +1649,7 @@ export default function DyslexiaTrainingPage() {
                       <CardContent className="p-4 space-y-3">
                         <div className="flex items-start justify-between gap-3">
                           <div className="space-y-1">
-                            <p className="text-[11px] font-semibold uppercase tracking-wide text-indigo-600 dark:text-indigo-400">
+                            <p className="text-[11px] font-semibold tracking-wide text-indigo-600 dark:text-indigo-400">
                               {dyslexiaCategoryLabels[category] ?? category}
                             </p>
                             <h3 className="text-sm font-semibold text-foreground">{support.title}</h3>
@@ -1660,7 +1660,7 @@ export default function DyslexiaTrainingPage() {
                         </div>
                         <p className="text-xs text-muted-foreground leading-relaxed">{support.description}</p>
                         <div className="space-y-1.5">
-                          <p className="text-[11px] font-semibold uppercase tracking-wide text-foreground">Quick wins</p>
+                          <p className="text-[11px] font-semibold tracking-wide text-foreground">Quick wins</p>
                           <ul className="space-y-1">
                             {support.quickWins.map((item, index) => (
                               <li key={index} className="flex items-start gap-2 text-xs text-muted-foreground">
@@ -1671,7 +1671,7 @@ export default function DyslexiaTrainingPage() {
                           </ul>
                         </div>
                         <div className="rounded-lg border border-indigo-100 dark:border-indigo-900 bg-indigo-50/70 dark:bg-indigo-950/20 p-3">
-                          <p className="text-[11px] font-semibold uppercase tracking-wide text-foreground">Example</p>
+                          <p className="text-[11px] font-semibold tracking-wide text-foreground">Example</p>
                           <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{support.example}</p>
                         </div>
                         <div className="flex flex-wrap gap-2">
@@ -1816,7 +1816,7 @@ export default function DyslexiaTrainingPage() {
                     </div>
 
                     <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900">
-                      <p className="text-xs text-muted-foreground italic leading-relaxed">
+                      <p className="text-xs text-muted-foreground leading-relaxed">
                         <strong className="text-foreground not-italic">Why this helps:</strong> {ex.why}
                       </p>
                     </div>
@@ -2054,7 +2054,7 @@ export default function DyslexiaTrainingPage() {
       {/* ── Closing Disclaimer ──────────────────────────────────────────────── */}
       <section className="bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 py-8">
         <div className={`${containerCls}`}>
-          <p className="text-xs text-muted-foreground italic leading-relaxed max-w-3xl">
+          <p className="text-xs text-muted-foreground leading-relaxed max-w-3xl">
             <strong>Educational Resource Disclaimer:</strong> This training plan is for educational and informational purposes only. It is not a substitute for professional medical advice, formal diagnosis, or specialist teaching. Content is informed by evidence-based research from the International Dyslexia Association, British Dyslexia Association, and Yale Center for Dyslexia. If assessments suggest significant difficulties, please seek a formal assessment from an Educational Psychologist or Specialist Teacher Assessor (APC/AMBDA qualified).
           </p>
         </div>

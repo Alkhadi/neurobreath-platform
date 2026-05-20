@@ -579,7 +579,7 @@ export function PhonicsSoundsLab() {
       <Card className="overflow-hidden" data-tutorial="phonics-sounds-lab">
         <CardHeader className="bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-amber-500/10 p-4 sm:p-6">
           <div>
-            <p className="text-[10px] sm:text-xs uppercase tracking-wider text-primary font-semibold mb-1">
+            <p className="text-[10px] sm:text-xs tracking-wider text-primary font-semibold mb-1">
               Stage 2 • Phonics Training
             </p>
             <h2 className="text-base sm:text-lg md:text-xl font-semibold flex items-center gap-2">
@@ -677,7 +677,7 @@ export function PhonicsSoundsLab() {
               {/* Header Controls */}
               <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
                 <div className="w-full sm:w-auto">
-                  <p className="text-[10px] sm:text-xs uppercase tracking-widest text-slate-400">Phoneme Studio</p>
+                  <p className="text-[10px] sm:text-xs tracking-widest text-slate-400">Phoneme Studio</p>
                   <h3 className="text-base sm:text-lg md:text-xl font-bold text-white">Phonics Sounds · Letters Only</h3>
                   <p className="text-xs sm:text-sm text-slate-400 hidden sm:block">Watch the animated letter stage while Coach Dorothy speaks every letter sound.</p>
                 </div>
@@ -781,10 +781,10 @@ export function PhonicsSoundsLab() {
 
                   {/* Audio Phase Indicator */}
                   <div className="mb-3 sm:mb-4 flex flex-wrap items-center gap-2 sm:gap-3">
-                    <span className="text-[10px] sm:text-xs text-slate-400 uppercase tracking-wide">Phase:</span>
+                    <span className="text-[10px] sm:text-xs text-slate-400 tracking-wide">Phase:</span>
                     <div className="flex gap-1 sm:gap-2 flex-wrap">
                       <span className={cn(
-                        "px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold uppercase transition-all duration-300",
+                        "px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold transition-all duration-300",
                         audioPhase === 'call' 
                           ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 scale-105 sm:scale-110" 
                           : "bg-slate-700 text-slate-400"
@@ -792,7 +792,7 @@ export function PhonicsSoundsLab() {
                         📢 <span className="hidden xs:inline">Call</span>
                       </span>
                       <span className={cn(
-                        "px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold uppercase transition-all duration-300",
+                        "px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold transition-all duration-300",
                         audioPhase === 'repeat' 
                           ? "bg-amber-500 text-white shadow-lg shadow-amber-500/30 scale-105 sm:scale-110" 
                           : "bg-slate-700 text-slate-400"
@@ -800,7 +800,7 @@ export function PhonicsSoundsLab() {
                         🔁 <span className="hidden xs:inline">Repeat</span>
                       </span>
                       <span className={cn(
-                        "px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold uppercase transition-all duration-300",
+                        "px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold transition-all duration-300",
                         audioPhase === 'recap' 
                           ? "bg-purple-500 text-white shadow-lg shadow-purple-500/30 scale-105 sm:scale-110" 
                           : "bg-slate-700 text-slate-400"
@@ -903,7 +903,7 @@ export function PhonicsSoundsLab() {
                 )}>
                   {/* Milestone Banner */}
                   <div className={cn(
-                    "inline-block px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-full text-white font-bold uppercase tracking-wider sm:tracking-widest text-xs sm:text-sm mb-4 sm:mb-6",
+                    "inline-block px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-full text-white font-bold tracking-wider sm:tracking-widest text-xs sm:text-sm mb-4 sm:mb-6",
                     MILESTONE_COLORS[currentMilestone.id]?.banner
                   )}>
                     {currentMilestone.label}
@@ -1090,19 +1090,19 @@ export function PhonicsSoundsLab() {
                                 NB
                               </div>
                               <div>
-                                <p className="text-xs uppercase tracking-widest text-amber-700 font-semibold">NeuroBreath</p>
+                                <p className="text-xs tracking-widest text-amber-700 font-semibold">NeuroBreath</p>
                                 <p className="text-sm font-bold text-amber-800">Academy</p>
                               </div>
                             </div>
                             
                             {/* Certificate Content */}
                             <div className="text-center mb-8">
-                              <p className="text-sm uppercase tracking-widest text-amber-600 mb-2">Certificate of Achievement</p>
+                              <p className="text-sm tracking-widest text-amber-600 mb-2">Certificate of Achievement</p>
                               <h2 className="text-3xl font-bold text-slate-800 mb-1">Platinum Letter</h2>
                               <h2 className="text-3xl font-bold text-slate-800 mb-4">Sound Mastery</h2>
                               <div className="py-4 border-y-2 border-amber-300 my-4">
                                 <p className="text-4xl font-bold text-slate-900">{certificateName || "Learner Name"}</p>
-                                <p className="text-lg text-amber-700 italic mt-2">Calm Focus Laureate</p>
+                                <p className="text-lg text-amber-700 font-semibold mt-2">Calm Focus Laureate</p>
                               </div>
                             </div>
                             
@@ -1113,11 +1113,11 @@ export function PhonicsSoundsLab() {
                             {/* Certificate Details */}
                             <div className="flex flex-wrap bg-amber-100/70 rounded-xl p-4 gap-4 [&>*]:basis-[calc(50%-8px)] [&>*]:min-w-0">
                               <div>
-                                <span className="text-xs uppercase tracking-wide text-amber-600 font-medium">Certificate ID</span>
+                                <span className="text-xs tracking-wide text-amber-600 font-medium">Certificate ID</span>
                                 <p className="font-mono font-bold text-slate-800">{certificateId}</p>
                               </div>
                               <div>
-                                <span className="text-xs uppercase tracking-wide text-amber-600 font-medium">Issued</span>
+                                <span className="text-xs tracking-wide text-amber-600 font-medium">Issued</span>
                                 <p className="font-bold text-slate-800">
                                   {new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
                                 </p>

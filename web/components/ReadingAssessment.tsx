@@ -282,7 +282,7 @@ export function ReadingAssessment() {
           color: #7c3aed;
           font-weight: 700;
           letter-spacing: 1px;
-          text-transform: uppercase;
+          text-transform: none;
           margin-bottom: 2px;
         }
         .header h1 {
@@ -321,7 +321,7 @@ export function ReadingAssessment() {
         .reading-level-label {
           font-size: 6px;
           font-weight: 800;
-          text-transform: uppercase;
+          text-transform: none;
           color: #7c3aed;
           letter-spacing: 0.5px;
           margin-bottom: 2px;
@@ -358,7 +358,7 @@ export function ReadingAssessment() {
         .score-label {
           font-size: 6px;
           font-weight: 700;
-          text-transform: uppercase;
+          text-transform: none;
           color: #94a3b8;
           letter-spacing: 0.3px;
           margin-bottom: 2px;
@@ -400,7 +400,7 @@ export function ReadingAssessment() {
           font-weight: 800;
           color: #1a202c;
           margin-bottom: 6px;
-          text-transform: uppercase;
+          text-transform: none;
           letter-spacing: 0.3px;
           display: flex;
           align-items: center;
@@ -474,7 +474,7 @@ export function ReadingAssessment() {
           font-weight: 800;
           color: #1e40af;
           margin-bottom: 6px;
-          text-transform: uppercase;
+          text-transform: none;
           letter-spacing: 0.3px;
         }
         .recommendations-list {
@@ -512,7 +512,7 @@ export function ReadingAssessment() {
           font-weight: 800;
           color: #92400e;
           font-size: 7px;
-          text-transform: uppercase;
+          text-transform: none;
           margin-bottom: 2px;
         }
         .disclaimer-text {
@@ -724,7 +724,7 @@ export function ReadingAssessment() {
             color: #7c3aed;
             font-weight: 700;
             letter-spacing: 2px;
-            text-transform: uppercase;
+            text-transform: none;
             margin-bottom: 8px;
             display: block;
           }
@@ -761,7 +761,7 @@ export function ReadingAssessment() {
           .reading-level-label {
             font-size: 10px;
             font-weight: 800;
-            text-transform: uppercase;
+            text-transform: none;
             color: #7c3aed;
             letter-spacing: 1.5px;
             margin-bottom: 8px;
@@ -795,7 +795,7 @@ export function ReadingAssessment() {
           .score-label {
             font-size: 10px;
             font-weight: 700;
-            text-transform: uppercase;
+            text-transform: none;
             color: #94a3b8;
             letter-spacing: 0.8px;
             margin-bottom: 10px;
@@ -834,7 +834,7 @@ export function ReadingAssessment() {
             font-weight: 800;
             color: #1a202c;
             margin-bottom: 16px;
-            text-transform: uppercase;
+            text-transform: none;
             letter-spacing: 0.5px;
           }
           h2::before {
@@ -929,7 +929,7 @@ export function ReadingAssessment() {
             font-weight: 800;
             color: #92400e;
             font-size: 11px;
-            text-transform: uppercase;
+            text-transform: none;
             margin-bottom: 6px;
           }
           .disclaimer-text {
@@ -1095,7 +1095,7 @@ export function ReadingAssessment() {
           <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md rounded-2xl p-8 border border-white/20 space-y-6">
             <div className="text-center space-y-3">
               <div className="inline-block bg-white/10 rounded-full px-6 py-2 border border-white/30">
-                <p className="text-white/70 text-sm font-semibold uppercase tracking-wide">Reading Level</p>
+                <p className="text-white/70 text-sm font-semibold tracking-wide">Reading Level</p>
               </div>
               <h3 className="text-5xl font-bold text-transparent bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text">
                 {readingLevel.band}
@@ -1106,15 +1106,15 @@ export function ReadingAssessment() {
             {/* Score Breakdown */}
             <div className="flex flex-wrap gap-4 [&>*]:basis-[calc(33.333%-11px)] [&>*]:min-w-0">
               <div className="bg-white/10 rounded-lg p-4 text-center border border-white/20">
-                <p className="text-white/60 text-sm font-semibold uppercase">Score</p>
+                <p className="text-white/60 text-sm font-semibold">Score</p>
                 <p className="text-3xl font-bold text-white mt-2">{score}/{totalQuestions}</p>
               </div>
               <div className="bg-white/10 rounded-lg p-4 text-center border border-white/20">
-                <p className="text-white/60 text-sm font-semibold uppercase">Accuracy</p>
+                <p className="text-white/60 text-sm font-semibold">Accuracy</p>
                 <p className="text-3xl font-bold text-green-400 mt-2">{accuracy}%</p>
               </div>
               <div className="bg-white/10 rounded-lg p-4 text-center border border-white/20">
-                <p className="text-white/60 text-sm font-semibold uppercase">Percentile</p>
+                <p className="text-white/60 text-sm font-semibold">Percentile</p>
                 <p className="text-3xl font-bold text-blue-400 mt-2">{readingLevel.percentile}</p>
               </div>
             </div>
@@ -1234,7 +1234,7 @@ export function ReadingAssessment() {
           </button>
           
           <div className="text-center">
-            <h2 className="text-white/80 text-sm font-semibold uppercase tracking-wide">
+            <h2 className="text-white/80 text-sm font-semibold tracking-wide">
               {currentSection.title}
             </h2>
             <p className="text-white/60 text-xs mt-1">
@@ -1315,7 +1315,7 @@ export function ReadingAssessment() {
 
         {/* Score Indicator */}
         <div className="fixed bottom-8 right-8 bg-white/10 backdrop-blur-md rounded-full p-6 border border-white/20 text-center">
-          <div className="text-white/60 text-xs uppercase tracking-wider">Score</div>
+          <div className="text-white/60 text-xs tracking-wider">Score</div>
           <div className="text-3xl font-bold text-white">{score}/{completedQuestions || 1}</div>
         </div>
       </div>

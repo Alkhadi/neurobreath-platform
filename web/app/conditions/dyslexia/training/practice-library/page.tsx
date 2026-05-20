@@ -117,7 +117,7 @@ export default function DyslexiaPracticeLibraryPage() {
                     <CardContent className="p-4 space-y-3">
                       <div className="flex items-start justify-between gap-3">
                         <div className="space-y-1">
-                          <p className="text-[11px] font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">
+                          <p className="text-[11px] font-semibold tracking-wide text-blue-700 dark:text-blue-300">
                             {example.timing}
                           </p>
                           <h3 className="text-sm font-semibold text-foreground">{example.title}</h3>
@@ -125,7 +125,7 @@ export default function DyslexiaPracticeLibraryPage() {
                       </div>
                       <p className="text-xs text-muted-foreground leading-relaxed">{example.summary}</p>
                       <div className="space-y-2">
-                        <p className="text-[11px] font-semibold uppercase tracking-wide text-foreground">How to do it</p>
+                        <p className="text-[11px] font-semibold tracking-wide text-foreground">How to do it</p>
                         <ul className="space-y-1.5">
                           {example.steps.map((step, index) => (
                             <li key={index} className="flex items-start gap-2 text-xs text-muted-foreground">
@@ -136,7 +136,7 @@ export default function DyslexiaPracticeLibraryPage() {
                         </ul>
                       </div>
                       <div className="rounded-lg border border-blue-100 dark:border-blue-900 bg-white/80 dark:bg-gray-950/40 p-3">
-                        <p className="text-[11px] font-semibold uppercase tracking-wide text-foreground">Example prompt</p>
+                        <p className="text-[11px] font-semibold tracking-wide text-foreground">Example prompt</p>
                         <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{example.example}</p>
                       </div>
                       <div className="flex flex-wrap gap-2">
@@ -166,7 +166,7 @@ export default function DyslexiaPracticeLibraryPage() {
                       <CardContent className="p-4 space-y-3">
                         <div className="flex items-start justify-between gap-3">
                           <div className="space-y-1">
-                            <p className="text-[11px] font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
+                            <p className="text-[11px] font-semibold tracking-wide text-indigo-700 dark:text-indigo-300">
                               {dyslexiaCategoryLabels[category] ?? category}
                             </p>
                             <h3 className="text-sm font-semibold text-foreground">{support.title}</h3>
@@ -185,7 +185,7 @@ export default function DyslexiaPracticeLibraryPage() {
                           ))}
                         </ul>
                         <div className="rounded-lg border border-indigo-100 dark:border-indigo-900 bg-white/80 dark:bg-gray-950/40 p-3">
-                          <p className="text-[11px] font-semibold uppercase tracking-wide text-foreground">Example</p>
+                          <p className="text-[11px] font-semibold tracking-wide text-foreground">Example</p>
                           <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{support.example}</p>
                         </div>
                         <div className="flex flex-wrap gap-2">
@@ -214,14 +214,14 @@ export default function DyslexiaPracticeLibraryPage() {
                   <Card key={category} className="border-amber-100 dark:border-amber-900 bg-amber-50/70 dark:bg-amber-950/20">
                     <CardContent className="p-4 space-y-3">
                       <div className="space-y-1">
-                        <p className="text-[11px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-300">
+                        <p className="text-[11px] font-semibold tracking-wide text-amber-700 dark:text-amber-300">
                           {dyslexiaCategoryLabels[category] ?? category}
                         </p>
                         <h3 className="text-sm font-semibold text-foreground">{support.title}</h3>
                       </div>
                       <p className="text-xs text-muted-foreground leading-relaxed">{support.description}</p>
                       <div className="rounded-lg border border-amber-100 dark:border-amber-900 bg-white/80 dark:bg-gray-950/40 p-3">
-                        <p className="text-[11px] font-semibold uppercase tracking-wide text-foreground">One starting example</p>
+                        <p className="text-[11px] font-semibold tracking-wide text-foreground">One starting example</p>
                         <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{support.example}</p>
                       </div>
                       <div className="flex flex-wrap gap-2">
