@@ -83,15 +83,15 @@ export function CredibilityFooter({ editorial, region, className }: CredibilityF
 
         <div className="flex flex-wrap gap-3 text-sm text-slate-600 [&>*]:basis-full md:[&>*]:basis-[calc(33.333%-8px)] [&>*]:min-w-0">
           <div>
-            <p className="text-xs uppercase tracking-wide text-slate-400">{COPY[locale].lastReviewedLabel}</p>
+            <p className="text-xs font-semibold text-slate-500">{COPY[locale].lastReviewedLabel}</p>
             <p className="font-semibold text-slate-800">{format(reviewedDate, 'dd MMM yyyy')}</p>
           </div>
           <div>
-            <p className="text-xs uppercase tracking-wide text-slate-400">{COPY[locale].nextReviewLabel}</p>
+            <p className="text-xs font-semibold text-slate-500">{COPY[locale].nextReviewLabel}</p>
             <p className="font-semibold text-slate-800">{format(nextReview, 'dd MMM yyyy')}</p>
           </div>
           <div>
-            <p className="text-xs uppercase tracking-wide text-slate-400">{COPY[locale].updatedLabel}</p>
+            <p className="text-xs font-semibold text-slate-500">{COPY[locale].updatedLabel}</p>
             <p className="font-semibold text-slate-800">{format(updatedDate, 'dd MMM yyyy')}</p>
           </div>
         </div>
@@ -133,7 +133,7 @@ export function CredibilityFooter({ editorial, region, className }: CredibilityF
             {editorial.changeLog.map(entry => (
               <li key={`${entry.date}-${entry.summary}`} className="flex flex-wrap gap-2">
                 <span className="font-semibold text-slate-700">{format(new Date(entry.date), 'dd MMM yyyy')}</span>
-                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] uppercase tracking-wide text-slate-500">
+                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600">
                   {entry.type}
                 </span>
                 <span>{entry.summary}</span>

@@ -219,7 +219,7 @@ export default function AutismParentSupportPage() {
                   </p>
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground mt-4 italic">
+              <p className="text-xs text-muted-foreground mt-4 font-semibold">
                 Educational information only; not medical advice.
               </p>
             </CardContent>
@@ -430,7 +430,7 @@ export default function AutismParentSupportPage() {
                     National Autistic Society
                     <ExternalLink className="w-3 h-3" />
                   </a>
-                  <p className="text-xs text-muted-foreground italic mt-3">
+                  <p className="text-xs text-muted-foreground font-semibold mt-3">
                     Supportive information only; not medical advice.
                   </p>
                 </div>
@@ -702,7 +702,7 @@ export default function AutismParentSupportPage() {
                   Structured, communication-focused interventions, environmental adaptations and co-occurring 
                   problem management; consider melatonin via specialists if behavioural sleep approaches fail.
                 </p>
-                <p className="text-xs text-muted-foreground italic">
+                <p className="text-xs text-muted-foreground font-semibold">
                   Source: NICE CG170 (support & management). Educational only; not medical advice.
                 </p>
               </CardContent>
@@ -720,7 +720,7 @@ export default function AutismParentSupportPage() {
                   Adapted CBT for anxiety/depression, structured support plans, and workplace or healthcare 
                   reasonable adjustments.
                 </p>
-                <p className="text-xs text-muted-foreground italic">
+                <p className="text-xs text-muted-foreground font-semibold">
                   Source: NICE autism guidance (adults). Educational only.
                 </p>
               </CardContent>
@@ -822,7 +822,7 @@ export default function AutismParentSupportPage() {
                   Log antecedent–behaviour–consequence patterns, teach an easier communication route, 
                   and reinforce success quickly.
                 </p>
-                <p className="text-sm text-muted-foreground italic">
+                <p className="text-sm text-muted-foreground font-semibold">
                   Check sensory and sleep foundations if plans stall.
                 </p>
               </CardContent>

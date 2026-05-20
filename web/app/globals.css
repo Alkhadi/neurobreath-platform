@@ -4966,3 +4966,58 @@ html, body {
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+/* =========================================================================
+   PHASE 1 SENSORY CLEANSE — calmer defaults
+   (Sept 2026 Sensory Cleanse: dyslexia-friendly, low-glare, low-interruption)
+   ========================================================================= */
+
+:root {
+  /* Sensory-safe baseline tokens. Existing per-surface tokens are kept;
+     these are the conservative page-level defaults used by html/body. */
+  --nb-page-bg: #F7F5EF;
+  --nb-surface: #FFFCF7;
+  --nb-text: #243033;
+  --nb-text-muted: #5D6870;
+  --nb-border-soft: #DCE6E2;
+}
+
+html {
+  background-color: var(--nb-page-bg);
+  color: var(--nb-text);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--nb-page-bg);
+  color: var(--nb-text);
+  /* Dyslexia-friendly readability */
+  text-align: left;
+  line-height: 1.65;
+}
+
+/* Comfortable paragraph rhythm for long-form content */
+p, li, dd {
+  line-height: 1.65;
+}
+
+/* Visible focus for keyboard users (do not hide focus outlines) */
+:where(a, button, [role="button"], input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid #2563EB;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respect motion preferences globally */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

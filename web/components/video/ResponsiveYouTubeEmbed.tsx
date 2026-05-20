@@ -26,7 +26,8 @@ export function ResponsiveYouTubeEmbed({ videoId, title, className }: Responsive
       <iframe
         src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1`}
         title={title}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        // Phase 1 Sensory Cleanse: autoplay capability removed so playback is user-initiated.
+        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowFullScreen
         loading="lazy"
         referrerPolicy="strict-origin-when-cross-origin"

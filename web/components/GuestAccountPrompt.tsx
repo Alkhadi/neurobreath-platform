@@ -18,7 +18,6 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import {
-  shouldShowAccountPrompt,
   dismissAccountPrompt,
   loadGuestProgress,
 } from '@/lib/guest-progress'
@@ -34,17 +33,13 @@ export function GuestAccountPrompt() {
   
   useEffect(() => {
     if (!mounted) return
-    
-    // Check if we should show the prompt
-    const shouldShow = shouldShowAccountPrompt()
-    if (shouldShow) {
-      // Small delay to avoid aggressive popup on page load
-      const timer = setTimeout(() => {
-        setOpen(true)
-      }, 2000)
-      
-      return () => clearTimeout(timer)
-    }
+
+    // Phase 1 Sensory Cleanse: do NOT auto-open this dialog.
+    // The previous 2-second timed pop-up has been removed; account
+    // creation is now surfaced via inline CTAs instead of an
+    // interruptive modal. The dialog only opens if explicitly
+    // triggered (kept for backwards compatibility with future
+    // user-initiated entry points).
   }, [mounted])
   
   const handleDismiss = () => {

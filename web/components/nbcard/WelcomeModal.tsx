@@ -23,14 +23,13 @@ export function WelcomeModal({ hasExistingCards, onCreateCard, onUseExample }: W
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // Show welcome modal only if:
-    // 1. User has not completed onboarding
-    // 2. User has no existing cards
-    // 3. This is their first visit
+    // Phase 1 Sensory Cleanse: do NOT auto-open the welcome modal.
+    // Interruptive modals on page load have been removed. Onboarding is
+    // surfaced via inline CTAs on the NB-Card hub; the dialog now only
+    // opens when explicitly triggered by user action.
     if (!hasCompletedOnboarding() && !hasExistingCards) {
-      // Small delay to avoid jarring immediate popup
-      const timer = setTimeout(() => setIsOpen(true), 300);
-      return () => clearTimeout(timer);
+      // Mark as complete on first mount so no future auto-open is attempted.
+      markOnboardingComplete();
     }
   }, [hasExistingCards]);
 

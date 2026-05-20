@@ -66,7 +66,7 @@ export function PrintablesHub({ region }: PrintablesHubProps) {
   return (
     <div className="space-y-10">
       <header className="space-y-4">
-        <p className="text-sm uppercase tracking-wide text-slate-500">Printables & Templates</p>
+        <p className="text-sm font-semibold tracking-wide text-slate-500">Printables & Templates</p>
         <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900">
           Print‑friendly resources for home, school, and work
         </h1>
@@ -134,7 +134,7 @@ export function PrintablesHub({ region }: PrintablesHubProps) {
           <div className="text-sm text-slate-500">Showing {filtered.length} of {PRINTABLES.length}</div>
         </div>
         <div className="flex flex-wrap mt-4 gap-3 [&>*]:basis-full md:[&>*]:basis-[calc(50%-6px)] lg:[&>*]:basis-[calc(20%-10px)] [&>*]:min-w-0">
-          <label className="flex flex-col text-xs font-semibold text-slate-500 uppercase">
+          <label className="flex flex-col text-xs font-semibold text-slate-500">
             Search
             <input
               value={query}
@@ -143,7 +143,7 @@ export function PrintablesHub({ region }: PrintablesHubProps) {
               className="mt-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none"
             />
           </label>
-          <label className="flex flex-col text-xs font-semibold text-slate-500 uppercase">
+          <label className="flex flex-col text-xs font-semibold text-slate-500">
             Audience
             <select
               value={audience}
@@ -158,7 +158,7 @@ export function PrintablesHub({ region }: PrintablesHubProps) {
               ))}
             </select>
           </label>
-          <label className="flex flex-col text-xs font-semibold text-slate-500 uppercase">
+          <label className="flex flex-col text-xs font-semibold text-slate-500">
             Type
             <select
               value={type}
@@ -173,7 +173,7 @@ export function PrintablesHub({ region }: PrintablesHubProps) {
               ))}
             </select>
           </label>
-          <label className="flex flex-col text-xs font-semibold text-slate-500 uppercase">
+          <label className="flex flex-col text-xs font-semibold text-slate-500">
             Condition tags
             <select
               value={condition}
@@ -188,7 +188,7 @@ export function PrintablesHub({ region }: PrintablesHubProps) {
               ))}
             </select>
           </label>
-          <label className="flex flex-col text-xs font-semibold text-slate-500 uppercase">
+          <label className="flex flex-col text-xs font-semibold text-slate-500">
             Support needs
             <select
               value={supportNeed}
