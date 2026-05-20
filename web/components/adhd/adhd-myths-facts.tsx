@@ -180,7 +180,7 @@ export function ADHDMythsFacts() {
                   <div className="flex items-start gap-2">
                     <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
                     <div>
-                      <div className="text-xs font-semibold text-red-600 uppercase tracking-wide mb-1">
+                      <div className="text-xs font-semibold text-red-600 tracking-wide mb-1">
                         Myth
                       </div>
                       <CardTitle className="text-lg font-semibold leading-snug">
@@ -196,7 +196,7 @@ export function ADHDMythsFacts() {
                   <div className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                     <div>
-                      <div className="text-xs font-semibold text-green-600 uppercase tracking-wide mb-1">
+                      <div className="text-xs font-semibold text-green-600 tracking-wide mb-1">
                         Fact
                       </div>
                       <CardDescription className="text-sm leading-relaxed text-foreground">

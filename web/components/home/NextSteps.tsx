@@ -41,7 +41,7 @@ export function NextSteps({ items }: { items: NextStepItem[] }) {
 									<span className="text-sm sm:text-lg font-semibold text-[#0F172A] dark:text-white leading-snug">
 										{featured.title}
 									</span>
-									<Badge className="bg-[#4ECDC4] text-white border-0 text-[10px] px-2 py-0.5 font-semibold tracking-wide uppercase">
+									<Badge className="bg-[#4ECDC4] text-white border-0 text-[10px] px-2 py-0.5 font-semibold tracking-wide">
 										Recommended
 									</Badge>
 								</div>

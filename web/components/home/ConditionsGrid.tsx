@@ -44,7 +44,7 @@ export function ConditionsGrid({
 								<div className="min-w-0 flex-1">
 									<div className="flex items-center justify-between gap-3">
 										<h3 className="text-sm sm:text-base font-semibold text-[#0F172A] dark:text-white">{condition.canonicalName}</h3>
-										<span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded-full">
+										<span className="shrink-0 text-[10px] font-semibold tracking-wider text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded-full">
 											{regionKey.toUpperCase()}
 										</span>
 									</div>
