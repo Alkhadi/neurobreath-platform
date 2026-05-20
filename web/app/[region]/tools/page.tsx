@@ -150,7 +150,7 @@ export default async function RegionToolsPage({ params }: RegionToolsPageProps) 
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
       <div className="mx-auto w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1200px] py-12 space-y-10">
         <header className="space-y-4">
-          <p className="text-sm uppercase tracking-wide text-slate-500">Tools</p>
+          <p className="text-sm tracking-wide text-slate-500">Tools</p>
           <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900">Tools you can try today</h1>
           <p className="text-base text-slate-600 max-w-3xl">
             Practical, low-friction tools grouped by support need. {copy.educationOnly}

@@ -112,7 +112,7 @@ export default async function RegionGuidePage({ params }: RegionGuidePageProps) 
           </div>
 
           <header className="space-y-4">
-            <p className="text-sm uppercase tracking-wide text-muted-foreground">{interactiveGuide.pillar.label}</p>
+            <p className="text-sm tracking-wide text-muted-foreground">{interactiveGuide.pillar.label}</p>
             <h1 className="text-4xl sm:text-5xl font-bold text-foreground">{interactiveGuide.title}</h1>
             <p className="text-lg text-muted-foreground max-w-2xl">{interactiveGuide.description}</p>
           </header>

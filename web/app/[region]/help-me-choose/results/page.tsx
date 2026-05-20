@@ -46,7 +46,7 @@ export default async function HelpMeChooseResultsPage({ params }: HelpMeChooseRe
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
       <div className="mx-auto w-[94vw] sm:w-[90vw] lg:w-[86vw] max-w-[1100px] py-12 space-y-8">
         <header className="space-y-3">
-          <p className="text-sm uppercase tracking-wide text-slate-500">Help me choose</p>
+          <p className="text-sm tracking-wide text-slate-500">Help me choose</p>
           <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900">Your personalised plan</h1>
           <p className="text-base text-slate-600 max-w-3xl">
             Educational guidance only. Your answers are stored locally on your device.
