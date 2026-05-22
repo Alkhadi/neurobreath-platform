@@ -5,7 +5,7 @@ import { PageShellNB, PageEndNB } from '@/components/layout/page-primitives'
 import { HeroToolNB } from '@/components/layout/hero-primitives'
 import { FeatureGridNB, ContentCardNB, CTASectionNB } from '@/components/layout/section-primitives'
 import { TrustBlockNB, TrustStripNB } from '@/components/trust/trust-primitives'
-import { Layers, Sparkles, Shuffle, Grid } from 'lucide-react'
+import { BrainCircuit, Layers, Sparkles, Shuffle, Grid } from 'lucide-react'
 import Link from 'next/link'
 
 export default function ToolsPage() {
@@ -44,6 +44,28 @@ export default function ToolsPage() {
       {/* ── Tool cards ───────────────────────────────────────── */}
       <div className="container-nb py-12">
         <FeatureGridNB columns={2}>
+          {/* Spiky Profile */}
+          <ContentCardNB
+            title="Spiky Profile"
+            description={renderGlossaryText(
+              'Create a strengths and support map across focus, sensory needs, communication, memory, reading, routines, and emotional regulation. Educational only — not a diagnosis.',
+            ) as string}
+            icon={<BrainCircuit className="w-6 h-6 text-white" />}
+            accent="linear-gradient(135deg, #0f766e, #2563eb)"
+            action={
+              <Link href="/tools/spiky-profile" className="nb-btn-primary w-full justify-center">
+                Open Spiky Profile
+              </Link>
+            }
+          >
+            <ul className="space-y-1.5 text-sm text-[color:var(--nb-text-body)] dark:text-white/70 list-disc pl-5">
+              <li>Reflect on strengths and support needs</li>
+              <li>Map uneven skill patterns clearly</li>
+              <li>Use educational, non-diagnostic wording</li>
+              <li>Choose practical next steps</li>
+            </ul>
+          </ContentCardNB>
+
           {/* Breath Ladder */}
           <ContentCardNB
             title="Breath Ladder"

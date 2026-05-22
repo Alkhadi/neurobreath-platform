@@ -382,6 +382,7 @@ export function SiteHeader() {
           </div>
           <div className="nb-mega-menu-section">
             <h4 className="nb-mega-menu-heading">General Tools</h4>
+            <Link href="/tools/spiky-profile" onClick={closeMegaMenu}>🧠 Spiky Profile</Link>
             <Link href="/tools/breath-tools" onClick={closeMegaMenu}>🫁 Breath Tools</Link>
             <Link href="/tools/mood-tools" onClick={closeMegaMenu}>🌈 Mood Tools</Link>
             <Link href="/tools/sleep-tools" onClick={closeMegaMenu}>💤 Sleep Tools</Link>
