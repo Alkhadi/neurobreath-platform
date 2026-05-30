@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# STRICT PATCH MODE pre-push gates:
+# - fast guard against forbidden changes
+# - runs required local quality gates before allowing push
+
+repo_root="$(git rev-parse --show-toplevel)"
+cd "$repo_root"
+
+if git show-ref --verify --quiet refs/remotes/origin/main; then
+  node web/scripts/strict-patch-guard.mjs --range origin/main...HEAD
+else
+  node web/scripts/strict-patch-guard.mjs --range HEAD~1...HEAD || true
+fi
+
+cd web
+yarn lint
+yarn typecheck
+yarn build
+
+# Buddy/UI/API targeted smoke (best-effort heuristic)
+changed_files="$(git diff --name-only origin/main...HEAD 2>/dev/null || true)"
+if echo "$changed_files" | grep -Eq '^(web/app/(buddy|api)/|web/tests/.*buddy|web/components/.*buddy)'; then
+  yarn test:e2e tests/buddy.spec.ts
+fi
