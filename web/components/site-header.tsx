@@ -521,6 +521,7 @@ export function SiteHeader() {
     <>
       {primaryNavContent}
       {utilityNavContent}
+      <AppsInstitutionalHeaderMenu />
     </>
   )
 

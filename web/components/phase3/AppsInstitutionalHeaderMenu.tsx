@@ -39,7 +39,7 @@ export function AppsInstitutionalHeaderMenu() {
   }, []);
 
   return (
-    <details ref={detailsRef} data-nb-apps-institutional-menu="true" className="group relative hidden lg:block">
+    <details ref={detailsRef} data-nb-apps-institutional-menu="true" className="group relative">
       <summary className="flex cursor-pointer list-none items-center gap-1 rounded-xl px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
         <span>Apps &amp; Institutional</span>
         <span aria-hidden="true" className="text-xs transition group-open:rotate-180">⌄</span>
