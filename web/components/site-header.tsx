@@ -1,5 +1,6 @@
 'use client'
 
+import { AppsInstitutionalHeaderMenu } from "@/components/phase3/AppsInstitutionalHeaderMenu";
 /* eslint-disable jsx-a11y/aria-proptypes */
 import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
@@ -520,6 +521,7 @@ export function SiteHeader() {
     <>
       {primaryNavContent}
       {utilityNavContent}
+      <AppsInstitutionalHeaderMenu />
     </>
   )
 
@@ -586,6 +588,7 @@ export function SiteHeader() {
             <nav ref={navRef} className="nb-main-nav" id="mainNav" role="navigation" aria-label="Primary">
               <div className="nb-main-nav-primary">{primaryNavContent}</div>
               <div className="nb-main-nav-secondary">{utilityNavContent}</div>
+              <AppsInstitutionalHeaderMenu />
             </nav>
           )}
         </div>
